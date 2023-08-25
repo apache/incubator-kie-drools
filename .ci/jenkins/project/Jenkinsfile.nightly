@@ -61,6 +61,9 @@ pipeline {
             }
         }
         stage('Build & Deploy KIE jpmml integration') {
+            when {
+                expression { isMainStream() }
+            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
@@ -168,4 +171,8 @@ void addBooleanParam(List buildParams, String key, boolean value) {
 
 String getBuildBranch() {
     return env.GIT_BRANCH_NAME
+}
+
+boolean isMainStream() {
+    return env.STREAM == 'main'
 }

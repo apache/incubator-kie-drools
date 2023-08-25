@@ -63,6 +63,9 @@ pipeline {
         }
 
         stage('Init KIE jpmml integration') {
+            when {
+                expression { isMainStream() }
+            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
@@ -193,4 +196,8 @@ String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, S
     } else {
         error 'Cannot parse given branch as a release branch, aka [M].[m].x ...'
     }
+}
+
+boolean isMainStream() {
+    return env.STREAM == 'main'
 }
