@@ -16,12 +16,12 @@
 
 package org.drools.base.common;
 
-import org.drools.util.ObjectPool;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
+
+import org.drools.util.ObjectPool;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
 
 public class PartitionsManager {
 

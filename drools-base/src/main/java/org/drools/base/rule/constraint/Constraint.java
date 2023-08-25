@@ -22,12 +22,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.RuleComponent;
-import org.drools.base.rule.Declaration;
 import org.drools.base.RuleBase;
 import org.drools.base.RuleBuildContext;
 import org.drools.base.base.ObjectType;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleComponent;
 import org.drools.core.util.bitmask.AllSetButLastBitMask;
 import org.drools.core.util.bitmask.BitMask;
 

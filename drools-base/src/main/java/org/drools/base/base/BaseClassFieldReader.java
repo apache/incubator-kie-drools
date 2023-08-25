@@ -16,14 +16,14 @@
 
 package org.drools.base.base;
 
-import org.drools.base.common.DroolsObjectInput;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.util.ClassUtils;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.base.common.DroolsObjectInput;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.util.ClassUtils;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
