@@ -15,10 +15,6 @@
 
 package org.drools.reliability.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.core.ClockType;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.IdentityObjectStore;
@@ -27,9 +23,13 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class SimpleSerializationReliableObjectStore extends IdentityObjectStore implements SimpleReliableObjectStore {
 
-    protected final transient Storage<Long, StoredObject> storage;
+    protected transient Storage<Long, StoredObject> storage;
 
     protected boolean reInitPropagated = false;
 
@@ -113,7 +113,7 @@ public class SimpleSerializationReliableObjectStore extends IdentityObjectStore 
         storage.put(getHandleForObject(object).getId(), storedObject);
     }
 
-    private StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
+    protected StoredObject factHandleToStoredObject(InternalFactHandle handle, boolean propagated, Object object) {
         return handle.isEvent() ?
                 createStoredEvent(propagated, object, ((DefaultEventHandle) handle).getStartTimestamp(), ((DefaultEventHandle) handle).getDuration()) :
                 createStoredObject(propagated, object);

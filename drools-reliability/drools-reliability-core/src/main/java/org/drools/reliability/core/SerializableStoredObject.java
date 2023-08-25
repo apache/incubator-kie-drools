@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 public class SerializableStoredObject extends BaseStoredObject {
 
-    private final Serializable object;
+    protected final Serializable object;
 
     public SerializableStoredObject(Object object, boolean propagated) {
         super(propagated);
