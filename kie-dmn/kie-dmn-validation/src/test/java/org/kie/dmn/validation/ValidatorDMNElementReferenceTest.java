@@ -60,7 +60,7 @@ public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
     }
 
     private void assertValiadationResult(List<DMNMessage> validationMessages) {
-    	assertThat(validationMessages).as(ValidatorUtil.formatMessages(validationMessages)).hasSize(3);
+    	assertThat(validationMessages).as(ValidatorUtil.formatMessages(validationMessages)).hasSize(4);
         assertThat(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_HREF_SYNTAX))).isTrue();
         assertThat(validationMessages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();

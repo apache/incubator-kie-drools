@@ -43,7 +43,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.MISSING_EXPRESSION);
         }
     }
@@ -53,7 +53,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_MISSING_EXPR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.MISSING_EXPRESSION);
     }
 
@@ -64,7 +64,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "DECISION_MISSING_EXPR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertThat(validate.get(0).getMessageType()).as(validate.get(0).toString()).isEqualTo(DMNMessageType.MISSING_EXPRESSION);
     }
 
@@ -74,7 +74,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
         }
     }
@@ -84,7 +84,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_MISSING_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
@@ -95,7 +95,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "DECISION_MISSING_VAR"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
@@ -103,7 +103,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
     public void testDECISION_MISSING_VARbis_ReaderInput() throws IOException {
         try (final Reader reader = getReader("decision/DECISION_MISSING_VARbis.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
         }
     }
@@ -112,7 +112,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
     public void testDECISION_MISSING_VARbis_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("decision/DECISION_MISSING_VARbis.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 
@@ -123,7 +123,7 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "DECISION_MISSING_VARbis"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_VARIABLE))).isTrue();
     }
 

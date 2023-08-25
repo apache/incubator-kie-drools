@@ -37,7 +37,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -47,7 +47,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -58,7 +58,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -68,7 +68,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -78,7 +78,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_DEC.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -89,7 +89,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "AUTHREQ_MISSING_DEPENDENCY_REQ_DEC"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -99,7 +99,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -109,7 +109,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -120,7 +120,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -130,7 +130,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -140,7 +140,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -151,7 +151,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -161,7 +161,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -171,7 +171,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_DEP_REQ_DEC_NOT_DECISION.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -182,7 +182,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "AUTHREQ_DEP_REQ_DEC_NOT_DECISION"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -192,7 +192,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -202,7 +202,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_DEP_REQ_INPUT_NOT_INPUT.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -213,7 +213,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
                                "https://github.com/kiegroup/kie-dmn",
                                "AUTHREQ_DEP_REQ_INPUT_NOT_INPUT"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 }
