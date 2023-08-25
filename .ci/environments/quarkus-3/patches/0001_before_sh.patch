@@ -3719,7 +3719,7 @@ index 4940e8a246..7be51afdd0 100644
  import org.drools.codegen.common.GeneratedFile;
  import org.drools.codegen.common.GeneratedFileType;
 diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
-index 06d572ada9..312b1b7fc7 100644
+index 315815dde1..e89e5681d7 100644
 --- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
 +++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
 @@ -19,8 +19,8 @@ import java.lang.annotation.Annotation;
