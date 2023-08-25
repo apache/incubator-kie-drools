@@ -164,7 +164,7 @@ public class PhreakTimerNode {
         }
         for ( LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            PropagationContext pctx = leftTuple.getPropagationContext();
+            PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
 
             Object obj = leftTuple.getContextObject();
             if (obj instanceof DefaultJobHandle) {
