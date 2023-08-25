@@ -64,7 +64,7 @@ pipeline {
 
         stage('Init KIE jpmml integration') {
             when {
-                expression { isMainStream() }
+                expression { return isMainStream() }
             }
             steps {
                 script {

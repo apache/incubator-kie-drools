@@ -62,7 +62,7 @@ pipeline {
         }
         stage('Build & Deploy KIE jpmml integration') {
             when {
-                expression { isMainStream() }
+                expression { return isMainStream() }
             }
             steps {
                 script {
