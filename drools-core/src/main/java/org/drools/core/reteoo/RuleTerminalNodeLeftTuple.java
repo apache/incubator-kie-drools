@@ -139,13 +139,11 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     @Override
     protected void setSink(Sink sink) {
         super.setSink(sink);
-        if (sink instanceof RuleTerminalNode) {
-            RuleTerminalNode terminalNode = (RuleTerminalNode) sink;
-            this.rule = terminalNode.getRule();
-            if (this.rule != null) {
-                String consequenceName = terminalNode.getConsequenceName();
-                this.consequence = consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? rule.getConsequence() : rule.getNamedConsequence(consequenceName);
-            }
+        TerminalNode terminalNode = (TerminalNode) sink;
+        this.rule = terminalNode.getRule();
+        if (this.rule != null && terminalNode instanceof RuleTerminalNode) {
+            String consequenceName = ((RuleTerminalNode)terminalNode).getConsequenceName();
+            this.consequence = consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? rule.getConsequence() : rule.getNamedConsequence(consequenceName);
         }
     }
 
