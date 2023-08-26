@@ -3748,6 +3748,24 @@ index f3669957d8..cb8ac2d291 100644
  
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.jboss.jandex.IndexView;
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java
+index 4ca73cc492..e98166a412 100644
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java
+@@ -18,10 +18,11 @@ package org.kie.kogito.serverless.workflow.io;
+ import java.net.URI;
+ import java.util.function.Function;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import io.quarkus.cache.Cache;
++
++import jakarta.annotation.PostConstruct;
+ import io.quarkus.cache.CacheName;
+ import io.quarkus.runtime.Startup;
+ 
 diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/java/org/kie/kogito/workflows/services/AgePersonService.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/java/org/kie/kogito/workflows/services/AgePersonService.java
 index 509b193727..2b0fa6b37f 100644
 --- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/java/org/kie/kogito/workflows/services/AgePersonService.java
@@ -4036,25 +4054,6 @@ index af5f61d1f0..767c7ea624 100644
  import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
  import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
  import org.slf4j.Logger;
-diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java
-index 4ca73cc492..3482f0ade3 100644
---- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java
-+++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/io/QuarkusResourceCache.java
-@@ -18,12 +18,12 @@ package org.kie.kogito.serverless.workflow.io;
- import java.net.URI;
- import java.util.function.Function;
- 
--import javax.annotation.PostConstruct;
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import io.quarkus.cache.Cache;
- import io.quarkus.cache.CacheName;
- import io.quarkus.runtime.Startup;
-+import jakarta.annotation.PostConstruct;
- 
- @Startup
- public class QuarkusResourceCache {
 diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/mapper/ObjectMapperConfig.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/mapper/ObjectMapperConfig.java
 index 128d514ba0..0a3adc2946 100644
 --- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow/src/main/java/org/kie/kogito/serverless/workflow/mapper/ObjectMapperConfig.java
