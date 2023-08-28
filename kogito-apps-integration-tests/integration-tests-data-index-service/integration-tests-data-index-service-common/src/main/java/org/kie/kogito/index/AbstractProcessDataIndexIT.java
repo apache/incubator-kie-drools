@@ -339,19 +339,19 @@ public abstract class AbstractProcessDataIndexIT {
         testProcessGatewayAPIComments(taskId, pId2);
         testProcessGatewayAPIAttachments(taskId, pId2);
 
-        String vars = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+        Map<String, Object> vars = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + pId2 + "\\\"}}) { variables} }\"}")
                 .when().post("/graphql")
                 .then()
                 .statusCode(200).extract().path("data.ProcessInstances[0].variables");
 
         if (vars != null) {
+            ((Map<String, String>) vars.get("traveller")).put("firstName", "Anakin");
             await()
                     .atMost(TIMEOUT)
                     .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                             .body("{ \"query\" : \"mutation{ ProcessInstanceUpdateVariables(id:\\\"" + pId2 + "\\\", variables:\\\"" +
-                                    vars.replace("Darth", "Anakin")
-                                            .replace("\"", "\\\\\\\"")
+                                    mapper.writeValueAsString(vars).replace("\"", "\\\\\\\"")
                                     + "\\\")}\"}")
                             .when().post("/graphql")
                             .then()
@@ -364,7 +364,7 @@ public abstract class AbstractProcessDataIndexIT {
                             .when().post("/graphql")
                             .then()
                             .statusCode(200)
-                            .body("data.ProcessInstances[0].variables", containsString("Anakin")));
+                            .body("data.ProcessInstances[0].variables.traveller.firstName", containsString("Anakin")));
         }
         given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"mutation{ NodeInstanceTrigger(id:\\\"" + pId2 + "\\\", nodeId:\\\"_8B62D3CA-5D03-4B2B-832B-126469288BB4\\\")}\"}")

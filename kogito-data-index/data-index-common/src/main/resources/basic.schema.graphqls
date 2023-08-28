@@ -1,6 +1,7 @@
 scalar DateTime
 scalar BigDecimal
 scalar Long
+scalar JSON
 
 schema {
     query: Query
@@ -25,7 +26,7 @@ type ProcessInstance {
     serviceUrl: String
     nodes: [NodeInstance!]!
     milestones: [Milestone!]
-    variables: String
+    variables: JSON
     start: DateTime!
     end: DateTime
     parentProcessInstance: ProcessInstance

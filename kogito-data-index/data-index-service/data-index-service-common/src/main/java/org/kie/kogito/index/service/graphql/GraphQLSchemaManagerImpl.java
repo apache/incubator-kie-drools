@@ -144,6 +144,7 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                 .scalar(getDateTimeScalarType())
                 .scalar(ExtendedScalars.GraphQLBigDecimal)
                 .scalar(ExtendedScalars.GraphQLLong)
+                .scalar(ExtendedScalars.Json)
                 .build();
 
         SchemaGenerator schemaGenerator = new SchemaGenerator();
