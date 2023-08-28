@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { ItemDescriptor } from '../ItemDescriptor';
 
 const item1 = {
@@ -34,11 +34,11 @@ mockMath.random = () => 0.5;
 global.Math = mockMath;
 describe('ItemDescriptor component tests', () => {
   it('snapshot testing for business key available', () => {
-    const wrapper = shallow(<ItemDescriptor itemDescription={item1} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<ItemDescriptor itemDescription={item1} />);
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing for business key null', () => {
-    const wrapper = shallow(<ItemDescriptor itemDescription={item2} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<ItemDescriptor itemDescription={item2} />);
+    expect(container).toMatchSnapshot();
   });
 });

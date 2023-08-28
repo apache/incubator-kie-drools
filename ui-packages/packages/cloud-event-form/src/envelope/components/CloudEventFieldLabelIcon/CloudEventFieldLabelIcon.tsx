@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
+import { HelpIcon } from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import { Popover } from '@patternfly/react-core/dist/js/components/Popover';
 
 export interface CloudEventFieldLabelIconProps {

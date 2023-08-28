@@ -18,70 +18,9 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import WorkflowForm, { WorkflowFormProps } from '../WorkflowForm';
 import { WorkflowFormDriver } from '../../../../api';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MockedWorkflowFormDriver } from '../../../../embedded/tests/mocks/Mocks';
 import * as validateWorkflowData from '../validateWorkflowData';
-
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@patternfly/react-core/dist/js/components/Alert', () =>
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core/dist/js/components/Alert'),
-    {
-      Alert: () => {
-        return <MockedComponent />;
-      }
-    }
-  )
-);
-
-jest.mock('@patternfly/react-code-editor/dist/js/components/CodeEditor', () =>
-  Object.assign({}, jest.requireActual('@patternfly/react-code-editor'), {
-    CodeEditor: () => {
-      return <MockedComponent />;
-    },
-    Language: () => {
-      return {
-        json: 'json'
-      };
-    }
-  })
-);
-
-jest.mock('@patternfly/react-core/dist/js/components/Popover', () =>
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core/dist/js/components/Popover'),
-    {
-      Popover: () => {
-        return <MockedComponent />;
-      }
-    }
-  )
-);
-
-jest.mock('@patternfly/react-core/dist/js/helpers', () =>
-  Object.assign(
-    {},
-    jest.requireActual('@patternfly/react-core/dist/js/helpers'),
-    {
-      Popper: () => {
-        return <MockedComponent />;
-      }
-    }
-  )
-);
-
-jest.mock('@patternfly/react-code-editor', () =>
-  Object.assign({}, jest.requireActual('@patternfly/react-code-editor'), {
-    CodeEditor: () => {
-      return <MockedComponent />;
-    }
-  })
-);
 
 let props: WorkflowFormProps;
 let startWorkflowSpy;
@@ -99,7 +38,7 @@ const getWorkflowFormDriver = (): WorkflowFormDriver => {
 };
 
 const getWorkflowFormWrapper = () => {
-  return mount(<WorkflowForm {...props} />).find('WorkflowForm');
+  return render(<WorkflowForm {...props} />).container;
 };
 
 describe('WorkflowForm Test', () => {
@@ -132,20 +71,18 @@ describe('WorkflowForm Test', () => {
     const driver = getWorkflowFormDriver();
     validateWorkflowDataSpy.mockReturnValue(true);
 
-    let wrapper;
+    let container;
     act(() => {
-      wrapper = getWorkflowFormWrapper();
+      container = getWorkflowFormWrapper();
     });
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const workflowForm = wrapper.find('Form');
-    expect(workflowForm.exists()).toBeTruthy();
-
-    expect(workflowForm.props().enabled).toBeFalsy();
+    const workflowForm = container.querySelector('form');
+    expect(workflowForm).toBeTruthy();
 
     act(() => {
-      workflowForm.find('Button[variant="primary"]').props().onClick();
+      fireEvent.click(screen.getByTestId('start-button'));
     });
 
     expect(driver.startWorkflow).toHaveBeenCalled();
@@ -155,24 +92,19 @@ describe('WorkflowForm Test', () => {
     const driver = getWorkflowFormDriver();
     validateWorkflowDataSpy.mockReturnValue(false);
 
-    let wrapper;
+    let container;
 
     act(() => {
-      wrapper = getWorkflowFormWrapper();
+      container = getWorkflowFormWrapper();
     });
 
-    const workflowForm = wrapper.find('Form');
-    expect(workflowForm.exists()).toBeTruthy();
-
-    expect(workflowForm.props().enabled).toBeFalsy();
+    const workflowForm = container.querySelector('form');
+    expect(workflowForm).toBeTruthy();
 
     act(() => {
-      workflowForm.find('Button[variant="primary"]').props().onClick();
+      fireEvent.click(screen.getByTestId('start-button'));
     });
-
-    wrapper = wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
     expect(driver.startWorkflow).not.toHaveBeenCalled();
   });
 
@@ -189,20 +121,20 @@ describe('WorkflowForm Test', () => {
 
     validateWorkflowDataSpy.mockReturnValue(true);
 
-    let wrapper;
+    let container;
     act(() => {
-      wrapper = getWorkflowFormWrapper();
+      container = getWorkflowFormWrapper();
     });
 
-    const workflowForm = wrapper.find('Form');
+    const workflowForm = container.querySelector('form');
 
     act(() => {
-      workflowForm.find('Button[variant="primary"]').props().onClick();
+      fireEvent.click(screen.getByTestId('start-button'));
     });
 
     expect(driver.startWorkflow).toHaveBeenCalled();
 
-    expect(wrapper.update()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     await act(async () => {
       Promise.resolve().then(() => jest.advanceTimersByTime(2000));
@@ -211,7 +143,7 @@ describe('WorkflowForm Test', () => {
       });
     });
 
-    expect(wrapper.update()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     jest.useRealTimers();
   });

@@ -13,76 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mount } from 'enzyme';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
 import { childProcessInstances } from './mocks/Mocks';
 import ProcessListChildTable from '../ProcessListChildTable';
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
-import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
+
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@kogito-apps/components-common/dist/components/ServerErrors', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    ServerErrors: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock(
-  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
-  () =>
-    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      }
-    })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    KogitoSpinner: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/ItemDescriptor', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    ItemDescriptor: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/EndpointLink', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    EndpointLink: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock(
-  '@kogito-apps/management-console-shared/dist/components/ProcessInfoModal',
-  () =>
-    Object.assign(
-      {},
-      jest.requireActual('@kogito-apps/management-console-shared'),
-      {
-        ProcessInfoModal: () => {
-          return <MockedComponent />;
-        }
-      }
-    )
-);
 describe('ProcessListChildTable test', () => {
+  beforeEach(() => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
+  });
+  afterEach(() => {
+    jest.spyOn(global.Math, 'random').mockRestore();
+  });
   it('render table', async () => {
     const driver = new TestProcessListDriver([], childProcessInstances);
     const driverGetChildQueryMock = jest.spyOn(
@@ -109,14 +56,17 @@ describe('ProcessListChildTable test', () => {
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve(props.processInstances);
     });
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessListChildTable {...props} />).find(
-        'ProcessListChildTable'
+      container = render(<ProcessListChildTable {...props} />);
+    });
+    await waitFor(() => screen.getAllByText('travels'));
+    expect(container).toMatchSnapshot();
+    await act(async () => {
+      fireEvent.click(
+        container.container.querySelector('.kogito-process-list__link')
       );
     });
-    wrapper = wrapper.update();
-    expect(wrapper).toMatchSnapshot();
     expect(driverGetChildQueryMock).toHaveBeenCalledWith(props.parentProcessId);
   });
 
@@ -146,16 +96,13 @@ describe('ProcessListChildTable test', () => {
     driverGetChildQueryMock.mockImplementation(() => {
       throw new Error('404 error');
     });
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessListChildTable {...props} />).find(
-        'ProcessListChildTable'
-      );
+      container = render(<ProcessListChildTable {...props} />);
     });
-    wrapper = wrapper.update();
-    const serverError = wrapper.find('ServerErrors');
-    expect(serverError).toMatchSnapshot();
-    expect(serverError.exists()).toBeTruthy();
+    await waitFor(() => screen.getAllByText('Error fetching data'));
+    expect(container).toMatchSnapshot();
+    expect(screen.getAllByText('Error fetching data').length).not.toEqual(0);
   });
 
   it('no results found', async () => {
@@ -188,18 +135,17 @@ describe('ProcessListChildTable test', () => {
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve([]);
     });
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessListChildTable {...props} />).find(
-        'ProcessListChildTable'
-      );
+      container = render(<ProcessListChildTable {...props} />);
     });
-    wrapper = wrapper.update();
-    expect(driverGetChildQueryMock).toHaveBeenCalledWith(props.parentProcessId);
-    const EmptyState = wrapper.find('KogitoEmptyState');
-    expect(EmptyState.exists()).toBeTruthy();
-    expect(EmptyState).toMatchSnapshot();
+    await waitFor(() => screen.getAllByText('No child workflow instances'));
+    expect(container).toMatchSnapshot();
+    expect(
+      screen.getAllByText('This workflow has no related sub workflows').length
+    ).not.toEqual(0);
   });
+
   it('checkbox selected - true', async () => {
     const driver = new TestProcessListDriver([], childProcessInstances);
     const driverGetChildQueryMock = jest.spyOn(
@@ -226,21 +172,16 @@ describe('ProcessListChildTable test', () => {
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve(props.processInstances);
     });
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessListChildTable {...props} />).find(
-        'ProcessListChildTable'
+      container = render(<ProcessListChildTable {...props} />);
+    });
+    await waitFor(() => screen.getAllByText('travels'));
+    await act(async () => {
+      fireEvent.click(
+        container.getByTestId('checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d')
       );
     });
-    wrapper = wrapper.update();
-    await act(async () => {
-      wrapper
-        .find(Checkbox)
-        .at(0)
-        .find('input')
-        .simulate('change', { target: { checked: true } });
-    });
-    wrapper = wrapper.update();
     expect(props.setSelectedInstances).toHaveBeenCalled();
   });
 
@@ -270,21 +211,21 @@ describe('ProcessListChildTable test', () => {
     driverGetChildQueryMock.mockImplementation(() => {
       return Promise.resolve(props.processInstances);
     });
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessListChildTable {...props} />).find(
-        'ProcessListChildTable'
+      container = render(<ProcessListChildTable {...props} />);
+    });
+    await waitFor(() => screen.getAllByText('travels'));
+    await act(async () => {
+      fireEvent.click(
+        container.getByTestId('checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d')
       );
     });
-    wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find(Checkbox)
-        .at(0)
-        .find('input')
-        .simulate('change', { target: { checked: false } });
+      fireEvent.click(
+        container.getByTestId('checkbox-e4448857-fa0c-403b-ad69-f0a353458b9d')
+      );
     });
-    wrapper = wrapper.update();
     expect(props.setSelectedInstances).toHaveBeenCalled();
   });
 });

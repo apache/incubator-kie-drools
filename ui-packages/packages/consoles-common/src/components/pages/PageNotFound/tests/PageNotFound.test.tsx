@@ -15,11 +15,11 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { PageNotFound } from '../PageNotFound';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import * as H from 'history';
 import { match } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const path = '/xy';
 const match: match = {
@@ -57,18 +57,31 @@ const props2 = {
 
 describe('PageNotFound component tests', () => {
   it('snapshot testing without location object', () => {
-    const wrapper = shallow(<PageNotFound {...props1} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(
+      <Router>
+        <PageNotFound {...props1} />
+      </Router>
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('snapshot testing with location object', () => {
-    const wrapper = shallow(<PageNotFound {...props2} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(
+      <Router>
+        <PageNotFound {...props2} />
+      </Router>
+    );
+    expect(container).toMatchSnapshot();
   });
   /* tslint:disable */
   it('redirect button click', () => {
-    const wrapper = shallow(<PageNotFound {...props2} />);
-    wrapper.find(Button).simulate('click');
-    expect(wrapper.find('Redirect').props()['to']).toEqual('/processInstances');
+    const { container } = render(
+      <Router>
+        <PageNotFound {...props2} />
+      </Router>
+    );
+    const button = screen.getByTestId('redirect-button');
+    fireEvent.click(button);
+    expect(container).toMatchSnapshot();
   });
 });

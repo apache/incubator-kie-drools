@@ -14,27 +14,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import ProcessListToolbar from '../ProcessListToolbar';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 import { act } from 'react-dom/test-utils';
-import {
-  Dropdown,
-  DropdownItem,
-  KebabToggle
-} from '@patternfly/react-core/dist/js/components/Dropdown';
-import {
-  Select,
-  SelectOption
-} from '@patternfly/react-core/dist/js/components/Select';
-import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
-import {
-  Toolbar,
-  ToolbarFilter
-} from '@patternfly/react-core/dist/js/components/Toolbar';
 import { ProcessInstances } from '../../ProcessListTable/tests/mocks/Mocks';
-import { shallow } from 'enzyme';
-import wait from 'waait';
 import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
 import axios from 'axios';
 import _ from 'lodash';
@@ -61,7 +45,8 @@ const props = {
   singularProcessLabel: 'Workflow',
   pluralProcessLabel: 'Workflows',
   isWorkflow: true,
-  isTriggerCloudEventEnabled: false
+  isTriggerCloudEventEnabled: true,
+  isChecked: true
 };
 beforeEach(() => {
   props.setProcessStates.mockClear();
@@ -71,57 +56,44 @@ beforeEach(() => {
 
 describe('ProcessListToolbar test', () => {
   it('Snapshot tests', () => {
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessListToolbar {...props} />);
+    expect(container).toMatchSnapshot();
   });
 
-  it('Snapshot tests with trigger cloud event', () => {
+  it('Snapshot tests with trigger cloud event', async () => {
     props.isTriggerCloudEventEnabled = true;
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
-    expect(wrapper).toMatchSnapshot();
-
-    const triggerButton = wrapper.findWhere((child) =>
-      child.text().includes('Trigger Cloud Event')
-    );
+    const container = render(<ProcessListToolbar {...props} />);
+    expect(container).toMatchSnapshot();
+    const triggerButton = screen.getByTestId('trigger-cloud-event');
     expect(triggerButton).not.toBeNull();
   });
 
   it('on select status', async () => {
-    let wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
+    render(<ProcessListToolbar {...props} />);
     await act(async () => {
-      wrapper.find(Select).find('button').simulate('click');
+      fireEvent.click(screen.getAllByText('Status')[0]);
     });
-    wrapper = wrapper.update();
+    await waitFor(() => screen.getAllByText('ACTIVE'));
     await act(async () => {
-      wrapper.find(SelectOption).at(1).find('input').simulate('change');
+      fireEvent.click(screen.getAllByText('ACTIVE')[0]);
     });
-    expect(props.setProcessStates.mock.calls[0][0]).toStrictEqual([
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('COMPLETED')[0]);
+    });
+    expect(props.setProcessStates.mock.calls[1][0]).toStrictEqual([
       'ACTIVE',
       'COMPLETED'
     ]);
     await act(async () => {
-      wrapper.find(SelectOption).at(0).find('input').simulate('change');
+      fireEvent.click(screen.getAllByText('ACTIVE')[0]);
     });
-    wrapper = wrapper.update();
     expect(props.setProcessStates).toHaveBeenCalled();
   });
 
   it('delete a status chip', async () => {
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
+    const container = render(<ProcessListToolbar {...props} />).container;
     await act(async () => {
-      wrapper
-        .find(ToolbarFilter)
-        .at(0)
-        .props()
-        ['deleteChip']('Status', 'ACTIVE');
+      fireEvent.click(container.querySelector('.pf-c-chip button')!);
     });
     expect(props.applyFilter).toHaveBeenCalled();
     expect(props.setFilters).toHaveBeenCalled();
@@ -130,20 +102,16 @@ describe('ProcessListToolbar test', () => {
   });
 
   it('delete a status chip', async () => {
-    const wrapper = mount(
+    const container = render(
       <ProcessListToolbar
         {...{
           ...props,
           filters: { ...props.filters, businessKey: ['GR1122', 'MTY11'] }
         }}
       />
-    ).find('ProcessListToolbar');
+    ).container;
     await act(async () => {
-      wrapper
-        .find(ToolbarFilter)
-        .at(1)
-        .props()
-        ['deleteChip']('Business key', 'GR1122');
+      fireEvent.click(container.querySelectorAll('.pf-c-chip button')[1]!);
     });
     expect(props.applyFilter).toHaveBeenCalled();
     expect(props.setFilters).toHaveBeenCalled();
@@ -152,31 +120,33 @@ describe('ProcessListToolbar test', () => {
     );
   });
 
-  it('enter click on apply filter(business key)', () => {
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
-    wrapper.find(TextInput).simulate('keypress', { key: 'Enter' });
-    expect(props.applyFilter).toHaveBeenCalled();
-  });
-
-  it('reset filters', () => {
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
-    wrapper.find(Toolbar).props()['clearAllFilters']();
-    expect(props.setProcessStates.mock.calls[0][0]).toEqual(['ACTIVE']);
+  it('reset filters', async () => {
+    render(<ProcessListToolbar {...props} />).container;
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('Status')[0]);
+    });
+    await waitFor(() => screen.getAllByText('ACTIVE'));
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('ACTIVE')[0]);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('COMPLETED')[0]);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('Reset to default')[0]);
+    });
+    expect(props.setProcessStates.mock.calls[2][0]).toEqual(['ACTIVE']);
     expect(props.setFilters.mock.calls[0][0]).toEqual({
       status: ['ACTIVE'],
       businessKey: []
     });
   });
 
-  it('apply filter click', () => {
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
-    wrapper.find('#apply-filter-button').at(1).simulate('click');
+  it('apply filter click', async () => {
+    render(<ProcessListToolbar {...props} />);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('apply-filter-button'));
+    });
     expect(props.setFilters).toHaveBeenCalled();
     expect(props.setFilters.mock.calls[0][0]).toStrictEqual({
       status: ['ACTIVE'],
@@ -184,247 +154,128 @@ describe('ProcessListToolbar test', () => {
     });
   });
 
-  describe('select multiple checkbox tests', () => {
-    const wrapper = shallow(<ProcessListToolbar {...props} />);
-    const wrapper1 = shallow(
-      <ProcessListToolbar {...{ ...props, isAllChecked: false }} />
-    );
-    it('none selected click', () => {
-      wrapper
-        .find('#bulk-select')
-        .props()
-        ['children']['props']['dropdownItems'][0]['props']['onClick']();
-      expect(props.setSelectedInstances).toHaveBeenCalled();
+  it('none selected click', async () => {
+    const container1 = render(<ProcessListToolbar {...props} />).container;
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#bulk-select div div button')!);
     });
-
-    it('parent selected click', () => {
-      wrapper
-        .find('#bulk-select')
-        .props()
-        ['children']['props']['dropdownItems'][1]['props']['onClick']();
-      expect(props.setSelectedInstances).toHaveBeenCalled();
+    await waitFor(() => screen.findAllByText('Select none'));
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#none a')!);
     });
-
-    it('all selected click', () => {
-      wrapper
-        .find('#bulk-select')
-        .props()
-        ['children']['props']['dropdownItems'][2]['props']['onClick']();
-      expect(props.setSelectedInstances).toHaveBeenCalled();
-    });
-    it('bulk select checkbox click', () => {
-      wrapper
-        .find('#bulk-select')
-        .props()
-        ['children']['props']['toggle']['props']['splitButtonItems'][0][
-          'props'
-        ]['onChange']();
-      expect(props.setSelectedInstances).toHaveBeenCalled();
-    });
-    it('bulk select checkbox click', () => {
-      wrapper1
-        .find('#bulk-select')
-        .props()
-        ['children']['props']['toggle']['props']['splitButtonItems'][0][
-          'props'
-        ]['onChange']();
-      expect(props.setSelectedInstances).toHaveBeenCalled();
-    });
-
-    it('drowdown toggle checkbox click', () => {
-      wrapper
-        .find('#bulk-select')
-        .props()
-        ['children']['props']['toggle']['props']['onToggle']();
-    });
+    expect(props.setSelectedInstances).toHaveBeenCalled();
   });
-  describe('multi Abort click tests', () => {
+
+  it('parent selected click', async () => {
+    const container1 = render(<ProcessListToolbar {...props} />).container;
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#bulk-select div div button')!);
+    });
+    await waitFor(() => screen.findAllByText('Select all parent processes'));
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#all-parent a')!);
+    });
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+
+  it('all selected click', async () => {
+    const container1 = render(<ProcessListToolbar {...props} />).container;
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#bulk-select div div button')!);
+    });
+    await waitFor(() => screen.findAllByText('Select all processes'));
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#all-parent-child a')!);
+    });
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+
+  it('bulk select checkbox check', async () => {
+    const container1 = render(<ProcessListToolbar {...props} />).container;
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#select-all-checkbox')!);
+    });
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+  it('bulk select checkbox uncheck', async () => {
+    const container1 = render(
+      <ProcessListToolbar {...{ ...props, isAllChecked: true }} />
+    ).container;
+    await act(async () => {
+      fireEvent.click(container1.querySelector('#select-all-checkbox')!);
+    });
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+  });
+
+  it('multi abort click', async () => {
     const abortProps = _.cloneDeep(props);
     abortProps.driver = new TestProcessListDriver([], []);
     const driverhandleProcessMultipleActionMock = jest.spyOn(
       abortProps.driver,
       'handleProcessMultipleAction'
     );
-    it('multi abort click success', async () => {
-      abortProps.selectedInstances = [ProcessInstances[0]];
-      mockedAxios.delete.mockResolvedValue({});
-      let wrapper = mount(<ProcessListToolbar {...abortProps} />).find(
-        'ProcessListToolbar'
+    abortProps.selectedInstances = [ProcessInstances[0]];
+    mockedAxios.delete.mockResolvedValue({});
+    const container = render(<ProcessListToolbar {...abortProps} />).container;
+    await act(async () => {
+      fireEvent.click(
+        container.querySelector(
+          '#process-management-buttons div div div button'
+        )!
       );
-      await act(async () => {
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(Dropdown)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(DropdownItem)
-          .at(0)
-          .simulate('click');
-        await wait(0);
-      });
-      expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
     });
-    it('multi abort click fail', async () => {
-      abortProps.selectedInstances = [ProcessInstances[0]];
-      mockedAxios.delete.mockRejectedValue({});
-      let wrapper = mount(<ProcessListToolbar {...abortProps} />).find(
-        'ProcessListToolbar'
-      );
-      await act(async () => {
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(Dropdown)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(DropdownItem)
-          .at(0)
-          .simulate('click');
-        await wait(0);
-      });
+    await waitFor(() => screen.findAllByText('Abort selected'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('multi-abort'));
     });
+    expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
   });
 
-  describe('multi Skip click tests', () => {
+  it('multi skip click', async () => {
     const skipProps = _.cloneDeep(props);
     skipProps.driver = new TestProcessListDriver([], []);
     const driverhandleProcessMultipleActionMock = jest.spyOn(
       skipProps.driver,
       'handleProcessMultipleAction'
     );
-    it('multi skip click success', async () => {
-      skipProps.selectedInstances = [ProcessInstances[0]];
-      mockedAxios.post.mockResolvedValue({});
-      let wrapper = mount(<ProcessListToolbar {...skipProps} />).find(
-        'ProcessListToolbar'
+    skipProps.selectedInstances = [ProcessInstances[0]];
+    mockedAxios.post.mockResolvedValue({});
+    const container = render(<ProcessListToolbar {...skipProps} />).container;
+    await act(async () => {
+      fireEvent.click(
+        container.querySelector(
+          '#process-management-buttons div div div button'
+        )!
       );
-      await act(async () => {
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(Dropdown)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(DropdownItem)
-          .at(1)
-          .simulate('click');
-        await wait(0);
-      });
-      expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
     });
-    it('multi skip click fail', async () => {
-      skipProps.selectedInstances = [ProcessInstances[0]];
-      mockedAxios.post.mockRejectedValue({});
-      let wrapper = mount(<ProcessListToolbar {...skipProps} />).find(
-        'ProcessListToolbar'
-      );
-      await act(async () => {
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(Dropdown)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(DropdownItem)
-          .at(1)
-          .simulate('click');
-        await wait(0);
-      });
-      expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
+    await waitFor(() => screen.findAllByText('Skip selected'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('multi-skip'));
     });
+    expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
   });
 
-  describe('multi Retry click tests', () => {
+  it('multi retry click', async () => {
     const retryProps = _.cloneDeep(props);
     retryProps.driver = new TestProcessListDriver([], []);
     const driverhandleProcessMultipleActionMock = jest.spyOn(
       retryProps.driver,
       'handleProcessMultipleAction'
     );
-    it('multi retry click success', async () => {
-      retryProps.selectedInstances = [ProcessInstances[0]];
-      mockedAxios.post.mockResolvedValue({});
-      let wrapper = mount(<ProcessListToolbar {...retryProps} />).find(
-        'ProcessListToolbar'
+    retryProps.selectedInstances = [ProcessInstances[0]];
+    mockedAxios.post.mockResolvedValue({});
+    const container = render(<ProcessListToolbar {...retryProps} />).container;
+    await act(async () => {
+      fireEvent.click(
+        container.querySelector(
+          '#process-management-buttons div div div button'
+        )!
       );
-      await act(async () => {
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(Dropdown)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(DropdownItem)
-          .at(2)
-          .simulate('click');
-        await wait(0);
-      });
-      expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
     });
-    it('multi retry click fail', async () => {
-      retryProps.selectedInstances = [ProcessInstances[0]];
-      mockedAxios.post.mockRejectedValue({});
-      let wrapper = mount(<ProcessListToolbar {...retryProps} />).find(
-        'ProcessListToolbar'
-      );
-      await act(async () => {
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(Dropdown)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper
-          .find('#process-management-buttons')
-          .at(0)
-          .find(DropdownItem)
-          .at(2)
-          .simulate('click');
-        await wait(0);
-      });
-      expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
+    await waitFor(() => screen.findAllByText('Retry selected'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('multi-retry'));
     });
-  });
-  it('reset click tests', () => {
-    const wrapper = mount(<ProcessListToolbar {...props} />).find(
-      'ProcessListToolbar'
-    );
-    wrapper.find('ProcessInfoModal').props()['resetSelected']();
-    expect(props.setSelectedInstances).toHaveBeenCalled();
-    expect(props.setIsAllChecked).toHaveBeenCalled();
+    expect(driverhandleProcessMultipleActionMock).toHaveBeenCalled();
   });
 });

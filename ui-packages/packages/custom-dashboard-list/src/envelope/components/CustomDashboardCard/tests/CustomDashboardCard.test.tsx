@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import {
   MockedCustomDashboardListDriver,
   customDashboardInfos
@@ -27,32 +27,35 @@ describe('customDashboard card tests', () => {
   Date.now = jest.fn(() => 1487076708000);
   const driver = new MockedCustomDashboardListDriver();
   it('renders card - with tsx', () => {
-    const wrapper = mount(
+    const { container } = render(
       <CustomDashboardCard
         driver={driver}
         customDashboardData={customDashboardInfos[0]}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
   it('renders card - with html', () => {
-    const wrapper = mount(
+    const { container } = render(
       <CustomDashboardCard
         driver={driver}
         customDashboardData={customDashboardInfos[1]}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
   it('simulate click on card', () => {
     const openDashboardSpy = jest.spyOn(driver, 'openDashboard');
-    const wrapper = mount(
+    render(
       <CustomDashboardCard
         driver={driver}
         customDashboardData={customDashboardInfos[0]}
       />
     );
-    wrapper.find(Card).simulate('click');
+
+    const card = screen.getByTestId('card');
+    fireEvent.click(card);
+
     expect(openDashboardSpy).toHaveBeenCalled();
   });
 });

@@ -1,69 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmbeddedProcessList tests Snapshot 1`] = `
-<ForwardRef
-  driver={
-    Object {
-      "applyFilter": [MockFunction],
-      "applySorting": [MockFunction],
-      "getChildProcessesQuery": [MockFunction],
-      "handleProcessAbort": [MockFunction],
-      "handleProcessMultipleAction": [MockFunction],
-      "handleProcessRetry": [MockFunction],
-      "handleProcessSkip": [MockFunction],
-      "initialLoad": [MockFunction],
-      "openProcess": [MockFunction],
-      "openTriggerCloudEvent": [MockFunction],
-      "query": [MockFunction],
-    }
-  }
-  envelopePath="path"
-  initialState={
-    Object {
-      "filters": Object {
-        "businessKey": Array [],
-        "status": Array [
-          "ACTIVE",
-        ],
-      },
-      "sortBy": Object {
-        "lastUpdate": "DESC",
-      },
-    }
-  }
-  isWorkflow={true}
-  pluralProcessLabel="Workflows"
-  singularProcessLabel="Workflow"
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      ProcessListChannelApiImpl {
-        "driver": Object {
-          "applyFilter": [MockFunction],
-          "applySorting": [MockFunction],
-          "getChildProcessesQuery": [MockFunction],
-          "handleProcessAbort": [MockFunction],
-          "handleProcessMultipleAction": [MockFunction],
-          "handleProcessRetry": [MockFunction],
-          "handleProcessSkip": [MockFunction],
-          "initialLoad": [MockFunction],
-          "openProcess": [MockFunction],
-          "openTriggerCloudEvent": [MockFunction],
-          "query": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;

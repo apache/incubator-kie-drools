@@ -50,7 +50,12 @@ export const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
     onSubmitForm
   ).map((button, index) => {
     return (
-      <ActionListItem key={`form-action-${index}`}>{button}</ActionListItem>
+      <ActionListItem
+        key={`form-action-${index}`}
+        data-testid="action-list-item"
+      >
+        {button}
+      </ActionListItem>
     );
   });
 
@@ -59,7 +64,7 @@ export const FormFooter: React.FC<IOwnProps & OUIAProps> = ({
       className="kogito-components-common__form-footer-padding-top"
       {...componentOuiaProps(ouiaId, 'form-footer', ouiaSafe)}
     >
-      <ActionList>{actionItems}</ActionList>
+      <ActionList data-testid="action-list">{actionItems}</ActionList>
     </div>
   );
 };

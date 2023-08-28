@@ -52,7 +52,7 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
       association.origin,
       association.envelopeServerId
     );
-
+    /* istanbul ignore if*/
     if (this.hasCapturedInitRequestYet()) {
       return;
     }

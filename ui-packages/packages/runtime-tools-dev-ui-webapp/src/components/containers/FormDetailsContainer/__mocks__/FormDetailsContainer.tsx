@@ -16,7 +16,14 @@
 
 import React from 'react';
 
-const MockedFormDetailsContainer = (): React.ReactElement => {
+const MockedFormDetailsContainer = ({
+  onSuccess,
+  onError
+}): React.ReactElement => {
+  React.useEffect(() => {
+    onSuccess();
+    onError();
+  }, []);
   return <></>;
 };
 

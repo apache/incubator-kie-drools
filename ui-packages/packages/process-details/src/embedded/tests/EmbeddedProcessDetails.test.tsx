@@ -17,7 +17,7 @@
 import React from 'react';
 import { EmbeddedProcessDetails } from '../EmbeddedProcessDetails';
 import { MockedProcessDetailsDriver } from './mocks/Mocks';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import {
   MilestoneStatus,
   ProcessInstance,
@@ -111,13 +111,10 @@ describe('EmbeddedProcessDetails tests', () => {
       pluralProcessLabel: 'Workflows'
     };
 
-    const wrapper = mount(<EmbeddedProcessDetails {...props} />);
+    const container = render(<EmbeddedProcessDetails {...props} />).container;
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-    const div = wrapper.find('div');
-
-    expect(div.exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+    const contentDiv = container.querySelector('div');
+    expect(contentDiv).toBeTruthy();
   });
 });

@@ -16,7 +16,17 @@
 
 import React from 'react';
 
-const MockedTaskFormContainer = (): React.ReactElement => {
+const MockedTaskFormContainer = ({
+  onSubmitSuccess,
+  onSubmitError
+}): React.ReactElement => {
+  React.useEffect(() => {
+    try {
+      onSubmitSuccess('complete');
+    } catch (e) {
+      onSubmitError();
+    }
+  }, []);
   return <></>;
 };
 

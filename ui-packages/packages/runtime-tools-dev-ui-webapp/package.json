@@ -102,14 +102,13 @@
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
     "@testing-library/jest-dom": "^5.16.5",
-    "@types/enzyme": "^3.10.13",
+    "@testing-library/react": "^11.2.6",
     "@types/jest": "^26.0.24",
     "@types/react": "17.0.5",
     "@types/react-dom": "^17.0.20",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "@types/webpack": "^4.41.33",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "apollo-server-express": "^2.26.1",
     "babel-jest": "^25.5.1",
     "concurrently": "^5.3.0",
@@ -118,8 +117,6 @@
     "css-loader": "^5.2.7",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "cypress": "^12.17.0",
-    "enzyme": "^3.11.0",
-    "enzyme-to-json": "^3.6.2",
     "express": "^4.18.2",
     "file-loader": "^6.2.0",
     "filemanager-webpack-plugin": "^6.1.7",
@@ -150,52 +147,6 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
-  },
-  "jest": {
-    "preset": "ts-jest/presets/js-with-ts",
-    "setupFiles": [
-      "./config/Jest-config/test-shim.js",
-      "./config/Jest-config/test-setup.js",
-      "core-js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "./src/static",
-      "./tests/mocks/"
-    ],
-    "coverageReporters": [
-      [
-        "lcov",
-        {
-          "projectRoot": "../../"
-        }
-      ]
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "globals": {
-      "ts-jest": {
-        "isolatedModules": true
-      }
-    },
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "transformIgnorePatterns": [],
-    "transform": {
-      "^.+\\.jsx?$": "./config/Jest-config/babel-jest-wrapper.js",
-      "^.+\\.(ts|tsx)$": "ts-jest",
-      "\\.(jpg|jpeg|png|svg)$": "./config/Jest-config/fileMocks.js"
-    },
-    "testMatch": [
-      "**/tests/*.(ts|tsx)"
-    ],
-    "moduleNameMapper": {
-      "\\.(scss|sass|css)$": "identity-obj-proxy",
-      "monaco-editor": "<rootDir>/__mocks__/monacoMock.js"
-    }
   },
   "lint-staged": {
     "*.{ts,tsx}": [

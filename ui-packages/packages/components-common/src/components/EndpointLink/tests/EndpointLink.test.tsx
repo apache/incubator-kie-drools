@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { EndpointLink } from '../EndpointLink';
 
 const props1 = {
@@ -43,19 +43,19 @@ const props4 = {
 };
 describe('EndpointLink component tests', () => {
   it('snapshot testing for link shown', () => {
-    const wrapper = shallow(<EndpointLink {...props1} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<EndpointLink {...props1} />);
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing for link hidden', () => {
-    const wrapper = shallow(<EndpointLink {...props2} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<EndpointLink {...props2} />);
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing for link hidden with custom link label', () => {
-    const wrapper = shallow(<EndpointLink {...props3} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<EndpointLink {...props3} />);
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing no service URL and link hidden', () => {
-    const wrapper = shallow(<EndpointLink {...props4} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<EndpointLink {...props4} />);
+    expect(container).toMatchSnapshot();
   });
 });

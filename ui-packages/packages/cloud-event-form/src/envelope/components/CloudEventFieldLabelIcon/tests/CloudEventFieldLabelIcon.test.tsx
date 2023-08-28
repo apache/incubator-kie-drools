@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import CloudEventFieldLabelIcon from '../CloudEventFieldLabelIcon';
 
 const MockedComponent = (): React.ReactElement => {
@@ -40,25 +40,25 @@ jest.mock('@patternfly/react-core/dist/js/components/Popover', () =>
 
 describe('CloudEventFieldLabelIcon tests', () => {
   it('default snapshot test', () => {
-    const wrapper = mount(
+    const container = render(
       <CloudEventFieldLabelIcon
         fieldId="endpoint"
         helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
       />
-    );
+    ).container;
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('default snapshot test - with header', () => {
-    const wrapper = mount(
+    const container = render(
       <CloudEventFieldLabelIcon
         fieldId="eventType"
         helpMessage="Sets the type of the cloud event."
         cloudEventHeader="type"
       />
-    );
+    ).container;
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

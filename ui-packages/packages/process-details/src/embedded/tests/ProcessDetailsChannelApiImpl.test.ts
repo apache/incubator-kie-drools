@@ -237,4 +237,17 @@ describe('ProcessDetailsChannelApiImpl tests', () => {
       node
     );
   });
+
+  it('processDetails__handleProcessVariableUpdate', () => {
+    api.processDetails__handleProcessVariableUpdate(processInstance, {});
+    expect(driver.handleProcessVariableUpdate).toHaveBeenCalledWith(
+      processInstance,
+      {}
+    );
+  });
+
+  it('processDetails__openProcessDetails', () => {
+    api.processDetails__openProcessDetails('1234');
+    expect(driver.openProcessInstanceDetails).toHaveBeenCalledWith('1234');
+  });
 });

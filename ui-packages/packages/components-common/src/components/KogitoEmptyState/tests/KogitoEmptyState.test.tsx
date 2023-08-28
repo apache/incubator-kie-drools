@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { KogitoEmptyState, KogitoEmptyStateType } from '../KogitoEmptyState';
 
@@ -69,41 +69,41 @@ const props = {
 
 describe('KogitoEmptyState component tests', () => {
   it('Search test', () => {
-    const wrapper = mount(
+    const { container } = render(
       <KogitoEmptyState type={KogitoEmptyStateType.Search} {...props} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
   it('Reset test', () => {
     const click = jest.fn();
-    const wrapper = mount(
+    const { container } = render(
       <KogitoEmptyState
         type={KogitoEmptyStateType.Reset}
         onClick={click}
         {...props}
       />
     );
-    expect(wrapper).toMatchSnapshot();
-    wrapper.find(Button).simulate('click');
+    expect(container).toMatchSnapshot();
+    fireEvent.click(screen.getByText('Reset to default'));
     expect(click).toHaveBeenCalledTimes(1);
   });
   it('Info test', () => {
-    const wrapper = mount(
+    const { container } = render(
       <KogitoEmptyState type={KogitoEmptyStateType.Info} {...props} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
   it('Refresh test', () => {
     const click = jest.fn();
-    const wrapper = mount(
+    const { container } = render(
       <KogitoEmptyState
         type={KogitoEmptyStateType.Refresh}
         onClick={click}
         {...props}
       />
     );
-    expect(wrapper).toMatchSnapshot();
-    wrapper.find(Button).simulate('click');
+    expect(container).toMatchSnapshot();
+    fireEvent.click(screen.getByText('Refresh'));
     expect(click).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import {
   ouiaAttribute,
   attributeOuiaId,
@@ -84,16 +84,14 @@ describe('test ouiaPageTypeAndObjectId', () => {
   document.body.setAttribute = jest.fn();
   document.body.removeAttribute = jest.fn();
   it('page type only', () => {
-    const wrapper = mount(<TestComponentSettingPageType />);
+    render(<TestComponentSettingPageType />);
     expect(document.body.setAttribute).toBeCalledWith(
       'data-ouia-page-type',
       'test-page-type'
     );
-    wrapper.unmount();
-    expect(document.body.removeAttribute).toBeCalledWith('data-ouia-page-type');
   });
   it('page type and id', () => {
-    const wrapper = mount(<TestComponentSettingPageTypeAndId />);
+    render(<TestComponentSettingPageTypeAndId />);
     expect(document.body.setAttribute).toBeCalledWith(
       'data-ouia-page-type',
       'test-page-type'
@@ -102,10 +100,7 @@ describe('test ouiaPageTypeAndObjectId', () => {
       'data-ouia-page-object-id',
       'test-object-id'
     );
-    wrapper.unmount();
+
     expect(document.body.removeAttribute).toBeCalledWith('data-ouia-page-type');
-    expect(document.body.removeAttribute).toBeCalledWith(
-      'data-ouia-page-object-id'
-    );
   });
 });

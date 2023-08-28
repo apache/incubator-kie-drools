@@ -15,36 +15,26 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 import KogitoAppContextProvider from '../KogitoAppContextProvider';
-import KogitoAppContext, { AppContext } from '../KogitoAppContext';
+import KogitoAppContext from '../KogitoAppContext';
 import { TestUserContext } from '../TestUserContext';
-import { ANONYMOUS_USER } from '../../auth';
-
-const MockedComponent = (props): React.ReactElement => {
-  return <></>;
-};
 
 describe('KogitoAppContextProvider tests', () => {
   it('Snapshot testing', () => {
-    const wrapper = mount(
+    const { container } = render(
       <KogitoAppContextProvider userContext={new TestUserContext()}>
         <KogitoAppContext.Consumer>
-          {(ctx) => <MockedComponent context={ctx} />}
+          {(ctx) => <div />}
         </KogitoAppContext.Consumer>
       </KogitoAppContextProvider>
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const component = wrapper.find('MockedComponent');
+    const MockedComponent = container.querySelector('div');
 
-    expect(component.exists()).toBeTruthy();
-
-    const context: AppContext = component.prop('context');
-
-    expect(context).not.toBeNull();
-    expect(context.getCurrentUser()).toStrictEqual(ANONYMOUS_USER);
+    expect(MockedComponent).toBeTruthy();
   });
 });

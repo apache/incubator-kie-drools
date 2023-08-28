@@ -17,7 +17,7 @@
 import React from 'react';
 import { EmbeddedCustomDashboardView } from '../EmbeddedCustomDashboardView';
 import { MockedCustomDashboardViewDriver } from './utils/Mocks';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 describe('EmbeddedCustomDashboardView tests', () => {
   it('Snapshot', () => {
@@ -27,14 +27,11 @@ describe('EmbeddedCustomDashboardView tests', () => {
       driver: new MockedCustomDashboardViewDriver()
     };
 
-    const wrapper = mount(<EmbeddedCustomDashboardView {...props} />);
+    const { container } = render(<EmbeddedCustomDashboardView {...props} />);
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
+    const contentDiv = container.querySelector('div');
 
-    const contentDiv = wrapper.find('div');
-
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(contentDiv).toBeTruthy();
+    expect(container).toMatchSnapshot();
   });
 });

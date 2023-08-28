@@ -1,30 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`WebApp - JobsManagementContainer tests Snapshot test with default values 1`] = `
-<JobsManagementContainer>
-  <ForwardRef
-    data-ouia-component-type="jobs-management-container"
-    data-ouia-safe={true}
-    driver={null}
-    targetOrigin="http://localhost:9000"
-  >
-    <ForwardRef(RefForwardingEmbeddedEnvelope)
-      apiImpl={
-        JobsManagementChannelApiImpl {
-          "driver": null,
-        }
-      }
-      config={
-        Object {
-          "containerType": "div",
-        }
-      }
-      origin="http://localhost:9000"
-      pollInit={[Function]}
-      refDelegate={[Function]}
-    >
-      <div />
-    </ForwardRef(RefForwardingEmbeddedEnvelope)>
-  </ForwardRef>
-</JobsManagementContainer>
+<div>
+  <div />
+</div>
 `;

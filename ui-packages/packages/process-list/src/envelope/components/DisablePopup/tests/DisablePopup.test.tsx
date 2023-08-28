@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import DisablePopup from '../DisablePopup';
 import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 
-const props1 = {
+const props = {
   processInstanceData: {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop',
     processId: 'travels',
     businessKey: 'Tr1122',
-    parentProcessInstanceId: null,
-    parentProcessInstance: null,
     processName: 'travels',
     roles: [],
     state: ProcessInstanceState.Active,
-    rootProcessInstanceId: null,
-    serviceUrl: null,
     endpoint: 'http://localhost:4000',
+    serviceUrl: null as unknown as undefined,
     addons: ['process-management'],
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
@@ -39,7 +36,6 @@ const props1 = {
     },
     start: new Date('2019-12-22T03:40:44.089Z'),
     lastUpdate: new Date('2019-12-22T03:40:44.089Z'),
-    end: null,
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
     nodes: [
@@ -60,48 +56,48 @@ const props1 = {
 
 describe('DisablePopup component tests', () => {
   it('snapshot testing for no service URL and only process-management addon', () => {
-    const wrapper = shallow(<DisablePopup {...props1} />);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<DisablePopup {...props} />).container;
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing for no service URL and no process-management addon', () => {
-    const wrapper = shallow(
+    const container = render(
       <DisablePopup
         {...{
-          ...props1,
-          processInstanceData: { ...props1.processInstanceData, addons: [] }
+          ...props,
+          processInstanceData: { ...props.processInstanceData, addons: [] }
         }}
       />
-    );
-    expect(wrapper).toMatchSnapshot();
+    ).container;
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing for service URL and process-management addon available', () => {
-    const wrapper = shallow(
+    const container = render(
       <DisablePopup
         {...{
-          ...props1,
+          ...props,
           processInstanceData: {
-            ...props1.processInstanceData,
+            ...props.processInstanceData,
             addons: ['process-management'],
             serviceUrl: 'http://localhost:4000'
           }
         }}
       />
-    );
-    expect(wrapper).toMatchSnapshot();
+    ).container;
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing for no process-management addon and only service URL', () => {
-    const wrapper = shallow(
+    const container = render(
       <DisablePopup
         {...{
-          ...props1,
+          ...props,
           processInstanceData: {
-            ...props1.processInstanceData,
+            ...props.processInstanceData,
             addons: [],
             serviceUrl: 'http://localhost:4000'
           }
         }}
       />
-    );
-    expect(wrapper).toMatchSnapshot();
+    ).container;
+    expect(container).toMatchSnapshot();
   });
 });

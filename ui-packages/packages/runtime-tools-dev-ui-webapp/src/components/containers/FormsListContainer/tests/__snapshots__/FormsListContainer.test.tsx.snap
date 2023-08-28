@@ -1,54 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FormsListContainer tests Snapshot 1`] = `
-<FormsListContainer>
-  <ForwardRef
-    driver={
-      FormsListGatewayApiImpl {
-        "_FormFilter": Object {
-          "formNames": Array [],
-        },
-        "applyFilter": [Function],
-        "getFormFilter": [Function],
-        "listeners": Array [
-          Object {
-            "onOpen": [Function],
-          },
-        ],
-        "openForm": [Function],
-      }
-    }
-    targetOrigin="http://localhost:9000"
-  >
-    <ForwardRef(RefForwardingEmbeddedEnvelope)
-      apiImpl={
-        FormsListChannelApiImpl {
-          "driver": FormsListGatewayApiImpl {
-            "_FormFilter": Object {
-              "formNames": Array [],
-            },
-            "applyFilter": [Function],
-            "getFormFilter": [Function],
-            "listeners": Array [
-              Object {
-                "onOpen": [Function],
-              },
-            ],
-            "openForm": [Function],
-          },
-        }
-      }
-      config={
-        Object {
-          "containerType": "div",
-        }
-      }
-      origin="http://localhost:9000"
-      pollInit={[Function]}
-      refDelegate={[Function]}
-    >
-      <div />
-    </ForwardRef(RefForwardingEmbeddedEnvelope)>
-  </ForwardRef>
-</FormsListContainer>
+<div>
+  <div />
+</div>
 `;

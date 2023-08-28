@@ -15,9 +15,9 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { NoData } from '../NoData';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const props1 = {
   defaultPath: '/processInstances',
@@ -40,18 +40,23 @@ const props2 = {
 
 describe('NoData component tests', () => {
   it('snapshot tests with location object', () => {
-    const wrapper = shallow(<NoData {...props1} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<NoData {...props1} />);
+    expect(container).toMatchSnapshot();
   });
 
   it('snapshot tests without location object', () => {
-    const wrapper = shallow(<NoData {...props2} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<NoData {...props2} />);
+    expect(container).toMatchSnapshot();
   });
   /* tslint:disable */
-  it('redirect button click', () => {
-    const wrapper = shallow(<NoData {...props2} />);
-    wrapper.find(Button).simulate('click');
-    expect(wrapper.find('Redirect').props()['to']).toEqual('/processInstances');
+  it('redirect button click', async () => {
+    const { container } = render(
+      <Router>
+        <NoData {...props2} />
+      </Router>
+    );
+    const button = screen.getByTestId('redirect-button');
+    fireEvent.click(button);
+    expect(container).toMatchSnapshot();
   });
 });

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import CustomDashboardsTable from '../CustomDashboardsTable';
 import {
   customDashboardInfos,
@@ -25,22 +25,10 @@ import { DataTable } from '@kogito-apps/components-common/dist/components/DataTa
 
 Date.now = jest.fn(() => 1487076708000); //14.02.2017
 
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@kogito-apps/components-common/dist/components/DataTable', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    DataTable: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
 describe('customDashboard table test', () => {
   const driver = new MockedCustomDashboardListDriver();
   it('renders table', () => {
-    const wrapper = mount(
+    const { container } = render(
       <CustomDashboardsTable
         driver={driver}
         isLoading={false}
@@ -48,7 +36,8 @@ describe('customDashboard table test', () => {
         setDashboardsData={jest.fn()}
       />
     );
-    const dataTable = wrapper.find(DataTable);
-    expect(dataTable.exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+    const checkTable = container.querySelector('table');
+    expect(checkTable).toBeTruthy();
   });
 });

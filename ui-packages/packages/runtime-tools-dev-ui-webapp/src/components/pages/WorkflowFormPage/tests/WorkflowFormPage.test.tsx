@@ -15,17 +15,32 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import WorkflowFormPage from '../WorkflowFormPage';
 import { BrowserRouter } from 'react-router-dom';
-import { WorkflowFormGatewayApiImpl } from '../../../../channel/WorkflowForm/WorkflowFormGatewayApi';
+import {
+  WorkflowFormGatewayApi,
+  WorkflowFormGatewayApiImpl
+} from '../../../../channel/WorkflowForm/WorkflowFormGatewayApi';
 import * as WorkflowFormContext from '../../../../channel/WorkflowForm/WorkflowFormContext';
+import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
+import * as ProcessFormContext from '../../../../channel/ProcessForm/ProcessFormContext';
 
 jest.mock('../../../containers/WorkflowFormContainer/WorkflowFormContainer');
+
+jest.mock('@kogito-apps/workflow-form', () => ({
+  ...jest.requireActual('@kogito-apps/workflow-form'),
+  EmbeddedWorkflowForm: () => {
+    return <div />;
+  }
+}));
+
+const mockHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
+    push: mockHistoryPush,
     location: {
       state: {
         workflowDefinition: {
@@ -36,20 +51,86 @@ jest.mock('react-router-dom', () => ({
     }
   })
 }));
+const MockWorkflowFormGatewayApi = jest.fn<WorkflowFormGatewayApi, []>(() => ({
+  setBusinessKey: jest.fn(),
+  getBusinessKey: jest.fn(),
+  getCustomWorkflowSchema: jest.fn(),
+  startWorkflow: jest.fn()
+}));
+
+const workflowFormGatewayApi = new MockWorkflowFormGatewayApi();
+
+jest
+  .spyOn(WorkflowFormContext, 'useWorkflowFormGatewayApi')
+  .mockImplementation(() => workflowFormGatewayApi);
+
+const MockProcessFormGatewayApi = jest.fn<ProcessFormGatewayApi, []>(() => ({
+  setBusinessKey: jest.fn(),
+  getBusinessKey: jest.fn(),
+  currentBusinessKey: ''
+}));
+
+const gatewayApi = new MockProcessFormGatewayApi();
+
+jest
+  .spyOn(ProcessFormContext, 'useProcessFormGatewayApi')
+  .mockImplementation(() => gatewayApi);
+
+const MockDevUIApp = jest.fn(() => ({
+  getDevUIUrl: jest.fn()
+}));
+
+const devUIApp = new MockDevUIApp();
+
+jest
+  .spyOn(DevUIAppContext, 'useDevUIAppContext')
+  .mockImplementation(() => devUIApp);
 
 jest
   .spyOn(WorkflowFormContext, 'useWorkflowFormGatewayApi')
   .mockImplementation(() => new WorkflowFormGatewayApiImpl('baseUrl'));
 
 describe('WorkflowFormPage tests', () => {
-  it('Snapshot', () => {
-    const wrapper = mount(
+  const props = {
+    ouiaId: 'workflow-form',
+    ouiaSafe: true
+  };
+  it('Snapshot', async () => {
+    const container = render(
       <BrowserRouter>
-        <WorkflowFormPage />
+        <WorkflowFormPage {...props} />
       </BrowserRouter>
-    );
+    ).container;
 
-    expect(wrapper.find('WorkflowFormPage')).toMatchSnapshot();
-    expect(wrapper.find('MockedWorkflowFormContainer').exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+
+    const checkWorkflowFormPage = screen.getByText('Start New Workflow');
+    expect(checkWorkflowFormPage).toBeTruthy();
+  });
+  it('Alert component checks', () => {
+    render(
+      <BrowserRouter>
+        <WorkflowFormPage {...props} />
+      </BrowserRouter>
+    ).container;
+
+    const goToButton = screen.getByText('Go to workflow list');
+    fireEvent.click(goToButton);
+    expect(mockHistoryPush).toHaveBeenCalledWith('/Processes');
+  });
+
+  it('Test close Alert component', () => {
+    render(
+      <BrowserRouter>
+        <WorkflowFormPage {...props} />
+      </BrowserRouter>
+    ).container;
+
+    const closeButton = screen.getByTestId('close-button');
+    fireEvent.click(closeButton);
+
+    expect(() => screen.getByLabelText('Danger Alert')).toThrow(
+      'Unable to find a label with the text of: Danger Alert'
+    );
   });
 });

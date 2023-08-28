@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import CustomDashboardListPage from '../CustomDashboardListPage';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -25,15 +25,18 @@ jest.mock(
 
 describe('CustomDashboardListPage tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <BrowserRouter>
         <CustomDashboardListPage />
       </BrowserRouter>
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
+
     expect(
-      wrapper.find('MockedCustomDashboardListContainer').exists()
-    ).toBeTruthy();
+      document.querySelector(
+        'body[data-ouia-page-type="custom-dashboard-list"]'
+      )
+    );
   });
 });

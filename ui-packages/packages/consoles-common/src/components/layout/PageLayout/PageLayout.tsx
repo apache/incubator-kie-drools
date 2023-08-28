@@ -96,6 +96,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
       isNavOpen={isNavOpen}
       theme="dark"
       {...ouiaAttribute('data-ouia-navigation', 'true')}
+      data-testid="page-sidebar"
     />
   );
 

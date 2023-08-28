@@ -1,236 +1,108 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessVariables component tests snapshot testing with variables 1`] = `
-<Memo(ProcessVariables)
-  displayLabel={true}
-  displaySuccess={true}
-  processInstance={
-    Object {
-      "addons": Array [
-        "jobs-management",
-        "prometheus-monitoring",
-        "process-management",
-      ],
-      "businessKey": "TEE12",
-      "childProcessInstances": Array [],
-      "end": 2019-10-22T05:40:44.089Z,
-      "endpoint": "http://localhost:4000",
-      "error": Object {
-        "message": "Something went wrong",
-        "nodeDefinitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-      },
-      "id": "tEE12-fo54-l665-mp112-akou112345566",
-      "lastUpdate": 2019-10-22T03:40:44.089Z,
-      "milestones": Array [],
-      "nodes": Array [
-        Object {
-          "definitionId": "EndEvent_1",
-          "enter": 2019-10-22T03:37:38.586Z,
-          "exit": 2019-10-22T03:37:38.586Z,
-          "id": "870bdda0-be04-4e59-bb0b-f9b665eaacc9",
-          "name": "End Event 1",
-          "nodeId": "1",
-          "type": "EndNode",
-        },
-      ],
-      "parentProcessInstance": null,
-      "parentProcessInstanceId": null,
-      "processId": "travels",
-      "processName": "travels",
-      "roles": Array [],
-      "rootProcessInstanceId": null,
-      "serviceUrl": "http://localhost:4000",
-      "start": 2019-10-22T03:40:44.089Z,
-      "state": "ACTIVE",
-      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
-    }
-  }
-  setDisplayLabel={[MockFunction]}
-  setUpdateJson={[MockFunction]}
-  updateJson={
-    Object {
-      "trip": Object {
-        "begin": "2019-10-22T22:00:00Z[UTC]",
-        "city": "Berlin",
-        "country": "Germany",
-        "end": "2019-10-30T22:00:00Z[UTC]",
-        "visaRequired": false,
-      },
-    }
-  }
->
-  <Card
-    data-ouia-component-type="process-variables"
-    data-ouia-safe={true}
+<div>
+  <article
+    class="pf-c-card"
+    data-ouia-component-id="OUIA-Generated-Card-2"
+    data-ouia-component-type="PF4/Card"
+    data-ouia-safe="true"
+    id=""
   >
-    <article
-      className="pf-c-card"
-      data-ouia-component-id="OUIA-Generated-Card-1"
-      data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
-      id=""
+    <div
+      class="pf-c-card__header"
     >
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
+      <h3
+        class="pf-c-title pf-m-xl"
+        data-ouia-component-id="OUIA-Generated-Title-2"
+        data-ouia-component-type="PF4/Title"
+        data-ouia-safe="true"
+      >
+        Variables
+      </h3>
+      <span
+        class="pf-c-label pf-m-orange"
+      >
+        <span
+          class="pf-c-label__content"
         >
-          <Title
-            headingLevel="h3"
-            size="xl"
-          >
-            <h3
-              className="pf-c-title pf-m-xl"
-              data-ouia-component-id="OUIA-Generated-Title-1"
-              data-ouia-component-type="PF4/Title"
-              data-ouia-safe={true}
-            >
-              Variables
-            </h3>
-          </Title>
-          <Label
-            color="orange"
-            icon={<InfoCircleIcon />}
-          >
-            <span
-              className="pf-c-label pf-m-orange"
-            >
-              <span
-                className="pf-c-label__content"
-              >
-                <span
-                  className="pf-c-label__icon"
-                >
-                  <InfoCircleIcon>
-                    <MockedIcon />
-                  </InfoCircleIcon>
-                </span>
-                 
-                Changes are not saved yet
-              </span>
-            </span>
-          </Label>
-          <Label
-            className="kogito-process-details--variables__label-fadeIn"
-            color="green"
-            icon={<InfoCircleIcon />}
-          >
-            <span
-              className="pf-c-label pf-m-green kogito-process-details--variables__label-fadeIn"
-            >
-              <span
-                className="pf-c-label__content"
-              >
-                <span
-                  className="pf-c-label__icon"
-                >
-                  <InfoCircleIcon>
-                    <MockedIcon />
-                  </InfoCircleIcon>
-                </span>
-                 
-                Changes are saved
-              </span>
-            </span>
-          </Label>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <div
-          className="pf-c-card__body"
+          <span
+            class="pf-c-label__icon"
+          />
+           
+          Changes are not saved yet
+        </span>
+      </span>
+      <span
+        class="pf-c-label pf-m-green kogito-process-details--variables__label-fadeIn"
+      >
+        <span
+          class="pf-c-label__content"
         >
-          <TextContent>
-            <div
-              className="pf-c-content"
-            >
-              <div>
-                <mockConstructor
-                  name={false}
-                  onAdd={[Function]}
-                  onDelete={[Function]}
-                  onEdit={[Function]}
-                  src={
-                    Object {
-                      "trip": Object {
-                        "begin": "2019-10-22T22:00:00Z[UTC]",
-                        "city": "Berlin",
-                        "country": "Germany",
-                        "end": "2019-10-30T22:00:00Z[UTC]",
-                        "visaRequired": false,
-                      },
-                    }
-                  }
-                >
-                  <MockedComponent
-                    name={false}
-                    onAdd={[Function]}
-                    onDelete={[Function]}
-                    onEdit={[Function]}
-                    src={
-                      Object {
-                        "trip": Object {
-                          "begin": "2019-10-22T22:00:00Z[UTC]",
-                          "city": "Berlin",
-                          "country": "Germany",
-                          "end": "2019-10-30T22:00:00Z[UTC]",
-                          "visaRequired": false,
-                        },
-                      }
-                    }
-                  />
-                </mockConstructor>
-              </div>
-            </div>
-          </TextContent>
-        </div>
-      </CardBody>
-    </article>
-  </Card>
-</Memo(ProcessVariables)>
+          <span
+            class="pf-c-label__icon"
+          />
+           
+          Changes are saved
+        </span>
+      </span>
+    </div>
+    <div
+      class="pf-c-card__body"
+    >
+      <div
+        class="pf-c-content"
+      >
+        <div />
+      </div>
+    </div>
+  </article>
+</div>
 `;
 
 exports[`ProcessVariables component tests snapshot testing without variables 1`] = `
-<Card
-  data-ouia-component-type="process-variables"
-  data-ouia-safe={true}
->
-  <CardHeader>
-    <Title
-      headingLevel="h3"
-      size="xl"
+<div>
+  <article
+    class="pf-c-card"
+    data-ouia-component-id="OUIA-Generated-Card-1"
+    data-ouia-component-type="PF4/Card"
+    data-ouia-safe="true"
+    id=""
+  >
+    <div
+      class="pf-c-card__header"
     >
-      Variables
-    </Title>
-    <Label
-      className="kogito-process-details--variables__label-fadeOut"
-      color="green"
-      icon={<InfoCircleIcon />}
+      <h3
+        class="pf-c-title pf-m-xl"
+        data-ouia-component-id="OUIA-Generated-Title-1"
+        data-ouia-component-type="PF4/Title"
+        data-ouia-safe="true"
+      >
+        Variables
+      </h3>
+      <span
+        class="pf-c-label pf-m-green kogito-process-details--variables__label-fadeOut"
+      >
+        <span
+          class="pf-c-label__content"
+        >
+          <span
+            class="pf-c-label__icon"
+          />
+           
+          Changes are saved
+        </span>
+      </span>
+    </div>
+    <div
+      class="pf-c-card__body"
     >
-       
-      Changes are saved
-    </Label>
-  </CardHeader>
-  <CardBody>
-    <TextContent>
-      <div>
-        <mockConstructor
-          name={false}
-          onAdd={false}
-          onDelete={false}
-          onEdit={false}
-          src={
-            Object {
-              "trip": Object {
-                "begin": "2019-10-22T22:00:00Z[UTC]",
-                "city": "Berlin",
-                "country": "Germany",
-                "end": "2019-10-30T22:00:00Z[UTC]",
-                "visaRequired": false,
-              },
-            }
-          }
-        />
+      <div
+        class="pf-c-content"
+      >
+        <div />
       </div>
-    </TextContent>
-  </CardBody>
-</Card>
+    </div>
+  </article>
+</div>
 `;

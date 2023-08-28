@@ -15,10 +15,8 @@
  */
 
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import * as Keycloak from '../../../../utils/KeycloakClient';
-import { PageSidebar } from '@patternfly/react-core/dist/js/components/Page';
-import { mount } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import PageLayout from '../PageLayout';
 
@@ -38,44 +36,30 @@ describe('PageLayout component tests', () => {
   isAuthEnabledMock.mockReturnValue(false);
 
   it('snapshot tests', () => {
-    const wrapper = mount(<PageLayout {...props} />).find('PageLayout');
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<PageLayout {...props} />);
+    expect(container).toMatchSnapshot();
   });
 
   it('open with PageSidebar closed', () => {
-    let wrapper = mount(<PageLayout {...props} pageNavOpen={false} />).find(
-      'PageLayout'
-    );
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(<PageLayout {...props} pageNavOpen={false} />);
+    expect(container).toMatchSnapshot();
 
-    let pageSidebar = wrapper.find(PageSidebar);
-    expect(pageSidebar.exists()).toBeTruthy();
-    expect(pageSidebar.props().isNavOpen).toBeFalsy();
+    let pageSidebar = screen.getByTestId('page-sidebar');
+    expect(pageSidebar).toBeTruthy();
 
-    const event = {
-      target: {}
-    } as React.MouseEvent<HTMLInputElement>;
-    act(() => {
-      wrapper.find('Button').prop('onClick')(event);
-    });
+    const button = screen.getByLabelText('Global navigation');
+    fireEvent.click(button);
 
-    wrapper = wrapper.update();
-    expect(wrapper).toMatchSnapshot();
-
-    pageSidebar = wrapper.find(PageSidebar);
-    expect(pageSidebar.exists()).toBeTruthy();
-    expect(pageSidebar.props().isNavOpen).toBeTruthy();
+    pageSidebar = screen.getByTestId('page-sidebar');
+    expect(pageSidebar).toBeTruthy();
+    expect(screen.getByText('page Navigation elements')).toBeTruthy();
   });
 
   it('check isNavOpen boolean', () => {
-    const wrapper = mount(<PageLayout {...props} />).find('PageLayout');
-    const event = {
-      target: {}
-    } as React.MouseEvent<HTMLInputElement>;
-    act(() => {
-      wrapper.find('Button').prop('onClick')(event);
-      wrapper.update();
-    });
-    expect(wrapper.find('PageSidebar').prop('isNavOpen')).toBeTruthy();
+    const { container } = render(<PageLayout {...props} />);
+    const button = screen.getByLabelText('Global navigation');
+    fireEvent.click(button);
+    expect(screen.getByText('page Navigation elements')).toBeTruthy();
+    expect(container).toMatchSnapshot();
   });
 });

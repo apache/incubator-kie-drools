@@ -1,55 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FormDetailsContainer tests Snapshot 1`] = `
-<FormDetailsContainer
-  formData={
-    Object {
-      "lastModified": 2021-08-23T13:26:02.130Z,
-      "name": "form1",
-      "type": "HTML",
-    }
-  }
-  onError={[Function]}
-  onSuccess={[Function]}
->
-  <ForwardRef
-    data-ouia-component-type="form-details-container"
-    data-ouia-safe={true}
-    driver={
-      Object {
-        "getFormContent": [Function],
-        "saveFormContent": [Function],
-      }
-    }
-    formData={
-      Object {
-        "lastModified": 2021-08-23T13:26:02.130Z,
-        "name": "form1",
-        "type": "HTML",
-      }
-    }
-    targetOrigin="http://localhost:9000"
-  >
-    <ForwardRef(RefForwardingEmbeddedEnvelope)
-      apiImpl={
-        FormDetailsChannelApiImpl {
-          "driver": Object {
-            "getFormContent": [Function],
-            "saveFormContent": [Function],
-          },
-        }
-      }
-      config={
-        Object {
-          "containerType": "div",
-        }
-      }
-      origin="http://localhost:9000"
-      pollInit={[Function]}
-      refDelegate={[Function]}
-    >
-      <div />
-    </ForwardRef(RefForwardingEmbeddedEnvelope)>
-  </ForwardRef>
-</FormDetailsContainer>
+<div>
+  <div />
+</div>
 `;

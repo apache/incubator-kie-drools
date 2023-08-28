@@ -1,488 +1,147 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CustomDashboard list toolbar tests render toolbar 1`] = `
-<CustomDashboardListToolbar
-  applyFilter={[MockFunction]}
-  filterDashboardNames={Array []}
-  setFilterDashboardNames={[MockFunction]}
->
-  <Toolbar
-    className="pf-m-toggle-group-container"
-    clearAllFilters={[Function]}
-    clearFiltersButtonText="Reset to default"
-    collapseListedFiltersBreakpoint="xl"
+<div>
+  <div
+    class="pf-c-toolbar pf-m-toggle-group-container"
+    data-ouia-component-id="OUIA-Generated-Toolbar-1"
     data-ouia-component-type="custom-dashboard-list-toolbar"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
     id="custom-dashboard-list-with-filter"
   >
     <div
-      className="pf-c-toolbar pf-m-toggle-group-container"
-      data-ouia-component-id="OUIA-Generated-Toolbar-1"
-      data-ouia-component-type="custom-dashboard-list-toolbar"
-      data-ouia-safe={true}
-      id="custom-dashboard-list-with-filter"
+      class="pf-c-toolbar__content"
     >
-      <ToolbarContent
-        isExpanded={false}
-        showClearFiltersButton={false}
+      <div
+        class="pf-c-toolbar__content-section"
       >
         <div
-          className="pf-c-toolbar__content"
+          class="pf-c-toolbar__group pf-m-toggle-group pf-m-show-on-xl"
         >
           <div
-            className="pf-c-toolbar__content-section"
+            class="pf-c-toolbar__toggle"
           >
-            <ToolbarToggleGroup
-              breakpoint="xl"
-              toggleIcon={
-                <FilterIcon
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
+            <button
+              aria-controls="custom-dashboard-list-with-filter-expandable-content-1"
+              aria-disabled="false"
+              aria-haspopup="false"
+              aria-label="Show Filters"
+              class="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-1"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 512 512"
+                width="1em"
+              >
+                <path
+                  d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
                 />
-              }
-            >
-              <div
-                className="pf-c-toolbar__group pf-m-toggle-group pf-m-show-on-xl"
-              >
-                <div
-                  className="pf-c-toolbar__toggle"
-                >
-                  <Button
-                    aria-controls="custom-dashboard-list-with-filter-expandable-content-1"
-                    aria-haspopup={false}
-                    aria-label="Show Filters"
-                    onClick={[Function]}
-                    variant="plain"
-                  >
-                    <ButtonBase
-                      aria-controls="custom-dashboard-list-with-filter-expandable-content-1"
-                      aria-haspopup={false}
-                      aria-label="Show Filters"
-                      innerRef={null}
-                      onClick={[Function]}
-                      variant="plain"
-                    >
-                      <button
-                        aria-controls="custom-dashboard-list-with-filter-expandable-content-1"
-                        aria-disabled={false}
-                        aria-haspopup={false}
-                        aria-label="Show Filters"
-                        className="pf-c-button pf-m-plain"
-                        data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                        data-ouia-component-type="PF4/Button"
-                        data-ouia-safe={true}
-                        disabled={false}
-                        onClick={[Function]}
-                        role={null}
-                        type="button"
-                      >
-                        <FilterIcon
-                          color="currentColor"
-                          noVerticalAlign={false}
-                          size="sm"
-                        >
-                          <svg
-                            aria-hidden={true}
-                            aria-labelledby={null}
-                            fill="currentColor"
-                            height="1em"
-                            role="img"
-                            style={
-                              Object {
-                                "verticalAlign": "-0.125em",
-                              }
-                            }
-                            viewBox="0 0 512 512"
-                            width="1em"
-                          >
-                            <path
-                              d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
-                            />
-                          </svg>
-                        </FilterIcon>
-                      </button>
-                    </ButtonBase>
-                  </Button>
-                </div>
-                <ForwardRef
-                  variant="filter-group"
-                >
-                  <ToolbarGroupWithRef
-                    innerRef={null}
-                    variant="filter-group"
-                  >
-                    <div
-                      className="pf-c-toolbar__group pf-m-filter-group"
-                    >
-                      <ToolbarFilter
-                        categoryName="Custom Dashboard name"
-                        chips={Array []}
-                        deleteChip={[Function]}
-                        key="input-customDashboard-name"
-                        showToolbarItem={true}
-                      >
-                        <ToolbarItem>
-                          <div
-                            className="pf-c-toolbar__item"
-                          >
-                            <InputGroup>
-                              <div
-                                className="pf-c-input-group"
-                              >
-                                <TextInput
-                                  aria-label="Dashboard name"
-                                  id="customDashboardName"
-                                  name="customDashboardName"
-                                  onChange={[Function]}
-                                  onKeyPress={[Function]}
-                                  placeholder="Filter by dashboard name"
-                                  type="search"
-                                  value=""
-                                >
-                                  <TextInputBase
-                                    aria-label="Dashboard name"
-                                    className=""
-                                    id="customDashboardName"
-                                    innerRef={null}
-                                    isDisabled={false}
-                                    isIconSprite={false}
-                                    isLeftTruncated={false}
-                                    isReadOnly={false}
-                                    isRequired={false}
-                                    name="customDashboardName"
-                                    onChange={[Function]}
-                                    onKeyPress={[Function]}
-                                    ouiaSafe={true}
-                                    placeholder="Filter by dashboard name"
-                                    type="search"
-                                    validated="default"
-                                    value=""
-                                  >
-                                    <input
-                                      aria-invalid={false}
-                                      aria-label="Dashboard name"
-                                      className="pf-c-form-control"
-                                      data-ouia-component-id="OUIA-Generated-TextInputBase-2"
-                                      data-ouia-component-type="PF4/TextInput"
-                                      data-ouia-safe={true}
-                                      disabled={false}
-                                      id="customDashboardName"
-                                      name="customDashboardName"
-                                      onBlur={[Function]}
-                                      onChange={[Function]}
-                                      onFocus={[Function]}
-                                      onKeyPress={[Function]}
-                                      placeholder="Filter by dashboard name"
-                                      required={false}
-                                      type="search"
-                                      value=""
-                                    />
-                                  </TextInputBase>
-                                </TextInput>
-                              </div>
-                            </InputGroup>
-                          </div>
-                        </ToolbarItem>
-                        <Portal
-                          containerInfo={
-                            <div
-                              aria-hidden="true"
-                              class="pf-c-toolbar__group pf-m-hidden"
-                              hidden=""
-                            />
-                          }
-                        />
-                      </ToolbarFilter>
-                      <ToolbarItem>
-                        <div
-                          className="pf-c-toolbar__item"
-                        >
-                          <Button
-                            id="apply-filter"
-                            onClick={[Function]}
-                            variant="primary"
-                          >
-                            <ButtonBase
-                              id="apply-filter"
-                              innerRef={null}
-                              onClick={[Function]}
-                              variant="primary"
-                            >
-                              <button
-                                aria-disabled={false}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary"
-                                data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={false}
-                                id="apply-filter"
-                                onClick={[Function]}
-                                role={null}
-                                type="button"
-                              >
-                                Apply Filter
-                              </button>
-                            </ButtonBase>
-                          </Button>
-                        </div>
-                      </ToolbarItem>
-                    </div>
-                  </ToolbarGroupWithRef>
-                </ForwardRef>
-              </div>
-            </ToolbarToggleGroup>
-            <ForwardRef
-              variant="icon-button-group"
-            >
-              <ToolbarGroupWithRef
-                innerRef={null}
-                variant="icon-button-group"
-              >
-                <div
-                  className="pf-c-toolbar__group pf-m-icon-button-group"
-                >
-                  <ToolbarItem>
-                    <div
-                      className="pf-c-toolbar__item"
-                    >
-                      <Tooltip
-                        content="Refresh"
-                      >
-                        <Popper
-                          appendTo={[Function]}
-                          distance={15}
-                          enableFlip={true}
-                          flipBehavior={
-                            Array [
-                              "top",
-                              "right",
-                              "bottom",
-                              "left",
-                              "top",
-                              "right",
-                              "bottom",
-                            ]
-                          }
-                          isVisible={false}
-                          onBlur={[Function]}
-                          onDocumentClick={false}
-                          onDocumentKeyDown={[Function]}
-                          onFocus={[Function]}
-                          onMouseEnter={[Function]}
-                          onMouseLeave={[Function]}
-                          onPopperMouseEnter={[Function]}
-                          onPopperMouseLeave={[Function]}
-                          onTriggerEnter={[Function]}
-                          placement="top"
-                          popper={
-                            <div
-                              aria-live="off"
-                              className="pf-c-tooltip"
-                              id="pf-tooltip-1"
-                              role="tooltip"
-                              style={
-                                Object {
-                                  "maxWidth": null,
-                                  "opacity": 0,
-                                  "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
-                                }
-                              }
-                            >
-                              <TooltipArrow />
-                              <TooltipContent
-                                isLeftAligned={false}
-                              >
-                                Refresh
-                              </TooltipContent>
-                            </div>
-                          }
-                          popperMatchesTriggerWidth={false}
-                          positionModifiers={
-                            Object {
-                              "bottom": "pf-m-bottom",
-                              "bottom-end": "pf-m-bottom-right",
-                              "bottom-start": "pf-m-bottom-left",
-                              "left": "pf-m-left",
-                              "left-end": "pf-m-left-bottom",
-                              "left-start": "pf-m-left-top",
-                              "right": "pf-m-right",
-                              "right-end": "pf-m-right-bottom",
-                              "right-start": "pf-m-right-top",
-                              "top": "pf-m-top",
-                              "top-end": "pf-m-top-right",
-                              "top-start": "pf-m-top-left",
-                            }
-                          }
-                          removeFindDomNode={false}
-                          trigger={
-                            <Button
-                              id="refresh"
-                              onClick={[Function]}
-                              variant="plain"
-                            >
-                              <SyncIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                              />
-                            </Button>
-                          }
-                          zIndex={9999}
-                        >
-                          <FindRefWrapper
-                            onFoundRef={[Function]}
-                          >
-                            <Button
-                              id="refresh"
-                              onClick={[Function]}
-                              variant="plain"
-                            >
-                              <ButtonBase
-                                id="refresh"
-                                innerRef={null}
-                                onClick={[Function]}
-                                variant="plain"
-                              >
-                                <button
-                                  aria-disabled={false}
-                                  aria-label={null}
-                                  className="pf-c-button pf-m-plain"
-                                  data-ouia-component-id="OUIA-Generated-Button-plain-2"
-                                  data-ouia-component-type="PF4/Button"
-                                  data-ouia-safe={true}
-                                  disabled={false}
-                                  id="refresh"
-                                  onClick={[Function]}
-                                  role={null}
-                                  type="button"
-                                >
-                                  <SyncIcon
-                                    color="currentColor"
-                                    noVerticalAlign={false}
-                                    size="sm"
-                                  >
-                                    <svg
-                                      aria-hidden={true}
-                                      aria-labelledby={null}
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style={
-                                        Object {
-                                          "verticalAlign": "-0.125em",
-                                        }
-                                      }
-                                      viewBox="0 0 512 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
-                                      />
-                                    </svg>
-                                  </SyncIcon>
-                                </button>
-                              </ButtonBase>
-                            </Button>
-                          </FindRefWrapper>
-                        </Popper>
-                      </Tooltip>
-                    </div>
-                  </ToolbarItem>
-                </div>
-              </ToolbarGroupWithRef>
-            </ForwardRef>
+              </svg>
+            </button>
           </div>
-          <ToolbarExpandableContent
-            chipContainerRef={
-              Object {
-                "current": null,
-              }
-            }
-            clearAllFilters={[Function]}
-            clearFiltersButtonText="Reset to default"
-            expandableContentRef={
-              Object {
-                "current": <div
-                  class="pf-c-toolbar__expandable-content"
-                  id="custom-dashboard-list-with-filter-expandable-content-1"
-                >
-                  <div
-                    class="pf-c-toolbar__group"
-                  />
-                </div>,
-              }
-            }
-            id="custom-dashboard-list-with-filter-expandable-content-1"
-            isExpanded={false}
-            showClearFiltersButton={false}
+          <div
+            class="pf-c-toolbar__group pf-m-filter-group"
           >
             <div
-              className="pf-c-toolbar__expandable-content"
-              id="custom-dashboard-list-with-filter-expandable-content-1"
-            >
-              <ForwardRef>
-                <ToolbarGroupWithRef
-                  innerRef={null}
-                >
-                  <div
-                    className="pf-c-toolbar__group"
-                  />
-                </ToolbarGroupWithRef>
-              </ForwardRef>
-            </div>
-          </ToolbarExpandableContent>
-        </div>
-      </ToolbarContent>
-      <ToolbarChipGroupContent
-        chipGroupContentRef={
-          Object {
-            "current": <div
-              class="pf-c-toolbar__content pf-m-hidden"
-              hidden=""
+              class="pf-c-toolbar__item"
             >
               <div
+                class="pf-c-input-group"
+              >
+                <input
+                  aria-invalid="false"
+                  aria-label="Dashboard name"
+                  class="pf-c-form-control"
+                  data-ouia-component-id="OUIA-Generated-TextInputBase-2"
+                  data-ouia-component-type="PF4/TextInput"
+                  data-ouia-safe="true"
+                  data-testid="search-input"
+                  id="customDashboardName"
+                  name="customDashboardName"
+                  placeholder="Filter by dashboard name"
+                  type="search"
+                  value=""
+                />
+              </div>
+            </div>
+            <div
+              class="pf-c-toolbar__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-primary"
+                data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="apply-filter"
+                id="apply-filter"
+                type="button"
+              >
+                Apply Filter
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__group pf-m-icon-button-group"
+        >
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <button
+              aria-disabled="false"
+              class="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-2"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              data-testid="refresh"
+              id="refresh"
+              type="button"
+            >
+              <svg
                 aria-hidden="true"
-                class="pf-c-toolbar__group pf-m-hidden"
-                hidden=""
-              />
-            </div>,
-          }
-        }
-        clearAllFilters={[Function]}
-        clearFiltersButtonText="Reset to default"
-        collapseListedFiltersBreakpoint="xl"
-        isExpanded={false}
-        numberOfFilters={0}
-        numberOfFiltersText={[Function]}
-        showClearFiltersButton={false}
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 512 512"
+                width="1em"
+              >
+                <path
+                  d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="pf-c-toolbar__expandable-content"
+        id="custom-dashboard-list-with-filter-expandable-content-1"
       >
         <div
-          className="pf-c-toolbar__content pf-m-hidden"
-          hidden={true}
-        >
-          <ForwardRef
-            aria-hidden={true}
-            className="pf-m-hidden"
-            hidden={true}
-          >
-            <ToolbarGroupWithRef
-              aria-hidden={true}
-              className="pf-m-hidden"
-              hidden={true}
-              innerRef={null}
-            >
-              <div
-                aria-hidden={true}
-                className="pf-c-toolbar__group pf-m-hidden"
-                hidden={true}
-              />
-            </ToolbarGroupWithRef>
-          </ForwardRef>
-        </div>
-      </ToolbarChipGroupContent>
+          class="pf-c-toolbar__group"
+        />
+      </div>
     </div>
-  </Toolbar>
-</CustomDashboardListToolbar>
+    <div
+      class="pf-c-toolbar__content pf-m-hidden"
+      hidden=""
+    >
+      <div
+        aria-hidden="true"
+        class="pf-c-toolbar__group pf-m-hidden"
+        hidden=""
+      />
+    </div>
+  </div>
+</div>
 `;

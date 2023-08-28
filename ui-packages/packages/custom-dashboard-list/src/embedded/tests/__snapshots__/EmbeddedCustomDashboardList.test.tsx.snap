@@ -1,39 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmbeddedCustomDashboardList tests Snapshot 1`] = `
-<ForwardRef
-  driver={
-    Object {
-      "applyFilter": [MockFunction],
-      "getCustomDashboardFilter": [MockFunction],
-      "getCustomDashboardsQuery": [MockFunction],
-      "openDashboard": [MockFunction],
-    }
-  }
-  envelopePath="path"
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      CustomDashboardListChannelApiImpl {
-        "driver": Object {
-          "applyFilter": [MockFunction],
-          "getCustomDashboardFilter": [MockFunction],
-          "getCustomDashboardsQuery": [MockFunction],
-          "openDashboard": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;

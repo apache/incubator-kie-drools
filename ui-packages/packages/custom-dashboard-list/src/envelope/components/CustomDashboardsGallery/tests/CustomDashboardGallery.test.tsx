@@ -16,7 +16,7 @@
 
 import React from 'react';
 import CustomDashboardsGallery from '../CustomDashboardsGallery';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import {
   customDashboardInfos,
   MockedCustomDashboardListDriver
@@ -28,59 +28,43 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock(
-  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
-  () =>
-    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      }
-    })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    KogitoSpinner: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
 describe('customDashboard gallery tests', () => {
   Date.now = jest.fn(() => 1487076708000);
   const driver = new MockedCustomDashboardListDriver();
   it('renders gallery of customDashboard', () => {
-    const wrapper = mount(
+    const { container } = render(
       <CustomDashboardsGallery
         driver={driver}
         isLoading={false}
         customDashboardsDatas={customDashboardInfos}
       />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('renders loading component', () => {
-    const wrapper = mount(
+    const { container } = render(
       <CustomDashboardsGallery
         driver={driver}
         isLoading={true}
         customDashboardsDatas={customDashboardInfos}
       />
     );
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find(KogitoSpinner)).toBeTruthy();
+    expect(container).toMatchSnapshot();
+    const checkLoading = screen.getByText('Loading customDashboard...');
+    expect(checkLoading).toBeTruthy();
   });
 
   it('renders empty state component', () => {
-    const wrapper = mount(
+    const { container } = render(
       <CustomDashboardsGallery
         driver={driver}
         isLoading={false}
         customDashboardsDatas={[]}
       />
     );
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find(KogitoEmptyState)).toBeTruthy();
+    expect(container).toMatchSnapshot();
+    const checkEmptyState = screen.getByText('No results found');
+    expect(checkEmptyState).toBeTruthy();
   });
 });

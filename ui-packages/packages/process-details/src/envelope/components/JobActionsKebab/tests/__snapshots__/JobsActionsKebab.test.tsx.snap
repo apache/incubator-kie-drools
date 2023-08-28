@@ -1,832 +1,111 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`job actions kebab tests dropdown open/close tests and details click 1`] = `
-<JobActionsKebab
-  driver={
-    Object {
-      "cancelJob": [MockFunction],
-      "getProcessDiagram": [MockFunction],
-      "getTriggerableNodes": [MockFunction],
-      "handleNodeInstanceCancel": [MockFunction],
-      "handleNodeInstanceRetrigger": [MockFunction],
-      "handleNodeTrigger": [MockFunction],
-      "handleProcessAbort": [MockFunction],
-      "handleProcessRetry": [MockFunction],
-      "handleProcessSkip": [MockFunction],
-      "handleProcessVariableUpdate": [MockFunction],
-      "jobsQuery": [MockFunction],
-      "openProcessInstanceDetails": [MockFunction],
-      "processDetailsQuery": [MockFunction],
-      "rescheduleJob": [MockFunction],
-    }
-  }
-  job={
-    Object {
-      "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
-      "expirationTime": 2020-08-27T03:35:50.147Z,
-      "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
-      "lastUpdate": 2020-08-27T03:35:50.147Z,
-      "priority": 0,
-      "processId": "travels",
-      "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
-      "repeatInterval": 1,
-      "repeatLimit": 3,
-      "retries": 0,
-      "rootProcessId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
-      "scheduledId": "0",
-      "status": "CANCELED",
-    }
-  }
->
-  <JobsDetailsModal
-    actionType="Job Details"
-    handleModalToggle={[Function]}
-    isModalOpen={false}
-    job={
-      Object {
-        "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
-        "expirationTime": 2020-08-27T03:35:50.147Z,
-        "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
-        "lastUpdate": 2020-08-27T03:35:50.147Z,
-        "priority": 0,
-        "processId": "travels",
-        "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
-        "repeatInterval": 1,
-        "repeatLimit": 3,
-        "retries": 0,
-        "rootProcessId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
-        "scheduledId": "0",
-        "status": "CANCELED",
-      }
-    }
-    modalAction={
-      Array [
-        <Button
-          onClick={[Function]}
-          variant="primary"
-        >
-          OK
-        </Button>,
-      ]
-    }
-    modalTitle={
-      <Title
-        headingLevel="h1"
-        size="2xl"
-      >
-        <InfoCircleIcon
-          className="pf-u-mr-sm"
-          color="var(--pf-global--info-color--100)"
-          noVerticalAlign={false}
-          size="sm"
-        />
-        <span>
-          Job Details
-        </span>
-      </Title>
-    }
-  >
-    <Modal
-      actions={
-        Array [
-          <Button
-            onClick={[Function]}
-            variant="primary"
-          >
-            OK
-          </Button>,
-        ]
-      }
-      appendTo={[Function]}
-      aria-describedby=""
-      aria-label="Job Detailsmodal"
-      aria-labelledby="Job Detailsmodal"
-      className=""
-      data-ouia-component-type="job-details-modal"
-      data-ouia-safe={true}
-      hasNoBodyWrapper={false}
-      header={
-        <Title
-          headingLevel="h1"
-          size="2xl"
-        >
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--info-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-          <span>
-            Job Details
-          </span>
-        </Title>
-      }
-      isOpen={false}
-      onClose={[Function]}
-      ouiaSafe={true}
-      showClose={true}
-      title=""
-      titleIconVariant={null}
-      titleLabel=""
-      variant="large"
-    >
-      <Portal
-        containerInfo={<div />}
-      >
-        <ModalContent
-          actions={
-            Array [
-              <Button
-                onClick={[Function]}
-                variant="primary"
-              >
-                OK
-              </Button>,
-            ]
-          }
-          aria-describedby=""
-          aria-label="Job Detailsmodal"
-          aria-labelledby="Job Detailsmodal"
-          boxId="pf-modal-part-0"
-          className=""
-          data-ouia-component-type="job-details-modal"
-          data-ouia-safe={true}
-          descriptorId="pf-modal-part-2"
-          hasNoBodyWrapper={false}
-          header={
-            <Title
-              headingLevel="h1"
-              size="2xl"
-            >
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--info-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-              <span>
-                Job Details
-              </span>
-            </Title>
-          }
-          isOpen={false}
-          labelId="pf-modal-part-1"
-          onClose={[Function]}
-          ouiaId="OUIA-Generated-Modal-large-1"
-          ouiaSafe={true}
-          showClose={true}
-          title=""
-          titleIconVariant={null}
-          titleLabel=""
-          variant="large"
-        />
-      </Portal>
-    </Modal>
-  </JobsDetailsModal>
-  <JobsRescheduleModal
-    actionType="Job Reschedule"
-    handleJobReschedule={[Function]}
-    handleModalToggle={[Function]}
-    isModalOpen={false}
-    job={
-      Object {
-        "callbackEndpoint": "http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0",
-        "expirationTime": 2020-08-27T03:35:50.147Z,
-        "id": "6e74a570-31c8-4020-bd70-19be2cb625f3_0",
-        "lastUpdate": 2020-08-27T03:35:50.147Z,
-        "priority": 0,
-        "processId": "travels",
-        "processInstanceId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
-        "repeatInterval": 1,
-        "repeatLimit": 3,
-        "retries": 0,
-        "rootProcessId": "5c56eeff-4cbf-3313-a325-4c895e0afced",
-        "scheduledId": "0",
-        "status": "CANCELED",
-      }
-    }
-    modalAction={
-      Array [
-        <Button
-          onClick={[Function]}
-          variant="secondary"
-        >
-          Cancel
-        </Button>,
-      ]
-    }
-    rescheduleError=""
-    setRescheduleError={[Function]}
-  >
-    <Modal
-      actions={
-        Array [
-          <Button
-            id="apply-button"
-            onClick={[Function]}
-            variant="primary"
-          >
-            Apply
-          </Button>,
-          <Button
-            onClick={[Function]}
-            variant="secondary"
-          >
-            Cancel
-          </Button>,
-        ]
-      }
-      appendTo={[Function]}
-      aria-describedby=""
-      aria-label="Job Reschedule modal"
-      aria-labelledby="actionType modal"
-      className=""
-      data-ouia-component-type="job-reschedule-modal"
-      data-ouia-safe={true}
-      hasNoBodyWrapper={false}
-      header={
-        <Title
-          headingLevel="h1"
-          size="2xl"
-        >
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--info-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-          <span>
-            Job Reschedule
-          </span>
-        </Title>
-      }
-      isOpen={false}
-      onClose={[Function]}
-      ouiaSafe={true}
-      showClose={true}
-      title=""
-      titleIconVariant={null}
-      titleLabel=""
-      variant="small"
-    >
-      <Portal
-        containerInfo={<div />}
-      >
-        <ModalContent
-          actions={
-            Array [
-              <Button
-                id="apply-button"
-                onClick={[Function]}
-                variant="primary"
-              >
-                Apply
-              </Button>,
-              <Button
-                onClick={[Function]}
-                variant="secondary"
-              >
-                Cancel
-              </Button>,
-            ]
-          }
-          aria-describedby=""
-          aria-label="Job Reschedule modal"
-          aria-labelledby="actionType modal"
-          boxId="pf-modal-part-1"
-          className=""
-          data-ouia-component-type="job-reschedule-modal"
-          data-ouia-safe={true}
-          descriptorId="pf-modal-part-3"
-          hasNoBodyWrapper={false}
-          header={
-            <Title
-              headingLevel="h1"
-              size="2xl"
-            >
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--info-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-              <span>
-                Job Reschedule
-              </span>
-            </Title>
-          }
-          isOpen={false}
-          labelId="pf-modal-part-2"
-          onClose={[Function]}
-          ouiaId="OUIA-Generated-Modal-small-1"
-          ouiaSafe={true}
-          showClose={true}
-          title=""
-          titleIconVariant={null}
-          titleLabel=""
-          variant="small"
-        />
-      </Portal>
-    </Modal>
-    <Modal
-      actions={
-        Array [
-          <Button
-            onClick={[Function]}
-            variant="primary"
-          >
-            OK
-          </Button>,
-        ]
-      }
-      appendTo={[Function]}
-      aria-describedby=""
-      aria-label="Reschedule error modal"
-      aria-labelledby="Reschedule error modal"
-      className=""
-      data-ouia-component-type="job-reschedule-error-modal"
-      data-ouia-safe={true}
-      hasNoBodyWrapper={false}
-      header={
-        <Title
-          headingLevel="h1"
-          size="2xl"
-        >
-          <InfoCircleIcon
-            className="pf-u-mr-sm"
-            color="var(--pf-global--danger-color--100)"
-            noVerticalAlign={false}
-            size="sm"
-          />
-          <span>
-            Job Reschedule
-          </span>
-        </Title>
-      }
-      isOpen={false}
-      onClose={[Function]}
-      ouiaSafe={true}
-      showClose={true}
-      title=""
-      titleIconVariant={null}
-      titleLabel=""
-      variant="small"
-    >
-      <Portal
-        containerInfo={<div />}
-      >
-        <ModalContent
-          actions={
-            Array [
-              <Button
-                onClick={[Function]}
-                variant="primary"
-              >
-                OK
-              </Button>,
-            ]
-          }
-          aria-describedby=""
-          aria-label="Reschedule error modal"
-          aria-labelledby="Reschedule error modal"
-          boxId="pf-modal-part-2"
-          className=""
-          data-ouia-component-type="job-reschedule-error-modal"
-          data-ouia-safe={true}
-          descriptorId="pf-modal-part-4"
-          hasNoBodyWrapper={false}
-          header={
-            <Title
-              headingLevel="h1"
-              size="2xl"
-            >
-              <InfoCircleIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--danger-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              />
-              <span>
-                Job Reschedule
-              </span>
-            </Title>
-          }
-          isOpen={false}
-          labelId="pf-modal-part-3"
-          onClose={[Function]}
-          ouiaId="OUIA-Generated-Modal-small-2"
-          ouiaSafe={true}
-          showClose={true}
-          title=""
-          titleIconVariant={null}
-          titleLabel=""
-          variant="small"
-        />
-      </Portal>
-    </Modal>
-  </JobsRescheduleModal>
-  <JobsCancelModal
-    actionType="Job Cancel"
-    handleModalToggle={[Function]}
-    isModalOpen={false}
-    modalContent=""
-    modalTitle={null}
-  >
-    <Modal
-      actions={
-        Array [
-          <Button
-            onClick={[Function]}
-            variant="primary"
-          >
-            OK
-          </Button>,
-        ]
-      }
-      appendTo={[Function]}
-      aria-describedby=""
-      aria-label="Job Cancel Modal"
-      aria-labelledby="Job Cancel Modal"
-      className=""
-      data-ouia-component-type="jobs-cancel-modal"
-      data-ouia-safe={true}
-      hasNoBodyWrapper={false}
-      header={null}
-      isOpen={false}
-      onClose={[Function]}
-      ouiaSafe={true}
-      showClose={true}
-      title=""
-      titleIconVariant={null}
-      titleLabel=""
-      variant="small"
-    >
-      <Portal
-        containerInfo={<div />}
-      >
-        <ModalContent
-          actions={
-            Array [
-              <Button
-                onClick={[Function]}
-                variant="primary"
-              >
-                OK
-              </Button>,
-            ]
-          }
-          aria-describedby=""
-          aria-label="Job Cancel Modal"
-          aria-labelledby="Job Cancel Modal"
-          boxId="pf-modal-part-3"
-          className=""
-          data-ouia-component-type="jobs-cancel-modal"
-          data-ouia-safe={true}
-          descriptorId="pf-modal-part-5"
-          hasNoBodyWrapper={false}
-          header={null}
-          isOpen={false}
-          labelId="pf-modal-part-4"
-          onClose={[Function]}
-          ouiaId="OUIA-Generated-Modal-small-3"
-          ouiaSafe={true}
-          showClose={true}
-          title=""
-          titleIconVariant={null}
-          titleLabel=""
-          variant="small"
-        />
-      </Portal>
-    </Modal>
-  </JobsCancelModal>
-  <Dropdown
+<div>
+  <div
     aria-label="Job actions dropdown"
     aria-labelledby="Job actions dropdown"
-    data-ouia-component-type="job-actions-kebab"
-    data-ouia-safe={true}
-    dropdownItems={
-      Array [
-        <DropdownItem
-          component="button"
-          onClick={[Function]}
-        >
-          Details
-        </DropdownItem>,
-      ]
-    }
-    isOpen={true}
-    isPlain={true}
-    onSelect={[Function]}
-    position="right"
-    toggle={
-      <KebabToggle
-        id="kebab-toggle"
-        onToggle={[Function]}
-      />
-    }
+    class="pf-c-dropdown pf-m-align-right"
+    data-ouia-component-id="OUIA-Generated-Dropdown-1"
+    data-ouia-component-type="PF4/Dropdown"
+    data-ouia-safe="true"
   >
-    <DropdownWithContext
-      aria-label="Job actions dropdown"
-      aria-labelledby="Job actions dropdown"
-      autoFocus={true}
-      className=""
-      data-ouia-component-type="job-actions-kebab"
-      data-ouia-safe={true}
-      direction="down"
-      dropdownItems={
-        Array [
-          <DropdownItem
-            component="button"
-            onClick={[Function]}
-          >
-            Details
-          </DropdownItem>,
-        ]
-      }
-      isFlipEnabled={true}
-      isGrouped={false}
-      isOpen={true}
-      isPlain={true}
-      isText={false}
-      menuAppendTo="inline"
-      onSelect={[Function]}
-      position="right"
-      removeFindDomNode={false}
-      toggle={
-        <KebabToggle
-          id="kebab-toggle"
-          onToggle={[Function]}
-        />
-      }
-      zIndex={9999}
+    <button
+      aria-expanded="false"
+      aria-haspopup="true"
+      aria-label="Actions"
+      class="pf-c-dropdown__toggle pf-m-plain"
+      id="kebab-toggle"
+      type="button"
     >
-      <div
-        aria-label="Job actions dropdown"
-        aria-labelledby="Job actions dropdown"
-        className="pf-c-dropdown pf-m-align-right pf-m-expanded"
-        data-ouia-component-id="OUIA-Generated-Dropdown-1"
-        data-ouia-component-type="PF4/Dropdown"
-        data-ouia-safe={true}
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 192 512"
+        width="1em"
       >
-        <KebabToggle
-          aria-haspopup={true}
-          getMenuRef={[Function]}
-          id="kebab-toggle"
-          isOpen={true}
-          isPlain={true}
-          isText={false}
-          key=".0"
-          onEnter={[Function]}
-          onToggle={[Function]}
-          parentRef={
-            Object {
-              "current": <div
-                aria-label="Job actions dropdown"
-                aria-labelledby="Job actions dropdown"
-                class="pf-c-dropdown pf-m-align-right pf-m-expanded"
-                data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                data-ouia-component-type="PF4/Dropdown"
-                data-ouia-safe="true"
-              >
-                <button
-                  aria-expanded="true"
-                  aria-haspopup="true"
-                  aria-label="Actions"
-                  class="pf-c-dropdown__toggle pf-m-plain"
-                  id="kebab-toggle"
-                  type="button"
-                >
-                  <svg
-                    aria-hidden="true"
-                    fill="currentColor"
-                    height="1em"
-                    role="img"
-                    style="vertical-align: -0.125em;"
-                    viewBox="0 0 192 512"
-                    width="1em"
-                  >
-                    <path
-                      d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                    />
-                  </svg>
-                </button>
-                <ul
-                  aria-labelledby="kebab-toggle"
-                  class="pf-c-dropdown__menu pf-m-align-right"
-                  role="menu"
-                >
-                  <li
-                    role="none"
-                  >
-                    <button
-                      aria-disabled="false"
-                      class="pf-c-dropdown__menu-item"
-                      data-ouia-component-id="OUIA-Generated-DropdownItem-1"
-                      data-ouia-component-type="PF4/DropdownItem"
-                      data-ouia-safe="true"
-                      role="menuitem"
-                      tabindex="-1"
-                      type="button"
-                    >
-                      Details
-                    </button>
-                  </li>
-                </ul>
-              </div>,
-            }
-          }
-        >
-          <Toggle
-            aria-haspopup={true}
-            aria-label="Actions"
-            bubbleEvent={false}
-            className=""
-            getMenuRef={[Function]}
-            id="kebab-toggle"
-            isActive={false}
-            isDisabled={false}
-            isOpen={true}
-            isPlain={true}
-            isPrimary={false}
-            isSplitButton={false}
-            isText={false}
-            onEnter={[Function]}
-            onToggle={[Function]}
-            parentRef={
-              Object {
-                "current": <div
-                  aria-label="Job actions dropdown"
-                  aria-labelledby="Job actions dropdown"
-                  class="pf-c-dropdown pf-m-align-right pf-m-expanded"
-                  data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                  data-ouia-component-type="PF4/Dropdown"
-                  data-ouia-safe="true"
-                >
-                  <button
-                    aria-expanded="true"
-                    aria-haspopup="true"
-                    aria-label="Actions"
-                    class="pf-c-dropdown__toggle pf-m-plain"
-                    id="kebab-toggle"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      fill="currentColor"
-                      height="1em"
-                      role="img"
-                      style="vertical-align: -0.125em;"
-                      viewBox="0 0 192 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                      />
-                    </svg>
-                  </button>
-                  <ul
-                    aria-labelledby="kebab-toggle"
-                    class="pf-c-dropdown__menu pf-m-align-right"
-                    role="menu"
-                  >
-                    <li
-                      role="none"
-                    >
-                      <button
-                        aria-disabled="false"
-                        class="pf-c-dropdown__menu-item"
-                        data-ouia-component-id="OUIA-Generated-DropdownItem-1"
-                        data-ouia-component-type="PF4/DropdownItem"
-                        data-ouia-safe="true"
-                        role="menuitem"
-                        tabindex="-1"
-                        type="button"
-                      >
-                        Details
-                      </button>
-                    </li>
-                  </ul>
-                </div>,
-              }
-            }
-          >
-            <button
-              aria-expanded={true}
-              aria-haspopup={true}
-              aria-label="Actions"
-              className="pf-c-dropdown__toggle pf-m-plain"
-              disabled={false}
-              id="kebab-toggle"
-              onClick={[Function]}
-              onKeyDown={[Function]}
-              type="button"
-            >
-              <EllipsisVIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  fill="currentColor"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 192 512"
-                  width="1em"
-                >
-                  <path
-                    d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
-                  />
-                </svg>
-              </EllipsisVIcon>
-            </button>
-          </Toggle>
-        </KebabToggle>
-        <DropdownMenu
-          aria-labelledby="kebab-toggle"
-          autoFocus={false}
-          className=""
-          component="ul"
-          isGrouped={false}
-          isOpen={true}
-          openedOnEnter={false}
-          position="right"
-          setMenuComponentRef={[Function]}
-        >
-          <ul
-            aria-labelledby="kebab-toggle"
-            autoFocus={false}
-            className="pf-c-dropdown__menu pf-m-align-right"
-            hidden={false}
-            role="menu"
-          >
-            <DropdownItem
-              component="button"
-              index={0}
-              key=".$details"
-              onClick={[Function]}
-            >
-              <InternalDropdownItem
-                className=""
-                component="button"
-                context={
-                  Object {
-                    "keyHandler": [Function],
-                    "sendRef": [Function],
-                  }
-                }
-                data-ouia-component-id="OUIA-Generated-DropdownItem-1"
-                data-ouia-component-type="PF4/DropdownItem"
-                data-ouia-safe={true}
-                description={null}
-                enterTriggersArrowDown={false}
-                icon={null}
-                index={0}
-                inoperableEvents={
-                  Array [
-                    "onClick",
-                    "onKeyPress",
-                  ]
-                }
-                isAriaDisabled={false}
-                isDisabled={false}
-                isPlainText={false}
-                onClick={[Function]}
-                role="menuitem"
-                styleChildren={true}
-                tabIndex={-1}
-                tooltipProps={Object {}}
-              >
-                <li
-                  onClick={[Function]}
-                  onKeyDown={[Function]}
-                  role="none"
-                >
-                  <button
-                    aria-disabled={false}
-                    className="pf-c-dropdown__menu-item"
-                    data-ouia-component-id="OUIA-Generated-DropdownItem-1"
-                    data-ouia-component-type="PF4/DropdownItem"
-                    data-ouia-safe={true}
-                    role="menuitem"
-                    tabIndex={-1}
-                    type="button"
-                  >
-                    Details
-                  </button>
-                </li>
-              </InternalDropdownItem>
-            </DropdownItem>
-          </ul>
-        </DropdownMenu>
-      </div>
-    </DropdownWithContext>
-  </Dropdown>
-</JobActionsKebab>
+        <path
+          d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`job actions kebab tests test job cancel option 1`] = `
+<div
+  aria-hidden="true"
+>
+  <div
+    aria-label="Job actions dropdown"
+    aria-labelledby="Job actions dropdown"
+    class="pf-c-dropdown pf-m-align-right"
+    data-ouia-component-id="OUIA-Generated-Dropdown-3"
+    data-ouia-component-type="PF4/Dropdown"
+    data-ouia-safe="true"
+  >
+    <button
+      aria-expanded="false"
+      aria-haspopup="true"
+      aria-label="Actions"
+      class="pf-c-dropdown__toggle pf-m-plain"
+      id="kebab-toggle"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 192 512"
+        width="1em"
+      >
+        <path
+          d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`job actions kebab tests test reschedule option 1`] = `
+<div>
+  <div
+    aria-label="Job actions dropdown"
+    aria-labelledby="Job actions dropdown"
+    class="pf-c-dropdown pf-m-align-right"
+    data-ouia-component-id="OUIA-Generated-Dropdown-2"
+    data-ouia-component-type="PF4/Dropdown"
+    data-ouia-safe="true"
+  >
+    <button
+      aria-expanded="false"
+      aria-haspopup="true"
+      aria-label="Actions"
+      class="pf-c-dropdown__toggle pf-m-plain"
+      id="kebab-toggle"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 192 512"
+        width="1em"
+      >
+        <path
+          d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
 `;

@@ -1,172 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Form Footer test showing actions 1`] = `
-<FormFooter
-  actions={
-    Array [
-      Object {
-        "execute": [MockFunction],
-        "name": "Abort",
-      },
-      Object {
-        "execute": [MockFunction],
-        "name": "Release",
-      },
-      Object {
-        "execute": [MockFunction],
-        "name": "Complete",
-      },
-    ]
-  }
->
+<div>
   <div
-    className="kogito-components-common__form-footer-padding-top"
+    class="kogito-components-common__form-footer-padding-top"
     data-ouia-component-type="form-footer"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
   >
-    <ActionList>
+    <div
+      class="pf-c-action-list"
+      data-testid="action-list"
+    >
       <div
-        className="pf-c-action-list"
-      >
-        <ActionListItem
-          key="form-action-0"
-        >
-          <div
-            className="pf-c-action-list__item"
-          >
-            <Button
-              isDisabled={false}
-              key="submit-Complete"
-              onClick={[Function]}
-              type="submit"
-              variant="primary"
-            >
-              <MockedComponent />
-            </Button>
-          </div>
-        </ActionListItem>
-        <ActionListItem
-          key="form-action-1"
-        >
-          <div
-            className="pf-c-action-list__item"
-          >
-            <Button
-              isDisabled={false}
-              key="submit-Abort"
-              onClick={[Function]}
-              type="submit"
-              variant="secondary"
-            >
-              <MockedComponent />
-            </Button>
-          </div>
-        </ActionListItem>
-        <ActionListItem
-          key="form-action-2"
-        >
-          <div
-            className="pf-c-action-list__item"
-          >
-            <Button
-              isDisabled={false}
-              key="submit-Release"
-              onClick={[Function]}
-              type="submit"
-              variant="secondary"
-            >
-              <MockedComponent />
-            </Button>
-          </div>
-        </ActionListItem>
-      </div>
-    </ActionList>
+        class="pf-c-action-list__item"
+        data-testid="action-list-item"
+      />
+      <div
+        class="pf-c-action-list__item"
+        data-testid="action-list-item"
+      />
+      <div
+        class="pf-c-action-list__item"
+        data-testid="action-list-item"
+      />
+    </div>
   </div>
-</FormFooter>
+</div>
 `;
 
 exports[`Form Footer test showing disabled 1`] = `
-<FormFooter
-  actions={
-    Array [
-      Object {
-        "execute": [MockFunction],
-        "name": "Abort",
-      },
-      Object {
-        "execute": [MockFunction],
-        "name": "Release",
-      },
-      Object {
-        "execute": [MockFunction],
-        "name": "Complete",
-      },
-    ]
-  }
-  enabled={false}
->
+<div>
   <div
-    className="kogito-components-common__form-footer-padding-top"
+    class="kogito-components-common__form-footer-padding-top"
     data-ouia-component-type="form-footer"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
   >
-    <ActionList>
+    <div
+      class="pf-c-action-list"
+      data-testid="action-list"
+    >
       <div
-        className="pf-c-action-list"
-      >
-        <ActionListItem
-          key="form-action-0"
-        >
-          <div
-            className="pf-c-action-list__item"
-          >
-            <Button
-              isDisabled={true}
-              key="submit-Complete"
-              onClick={[Function]}
-              type="submit"
-              variant="primary"
-            >
-              <MockedComponent />
-            </Button>
-          </div>
-        </ActionListItem>
-        <ActionListItem
-          key="form-action-1"
-        >
-          <div
-            className="pf-c-action-list__item"
-          >
-            <Button
-              isDisabled={true}
-              key="submit-Abort"
-              onClick={[Function]}
-              type="submit"
-              variant="secondary"
-            >
-              <MockedComponent />
-            </Button>
-          </div>
-        </ActionListItem>
-        <ActionListItem
-          key="form-action-2"
-        >
-          <div
-            className="pf-c-action-list__item"
-          >
-            <Button
-              isDisabled={true}
-              key="submit-Release"
-              onClick={[Function]}
-              type="submit"
-              variant="secondary"
-            >
-              <MockedComponent />
-            </Button>
-          </div>
-        </ActionListItem>
-      </div>
-    </ActionList>
+        class="pf-c-action-list__item"
+        data-testid="action-list-item"
+      />
+      <div
+        class="pf-c-action-list__item"
+        data-testid="action-list-item"
+      />
+      <div
+        class="pf-c-action-list__item"
+        data-testid="action-list-item"
+      />
+    </div>
   </div>
-</FormFooter>
+</div>
 `;

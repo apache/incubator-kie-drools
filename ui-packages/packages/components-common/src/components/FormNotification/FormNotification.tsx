@@ -55,10 +55,14 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({
       isInline
       title={notification.message}
       variant={variant}
+      data-testid={'alert-box'}
       actionLinks={
         <React.Fragment>
           {notification.details && (
-            <AlertActionLink onClick={() => setShowDetails(!showDetails)}>
+            <AlertActionLink
+              onClick={() => setShowDetails(!showDetails)}
+              data-testid="view-details"
+            >
               View details
             </AlertActionLink>
           )}
@@ -66,14 +70,23 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({
             notification.customActions.length > 0 &&
             notification.customActions.map((customAction, index) => {
               return (
-                <AlertActionLink onClick={customAction.onClick} key={index}>
+                <AlertActionLink
+                  onClick={customAction.onClick}
+                  key={index}
+                  data-testid="custom-action"
+                >
                   {customAction.label}
                 </AlertActionLink>
               );
             })}
         </React.Fragment>
       }
-      actionClose={<AlertActionCloseButton onClose={notification.close} />}
+      actionClose={
+        <AlertActionCloseButton
+          onClose={notification.close}
+          data-testid={'close-button'}
+        />
+      }
       {...componentOuiaProps(ouiaId, 'form-notification-alert', ouiaSafe)}
     >
       {showDetails && notification.details && <p>{notification.details}</p>}

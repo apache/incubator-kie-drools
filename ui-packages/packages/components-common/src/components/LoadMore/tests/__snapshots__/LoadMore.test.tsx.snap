@@ -1,158 +1,168 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LoadMore component tests with isLoading false simulate loading state in button 1`] = `
-<DropdownToggleAction
-  className=""
-  isDisabled={false}
-  key="toggle-id-load-more-ouia-id"
-  onClick={[Function]}
->
-  <button
-    className="pf-c-dropdown__toggle-button"
-    onClick={[Function]}
+<div>
+  <ul
+    aria-label="Simple data list example"
+    class="pf-c-data-list pf-m-grid-md"
+    data-ouia-component-id="load-more-ouia-id"
+    data-ouia-component-type="load-more"
+    data-ouia-safe="true"
+    data-testid="load-more-data-list"
   >
-    Loading...
-    <Spinner
-      className="kogito-components-common__load-more-spinner"
-      size="md"
+    <li
+      aria-labelledby="kie-datalist-item"
+      class="pf-c-data-list__item"
+      id=""
     >
-      <span
-        aria-label="Contents"
-        aria-valuetext="Loading..."
-        className="pf-c-spinner pf-m-md kogito-components-common__load-more-spinner"
-        role="progressbar"
+      <div
+        class="pf-c-data-list__cell kogito-components-common__load-more"
+        rowid="kie-datalist-item"
       >
-        <span
-          className="pf-c-spinner__clipper"
-        />
-        <span
-          className="pf-c-spinner__lead-ball"
-        />
-        <span
-          className="pf-c-spinner__tail-ball"
-        />
-      </span>
-    </Spinner>
-     
-  </button>
-</DropdownToggleAction>
+        <div
+          class="pf-u-float-right pf-u-mr-md"
+        >
+          <div
+            class="pf-c-dropdown pf-m-top"
+            data-ouia-component-id="OUIA-Generated-Dropdown-4"
+            data-ouia-component-type="PF4/Dropdown"
+            data-ouia-safe="true"
+          >
+            <div
+              class="pf-c-dropdown__toggle pf-m-split-button"
+            >
+              <button
+                class="pf-c-dropdown__toggle-button"
+                data-testid="toggle-action"
+              >
+                Loading...
+                <span
+                  aria-label="Contents"
+                  aria-valuetext="Loading..."
+                  class="pf-c-spinner pf-m-md kogito-components-common__load-more-spinner"
+                  role="progressbar"
+                >
+                  <span
+                    class="pf-c-spinner__clipper"
+                  />
+                  <span
+                    class="pf-c-spinner__lead-ball"
+                  />
+                  <span
+                    class="pf-c-spinner__tail-ball"
+                  />
+                </span>
+                 
+              </button>
+              <button
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-label="Select"
+                class="pf-c-dropdown__toggle-button"
+                data-ouia-component-id="OUIA-Generated-DropdownToggle-4"
+                data-ouia-component-type="PF4/DropdownToggle"
+                data-ouia-safe="true"
+                data-testid="toggle-id"
+                id="pf-dropdown-toggle-id-7"
+                type="button"
+              >
+                <span
+                  class=""
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 320 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
 `;
 
 exports[`LoadMore component tests with isLoading false snapshot testing 1`] = `
-<DataList
+<ul
   aria-label="Simple data list example"
-  className=""
+  class="pf-c-data-list pf-m-grid-md"
   data-ouia-component-id="load-more-ouia-id"
   data-ouia-component-type="load-more"
-  data-ouia-safe={true}
-  gridBreakpoint="md"
-  isCompact={false}
-  selectedDataListItemId=""
-  wrapModifier={null}
+  data-ouia-safe="true"
+  data-testid="load-more-data-list"
 >
-  <DataListItem
+  <li
     aria-labelledby="kie-datalist-item"
-    className=""
+    class="pf-c-data-list__item"
     id=""
-    isExpanded={false}
   >
-    <DataListCell
-      className="kogito-components-common__load-more"
+    <div
+      class="pf-c-data-list__cell kogito-components-common__load-more"
+      rowid="kie-datalist-item"
     >
       <div
-        className="pf-u-float-right pf-u-mr-md"
+        class="pf-u-float-right pf-u-mr-md"
       >
-        <Dropdown
-          direction="up"
-          dropdownItems={
-            Array [
-              <DropdownItem
-                component="button"
-                id="10"
+        <div
+          class="pf-c-dropdown pf-m-top"
+          data-ouia-component-id="OUIA-Generated-Dropdown-1"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+        >
+          <div
+            class="pf-c-dropdown__toggle pf-m-split-button"
+          >
+            <button
+              class="pf-c-dropdown__toggle-button"
+              data-testid="toggle-action"
+            >
+              Load 10 more
+            </button>
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-label="Select"
+              class="pf-c-dropdown__toggle-button"
+              data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
+              data-ouia-component-type="PF4/DropdownToggle"
+              data-ouia-safe="true"
+              data-testid="toggle-id"
+              id="pf-dropdown-toggle-id-0"
+              type="button"
+            >
+              <span
+                class=""
               >
-                <Split
-                  hasGutter={true}
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 320 512"
+                  width="1em"
                 >
-                  <SplitItem>
-                    Load 
-                    10
-                     more
-                  </SplitItem>
-                  <SplitItem>
-                    <CheckIcon
-                      color="var(--pf-global--info-color--100)"
-                      noVerticalAlign={false}
-                      size="sm"
-                    />
-                  </SplitItem>
-                </Split>
-              </DropdownItem>,
-              <DropdownItem
-                component="button"
-                id="20"
-              >
-                <Split
-                  hasGutter={true}
-                >
-                  <SplitItem>
-                    Load 
-                    20
-                     more
-                  </SplitItem>
-                </Split>
-              </DropdownItem>,
-              <DropdownItem
-                component="button"
-                id="50"
-              >
-                <Split
-                  hasGutter={true}
-                >
-                  <SplitItem>
-                    Load 
-                    50
-                     more
-                  </SplitItem>
-                </Split>
-              </DropdownItem>,
-              <DropdownItem
-                component="button"
-                id="100"
-              >
-                <Split
-                  hasGutter={true}
-                >
-                  <SplitItem>
-                    Load 
-                    100
-                     more
-                  </SplitItem>
-                </Split>
-              </DropdownItem>,
-            ]
-          }
-          isOpen={false}
-          onSelect={[Function]}
-          toggle={
-            <DropdownToggle
-              id="toggle-id"
-              onToggle={[Function]}
-              splitButtonItems={
-                Array [
-                  <DropdownToggleAction
-                    className=""
-                    isDisabled={false}
-                    onClick={[Function]}
-                  >
-                    Load 10 more
-                  </DropdownToggleAction>,
-                ]
-              }
-            />
-          }
-        />
+                  <path
+                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
-    </DataListCell>
-  </DataListItem>
-</DataList>
+    </div>
+  </li>
+</ul>
 `;

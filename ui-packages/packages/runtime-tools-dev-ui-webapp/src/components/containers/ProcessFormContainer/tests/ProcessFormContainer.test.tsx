@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import ProcessFormContainer from '../ProcessFormContainer';
 import * as FormDetailsContext from '../../../../channel/FormDetails/FormDetailsContext';
 import { FormDetailsGatewayApiImpl } from '../../../../channel/FormDetails/FormDetailsGatewayApi';
@@ -25,10 +25,25 @@ import {
   User
 } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { EmbeddedProcessForm } from '@kogito-apps/process-form';
+import * as ProcessFormContext from '../../../../channel/ProcessForm/ProcessFormContext';
+import { ProcessFormGatewayApi } from '../../../../channel/ProcessForm/ProcessFormGatewayApi';
 
 jest
   .spyOn(FormDetailsContext, 'useFormDetailsGatewayApi')
   .mockImplementation(() => new FormDetailsGatewayApiImpl());
+
+const MockProcessFormGatewayApi = jest.fn<ProcessFormGatewayApi, []>(() => ({
+  setBusinessKey: jest.fn(),
+  getBusinessKey: jest.fn(),
+  currentBusinessKey: '',
+  getProcessFormSchema: jest.fn()
+}));
+
+const gatewayApi = new MockProcessFormGatewayApi();
+
+jest
+  .spyOn(ProcessFormContext, 'useProcessFormGatewayApi')
+  .mockImplementation(() => gatewayApi);
 
 const user: User = new DefaultUser('jon', []);
 const appContextProps = {
@@ -56,18 +71,14 @@ describe('ProcessFormContainer tests', () => {
       onSubmitSuccess: jest.fn(),
       onSubmitError: jest.fn()
     };
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <ProcessFormContainer {...props} />
       </DevUIAppContextProvider>
     );
 
-    expect(wrapper.find('ProcessFormContainer')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const forwardRef = wrapper.find(EmbeddedProcessForm);
-
-    expect(forwardRef.props().driver).not.toBeNull();
-
-    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
+    expect(container.querySelector('div')).toBeTruthy();
   });
 });

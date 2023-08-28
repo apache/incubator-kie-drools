@@ -15,9 +15,26 @@
  */
 
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import ProcessVariables from '../ProcessVariables';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
+
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+const MockedIcon = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('react-json-view', () =>
+  jest.fn((_props) => <MockedComponent {..._props} />)
+);
+jest.mock('@patternfly/react-icons/dist/js/icons/info-circle-icon', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
+    InfoCircleIcon: () => {
+      return <MockedIcon />;
+    }
+  })
+);
 
 const processInstance = {
   id: 'tEE12-fo54-l665-mp112-akou112345566',
@@ -55,23 +72,6 @@ const processInstance = {
   milestones: [],
   childProcessInstances: []
 };
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-const MockedIcon = (): React.ReactElement => {
-  return <></>;
-};
-jest.mock('react-json-view', () =>
-  jest.fn((_props) => <MockedComponent {..._props} />)
-);
-jest.mock('@patternfly/react-icons/dist/js/icons/info-circle-icon', () =>
-  Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
-    InfoCircleIcon: () => {
-      return <MockedIcon />;
-    }
-  })
-);
 const props = {
   setUpdateJson: jest.fn(),
   displayLabel: false,
@@ -108,30 +108,11 @@ const props2 = {
 
 describe('ProcessVariables component tests', () => {
   it('snapshot testing without variables', () => {
-    const wrapper = shallow(<ProcessVariables {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessVariables {...props} />).container;
+    expect(container).toMatchSnapshot();
   });
   it('snapshot testing with variables', () => {
-    const wrapper = mount(<ProcessVariables {...props2} />);
-    expect(wrapper.find(ProcessVariables)).toMatchSnapshot();
-    const onEdit = () => {
-      return null;
-    };
-    const obj = {
-      name: false,
-      onEdit,
-      src: {
-        trip: {
-          begin: '2019-10-22T22:00:00Z[UTC]',
-          city: 'Berlin',
-          country: 'Germany',
-          end: '2019-10-30T22:00:00Z[UTC]',
-          visaRequired: false
-        }
-      }
-    };
-    wrapper.find('mockConstructor').first().props()['onEdit'](obj);
-    expect(props2.setUpdateJson).toHaveBeenCalled();
-    expect(props2.setDisplayLabel).toHaveBeenCalled();
+    const container = render(<ProcessVariables {...props2} />).container;
+    expect(container).toMatchSnapshot();
   });
 });

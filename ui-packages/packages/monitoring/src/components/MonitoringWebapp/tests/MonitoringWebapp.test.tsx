@@ -15,22 +15,22 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import MonitoringWebapp from '../MonitoringWebapp';
 
 describe('Monitoring Webapp Tests', () => {
   it('Snapshot - Monitoring Webapp', async () => {
-    const wrapper = mount(<MonitoringWebapp></MonitoringWebapp>);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<MonitoringWebapp></MonitoringWebapp>).container;
+    expect(container).toMatchSnapshot();
   });
   it('Snapshot - Monitoring Webapp with parameters', async () => {
-    const wrapper = mount(
+    const container = render(
       <MonitoringWebapp
         dataIndexUrl="http://localhost:8180"
         dashboard="someDashboard.yml"
         workflow="test123"
       ></MonitoringWebapp>
-    );
-    expect(wrapper).toMatchSnapshot();
+    ).container;
+    expect(container).toMatchSnapshot();
   });
 });

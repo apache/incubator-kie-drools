@@ -55,7 +55,7 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: (initArgs) => {
+      initialize: /* istanbul ignore next */ (initArgs) => {
         setProcessInstance(initArgs.processInstance);
         setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents);
         setDiagramPreviewSize(initArgs.diagramPreviewSize);

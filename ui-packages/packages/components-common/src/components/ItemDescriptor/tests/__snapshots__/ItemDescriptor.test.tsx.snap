@@ -1,52 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ItemDescriptor component tests snapshot testing for business key available 1`] = `
-<Fragment>
-  <Tooltip
-    appendTo={[Function]}
-    content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
-    data-ouia-component-type="item-descriptor"
-    data-ouia-safe={true}
-  >
-    <span>
-      HotelBooking
-       
-      <Badge>
-        T1234HotelBooking01
-      </Badge>
+<div>
+  <span>
+    HotelBooking
+     
+    <span
+      class="pf-c-badge pf-m-unread"
+    >
+      T1234HotelBooking01
     </span>
-  </Tooltip>
+  </span>
   <div
     id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a-0.5"
   />
-</Fragment>
+</div>
 `;
 
 exports[`ItemDescriptor component tests snapshot testing for business key null 1`] = `
-<Fragment>
-  <Tooltip
-    appendTo={[Function]}
-    content="a1e139d5-4e77-48c9-84ae-34578e904e5a"
-    data-ouia-component-type="item-descriptor"
-    data-ouia-safe={true}
-  >
-    <span>
-      HotelBooking
-       
-      <TextContent
-        className="pf-u-display-inline"
+<div>
+  <span>
+    HotelBooking
+     
+    <div
+      class="pf-c-content pf-u-display-inline"
+    >
+      <small
+        class="pf-u-display-inline"
+        data-ouia-component-id="OUIA-Generated-Text-1"
+        data-ouia-component-type="PF4/Text"
+        data-ouia-safe="true"
+        data-pf-content="true"
       >
-        <Text
-          className="pf-u-display-inline"
-          component="small"
-        >
-          a1e13
-        </Text>
-      </TextContent>
-    </span>
-  </Tooltip>
+        a1e13
+      </small>
+    </div>
+  </span>
   <div
     id="kogito-consoles-tooltip-a1e139d5-4e77-48c9-84ae-34578e904e5a-0.5"
   />
-</Fragment>
+</div>
 `;

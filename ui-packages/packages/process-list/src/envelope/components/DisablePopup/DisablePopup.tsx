@@ -55,6 +55,7 @@ const DisablePopup: React.FC<DisablePopupProps & OUIAProps> = ({
   return (
     <Tooltip
       content={content}
+      id="disable-popup-tooltip"
       {...componentOuiaProps(ouiaId, 'disable-popup', ouiaSafe)}
     >
       {component}

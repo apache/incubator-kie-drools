@@ -16,20 +16,12 @@
 
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
-import {
-  componentOuiaProps,
-  OUIAProps
-} from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   ReactSvgPanZoomLoader,
   SvgLoaderSelectElement
 } from 'react-svg-pan-zoom-loader';
-import {
-  Card,
-  CardHeader,
-  CardBody
-} from '@patternfly/react-core/dist/js/components/Card';
-import { Title } from '@patternfly/react-core/dist/js/components/Title';
+import { Title, Card, CardHeader, CardBody } from '@patternfly/react-core';
 
 interface SvgType {
   src: string;

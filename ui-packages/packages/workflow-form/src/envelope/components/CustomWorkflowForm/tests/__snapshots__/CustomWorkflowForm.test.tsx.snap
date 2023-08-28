@@ -1,333 +1,382 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CustomWorkflowForm Test Custom Workflow Form - loading 1`] = `
-<CustomWorkflowForm
-  customFormSchema={
-    Object {
-      "description": "Schema for expression test",
-      "properties": Object {
-        "numbers": Object {
-          "description": "The array of numbers to be operated with",
-          "items": Object {
-            "properties": Object {
-              "x": Object {
-                "type": "number",
-              },
-              "y": Object {
-                "type": "number",
-              },
-            },
-            "type": "object",
-          },
-          "type": "array",
-        },
-      },
-      "required": Array [
-        "numbers",
-      ],
-      "title": "Expression",
-      "type": "object",
-    }
-  }
-  driver={
-    Object {
-      "getCustomWorkflowSchema": [MockFunction],
-      "resetBusinessKey": [MockFunction],
-      "startWorkflow": [MockFunction] {
-        "calls": Array [
-          Array [
-            "http://localhost:4000/hiring",
-            undefined,
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": Promise {},
-          },
-        ],
-      },
-    }
-  }
-  workflowDefinition={
-    Object {
-      "endpoint": "http://localhost:4000/hiring",
-      "workflowName": "workflow1",
-    }
-  }
->
-  <Bullseye>
+<div>
+  <div
+    class="pf-l-bullseye"
+  >
     <div
-      className="pf-l-bullseye"
+      class="pf-c-empty-state"
+      data-ouia-component-id="custom-workflow-form-loading"
+      data-ouia-component-type="kogito-spinner"
+      data-ouia-safe="true"
     >
-      <KogitoSpinner
-        ouiaId="custom-workflow-form-loading"
-        spinnerText="Starting workflow..."
+      <div
+        class="pf-c-empty-state__content"
       >
-        <EmptyState
-          data-ouia-component-id="custom-workflow-form-loading"
-          data-ouia-component-type="kogito-spinner"
-          data-ouia-safe={true}
+        <div
+          class="pf-c-empty-state__icon"
         >
-          <div
-            className="pf-c-empty-state"
-            data-ouia-component-id="custom-workflow-form-loading"
-            data-ouia-component-type="kogito-spinner"
-            data-ouia-safe={true}
+          <span
+            aria-label="Contents"
+            aria-valuetext="Loading..."
+            class="pf-c-spinner pf-m-xl"
+            role="progressbar"
           >
-            <div
-              className="pf-c-empty-state__content"
-            >
-              <EmptyStateIcon
-                component={[Function]}
-                variant="container"
-              >
-                <div
-                  className="pf-c-empty-state__icon"
-                >
-                  <Spinner>
-                    <span
-                      aria-label="Contents"
-                      aria-valuetext="Loading..."
-                      className="pf-c-spinner pf-m-xl"
-                      role="progressbar"
-                    >
-                      <span
-                        className="pf-c-spinner__clipper"
-                      />
-                      <span
-                        className="pf-c-spinner__lead-ball"
-                      />
-                      <span
-                        className="pf-c-spinner__tail-ball"
-                      />
-                    </span>
-                  </Spinner>
-                </div>
-              </EmptyStateIcon>
-              <Title
-                headingLevel="h3"
-                size="lg"
-              >
-                <h3
-                  className="pf-c-title pf-m-lg"
-                  data-ouia-component-id="OUIA-Generated-Title-2"
-                  data-ouia-component-type="PF4/Title"
-                  data-ouia-safe={true}
-                >
-                  Starting workflow...
-                </h3>
-              </Title>
-            </div>
-          </div>
-        </EmptyState>
-      </KogitoSpinner>
+            <span
+              class="pf-c-spinner__clipper"
+            />
+            <span
+              class="pf-c-spinner__lead-ball"
+            />
+            <span
+              class="pf-c-spinner__tail-ball"
+            />
+          </span>
+        </div>
+        <h3
+          class="pf-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-2"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
+        >
+          Starting workflow...
+        </h3>
+      </div>
     </div>
-  </Bullseye>
-</CustomWorkflowForm>
+  </div>
+</div>
 `;
 
 exports[`CustomWorkflowForm Test Custom Workflow Form - loading 2`] = `
-<CustomWorkflowForm
-  customFormSchema={
-    Object {
-      "description": "Schema for expression test",
-      "properties": Object {
-        "numbers": Object {
-          "description": "The array of numbers to be operated with",
-          "items": Object {
-            "properties": Object {
-              "x": Object {
-                "type": "number",
-              },
-              "y": Object {
-                "type": "number",
-              },
-            },
-            "type": "object",
-          },
-          "type": "array",
-        },
-      },
-      "required": Array [
-        "numbers",
-      ],
-      "title": "Expression",
-      "type": "object",
-    }
-  }
-  driver={
-    Object {
-      "getCustomWorkflowSchema": [MockFunction],
-      "resetBusinessKey": [MockFunction],
-      "startWorkflow": [MockFunction] {
-        "calls": Array [
-          Array [
-            "http://localhost:4000/hiring",
-            undefined,
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": Promise {},
-          },
-        ],
-      },
-    }
-  }
-  workflowDefinition={
-    Object {
-      "endpoint": "http://localhost:4000/hiring",
-      "workflowName": "workflow1",
-    }
-  }
->
+<div>
   <div
     data-ouia-component-type="custom-workflow-form"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
   >
-    <FormRenderer
-      formActions={
-        Array [
-          Object {
-            "name": "Start",
-          },
-          Object {
-            "actionType": "reset",
-            "execute": [Function],
-            "name": "Reset",
-          },
-        ]
-      }
-      formSchema={
-        Object {
-          "description": "Schema for expression test",
-          "properties": Object {
-            "numbers": Object {
-              "description": "The array of numbers to be operated with",
-              "items": Object {
-                "properties": Object {
-                  "x": Object {
-                    "type": "number",
-                  },
-                  "y": Object {
-                    "type": "number",
-                  },
-                },
-                "type": "object",
-              },
-              "type": "array",
-            },
-          },
-          "required": Array [
-            "numbers",
-          ],
-          "title": "Expression",
-          "type": "object",
-        }
-      }
-      onSubmit={[Function]}
-      readOnly={false}
+    <form
+      class="pf-c-form"
+      data-ouia-component-type="form-renderer"
+      data-ouia-safe="true"
+      novalidate=""
     >
-      <MockedComponent />
-    </FormRenderer>
+      <div>
+        <div
+          description="The array of numbers to be operated with"
+          id="uniforms-0004-0001"
+          items="[object Object]"
+          required=""
+        >
+          <div
+            class="pf-l-split pf-m-gutter"
+          >
+            <div
+              class="pf-l-split__item"
+            >
+              <label>
+                Numbers
+              </label>
+            </div>
+            <div
+              class="pf-l-split__item pf-m-fill"
+            />
+            <div
+              class="pf-l-split__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-6"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                id="uniforms-0004-0002"
+                properties="[object Object]"
+                style="padding-left: 0px; padding-right: 0px;"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="#0088ce"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div />
+        </div>
+      </div>
+    </form>
+    <div
+      class="kogito-components-common__form-footer-padding-top"
+      data-ouia-component-type="form-footer"
+      data-ouia-safe="true"
+    >
+      <div
+        class="pf-c-action-list"
+        data-testid="action-list"
+      >
+        <div
+          class="pf-c-action-list__item"
+          data-testid="action-list-item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-primary"
+            data-ouia-component-id="OUIA-Generated-Button-primary-5"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="submit"
+          >
+            Start
+          </button>
+        </div>
+        <div
+          class="pf-c-action-list__item"
+          data-testid="action-list-item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-5"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="reset"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-</CustomWorkflowForm>
+</div>
 `;
 
 exports[`CustomWorkflowForm Test Custom Workflow Form rendering 1`] = `
-<CustomWorkflowForm
-  customFormSchema={
-    Object {
-      "description": "Schema for expression test",
-      "properties": Object {
-        "numbers": Object {
-          "description": "The array of numbers to be operated with",
-          "items": Object {
-            "properties": Object {
-              "x": Object {
-                "type": "number",
-              },
-              "y": Object {
-                "type": "number",
-              },
-            },
-            "type": "object",
-          },
-          "type": "array",
-        },
-      },
-      "required": Array [
-        "numbers",
-      ],
-      "title": "Expression",
-      "type": "object",
-    }
-  }
-  driver={
-    Object {
-      "getCustomWorkflowSchema": [MockFunction],
-      "resetBusinessKey": [MockFunction],
-      "startWorkflow": [MockFunction],
-    }
-  }
-  workflowDefinition={
-    Object {
-      "endpoint": "http://localhost:4000/hiring",
-      "workflowName": "workflow1",
-    }
-  }
->
+<div>
   <div
     data-ouia-component-type="custom-workflow-form"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
   >
-    <FormRenderer
-      formActions={
-        Array [
-          Object {
-            "name": "Start",
-          },
-          Object {
-            "actionType": "reset",
-            "execute": [Function],
-            "name": "Reset",
-          },
-        ]
-      }
-      formSchema={
-        Object {
-          "description": "Schema for expression test",
-          "properties": Object {
-            "numbers": Object {
-              "description": "The array of numbers to be operated with",
-              "items": Object {
-                "properties": Object {
-                  "x": Object {
-                    "type": "number",
-                  },
-                  "y": Object {
-                    "type": "number",
-                  },
-                },
-                "type": "object",
-              },
-              "type": "array",
-            },
-          },
-          "required": Array [
-            "numbers",
-          ],
-          "title": "Expression",
-          "type": "object",
-        }
-      }
-      onSubmit={[Function]}
-      readOnly={false}
+    <form
+      class="pf-c-form"
+      data-ouia-component-type="form-renderer"
+      data-ouia-safe="true"
+      novalidate=""
     >
-      <MockedComponent />
-    </FormRenderer>
+      <div>
+        <div
+          description="The array of numbers to be operated with"
+          id="uniforms-0000-0001"
+          items="[object Object]"
+          required=""
+        >
+          <div
+            class="pf-l-split pf-m-gutter"
+          >
+            <div
+              class="pf-l-split__item"
+            >
+              <label>
+                Numbers
+              </label>
+            </div>
+            <div
+              class="pf-l-split__item pf-m-fill"
+            />
+            <div
+              class="pf-l-split__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                id="uniforms-0000-0002"
+                properties="[object Object]"
+                style="padding-left: 0px; padding-right: 0px;"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="#0088ce"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div />
+        </div>
+      </div>
+    </form>
+    <div
+      class="kogito-components-common__form-footer-padding-top"
+      data-ouia-component-type="form-footer"
+      data-ouia-safe="true"
+    >
+      <div
+        class="pf-c-action-list"
+        data-testid="action-list"
+      >
+        <div
+          class="pf-c-action-list__item"
+          data-testid="action-list-item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-primary"
+            data-ouia-component-id="OUIA-Generated-Button-primary-1"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="submit"
+          >
+            Start
+          </button>
+        </div>
+        <div
+          class="pf-c-action-list__item"
+          data-testid="action-list-item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="reset"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-</CustomWorkflowForm>
+</div>
+`;
+
+exports[`CustomWorkflowForm Test Custom Workflow Form with reset 1`] = `
+<div>
+  <div
+    data-ouia-component-type="custom-workflow-form"
+    data-ouia-safe="true"
+  >
+    <form
+      class="pf-c-form"
+      data-ouia-component-type="form-renderer"
+      data-ouia-safe="true"
+      novalidate=""
+    >
+      <div>
+        <div
+          description="The array of numbers to be operated with"
+          id="uniforms-0002-0001"
+          items="[object Object]"
+          required=""
+        >
+          <div
+            class="pf-l-split pf-m-gutter"
+          >
+            <div
+              class="pf-l-split__item"
+            >
+              <label>
+                Numbers
+              </label>
+            </div>
+            <div
+              class="pf-l-split__item pf-m-fill"
+            />
+            <div
+              class="pf-l-split__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                id="uniforms-0002-0002"
+                properties="[object Object]"
+                style="padding-left: 0px; padding-right: 0px;"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="#0088ce"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div />
+        </div>
+      </div>
+    </form>
+    <div
+      class="kogito-components-common__form-footer-padding-top"
+      data-ouia-component-type="form-footer"
+      data-ouia-safe="true"
+    >
+      <div
+        class="pf-c-action-list"
+        data-testid="action-list"
+      >
+        <div
+          class="pf-c-action-list__item"
+          data-testid="action-list-item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-primary"
+            data-ouia-component-id="OUIA-Generated-Button-primary-3"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="submit"
+          >
+            Start
+          </button>
+        </div>
+        <div
+          class="pf-c-action-list__item"
+          data-testid="action-list-item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="OUIA-Generated-Button-secondary-3"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="reset"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 `;

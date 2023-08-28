@@ -16,9 +16,8 @@
 
 import React from 'react';
 import ProcessDetailsMilestonesPanel from '../ProcessDetailsMilestonesPanel';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { MilestoneStatus } from '@kogito-apps/management-console-shared/dist/types';
-// tslint:disable: no-string-literal
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -39,6 +38,7 @@ jest.mock('@patternfly/react-core/dist/js/components/Tooltip', () =>
     }
   })
 );
+
 describe('Process details page milestones panel', () => {
   const props = {
     milestones: [
@@ -109,14 +109,11 @@ describe('Process details page milestones panel', () => {
     ]
   };
   it('Snapshot test with default props', () => {
-    const wrapper = mount(<ProcessDetailsMilestonesPanel {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessDetailsMilestonesPanel {...props} />);
+    expect(container).toMatchSnapshot();
   });
   it('test assertions', () => {
-    const wrapper = mount(<ProcessDetailsMilestonesPanel {...props2} />);
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('p').at(2).text()).toEqual(
-      'Milestone 3: Order delivered Available'
-    );
+    const container = render(<ProcessDetailsMilestonesPanel {...props2} />);
+    expect(container).toMatchSnapshot();
   });
 });

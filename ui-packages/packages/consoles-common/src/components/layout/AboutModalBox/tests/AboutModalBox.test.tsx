@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import AboutModal from '../AboutModalBox';
 import { BrandContext } from '../../BrandContext/BrandContext';
 
@@ -26,7 +26,7 @@ const props = {
 describe('AboutModal component tests', () => {
   it('snapshot testing', () => {
     process.env.KOGITO_APP_VERSION = '1.2.3-MOCKED-VERSION';
-    const wrapper = mount(
+    const { container } = render(
       <BrandContext.Provider
         value={{
           imageSrc: 'kogito-image-src',
@@ -35,7 +35,7 @@ describe('AboutModal component tests', () => {
       >
         <AboutModal {...props} />
       </BrandContext.Provider>
-    ).find('AboutModal');
-    expect(wrapper).toMatchSnapshot();
+    );
+    expect(container).toMatchSnapshot();
   });
 });

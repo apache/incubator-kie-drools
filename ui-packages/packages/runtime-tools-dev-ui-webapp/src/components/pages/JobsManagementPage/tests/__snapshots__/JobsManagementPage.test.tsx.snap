@@ -1,111 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`WebApp - JobsManagementPage tests Snapshot test with default values 1`] = `
-<JobsManagementPage>
-  <PageSectionHeader
-    titleText="Jobs Management"
+<div>
+  <section
+    class="pf-c-page__main-section pf-m-light"
+    data-ouia-component-type="page-section-header"
+    data-ouia-safe="true"
   >
-    <PageSection
-      data-ouia-component-type="page-section-header"
-      data-ouia-safe={true}
-      variant="light"
+    <div
+      class="pf-l-flex"
+      data-ouia-component-type="page-title"
+      data-ouia-safe="true"
     >
-      <section
-        className="pf-c-page__main-section pf-m-light"
-        data-ouia-component-type="page-section-header"
-        data-ouia-safe={true}
+      <div
+        class="pf-m-spacer-sm"
       >
-        <PageTitle
-          title="Jobs Management"
+        <h1
+          class="pf-c-title pf-m-4xl"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
         >
-          <Flex
-            data-ouia-component-type="page-title"
-            data-ouia-safe={true}
-          >
-            <div
-              className="pf-l-flex"
-              data-ouia-component-type="page-title"
-              data-ouia-safe={true}
-            >
-              <FlexItem
-                spacer={
-                  Object {
-                    "default": "spacerSm",
-                  }
-                }
-              >
-                <div
-                  className="pf-m-spacer-sm"
-                >
-                  <Title
-                    headingLevel="h1"
-                    size="4xl"
-                  >
-                    <h1
-                      className="pf-c-title pf-m-4xl"
-                      data-ouia-component-id="OUIA-Generated-Title-1"
-                      data-ouia-component-type="PF4/Title"
-                      data-ouia-safe={true}
-                    >
-                      Jobs Management
-                    </h1>
-                  </Title>
-                </div>
-              </FlexItem>
-            </div>
-          </Flex>
-        </PageTitle>
-      </section>
-    </PageSection>
-  </PageSectionHeader>
-  <PageSection
+          Jobs Management
+        </h1>
+      </div>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section"
     data-ouia-component-type="jobs-management-page-section"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
   >
-    <section
-      className="pf-c-page__main-section"
-      data-ouia-component-type="jobs-management-page-section"
-      data-ouia-safe={true}
+    <article
+      class="pf-c-card Dev-ui__card-size"
+      data-ouia-component-id="OUIA-Generated-Card-1"
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe="true"
+      id=""
     >
-      <Card
-        className="Dev-ui__card-size"
-      >
-        <article
-          className="pf-c-card Dev-ui__card-size"
-          data-ouia-component-id="OUIA-Generated-Card-1"
-          data-ouia-component-type="PF4/Card"
-          data-ouia-safe={true}
-          id=""
-        >
-          <JobsManagementContainer>
-            <ForwardRef
-              data-ouia-component-type="jobs-management-container"
-              data-ouia-safe={true}
-              driver={null}
-              targetOrigin="http://localhost:9000"
-            >
-              <ForwardRef(RefForwardingEmbeddedEnvelope)
-                apiImpl={
-                  JobsManagementChannelApiImpl {
-                    "driver": null,
-                  }
-                }
-                config={
-                  Object {
-                    "containerType": "div",
-                  }
-                }
-                origin="http://localhost:9000"
-                pollInit={[Function]}
-                refDelegate={[Function]}
-              >
-                <div />
-              </ForwardRef(RefForwardingEmbeddedEnvelope)>
-            </ForwardRef>
-          </JobsManagementContainer>
-        </article>
-      </Card>
-    </section>
-  </PageSection>
-</JobsManagementPage>
+      <div />
+    </article>
+  </section>
+</div>
 `;

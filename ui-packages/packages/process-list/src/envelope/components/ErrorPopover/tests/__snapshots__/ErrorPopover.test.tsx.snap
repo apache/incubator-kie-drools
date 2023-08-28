@@ -1,536 +1,114 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Errorpopover component tests snapshot testing with error object 1`] = `
-<ErrorPopover
-  onRetryClick={[MockFunction]}
-  onSkipClick={[MockFunction]}
-  processInstanceData={
-    Object {
-      "addons": Array [
-        "jobs-management",
-        "prometheus-monitoring",
-        "process-management",
-      ],
-      "businessKey": "T1234",
-      "childProcessInstances": Array [],
-      "end": 2019-10-22T03:40:44.089Z,
-      "endpoint": "http://localhost:4000",
-      "error": Object {
-        "message": "Something went wrong",
-        "nodeDefinitionId": "_2140F05A-364F-40B3-BB7B-B12927065DF8",
-      },
-      "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
-      "lastUpdate": 2019-10-22T03:40:44.089Z,
-      "nodes": Array [],
-      "parentProcessInstance": null,
-      "parentProcessInstanceId": null,
-      "processId": "travels",
-      "processName": "travels",
-      "roles": Array [],
-      "rootProcessInstanceId": null,
-      "serviceUrl": "http://localhost:4000",
-      "start": 2019-10-22T03:40:44.089Z,
-      "state": "ERROR",
-      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
-    }
-  }
->
-  <Popover
-    bodyContent={
-      <div>
-        Something went wrong
-      </div>
-    }
-    data-ouia-component-type="error-popover"
-    data-ouia-safe={true}
-    footerContent={
-      Array [
-        <Button
-          className="pf-u-mr-sm"
-          id="skip-button"
-          onClick={[Function]}
-          variant="secondary"
-        >
-          Skip
-        </Button>,
-        <Button
-          className="pf-u-mr-sm"
-          id="retry-button"
-          onClick={[Function]}
-          variant="secondary"
-        >
-          Retry
-        </Button>,
-      ]
-    }
-    headerContent={
-      <div>
-        Process error
-      </div>
-    }
-    id="e4448857-fa0c-403b-ad69-f0a353458b9d"
-    position="auto"
-    zIndex={300}
-  >
-    <Popper
-      appendTo={[Function]}
-      distance={25}
-      enableFlip={true}
-      flipBehavior={
-        Array [
-          "top",
-          "bottom",
-          "left",
-          "right",
-          "top-start",
-          "top-end",
-          "bottom-start",
-          "bottom-end",
-          "left-start",
-          "left-end",
-          "right-start",
-          "right-end",
-        ]
-      }
-      isVisible={false}
-      onDocumentClick={[Function]}
-      onDocumentKeyDown={[Function]}
-      onTriggerClick={[Function]}
-      placement="auto"
-      popper={
-        <ForwardRef
-          active={false}
-          aria-describedby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
-          aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
-          aria-modal="true"
-          className="pf-c-popover"
-          data-ouia-component-type="error-popover"
-          data-ouia-safe={true}
-          focusTrapOptions={
-            Object {
-              "clickOutsideDeactivates": true,
-              "fallbackFocus": [Function],
-              "returnFocusOnDeactivate": true,
-              "tabbableOptions": Object {
-                "displayCheck": "none",
-              },
-            }
-          }
-          onMouseDown={[Function]}
-          preventScrollOnDeactivate={true}
-          role="dialog"
-          style={
-            Object {
-              "maxWidth": null,
-              "minWidth": null,
-              "opacity": 0,
-              "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
-            }
-          }
-        >
-          <PopoverArrow />
-          <PopoverContent>
-            <PopoverCloseButton
-              aria-label="Close"
-              onClose={[Function]}
-            />
-            <PopoverHeader
-              alertSeverityScreenReaderText="undefined alert:"
-              icon={null}
-              id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
-              titleHeadingLevel="h6"
-            >
-              <div>
-                Process error
-              </div>
-            </PopoverHeader>
-            <PopoverBody
-              id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
-            >
-              <div>
-                Something went wrong
-              </div>
-            </PopoverBody>
-            <PopoverFooter
-              id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-footer"
-            >
-              <Button
-                className="pf-u-mr-sm"
-                id="skip-button"
-                onClick={[Function]}
-                variant="secondary"
-              >
-                Skip
-              </Button>
-              <Button
-                className="pf-u-mr-sm"
-                id="retry-button"
-                onClick={[Function]}
-                variant="secondary"
-              >
-                Retry
-              </Button>
-            </PopoverFooter>
-          </PopoverContent>
-        </ForwardRef>
-      }
-      popperMatchesTriggerWidth={false}
-      positionModifiers={
-        Object {
-          "bottom": "pf-m-bottom",
-          "bottom-end": "pf-m-bottom-right",
-          "bottom-start": "pf-m-bottom-left",
-          "left": "pf-m-left",
-          "left-end": "pf-m-left-bottom",
-          "left-start": "pf-m-left-top",
-          "right": "pf-m-right",
-          "right-end": "pf-m-right-bottom",
-          "right-start": "pf-m-right-top",
-          "top": "pf-m-top",
-          "top-end": "pf-m-top-right",
-          "top-start": "pf-m-top-left",
-        }
-      }
-      removeFindDomNode={false}
-      trigger={
-        <Button
-          isInline={true}
-          variant="link"
-        >
-          <React.Fragment>
-            <ErrorCircleOIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--danger-color--100)"
-              noVerticalAlign={false}
-              size="sm"
-            />
-            Error
-          </React.Fragment>
-        </Button>
-      }
-      zIndex={300}
-    >
-      <FindRefWrapper
-        onFoundRef={[Function]}
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <button
+        aria-disabled="false"
+        class="pf-c-button pf-m-link pf-m-inline"
+        data-ouia-component-id="OUIA-Generated-Button-link-1"
+        data-ouia-component-type="PF4/Button"
+        data-ouia-safe="true"
+        data-testid="error-state"
+        type="button"
       >
-        <Button
-          isInline={true}
-          variant="link"
+        <svg
+          aria-hidden="true"
+          class="pf-u-mr-sm"
+          fill="var(--pf-global--danger-color--100)"
+          height="1em"
+          role="img"
+          style="vertical-align: -0.125em;"
+          viewBox="0 0 1024 1024"
+          width="1em"
         >
-          <ButtonBase
-            innerRef={null}
-            isInline={true}
-            variant="link"
-          >
-            <button
-              aria-disabled={false}
-              aria-label={null}
-              className="pf-c-button pf-m-link pf-m-inline"
-              data-ouia-component-id="OUIA-Generated-Button-link-1"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
-              role={null}
-              type="button"
-            >
-              <ErrorCircleOIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--danger-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  className="pf-u-mr-sm"
-                  fill="var(--pf-global--danger-color--100)"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 1024 1024"
-                  width="1em"
-                >
-                  <path
-                    d="M409.5,319 C406.699326,316.168774 402.882413,314.575614 398.9,314.575614 C394.917587,314.575614 391.100674,316.168774 388.3,319 L319,388.3 C316.168774,391.100674 314.575614,394.917587 314.575614,398.9 C314.575614,402.882413 316.168774,406.699326 319,409.5 L421.5,512 L319,614.5 C316.168774,617.300674 314.575614,621.117587 314.575614,625.1 C314.575614,629.082413 316.168774,632.899326 319,635.7 L388.3,705 C391.100674,707.831226 394.917587,709.424386 398.9,709.424386 C402.882413,709.424386 406.699326,707.831226 409.5,705 L512,602.5 L614.5,705 C620.367618,710.877435 629.877455,710.922082 635.8,705.1 L705.1,635.8 C707.926508,632.970191 709.505822,629.128746 709.48721,625.129169 C709.468267,621.129592 707.852954,617.303145 705,614.5 L602.5,512 L705,409.5 C707.821142,406.720523 709.417879,402.93109 709.436648,398.97079 C709.455417,395.01049 707.89467,391.206092 705.1,388.4 L635.8,319 C629.932382,313.122565 620.422545,313.077918 614.5,318.9 L512,421.5 L409.5,319 Z M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 Z M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0 Z"
-                  />
-                </svg>
-              </ErrorCircleOIcon>
-              Error
-            </button>
-          </ButtonBase>
-        </Button>
-      </FindRefWrapper>
-    </Popper>
-  </Popover>
-</ErrorPopover>
-`;
-
-exports[`Errorpopover component tests snapshot testing without error object 1`] = `
-<ErrorPopover
-  onRetryClick={[MockFunction]}
-  onSkipClick={[MockFunction]}
-  processInstanceData={
-    Object {
-      "addons": Array [
-        "jobs-management",
-        "prometheus-monitoring",
-        "process-management",
-      ],
-      "businessKey": "T1234",
-      "childProcessInstances": Array [],
-      "end": 2019-10-22T03:40:44.089Z,
-      "endpoint": "http://localhost:4000",
-      "error": null,
-      "id": "e4448857-fa0c-403b-ad69-f0a353458b9d",
-      "lastUpdate": 2019-10-22T03:40:44.089Z,
-      "nodes": Array [],
-      "parentProcessInstance": null,
-      "parentProcessInstanceId": null,
-      "processId": "travels",
-      "processName": "travels",
-      "roles": Array [],
-      "rootProcessInstanceId": null,
-      "serviceUrl": "http://localhost:4000",
-      "start": 2019-10-22T03:40:44.089Z,
-      "state": "ERROR",
-      "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
-    }
-  }
->
-  <Popover
-    bodyContent={
-      <div>
-        No error message found
-      </div>
-    }
-    data-ouia-component-type="error-popover"
-    data-ouia-safe={true}
-    footerContent={
-      Array [
-        <Button
-          className="pf-u-mr-sm"
-          id="skip-button"
-          onClick={[Function]}
-          variant="secondary"
-        >
-          Skip
-        </Button>,
-        <Button
-          className="pf-u-mr-sm"
-          id="retry-button"
-          onClick={[Function]}
-          variant="secondary"
-        >
-          Retry
-        </Button>,
-      ]
-    }
-    headerContent={
-      <div>
-        Process error
-      </div>
-    }
-    id="e4448857-fa0c-403b-ad69-f0a353458b9d"
-    position="auto"
-    zIndex={300}
-  >
-    <Popper
-      appendTo={[Function]}
-      distance={25}
-      enableFlip={true}
-      flipBehavior={
-        Array [
-          "top",
-          "bottom",
-          "left",
-          "right",
-          "top-start",
-          "top-end",
-          "bottom-start",
-          "bottom-end",
-          "left-start",
-          "left-end",
-          "right-start",
-          "right-end",
-        ]
-      }
-      isVisible={false}
-      onDocumentClick={[Function]}
-      onDocumentKeyDown={[Function]}
-      onTriggerClick={[Function]}
-      placement="auto"
-      popper={
-        <ForwardRef
-          active={false}
-          aria-describedby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
-          aria-labelledby="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
-          aria-modal="true"
-          className="pf-c-popover"
-          data-ouia-component-type="error-popover"
-          data-ouia-safe={true}
-          focusTrapOptions={
-            Object {
-              "clickOutsideDeactivates": true,
-              "fallbackFocus": [Function],
-              "returnFocusOnDeactivate": true,
-              "tabbableOptions": Object {
-                "displayCheck": "none",
-              },
-            }
-          }
-          onMouseDown={[Function]}
-          preventScrollOnDeactivate={true}
-          role="dialog"
-          style={
-            Object {
-              "maxWidth": null,
-              "minWidth": null,
-              "opacity": 0,
-              "transition": "opacity 300ms cubic-bezier(.54, 1.5, .38, 1.11)",
-            }
-          }
-        >
-          <PopoverArrow />
-          <PopoverContent>
-            <PopoverCloseButton
-              aria-label="Close"
-              onClose={[Function]}
-            />
-            <PopoverHeader
-              alertSeverityScreenReaderText="undefined alert:"
-              icon={null}
-              id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-header"
-              titleHeadingLevel="h6"
-            >
-              <div>
-                Process error
-              </div>
-            </PopoverHeader>
-            <PopoverBody
-              id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-body"
-            >
-              <div>
-                No error message found
-              </div>
-            </PopoverBody>
-            <PopoverFooter
-              id="popover-e4448857-fa0c-403b-ad69-f0a353458b9d-footer"
-            >
-              <Button
-                className="pf-u-mr-sm"
-                id="skip-button"
-                onClick={[Function]}
-                variant="secondary"
-              >
-                Skip
-              </Button>
-              <Button
-                className="pf-u-mr-sm"
-                id="retry-button"
-                onClick={[Function]}
-                variant="secondary"
-              >
-                Retry
-              </Button>
-            </PopoverFooter>
-          </PopoverContent>
-        </ForwardRef>
-      }
-      popperMatchesTriggerWidth={false}
-      positionModifiers={
-        Object {
-          "bottom": "pf-m-bottom",
-          "bottom-end": "pf-m-bottom-right",
-          "bottom-start": "pf-m-bottom-left",
-          "left": "pf-m-left",
-          "left-end": "pf-m-left-bottom",
-          "left-start": "pf-m-left-top",
-          "right": "pf-m-right",
-          "right-end": "pf-m-right-bottom",
-          "right-start": "pf-m-right-top",
-          "top": "pf-m-top",
-          "top-end": "pf-m-top-right",
-          "top-start": "pf-m-top-left",
-        }
-      }
-      removeFindDomNode={false}
-      trigger={
-        <Button
-          isInline={true}
-          variant="link"
-        >
-          <React.Fragment>
-            <ErrorCircleOIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--danger-color--100)"
-              noVerticalAlign={false}
-              size="sm"
-            />
-            Error
-          </React.Fragment>
-        </Button>
-      }
-      zIndex={300}
+          <path
+            d="M409.5,319 C406.699326,316.168774 402.882413,314.575614 398.9,314.575614 C394.917587,314.575614 391.100674,316.168774 388.3,319 L319,388.3 C316.168774,391.100674 314.575614,394.917587 314.575614,398.9 C314.575614,402.882413 316.168774,406.699326 319,409.5 L421.5,512 L319,614.5 C316.168774,617.300674 314.575614,621.117587 314.575614,625.1 C314.575614,629.082413 316.168774,632.899326 319,635.7 L388.3,705 C391.100674,707.831226 394.917587,709.424386 398.9,709.424386 C402.882413,709.424386 406.699326,707.831226 409.5,705 L512,602.5 L614.5,705 C620.367618,710.877435 629.877455,710.922082 635.8,705.1 L705.1,635.8 C707.926508,632.970191 709.505822,629.128746 709.48721,625.129169 C709.468267,621.129592 707.852954,617.303145 705,614.5 L602.5,512 L705,409.5 C707.821142,406.720523 709.417879,402.93109 709.436648,398.97079 C709.455417,395.01049 707.89467,391.206092 705.1,388.4 L635.8,319 C629.932382,313.122565 620.422545,313.077918 614.5,318.9 L512,421.5 L409.5,319 Z M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 Z M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0 Z"
+          />
+        </svg>
+        Error
+      </button>
+    </div>
+  </body>,
+  "container": <div>
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-link pf-m-inline"
+      data-ouia-component-id="OUIA-Generated-Button-link-1"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      data-testid="error-state"
+      type="button"
     >
-      <FindRefWrapper
-        onFoundRef={[Function]}
+      <svg
+        aria-hidden="true"
+        class="pf-u-mr-sm"
+        fill="var(--pf-global--danger-color--100)"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 1024 1024"
+        width="1em"
       >
-        <Button
-          isInline={true}
-          variant="link"
-        >
-          <ButtonBase
-            innerRef={null}
-            isInline={true}
-            variant="link"
-          >
-            <button
-              aria-disabled={false}
-              aria-label={null}
-              className="pf-c-button pf-m-link pf-m-inline"
-              data-ouia-component-id="OUIA-Generated-Button-link-2"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
-              role={null}
-              type="button"
-            >
-              <ErrorCircleOIcon
-                className="pf-u-mr-sm"
-                color="var(--pf-global--danger-color--100)"
-                noVerticalAlign={false}
-                size="sm"
-              >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  className="pf-u-mr-sm"
-                  fill="var(--pf-global--danger-color--100)"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 1024 1024"
-                  width="1em"
-                >
-                  <path
-                    d="M409.5,319 C406.699326,316.168774 402.882413,314.575614 398.9,314.575614 C394.917587,314.575614 391.100674,316.168774 388.3,319 L319,388.3 C316.168774,391.100674 314.575614,394.917587 314.575614,398.9 C314.575614,402.882413 316.168774,406.699326 319,409.5 L421.5,512 L319,614.5 C316.168774,617.300674 314.575614,621.117587 314.575614,625.1 C314.575614,629.082413 316.168774,632.899326 319,635.7 L388.3,705 C391.100674,707.831226 394.917587,709.424386 398.9,709.424386 C402.882413,709.424386 406.699326,707.831226 409.5,705 L512,602.5 L614.5,705 C620.367618,710.877435 629.877455,710.922082 635.8,705.1 L705.1,635.8 C707.926508,632.970191 709.505822,629.128746 709.48721,625.129169 C709.468267,621.129592 707.852954,617.303145 705,614.5 L602.5,512 L705,409.5 C707.821142,406.720523 709.417879,402.93109 709.436648,398.97079 C709.455417,395.01049 707.89467,391.206092 705.1,388.4 L635.8,319 C629.932382,313.122565 620.422545,313.077918 614.5,318.9 L512,421.5 L409.5,319 Z M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 Z M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0 Z"
-                  />
-                </svg>
-              </ErrorCircleOIcon>
-              Error
-            </button>
-          </ButtonBase>
-        </Button>
-      </FindRefWrapper>
-    </Popper>
-  </Popover>
-</ErrorPopover>
+        <path
+          d="M409.5,319 C406.699326,316.168774 402.882413,314.575614 398.9,314.575614 C394.917587,314.575614 391.100674,316.168774 388.3,319 L319,388.3 C316.168774,391.100674 314.575614,394.917587 314.575614,398.9 C314.575614,402.882413 316.168774,406.699326 319,409.5 L421.5,512 L319,614.5 C316.168774,617.300674 314.575614,621.117587 314.575614,625.1 C314.575614,629.082413 316.168774,632.899326 319,635.7 L388.3,705 C391.100674,707.831226 394.917587,709.424386 398.9,709.424386 C402.882413,709.424386 406.699326,707.831226 409.5,705 L512,602.5 L614.5,705 C620.367618,710.877435 629.877455,710.922082 635.8,705.1 L705.1,635.8 C707.926508,632.970191 709.505822,629.128746 709.48721,625.129169 C709.468267,621.129592 707.852954,617.303145 705,614.5 L602.5,512 L705,409.5 C707.821142,406.720523 709.417879,402.93109 709.436648,398.97079 C709.455417,395.01049 707.89467,391.206092 705.1,388.4 L635.8,319 C629.932382,313.122565 620.422545,313.077918 614.5,318.9 L512,421.5 L409.5,319 Z M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 Z M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0 Z"
+        />
+      </svg>
+      Error
+    </button>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
 `;

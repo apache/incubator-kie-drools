@@ -1,11 +1,8 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import InlineEdit from '../InlineEdit';
 import * as hooks from '../../../../../../channel/ProcessForm/ProcessFormContext';
 import { ProcessFormGatewayApiImpl } from '../../../../../../channel/ProcessForm/ProcessFormGatewayApi';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
-import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
-import { act } from 'react-dom/test-utils';
 
 const props = {
   getBusinessKey: () => '',
@@ -19,23 +16,20 @@ describe('inline edit tests', () => {
       .mockImplementation(() => new ProcessFormGatewayApiImpl());
   });
   it('snapshot', () => {
-    const wrapper = mount(<InlineEdit {...props} />);
+    const wrapper = render(<InlineEdit {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it('enter text and confirm', async () => {
-    let wrapper = mount(<InlineEdit {...props} />);
-    await act(async () => {
-      wrapper.find(Button).at(0).simulate('click');
+    const container = render(<InlineEdit {...props} />).container;
+
+    fireEvent.change(screen.getByPlaceholderText('Enter business key'), {
+      target: { value: 'new value' }
     });
-    wrapper = wrapper.update();
-    await act(async () => {
-      wrapper.find(TextInput).simulate('change', { target: { value: '222' } });
-    });
-    wrapper = wrapper.update();
-    await act(async () => {
-      wrapper.find(Button).at(1).simulate('click');
-    });
-    wrapper = wrapper.update();
+    const buttons = container.querySelectorAll('button');
+    fireEvent.click(buttons[1]);
+    expect(props.setBusinessKey).toHaveBeenCalled();
+    fireEvent.click(buttons[2]);
+    expect(props.setBusinessKey).toHaveBeenCalled();
   });
 });

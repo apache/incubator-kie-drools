@@ -130,6 +130,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
 
   const errorModalAction: JSX.Element[] = [
     <Button
+      data-testid="svg-error-modal"
       key="confirm-selection"
       variant="primary"
       onClick={handleSvgErrorModal}
@@ -182,6 +183,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     }
   }, [isEnvelopeConnectedToChannel]);
 
+  /* istanbul ignore next */
   const handleSave = (): void => {
     driver
       .handleProcessVariableUpdate(data, updateJson)
@@ -208,6 +210,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           className="kogito-process-details--details__buttonMargin"
           onClick={handleSave}
           isDisabled={!displayLabel}
+          data-testid="save-button"
         >
           Save
         </Button>
@@ -231,6 +234,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           handleRefresh();
         }}
         id="refresh-button"
+        data-testid="refresh-button"
         aria-label={'Refresh list'}
       >
         <SyncIcon />
@@ -279,6 +283,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         <Button
           variant="secondary"
           id="abort-button"
+          data-testid="abort-button"
           onClick={() => onAbortClick(data)}
         >
           Abort

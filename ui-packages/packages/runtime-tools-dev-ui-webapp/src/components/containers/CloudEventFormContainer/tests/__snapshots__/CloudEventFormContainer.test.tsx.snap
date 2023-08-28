@@ -1,57 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CloudEventFormContainer tests Snapshot - with router param 1`] = `
-<CloudEventFormContainer
-  isTriggerNewInstance={false}
-  onError={[MockFunction]}
-  onSuccess={[MockFunction]}
->
-  <EmbeddedCloudEventForm
-    data-ouia-component-type="cloud-event-form-container"
-    data-ouia-safe={true}
-    defaultValues={
-      Object {
-        "cloudEventSource": "/local/quarkus-devUi",
-        "instanceId": "1234",
-      }
-    }
-    driver={
-      Object {
-        "triggerCloudEvent": [Function],
-      }
-    }
-    isNewInstanceEvent={false}
-    targetOrigin="http://localhost:9000"
-  >
-    <MockedComponent />
-  </EmbeddedCloudEventForm>
-</CloudEventFormContainer>
+<div>
+  <div />
+</div>
 `;
 
 exports[`CloudEventFormContainer tests Snapshot 1`] = `
-<CloudEventFormContainer
-  isTriggerNewInstance={false}
-  onError={[MockFunction]}
-  onSuccess={[MockFunction]}
->
-  <EmbeddedCloudEventForm
-    data-ouia-component-type="cloud-event-form-container"
-    data-ouia-safe={true}
-    defaultValues={
-      Object {
-        "cloudEventSource": "/local/quarkus-devUi",
-        "instanceId": undefined,
-      }
-    }
-    driver={
-      Object {
-        "triggerCloudEvent": [Function],
-      }
-    }
-    isNewInstanceEvent={false}
-    targetOrigin="http://localhost:9000"
-  >
-    <MockedComponent />
-  </EmbeddedCloudEventForm>
-</CloudEventFormContainer>
+<div>
+  <div />
+</div>
 `;

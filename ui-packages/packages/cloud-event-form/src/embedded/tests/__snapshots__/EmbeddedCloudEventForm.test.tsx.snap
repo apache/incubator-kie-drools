@@ -1,101 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmbeddedCloudEventForm tests Snapshot - defaultValue 1`] = `
-<ForwardRef
-  defaultValues={
-    Object {
-      "cloudEventSource": "/local/source",
-      "instanceId": "1234",
-    }
-  }
-  driver={
-    Object {
-      "triggerCloudEvent": [MockFunction],
-    }
-  }
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      EmbeddedCloudEventFormChannelApiImpl {
-        "driver": Object {
-          "triggerCloudEvent": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;
 
 exports[`EmbeddedCloudEventForm tests Snapshot - isNewInstanceEvent 1`] = `
-<ForwardRef
-  driver={
-    Object {
-      "triggerCloudEvent": [MockFunction],
-    }
-  }
-  isNewInstanceEvent={true}
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      EmbeddedCloudEventFormChannelApiImpl {
-        "driver": Object {
-          "triggerCloudEvent": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;
 
 exports[`EmbeddedCloudEventForm tests Snapshot 1`] = `
-<ForwardRef
-  driver={
-    Object {
-      "triggerCloudEvent": [MockFunction],
-    }
-  }
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      EmbeddedCloudEventFormChannelApiImpl {
-        "driver": Object {
-          "triggerCloudEvent": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;

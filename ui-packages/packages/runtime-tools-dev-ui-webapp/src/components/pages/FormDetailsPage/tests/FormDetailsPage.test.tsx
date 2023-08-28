@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import FormDetailsPage from '../FormDetailsPage';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -40,13 +40,29 @@ jest.mock('react-router-dom', () => ({
 
 describe('FormDetailsPage tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <BrowserRouter>
         <FormDetailsPage />
       </BrowserRouter>
     );
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('MockedFormDetailsContainer').exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+
+    expect(
+      document.querySelector('body[data-ouia-page-type="form-detail"]')
+    ).toBeTruthy();
+  });
+  it('Test close action in Alert component', () => {
+    render(
+      <BrowserRouter>
+        <FormDetailsPage />
+      </BrowserRouter>
+    );
+
+    const button = screen.getByTestId('close-button');
+    fireEvent.click(button);
+    expect(() => screen.getByLabelText('Danger Alert')).toThrow(
+      'Unable to find a label with the text of: Danger Alert'
+    );
   });
 });

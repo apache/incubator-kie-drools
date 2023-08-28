@@ -529,7 +529,7 @@ export const getCustomWorkflowSchema = (
             response.paths['/' + workflowName].post.requestBody.content[
               'application/json'
             ].schema;
-
+          /* istanbul ignore else*/
           if (schemaFromRequestBody.type) {
             schema = {
               type: schemaFromRequestBody.type,

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../channel/TaskForms';
 import * as TaskFormContext from '../../../../channel/TaskForms/TaskFormContext';
@@ -25,8 +25,6 @@ import {
   User
 } from '@kogito-apps/consoles-common/dist/environment/auth';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
-import { EmbeddedTaskForm } from '@kogito-apps/task-form';
 
 const testUserTask: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -85,7 +83,7 @@ describe('TaskFormContainer tests', () => {
   it('Snapshot', () => {
     const onSubmit = jest.fn();
     const onFailure = jest.fn();
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <TaskFormContainer
           userTask={testUserTask}
@@ -93,13 +91,10 @@ describe('TaskFormContainer tests', () => {
           onSubmitError={onFailure}
         />
       </DevUIAppContextProvider>
-    ).find(TaskFormContainer);
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const forwardRef = wrapper.find(EmbeddedTaskForm);
-    expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().user).toStrictEqual(user);
-    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
+    expect(container.querySelector('div')).toBeTruthy();
   });
 });

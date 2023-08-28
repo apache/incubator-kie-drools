@@ -53,6 +53,7 @@ const ErrorPopover: React.FC<ErrorPopoverProps & OUIAProps> = ({
           <Button
             key="confirm1"
             id="skip-button"
+            data-testid="skip-button"
             variant="secondary"
             onClick={() => onSkipClick(processInstanceData)}
             className="pf-u-mr-sm"
@@ -63,6 +64,7 @@ const ErrorPopover: React.FC<ErrorPopoverProps & OUIAProps> = ({
             key="confirm2"
             variant="secondary"
             id="retry-button"
+            data-testid="retry-button"
             onClick={() => onRetryClick(processInstanceData)}
             className="pf-u-mr-sm"
           >
@@ -73,7 +75,7 @@ const ErrorPopover: React.FC<ErrorPopoverProps & OUIAProps> = ({
       position="auto"
       {...componentOuiaProps(ouiaId, 'error-popover', ouiaSafe)}
     >
-      <Button variant="link" isInline>
+      <Button variant="link" isInline data-testid="error-state">
         {ProcessInstanceIconCreator(processInstanceData.state)}
       </Button>
     </Popover>

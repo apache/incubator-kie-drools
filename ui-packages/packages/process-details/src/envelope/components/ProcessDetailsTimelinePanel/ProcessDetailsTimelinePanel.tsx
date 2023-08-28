@@ -183,6 +183,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
             ...options,
             <DropdownItem
               key="job-details"
+              data-testid="job-details"
               id="job-details"
               component="button"
               onClick={() => handleJobDetails(job)}
@@ -191,6 +192,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
             </DropdownItem>,
             <DropdownItem
               key="job-reschedule"
+              data-testid="job-reschedule"
               id="job-reschedule"
               component="button"
               onClick={() => handleJobRescheduleBySelected(job)}
@@ -199,6 +201,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
             </DropdownItem>,
             <DropdownItem
               key="job-cancel"
+              data-testid="job-cancel"
               id="job-cancel"
               component="button"
               onClick={() => handleCancelAction(job)}
@@ -237,6 +240,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
     ) {
       const options = [
         <DropdownItem
+          data-testid="retry"
           key="retry"
           component="button"
           onClick={() =>
@@ -261,6 +265,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           Retry
         </DropdownItem>,
         <DropdownItem
+          data-testid="skip"
           key="skip"
           component="button"
           onClick={() =>
@@ -290,6 +295,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
     } else if (node.exit === null && !ignoredNodeTypes.includes(node.type)) {
       const options = [
         <DropdownItem
+          data-testid="retrigger"
           key="retrigger"
           component="button"
           onClick={() =>
@@ -315,6 +321,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           Retrigger node
         </DropdownItem>,
         <DropdownItem
+          data-testid="cancel"
           key="cancel"
           component="button"
           onClick={() =>
@@ -364,6 +371,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
                 onKebabToggle(isOpen, 'timeline-kebab-toggle-' + index)
               }
               id={'timeline-kebab-toggle-' + index}
+              data-testid={'timeline-kebab-toggle-' + index}
             />
           }
           position="right"

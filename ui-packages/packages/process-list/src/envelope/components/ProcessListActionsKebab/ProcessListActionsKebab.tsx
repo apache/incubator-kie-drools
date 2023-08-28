@@ -109,6 +109,7 @@ const ProcessListActionsKebab: React.FC<
         <KebabToggle
           isDisabled={checkProcessInstanceState(processInstance)}
           onToggle={onToggle}
+          data-testid="kebab-toggle"
           id="kebab-toggle"
         />
       }

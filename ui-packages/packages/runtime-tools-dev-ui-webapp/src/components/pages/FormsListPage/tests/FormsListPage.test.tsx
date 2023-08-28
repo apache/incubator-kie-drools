@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import FormsListPage from '../FormsListPage';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -23,13 +23,16 @@ jest.mock('../../../containers/FormsListContainer/FormsListContainer');
 
 describe('FormsListPage tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <BrowserRouter>
         <FormsListPage />
       </BrowserRouter>
     );
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('MockedFormsListContainer').exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+
+    expect(
+      document.querySelector('body[data-ouia-page-type="forms-list"]')
+    ).toBeTruthy();
   });
 });

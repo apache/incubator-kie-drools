@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { EmbeddedCloudEventForm } from '../EmbeddedCloudEventForm';
 import { MockedCloudEventFormDriver } from './utils/Mocks';
@@ -28,17 +28,13 @@ describe('EmbeddedCloudEventForm tests', () => {
       driver: new MockedCloudEventFormDriver()
     };
 
-    const wrapper = mount(<EmbeddedCloudEventForm {...props} />);
+    const container = render(<EmbeddedCloudEventForm {...props} />).container;
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-    expect(wrapper.props().isNewInstanceEvent).toBeUndefined();
-    expect(wrapper.props().defaultValues).toBeUndefined();
+    expect(container).toMatchSnapshot();
 
-    const contentDiv = wrapper.find('div');
+    const contentDiv = container.querySelector('div');
 
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(contentDiv).toBeTruthy();
   });
 
   it('Snapshot - isNewInstanceEvent', () => {
@@ -48,17 +44,13 @@ describe('EmbeddedCloudEventForm tests', () => {
       isNewInstanceEvent: true
     };
 
-    const wrapper = mount(<EmbeddedCloudEventForm {...props} />);
+    const container = render(<EmbeddedCloudEventForm {...props} />).container;
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-    expect(wrapper.props().isNewInstanceEvent).toStrictEqual(true);
-    expect(wrapper.props().defaultValues).toBeUndefined();
+    expect(container).toMatchSnapshot();
 
-    const contentDiv = wrapper.find('div');
+    const contentDiv = container.querySelector('div');
 
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(contentDiv).toBeTruthy();
   });
 
   it('Snapshot - defaultValue', () => {
@@ -71,15 +63,12 @@ describe('EmbeddedCloudEventForm tests', () => {
       }
     };
 
-    const wrapper = mount(<EmbeddedCloudEventForm {...props} />);
+    const container = render(<EmbeddedCloudEventForm {...props} />).container;
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-    expect(wrapper.props().defaultValues).not.toBeNull();
+    expect(container).toMatchSnapshot();
 
-    const contentDiv = wrapper.find('div');
+    const contentDiv = container.querySelector('div');
 
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(contentDiv).toBeTruthy();
   });
 });

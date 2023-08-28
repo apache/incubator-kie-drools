@@ -91,12 +91,13 @@ export const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({
         <Title headingLevel="h1" size="4xl">
           Error fetching data
         </Title>
-        <EmptyStateBody>
+        <EmptyStateBody data-testid="empty-state-body">
           {getErrorSubTitle()}{' '}
           <Button
             variant="link"
             isInline
             id="display-error"
+            data-testid="display-error"
             onClick={() => setDisplayError(!displayError)}
           >
             See more details

@@ -1,152 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PageSectionHeader tests Snapshot test with default props 1`] = `
-<PageSectionHeader
-  breadcrumbPath={
-    Array [
-      "/",
-      Object {
-        "pathname": "/ProcessInstances",
-        "state": Object {},
-      },
-    ]
-  }
-  breadcrumbText={
-    Array [
-      "Home",
-      "Processes",
-    ]
-  }
-  titleText="Process Details"
->
-  <PageSection
+<div>
+  <section
+    class="pf-c-page__main-section pf-m-light"
     data-ouia-component-type="page-section-header"
-    data-ouia-safe={true}
-    variant="light"
+    data-ouia-safe="true"
   >
-    <section
-      className="pf-c-page__main-section pf-m-light"
-      data-ouia-component-type="page-section-header"
-      data-ouia-safe={true}
+    <nav
+      aria-label="Breadcrumb"
+      class="pf-c-breadcrumb"
+      data-ouia-component-id="OUIA-Generated-Breadcrumb-1"
+      data-ouia-component-type="PF4/Breadcrumb"
+      data-ouia-safe="true"
     >
-      <Breadcrumb>
-        <nav
-          aria-label="Breadcrumb"
-          className="pf-c-breadcrumb"
-          data-ouia-component-id="OUIA-Generated-Breadcrumb-1"
-          data-ouia-component-type="PF4/Breadcrumb"
-          data-ouia-safe={true}
-        >
-          <ol
-            className="pf-c-breadcrumb__list"
-          >
-            <BreadcrumbItem
-              key=".$0"
-              showDivider={false}
-            >
-              <li
-                className="pf-c-breadcrumb__item"
-              >
-                <Link
-                  to="/"
-                >
-                  <LinkAnchor
-                    href="/"
-                    navigate={[Function]}
-                  >
-                    <a
-                      href="/"
-                      onClick={[Function]}
-                    >
-                      Home
-                    </a>
-                  </LinkAnchor>
-                </Link>
-              </li>
-            </BreadcrumbItem>
-            <BreadcrumbItem
-              isActive={true}
-              key=".$1"
-              showDivider={true}
-            >
-              <li
-                className="pf-c-breadcrumb__item"
-              >
-                <span
-                  className="pf-c-breadcrumb__item-divider"
-                >
-                  <AngleRightIcon
-                    color="currentColor"
-                    noVerticalAlign={false}
-                    size="sm"
-                  >
-                    <svg
-                      aria-hidden={true}
-                      aria-labelledby={null}
-                      fill="currentColor"
-                      height="1em"
-                      role="img"
-                      style={
-                        Object {
-                          "verticalAlign": "-0.125em",
-                        }
-                      }
-                      viewBox="0 0 256 512"
-                      width="1em"
-                    >
-                      <path
-                        d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
-                      />
-                    </svg>
-                  </AngleRightIcon>
-                </span>
-                Processes
-              </li>
-            </BreadcrumbItem>
-          </ol>
-        </nav>
-      </Breadcrumb>
-      <PageTitle
-        title="Process Details"
+      <ol
+        class="pf-c-breadcrumb__list"
       >
-        <Flex
-          data-ouia-component-type="page-title"
-          data-ouia-safe={true}
+        <li
+          class="pf-c-breadcrumb__item"
         >
-          <div
-            className="pf-l-flex"
-            data-ouia-component-type="page-title"
-            data-ouia-safe={true}
+          <a
+            href="/"
           >
-            <FlexItem
-              spacer={
-                Object {
-                  "default": "spacerSm",
-                }
-              }
+            Home
+          </a>
+        </li>
+        <li
+          class="pf-c-breadcrumb__item"
+        >
+          <span
+            class="pf-c-breadcrumb__item-divider"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style="vertical-align: -0.125em;"
+              viewBox="0 0 256 512"
+              width="1em"
             >
-              <div
-                className="pf-m-spacer-sm"
-              >
-                <Title
-                  headingLevel="h1"
-                  size="4xl"
-                >
-                  <h1
-                    className="pf-c-title pf-m-4xl"
-                    data-ouia-component-id="OUIA-Generated-Title-1"
-                    data-ouia-component-type="PF4/Title"
-                    data-ouia-safe={true}
-                  >
-                    Process Details
-                  </h1>
-                </Title>
-              </div>
-            </FlexItem>
-          </div>
-        </Flex>
-      </PageTitle>
-    </section>
-  </PageSection>
-</PageSectionHeader>
+              <path
+                d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+              />
+            </svg>
+          </span>
+          Processes
+        </li>
+      </ol>
+    </nav>
+    <div
+      class="pf-l-flex"
+      data-ouia-component-type="page-title"
+      data-ouia-safe="true"
+    >
+      <div
+        class="pf-m-spacer-sm"
+      >
+        <h1
+          class="pf-c-title pf-m-4xl"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
+        >
+          Process Details
+        </h1>
+      </div>
+    </div>
+  </section>
+</div>
 `;

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import CustomDashboardList from '../components/CustomDashboardList/CustomDashboardList';
 import CustomDashboardListEnvelopeView, {
@@ -25,19 +25,21 @@ import CustomDashboardListEnvelopeView, {
 
 describe('CustomDashboardListEnvelopeView tests', () => {
   jest.mock('../components/CustomDashboardList/CustomDashboardList');
-  it('Snapshot', () => {
+  it('Snapshot', async () => {
     const channelApi = new MockedMessageBusClientApi();
 
     const forwardRef = React.createRef<CustomDashboardListEnvelopeViewApi>();
+    let container;
+    await act(async () => {
+      container = render(
+        <CustomDashboardListEnvelopeView
+          channelApi={channelApi}
+          ref={forwardRef}
+        />
+      ).container;
+    });
 
-    let wrapper = mount(
-      <CustomDashboardListEnvelopeView
-        channelApi={channelApi}
-        ref={forwardRef}
-      />
-    ).find('CustomDashboardListEnvelopeView');
-
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     act(() => {
       if (forwardRef.current) {
@@ -45,16 +47,16 @@ describe('CustomDashboardListEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update();
+    const CustomDashboardListEnvelopeViewCheck =
+      container.getElementsByClassName('pf-m-toggle-group-container');
+    expect(CustomDashboardListEnvelopeViewCheck).toMatchSnapshot();
 
-    const envelopeView = wrapper.find(CustomDashboardListEnvelopeView);
+    const dashboardList = screen.getByText('Loading Dashboard...');
 
-    expect(envelopeView).toMatchSnapshot();
+    expect(dashboardList).toBeTruthy();
 
-    const dashboardList = envelopeView.find(CustomDashboardList);
+    const listTable = container.querySelector('table');
 
-    expect(dashboardList.exists()).toBeTruthy();
-    expect(dashboardList.props().isEnvelopeConnectedToChannel).toBeTruthy();
-    expect(dashboardList.props().driver).not.toBeNull();
+    expect(listTable).toBeTruthy();
   });
 });

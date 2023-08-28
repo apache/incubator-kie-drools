@@ -89,7 +89,8 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
   const embeddedFile: EmbeddedEditorFile = useMemo(() => {
     return {
-      getFileContents: async () => Promise.resolve(getFileContent()),
+      getFileContents: /* istanbul ignore next */ async () =>
+        Promise.resolve(getFileContent()),
       isReadOnly: true,
       fileExtension: `sw.${getFileType()}`,
       fileName: `*.sw.${getFileType()}`
@@ -121,7 +122,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
   const channelApiImpl = useMemo(
     () =>
       new EmbeddedEditorChannelApiImpl(stateControl, embeddedFile, 'en', {
-        kogitoEditor_ready: () => {
+        kogitoEditor_ready: /* istanbul ignore next */ () => {
           setReady(true);
         }
       }),

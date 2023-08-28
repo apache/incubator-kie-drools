@@ -18,7 +18,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 import { WorkflowFormDriver } from '../../../../api';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MockedWorkflowFormDriver } from '../../../../embedded/tests/mocks/Mocks';
 import CustomWorkflowForm, {
   CustomWorkflowFormProps
@@ -35,28 +35,8 @@ const getWorkflowFormDriver = (): WorkflowFormDriver => {
   return driver;
 };
 
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@kogito-apps/components-common/dist/components/FormRenderer', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    FormRenderer: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/FormFooter', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    FormFooter: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
 const getWorkflowFormWrapper = () => {
-  return mount(<CustomWorkflowForm {...props} />).find('CustomWorkflowForm');
+  return render(<CustomWorkflowForm {...props} />).container;
 };
 
 describe('CustomWorkflowForm Test', () => {
@@ -74,23 +54,40 @@ describe('CustomWorkflowForm Test', () => {
 
   it('Custom Workflow Form rendering', async () => {
     const driver = getWorkflowFormDriver();
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = getWorkflowFormWrapper();
+      container = getWorkflowFormWrapper();
       wait();
     });
-    expect(wrapper).toMatchSnapshot();
-
-    const customWorkflowForm = wrapper.find('CustomWorkflowForm');
-    expect(customWorkflowForm.exists()).toBeTruthy();
-
-    expect(customWorkflowForm.props().enabled).toBeFalsy();
+    expect(container).toMatchSnapshot();
+    const checkCustomWorkflowForm = container.querySelector(
+      '[data-ouia-component-type="custom-workflow-form"]'
+    );
+    expect(checkCustomWorkflowForm).toBeTruthy();
 
     await act(async () => {
-      customWorkflowForm.find('FormRenderer').props()['onSubmit']();
+      fireEvent.click(container.querySelector('[type="submit"]'));
       wait();
     });
     expect(driver.startWorkflow).toHaveBeenCalled();
+  });
+
+  it('Custom Workflow Form with reset', async () => {
+    const driver = getWorkflowFormDriver();
+    let container;
+    await act(async () => {
+      container = getWorkflowFormWrapper();
+      wait();
+    });
+    expect(container).toMatchSnapshot();
+    const checkCustomWorkflowForm = container.querySelector(
+      '[data-ouia-component-type="custom-workflow-form"]'
+    );
+    expect(checkCustomWorkflowForm).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(container.querySelector('[type="reset"]'));
+      wait();
+    });
   });
 
   it('Custom Workflow Form - loading', async () => {
@@ -104,20 +101,24 @@ describe('CustomWorkflowForm Test', () => {
     );
     props.driver = driver;
 
-    let wrapper;
+    let container;
     act(() => {
-      wrapper = getWorkflowFormWrapper();
+      container = getWorkflowFormWrapper();
     });
 
-    const customWorkflowForm = wrapper.find('CustomWorkflowForm');
+    const checkCustomWorkflowForm = container.querySelector(
+      '[data-ouia-component-type="custom-workflow-form"]'
+    );
+    expect(checkCustomWorkflowForm).toBeTruthy();
 
-    act(() => {
-      customWorkflowForm.find('FormRenderer').props()['onSubmit']();
+    await act(async () => {
+      fireEvent.click(container.querySelector('[type="submit"]'));
+      wait();
     });
 
     expect(driver.startWorkflow).toHaveBeenCalled();
 
-    expect(wrapper.update()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     await act(async () => {
       Promise.resolve().then(() => jest.advanceTimersByTime(2000));
@@ -126,7 +127,7 @@ describe('CustomWorkflowForm Test', () => {
       });
     });
 
-    expect(wrapper.update()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     jest.useRealTimers();
   });

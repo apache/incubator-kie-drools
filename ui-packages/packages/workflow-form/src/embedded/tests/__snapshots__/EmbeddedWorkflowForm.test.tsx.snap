@@ -1,37 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmbeddedWorkflowForm tests Snapshot 1`] = `
-<ForwardRef
-  driver={
-    Object {
-      "getCustomWorkflowSchema": [MockFunction],
-      "resetBusinessKey": [MockFunction],
-      "startWorkflow": [MockFunction],
-    }
-  }
-  targetOrigin="origin"
-  workflowDefinition={null}
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      EmbeddedWorkflowFormChannelApiImpl {
-        "driver": Object {
-          "getCustomWorkflowSchema": [MockFunction],
-          "resetBusinessKey": [MockFunction],
-          "startWorkflow": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;

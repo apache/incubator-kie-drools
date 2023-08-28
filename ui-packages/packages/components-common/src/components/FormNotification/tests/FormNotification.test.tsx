@@ -16,12 +16,7 @@
 
 import React from 'react';
 import { FormNotification, Notification } from '../FormNotification';
-import {
-  AlertActionCloseButton,
-  AlertActionLink,
-  Alert
-} from '@patternfly/react-core/dist/js/components/Alert';
-import { mount } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 describe('FormNotification test', () => {
   it('Simple notification', () => {
@@ -31,22 +26,27 @@ describe('FormNotification test', () => {
       close: jest.fn()
     };
 
-    const wrapper = mount(
+    const { container } = render(
       <FormNotification notification={notificationProps} />
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const alert = wrapper.find(Alert);
+    const alert = screen.getByTestId('alert-box');
 
-    expect(alert.exists()).toBeTruthy();
-    expect(alert.props().variant).toBe('success');
+    expect(alert).toBeTruthy();
 
-    expect(wrapper.html()).toContain(notificationProps.message);
+    const successVariant = screen.getByLabelText('Success Alert');
 
-    const button = wrapper.find(AlertActionCloseButton).find('button');
+    expect(successVariant).toBeTruthy();
 
-    button.simulate('click');
+    const alertMessage = container.querySelector('h4')?.textContent;
+
+    expect(alertMessage).toEqual('Success alert:The form has been submitted');
+
+    const closeButton = screen.getByTestId('close-button');
+
+    fireEvent.click(closeButton);
 
     expect(notificationProps.close).toBeCalled();
   });
@@ -59,28 +59,36 @@ describe('FormNotification test', () => {
       details: 'The details here!'
     };
 
-    let wrapper = mount(<FormNotification notification={notificationProps} />);
-    expect(wrapper).toMatchSnapshot();
+    const { container } = render(
+      <FormNotification notification={notificationProps} />
+    );
+    expect(container).toMatchSnapshot();
 
-    expect(wrapper.html()).toContain(notificationProps.message);
+    const alertMessage = container.querySelector('h4')?.textContent;
 
-    const alert = wrapper.find(Alert);
+    expect(alertMessage).toEqual('Danger alert:The form has been submitted');
 
-    expect(alert.exists()).toBeTruthy();
-    expect(alert.props().variant).toBe('danger');
+    const alert = screen.getByTestId('alert-box');
 
-    const button = wrapper.find(AlertActionLink).find('button');
+    expect(alert).toBeTruthy();
 
-    expect(button.exists()).toBeTruthy();
-    expect(button.getDOMNode().innerHTML).toBe('View details');
+    const dangerVariant = screen.getByLabelText('Danger Alert');
 
-    button.simulate('click');
+    expect(dangerVariant).toBeTruthy();
 
-    expect(wrapper).toMatchSnapshot();
+    const button = screen.getByTestId('view-details');
 
-    wrapper = wrapper.update().find('FormNotification');
+    expect(button).toBeTruthy();
 
-    expect(wrapper.html()).toContain(notificationProps.details);
+    expect(button.textContent).toEqual('View details');
+
+    fireEvent.click(button);
+
+    expect(container).toMatchSnapshot();
+
+    const detail = container.querySelector('p')?.textContent;
+
+    expect(detail).toEqual(notificationProps.details);
   });
 
   it('Notification with custom action', async () => {
@@ -96,20 +104,23 @@ describe('FormNotification test', () => {
       ]
     };
 
-    const wrapper = mount(
+    const { container } = render(
       <FormNotification notification={notificationProps} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    expect(wrapper.html()).toContain(notificationProps.message);
+    const alertMessage = container.querySelector('h4')?.textContent;
 
-    const button = wrapper.find(AlertActionLink).find('button');
+    expect(alertMessage).toEqual('Success alert:The form has been submitted');
 
-    expect(button.exists()).toBeTruthy();
-    expect(button.getDOMNode().innerHTML).toBe('Custom action');
+    const customActionButton = screen.getByTestId('custom-action');
 
-    button.simulate('click');
+    expect(customActionButton).toBeTruthy();
 
-    expect(notificationProps.customActions[0].onClick).toBeCalled();
+    expect(customActionButton.textContent).toEqual('Custom action');
+
+    fireEvent.click(customActionButton);
+
+    expect(notificationProps?.customActions[0]?.onClick).toBeCalled();
   });
 });

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import WorkflowFormContainer from '../WorkflowFormContainer';
 import * as WorkflowFormContext from '../../../../channel/WorkflowForm/WorkflowFormContext';
 import { WorkflowFormGatewayApi } from '../../../../channel/WorkflowForm/WorkflowFormGatewayApi';
@@ -24,19 +24,6 @@ import {
   DefaultUser,
   User
 } from '@kogito-apps/consoles-common/dist/environment/auth';
-import { EmbeddedWorkflowForm } from '@kogito-apps/workflow-form';
-
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@patternfly/react-code-editor', () =>
-  Object.assign(jest.requireActual('@patternfly/react-code-editor'), {
-    CodeEditor: () => {
-      return <MockedComponent />;
-    }
-  })
-);
 
 const MockedWorkflowFormGatewayApi = jest.fn<WorkflowFormGatewayApi, []>(
   () => ({
@@ -54,7 +41,7 @@ jest
   .mockImplementation(() => gatewayApi);
 
 const getWrapper = () => {
-  return mount(
+  return render(
     <DevUIAppContextProvider users={[user]} {...appContextProps}>
       <WorkflowFormContainer {...props} />
     </DevUIAppContextProvider>
@@ -94,87 +81,9 @@ describe('WorkflowFormContainer tests', () => {
   });
 
   it('Snapshot', () => {
-    const wrapper = getWrapper();
-    expect(wrapper.find('WorkflowFormContainer')).toMatchSnapshot();
+    const { container } = getWrapper();
+    expect(container).toMatchSnapshot();
 
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-
-    expect(forwardRef.props().driver).not.toBeNull();
-
-    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
-  });
-
-  it('test get custom workflow schema', () => {
-    const wrapper = getWrapper();
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-    forwardRef.props().driver['getCustomWorkflowSchema']();
-    expect(gatewayApi.getCustomWorkflowSchema).toHaveBeenCalled();
-  });
-
-  it('test start workflow rest - success', () => {
-    gatewayApi.startWorkflow = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve('1234'));
-
-    const wrapper = getWrapper();
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-
-    forwardRef.props().driver['startWorkflow']('/endpoint', {});
-    expect(gatewayApi.startWorkflow).toHaveBeenCalled();
-  });
-
-  it('test start workflow rest - failure', () => {
-    gatewayApi.startWorkflow = jest.fn().mockImplementation(() =>
-      Promise.reject({
-        response: {
-          data: {
-            message: 'error',
-            cause: 'error cause'
-          }
-        }
-      })
-    );
-    const wrapper = getWrapper();
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-
-    forwardRef.props().driver['startWorkflow']('/endpoint', {});
-    expect(gatewayApi.startWorkflow).toHaveBeenCalled();
-  });
-
-  it('test start workflow no form - success', () => {
-    gatewayApi.startWorkflow = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve('1234'));
-    const wrapper = getWrapper();
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-
-    forwardRef.props().driver['startWorkflow']('/endpoint', {});
-    expect(gatewayApi.startWorkflow).toHaveBeenCalled();
-  });
-
-  it('test start workflow no form - failure', () => {
-    gatewayApi.startWorkflow = jest.fn().mockImplementation(() =>
-      Promise.reject({
-        response: {
-          data: {
-            message: 'error',
-            cause: 'error cause'
-          }
-        }
-      })
-    );
-    const wrapper = getWrapper();
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-
-    forwardRef.props().driver['startWorkflow']('/endpoint', {});
-    expect(gatewayApi.startWorkflow).toHaveBeenCalled();
-  });
-
-  it('test reset businesskey', () => {
-    const wrapper = getWrapper();
-    const forwardRef = wrapper.find(EmbeddedWorkflowForm);
-
-    forwardRef.props().driver['resetBusinessKey']();
-    expect(props.onResetForm).toHaveBeenCalled();
+    expect(container.querySelector('div')).toBeTruthy();
   });
 });

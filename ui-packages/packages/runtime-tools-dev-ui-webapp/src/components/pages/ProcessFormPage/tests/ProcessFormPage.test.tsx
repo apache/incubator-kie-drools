@@ -15,16 +15,23 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import ProcessFormPage from '../ProcessFormPage';
 import { BrowserRouter } from 'react-router-dom';
+import * as ProcessFormContext from '../../../../channel/ProcessForm/ProcessFormContext';
+import { ProcessFormGatewayApi } from '../../../../channel/ProcessForm/ProcessFormGatewayApi';
+import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
 
 jest.mock('../components/InlineEdit/InlineEdit');
+
 jest.mock('../../../containers/ProcessFormContainer/ProcessFormContainer');
+
+const mockHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
+    push: mockHistoryPush,
     location: {
       state: {
         processDefinition: {
@@ -36,15 +43,74 @@ jest.mock('react-router-dom', () => ({
   })
 }));
 
+const MockProcessFormGatewayApi = jest.fn<ProcessFormGatewayApi, []>(() => ({
+  setBusinessKey: jest.fn(),
+  getBusinessKey: jest.fn(),
+  currentBusinessKey: ''
+}));
+
+const MockDevUIApp = jest.fn(() => ({
+  getDevUIUrl: jest.fn()
+}));
+
+const gatewayApi = new MockProcessFormGatewayApi();
+
+const devUIApp = new MockDevUIApp();
+
+jest
+  .spyOn(DevUIAppContext, 'useDevUIAppContext')
+  .mockImplementation(() => devUIApp);
+
+jest
+  .spyOn(ProcessFormContext, 'useProcessFormGatewayApi')
+  .mockImplementation(() => gatewayApi);
+
 describe('ProcessFormPage tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
+      <BrowserRouter>
+        <ProcessFormPage />
+      </BrowserRouter>
+    );
+    expect(container).toMatchSnapshot();
+    const checkProcessForm = container.querySelector(
+      'section[data-ouia-component-type="process-form-page-section"]'
+    );
+    expect(checkProcessForm).toBeTruthy();
+    expect(container.querySelector('h1').textContent).toEqual('Start process1');
+  });
+  it('Test Go to process List in Alert component', () => {
+    render(
       <BrowserRouter>
         <ProcessFormPage />
       </BrowserRouter>
     );
 
-    expect(wrapper.find('ProcessFormPage')).toMatchSnapshot();
-    expect(wrapper.find('MockedProcessFormContainer').exists()).toBeTruthy();
+    const button = screen.getByText('Go to process list');
+    fireEvent.click(button);
+    expect(mockHistoryPush).toHaveBeenCalledWith('/Processes');
+  });
+
+  it('Test Go to process List in Alert component', () => {
+    render(
+      <BrowserRouter>
+        <ProcessFormPage />
+      </BrowserRouter>
+    );
+
+    const button = screen.getByText('Go to Process details');
+    fireEvent.click(button);
+    expect(mockHistoryPush).toHaveBeenCalledWith('/Processes');
+  });
+
+  it('Test close action in Alert component', () => {
+    render(
+      <BrowserRouter>
+        <ProcessFormPage />
+      </BrowserRouter>
+    );
+
+    const button = screen.getByTestId('close-button');
+    fireEvent.click(button);
   });
 });

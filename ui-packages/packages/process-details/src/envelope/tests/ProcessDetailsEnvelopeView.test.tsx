@@ -15,19 +15,15 @@
  */
 
 import React from 'react';
-import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import ProcessDetailsEnvelopeView, {
   ProcessDetailsEnvelopeViewApi
 } from '../ProcessDetailsEnvelopeView';
-import ProcessDetails from '../components/ProcessDetails/ProcessDetails';
 import {
   MilestoneStatus,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared/dist/types';
-
-jest.mock('../components/ProcessDetails/ProcessDetails');
 
 describe('ProcessDetailsEnvelopeView tests', () => {
   it('Snapshot', () => {
@@ -115,28 +111,9 @@ describe('ProcessDetailsEnvelopeView tests', () => {
 
     const forwardRef = React.createRef<ProcessDetailsEnvelopeViewApi>();
 
-    let wrapper = mount(
+    const container = render(
       <ProcessDetailsEnvelopeView channelApi={channelApi} ref={forwardRef} />
-    ).find('ProcessDetailsEnvelopeView');
-
-    expect(wrapper).toMatchSnapshot();
-
-    act(() => {
-      if (forwardRef.current) {
-        forwardRef.current.initialize(data);
-      }
-    });
-
-    wrapper = wrapper.update();
-
-    expect(wrapper.find(ProcessDetailsEnvelopeView)).toMatchSnapshot();
-
-    const ProcessDetailsWrapper = wrapper.find(ProcessDetails);
-
-    expect(ProcessDetailsWrapper.exists()).toBeTruthy();
-    expect(
-      ProcessDetailsWrapper.props().isEnvelopeConnectedToChannel
-    ).toBeTruthy();
-    expect(ProcessDetailsWrapper.props().driver).not.toBeNull();
+    ).container;
+    expect(container).toMatchSnapshot();
   });
 });

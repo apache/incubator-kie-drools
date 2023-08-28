@@ -16,7 +16,14 @@
 
 import React from 'react';
 
-const MockedWorkflowFormContainer = (): React.ReactElement => {
+const MockedWorkflowFormContainer = ({
+  onSubmitSuccess,
+  onSubmitError
+}): React.ReactElement => {
+  React.useEffect(() => {
+    onSubmitSuccess();
+    onSubmitError();
+  }, []);
   return <></>;
 };
 

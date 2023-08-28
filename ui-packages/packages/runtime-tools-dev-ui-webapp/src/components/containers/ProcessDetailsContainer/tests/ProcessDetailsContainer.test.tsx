@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import ProcessDetailsContainer from '../ProcessDetailsContainer';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
@@ -82,11 +82,13 @@ const appContextProps = {
 
 describe('WebApp - ProcessDetailsContainer tests', () => {
   it('Snapshot test with default values', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <ProcessDetailsContainer processInstance={processInstance} />
       </DevUIAppContextProvider>
     );
-    expect(wrapper.find('ProcessDetailsContainer')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
+
+    expect(container.querySelector('div')).toBeTruthy();
   });
 });

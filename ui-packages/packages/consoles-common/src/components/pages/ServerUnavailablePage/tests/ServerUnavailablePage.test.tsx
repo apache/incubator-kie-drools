@@ -15,11 +15,8 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
-import { EmptyStateBody } from '@patternfly/react-core/dist/js/components/EmptyState';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ServerUnavailablePage } from '../ServerUnavailablePage';
-import { act } from 'react-dom/test-utils';
 
 const reload = jest.fn();
 process.env.KOGITO_APP_NAME = 'Sample console';
@@ -29,23 +26,19 @@ describe('ServerUnavailablePage tests', () => {
     reload.mockClear();
   });
   it('Snapshot with default name', () => {
-    const wrapper = mount(<ServerUnavailablePage reload={reload} />).find(
-      'ServerUnavailablePage'
-    );
+    const { container } = render(<ServerUnavailablePage reload={reload} />);
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const emptystates = wrapper.find(EmptyStateBody);
+    const emptystates = screen.getAllByTestId('empty-state-body');
 
     expect(emptystates).toHaveLength(2);
-    expect(emptystates.first().text()).toContain(
+    expect(emptystates[0].textContent).toContain(
       `The ${process.env.KOGITO_APP_NAME} could not access the server to display content.`
     );
 
-    act(() => {
-      const reset = wrapper.find(Button);
-      reset.simulate('click');
-    });
+    const reset = screen.getByTestId('refresh-button');
+    fireEvent.click(reset);
 
     expect(reload).toHaveBeenCalled();
   });
@@ -53,23 +46,21 @@ describe('ServerUnavailablePage tests', () => {
   it('Snapshot with custom name', () => {
     const customDisplayName: string = 'My custom display Name';
 
-    const wrapper = mount(
+    const { container } = render(
       <ServerUnavailablePage displayName={customDisplayName} reload={reload} />
-    ).find('ServerUnavailablePage');
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const emptystates = wrapper.find(EmptyStateBody);
+    const emptystates = screen.getAllByTestId('empty-state-body');
 
     expect(emptystates).toHaveLength(2);
-    expect(emptystates.first().text()).toContain(
+    expect(emptystates[0].textContent).toContain(
       `The ${customDisplayName} could not access the server to display content.`
     );
 
-    act(() => {
-      const reset = wrapper.find(Button);
-      reset.simulate('click');
-    });
+    const reset = screen.getByTestId('refresh-button');
+    fireEvent.click(reset);
 
     expect(reload).toHaveBeenCalled();
   });

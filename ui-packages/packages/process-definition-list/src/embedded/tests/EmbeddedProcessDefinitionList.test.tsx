@@ -17,7 +17,7 @@
 import React from 'react';
 import { EmbeddedProcessDefinitionList } from '../EmbeddedProcessDefinitionList';
 import { MockedProcessDefinitionListDriver } from './utils/Mocks';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 describe('EmbeddedProcessDefinitionList tests', () => {
   it('Snapshot', () => {
@@ -28,14 +28,14 @@ describe('EmbeddedProcessDefinitionList tests', () => {
       singularProcessLabel: 'Workflow'
     };
 
-    const wrapper = mount(<EmbeddedProcessDefinitionList {...props} />);
+    const container = render(
+      <EmbeddedProcessDefinitionList {...props} />
+    ).container;
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
+    expect(container).toMatchSnapshot();
 
-    const contentDiv = wrapper.find('div');
+    const contentDiv = container.querySelector('div');
 
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(contentDiv).toBeTruthy();
   });
 });

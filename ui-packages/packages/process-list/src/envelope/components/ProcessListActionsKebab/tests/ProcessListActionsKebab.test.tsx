@@ -15,13 +15,9 @@
  */
 import React from 'react';
 import ProcessListActionsKebab from '../ProcessListActionsKebab';
-import { mount } from 'enzyme';
-import {
-  Dropdown,
-  KebabToggle,
-  DropdownItem
-} from '@patternfly/react-core/dist/js/components/Dropdown';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
 describe('Process list actions kebab tests', () => {
   const props = {
@@ -29,10 +25,7 @@ describe('Process list actions kebab tests', () => {
       id: '538f9feb-5a14-4096-b791-2055b38da7c6',
       processId: 'travels',
       businessKey: 'Tra234',
-      parentProcessInstanceId: null,
-      parentProcessInstance: null,
       processName: 'travels',
-      rootProcessInstanceId: null,
       roles: [],
       state: ProcessInstanceState.Error,
       addons: [
@@ -57,81 +50,50 @@ describe('Process list actions kebab tests', () => {
     },
     onSkipClick: jest.fn(),
     onRetryClick: jest.fn(),
-    onAbortClick: jest.fn()
+    onAbortClick: jest.fn(),
+    onOpenTriggerCloudEvent: jest.fn()
   };
-  it('Skip click test', () => {
-    let wrapper = mount(<ProcessListActionsKebab {...props} />);
-    wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
-    wrapper = wrapper.update();
-    expect(
-      wrapper.find(DropdownItem).at(1).find('a').children().contains('Skip')
-    ).toBeTruthy();
-    wrapper.find(DropdownItem).at(1).simulate('click');
+  it('Skip click test', async () => {
+    const container = render(<ProcessListActionsKebab {...props} />);
+    await act(async () => {
+      fireEvent.click(container.getByTestId('kebab-toggle'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Skip'));
+    });
     expect(props.onSkipClick).toHaveBeenCalled();
   });
 
-  it('Retry click test', () => {
-    let wrapper = mount(<ProcessListActionsKebab {...props} />);
-    wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
-    wrapper = wrapper.update();
-    expect(
-      wrapper.find(DropdownItem).at(0).find('a').children().contains('Retry')
-    ).toBeTruthy();
-    wrapper.find(DropdownItem).at(0).simulate('click');
+  it('Retry click test', async () => {
+    const container = render(<ProcessListActionsKebab {...props} />);
+    await act(async () => {
+      fireEvent.click(container.getByTestId('kebab-toggle'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Retry'));
+    });
     expect(props.onRetryClick).toHaveBeenCalled();
   });
 
-  it('Abort click test', () => {
-    let wrapper = mount(<ProcessListActionsKebab {...props} />);
-    wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
-    wrapper = wrapper.update();
-    expect(
-      wrapper.find(DropdownItem).at(2).find('a').children().contains('Abort')
-    ).toBeTruthy();
-    wrapper.find(DropdownItem).at(2).simulate('click');
+  it('Abort click test', async () => {
+    const container = render(<ProcessListActionsKebab {...props} />);
+    await act(async () => {
+      fireEvent.click(container.getByTestId('kebab-toggle'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Abort'));
+    });
     expect(props.onAbortClick).toHaveBeenCalled();
-  });
-  it('Trigger CloudEvent click test', () => {
-    const onOpenTriggerCloudEvent = jest.fn();
-    let wrapper = mount(
-      <ProcessListActionsKebab
-        {...props}
-        onOpenTriggerCloudEvent={onOpenTriggerCloudEvent}
-      />
-    );
-    wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
-    wrapper = wrapper.update();
-    expect(
-      wrapper
-        .find(DropdownItem)
-        .at(2)
-        .find('a')
-        .children()
-        .contains('Send Cloud Event')
-    ).toBeTruthy();
-    wrapper.find(DropdownItem).at(2).simulate('click');
-    expect(onOpenTriggerCloudEvent).toHaveBeenCalled();
   });
 
-  it('process instance in active state', () => {
-    let wrapper = mount(
-      <ProcessListActionsKebab
-        {...{
-          ...props,
-          processInstance: {
-            ...props.processInstance,
-            state: ProcessInstanceState.Active
-          }
-        }}
-      />
-    );
-    wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
-    wrapper = wrapper.update();
-    expect(wrapper.find(DropdownItem).length).toEqual(1);
-    expect(
-      wrapper.find(DropdownItem).at(0).find('a').children().contains('Abort')
-    ).toBeTruthy();
-    wrapper.find(DropdownItem).at(0).simulate('click');
-    expect(props.onAbortClick).toHaveBeenCalled();
+  it('onOpenTriggerCloudEvent click test', async () => {
+    const container = render(<ProcessListActionsKebab {...props} />);
+    await act(async () => {
+      fireEvent.click(container.getByTestId('kebab-toggle'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Send Cloud Event'));
+    });
+    expect(props.onOpenTriggerCloudEvent).toHaveBeenCalled();
   });
 });

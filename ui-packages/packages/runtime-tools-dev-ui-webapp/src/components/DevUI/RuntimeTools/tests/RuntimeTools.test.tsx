@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import RuntimeTools from '../RuntimeTools';
@@ -23,7 +23,7 @@ jest.mock('apollo-link-http');
 jest.mock('../../DevUILayout/DevUILayout');
 describe('Runtime Tools tests', () => {
   it('Snapshot tests with default props', () => {
-    const wrapper = mount(
+    const { container } = render(
       <MemoryRouter initialEntries={['/']} keyLength={0}>
         <RuntimeTools
           users={[{ id: 'John snow', groups: ['admin'] }]}
@@ -38,6 +38,6 @@ describe('Runtime Tools tests', () => {
       </MemoryRouter>
     );
 
-    expect(wrapper.find('RuntimeTools')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

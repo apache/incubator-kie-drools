@@ -1,437 +1,115 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TaskInboxPage tests Snapshot 1`] = `
-<TaskInboxPage>
-  <PageSection
+<div>
+  <section
+    class="pf-c-page__main-section pf-m-light"
     data-ouia-component-id="header-[object Object]"
     data-ouia-component-type="task-inbox-page"
-    data-ouia-safe={Object {}}
-    variant="light"
+    data-ouia-safe="[object Object]"
   >
-    <section
-      className="pf-c-page__main-section pf-m-light"
-      data-ouia-component-id="header-[object Object]"
-      data-ouia-component-type="task-inbox-page"
-      data-ouia-safe={Object {}}
+    <div
+      class="pf-l-grid"
     >
-      <Grid>
+      <div
+        class="pf-l-grid__item pf-m-10-col"
+      >
         <div
-          className="pf-l-grid"
+          class="pf-l-flex"
+          data-ouia-component-type="page-title"
+          data-ouia-safe="true"
         >
-          <GridItem
-            span={10}
+          <div
+            class="pf-m-spacer-sm"
           >
-            <div
-              className="pf-l-grid__item pf-m-10-col"
+            <h1
+              class="pf-c-title pf-m-4xl"
+              data-ouia-component-id="OUIA-Generated-Title-1"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe="true"
             >
-              <PageTitle
-                title="Task Inbox"
-              >
-                <Flex
-                  data-ouia-component-type="page-title"
-                  data-ouia-safe={true}
-                >
-                  <div
-                    className="pf-l-flex"
-                    data-ouia-component-type="page-title"
-                    data-ouia-safe={true}
-                  >
-                    <FlexItem
-                      spacer={
-                        Object {
-                          "default": "spacerSm",
-                        }
-                      }
-                    >
-                      <div
-                        className="pf-m-spacer-sm"
-                      >
-                        <Title
-                          headingLevel="h1"
-                          size="4xl"
-                        >
-                          <h1
-                            className="pf-c-title pf-m-4xl"
-                            data-ouia-component-id="OUIA-Generated-Title-1"
-                            data-ouia-component-type="PF4/Title"
-                            data-ouia-safe={true}
-                          >
-                            Task Inbox
-                          </h1>
-                        </Title>
-                      </div>
-                    </FlexItem>
-                  </div>
-                </Flex>
-              </PageTitle>
-            </div>
-          </GridItem>
-          <GridItem
-            span={2}
-          >
-            <div
-              className="pf-l-grid__item pf-m-2-col"
-            >
-              <TaskInboxSwitchUser
-                user="John snow"
-              >
-                <Dropdown
-                  className="DevUI-switchUser-dropdown-styling"
-                  data-ouia-component-type="task-inbox-switch-user"
-                  data-ouia-safe={true}
-                  dropdownItems={
-                    Array [
-                      <DropdownItem>
-                        John snow
-                      </DropdownItem>,
-                    ]
-                  }
-                  isOpen={false}
-                  isPlain={true}
-                  onSelect={[Function]}
-                  toggle={
-                    <DropdownToggle
-                      aria-label="Applications"
-                      icon={
-                        <UserIcon
-                          color="currentColor"
-                          noVerticalAlign={false}
-                          size="sm"
-                        />
-                      }
-                      id="toggle-id-7"
-                      onToggle={[Function]}
-                      toggleIndicator={[Function]}
-                    >
-                      John snow
-                    </DropdownToggle>
-                  }
-                >
-                  <DropdownWithContext
-                    autoFocus={true}
-                    className="DevUI-switchUser-dropdown-styling"
-                    data-ouia-component-type="task-inbox-switch-user"
-                    data-ouia-safe={true}
-                    direction="down"
-                    dropdownItems={
-                      Array [
-                        <DropdownItem>
-                          John snow
-                        </DropdownItem>,
-                      ]
-                    }
-                    isFlipEnabled={true}
-                    isGrouped={false}
-                    isOpen={false}
-                    isPlain={true}
-                    isText={false}
-                    menuAppendTo="inline"
-                    onSelect={[Function]}
-                    position="left"
-                    removeFindDomNode={false}
-                    toggle={
-                      <DropdownToggle
-                        aria-label="Applications"
-                        icon={
-                          <UserIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                          />
-                        }
-                        id="toggle-id-7"
-                        onToggle={[Function]}
-                        toggleIndicator={[Function]}
-                      >
-                        John snow
-                      </DropdownToggle>
-                    }
-                    zIndex={9999}
-                  >
-                    <div
-                      className="pf-c-dropdown DevUI-switchUser-dropdown-styling"
-                      data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                      data-ouia-component-type="PF4/Dropdown"
-                      data-ouia-safe={true}
-                    >
-                      <DropdownToggle
-                        aria-haspopup={true}
-                        aria-label="Applications"
-                        getMenuRef={[Function]}
-                        icon={
-                          <UserIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
-                          />
-                        }
-                        id="toggle-id-7"
-                        isOpen={false}
-                        isPlain={true}
-                        isText={false}
-                        key=".0"
-                        onEnter={[Function]}
-                        onToggle={[Function]}
-                        parentRef={
-                          Object {
-                            "current": <div
-                              class="pf-c-dropdown DevUI-switchUser-dropdown-styling"
-                              data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                              data-ouia-component-type="PF4/Dropdown"
-                              data-ouia-safe="true"
-                            >
-                              <button
-                                aria-expanded="false"
-                                aria-haspopup="true"
-                                aria-label="Applications"
-                                class="pf-c-dropdown__toggle pf-m-plain"
-                                data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                                data-ouia-component-type="PF4/DropdownToggle"
-                                data-ouia-safe="true"
-                                id="toggle-id-7"
-                                type="button"
-                              >
-                                <span
-                                  class="pf-c-dropdown__toggle-image"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    height="1em"
-                                    role="img"
-                                    style="vertical-align: -0.125em;"
-                                    viewBox="0 0 448 512"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
-                                    />
-                                  </svg>
-                                </span>
-                                <span
-                                  class="pf-c-dropdown__toggle-text"
-                                >
-                                  John snow
-                                </span>
-                                <span
-                                  class="pf-c-dropdown__toggle-icon"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    height="1em"
-                                    role="img"
-                                    style="vertical-align: -0.125em;"
-                                    viewBox="0 0 320 512"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                    />
-                                  </svg>
-                                </span>
-                              </button>
-                            </div>,
-                          }
-                        }
-                        toggleIndicator={[Function]}
-                      >
-                        <Toggle
-                          aria-haspopup={true}
-                          aria-label="Applications"
-                          bubbleEvent={false}
-                          className=""
-                          data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                          data-ouia-component-type="PF4/DropdownToggle"
-                          data-ouia-safe={true}
-                          getMenuRef={[Function]}
-                          id="toggle-id-7"
-                          isActive={false}
-                          isDisabled={false}
-                          isOpen={false}
-                          isPlain={true}
-                          isPrimary={false}
-                          isSplitButton={false}
-                          isText={false}
-                          onEnter={[Function]}
-                          onToggle={[Function]}
-                          parentRef={
-                            Object {
-                              "current": <div
-                                class="pf-c-dropdown DevUI-switchUser-dropdown-styling"
-                                data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                                data-ouia-component-type="PF4/Dropdown"
-                                data-ouia-safe="true"
-                              >
-                                <button
-                                  aria-expanded="false"
-                                  aria-haspopup="true"
-                                  aria-label="Applications"
-                                  class="pf-c-dropdown__toggle pf-m-plain"
-                                  data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                                  data-ouia-component-type="PF4/DropdownToggle"
-                                  data-ouia-safe="true"
-                                  id="toggle-id-7"
-                                  type="button"
-                                >
-                                  <span
-                                    class="pf-c-dropdown__toggle-image"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style="vertical-align: -0.125em;"
-                                      viewBox="0 0 448 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
-                                      />
-                                    </svg>
-                                  </span>
-                                  <span
-                                    class="pf-c-dropdown__toggle-text"
-                                  >
-                                    John snow
-                                  </span>
-                                  <span
-                                    class="pf-c-dropdown__toggle-icon"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style="vertical-align: -0.125em;"
-                                      viewBox="0 0 320 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                      />
-                                    </svg>
-                                  </span>
-                                </button>
-                              </div>,
-                            }
-                          }
-                          toggleVariant="default"
-                        >
-                          <button
-                            aria-expanded={false}
-                            aria-haspopup={true}
-                            aria-label="Applications"
-                            className="pf-c-dropdown__toggle pf-m-plain"
-                            data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                            data-ouia-component-type="PF4/DropdownToggle"
-                            data-ouia-safe={true}
-                            disabled={false}
-                            id="toggle-id-7"
-                            onClick={[Function]}
-                            onKeyDown={[Function]}
-                            type="button"
-                          >
-                            <span
-                              className="pf-c-dropdown__toggle-image"
-                            >
-                              <UserIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                              >
-                                <svg
-                                  aria-hidden={true}
-                                  aria-labelledby={null}
-                                  fill="currentColor"
-                                  height="1em"
-                                  role="img"
-                                  style={
-                                    Object {
-                                      "verticalAlign": "-0.125em",
-                                    }
-                                  }
-                                  viewBox="0 0 448 512"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
-                                  />
-                                </svg>
-                              </UserIcon>
-                            </span>
-                            <span
-                              className="pf-c-dropdown__toggle-text"
-                            >
-                              John snow
-                            </span>
-                            <span
-                              className="pf-c-dropdown__toggle-icon"
-                            >
-                              <CaretDownIcon
-                                color="currentColor"
-                                noVerticalAlign={false}
-                                size="sm"
-                              >
-                                <svg
-                                  aria-hidden={true}
-                                  aria-labelledby={null}
-                                  fill="currentColor"
-                                  height="1em"
-                                  role="img"
-                                  style={
-                                    Object {
-                                      "verticalAlign": "-0.125em",
-                                    }
-                                  }
-                                  viewBox="0 0 320 512"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                  />
-                                </svg>
-                              </CaretDownIcon>
-                            </span>
-                          </button>
-                        </Toggle>
-                      </DropdownToggle>
-                    </div>
-                  </DropdownWithContext>
-                </Dropdown>
-              </TaskInboxSwitchUser>
-            </div>
-          </GridItem>
+              Task Inbox
+            </h1>
+          </div>
         </div>
-      </Grid>
-    </section>
-  </PageSection>
-  <PageSection
+      </div>
+      <div
+        class="pf-l-grid__item pf-m-2-col"
+      >
+        <div
+          class="pf-c-dropdown DevUI-switchUser-dropdown-styling"
+          data-ouia-component-id="OUIA-Generated-Dropdown-1"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-label="Applications"
+            class="pf-c-dropdown__toggle pf-m-plain"
+            data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
+            data-ouia-component-type="PF4/DropdownToggle"
+            data-ouia-safe="true"
+            id="toggle-id-7"
+            type="button"
+          >
+            <span
+              class="pf-c-dropdown__toggle-image"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
+                />
+              </svg>
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-text"
+            >
+              John snow
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-icon"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 320 512"
+                width="1em"
+              >
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    class="pf-c-page__main-section"
     data-ouia-component-id="content-[object Object]"
     data-ouia-component-type="task-inbox-page-section"
-    data-ouia-safe={Object {}}
+    data-ouia-safe="[object Object]"
   >
-    <section
-      className="pf-c-page__main-section"
-      data-ouia-component-id="content-[object Object]"
-      data-ouia-component-type="task-inbox-page-section"
-      data-ouia-safe={Object {}}
-    >
-      <Card
-        className="Dev-ui__card-size"
-      >
-        <article
-          className="pf-c-card Dev-ui__card-size"
-          data-ouia-component-id="OUIA-Generated-Card-1"
-          data-ouia-component-type="PF4/Card"
-          data-ouia-safe={true}
-          id=""
-        >
-          <MockedTaskInboxContainer />
-        </article>
-      </Card>
-    </section>
-  </PageSection>
-</TaskInboxPage>
+    <article
+      class="pf-c-card Dev-ui__card-size"
+      data-ouia-component-id="OUIA-Generated-Card-1"
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe="true"
+      id=""
+    />
+  </section>
+</div>
 `;

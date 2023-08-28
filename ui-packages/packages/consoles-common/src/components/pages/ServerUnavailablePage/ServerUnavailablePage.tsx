@@ -58,14 +58,18 @@ export const ServerUnavailablePage: React.FC<Props & OUIAProps> = ({
           <Title headingLevel="h1" size="4xl">
             Error connecting server
           </Title>
-          <EmptyStateBody>
+          <EmptyStateBody data-testid="empty-state-body">
             {`The ${name} could not access the server to display content.`}
           </EmptyStateBody>
-          <EmptyStateBody>
+          <EmptyStateBody data-testid="empty-state-body">
             Try reloading the page, or contact your administrator for more
             information.
           </EmptyStateBody>
-          <Button variant="primary" onClick={reload}>
+          <Button
+            variant="primary"
+            onClick={reload}
+            data-testid="refresh-button"
+          >
             Refresh
           </Button>
         </EmptyState>

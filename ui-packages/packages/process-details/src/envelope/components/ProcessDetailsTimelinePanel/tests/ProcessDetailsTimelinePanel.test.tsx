@@ -15,21 +15,15 @@
  */
 
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ProcessDetailsTimelinePanel from '../ProcessDetailsTimelinePanel';
 import {
   JobStatus,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared/dist/types';
 import { act } from 'react-dom/test-utils';
-import {
-  Dropdown,
-  DropdownItem,
-  KebabToggle
-} from '@patternfly/react-core/dist/js/components/Dropdown';
-import wait from 'waait';
-import * as Utils from '../../../../utils/Utils';
 import TestProcessDetailsDriver from '../../../tests/mocks/TestProcessDetailsDriver';
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
 const MockedIcon = (): React.ReactElement => {
   return <></>;
@@ -73,6 +67,20 @@ jest.mock('@patternfly/react-icons/dist/js/icons/outlined-clock-icon', () =>
       return <MockedIcon />;
     }
   })
+);
+
+jest.mock(
+  '@kogito-apps/management-console-shared/dist/components/JobsRescheduleModal/JobsRescheduleModal',
+  () =>
+    Object.assign(
+      {},
+      jest.requireActual('@kogito-apps/management-console-shared'),
+      {
+        JobsRescheduleModal: () => {
+          return <></>;
+        }
+      }
+    )
 );
 
 const driver = new TestProcessDetailsDriver(
@@ -314,13 +322,22 @@ const props3 = {
         enter: new Date('2019-10-22T04:43:01.144Z'),
         exit: null,
         type: 'HumanTaskNode'
+      },
+      {
+        name: 'Jobs',
+        definitionId: 'StartJob_1',
+        id: '6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2',
+        nodeId: '123-456-789',
+        enter: new Date('2019-10-22T04:43:01.144Z'),
+        exit: null,
+        type: 'HumanTaskNode'
       }
     ],
     childProcessInstances: []
   },
   jobs: [
     {
-      id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+      id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0111111',
       processId: 'travels',
       processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
       rootProcessId: null,
@@ -335,6 +352,24 @@ const props3 = {
       lastUpdate: new Date('2020-08-27T03:35:50.147Z'),
       expirationTime: null,
       endpoint: 'http://localhost:4000'
+    },
+    {
+      id: '6e74a570-31c8-4020-bd70-19be2cb625f3_0111111',
+      processId: 'travels1111',
+      processInstanceId: '5c56eeff-4cbf-3313-a325-4c895e0afced',
+      rootProcessId: null,
+      status: JobStatus.Scheduled,
+      priority: 0,
+      callbackEndpoint:
+        'http://localhost:8080/management/jobs/travels/instances/5c56eeff-4cbf-3313-a325-4c895e0afced/timers/6e74a570-31c8-4020-bd70-19be2cb625f3_0',
+      repeatInterval: null,
+      repeatLimit: null,
+      scheduledId: '0',
+      retries: 0,
+      lastUpdate: new Date('2020-08-27T03:35:50.147Z'),
+      expirationTime: null,
+      endpoint: 'http://localhost:4000',
+      nodeInstanceId: ''
     }
   ],
   driver,
@@ -400,375 +435,221 @@ const props4 = {
 
 describe('ProcessDetailsTimelinePanel component tests', () => {
   it('Snapshot testing for service url available', () => {
-    const wrapper = shallow(<ProcessDetailsTimelinePanel {...props1} />);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessDetailsTimelinePanel {...props1} />);
+    expect(container).toMatchSnapshot();
   });
 
   it('Snapshot testing for no service url', () => {
-    const wrapper = shallow(<ProcessDetailsTimelinePanel {...props2} />);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessDetailsTimelinePanel {...props2} />);
+    expect(container).toMatchSnapshot();
   });
 
   it('Snapshot testing for completed state', () => {
-    const wrapper = shallow(<ProcessDetailsTimelinePanel {...props3} />);
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessDetailsTimelinePanel {...props3} />);
+    expect(container).toMatchSnapshot();
   });
 
-  it('onKebabToggle click test', async () => {
-    let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
+  it('skip test success', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleSkipMock = jest.spyOn(driver, 'handleProcessSkip');
+    driverHandleSkipMock.mockResolvedValue();
     await act(async () => {
-      wrapper
-        .find(Dropdown)
-        .at(0)
-        .find(KebabToggle)
-        .find('button')
-        .simulate('click');
-      await wait(0);
-      wrapper = wrapper.update();
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-0'));
     });
-    expect(wrapper.find(Dropdown).at(0).props()['isOpen']).toBeTruthy();
+    await waitFor(() => screen.getAllByText('Skip'));
     await act(async () => {
-      wrapper
-        .find(Dropdown)
-        .at(0)
-        .find(KebabToggle)
-        .find('button')
-        .simulate('click');
-      await wait(0);
-      wrapper = wrapper.update();
+      fireEvent.click(screen.getByTestId('skip'));
     });
-    expect(wrapper.find(Dropdown).at(0).props()['isOpen']).toBeFalsy();
+
+    expect(driverHandleSkipMock).toHaveBeenCalled();
   });
 
-  describe('handleSkip tests', () => {
-    const handleSkipSpy = jest.spyOn(Utils, 'handleSkip');
-    it('success test', async () => {
-      const mockDriverHandleSkipSuccess = jest.spyOn(
-        driver,
-        'handleProcessSkip'
-      );
+  it('skip test failure', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleSkipMock = jest.spyOn(driver, 'handleProcessSkip');
+    driverHandleSkipMock.mockRejectedValue('Error');
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-0'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-0'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-0'));
+    });
+    await waitFor(() => screen.getAllByText('Skip'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('skip'));
+    });
 
-      mockDriverHandleSkipSuccess.mockResolvedValue();
-      // let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      let wrapper;
-      await act(async () => {
-        wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      });
-      wrapper = wrapper.update();
-      await act(async () => {
-        wrapper
-          .find('Dropdown')
-          .at(0)
-          .find('KebabToggle')
-          .find('button')
-          .simulate('click');
-      });
-      // await wait(0);
-      wrapper = wrapper.update();
-      await act(async () => {
-        wrapper.find('DropdownItem').at(1).simulate('click');
-      });
-      // await wait(0);
-      wrapper = wrapper.update();
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Confirm travel was successfully skipped.'
-      );
-      expect(handleSkipSpy).toHaveBeenCalled();
-    });
-    it('failure', async () => {
-      // mockedAxios.post.mockRejectedValue({ message: '403 error' });
-      const mockDriverHandleSkipFalied = jest.spyOn(
-        driver,
-        'handleProcessSkip'
-      );
-      mockDriverHandleSkipFalied.mockRejectedValue(new Error('403 error'));
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(0)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper.find(DropdownItem).at(1).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Confirm travel failed to skip. Message: "403 error"'
-      );
-      expect(handleSkipSpy).toHaveBeenCalled();
-    });
+    expect(driverHandleSkipMock).toHaveBeenCalled();
   });
 
-  describe('nodeInstanceRetrigger tests', () => {
-    const handleNodeInstanceRetriggerSpy = jest.spyOn(
-      Utils,
+  it('retry test success', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleRetryMock = jest.spyOn(driver, 'handleProcessRetry');
+    driverHandleRetryMock.mockResolvedValue();
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-0'));
+    });
+    await waitFor(() => screen.getAllByText('Retry'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('retry'));
+    });
+
+    expect(driverHandleRetryMock).toHaveBeenCalled();
+  });
+
+  it('retry test failure', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleRetryMock = jest.spyOn(driver, 'handleProcessRetry');
+    driverHandleRetryMock.mockRejectedValue('Error');
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-0'));
+    });
+    await waitFor(() => screen.getAllByText('Retry'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('retry'));
+    });
+
+    expect(driverHandleRetryMock).toHaveBeenCalled();
+  });
+
+  it('retrigger test success', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleNodeInstanceRetrigger = jest.spyOn(
+      driver,
       'handleNodeInstanceRetrigger'
     );
-    it('success test', async () => {
-      const handleNodeInstanceRetriggerSuccess = jest.spyOn(
-        driver,
-        'handleNodeInstanceRetrigger'
-      );
-      handleNodeInstanceRetriggerSuccess.mockResolvedValue();
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
+    driverHandleNodeInstanceRetrigger.mockResolvedValue();
 
-        wrapper.find(DropdownItem).at(0).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Book flight was successfully retriggered.'
-      );
-      expect(handleNodeInstanceRetriggerSpy).toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
     });
-    it('failure', async () => {
-      const handleNodeInstanceRetriggerFailed = jest.spyOn(
-        driver,
-        'handleNodeInstanceRetrigger'
-      );
-      handleNodeInstanceRetriggerFailed.mockRejectedValue(
-        new Error('403 error')
-      );
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper.find(DropdownItem).at(0).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Book flight failed to retrigger. Message: "403 error"'
-      );
-      expect(handleNodeInstanceRetriggerSpy).toHaveBeenCalled();
+    await waitFor(() => screen.getAllByText('Retrigger node'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('retrigger'));
     });
+
+    expect(driverHandleNodeInstanceRetrigger).toHaveBeenCalled();
   });
 
-  describe('nodeInstanceCancel tests', () => {
-    const handleNodeInstanceCancelSpy = jest.spyOn(
-      Utils,
+  it('retrigger test failure', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleNodeInstanceRetrigger = jest.spyOn(
+      driver,
+      'handleNodeInstanceRetrigger'
+    );
+    driverHandleNodeInstanceRetrigger.mockRejectedValue('Error');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
+    });
+    await waitFor(() => screen.getAllByText('Retrigger node'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('retrigger'));
+    });
+
+    expect(driverHandleNodeInstanceRetrigger).toHaveBeenCalled();
+  });
+
+  it('cancel test success', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleNodeInstanceCancel = jest.spyOn(
+      driver,
       'handleNodeInstanceCancel'
     );
-    it('success test', async () => {
-      const handleNodeInstanceCancelSuccess = jest.spyOn(
-        driver,
-        'handleNodeInstanceCancel'
-      );
-      handleNodeInstanceCancelSuccess.mockResolvedValue();
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper.find(DropdownItem).at(1).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Book flight was successfully canceled.'
-      );
-      expect(handleNodeInstanceCancelSpy).toHaveBeenCalled();
+    driverHandleNodeInstanceCancel.mockResolvedValue();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
     });
-    it('failure', async () => {
-      const handleNodeInstanceCancelFailed = jest.spyOn(
-        driver,
-        'handleNodeInstanceCancel'
-      );
-      handleNodeInstanceCancelFailed.mockRejectedValue(new Error('403 error'));
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper.find(DropdownItem).at(1).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Book flight failed to cancel. Message: "403 error"'
-      );
-      expect(handleNodeInstanceCancelSpy).toHaveBeenCalled();
+    await waitFor(() => screen.getAllByText('Cancel node'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('cancel'));
     });
+
+    expect(driverHandleNodeInstanceCancel).toHaveBeenCalled();
   });
 
-  describe('handleRetry tests', () => {
-    const handleRetrySpy = jest.spyOn(Utils, 'handleRetry');
-    it('success test', async () => {
-      const handleRetrySpySuccess = jest.spyOn(driver, 'handleProcessRetry');
-      handleRetrySpySuccess.mockResolvedValue();
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(0)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper.find(DropdownItem).at(0).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Confirm travel was successfully re-executed.'
-      );
-      expect(handleRetrySpy).toHaveBeenCalled();
+  it('cancel test failure', async () => {
+    render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverHandleNodeInstanceCancel = jest.spyOn(
+      driver,
+      'handleNodeInstanceCancel'
+    );
+    driverHandleNodeInstanceCancel.mockRejectedValue('Error');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
     });
-    it('failure', async () => {
-      const handleRetrySpyFailed = jest.spyOn(driver, 'handleProcessRetry');
-      handleRetrySpyFailed.mockRejectedValue(new Error('403 error'));
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(0)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-        wrapper.find(DropdownItem).at(0).simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(wrapper.find('ProcessInfoModal').props()['modalContent']).toEqual(
-        'The node Confirm travel failed to re-execute. Message: "403 error"'
-      );
-      expect(handleRetrySpy).toHaveBeenCalled();
+    await waitFor(() => screen.getAllByText('Cancel node'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('cancel'));
     });
+
+    expect(driverHandleNodeInstanceCancel).toHaveBeenCalled();
   });
-  describe('test job actions on nodes', () => {
-    it('test job details action', async () => {
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(0)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      await act(async () => {
-        wrapper.find('#job-details').first().simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(
-        wrapper.find('JobsDetailsModal').props()['isModalOpen']
-      ).toBeTruthy();
+
+  it('job details click', async () => {
+    const container = render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverJobsQuery = jest.spyOn(driver, 'jobsQuery');
+    driverJobsQuery.mockResolvedValue(new Promise((r) => r([])));
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
     });
-    it('test job reschedule action', async () => {
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      await act(async () => {
-        wrapper.find('#job-reschedule').first().simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(
-        wrapper.find('JobsRescheduleModal').props()['isModalOpen']
-      ).toBeTruthy();
+
+    await waitFor(() => screen.getAllByText('Job Details'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('job-details'));
     });
-    it('test job cancel action with success response', async () => {
-      const modalTitle = 'success';
-      const modalContent =
-        'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 is canceled successfully';
-      const cancelJobSuccess = jest.spyOn(driver, 'cancelJob');
-      cancelJobSuccess.mockImplementationOnce(() =>
-        Promise.resolve({ modalTitle, modalContent })
-      );
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      await act(async () => {
-        wrapper.find('#job-cancel').first().simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(
-        wrapper.find('JobsCancelModal').props()['isModalOpen']
-      ).toBeTruthy();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('job reschedule', async () => {
+    const container = render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverRescheduleJob = jest.spyOn(driver, 'rescheduleJob');
+    driverRescheduleJob.mockResolvedValue(
+      new Promise((r) =>
+        r({
+          modalTitle: 'Mock Reschedule',
+          modalContent: 'success'
+        })
+      )
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
     });
-    it('test job cancel action with error response', async () => {
-      const modalTitle = 'failure';
-      const modalContent =
-        'The job: 6e74a570-31c8-4020-bd70-19be2cb625f3_0 failed. Message: 404 not found';
-      const cancelJobFailed = jest.spyOn(driver, 'cancelJob');
-      cancelJobFailed.mockImplementationOnce(() =>
-        Promise.resolve({ modalTitle, modalContent })
-      );
-      let wrapper = mount(<ProcessDetailsTimelinePanel {...props1} />);
-      await act(async () => {
-        wrapper
-          .find(Dropdown)
-          .at(1)
-          .find(KebabToggle)
-          .find('button')
-          .simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      await act(async () => {
-        wrapper.find('#job-cancel').first().simulate('click');
-        await wait(0);
-        wrapper = wrapper.update();
-      });
-      expect(
-        wrapper.find('JobsCancelModal').props()['isModalOpen']
-      ).toBeTruthy();
+    await waitFor(() => screen.getAllByText('Job Reschedule'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('job-reschedule'));
     });
-    it('test options when there are no jobs', async () => {
-      const wrapper = mount(<ProcessDetailsTimelinePanel {...props4} />);
-      expect(wrapper).toMatchSnapshot();
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('job cancel', async () => {
+    const container = render(<ProcessDetailsTimelinePanel {...props1} />);
+    const driverCancelJob = jest.spyOn(driver, 'cancelJob');
+    driverCancelJob.mockResolvedValue(
+      new Promise((r) =>
+        r({
+          modalTitle: 'Mock Cancel',
+          modalContent: 'success'
+        })
+      )
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('timeline-kebab-toggle-2'));
     });
+    await waitFor(() => screen.getAllByText('Job Cancel'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('job-cancel'));
+    });
+    expect(container).toMatchSnapshot();
   });
 });

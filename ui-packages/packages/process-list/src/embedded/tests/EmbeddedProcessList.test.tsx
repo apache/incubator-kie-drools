@@ -17,7 +17,7 @@
 import React from 'react';
 import { EmbeddedProcessList } from '../EmbeddedProcessList';
 import { MockedProcessListDriver } from './utils/Mocks';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import {
   ProcessInstanceState,
   OrderBy
@@ -43,15 +43,10 @@ describe('EmbeddedProcessList tests', () => {
       isWorkflow: true
     };
 
-    const wrapper = mount(<EmbeddedProcessList {...props} />);
+    const container = render(<EmbeddedProcessList {...props} />).container;
 
-    expect(wrapper).toMatchSnapshot();
-
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
-
-    const contentDiv = wrapper.find('div');
-
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+    const contentDiv = container.querySelector('div');
+    expect(contentDiv).toBeTruthy();
   });
 });

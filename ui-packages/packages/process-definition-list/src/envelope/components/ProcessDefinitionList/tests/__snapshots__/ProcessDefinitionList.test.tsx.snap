@@ -1,515 +1,764 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessDefinition list tests render ProcessDefinition list - table 1`] = `
-<ProcessDefinitionList
-  driver={MockedProcessDefinitionListDriver {}}
-  isEnvelopeConnectedToChannel={true}
-  singularProcessLabel="Workflow"
->
+<div>
   <div
     data-ouia-component-type="process-definition-list"
-    data-ouia-safe={false}
+    data-ouia-safe="true"
   >
-    <MockedProcessDefinitionListToolbar
-      applyFilter={[Function]}
-      filterProcessNames={Array []}
-      setFilterProcessNames={[Function]}
-      singularProcessLabel="Workflow"
-    />
-    <Divider>
-      <hr
-        className="pf-c-divider"
-      />
-    </Divider>
-    <DataTable
-      LoadingComponent={
-        <Bullseye>
-          <KogitoSpinner
-            ouiaId="forms-list-loading-process-definitions"
-            spinnerText="Loading workflow definitions..."
-          />
-        </Bullseye>
-      }
-      columns={
-        Array [
-          Object {
-            "bodyCellTransformer": [Function],
-            "label": "Workflow Name",
-            "path": "processName",
-          },
-          Object {
-            "bodyCellTransformer": [Function],
-            "label": "Endpoint",
-            "path": "endpoint",
-          },
-          Object {
-            "bodyCellTransformer": [Function],
-            "label": "Actions",
-            "path": "actions",
-          },
-        ]
-      }
-      data={Array []}
-      error={false}
-      isLoading={true}
+    <div
+      class="pf-c-toolbar pf-m-toggle-group-container"
+      data-ouia-component-id="OUIA-Generated-Toolbar-2"
+      data-ouia-component-type="process-definition-list-toolbar"
+      data-ouia-safe="true"
+      id="process-definition-list-with-filter"
     >
-      <Table
-        actionsMenuAppendTo="inline"
-        aria-label="Data Table"
-        borders={true}
-        canCollapseAll={false}
-        canSelectAll={true}
-        canSortFavorites={true}
-        cells={Array []}
-        className=""
-        collapseAllAriaLabel=""
-        contentId="expanded-content"
-        data-ouia-component-type="data-table"
-        data-ouia-safe={false}
-        dropdownDirection="down"
-        dropdownPosition="right"
-        expandId="expandable-toggle"
-        gridBreakPoint="grid-md"
-        isHeaderSelectDisabled={false}
-        isNested={false}
-        isStickyHeader={false}
-        isTreeTable={false}
-        onSort={[Function]}
-        ouiaSafe={true}
-        role="grid"
-        rowLabeledBy="simple-node"
-        rows={Array []}
-        selectVariant="checkbox"
-        variant={null}
+      <div
+        class="pf-c-toolbar__content"
       >
-        <Provider
-          aria-label="Data Table"
-          borders={true}
-          className=""
-          columns={Array []}
-          data-ouia-component-type="data-table"
-          data-ouia-safe={false}
-          gridBreakPoint="grid-md"
-          isNested={false}
-          isStickyHeader={false}
-          isTreeTable={false}
-          ouiaSafe={true}
-          renderers={
-            Object {
-              "body": Object {
-                "cell": [Function],
-                "row": [Function],
-                "wrapper": [Function],
-              },
-              "header": Object {
-                "cell": [Function],
-              },
-            }
-          }
-          role="grid"
-          variant={null}
+        <div
+          class="pf-c-toolbar__content-section"
         >
-          <TableComposable
-            aria-label="Data Table"
-            borders={true}
-            className=""
-            data-ouia-component-type="data-table"
-            data-ouia-safe={false}
-            gridBreakPoint="grid-md"
-            isNested={false}
-            isStickyHeader={false}
-            isTreeTable={false}
-            ouiaSafe={true}
-            role="grid"
-            variant={null}
+          <div
+            class="pf-c-toolbar__group pf-m-toggle-group pf-m-show-on-xl"
           >
-            <TableComposableBase
-              aria-label="Data Table"
-              borders={true}
-              className=""
-              data-ouia-component-type="data-table"
-              data-ouia-safe={false}
-              gridBreakPoint="grid-md"
-              innerRef={null}
-              isNested={false}
-              isStickyHeader={false}
-              isTreeTable={false}
-              ouiaSafe={true}
-              role="grid"
-              variant={null}
+            <div
+              class="pf-c-toolbar__toggle"
             >
-              <table
-                aria-label="Data Table"
-                className="pf-c-table pf-m-grid-md"
-                data-ouia-component-id="OUIA-Generated-Table-4"
-                data-ouia-component-type="data-table"
-                data-ouia-safe={false}
-                role="grid"
+              <button
+                aria-controls="process-definition-list-with-filter-expandable-content-7"
+                aria-disabled="false"
+                aria-haspopup="false"
+                aria-label="Show Filters"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                type="button"
               >
-                <TableHeader>
-                  <ContextHeader
-                    headerRows={null}
-                  >
-                    <Header
-                      className=""
-                      headerRows={null}
-                    >
-                      <BaseHeader
-                        className=""
-                        columns={Array []}
-                        headerRows={null}
-                        renderers={
-                          Object {
-                            "body": Object {
-                              "cell": [Function],
-                              "row": [Function],
-                              "wrapper": [Function],
-                            },
-                            "header": Object {
-                              "cell": [Function],
-                              "row": Object {
-                                "$$typeof": Symbol(react.forward_ref),
-                                "render": [Function],
-                              },
-                              "wrapper": Object {
-                                "$$typeof": Symbol(react.forward_ref),
-                                "render": [Function],
-                              },
-                            },
-                            "table": Object {
-                              "$$typeof": Symbol(react.forward_ref),
-                              "render": [Function],
-                            },
-                          }
-                        }
-                      >
-                        <Thead
-                          className=""
-                        >
-                          <TheadBase
-                            className=""
-                            innerRef={null}
-                          >
-                            <thead
-                              className=""
-                            >
-                              <HeaderRow
-                                key="0-header-row"
-                                renderers={
-                                  Object {
-                                    "cell": [Function],
-                                    "row": Object {
-                                      "$$typeof": Symbol(react.forward_ref),
-                                      "render": [Function],
-                                    },
-                                    "wrapper": Object {
-                                      "$$typeof": Symbol(react.forward_ref),
-                                      "render": [Function],
-                                    },
-                                  }
-                                }
-                                rowData={Array []}
-                                rowIndex={0}
-                              >
-                                <Tr>
-                                  <TrBase
-                                    innerRef={null}
-                                  >
-                                    <tr
-                                      aria-label=""
-                                      className=""
-                                      data-ouia-component-id="OUIA-Generated-TableRow-3"
-                                      data-ouia-component-type="PF4/TableRow"
-                                      data-ouia-safe={true}
-                                      hidden={false}
-                                    />
-                                  </TrBase>
-                                </Tr>
-                              </HeaderRow>
-                            </thead>
-                          </TheadBase>
-                        </Thead>
-                      </BaseHeader>
-                    </Header>
-                  </ContextHeader>
-                </TableHeader>
-                <TableBody
-                  rowKey="rowKey"
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
                 >
-                  <ContextBody
-                    className=""
-                    headerData={Array []}
-                    headerRows={null}
-                    onRow={[Function]}
-                    onRowClick={[Function]}
-                    rowKey="rowKey"
-                    rows={Array []}
+                  <path
+                    d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
                   />
-                </TableBody>
-              </table>
-            </TableComposableBase>
-          </TableComposable>
-        </Provider>
-      </Table>
-    </DataTable>
+                </svg>
+              </button>
+            </div>
+            <div
+              class="pf-c-toolbar__group pf-m-filter-group"
+            >
+              <div
+                class="pf-c-toolbar__item"
+              >
+                <div
+                  class="pf-c-input-group"
+                >
+                  <input
+                    aria-invalid="false"
+                    aria-label="process name"
+                    class="pf-c-form-control"
+                    data-ouia-component-id="OUIA-Generated-TextInputBase-4"
+                    data-ouia-component-type="PF4/TextInput"
+                    data-ouia-safe="true"
+                    id="processName"
+                    name="processName"
+                    placeholder="Filter by workflow name"
+                    type="search"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class="pf-c-toolbar__item"
+              >
+                <button
+                  aria-disabled="false"
+                  class="pf-c-button pf-m-primary"
+                  data-ouia-component-id="OUIA-Generated-Button-primary-2"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  data-testid="apply-filter"
+                  id="apply-filter"
+                  type="button"
+                >
+                  Apply Filter
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__group pf-m-icon-button-group"
+          >
+            <div
+              class="pf-c-toolbar__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-4"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="refresh"
+                id="refresh"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__expandable-content"
+          id="process-definition-list-with-filter-expandable-content-7"
+        >
+          <div
+            class="pf-c-toolbar__group"
+          />
+          <div
+            class="pf-c-toolbar__group pf-m-chip-container"
+          >
+            <div
+              class="pf-c-toolbar__group"
+            />
+            <div
+              class="pf-c-toolbar__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-link pf-m-inline"
+                data-ouia-component-id="OUIA-Generated-Button-link-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                type="button"
+              >
+                Reset to default
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="pf-c-toolbar__content"
+      >
+        <div
+          aria-hidden="true"
+          class="pf-c-toolbar__group pf-m-hidden"
+          hidden=""
+        >
+          <div
+            class="pf-c-toolbar__item pf-m-chip-group"
+          >
+            <div
+              aria-labelledby="pf-random-id-0"
+              class="pf-c-chip-group pf-m-category"
+              data-ouia-component-type="PF4/ChipGroup"
+              data-ouia-safe="true"
+              role="group"
+            >
+              <div
+                class="pf-c-chip-group__main"
+              >
+                <span
+                  class="pf-c-chip-group__label"
+                  id="pf-random-id-0"
+                >
+                  Process name
+                </span>
+                <ul
+                  aria-labelledby="pf-random-id-0"
+                  class="pf-c-chip-group__list"
+                  role="list"
+                >
+                  <li
+                    class="pf-c-chip-group__list-item"
+                  >
+                    <div
+                      class="pf-c-chip"
+                      data-ouia-component-id="OUIA-Generated-Chip-1"
+                      data-ouia-component-type="PF4/Chip"
+                      data-ouia-safe="true"
+                    >
+                      <span
+                        class="pf-c-chip__text"
+                        id="pf-random-id-1"
+                      >
+                        process1,process2,process3
+                      </span>
+                      <button
+                        aria-disabled="false"
+                        aria-label="close"
+                        aria-labelledby="remove_pf-random-id-1 pf-random-id-1"
+                        class="pf-c-button pf-m-plain"
+                        data-ouia-component-id="close"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe="true"
+                        id="remove_pf-random-id-1"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style="vertical-align: -0.125em;"
+                          viewBox="0 0 352 512"
+                          width="1em"
+                        >
+                          <path
+                            d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__group"
+        >
+          <div
+            class="pf-c-toolbar__item"
+          >
+            1 filters applied
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-link pf-m-inline"
+            data-ouia-component-id="OUIA-Generated-Button-link-2"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="button"
+          >
+            Reset to default
+          </button>
+        </div>
+      </div>
+    </div>
+    <hr
+      class="pf-c-divider"
+    />
+    <table
+      aria-label="Data Table"
+      class="pf-c-table pf-m-grid-md"
+      data-ouia-component-id="OUIA-Generated-Table-4"
+      data-ouia-component-type="data-table"
+      data-ouia-safe="true"
+      role="grid"
+    >
+      <thead
+        class=""
+      >
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-3"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <th
+            class=""
+            data-key="0"
+            data-label="Workflow Name"
+            scope="col"
+          >
+            Workflow Name
+          </th>
+          <th
+            class=""
+            data-key="1"
+            data-label="Endpoint"
+            scope="col"
+          >
+            Endpoint
+          </th>
+          <th
+            class=""
+            data-key="2"
+            data-label="Actions"
+            scope="col"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class=""
+        role="rowgroup"
+      >
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-4"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <td
+            class=""
+            colspan="3"
+            data-key="0"
+            data-label="Workflow Name"
+          >
+            <div
+              class="pf-l-bullseye"
+              data-ouia-component-type="kogito-empty-state"
+              data-ouia-safe="true"
+            >
+              <div
+                class="pf-c-empty-state"
+              >
+                <div
+                  class="pf-c-empty-state__content"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="pf-c-empty-state__icon"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                    />
+                  </svg>
+                  <h5
+                    class="pf-c-title pf-m-lg"
+                    data-ouia-component-id="OUIA-Generated-Title-3"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe="true"
+                  >
+                    No results found
+                  </h5>
+                  <div
+                    class="pf-c-empty-state__body"
+                  >
+                    Try using different filters
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</ProcessDefinitionList>
+</div>
 `;
 
 exports[`ProcessDefinition list tests render ProcessDefinition list - table with cloud event enabled 1`] = `
-<ProcessDefinitionList
-  driver={MockedProcessDefinitionListDriver {}}
-  isEnvelopeConnectedToChannel={true}
-  isTriggerCloudEventEnabled={true}
-  singularProcessLabel="Workflow"
->
+<div>
   <div
     data-ouia-component-type="process-definition-list"
-    data-ouia-safe={false}
+    data-ouia-safe="true"
   >
-    <MockedProcessDefinitionListToolbar
-      applyFilter={[Function]}
-      filterProcessNames={Array []}
-      onOpenTriggerCloudEvent={[Function]}
-      setFilterProcessNames={[Function]}
-      singularProcessLabel="Workflow"
-    />
-    <Divider>
-      <hr
-        className="pf-c-divider"
-      />
-    </Divider>
-    <DataTable
-      LoadingComponent={
-        <Bullseye>
-          <KogitoSpinner
-            ouiaId="forms-list-loading-process-definitions"
-            spinnerText="Loading workflow definitions..."
-          />
-        </Bullseye>
-      }
-      columns={
-        Array [
-          Object {
-            "bodyCellTransformer": [Function],
-            "label": "Workflow Name",
-            "path": "processName",
-          },
-          Object {
-            "bodyCellTransformer": [Function],
-            "label": "Endpoint",
-            "path": "endpoint",
-          },
-          Object {
-            "bodyCellTransformer": [Function],
-            "label": "Actions",
-            "path": "actions",
-          },
-        ]
-      }
-      data={Array []}
-      error={false}
-      isLoading={true}
+    <div
+      class="pf-c-toolbar pf-m-toggle-group-container"
+      data-ouia-component-id="OUIA-Generated-Toolbar-3"
+      data-ouia-component-type="process-definition-list-toolbar"
+      data-ouia-safe="true"
+      id="process-definition-list-with-filter"
     >
-      <Table
-        actionsMenuAppendTo="inline"
-        aria-label="Data Table"
-        borders={true}
-        canCollapseAll={false}
-        canSelectAll={true}
-        canSortFavorites={true}
-        cells={Array []}
-        className=""
-        collapseAllAriaLabel=""
-        contentId="expanded-content"
-        data-ouia-component-type="data-table"
-        data-ouia-safe={false}
-        dropdownDirection="down"
-        dropdownPosition="right"
-        expandId="expandable-toggle"
-        gridBreakPoint="grid-md"
-        isHeaderSelectDisabled={false}
-        isNested={false}
-        isStickyHeader={false}
-        isTreeTable={false}
-        onSort={[Function]}
-        ouiaSafe={true}
-        role="grid"
-        rowLabeledBy="simple-node"
-        rows={Array []}
-        selectVariant="checkbox"
-        variant={null}
+      <div
+        class="pf-c-toolbar__content"
       >
-        <Provider
-          aria-label="Data Table"
-          borders={true}
-          className=""
-          columns={Array []}
-          data-ouia-component-type="data-table"
-          data-ouia-safe={false}
-          gridBreakPoint="grid-md"
-          isNested={false}
-          isStickyHeader={false}
-          isTreeTable={false}
-          ouiaSafe={true}
-          renderers={
-            Object {
-              "body": Object {
-                "cell": [Function],
-                "row": [Function],
-                "wrapper": [Function],
-              },
-              "header": Object {
-                "cell": [Function],
-              },
-            }
-          }
-          role="grid"
-          variant={null}
+        <div
+          class="pf-c-toolbar__content-section"
         >
-          <TableComposable
-            aria-label="Data Table"
-            borders={true}
-            className=""
-            data-ouia-component-type="data-table"
-            data-ouia-safe={false}
-            gridBreakPoint="grid-md"
-            isNested={false}
-            isStickyHeader={false}
-            isTreeTable={false}
-            ouiaSafe={true}
-            role="grid"
-            variant={null}
+          <div
+            class="pf-c-toolbar__group pf-m-toggle-group pf-m-show-on-xl"
           >
-            <TableComposableBase
-              aria-label="Data Table"
-              borders={true}
-              className=""
-              data-ouia-component-type="data-table"
-              data-ouia-safe={false}
-              gridBreakPoint="grid-md"
-              innerRef={null}
-              isNested={false}
-              isStickyHeader={false}
-              isTreeTable={false}
-              ouiaSafe={true}
-              role="grid"
-              variant={null}
+            <div
+              class="pf-c-toolbar__toggle"
             >
-              <table
-                aria-label="Data Table"
-                className="pf-c-table pf-m-grid-md"
-                data-ouia-component-id="OUIA-Generated-Table-6"
-                data-ouia-component-type="data-table"
-                data-ouia-safe={false}
-                role="grid"
+              <button
+                aria-controls="process-definition-list-with-filter-expandable-content-13"
+                aria-disabled="false"
+                aria-haspopup="false"
+                aria-label="Show Filters"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-6"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                type="button"
               >
-                <TableHeader>
-                  <ContextHeader
-                    headerRows={null}
-                  >
-                    <Header
-                      className=""
-                      headerRows={null}
-                    >
-                      <BaseHeader
-                        className=""
-                        columns={Array []}
-                        headerRows={null}
-                        renderers={
-                          Object {
-                            "body": Object {
-                              "cell": [Function],
-                              "row": [Function],
-                              "wrapper": [Function],
-                            },
-                            "header": Object {
-                              "cell": [Function],
-                              "row": Object {
-                                "$$typeof": Symbol(react.forward_ref),
-                                "render": [Function],
-                              },
-                              "wrapper": Object {
-                                "$$typeof": Symbol(react.forward_ref),
-                                "render": [Function],
-                              },
-                            },
-                            "table": Object {
-                              "$$typeof": Symbol(react.forward_ref),
-                              "render": [Function],
-                            },
-                          }
-                        }
-                      >
-                        <Thead
-                          className=""
-                        >
-                          <TheadBase
-                            className=""
-                            innerRef={null}
-                          >
-                            <thead
-                              className=""
-                            >
-                              <HeaderRow
-                                key="0-header-row"
-                                renderers={
-                                  Object {
-                                    "cell": [Function],
-                                    "row": Object {
-                                      "$$typeof": Symbol(react.forward_ref),
-                                      "render": [Function],
-                                    },
-                                    "wrapper": Object {
-                                      "$$typeof": Symbol(react.forward_ref),
-                                      "render": [Function],
-                                    },
-                                  }
-                                }
-                                rowData={Array []}
-                                rowIndex={0}
-                              >
-                                <Tr>
-                                  <TrBase
-                                    innerRef={null}
-                                  >
-                                    <tr
-                                      aria-label=""
-                                      className=""
-                                      data-ouia-component-id="OUIA-Generated-TableRow-5"
-                                      data-ouia-component-type="PF4/TableRow"
-                                      data-ouia-safe={true}
-                                      hidden={false}
-                                    />
-                                  </TrBase>
-                                </Tr>
-                              </HeaderRow>
-                            </thead>
-                          </TheadBase>
-                        </Thead>
-                      </BaseHeader>
-                    </Header>
-                  </ContextHeader>
-                </TableHeader>
-                <TableBody
-                  rowKey="rowKey"
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
                 >
-                  <ContextBody
-                    className=""
-                    headerData={Array []}
-                    headerRows={null}
-                    onRow={[Function]}
-                    onRowClick={[Function]}
-                    rowKey="rowKey"
-                    rows={Array []}
+                  <path
+                    d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
                   />
-                </TableBody>
-              </table>
-            </TableComposableBase>
-          </TableComposable>
-        </Provider>
-      </Table>
-    </DataTable>
+                </svg>
+              </button>
+            </div>
+            <div
+              class="pf-c-toolbar__group pf-m-filter-group"
+            >
+              <div
+                class="pf-c-toolbar__item"
+              >
+                <div
+                  class="pf-c-input-group"
+                >
+                  <input
+                    aria-invalid="false"
+                    aria-label="process name"
+                    class="pf-c-form-control"
+                    data-ouia-component-id="OUIA-Generated-TextInputBase-6"
+                    data-ouia-component-type="PF4/TextInput"
+                    data-ouia-safe="true"
+                    id="processName"
+                    name="processName"
+                    placeholder="Filter by workflow name"
+                    type="search"
+                    value=""
+                  />
+                </div>
+              </div>
+              <div
+                class="pf-c-toolbar__item"
+              >
+                <button
+                  aria-disabled="false"
+                  class="pf-c-button pf-m-primary"
+                  data-ouia-component-id="OUIA-Generated-Button-primary-3"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe="true"
+                  data-testid="apply-filter"
+                  id="apply-filter"
+                  type="button"
+                >
+                  Apply Filter
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__group pf-m-icon-button-group"
+          >
+            <div
+              class="pf-c-toolbar__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-7"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="refresh"
+                id="refresh"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                >
+                  <path
+                    d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__group"
+          >
+            <hr
+              class="pf-c-divider pf-m-vertical"
+            />
+            <div
+              class="pf-c-toolbar__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-primary"
+                data-ouia-component-id="OUIA-Generated-Button-primary-4"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                type="button"
+              >
+                Trigger Cloud Event
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__expandable-content"
+          id="process-definition-list-with-filter-expandable-content-13"
+        >
+          <div
+            class="pf-c-toolbar__group"
+          />
+          <div
+            class="pf-c-toolbar__group pf-m-chip-container"
+          >
+            <div
+              class="pf-c-toolbar__group"
+            />
+            <div
+              class="pf-c-toolbar__item"
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-link pf-m-inline"
+                data-ouia-component-id="OUIA-Generated-Button-link-3"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                type="button"
+              >
+                Reset to default
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="pf-c-toolbar__content"
+      >
+        <div
+          aria-hidden="true"
+          class="pf-c-toolbar__group pf-m-hidden"
+          hidden=""
+        >
+          <div
+            class="pf-c-toolbar__item pf-m-chip-group"
+          >
+            <div
+              aria-labelledby="pf-random-id-2"
+              class="pf-c-chip-group pf-m-category"
+              data-ouia-component-type="PF4/ChipGroup"
+              data-ouia-safe="true"
+              role="group"
+            >
+              <div
+                class="pf-c-chip-group__main"
+              >
+                <span
+                  class="pf-c-chip-group__label"
+                  id="pf-random-id-2"
+                >
+                  Process name
+                </span>
+                <ul
+                  aria-labelledby="pf-random-id-2"
+                  class="pf-c-chip-group__list"
+                  role="list"
+                >
+                  <li
+                    class="pf-c-chip-group__list-item"
+                  >
+                    <div
+                      class="pf-c-chip"
+                      data-ouia-component-id="OUIA-Generated-Chip-2"
+                      data-ouia-component-type="PF4/Chip"
+                      data-ouia-safe="true"
+                    >
+                      <span
+                        class="pf-c-chip__text"
+                        id="pf-random-id-3"
+                      >
+                        process1,process2,process3
+                      </span>
+                      <button
+                        aria-disabled="false"
+                        aria-label="close"
+                        aria-labelledby="remove_pf-random-id-3 pf-random-id-3"
+                        class="pf-c-button pf-m-plain"
+                        data-ouia-component-id="close"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe="true"
+                        id="remove_pf-random-id-3"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style="vertical-align: -0.125em;"
+                          viewBox="0 0 352 512"
+                          width="1em"
+                        >
+                          <path
+                            d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__group"
+        >
+          <div
+            class="pf-c-toolbar__item"
+          >
+            1 filters applied
+          </div>
+        </div>
+        <div
+          class="pf-c-toolbar__item"
+        >
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-link pf-m-inline"
+            data-ouia-component-id="OUIA-Generated-Button-link-4"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="button"
+          >
+            Reset to default
+          </button>
+        </div>
+      </div>
+    </div>
+    <hr
+      class="pf-c-divider"
+    />
+    <table
+      aria-label="Data Table"
+      class="pf-c-table pf-m-grid-md"
+      data-ouia-component-id="OUIA-Generated-Table-6"
+      data-ouia-component-type="data-table"
+      data-ouia-safe="true"
+      role="grid"
+    >
+      <thead
+        class=""
+      >
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-5"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <th
+            class=""
+            data-key="0"
+            data-label="Workflow Name"
+            scope="col"
+          >
+            Workflow Name
+          </th>
+          <th
+            class=""
+            data-key="1"
+            data-label="Endpoint"
+            scope="col"
+          >
+            Endpoint
+          </th>
+          <th
+            class=""
+            data-key="2"
+            data-label="Actions"
+            scope="col"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class=""
+        role="rowgroup"
+      >
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-6"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <td
+            class=""
+            colspan="3"
+            data-key="0"
+            data-label="Workflow Name"
+          >
+            <div
+              class="pf-l-bullseye"
+              data-ouia-component-type="kogito-empty-state"
+              data-ouia-safe="true"
+            >
+              <div
+                class="pf-c-empty-state"
+              >
+                <div
+                  class="pf-c-empty-state__content"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="pf-c-empty-state__icon"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                    />
+                  </svg>
+                  <h5
+                    class="pf-c-title pf-m-lg"
+                    data-ouia-component-id="OUIA-Generated-Title-5"
+                    data-ouia-component-type="PF4/Title"
+                    data-ouia-safe="true"
+                  >
+                    No results found
+                  </h5>
+                  <div
+                    class="pf-c-empty-state__body"
+                  >
+                    Try using different filters
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</ProcessDefinitionList>
+</div>
 `;

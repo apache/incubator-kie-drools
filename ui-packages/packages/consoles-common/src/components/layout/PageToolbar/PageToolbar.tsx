@@ -135,6 +135,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
                 </DropdownToggle>
               }
               dropdownItems={userDropdownItems}
+              data-testid={'pageToolbar-dropdown'}
             />
           </ToolbarItem>
         </ToolbarGroup>

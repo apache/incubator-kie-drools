@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import TaskInboxPage from '../TaskInboxPage';
 import TaskInboxContainer from '../../../containers/TaskInboxContainer/TaskInboxContainer';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
@@ -29,20 +29,27 @@ describe('TaskInboxPage tests', () => {
     getUserTaskById: jest.fn(),
     getUserTasks: jest.fn()
   }));
+
+  const props = {
+    ouiaId: 'task-inbox',
+    ouiaSafe: true
+  };
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider
         isProcessEnabled={true}
         isTracingEnabled={false}
         users={[{ id: 'John snow', groups: ['admin'] }]}
       >
         <TaskInboxContextProvider apolloClient={new MockQueries()}>
-          <TaskInboxPage />
+          <TaskInboxPage {...props} />
         </TaskInboxContextProvider>
       </DevUIAppContextProvider>
     );
 
-    expect(wrapper.find(TaskInboxPage)).toMatchSnapshot();
-    expect(wrapper.find(TaskInboxContainer).exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+
+    const checkTaskInboxPage = container.querySelector('h1').textContent;
+    expect(checkTaskInboxPage).toEqual('Task Inbox');
   });
 });

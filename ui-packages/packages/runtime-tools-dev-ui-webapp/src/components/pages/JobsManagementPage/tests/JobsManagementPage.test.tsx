@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import JobsManagementPage from '../JobsManagementPage';
 import { BrowserRouter } from 'react-router-dom';
@@ -42,13 +42,13 @@ const appContextProps = {
 
 describe('WebApp - JobsManagementPage tests', () => {
   it('Snapshot test with default values', () => {
-    const wrapper = mount(
+    const { container } = render(
       <BrowserRouter>
         <DevUIAppContextProvider users={[user]} {...appContextProps}>
           <JobsManagementPage />
         </DevUIAppContextProvider>
       </BrowserRouter>
     );
-    expect(wrapper.find('JobsManagementPage')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

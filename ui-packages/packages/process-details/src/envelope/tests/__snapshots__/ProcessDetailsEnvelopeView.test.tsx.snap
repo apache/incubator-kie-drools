@@ -1,108 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ProcessDetailsEnvelopeView tests Snapshot 1`] = `null`;
-
-exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
-<ForwardRef
-  channelApi={
-    Object {
-      "notifications": Object {
-        "jobList__sortBy": Object {
-          "send": [MockFunction],
-          "subscribe": [MockFunction],
-          "unsubscribe": [MockFunction],
-        },
-        "processDetails__handleProcessVariableUpdate": Object {
-          "send": [MockFunction],
-          "subscribe": [MockFunction],
-          "unsubscribe": [MockFunction],
-        },
-        "processDetails__openProcessDetails": Object {
-          "send": [MockFunction],
-          "subscribe": [MockFunction],
-          "unsubscribe": [MockFunction],
-        },
-      },
-      "requests": Object {
-        "processDetails__cancelJob": [MockFunction],
-        "processDetails__getProcessDiagram": [MockFunction],
-        "processDetails__getTriggerableNodes": [MockFunction],
-        "processDetails__handleNodeInstanceCancel": [MockFunction],
-        "processDetails__handleNodeInstanceRetrigger": [MockFunction],
-        "processDetails__handleNodeTrigger": [MockFunction],
-        "processDetails__handleProcessAbort": [MockFunction],
-        "processDetails__handleProcessRetry": [MockFunction],
-        "processDetails__handleProcessSkip": [MockFunction],
-        "processDetails__handleProcessVariableUpdate": [MockFunction],
-        "processDetails__initialLoad": [MockFunction],
-        "processDetails__jobsQuery": [MockFunction],
-        "processDetails__processDetailsQuery": [MockFunction],
-        "processDetails__rescheduleJob": [MockFunction],
-      },
-      "shared": Object {
-        "processDetails__handleProcessVariableUpdate": Object {
-          "send": [MockFunction],
-          "set": [MockFunction],
-          "subscribe": [MockFunction],
-          "unsubscribe": [MockFunction],
-        },
-      },
-      "subscribe": [MockFunction],
-      "unsubscribe": [MockFunction],
-    }
-  }
->
-  <MockedProcessDetails
-    driver={
-      ProcessDetailsEnvelopeViewDriver {
-        "channelApi": Object {
-          "notifications": Object {
-            "jobList__sortBy": Object {
-              "send": [MockFunction],
-              "subscribe": [MockFunction],
-              "unsubscribe": [MockFunction],
-            },
-            "processDetails__handleProcessVariableUpdate": Object {
-              "send": [MockFunction],
-              "subscribe": [MockFunction],
-              "unsubscribe": [MockFunction],
-            },
-            "processDetails__openProcessDetails": Object {
-              "send": [MockFunction],
-              "subscribe": [MockFunction],
-              "unsubscribe": [MockFunction],
-            },
-          },
-          "requests": Object {
-            "processDetails__cancelJob": [MockFunction],
-            "processDetails__getProcessDiagram": [MockFunction],
-            "processDetails__getTriggerableNodes": [MockFunction],
-            "processDetails__handleNodeInstanceCancel": [MockFunction],
-            "processDetails__handleNodeInstanceRetrigger": [MockFunction],
-            "processDetails__handleNodeTrigger": [MockFunction],
-            "processDetails__handleProcessAbort": [MockFunction],
-            "processDetails__handleProcessRetry": [MockFunction],
-            "processDetails__handleProcessSkip": [MockFunction],
-            "processDetails__handleProcessVariableUpdate": [MockFunction],
-            "processDetails__initialLoad": [MockFunction],
-            "processDetails__jobsQuery": [MockFunction],
-            "processDetails__processDetailsQuery": [MockFunction],
-            "processDetails__rescheduleJob": [MockFunction],
-          },
-          "shared": Object {
-            "processDetails__handleProcessVariableUpdate": Object {
-              "send": [MockFunction],
-              "set": [MockFunction],
-              "subscribe": [MockFunction],
-              "unsubscribe": [MockFunction],
-            },
-          },
-          "subscribe": [MockFunction],
-          "unsubscribe": [MockFunction],
-        },
-      }
-    }
-    isEnvelopeConnectedToChannel={true}
-  />
-</ForwardRef>
+exports[`ProcessDetailsEnvelopeView tests Snapshot 1`] = `
+<div>
+  <article
+    class="pf-c-card"
+    data-ouia-component-id="OUIA-Generated-Card-1"
+    data-ouia-component-type="PF4/Card"
+    data-ouia-safe="true"
+    id=""
+  >
+    <div
+      class="pf-c-empty-state"
+      data-ouia-component-type="kogito-spinner"
+      data-ouia-safe="true"
+    >
+      <div
+        class="pf-c-empty-state__content"
+      >
+        <div
+          class="pf-c-empty-state__icon"
+        >
+          <span
+            aria-label="Contents"
+            aria-valuetext="Loading..."
+            class="pf-c-spinner pf-m-xl"
+            role="progressbar"
+          >
+            <span
+              class="pf-c-spinner__clipper"
+            />
+            <span
+              class="pf-c-spinner__lead-ball"
+            />
+            <span
+              class="pf-c-spinner__tail-ball"
+            />
+          </span>
+        </div>
+        <h3
+          class="pf-c-title pf-m-lg"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
+        >
+          Loading process details...
+        </h3>
+      </div>
+    </div>
+  </article>
+</div>
 `;

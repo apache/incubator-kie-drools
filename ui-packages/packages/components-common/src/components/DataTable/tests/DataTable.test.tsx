@@ -19,7 +19,7 @@ import { DataTable, DataTableColumn } from '../DataTable';
 import { gql } from 'apollo-boost';
 import { MockedProvider } from '@apollo/react-testing';
 import { Label } from '@patternfly/react-core/dist/js/components/Label';
-import { mount } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
@@ -224,13 +224,12 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await mount(
+    const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
       </MockedProvider>
     );
-    wrapper.update();
-    expect(wrapper.find(DataTable)).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('Should render ErrorComponent', async () => {
@@ -245,14 +244,13 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await mount(
+    const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
       </MockedProvider>
     );
-    wrapper.update();
 
-    expect(wrapper.find(DataTable)).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('Should render LoadingComponent', async () => {
@@ -267,14 +265,13 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await mount(
+    const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
       </MockedProvider>
     );
-    wrapper.update();
 
-    expect(wrapper.find(DataTable)).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('check sorting functionality', async () => {
@@ -291,18 +288,17 @@ describe('DataTable component tests', () => {
       sortBy: {}
     };
 
-    const wrapper = await mount(
+    const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
       </MockedProvider>
     );
-    wrapper.update();
 
-    wrapper
-      .find('[aria-label="Data Table"]')
-      .at(0)
-      .props()
-      ['onSort']({}, 1, 'asc');
+    screen.getByLabelText('Data Table');
+
+    const sortIcon = container.querySelectorAll('svg')[0];
+
+    fireEvent.click(sortIcon);
 
     expect(props.onSorting).toHaveBeenCalledTimes(1);
   });

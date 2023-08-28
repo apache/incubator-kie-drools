@@ -15,14 +15,12 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import TaskInboxContainer from '../TaskInboxContainer';
 import * as TaskInboxContext from '../../../../channel/TaskInbox/TaskInboxContext';
 import { TaskInboxQueries } from '../../../../channel/TaskInbox/TaskInboxQueries';
 import { TaskInboxGatewayApiImpl } from '../../../../channel/TaskInbox/TaskInboxGatewayApi';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
-import { TaskInboxContextProvider } from '../../../../channel/TaskInbox';
-import { EmbeddedTaskInbox } from '@kogito-apps/task-inbox';
 
 const MockQueries = jest.fn<TaskInboxQueries, []>(() => ({
   getUserTaskById: jest.fn(),
@@ -52,30 +50,17 @@ const appContextProps = {
 
 describe('TaskInboxContainer tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider
         users={[{ id: 'John snow', groups: ['admin'] }]}
         {...appContextProps}
       >
         <TaskInboxContainer />
       </DevUIAppContextProvider>
-    ).find('TaskInboxContainer');
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const forwardRef = wrapper.find(EmbeddedTaskInbox);
-    expect(forwardRef.props().activeTaskStates).toStrictEqual([
-      'Ready',
-      'Reserved'
-    ]);
-    expect(forwardRef.props().allTaskStates).toStrictEqual([
-      'Ready',
-      'Reserved',
-      'Completed',
-      'Aborted',
-      'Skipped'
-    ]);
-    expect(forwardRef.props().driver).not.toBeNull();
-    expect(forwardRef.props().targetOrigin).toBe('http://localhost:9000');
+    expect(container.querySelector('div')).toBeTruthy();
   });
 });

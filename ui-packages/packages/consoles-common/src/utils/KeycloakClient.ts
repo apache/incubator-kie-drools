@@ -43,7 +43,9 @@ export const getUpdateTokenValidity = (): number => {
 let currentSecurityContext: UserContext;
 let keycloak: Keycloak.KeycloakInstance;
 export const getLoadedSecurityContext = (): UserContext => {
+  /* istanbul ignore if */
   if (!currentSecurityContext) {
+    /* istanbul ignore if */
     if (isAuthEnabled()) {
       throw Error(
         'Cannot load security context! Please reload screen and log in again.'

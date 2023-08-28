@@ -142,6 +142,7 @@ const ProcessDetailsPanel: React.FC<IOwnProps & OUIAProps> = ({
             <FormGroup label="Parent Process" fieldId="parent">
               <div>
                 <Button
+                  data-testid="open-parent-process"
                   variant="link"
                   icon={<LevelUpAltIcon />}
                   onClick={(): void => {

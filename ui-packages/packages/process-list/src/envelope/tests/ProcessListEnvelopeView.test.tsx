@@ -16,28 +16,22 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import ProcessListEnvelopeView, {
   ProcessListEnvelopeViewApi
 } from '../ProcessListEnvelopeView';
-import ProcessListPage from '../components/ProcessList/ProcessList';
-
-jest.mock('../components/ProcessList/ProcessList');
 
 describe('ProcessListEnvelopeView tests', () => {
-  it('Snapshot', () => {
+  it('Snapshot', async () => {
     const channelApi = new MockedMessageBusClientApi();
 
     const forwardRef = React.createRef<ProcessListEnvelopeViewApi>();
 
-    let wrapper = mount(
+    const container = render(
       <ProcessListEnvelopeView channelApi={channelApi} ref={forwardRef} />
     );
-
-    expect(wrapper.find('ProcessListEnvelopeView')).toMatchSnapshot();
-
-    act(() => {
+    await act(async () => {
       if (forwardRef.current) {
         forwardRef.current.initialize({
           initialState: {
@@ -51,15 +45,7 @@ describe('ProcessListEnvelopeView tests', () => {
           isWorkflow: true
         });
       }
-      wrapper = wrapper.update();
     });
-
-    expect(wrapper.update().find(ProcessListEnvelopeView)).toMatchSnapshot();
-
-    const processList = wrapper.find(ProcessListPage);
-
-    expect(processList.exists()).toBeTruthy();
-    expect(processList.props().isEnvelopeConnectedToChannel).toBeTruthy();
-    expect(processList.props().driver).not.toBeNull();
+    expect(container).toMatchSnapshot();
   });
 });

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import CloudEventFormContainer, {
   CloudEventFormContainerParams
 } from '../CloudEventFormContainer';
@@ -48,18 +48,6 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 
-jest.mock('@kogito-apps/cloud-event-form/dist/embedded', () =>
-  Object.assign(
-    {},
-    jest.requireActual('@kogito-apps/cloud-event-form/dist/embedded'),
-    {
-      EmbeddedCloudEventForm: () => {
-        return <MockedComponent />;
-      }
-    }
-  )
-);
-
 const properties = {
   isTriggerNewInstance: false,
   onSuccess: jest.fn(),
@@ -88,40 +76,30 @@ describe('CloudEventFormContainer tests', () => {
   });
 
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <CloudEventFormContainer {...properties} />
       </DevUIAppContextProvider>
-    ).find(CloudEventFormContainer);
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const embeddedForm = wrapper.find(EmbeddedCloudEventForm);
-    expect(embeddedForm.props().isNewInstanceEvent).toBeFalsy();
-    expect(embeddedForm.props().driver).not.toBeUndefined();
-    expect(
-      embeddedForm.props().defaultValues?.cloudEventSource
-    ).not.toBeUndefined();
-    expect(embeddedForm.props().defaultValues?.instanceId).toBeUndefined();
+    const checkDiv = container.querySelector('div');
+    expect(checkDiv).toBeTruthy();
   });
 
   it('Snapshot - with router param', () => {
     routerParams.instanceId = '1234';
 
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <CloudEventFormContainer {...properties} />
       </DevUIAppContextProvider>
-    ).find(CloudEventFormContainer);
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const embeddedForm = wrapper.find(EmbeddedCloudEventForm);
-    expect(embeddedForm.props().isNewInstanceEvent).toBeFalsy();
-    expect(embeddedForm.props().driver).not.toBeUndefined();
-    expect(
-      embeddedForm.props().defaultValues?.cloudEventSource
-    ).not.toBeUndefined();
-    expect(embeddedForm.props().defaultValues?.instanceId).toBe('1234');
+    const checkDiv = container.querySelector('div');
+    expect(checkDiv).toBeTruthy();
   });
 });

@@ -25,8 +25,8 @@ import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { Grid, GridItem } from '@patternfly/react-core/dist/js/layouts/Grid';
 import { Stack, StackItem } from '@patternfly/react-core/dist/js/layouts/Stack';
 import { TextInput } from '@patternfly/react-core/dist/js/components/TextInput';
-import PlusCircleIcon from '@patternfly/react-icons/dist/esm/icons/plus-circle-icon';
-import TrashIcon from '@patternfly/react-icons/dist/esm/icons/trash-icon';
+import { PlusCircleIcon } from '@patternfly/react-icons/dist/esm/icons/plus-circle-icon';
+import { TrashIcon } from '@patternfly/react-icons/dist/esm/icons/trash-icon';
 import {
   componentOuiaProps,
   OUIAProps
@@ -153,6 +153,7 @@ const CloudEventCustomHeadersEditor = React.forwardRef<
                         value={header.key}
                         onChange={(value) => updateHeaderKey(index, value)}
                         autoFocus={isNewHeader && index === headers.length - 1}
+                        data-testid="update-key"
                       />
                     </GridItem>
                     <GridItem span={7} key={`header-value-${header.uuid}`}>
@@ -160,6 +161,7 @@ const CloudEventCustomHeadersEditor = React.forwardRef<
                         id={`header-value-${index}-input`}
                         value={header.value}
                         onChange={(value) => updateHeaderValue(index, value)}
+                        data-testid="update-value"
                       />
                     </GridItem>
                     <GridItem span={1} key={`header-delete-${header.uuid}`}>

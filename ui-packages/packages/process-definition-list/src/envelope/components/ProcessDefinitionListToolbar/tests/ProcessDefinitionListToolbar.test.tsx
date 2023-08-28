@@ -15,33 +15,30 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import ProcessDefinitionListToolbar from '../ProcessDefinitionListToolbar';
 import { act } from 'react-dom/test-utils';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
-import { ToolbarFilter } from '@patternfly/react-core/dist/js/components/Toolbar';
-import { Tooltip } from '@patternfly/react-core/dist/js/components/Tooltip';
 
 describe('ProcessDefinition list toolbar tests', () => {
   it('render toolbar', () => {
-    const wrapper = mount(
+    const container = render(
       <ProcessDefinitionListToolbar
         applyFilter={jest.fn()}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
         singularProcessLabel={'Workflow'}
       />
+    ).container;
+    expect(container).toMatchSnapshot();
+    const checkToolbar = container.querySelector(
+      '[class="pf-c-toolbar__content"]'
     );
-    expect(wrapper).toMatchSnapshot();
-    expect(
-      wrapper
-        .findWhere((child) => child.key() === 'triggerCloudEventButton')
-        .exists()
-    ).toBeFalsy();
+    expect(checkToolbar).toBeTruthy();
+    expect(container.querySelector('Trigger Cloud Event')).toBeFalsy();
   });
 
   it('render toolbar - with trigger cloud event', () => {
-    const wrapper = mount(
+    const container = render(
       <ProcessDefinitionListToolbar
         applyFilter={jest.fn()}
         setFilterProcessNames={jest.fn()}
@@ -49,118 +46,101 @@ describe('ProcessDefinition list toolbar tests', () => {
         singularProcessLabel={'Workflow'}
         onOpenTriggerCloudEvent={jest.fn()}
       />
+    ).container;
+    expect(container).toMatchSnapshot();
+
+    const checkToolbar = container.querySelector(
+      '[class="pf-c-toolbar__content"]'
     );
-    expect(wrapper).toMatchSnapshot();
-    expect(
-      wrapper
-        .findWhere((child) => child.key() === 'triggerCloudEventButton')
-        .exists()
-    ).toBeTruthy();
+    expect(checkToolbar).toBeTruthy();
+    const checkTriggerCloudEventButton = screen.getByText(
+      'Trigger Cloud Event'
+    );
+    expect(checkTriggerCloudEventButton).toBeTruthy();
   });
 
   it('apply filter click', () => {
     const applyFilter = jest.fn();
-    const wrapper = mount(
+    const container = render(
       <ProcessDefinitionListToolbar
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={[]}
         singularProcessLabel={'Workflow'}
       />
-    );
-    act(() => {
-      wrapper
-        .find('TextInputBase')
-        .props()
-        ['onChange']({
-          target: {
-            value: 'process1'
-          }
-        } as any);
-    });
-    wrapper.find('#apply-filter').find('button').simulate('click');
+    ).container;
+    fireEvent.click(screen.getByTestId('apply-filter'));
     expect(applyFilter).toHaveBeenCalled();
   });
 
   it('reset click', () => {
     const applyFilter = jest.fn();
-    const wrapper = mount(
-      <ProcessDefinitionListToolbar
-        applyFilter={applyFilter}
-        setFilterProcessNames={jest.fn()}
-        filterProcessNames={[]}
-        singularProcessLabel={'Workflow'}
-      />
-    );
-    act(() => {
-      wrapper.find('Toolbar').props()['clearAllFilters']();
-    });
-    expect(applyFilter).toHaveBeenCalled();
-  });
-
-  it('refresh click', () => {
-    const applyFilter = jest.fn();
-    const wrapper = mount(
-      <ProcessDefinitionListToolbar
-        applyFilter={applyFilter}
-        setFilterProcessNames={jest.fn()}
-        filterProcessNames={[]}
-        singularProcessLabel={'Workflow'}
-      />
-    );
-    act(() => {
-      wrapper.find(Tooltip).find(Button).simulate('click');
-    });
-    expect(applyFilter).toHaveBeenCalled();
-  });
-
-  it('enter clicked', () => {
-    const applyFilter = jest.fn();
-    const wrapper = mount(
-      <ProcessDefinitionListToolbar
-        applyFilter={applyFilter}
-        setFilterProcessNames={jest.fn()}
-        filterProcessNames={[]}
-        singularProcessLabel={'Workflow'}
-      />
-    );
-    act(() => {
-      wrapper
-        .find('TextInputBase')
-        .props()
-        ['onKeyPress']({
-          key: 'Enter',
-          target: {
-            value: 'process1'
-          }
-        } as any);
-    });
-    wrapper.find('#apply-filter').find('button').simulate('click');
-    expect(applyFilter).toHaveBeenCalled();
-  });
-
-  it('on delete chip', () => {
-    const applyFilter = jest.fn();
-    const wrapper = mount(
+    const container = render(
       <ProcessDefinitionListToolbar
         applyFilter={applyFilter}
         setFilterProcessNames={jest.fn()}
         filterProcessNames={['process1']}
         singularProcessLabel={'Workflow'}
       />
+    ).container;
+
+    act(() => {
+      fireEvent.click(screen.getAllByText('Reset to default')[0]);
+    });
+    expect(applyFilter).toHaveBeenCalled();
+  });
+
+  it('refresh click', () => {
+    const applyFilter = jest.fn();
+    render(
+      <ProcessDefinitionListToolbar
+        applyFilter={applyFilter}
+        setFilterProcessNames={jest.fn()}
+        filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
+      />
     );
     act(() => {
-      wrapper
-        .find(ToolbarFilter)
-        .props()
-        ['deleteChip']('Process name', 'process1');
+      fireEvent.click(screen.getByTestId('refresh'));
     });
+    expect(applyFilter).toHaveBeenCalled();
+  });
+
+  it('enter clicked', () => {
+    const applyFilter = jest.fn();
+    const container = render(
+      <ProcessDefinitionListToolbar
+        applyFilter={applyFilter}
+        setFilterProcessNames={jest.fn()}
+        filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
+      />
+    ).container;
+
+    const input = screen.getByTestId('apply-filter');
+    fireEvent.change(input, { target: { value: 'process1' } });
+    fireEvent.keyDown(input, { key: 'enter', keyCode: 13 });
+    expect(container).toMatchSnapshot();
+  });
+
+  it('on delete chip', () => {
+    const applyFilter = jest.fn();
+    const container = render(
+      <ProcessDefinitionListToolbar
+        applyFilter={applyFilter}
+        setFilterProcessNames={jest.fn()}
+        filterProcessNames={['process1']}
+        singularProcessLabel={'Workflow'}
+      />
+    ).container;
+
+    fireEvent.click(screen.getByLabelText('close'));
     expect(applyFilter).toHaveBeenCalled();
   });
 
   it('on open trigger cloud event form', () => {
     const triggerCloudEvenMock = jest.fn();
-    const wrapper = mount(
+    const container = render(
       <ProcessDefinitionListToolbar
         applyFilter={jest.fn()}
         setFilterProcessNames={jest.fn()}
@@ -168,15 +148,14 @@ describe('ProcessDefinition list toolbar tests', () => {
         singularProcessLabel={'Workflow'}
         onOpenTriggerCloudEvent={triggerCloudEvenMock}
       />
-    );
+    ).container;
 
-    const triggerCloudEventButton = wrapper.findWhere(
-      (child) => child.key() === 'triggerCloudEventButton'
-    );
-    expect(triggerCloudEventButton.exists()).toBeTruthy();
+    const triggerCloudEventButton = screen.getByText('Trigger Cloud Event');
+
+    expect(triggerCloudEventButton).toBeTruthy();
 
     act(() => {
-      triggerCloudEventButton.prop('onClick')(undefined);
+      fireEvent.click(triggerCloudEventButton);
     });
 
     expect(triggerCloudEvenMock).toHaveBeenCalled();

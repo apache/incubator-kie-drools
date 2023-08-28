@@ -118,7 +118,7 @@ export const processInstances: ProcessInstance[] = [
     childProcessInstances: []
   },
   {
-    id: 'ppki-043e-375a-9f52-vfr4567',
+    id: 'ppki-043e-375a-9f52-vfr45678',
     processId: 'travels',
     businessKey: 'REW1',
     parentProcessInstanceId: null,

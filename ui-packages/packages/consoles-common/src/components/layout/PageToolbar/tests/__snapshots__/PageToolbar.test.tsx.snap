@@ -1,839 +1,396 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
-<PageToolbar>
-  <MockedAboutModalBox
-    handleModalToggleProp={[Function]}
-    isOpenProp={false}
-  />
-  <Toolbar
+<div>
+  <div
+    class="pf-c-toolbar"
+    data-ouia-component-id="OUIA-Generated-Toolbar-1"
     data-ouia-component-type="page-toolbar"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
+    id="pf-random-id-0"
   >
-    <GenerateId
-      prefix="pf-random-id-"
+    <div
+      class="pf-c-toolbar__group"
     >
       <div
-        className="pf-c-toolbar"
-        data-ouia-component-id="OUIA-Generated-Toolbar-1"
-        data-ouia-component-type="page-toolbar"
-        data-ouia-safe={true}
-        id="pf-random-id-0"
+        class="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
       >
-        <ForwardRef>
-          <ToolbarGroupWithRef
-            innerRef={null}
-          >
-            <div
-              className="pf-c-toolbar__group"
-            >
-              <ToolbarItem
-                className="pf-u-screen-reader pf-u-visible-on-md"
-              >
-                <div
-                  className="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
-                >
-                  <Dropdown
-                    dropdownItems={
-                      Array [
-                        <DropdownItem
-                          onClick={[Function]}
-                        >
-                          About
-                        </DropdownItem>,
-                      ]
-                    }
-                    isOpen={false}
-                    isPlain={true}
-                    onSelect={[Function]}
-                    position="right"
-                    toggle={
-                      <DropdownToggle
-                        icon={
-                          <Avatar
-                            alt="User Avatar"
-                            src="avatar.svg"
-                          />
-                        }
-                        onToggle={[Function]}
-                      >
-                        Anonymous
-                      </DropdownToggle>
-                    }
-                  >
-                    <DropdownWithContext
-                      autoFocus={true}
-                      className=""
-                      direction="down"
-                      dropdownItems={
-                        Array [
-                          <DropdownItem
-                            onClick={[Function]}
-                          >
-                            About
-                          </DropdownItem>,
-                        ]
-                      }
-                      isFlipEnabled={true}
-                      isGrouped={false}
-                      isOpen={false}
-                      isPlain={true}
-                      isText={false}
-                      menuAppendTo="inline"
-                      onSelect={[Function]}
-                      position="right"
-                      removeFindDomNode={false}
-                      toggle={
-                        <DropdownToggle
-                          icon={
-                            <Avatar
-                              alt="User Avatar"
-                              src="avatar.svg"
-                            />
-                          }
-                          onToggle={[Function]}
-                        >
-                          Anonymous
-                        </DropdownToggle>
-                      }
-                      zIndex={9999}
-                    >
-                      <div
-                        className="pf-c-dropdown pf-m-align-right"
-                        data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                        data-ouia-component-type="PF4/Dropdown"
-                        data-ouia-safe={true}
-                      >
-                        <DropdownToggle
-                          aria-haspopup={true}
-                          getMenuRef={[Function]}
-                          icon={
-                            <Avatar
-                              alt="User Avatar"
-                              src="avatar.svg"
-                            />
-                          }
-                          id="pf-dropdown-toggle-id-0"
-                          isOpen={false}
-                          isPlain={true}
-                          isText={false}
-                          key=".0"
-                          onEnter={[Function]}
-                          onToggle={[Function]}
-                          parentRef={
-                            Object {
-                              "current": <div
-                                class="pf-c-dropdown pf-m-align-right"
-                                data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                                data-ouia-component-type="PF4/Dropdown"
-                                data-ouia-safe="true"
-                              >
-                                <button
-                                  aria-expanded="false"
-                                  aria-haspopup="true"
-                                  class="pf-c-dropdown__toggle pf-m-plain"
-                                  data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                                  data-ouia-component-type="PF4/DropdownToggle"
-                                  data-ouia-safe="true"
-                                  id="pf-dropdown-toggle-id-0"
-                                  type="button"
-                                >
-                                  <span
-                                    class="pf-c-dropdown__toggle-image"
-                                  >
-                                    <img
-                                      alt="User Avatar"
-                                      class="pf-c-avatar"
-                                      src="avatar.svg"
-                                    />
-                                  </span>
-                                  <span
-                                    class="pf-c-dropdown__toggle-text"
-                                  >
-                                    Anonymous
-                                  </span>
-                                  <span
-                                    class="pf-c-dropdown__toggle-icon"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style="vertical-align: -0.125em;"
-                                      viewBox="0 0 320 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                      />
-                                    </svg>
-                                  </span>
-                                </button>
-                              </div>,
-                            }
-                          }
-                        >
-                          <Toggle
-                            aria-haspopup={true}
-                            bubbleEvent={false}
-                            className=""
-                            data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                            data-ouia-component-type="PF4/DropdownToggle"
-                            data-ouia-safe={true}
-                            getMenuRef={[Function]}
-                            id="pf-dropdown-toggle-id-0"
-                            isActive={false}
-                            isDisabled={false}
-                            isOpen={false}
-                            isPlain={true}
-                            isPrimary={false}
-                            isSplitButton={false}
-                            isText={false}
-                            onEnter={[Function]}
-                            onToggle={[Function]}
-                            parentRef={
-                              Object {
-                                "current": <div
-                                  class="pf-c-dropdown pf-m-align-right"
-                                  data-ouia-component-id="OUIA-Generated-Dropdown-1"
-                                  data-ouia-component-type="PF4/Dropdown"
-                                  data-ouia-safe="true"
-                                >
-                                  <button
-                                    aria-expanded="false"
-                                    aria-haspopup="true"
-                                    class="pf-c-dropdown__toggle pf-m-plain"
-                                    data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                                    data-ouia-component-type="PF4/DropdownToggle"
-                                    data-ouia-safe="true"
-                                    id="pf-dropdown-toggle-id-0"
-                                    type="button"
-                                  >
-                                    <span
-                                      class="pf-c-dropdown__toggle-image"
-                                    >
-                                      <img
-                                        alt="User Avatar"
-                                        class="pf-c-avatar"
-                                        src="avatar.svg"
-                                      />
-                                    </span>
-                                    <span
-                                      class="pf-c-dropdown__toggle-text"
-                                    >
-                                      Anonymous
-                                    </span>
-                                    <span
-                                      class="pf-c-dropdown__toggle-icon"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        fill="currentColor"
-                                        height="1em"
-                                        role="img"
-                                        style="vertical-align: -0.125em;"
-                                        viewBox="0 0 320 512"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </button>
-                                </div>,
-                              }
-                            }
-                            toggleVariant="default"
-                          >
-                            <button
-                              aria-expanded={false}
-                              aria-haspopup={true}
-                              className="pf-c-dropdown__toggle pf-m-plain"
-                              data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
-                              data-ouia-component-type="PF4/DropdownToggle"
-                              data-ouia-safe={true}
-                              disabled={false}
-                              id="pf-dropdown-toggle-id-0"
-                              onClick={[Function]}
-                              onKeyDown={[Function]}
-                              type="button"
-                            >
-                              <span
-                                className="pf-c-dropdown__toggle-image"
-                              >
-                                <Avatar
-                                  alt="User Avatar"
-                                  src="avatar.svg"
-                                >
-                                  <img
-                                    alt="User Avatar"
-                                    className="pf-c-avatar"
-                                    src="avatar.svg"
-                                  />
-                                </Avatar>
-                              </span>
-                              <span
-                                className="pf-c-dropdown__toggle-text"
-                              >
-                                Anonymous
-                              </span>
-                              <span
-                                className="pf-c-dropdown__toggle-icon"
-                              >
-                                <CaretDownIcon
-                                  color="currentColor"
-                                  noVerticalAlign={false}
-                                  size="sm"
-                                >
-                                  <svg
-                                    aria-hidden={true}
-                                    aria-labelledby={null}
-                                    fill="currentColor"
-                                    height="1em"
-                                    role="img"
-                                    style={
-                                      Object {
-                                        "verticalAlign": "-0.125em",
-                                      }
-                                    }
-                                    viewBox="0 0 320 512"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                    />
-                                  </svg>
-                                </CaretDownIcon>
-                              </span>
-                            </button>
-                          </Toggle>
-                        </DropdownToggle>
-                      </div>
-                    </DropdownWithContext>
-                  </Dropdown>
-                </div>
-              </ToolbarItem>
-            </div>
-          </ToolbarGroupWithRef>
-        </ForwardRef>
-        <ToolbarChipGroupContent
-          chipGroupContentRef={
-            Object {
-              "current": <div
-                class="pf-c-toolbar__content pf-m-hidden"
-                hidden=""
-              >
-                <div
-                  class="pf-c-toolbar__group"
-                />
-              </div>,
-            }
-          }
-          clearFiltersButtonText="Clear all filters"
-          collapseListedFiltersBreakpoint="lg"
-          isExpanded={false}
-          numberOfFilters={0}
-          numberOfFiltersText={[Function]}
-          showClearFiltersButton={false}
+        <div
+          class="pf-c-dropdown pf-m-align-right"
+          data-ouia-component-id="OUIA-Generated-Dropdown-1"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+          data-testid="pageToolbar-dropdown"
         >
-          <div
-            className="pf-c-toolbar__content pf-m-hidden"
-            hidden={true}
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="pf-c-dropdown__toggle pf-m-plain"
+            data-ouia-component-id="OUIA-Generated-DropdownToggle-1"
+            data-ouia-component-type="PF4/DropdownToggle"
+            data-ouia-safe="true"
+            id="pf-dropdown-toggle-id-0"
+            type="button"
           >
-            <ForwardRef
-              className=""
+            <span
+              class="pf-c-dropdown__toggle-image"
             >
-              <ToolbarGroupWithRef
-                className=""
-                innerRef={null}
+              <img
+                alt="User Avatar"
+                class="pf-c-avatar"
+                src="avatar.svg"
+              />
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-text"
+            >
+              Anonymous
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-icon"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 320 512"
+                width="1em"
               >
-                <div
-                  className="pf-c-toolbar__group"
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
                 />
-              </ToolbarGroupWithRef>
-            </ForwardRef>
-          </div>
-        </ToolbarChipGroupContent>
+              </svg>
+            </span>
+          </button>
+        </div>
       </div>
-    </GenerateId>
-  </Toolbar>
-</PageToolbar>
+    </div>
+    <div
+      class="pf-c-toolbar__content pf-m-hidden"
+      hidden=""
+    >
+      <div
+        class="pf-c-toolbar__group"
+      />
+    </div>
+  </div>
+</div>
 `;
 
 exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
-<PageToolbar>
-  <MockedAboutModalBox
-    handleModalToggleProp={[Function]}
-    isOpenProp={false}
-  />
-  <Toolbar
+<div>
+  <div
+    class="pf-c-toolbar"
+    data-ouia-component-id="OUIA-Generated-Toolbar-2"
     data-ouia-component-type="page-toolbar"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
+    id="pf-random-id-1"
   >
-    <GenerateId
-      prefix="pf-random-id-"
+    <div
+      class="pf-c-toolbar__group"
     >
       <div
-        className="pf-c-toolbar"
-        data-ouia-component-id="OUIA-Generated-Toolbar-2"
-        data-ouia-component-type="page-toolbar"
-        data-ouia-safe={true}
-        id="pf-random-id-1"
+        class="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
       >
-        <ForwardRef>
-          <ToolbarGroupWithRef
-            innerRef={null}
-          >
-            <div
-              className="pf-c-toolbar__group"
-            >
-              <ToolbarItem
-                className="pf-u-screen-reader pf-u-visible-on-md"
-              >
-                <div
-                  className="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
-                >
-                  <Dropdown
-                    dropdownItems={
-                      Array [
-                        <DropdownItem
-                          onClick={[Function]}
-                        >
-                          About
-                        </DropdownItem>,
-                        <DropdownSeparator />,
-                        <DropdownItem
-                          onClick={[Function]}
-                        >
-                          Log out
-                        </DropdownItem>,
-                      ]
-                    }
-                    isOpen={false}
-                    isPlain={true}
-                    onSelect={[Function]}
-                    position="right"
-                    toggle={
-                      <DropdownToggle
-                        icon={
-                          <Avatar
-                            alt="User Avatar"
-                            src="avatar.svg"
-                          />
-                        }
-                        onToggle={[Function]}
-                      >
-                        jdoe
-                      </DropdownToggle>
-                    }
-                  >
-                    <DropdownWithContext
-                      autoFocus={true}
-                      className=""
-                      direction="down"
-                      dropdownItems={
-                        Array [
-                          <DropdownItem
-                            onClick={[Function]}
-                          >
-                            About
-                          </DropdownItem>,
-                          <DropdownSeparator />,
-                          <DropdownItem
-                            onClick={[Function]}
-                          >
-                            Log out
-                          </DropdownItem>,
-                        ]
-                      }
-                      isFlipEnabled={true}
-                      isGrouped={false}
-                      isOpen={false}
-                      isPlain={true}
-                      isText={false}
-                      menuAppendTo="inline"
-                      onSelect={[Function]}
-                      position="right"
-                      removeFindDomNode={false}
-                      toggle={
-                        <DropdownToggle
-                          icon={
-                            <Avatar
-                              alt="User Avatar"
-                              src="avatar.svg"
-                            />
-                          }
-                          onToggle={[Function]}
-                        >
-                          jdoe
-                        </DropdownToggle>
-                      }
-                      zIndex={9999}
-                    >
-                      <div
-                        className="pf-c-dropdown pf-m-align-right"
-                        data-ouia-component-id="OUIA-Generated-Dropdown-2"
-                        data-ouia-component-type="PF4/Dropdown"
-                        data-ouia-safe={true}
-                      >
-                        <DropdownToggle
-                          aria-haspopup={true}
-                          getMenuRef={[Function]}
-                          icon={
-                            <Avatar
-                              alt="User Avatar"
-                              src="avatar.svg"
-                            />
-                          }
-                          id="pf-dropdown-toggle-id-1"
-                          isOpen={false}
-                          isPlain={true}
-                          isText={false}
-                          key=".0"
-                          onEnter={[Function]}
-                          onToggle={[Function]}
-                          parentRef={
-                            Object {
-                              "current": <div
-                                class="pf-c-dropdown pf-m-align-right"
-                                data-ouia-component-id="OUIA-Generated-Dropdown-2"
-                                data-ouia-component-type="PF4/Dropdown"
-                                data-ouia-safe="true"
-                              >
-                                <button
-                                  aria-expanded="false"
-                                  aria-haspopup="true"
-                                  class="pf-c-dropdown__toggle pf-m-plain"
-                                  data-ouia-component-id="OUIA-Generated-DropdownToggle-2"
-                                  data-ouia-component-type="PF4/DropdownToggle"
-                                  data-ouia-safe="true"
-                                  id="pf-dropdown-toggle-id-1"
-                                  type="button"
-                                >
-                                  <span
-                                    class="pf-c-dropdown__toggle-image"
-                                  >
-                                    <img
-                                      alt="User Avatar"
-                                      class="pf-c-avatar"
-                                      src="avatar.svg"
-                                    />
-                                  </span>
-                                  <span
-                                    class="pf-c-dropdown__toggle-text"
-                                  >
-                                    jdoe
-                                  </span>
-                                  <span
-                                    class="pf-c-dropdown__toggle-icon"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      fill="currentColor"
-                                      height="1em"
-                                      role="img"
-                                      style="vertical-align: -0.125em;"
-                                      viewBox="0 0 320 512"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                      />
-                                    </svg>
-                                  </span>
-                                </button>
-                              </div>,
-                            }
-                          }
-                        >
-                          <Toggle
-                            aria-haspopup={true}
-                            bubbleEvent={false}
-                            className=""
-                            data-ouia-component-id="OUIA-Generated-DropdownToggle-2"
-                            data-ouia-component-type="PF4/DropdownToggle"
-                            data-ouia-safe={true}
-                            getMenuRef={[Function]}
-                            id="pf-dropdown-toggle-id-1"
-                            isActive={false}
-                            isDisabled={false}
-                            isOpen={false}
-                            isPlain={true}
-                            isPrimary={false}
-                            isSplitButton={false}
-                            isText={false}
-                            onEnter={[Function]}
-                            onToggle={[Function]}
-                            parentRef={
-                              Object {
-                                "current": <div
-                                  class="pf-c-dropdown pf-m-align-right"
-                                  data-ouia-component-id="OUIA-Generated-Dropdown-2"
-                                  data-ouia-component-type="PF4/Dropdown"
-                                  data-ouia-safe="true"
-                                >
-                                  <button
-                                    aria-expanded="false"
-                                    aria-haspopup="true"
-                                    class="pf-c-dropdown__toggle pf-m-plain"
-                                    data-ouia-component-id="OUIA-Generated-DropdownToggle-2"
-                                    data-ouia-component-type="PF4/DropdownToggle"
-                                    data-ouia-safe="true"
-                                    id="pf-dropdown-toggle-id-1"
-                                    type="button"
-                                  >
-                                    <span
-                                      class="pf-c-dropdown__toggle-image"
-                                    >
-                                      <img
-                                        alt="User Avatar"
-                                        class="pf-c-avatar"
-                                        src="avatar.svg"
-                                      />
-                                    </span>
-                                    <span
-                                      class="pf-c-dropdown__toggle-text"
-                                    >
-                                      jdoe
-                                    </span>
-                                    <span
-                                      class="pf-c-dropdown__toggle-icon"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        fill="currentColor"
-                                        height="1em"
-                                        role="img"
-                                        style="vertical-align: -0.125em;"
-                                        viewBox="0 0 320 512"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </button>
-                                </div>,
-                              }
-                            }
-                            toggleVariant="default"
-                          >
-                            <button
-                              aria-expanded={false}
-                              aria-haspopup={true}
-                              className="pf-c-dropdown__toggle pf-m-plain"
-                              data-ouia-component-id="OUIA-Generated-DropdownToggle-2"
-                              data-ouia-component-type="PF4/DropdownToggle"
-                              data-ouia-safe={true}
-                              disabled={false}
-                              id="pf-dropdown-toggle-id-1"
-                              onClick={[Function]}
-                              onKeyDown={[Function]}
-                              type="button"
-                            >
-                              <span
-                                className="pf-c-dropdown__toggle-image"
-                              >
-                                <Avatar
-                                  alt="User Avatar"
-                                  src="avatar.svg"
-                                >
-                                  <img
-                                    alt="User Avatar"
-                                    className="pf-c-avatar"
-                                    src="avatar.svg"
-                                  />
-                                </Avatar>
-                              </span>
-                              <span
-                                className="pf-c-dropdown__toggle-text"
-                              >
-                                jdoe
-                              </span>
-                              <span
-                                className="pf-c-dropdown__toggle-icon"
-                              >
-                                <CaretDownIcon
-                                  color="currentColor"
-                                  noVerticalAlign={false}
-                                  size="sm"
-                                >
-                                  <svg
-                                    aria-hidden={true}
-                                    aria-labelledby={null}
-                                    fill="currentColor"
-                                    height="1em"
-                                    role="img"
-                                    style={
-                                      Object {
-                                        "verticalAlign": "-0.125em",
-                                      }
-                                    }
-                                    viewBox="0 0 320 512"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                                    />
-                                  </svg>
-                                </CaretDownIcon>
-                              </span>
-                            </button>
-                          </Toggle>
-                        </DropdownToggle>
-                      </div>
-                    </DropdownWithContext>
-                  </Dropdown>
-                </div>
-              </ToolbarItem>
-            </div>
-          </ToolbarGroupWithRef>
-        </ForwardRef>
-        <ToolbarChipGroupContent
-          chipGroupContentRef={
-            Object {
-              "current": <div
-                class="pf-c-toolbar__content pf-m-hidden"
-                hidden=""
-              >
-                <div
-                  class="pf-c-toolbar__group"
-                />
-              </div>,
-            }
-          }
-          clearFiltersButtonText="Clear all filters"
-          collapseListedFiltersBreakpoint="lg"
-          isExpanded={false}
-          numberOfFilters={0}
-          numberOfFiltersText={[Function]}
-          showClearFiltersButton={false}
+        <div
+          class="pf-c-dropdown pf-m-align-right"
+          data-ouia-component-id="OUIA-Generated-Dropdown-2"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+          data-testid="pageToolbar-dropdown"
         >
-          <div
-            className="pf-c-toolbar__content pf-m-hidden"
-            hidden={true}
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="pf-c-dropdown__toggle pf-m-plain"
+            data-ouia-component-id="OUIA-Generated-DropdownToggle-2"
+            data-ouia-component-type="PF4/DropdownToggle"
+            data-ouia-safe="true"
+            id="pf-dropdown-toggle-id-1"
+            type="button"
           >
-            <ForwardRef
-              className=""
+            <span
+              class="pf-c-dropdown__toggle-image"
             >
-              <ToolbarGroupWithRef
-                className=""
-                innerRef={null}
+              <img
+                alt="User Avatar"
+                class="pf-c-avatar"
+                src="avatar.svg"
+              />
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-text"
+            >
+              jdoe
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-icon"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 320 512"
+                width="1em"
               >
-                <div
-                  className="pf-c-toolbar__group"
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
                 />
-              </ToolbarGroupWithRef>
-            </ForwardRef>
-          </div>
-        </ToolbarChipGroupContent>
+              </svg>
+            </span>
+          </button>
+        </div>
       </div>
-    </GenerateId>
-  </Toolbar>
-</PageToolbar>
+    </div>
+    <div
+      class="pf-c-toolbar__content pf-m-hidden"
+      hidden=""
+    >
+      <div
+        class="pf-c-toolbar__group"
+      />
+    </div>
+  </div>
+</div>
 `;
 
 exports[`PageToolbar component tests Testing dropdown items - auth disabled 1`] = `
-<Fragment>
-  <MockedAboutModalBox
-    handleModalToggleProp={[Function]}
-    isOpenProp={false}
-  />
-  <Toolbar
+<div>
+  <div
+    class="pf-c-toolbar"
+    data-ouia-component-id="OUIA-Generated-Toolbar-5"
     data-ouia-component-type="page-toolbar"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
+    id="pf-random-id-4"
   >
-    <ForwardRef>
-      <ToolbarItem
-        className="pf-u-screen-reader pf-u-visible-on-md"
+    <div
+      class="pf-c-toolbar__group"
+    >
+      <div
+        class="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
       >
-        <Dropdown
-          dropdownItems={
-            Array [
-              <DropdownItem
-                onClick={[Function]}
-              >
-                About
-              </DropdownItem>,
-            ]
-          }
-          isOpen={false}
-          isPlain={true}
-          onSelect={[Function]}
-          position="right"
-          toggle={
-            <DropdownToggle
-              icon={
-                <Avatar
-                  alt="User Avatar"
-                  src="avatar.svg"
-                />
-              }
-              onToggle={[Function]}
+        <div
+          class="pf-c-dropdown pf-m-align-right"
+          data-ouia-component-id="OUIA-Generated-Dropdown-5"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+          data-testid="pageToolbar-dropdown"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="pf-c-dropdown__toggle pf-m-plain"
+            data-ouia-component-id="OUIA-Generated-DropdownToggle-5"
+            data-ouia-component-type="PF4/DropdownToggle"
+            data-ouia-safe="true"
+            id="pf-dropdown-toggle-id-8"
+            type="button"
+          >
+            <span
+              class="pf-c-dropdown__toggle-image"
+            >
+              <img
+                alt="User Avatar"
+                class="pf-c-avatar"
+                src="avatar.svg"
+              />
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-text"
             >
               Anonymous
-            </DropdownToggle>
-          }
-        />
-      </ToolbarItem>
-    </ForwardRef>
-  </Toolbar>
-</Fragment>
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-icon"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 320 512"
+                width="1em"
+              >
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="pf-c-toolbar__content pf-m-hidden"
+      hidden=""
+    >
+      <div
+        class="pf-c-toolbar__group"
+      />
+    </div>
+  </div>
+</div>
 `;
 
 exports[`PageToolbar component tests Testing dropdown items - auth enabled 1`] = `
-<Fragment>
-  <MockedAboutModalBox
-    handleModalToggleProp={[Function]}
-    isOpenProp={false}
-  />
-  <Toolbar
+<div>
+  <div
+    class="pf-c-toolbar"
+    data-ouia-component-id="OUIA-Generated-Toolbar-3"
     data-ouia-component-type="page-toolbar"
-    data-ouia-safe={true}
+    data-ouia-safe="true"
+    id="pf-random-id-2"
   >
-    <ForwardRef>
-      <ToolbarItem
-        className="pf-u-screen-reader pf-u-visible-on-md"
+    <div
+      class="pf-c-toolbar__group"
+    >
+      <div
+        class="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
       >
-        <Dropdown
-          dropdownItems={
-            Array [
-              <DropdownItem
-                onClick={[Function]}
-              >
-                About
-              </DropdownItem>,
-              <DropdownSeparator />,
-              <DropdownItem
-                onClick={[Function]}
-              >
-                Log out
-              </DropdownItem>,
-            ]
-          }
-          isOpen={false}
-          isPlain={true}
-          onSelect={[Function]}
-          position="right"
-          toggle={
-            <DropdownToggle
-              icon={
-                <Avatar
-                  alt="User Avatar"
-                  src="avatar.svg"
-                />
-              }
-              onToggle={[Function]}
+        <div
+          class="pf-c-dropdown pf-m-align-right"
+          data-ouia-component-id="OUIA-Generated-Dropdown-3"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+          data-testid="pageToolbar-dropdown"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="pf-c-dropdown__toggle pf-m-plain"
+            data-ouia-component-id="OUIA-Generated-DropdownToggle-3"
+            data-ouia-component-type="PF4/DropdownToggle"
+            data-ouia-safe="true"
+            id="pf-dropdown-toggle-id-2"
+            type="button"
+          >
+            <span
+              class="pf-c-dropdown__toggle-image"
+            >
+              <img
+                alt="User Avatar"
+                class="pf-c-avatar"
+                src="avatar.svg"
+              />
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-text"
             >
               jdoe
-            </DropdownToggle>
-          }
-        />
-      </ToolbarItem>
-    </ForwardRef>
-  </Toolbar>
-</Fragment>
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-icon"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 320 512"
+                width="1em"
+              >
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="pf-c-toolbar__content pf-m-hidden"
+      hidden=""
+    >
+      <div
+        class="pf-c-toolbar__group"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`PageToolbar component tests Testing logout - auth enabled 1`] = `
+<div>
+  <div
+    class="pf-c-toolbar"
+    data-ouia-component-id="OUIA-Generated-Toolbar-4"
+    data-ouia-component-type="page-toolbar"
+    data-ouia-safe="true"
+    id="pf-random-id-3"
+  >
+    <div
+      class="pf-c-toolbar__group"
+    >
+      <div
+        class="pf-c-toolbar__item pf-u-screen-reader pf-u-visible-on-md"
+      >
+        <div
+          class="pf-c-dropdown pf-m-align-right"
+          data-ouia-component-id="OUIA-Generated-Dropdown-4"
+          data-ouia-component-type="PF4/Dropdown"
+          data-ouia-safe="true"
+          data-testid="pageToolbar-dropdown"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="pf-c-dropdown__toggle pf-m-plain"
+            data-ouia-component-id="OUIA-Generated-DropdownToggle-4"
+            data-ouia-component-type="PF4/DropdownToggle"
+            data-ouia-safe="true"
+            id="pf-dropdown-toggle-id-7"
+            type="button"
+          >
+            <span
+              class="pf-c-dropdown__toggle-image"
+            >
+              <img
+                alt="User Avatar"
+                class="pf-c-avatar"
+                src="avatar.svg"
+              />
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-text"
+            >
+              jdoe
+            </span>
+            <span
+              class="pf-c-dropdown__toggle-icon"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 320 512"
+                width="1em"
+              >
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="pf-c-toolbar__content pf-m-hidden"
+      hidden=""
+    >
+      <div
+        class="pf-c-toolbar__group"
+      />
+    </div>
+  </div>
+</div>
 `;

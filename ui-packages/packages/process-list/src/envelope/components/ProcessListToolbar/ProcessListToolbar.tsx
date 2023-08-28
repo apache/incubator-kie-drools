@@ -544,6 +544,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   const dropdownItemsProcesManagementButtons = () => {
     return [
       <DropdownItem
+        data-testid="multi-abort"
         key="abort"
         onClick={operations[OperationType.ABORT].functions.perform}
         isDisabled={selectedInstances.length === 0}
@@ -551,6 +552,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         Abort selected
       </DropdownItem>,
       <DropdownItem
+        data-testid="multi-skip"
         key="skip"
         onClick={operations[OperationType.SKIP].functions.perform}
         isDisabled={selectedInstances.length === 0}
@@ -558,6 +560,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         Skip selected
       </DropdownItem>,
       <DropdownItem
+        data-testid="multi-retry"
         key="retry"
         onClick={operations[OperationType.RETRY].functions.perform}
         isDisabled={selectedInstances.length === 0}
@@ -661,6 +664,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
             isOpen={isExpanded}
             placeholderText="Status"
             id="status-select"
+            data-testid="status-select"
           >
             {statusMenuItems}
           </Select>
@@ -674,6 +678,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
             <TextInput
               name="businessKey"
               id="businessKey"
+              data-testid="businesskey"
               type="search"
               aria-label="business key"
               onChange={setBusinessKeyInput}
@@ -687,7 +692,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
           <Button
             variant="primary"
             onClick={onApplyFilter}
-            id="apply-filter-button"
+            data-testid="apply-filter-button"
           >
             Apply filter
           </Button>
@@ -710,7 +715,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       <ToolbarGroup variant="icon-button-group">
         <ToolbarItem>
           <Tooltip content={'Refresh'}>
-            <Button variant="plain" onClick={refresh} id="refresh">
+            <Button variant="plain" onClick={refresh} data-testid="refresh">
               <SyncIcon />
             </Button>
           </Tooltip>
@@ -720,7 +725,11 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         <ToolbarGroup>
           <ToolbarItem variant="separator" />
           <ToolbarItem>
-            <Button variant="primary" onClick={() => onOpenCloudEventClick()}>
+            <Button
+              variant="primary"
+              onClick={() => onOpenCloudEventClick()}
+              data-testid="trigger-cloud-event"
+            >
               Trigger Cloud Event
             </Button>
           </ToolbarItem>
@@ -740,7 +749,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         ouiaId="operation-result"
       />
       <Toolbar
-        id="data-toolbar-with-filter"
+        data-testid="data-toolbar-with-filter"
         className="pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
         collapseListedFiltersBreakpoint="xl"
         clearAllFilters={resetAllFilters}

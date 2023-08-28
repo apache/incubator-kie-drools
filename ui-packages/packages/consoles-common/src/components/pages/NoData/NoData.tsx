@@ -79,7 +79,11 @@ export const NoData: React.FC<IOwnProps & OUIAProps> = ({
                 ? props.location.state.description
                 : 'No data to display'}
             </EmptyStateBody>
-            <Button variant="primary" onClick={redirectHandler}>
+            <Button
+              variant="primary"
+              onClick={redirectHandler}
+              data-testid="redirect-button"
+            >
               {props.location.state
                 ? props.location.state.buttonText
                 : props.defaultButton}

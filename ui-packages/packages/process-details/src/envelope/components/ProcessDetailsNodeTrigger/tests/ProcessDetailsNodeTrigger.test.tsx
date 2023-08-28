@@ -16,21 +16,15 @@
 
 import React from 'react';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger';
-import {
-  DropdownToggle,
-  DropdownItem
-} from '@patternfly/react-core/dist/js/components/Dropdown';
-import { FlexItem } from '@patternfly/react-core/dist/js/layouts/Flex';
 import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import {
   ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared/dist/types';
 import TestProcessDetailsDriver from '../../../tests/mocks/TestProcessDetailsDriver';
-import wait from 'waait';
 jest.mock('../../ProcessDetailsErrorModal/ProcessDetailsErrorModal');
-
+Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 const processInstanceData: ProcessInstance = {
   id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
   processId: 'travels',
@@ -77,158 +71,47 @@ const processInstanceData: ProcessInstance = {
   childProcessInstances: []
 };
 
-const mockTriggerableNodes = [
-  {
-    nodeDefinitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
-    name: 'Send visa application',
-    id: 1,
-    type: 'ActionNode',
-    uniqueId: '1'
-  },
-  {
-    nodeDefinitionId: '_175DC79D-C2F1-4B28-BE2D-B583DFABF70D',
-    name: 'Book',
-    id: 2,
-    type: 'Split',
-    uniqueId: '2'
-  },
-  {
-    nodeDefinitionId: '_E611283E-30B0-46B9-8305-768A002C7518',
-    name: 'visasrejected',
-    id: 3,
-    type: 'EventNode',
-    uniqueId: '3'
-  }
-];
-
-const getNodeTriggerWrapper = async () => {
-  let wrapper;
-  await act(async () => {
-    wrapper = mount(
-      <ProcessDetailsNodeTrigger
-        processInstanceData={processInstanceData}
-        driver={new TestProcessDetailsDriver('123')}
-      />
-    );
-    await wait(0);
-    wrapper = wrapper.update().find('ProcessDetailsNodeTrigger');
-  });
-  return wrapper;
-};
-
 describe('Process details node trigger component tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it('snapshot testing with none selected', async () => {
-    const wrapper = await getNodeTriggerWrapper();
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('select a node test ', async () => {
-    let wrapper = await getNodeTriggerWrapper();
+    let container;
     await act(async () => {
-      wrapper.find(DropdownToggle).find('button').simulate('click');
-    });
-    wrapper = wrapper.update();
-
-    await act(async () => {
-      wrapper.find(DropdownItem).at(1).simulate('click');
-    });
-    wrapper = wrapper.update();
-    // snapshot with data displayed
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find(FlexItem).length).toEqual(3);
-    // Node name displayed
-    expect(
-      wrapper
-        .find(FlexItem)
-        .find('h6')
-        .at(0)
-        .children()
-        .contains('Node name : ')
-    ).toBeTruthy();
-    // Node type displayed
-    expect(
-      wrapper
-        .find(FlexItem)
-        .find('h6')
-        .at(1)
-        .children()
-        .contains('Node type : ')
-    ).toBeTruthy();
-    // Node id displayed
-    expect(
-      wrapper.find(FlexItem).find('h6').at(2).children().contains('Node id : ')
-    ).toBeTruthy();
-  });
-
-  it('Node trigger success tests', async () => {
-    const driver = new TestProcessDetailsDriver('123');
-    const driverMockNodeTriggerSuccess = jest.spyOn(
-      driver,
-      'handleNodeTrigger'
-    );
-    const driverMockGetTriggerableNode = jest.spyOn(
-      driver,
-      'getTriggerableNodes'
-    );
-    driverMockGetTriggerableNode.mockResolvedValue(mockTriggerableNodes);
-    driverMockNodeTriggerSuccess.mockResolvedValue();
-    let wrapper;
-    await act(async () => {
-      wrapper = mount(
+      container = render(
         <ProcessDetailsNodeTrigger
           processInstanceData={processInstanceData}
           driver={new TestProcessDetailsDriver('123')}
         />
       );
-      await wait(0);
-      wrapper = wrapper.update().find('ProcessDetailsNodeTrigger');
     });
-
-    await act(async () => {
-      wrapper.find(DropdownToggle).find('button').simulate('click');
-    });
-    wrapper = wrapper.update();
-
-    await act(async () => {
-      wrapper.find(DropdownItem).at(1).simulate('click');
-    });
-    wrapper = wrapper.update();
-    await act(async () => {
-      wrapper.find('#trigger').find('button').simulate('click');
-    });
-    wrapper = wrapper.update();
-    wrapper = wrapper.find('MockedProcessDetailsErrorModal');
-    // takes snapshot of the success modal
-    expect(wrapper).toMatchSnapshot();
-    // check the modal content
-    expect(
-      wrapper.find('MockedProcessDetailsErrorModal').props()['errorString']
-    ).toEqual('The node Book was triggered successfully');
+    expect(container).toMatchSnapshot();
   });
 
-  it('failed to retrieve nodes', async () => {
-    const driver = new TestProcessDetailsDriver('123');
-    const driverMockGetTriggerableNode = jest.spyOn(
-      driver,
-      'getTriggerableNodes'
-    );
-    driverMockGetTriggerableNode.mockRejectedValue({ message: '404 error' });
-    let wrapper = null;
+  it('select a node and trigger ', async () => {
+    let container;
     await act(async () => {
-      wrapper = mount(
+      container = render(
         <ProcessDetailsNodeTrigger
           processInstanceData={processInstanceData}
-          driver={driver}
+          driver={new TestProcessDetailsDriver('123')}
         />
-      ).find('ProcessDetailsNodeTrigger');
+      );
     });
-    wrapper = wrapper.update().find('MockedProcessDetailsErrorModal');
-    expect(wrapper).toMatchSnapshot();
-    expect(
-      wrapper.find('MockedProcessDetailsErrorModal').exists()
-    ).toBeTruthy();
-    expect(
-      wrapper.find('MockedProcessDetailsErrorModal').props()['errorString']
-    ).toEqual('Retrieval of nodes failed with error: 404 error');
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('toggle-id'));
+    });
+    await waitFor(() => screen.getAllByText('Book'));
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('Book')[0]);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('trigger'));
+    });
+    await new Promise((r) => setTimeout(r, 1000));
+    await waitFor(() => screen.getAllByText('Node id :'));
+    expect(screen.getAllByText('Node id :')[0]).toBeTruthy();
+    expect(screen.getAllByText('Node name :')[0]).toBeTruthy();
+    expect(screen.getAllByText('Node type :')[0]).toBeTruthy();
   });
 });

@@ -16,14 +16,11 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import ProcessDefinitionListEnvelopeView, {
   ProcessDefinitionListEnvelopeViewApi
 } from '../ProcessDefinitionListEnvelopeView';
-import ProcessDefinitionList from '../components/ProcessDefinitionList/ProcessDefinitionList';
-
-jest.mock('../components/ProcessDefinitionList/ProcessDefinitionList');
 
 describe('ProcessDefinitionListEnvelopeView tests', () => {
   it('Snapshot', () => {
@@ -31,14 +28,14 @@ describe('ProcessDefinitionListEnvelopeView tests', () => {
 
     const forwardRef = React.createRef<ProcessDefinitionListEnvelopeViewApi>();
 
-    let wrapper = mount(
+    const container = render(
       <ProcessDefinitionListEnvelopeView
         channelApi={channelApi}
         ref={forwardRef}
       />
-    ).find('ProcessDefinitionListEnvelopeView');
+    ).container;
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     act(() => {
       if (forwardRef.current) {
@@ -46,18 +43,15 @@ describe('ProcessDefinitionListEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update();
+    const processDefinitionList = container.querySelector(
+      '[data-ouia-component-type="process-definition-list"]'
+    );
 
-    const envelopeView = wrapper.find(ProcessDefinitionListEnvelopeView);
+    expect(processDefinitionList).toBeTruthy();
+    const checkIsEnvelopeConnectedToChannel = container.querySelector('h3');
 
-    expect(envelopeView).toMatchSnapshot();
-
-    const processDefinitionList = envelopeView.find(ProcessDefinitionList);
-
-    expect(processDefinitionList.exists()).toBeTruthy();
-    expect(
-      processDefinitionList.props().isEnvelopeConnectedToChannel
-    ).toBeTruthy();
-    expect(processDefinitionList.props().driver).not.toBeNull();
+    expect(checkIsEnvelopeConnectedToChannel?.textContent).toEqual(
+      'Loading  definitions...'
+    );
   });
 });

@@ -1,148 +1,75 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`KeycloakUnavailablePage test render the page 1`] = `
-<KeycloakUnavailablePage>
+<div>
   <div
     data-ouia-component-type="server-unavailable"
-    data-ouia-safe={true}
-    style={
-      Object {
-        "background": "#868686",
-        "display": "flex",
-        "height": "100%",
-        "justifyContent": "center",
-        "paddingTop": "5%",
-      }
-    }
+    data-ouia-safe="true"
+    style="display: flex; justify-content: center; padding-top: 5%; background: rgb(134, 134, 134); height: 100%;"
   >
      
-    <Card
-      style={
-        Object {
-          "maxHeight": "300px",
-        }
-      }
+    <article
+      class="pf-c-card"
+      data-ouia-component-id="OUIA-Generated-Card-1"
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe="true"
+      id=""
+      style="max-height: 300px;"
     >
-      <article
-        className="pf-c-card"
-        data-ouia-component-id="OUIA-Generated-Card-1"
-        data-ouia-component-type="PF4/Card"
-        data-ouia-safe={true}
-        id=""
-        style={
-          Object {
-            "maxHeight": "300px",
-          }
-        }
+      <div
+        class="pf-c-card__header"
       >
-        <CardHeader>
-          <div
-            className="pf-c-card__header"
-          >
-            <CardHeaderMain>
-              <div
-                className=""
-              >
-                <Brand
-                  alt="Kogito keycloak"
-                  src="kogito.png"
-                  style={
-                    Object {
-                      "height": "30px",
-                    }
-                  }
-                >
-                  <img
-                    alt="Kogito keycloak"
-                    className="pf-c-brand"
-                    src="kogito.png"
-                  />
-                </Brand>
-              </div>
-            </CardHeaderMain>
-          </div>
-        </CardHeader>
-        <CardBody
-          isFilled={false}
+        <div
+          class=""
         >
-          <div
-            className="pf-c-card__body pf-m-no-fill"
+          <img
+            alt="Kogito keycloak"
+            class="pf-c-brand"
+            src="kogito.png"
           />
-        </CardBody>
-        <CardTitle>
-          <div
-            className="pf-c-card__title"
+        </div>
+      </div>
+      <div
+        class="pf-c-card__body pf-m-no-fill"
+      />
+      <div
+        class="pf-c-card__title"
+      >
+        Error:503 - Server unavailable
+      </div>
+      <div
+        class="pf-c-card__body pf-m-no-fill"
+      />
+      <div
+        class="pf-c-card__body"
+      >
+        Sorry.. the keycloak server seems to be down
+      </div>
+      <div
+        class="pf-c-card__body pf-m-no-fill"
+      />
+      <div
+        class="pf-l-bullseye"
+      >
+        <span>
+          Please contact administrator or
+           
+          <button
+            aria-disabled="false"
+            class="pf-c-button pf-m-link pf-m-inline"
+            data-ouia-component-id="OUIA-Generated-Button-link-1"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            type="button"
           >
-            Error:503 - Server unavailable
-          </div>
-        </CardTitle>
-        <CardBody
-          isFilled={false}
-        >
-          <div
-            className="pf-c-card__body pf-m-no-fill"
-          />
-        </CardBody>
-        <CardBody>
-          <div
-            className="pf-c-card__body"
-          >
-            Sorry.. the keycloak server seems to be down
-          </div>
-        </CardBody>
-        <CardBody
-          isFilled={false}
-        >
-          <div
-            className="pf-c-card__body pf-m-no-fill"
-          />
-        </CardBody>
-        <Bullseye>
-          <div
-            className="pf-l-bullseye"
-          >
-            <span>
-              Please contact administrator or
-               
-              <Button
-                isInline={true}
-                onClick={[Function]}
-                variant="link"
-              >
-                <ButtonBase
-                  innerRef={null}
-                  isInline={true}
-                  onClick={[Function]}
-                  variant="link"
-                >
-                  <button
-                    aria-disabled={false}
-                    aria-label={null}
-                    className="pf-c-button pf-m-link pf-m-inline"
-                    data-ouia-component-id="OUIA-Generated-Button-link-1"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe={true}
-                    disabled={false}
-                    onClick={[Function]}
-                    role={null}
-                    type="button"
-                  >
-                    click here to retry
-                  </button>
-                </ButtonBase>
-              </Button>
-            </span>
-          </div>
-        </Bullseye>
-        <CardBody
-          isFilled={false}
-        >
-          <div
-            className="pf-c-card__body pf-m-no-fill"
-          />
-        </CardBody>
-      </article>
-    </Card>
+            click here to retry
+          </button>
+        </span>
+      </div>
+      <div
+        class="pf-c-card__body pf-m-no-fill"
+      />
+    </article>
   </div>
-</KeycloakUnavailablePage>
+</div>
 `;

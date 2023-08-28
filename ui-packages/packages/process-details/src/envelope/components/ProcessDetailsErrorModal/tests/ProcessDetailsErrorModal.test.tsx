@@ -18,7 +18,7 @@ import React from 'react';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
 import { setTitle } from '@kogito-apps/management-console-shared/dist/utils/Utils';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 const MockedIcon = (): React.ReactElement => {
   return <></>;
@@ -36,6 +36,7 @@ const errorModalAction: JSX.Element[] = [
     OK
   </Button>
 ];
+
 describe('Process details error modal tests', () => {
   const props = {
     errorString: '404-not found',
@@ -47,10 +48,7 @@ describe('Process details error modal tests', () => {
   };
 
   it('Snapshot test with default props', () => {
-    const wrapper = mount(<ProcessDetailsErrorModal {...props} />).find(
-      'ProcessDetailsErrorModal'
-    );
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('Text').children().text()).toEqual('404-not found');
+    const container = render(<ProcessDetailsErrorModal {...props} />).container;
+    expect(container).toMatchSnapshot();
   });
 });

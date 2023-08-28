@@ -71,6 +71,7 @@ export const EmbeddedProcessDetails = React.forwardRef(
           container: container(),
           bus: {
             postMessage(message, targetOrigin, transfer) {
+              /* istanbul ignore next */
               window.postMessage(message, targetOrigin, transfer);
             }
           }

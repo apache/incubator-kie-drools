@@ -1,76 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CustomDashboardViewEnvelopeView tests Snapshot 1`] = `null`;
+exports[`CustomDashboardViewEnvelopeView tests Snapshot 1`] = `<div />`;
 
 exports[`CustomDashboardViewEnvelopeView tests Snapshot 2`] = `
-<ForwardRef
-  channelApi={
-    Object {
-      "notifications": [MockFunction],
-      "requests": Object {
-        "customDashboardView__getCustomDashboardView": [MockFunction] {
-          "calls": Array [
-            Array [
-              "name",
-            ],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": Promise {},
-            },
-          ],
-        },
-      },
-      "shared": [MockFunction],
-      "subscribe": [MockFunction],
-      "unsubscribe": [MockFunction],
-    }
-  }
->
-  <CustomDashboardView
-    customDashboardName="name"
-    driver={
-      CustomDashboardViewEnvelopeViewDriver {
-        "channelApi": Object {
-          "notifications": [MockFunction],
-          "requests": Object {
-            "customDashboardView__getCustomDashboardView": [MockFunction] {
-              "calls": Array [
-                Array [
-                  "name",
-                ],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": Promise {},
-                },
-              ],
-            },
-          },
-          "shared": [MockFunction],
-          "subscribe": [MockFunction],
-          "unsubscribe": [MockFunction],
-        },
-      }
-    }
-    isEnvelopeConnectedToChannel={true}
-    targetOrigin="targetOrigin"
-  >
-    <iframe
-      data-ouia-component-type="customDashboard-view"
-      data-ouia-safe={true}
-      id="db"
-      src="resources/webapp/custom-dashboard-view/dashbuilder/index.html"
-      style={
-        Object {
-          "height": "100%",
-          "padding": "10px",
-          "width": "100%",
-        }
-      }
-    />
-  </CustomDashboardView>
-</ForwardRef>
+<iframe
+  data-ouia-component-type="customDashboard-view"
+  data-ouia-safe="true"
+  id="db"
+  src="resources/webapp/custom-dashboard-view/dashbuilder/index.html"
+  style="width: 100%; height: 100%; padding: 10px;"
+/>
 `;

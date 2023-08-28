@@ -122,10 +122,16 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
   const dropdownItems = (): JSX.Element[] => {
     if (job.endpoint !== null && RescheduleJobs.includes(job.status)) {
       return [
-        <DropdownItem key="details" component="button" onClick={onDetailsClick}>
+        <DropdownItem
+          data-testid="job-details"
+          key="details"
+          component="button"
+          onClick={onDetailsClick}
+        >
           Details
         </DropdownItem>,
         <DropdownItem
+          data-testid="job-reschedule"
           key="reschedule"
           component="button"
           id="reschedule-option"
@@ -134,6 +140,7 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
           Reschedule
         </DropdownItem>,
         <DropdownItem
+          data-testid="job-cancel"
           key="cancel"
           component="button"
           id="cancel-option"
@@ -144,7 +151,12 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
       ];
     } else {
       return [
-        <DropdownItem key="details" component="button" onClick={onDetailsClick}>
+        <DropdownItem
+          data-testid="job-details"
+          key="details"
+          component="button"
+          onClick={onDetailsClick}
+        >
           Details
         </DropdownItem>
       ];

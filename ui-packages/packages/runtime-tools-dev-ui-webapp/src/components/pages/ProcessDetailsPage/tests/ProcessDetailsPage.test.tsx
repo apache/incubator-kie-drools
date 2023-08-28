@@ -16,7 +16,7 @@
 
 import React from 'react';
 import * as H from 'history';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import {
   MilestoneStatus,
   ProcessInstance,
@@ -182,11 +182,11 @@ describe('WebApp - ProcessDetailsPage tests', () => {
     gatewayApi = new MockProcessDetailsGatewayApi();
   });
   it('Snapshot test with default values', async () => {
-    const wrapper = await mount(
+    const { container } = await render(
       <MemoryRouter initialEntries={['/']} keyLength={0}>
         <ProcessDetailsPage {...props} />
       </MemoryRouter>
     );
-    expect(wrapper.find(ProcessDetailsPage)).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

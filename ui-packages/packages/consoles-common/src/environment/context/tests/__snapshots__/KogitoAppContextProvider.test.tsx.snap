@@ -1,27 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`KogitoAppContextProvider tests Snapshot testing 1`] = `
-<KogitoAppContextProvider
-  userContext={
-    TestUserContext {
-      "user": DefaultUser {
-        "groups": Array [],
-        "id": "Dev User",
-      },
-    }
-  }
->
-  <MockedComponent
-    context={
-      AppContextImpl {
-        "userContext": TestUserContext {
-          "user": DefaultUser {
-            "groups": Array [],
-            "id": "Dev User",
-          },
-        },
-      }
-    }
-  />
-</KogitoAppContextProvider>
+<div>
+  <div />
+</div>
 `;

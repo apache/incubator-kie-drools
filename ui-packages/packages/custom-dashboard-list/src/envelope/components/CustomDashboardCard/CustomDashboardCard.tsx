@@ -56,6 +56,7 @@ const CustomDashboardCard: React.FC<CustomDashboardCardProps & OUIAProps> = ({
       {...componentOuiaProps(ouiaId, 'customDashboard-card', ouiaSafe)}
       isSelectable
       onClick={handleCardClick}
+      data-testid="card"
     >
       <CardHeader>
         <CardHeaderMain>Empty</CardHeaderMain>

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import {
   MockedMessageBusClientApi,
   workflowForm__getCustomWorkflowSchema,
@@ -25,41 +25,36 @@ import {
 import WorkflowFormEnvelopeView, {
   WorkflowFormEnvelopeViewApi
 } from '../WorkflowFormEnvelopeView';
-import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
-import CustomWorkflowForm from '../components/CustomWorkflowForm/CustomWorkflowForm';
-import WorkflowForm from '../components/WorkflowForm/WorkflowForm';
-
-jest.mock('../components/WorkflowForm/WorkflowForm');
-jest.mock('../components/CustomWorkflowForm/CustomWorkflowForm');
-
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    KogitoSpinner: () => {
-      return <MockedComponent />;
-    }
-  })
-);
 
 describe('WorkflowFormEnvelopeView tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn()
+      }))
+    });
   });
 
   it('Loading', () => {
     const channelApi = MockedMessageBusClientApi();
     const forwardRef = React.createRef<WorkflowFormEnvelopeViewApi>();
 
-    const wrapper = mount(
+    const container = render(
       <WorkflowFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
-    );
+    ).container;
 
-    expect(wrapper).toMatchSnapshot();
-
-    const spinner = wrapper.find(KogitoSpinner);
-    expect(spinner.exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+    const checkLoading = container.querySelector('h3');
+    expect(checkLoading?.textContent).toEqual('Loading workflow form...');
   });
 
   it('Workflow Form', async () => {
@@ -70,9 +65,9 @@ describe('WorkflowFormEnvelopeView tests', () => {
       Promise.resolve(null)
     );
 
-    let wrapper = mount(
+    const container = render(
       <WorkflowFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
-    );
+    ).container;
 
     await act(async () => {
       if (forwardRef.current) {
@@ -83,13 +78,11 @@ describe('WorkflowFormEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-
-    const workflowForm = wrapper.find(WorkflowForm);
-    expect(workflowForm.exists()).toBeTruthy();
-    expect(workflowForm.props().driver).not.toBeNull();
+    expect(container).toMatchSnapshot();
+    const checkWorkflowForm = container.querySelector(
+      '[data-ouia-component-type="workflow-form"]'
+    );
+    expect(checkWorkflowForm).toBeTruthy();
   });
 
   it('Custom Workflow Form', async () => {
@@ -100,9 +93,9 @@ describe('WorkflowFormEnvelopeView tests', () => {
       Promise.resolve(workflowSchema)
     );
 
-    let wrapper = mount(
+    const container = render(
       <WorkflowFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
-    );
+    ).container;
 
     await act(async () => {
       if (forwardRef.current) {
@@ -113,12 +106,10 @@ describe('WorkflowFormEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update();
-
-    expect(wrapper).toMatchSnapshot();
-
-    const customWorkflowForm = wrapper.find(CustomWorkflowForm);
-    expect(customWorkflowForm.exists()).toBeTruthy();
-    expect(customWorkflowForm.props().driver).not.toBeNull();
+    expect(container).toMatchSnapshot();
+    const checkCustomWorkflowForm = container.querySelector(
+      '[data-ouia-component-type="custom-workflow-form"]'
+    );
+    expect(checkCustomWorkflowForm).toBeTruthy();
   });
 });

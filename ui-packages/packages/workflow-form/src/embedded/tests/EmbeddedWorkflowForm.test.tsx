@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import {
   EmbeddedWorkflowForm,
   EmbeddedWorkflowFormProps
 } from '../EmbeddedWorkflowForm';
 import { MockedWorkflowFormDriver } from './mocks/Mocks';
-
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-jest.mock('@patternfly/react-code-editor', () =>
-  Object.assign(jest.requireActual('@patternfly/react-code-editor'), {
-    CodeEditor: () => {
-      return <MockedComponent />;
-    }
-  })
-);
 
 describe('EmbeddedWorkflowForm tests', () => {
   it('Snapshot', () => {
@@ -41,15 +30,12 @@ describe('EmbeddedWorkflowForm tests', () => {
       targetOrigin: 'origin'
     };
 
-    const wrapper = mount(<EmbeddedWorkflowForm {...props} />);
+    const container = render(<EmbeddedWorkflowForm {...props} />).container;
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    expect(wrapper.props().driver).toStrictEqual(props.driver);
-    expect(wrapper.props().targetOrigin).toStrictEqual(props.targetOrigin);
+    const contentDiv = container.querySelector('div');
 
-    const contentDiv = wrapper.find('div');
-
-    expect(contentDiv.exists()).toBeTruthy();
+    expect(contentDiv).toBeTruthy();
   });
 });

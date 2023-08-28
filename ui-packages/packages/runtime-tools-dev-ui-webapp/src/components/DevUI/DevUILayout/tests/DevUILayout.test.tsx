@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import DevUILayout from '../DevUILayout';
 import DevUIRoutes from '../../DevUIRoutes/DevUIRoutes';
 import { ApolloClient } from 'apollo-client';
@@ -44,7 +44,7 @@ describe('DevUILayout tests', () => {
       },
       isStunnerEnabled: false
     };
-    const wrapper = mount(
+    const { container } = render(
       <DevUILayout {...props}>
         <MemoryRouter initialEntries={['/']} keyLength={0}>
           <DevUIRoutes
@@ -55,22 +55,23 @@ describe('DevUILayout tests', () => {
         </MemoryRouter>
       </DevUILayout>
     );
-    expect(wrapper.find('PageLayout')).toMatchSnapshot();
-
+    expect(container).toMatchSnapshot();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="processes-nav"]')
+      container.querySelector('[data-ouia-navigation-name="processes-nav"]')
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="jobs-management-nav"]')
+      container.querySelector(
+        '[data-ouia-navigation-name="jobs-management-nav"]'
+      )
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="task-inbox-nav"]')
+      container.querySelector('[data-ouia-navigation-name="task-inbox-nav"]')
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="forms-list-nav"]')
+      container.querySelector('[data-ouia-navigation-name="forms-list-nav"]')
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="audit-nav"]')
+      container.querySelector('[data-ouia-navigation-name="audit-nav"]')
     ).toBeTruthy();
   });
 
@@ -89,7 +90,7 @@ describe('DevUILayout tests', () => {
       },
       isStunnerEnabled: false
     };
-    const wrapper = mount(
+    const { container } = render(
       <DevUILayout {...props}>
         <MemoryRouter initialEntries={['/']} keyLength={0}>
           <DevUIRoutes
@@ -100,22 +101,24 @@ describe('DevUILayout tests', () => {
         </MemoryRouter>
       </DevUILayout>
     );
-    expect(wrapper.find('PageLayout')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="processes-nav"]')
+      container.querySelector('[data-ouia-navigation-name="processes-nav"]')
     ).toBeFalsy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="jobs-management-nav"]')
+      container.querySelector(
+        '[data-ouia-navigation-name="jobs-management-nav"]'
+      )
     ).toBeFalsy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="task-inbox-nav"]')
+      container.querySelector('[data-ouia-navigation-name="task-inbox-nav"]')
     ).toBeFalsy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="forms-list-nav"]')
+      container.querySelector('[data-ouia-navigation-name="forms-list-nav"]')
     ).toBeFalsy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="audit-nav"]')
+      container.querySelector('[data-ouia-navigation-name="audit-nav"]')
     ).toBeTruthy();
   });
 
@@ -134,7 +137,7 @@ describe('DevUILayout tests', () => {
       },
       isStunnerEnabled: false
     };
-    const wrapper = mount(
+    const { container } = render(
       <DevUILayout {...props}>
         <MemoryRouter initialEntries={['/']} keyLength={0}>
           <DevUIRoutes
@@ -145,22 +148,24 @@ describe('DevUILayout tests', () => {
         </MemoryRouter>
       </DevUILayout>
     );
-    expect(wrapper.find('PageLayout')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="processes-nav"]')
+      container.querySelector('[data-ouia-navigation-name="processes-nav"]')
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="jobs-management-nav"]')
+      container.querySelector(
+        '[data-ouia-navigation-name="jobs-management-nav"]'
+      )
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="task-inbox-nav"]')
+      container.querySelector('[data-ouia-navigation-name="task-inbox-nav"]')
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="forms-list-nav"]')
+      container.querySelector('[data-ouia-navigation-name="forms-list-nav"]')
     ).toBeTruthy();
     expect(
-      wrapper.exists('Link[data-ouia-navigation-name="audit-nav"]')
+      container.querySelector('[data-ouia-navigation-name="audit-nav"]')
     ).toBeFalsy();
   });
 });

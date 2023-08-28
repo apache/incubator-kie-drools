@@ -1,33 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmbeddedCustomDashboardView tests Snapshot 1`] = `
-<ForwardRef
-  dashboardName="name"
-  driver={
-    Object {
-      "getCustomDashboardContent": [MockFunction],
-    }
-  }
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      CustomDashboardViewChannelApiImpl {
-        "driver": Object {
-          "getCustomDashboardContent": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;

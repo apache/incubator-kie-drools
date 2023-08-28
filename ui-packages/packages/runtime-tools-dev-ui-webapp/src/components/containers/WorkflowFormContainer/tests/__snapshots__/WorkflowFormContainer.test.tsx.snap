@@ -1,56 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`WorkflowFormContainer tests Snapshot 1`] = `
-<WorkflowFormContainer
-  onResetForm={[MockFunction]}
-  onSubmitError={[MockFunction]}
-  onSubmitSuccess={[MockFunction]}
-  workflowDefinitionData={
-    Object {
-      "endpoint": "http://localhost:4000",
-      "workflowName": "workflow1",
-    }
-  }
->
-  <ForwardRef
-    data-ouia-component-type="workflow-form-container"
-    data-ouia-safe={true}
-    driver={
-      Object {
-        "getCustomWorkflowSchema": [Function],
-        "resetBusinessKey": [Function],
-        "startWorkflow": [Function],
-      }
-    }
-    targetOrigin="http://localhost:9000"
-    workflowDefinition={
-      Object {
-        "endpoint": "http://localhost:4000",
-        "workflowName": "workflow1",
-      }
-    }
-  >
-    <ForwardRef(RefForwardingEmbeddedEnvelope)
-      apiImpl={
-        EmbeddedWorkflowFormChannelApiImpl {
-          "driver": Object {
-            "getCustomWorkflowSchema": [Function],
-            "resetBusinessKey": [Function],
-            "startWorkflow": [Function],
-          },
-        }
-      }
-      config={
-        Object {
-          "containerType": "div",
-        }
-      }
-      origin="http://localhost:9000"
-      pollInit={[Function]}
-      refDelegate={[Function]}
-    >
-      <div />
-    </ForwardRef(RefForwardingEmbeddedEnvelope)>
-  </ForwardRef>
-</WorkflowFormContainer>
+<div>
+  <div />
+</div>
 `;

@@ -1,34 +1,114 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessDiagram component tests Snapshot testing  with default props 1`] = `
-<Fragment>
-  <Card
-    data-ouia-component-type="process-diagram"
-    data-ouia-safe={true}
-  >
-    <CardHeader>
-      <Title
-        headingLevel="h3"
-        size="xl"
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <article
+        class="pf-c-card"
+        data-ouia-component-id="OUIA-Generated-Card-1"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
       >
-        Diagram
-      </Title>
-    </CardHeader>
-    <CardBody>
-      <ReactSvgPanZoomLoader
-        height={400}
-        proxy={
-          <React.Fragment>
-            <SvgLoaderSelectElement
-              selector={[Function]}
-            />
-          </React.Fragment>
-        }
-        render={[Function]}
-        src="<svg version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"800\\" height=\\"300\\" viewBox=\\"0 0 1748 632\\"></svg>"
-        width={1000}
-      />
-    </CardBody>
-  </Card>
-</Fragment>
+        <div
+          class="pf-c-card__header"
+        >
+          <h3
+            class="pf-c-title pf-m-xl"
+            data-ouia-component-id="OUIA-Generated-Title-1"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
+          >
+            Diagram
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body"
+        >
+          <div />
+        </div>
+      </article>
+    </div>
+  </body>,
+  "container": <div>
+    <article
+      class="pf-c-card"
+      data-ouia-component-id="OUIA-Generated-Card-1"
+      data-ouia-component-type="PF4/Card"
+      data-ouia-safe="true"
+      id=""
+    >
+      <div
+        class="pf-c-card__header"
+      >
+        <h3
+          class="pf-c-title pf-m-xl"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
+        >
+          Diagram
+        </h3>
+      </div>
+      <div
+        class="pf-c-card__body"
+      >
+        <div />
+      </div>
+    </article>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
 `;

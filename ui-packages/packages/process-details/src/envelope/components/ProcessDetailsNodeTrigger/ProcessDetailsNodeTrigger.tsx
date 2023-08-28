@@ -182,6 +182,7 @@ const ProcessDetailsNodeTrigger: React.FC<
                 toggle={
                   <DropdownToggle
                     id="toggle-id"
+                    data-testid="toggle-id"
                     onToggle={onToggle}
                     toggleIndicator={CaretDownIcon}
                   >
@@ -256,6 +257,7 @@ const ProcessDetailsNodeTrigger: React.FC<
                 variant="secondary"
                 onClick={onTriggerClick}
                 id="trigger"
+                data-testid="trigger"
                 isDisabled={!selectedNode}
               >
                 Trigger

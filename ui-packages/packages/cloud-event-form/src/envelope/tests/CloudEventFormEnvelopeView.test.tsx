@@ -15,27 +15,37 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import CloudEventFormEnvelopeView, {
   CloudEventFormEnvelopeViewApi
 } from '../CloudEventFormEnvelopeView';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
-import CloudEventForm from '../components/CloudEventForm/CloudEventForm';
-
-jest.mock('../components/CloudEventForm/CloudEventForm');
 
 describe('CloudEventFormEnvelopeView tests', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn()
+      }))
+    });
+  });
   it('Snapshot', () => {
     const channelApi = new MockedMessageBusClientApi();
 
     const forwardRef = React.createRef<CloudEventFormEnvelopeViewApi>();
 
-    let wrapper = mount(
+    const container = render(
       <CloudEventFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
-    ).find('CloudEventFormEnvelopeView');
+    ).container;
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     act(() => {
       if (forwardRef.current) {
@@ -49,17 +59,9 @@ describe('CloudEventFormEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update();
-
-    const envelopeView = wrapper.find(CloudEventFormEnvelopeView);
-
-    expect(envelopeView).toMatchSnapshot();
-
-    const cloudEventForm = envelopeView.find(CloudEventForm);
-
-    expect(cloudEventForm.exists()).toBeTruthy();
-    expect(cloudEventForm.props().driver).not.toBeNull();
-    expect(cloudEventForm.props().isNewInstanceEvent).toBeTruthy();
-    expect(cloudEventForm.props().defaultValues).not.toBeNull();
+    const checkWorkflowForm = container.querySelector(
+      '[data-ouia-component-type="workflow-form"]'
+    );
+    expect(checkWorkflowForm).toBeTruthy();
   });
 });

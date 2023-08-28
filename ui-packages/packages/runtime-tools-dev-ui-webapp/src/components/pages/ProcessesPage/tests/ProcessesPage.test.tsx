@@ -15,17 +15,25 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import ProcessesPage from '../ProcessesPage';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import * as H from 'history';
 import { act } from 'react-dom/test-utils';
 import * as RuntimeToolsDevUIAppContext from '../../../contexts/DevUIAppContext';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
+import * as ProcessListGatewayApi from '../../../../channel/ProcessList/ProcessListContext';
 jest.mock('../../../containers/ProcessListContainer/ProcessListContainer');
 jest.mock(
   '../../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer'
 );
+const MockProcessFormGatewayApi = jest.fn(() => ({
+  onOpenProcessListen: jest.fn()
+}));
+const processListGatewayApi = new MockProcessFormGatewayApi();
+jest
+  .spyOn(ProcessListGatewayApi, 'useProcessListGatewayApi')
+  .mockImplementation(() => processListGatewayApi);
 describe('ProcessesPage tests', () => {
   const props = {
     match: {
@@ -41,7 +49,7 @@ describe('ProcessesPage tests', () => {
   };
 
   it('Snapshot - processList page', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider
         users={[]}
         devUIUrl="http://devUIUrl"
@@ -59,12 +67,15 @@ describe('ProcessesPage tests', () => {
       </DevUIAppContextProvider>
     );
 
-    expect(wrapper.find(ProcessesPage)).toMatchSnapshot();
-    expect(wrapper.find('MockedProcessListContainer').exists()).toBeTruthy();
+    expect(container).toMatchSnapshot();
+
+    expect(container.querySelector('h1').textContent).toEqual(
+      'Workflow Instances'
+    );
   });
 
   it('Snapshot - processDefinitionList page', async () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider
         users={[]}
         devUIUrl="http://devUIUrl"
@@ -81,12 +92,23 @@ describe('ProcessesPage tests', () => {
         </MemoryRouter>
       </DevUIAppContextProvider>
     );
-    await act(async () => {
-      wrapper.find('TabButton').at(1).find('button').simulate('click');
-    });
-    await act(async () => {
-      wrapper = wrapper.update();
-    });
-    expect(wrapper.find('MockedProcessListContainer').exists()).toBeTruthy();
+
+    const tabs = screen.getAllByRole('tab');
+
+    fireEvent.click(tabs[0]);
+
+    const processListContainer = container.querySelector(
+      'section[aria-labelledby="pf-tab-0-process-list-tab"]'
+    );
+
+    expect(processListContainer).toBeTruthy();
+
+    fireEvent.click(tabs[1]);
+
+    const processDefinitionContainer = container.querySelector(
+      'section[aria-labelledby="pf-tab-0-process-list-tab"]'
+    );
+
+    expect(processDefinitionContainer).toBeTruthy();
   });
 });

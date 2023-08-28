@@ -1,81 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DisablePopup component tests snapshot testing for no process-management addon and only service URL 1`] = `
-<Tooltip
-  content="Management add-on capability not enabled. Contact your administrator to set up"
-  data-ouia-component-type="disable-popup"
-  data-ouia-safe={true}
->
-  <Checkbox
-    className=""
-    component="div"
-    id="test"
-    isChecked={false}
-    isDisabled={false}
-    isRequired={false}
-    isValid={true}
-    onChange={[Function]}
-    ouiaSafe={true}
-  />
-</Tooltip>
+<div>
+  <div
+    class="pf-c-check pf-m-standalone"
+  >
+    <input
+      aria-invalid="false"
+      class="pf-c-check__input"
+      data-ouia-component-id="OUIA-Generated-Checkbox-4"
+      data-ouia-component-type="PF4/Checkbox"
+      data-ouia-safe="true"
+      id="test"
+      type="checkbox"
+    />
+  </div>
+</div>
 `;
 
 exports[`DisablePopup component tests snapshot testing for no service URL and no process-management addon 1`] = `
-<Tooltip
-  content="Management add-on capability not enabled & missing the kogito.service.url property. Contact your administrator to set up."
-  data-ouia-component-type="disable-popup"
-  data-ouia-safe={true}
->
-  <Checkbox
-    className=""
-    component="div"
-    id="test"
-    isChecked={false}
-    isDisabled={false}
-    isRequired={false}
-    isValid={true}
-    onChange={[Function]}
-    ouiaSafe={true}
-  />
-</Tooltip>
+<div>
+  <div
+    class="pf-c-check pf-m-standalone"
+  >
+    <input
+      aria-invalid="false"
+      class="pf-c-check__input"
+      data-ouia-component-id="OUIA-Generated-Checkbox-2"
+      data-ouia-component-type="PF4/Checkbox"
+      data-ouia-safe="true"
+      id="test"
+      type="checkbox"
+    />
+  </div>
+</div>
 `;
 
 exports[`DisablePopup component tests snapshot testing for no service URL and only process-management addon 1`] = `
-<Tooltip
-  content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up."
-  data-ouia-component-type="disable-popup"
-  data-ouia-safe={true}
->
-  <Checkbox
-    className=""
-    component="div"
-    id="test"
-    isChecked={false}
-    isDisabled={false}
-    isRequired={false}
-    isValid={true}
-    onChange={[Function]}
-    ouiaSafe={true}
-  />
-</Tooltip>
+<div>
+  <div
+    class="pf-c-check pf-m-standalone"
+  >
+    <input
+      aria-invalid="false"
+      class="pf-c-check__input"
+      data-ouia-component-id="OUIA-Generated-Checkbox-1"
+      data-ouia-component-type="PF4/Checkbox"
+      data-ouia-safe="true"
+      id="test"
+      type="checkbox"
+    />
+  </div>
+</div>
 `;
 
 exports[`DisablePopup component tests snapshot testing for service URL and process-management addon available 1`] = `
-<Tooltip
-  content=""
-  data-ouia-component-type="disable-popup"
-  data-ouia-safe={true}
->
-  <Checkbox
-    className=""
-    component="div"
-    id="test"
-    isChecked={false}
-    isDisabled={false}
-    isRequired={false}
-    isValid={true}
-    onChange={[Function]}
-    ouiaSafe={true}
-  />
-</Tooltip>
+<div>
+  <div
+    class="pf-c-check pf-m-standalone"
+  >
+    <input
+      aria-invalid="false"
+      class="pf-c-check__input"
+      data-ouia-component-id="OUIA-Generated-Checkbox-3"
+      data-ouia-component-type="PF4/Checkbox"
+      data-ouia-safe="true"
+      id="test"
+      type="checkbox"
+    />
+  </div>
+</div>
 `;

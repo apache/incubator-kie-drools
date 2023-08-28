@@ -120,7 +120,12 @@ const ProcessDefinitionListToolbar: React.FC<
           </InputGroup>
         </ToolbarFilter>
         <ToolbarItem>
-          <Button id="apply-filter" variant="primary" onClick={doApplyFilter}>
+          <Button
+            id="apply-filter"
+            variant="primary"
+            onClick={doApplyFilter}
+            data-testid="apply-filter"
+          >
             Apply Filter
           </Button>
         </ToolbarItem>
@@ -136,7 +141,12 @@ const ProcessDefinitionListToolbar: React.FC<
       <ToolbarGroup variant="icon-button-group">
         <ToolbarItem>
           <Tooltip content={'Refresh'}>
-            <Button variant="plain" onClick={doRefresh} id="refresh">
+            <Button
+              variant="plain"
+              onClick={doRefresh}
+              id="refresh"
+              data-testid="refresh"
+            >
               <SyncIcon />
             </Button>
           </Tooltip>

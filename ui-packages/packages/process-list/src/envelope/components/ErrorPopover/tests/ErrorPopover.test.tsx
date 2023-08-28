@@ -15,8 +15,13 @@
  */
 import React from 'react';
 import ErrorPopover from '../ErrorPopover';
-import { mount } from 'enzyme';
-import { Popover } from '@patternfly/react-core/dist/js/components/Popover';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor
+} from '@testing-library/react';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
 const props = {
   processInstanceData: {
@@ -49,34 +54,32 @@ const props = {
 };
 
 describe('Errorpopover component tests', () => {
-  it('snapshot testing with error object', () => {
-    const wrapper = mount(<ErrorPopover {...props} />).find('ErrorPopover');
-    expect(wrapper).toMatchSnapshot();
+  it('snapshot testing with error object', async () => {
+    const container = render(<ErrorPopover {...props} />);
+    expect(container).toMatchSnapshot();
   });
 
-  it('snapshot testing without error object', () => {
-    const wrapper = mount(
-      <ErrorPopover
-        {...{
-          ...props,
-          processInstanceData: { ...props.processInstanceData, error: null }
-        }}
-      />
-    ).find('ErrorPopover');
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('Skip call success', () => {
-    let wrapper = mount(<ErrorPopover {...props} />);
-    wrapper.find(Popover).props()['footerContent'][0]['props']['onClick']();
-    wrapper = wrapper.update();
+  it('Skip call success', async () => {
+    const container = render(<ErrorPopover {...props} />);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('error-state'));
+    });
+    await waitFor(() => screen.getAllByText('Skip'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('skip-button'));
+    });
     expect(props.onSkipClick).toHaveBeenCalled();
   });
 
-  it('Retry call success', () => {
-    let wrapper = mount(<ErrorPopover {...props} />);
-    wrapper.find(Popover).props()['footerContent'][1]['props']['onClick']();
-    wrapper = wrapper.update();
+  it('Retry call success', async () => {
+    const container = render(<ErrorPopover {...props} />);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('error-state'));
+    });
+    await waitFor(() => screen.getAllByText('Retry'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('retry-button'));
+    });
     expect(props.onRetryClick).toHaveBeenCalled();
   });
 });

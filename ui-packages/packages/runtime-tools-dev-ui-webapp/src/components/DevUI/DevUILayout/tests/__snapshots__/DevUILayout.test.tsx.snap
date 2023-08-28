@@ -1,1048 +1,320 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DevUILayout tests Snapshot test with Processing disabled 1`] = `
-<PageLayout
-  PageNav={
-    <DevUINav
-      pathname="/"
-    />
-  }
-  pageNavOpen={true}
-  withHeader={false}
->
-  <Page
-    className="kogito-consoles-common--PageLayout"
+<div>
+  <div
+    class="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
     data-ouia-component-type="page"
-    data-ouia-safe={true}
-    defaultManagedSidebarIsOpen={true}
-    getBreakpoint={[Function]}
-    getVerticalBreakpoint={[Function]}
-    header={<React.Fragment />}
-    isBreadcrumbWidthLimited={false}
-    isManagedSidebar={false}
-    isNotificationDrawerExpanded={false}
-    mainContainerId="main-content-page-layout-default-nav"
-    mainTabIndex={-1}
-    onNotificationDrawerExpand={[Function]}
-    onPageResize={[Function]}
-    sidebar={
-      <PageSidebar
-        data-ouia-navigation="true"
-        isNavOpen={true}
-        nav={
-          <DevUINav
-            pathname="/"
-          />
-        }
-        theme="dark"
-      />
-    }
+    data-ouia-safe="true"
   >
     <div
-      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
-      data-ouia-component-type="page"
-      data-ouia-safe={true}
+      aria-hidden="false"
+      class="pf-c-page__sidebar pf-m-expanded"
+      data-ouia-navigation="true"
+      data-testid="page-sidebar"
+      id="page-sidebar"
     >
-      <PageSidebar
-        data-ouia-navigation="true"
-        isNavOpen={true}
-        nav={
-          <DevUINav
-            pathname="/"
-          />
-        }
-        theme="dark"
+      <div
+        class="pf-c-page__sidebar-body"
       >
-        <div
-          aria-hidden={false}
-          className="pf-c-page__sidebar pf-m-expanded"
-          data-ouia-navigation="true"
-          id="page-sidebar"
+        <nav
+          aria-label="Nav"
+          class="pf-c-nav"
+          data-ouia-component-id="OUIA-Generated-Nav-2"
+          data-ouia-component-type="PF4/Nav"
+          data-ouia-safe="true"
         >
-          <div
-            className="pf-c-page__sidebar-body"
+          <ul
+            class="pf-c-nav__list"
           >
-            <DevUINav
-              pathname="/"
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-8"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
-              <Nav
-                aria-label="Nav"
-                onSelect={[Function]}
-                onToggle={[Function]}
-                ouiaSafe={true}
-                theme="dark"
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="audit-nav"
+                href="/Audit"
               >
-                <nav
-                  aria-label="Nav"
-                  className="pf-c-nav"
-                  data-ouia-component-id="OUIA-Generated-Nav-2"
-                  data-ouia-component-type="PF4/Nav"
-                  data-ouia-safe={true}
-                >
-                  <NavList
-                    ariaLeftScroll="Scroll left"
-                    ariaRightScroll="Scroll right"
-                  >
-                    <ul
-                      className="pf-c-nav__list"
-                      onScroll={[Function]}
-                    >
-                      <NavItem
-                        isActive={false}
-                        key="audit-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-8"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="audit-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Audit"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="audit-nav"
-                              href="/Audit"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="audit-nav"
-                                href="/Audit"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Audit investigation
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                    </ul>
-                  </NavList>
-                </nav>
-              </Nav>
-            </DevUINav>
-          </div>
-        </div>
-      </PageSidebar>
-      <main
-        className="pf-c-page__main"
-        id="main-content-page-layout-default-nav"
-        tabIndex={-1}
-      >
-        <MemoryRouter
-          initialEntries={
-            Array [
-              "/",
-            ]
-          }
-          keyLength={0}
-        >
-          <Router
-            history={
-              Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
-              }
-            }
-          >
-            <MockedDevUIRoutes
-              dataIndexUrl="http://localhost:8180"
-              navigate="JobsManagement"
-              trustyServiceUrl="http://localhost:8081"
-            />
-          </Router>
-        </MemoryRouter>
-      </main>
+                Audit investigation
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
-  </Page>
-</PageLayout>
+    <main
+      class="pf-c-page__main"
+      data-ouia-main="true"
+      id="main-content-page-layout-default-nav"
+      tabindex="-1"
+    />
+  </div>
+</div>
 `;
 
 exports[`DevUILayout tests Snapshot test with Tracing disabled 1`] = `
-<PageLayout
-  PageNav={
-    <DevUINav
-      pathname="/"
-    />
-  }
-  pageNavOpen={true}
-  withHeader={false}
->
-  <Page
-    className="kogito-consoles-common--PageLayout"
+<div>
+  <div
+    class="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
     data-ouia-component-type="page"
-    data-ouia-safe={true}
-    defaultManagedSidebarIsOpen={true}
-    getBreakpoint={[Function]}
-    getVerticalBreakpoint={[Function]}
-    header={<React.Fragment />}
-    isBreadcrumbWidthLimited={false}
-    isManagedSidebar={false}
-    isNotificationDrawerExpanded={false}
-    mainContainerId="main-content-page-layout-default-nav"
-    mainTabIndex={-1}
-    onNotificationDrawerExpand={[Function]}
-    onPageResize={[Function]}
-    sidebar={
-      <PageSidebar
-        data-ouia-navigation="true"
-        isNavOpen={true}
-        nav={
-          <DevUINav
-            pathname="/"
-          />
-        }
-        theme="dark"
-      />
-    }
+    data-ouia-safe="true"
   >
     <div
-      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
-      data-ouia-component-type="page"
-      data-ouia-safe={true}
+      aria-hidden="false"
+      class="pf-c-page__sidebar pf-m-expanded"
+      data-ouia-navigation="true"
+      data-testid="page-sidebar"
+      id="page-sidebar"
     >
-      <PageSidebar
-        data-ouia-navigation="true"
-        isNavOpen={true}
-        nav={
-          <DevUINav
-            pathname="/"
-          />
-        }
-        theme="dark"
+      <div
+        class="pf-c-page__sidebar-body"
       >
-        <div
-          aria-hidden={false}
-          className="pf-c-page__sidebar pf-m-expanded"
-          data-ouia-navigation="true"
-          id="page-sidebar"
+        <nav
+          aria-label="Nav"
+          class="pf-c-nav"
+          data-ouia-component-id="OUIA-Generated-Nav-3"
+          data-ouia-component-type="PF4/Nav"
+          data-ouia-safe="true"
         >
-          <div
-            className="pf-c-page__sidebar-body"
+          <ul
+            class="pf-c-nav__list"
           >
-            <DevUINav
-              pathname="/"
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-9"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
-              <Nav
-                aria-label="Nav"
-                onSelect={[Function]}
-                onToggle={[Function]}
-                ouiaSafe={true}
-                theme="dark"
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="processes-nav"
+                href="/Processes"
               >
-                <nav
-                  aria-label="Nav"
-                  className="pf-c-nav"
-                  data-ouia-component-id="OUIA-Generated-Nav-3"
-                  data-ouia-component-type="PF4/Nav"
-                  data-ouia-safe={true}
-                >
-                  <NavList
-                    ariaLeftScroll="Scroll left"
-                    ariaRightScroll="Scroll right"
-                  >
-                    <ul
-                      className="pf-c-nav__list"
-                      onScroll={[Function]}
-                    >
-                      <NavItem
-                        isActive={false}
-                        key="processes-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-9"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="processes-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Processes"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="processes-nav"
-                              href="/Processes"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="processes-nav"
-                                href="/Processes"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Workflows
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="jobs-management-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-10"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="jobs-management-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/JobsManagement"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="jobs-management-nav"
-                              href="/JobsManagement"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="jobs-management-nav"
-                                href="/JobsManagement"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Jobs
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="task-inbox-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-11"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="task-inbox-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/TaskInbox"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="task-inbox-nav"
-                              href="/TaskInbox"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="task-inbox-nav"
-                                href="/TaskInbox"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Tasks
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="forms-list-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-12"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="forms-list-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Forms"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="forms-list-nav"
-                              href="/Forms"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="forms-list-nav"
-                                href="/Forms"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Forms
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="monitoring-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-13"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="monitoring-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Monitoring"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="monitoring-nav"
-                              href="/Monitoring"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="monitoring-nav"
-                                href="/Monitoring"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Monitoring
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="customDashboard-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-14"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="customDashboard-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/CustomDashboard"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="customDashboard-nav"
-                              href="/CustomDashboard"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="customDashboard-nav"
-                                href="/CustomDashboard"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Dashboards
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                    </ul>
-                  </NavList>
-                </nav>
-              </Nav>
-            </DevUINav>
-          </div>
-        </div>
-      </PageSidebar>
-      <main
-        className="pf-c-page__main"
-        id="main-content-page-layout-default-nav"
-        tabIndex={-1}
-      >
-        <MemoryRouter
-          initialEntries={
-            Array [
-              "/",
-            ]
-          }
-          keyLength={0}
-        >
-          <Router
-            history={
-              Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
-              }
-            }
-          >
-            <MockedDevUIRoutes
-              dataIndexUrl="http://localhost:8180"
-              navigate="JobsManagement"
-              trustyServiceUrl="http://localhost:8081"
-            />
-          </Router>
-        </MemoryRouter>
-      </main>
+                Workflows
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-10"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="jobs-management-nav"
+                href="/JobsManagement"
+              >
+                Jobs
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-11"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="task-inbox-nav"
+                href="/TaskInbox"
+              >
+                Tasks
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-12"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="forms-list-nav"
+                href="/Forms"
+              >
+                Forms
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-13"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="monitoring-nav"
+                href="/Monitoring"
+              >
+                Monitoring
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-14"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="customDashboard-nav"
+                href="/CustomDashboard"
+              >
+                Dashboards
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
-  </Page>
-</PageLayout>
+    <main
+      class="pf-c-page__main"
+      data-ouia-main="true"
+      id="main-content-page-layout-default-nav"
+      tabindex="-1"
+    />
+  </div>
+</div>
 `;
 
 exports[`DevUILayout tests Snapshot test with default props 1`] = `
-<PageLayout
-  PageNav={
-    <DevUINav
-      pathname="/"
-    />
-  }
-  pageNavOpen={true}
-  withHeader={false}
->
-  <Page
-    className="kogito-consoles-common--PageLayout"
+<div>
+  <div
+    class="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
     data-ouia-component-type="page"
-    data-ouia-safe={true}
-    defaultManagedSidebarIsOpen={true}
-    getBreakpoint={[Function]}
-    getVerticalBreakpoint={[Function]}
-    header={<React.Fragment />}
-    isBreadcrumbWidthLimited={false}
-    isManagedSidebar={false}
-    isNotificationDrawerExpanded={false}
-    mainContainerId="main-content-page-layout-default-nav"
-    mainTabIndex={-1}
-    onNotificationDrawerExpand={[Function]}
-    onPageResize={[Function]}
-    sidebar={
-      <PageSidebar
-        data-ouia-navigation="true"
-        isNavOpen={true}
-        nav={
-          <DevUINav
-            pathname="/"
-          />
-        }
-        theme="dark"
-      />
-    }
+    data-ouia-safe="true"
   >
     <div
-      className="pf-c-page pf-m-resize-observer pf-m-breakpoint-default pf-m-height-breakpoint-sm kogito-consoles-common--PageLayout"
-      data-ouia-component-type="page"
-      data-ouia-safe={true}
+      aria-hidden="false"
+      class="pf-c-page__sidebar pf-m-expanded"
+      data-ouia-navigation="true"
+      data-testid="page-sidebar"
+      id="page-sidebar"
     >
-      <PageSidebar
-        data-ouia-navigation="true"
-        isNavOpen={true}
-        nav={
-          <DevUINav
-            pathname="/"
-          />
-        }
-        theme="dark"
+      <div
+        class="pf-c-page__sidebar-body"
       >
-        <div
-          aria-hidden={false}
-          className="pf-c-page__sidebar pf-m-expanded"
-          data-ouia-navigation="true"
-          id="page-sidebar"
+        <nav
+          aria-label="Nav"
+          class="pf-c-nav"
+          data-ouia-component-id="OUIA-Generated-Nav-1"
+          data-ouia-component-type="PF4/Nav"
+          data-ouia-safe="true"
         >
-          <div
-            className="pf-c-page__sidebar-body"
+          <ul
+            class="pf-c-nav__list"
           >
-            <DevUINav
-              pathname="/"
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-1"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
             >
-              <Nav
-                aria-label="Nav"
-                onSelect={[Function]}
-                onToggle={[Function]}
-                ouiaSafe={true}
-                theme="dark"
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="processes-nav"
+                href="/Processes"
               >
-                <nav
-                  aria-label="Nav"
-                  className="pf-c-nav"
-                  data-ouia-component-id="OUIA-Generated-Nav-1"
-                  data-ouia-component-type="PF4/Nav"
-                  data-ouia-safe={true}
-                >
-                  <NavList
-                    ariaLeftScroll="Scroll left"
-                    ariaRightScroll="Scroll right"
-                  >
-                    <ul
-                      className="pf-c-nav__list"
-                      onScroll={[Function]}
-                    >
-                      <NavItem
-                        isActive={false}
-                        key="processes-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-1"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="processes-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Processes"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="processes-nav"
-                              href="/Processes"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="processes-nav"
-                                href="/Processes"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Workflows
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="jobs-management-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-2"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="jobs-management-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/JobsManagement"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="jobs-management-nav"
-                              href="/JobsManagement"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="jobs-management-nav"
-                                href="/JobsManagement"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Jobs
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="task-inbox-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-3"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="task-inbox-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/TaskInbox"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="task-inbox-nav"
-                              href="/TaskInbox"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="task-inbox-nav"
-                                href="/TaskInbox"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Tasks
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="forms-list-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-4"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="forms-list-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Forms"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="forms-list-nav"
-                              href="/Forms"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="forms-list-nav"
-                                href="/Forms"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Forms
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="monitoring-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-5"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="monitoring-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Monitoring"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="monitoring-nav"
-                              href="/Monitoring"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="monitoring-nav"
-                                href="/Monitoring"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Monitoring
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="customDashboard-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-6"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="customDashboard-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/CustomDashboard"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="customDashboard-nav"
-                              href="/CustomDashboard"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="customDashboard-nav"
-                                href="/CustomDashboard"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Dashboards
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                      <NavItem
-                        isActive={false}
-                        key="audit-nav"
-                      >
-                        <li
-                          className="pf-c-nav__item"
-                          data-ouia-component-id="OUIA-Generated-NavItem-7"
-                          data-ouia-component-type="PF4/NavItem"
-                          data-ouia-safe={true}
-                          onMouseOver={[Function]}
-                        >
-                          <Link
-                            aria-current={null}
-                            className="pf-c-nav__link"
-                            data-ouia-navigation-name="audit-nav"
-                            onClick={[Function]}
-                            tabIndex={null}
-                            to="/Audit"
-                          >
-                            <LinkAnchor
-                              aria-current={null}
-                              className="pf-c-nav__link"
-                              data-ouia-navigation-name="audit-nav"
-                              href="/Audit"
-                              navigate={[Function]}
-                              onClick={[Function]}
-                              tabIndex={null}
-                            >
-                              <a
-                                aria-current={null}
-                                className="pf-c-nav__link"
-                                data-ouia-navigation-name="audit-nav"
-                                href="/Audit"
-                                onClick={[Function]}
-                                tabIndex={null}
-                              >
-                                Audit investigation
-                              </a>
-                            </LinkAnchor>
-                          </Link>
-                        </li>
-                      </NavItem>
-                    </ul>
-                  </NavList>
-                </nav>
-              </Nav>
-            </DevUINav>
-          </div>
-        </div>
-      </PageSidebar>
-      <main
-        className="pf-c-page__main"
-        id="main-content-page-layout-default-nav"
-        tabIndex={-1}
-      >
-        <MemoryRouter
-          initialEntries={
-            Array [
-              "/",
-            ]
-          }
-          keyLength={0}
-        >
-          <Router
-            history={
-              Object {
-                "action": "POP",
-                "block": [Function],
-                "canGo": [Function],
-                "createHref": [Function],
-                "entries": Array [
-                  Object {
-                    "hash": "",
-                    "pathname": "/",
-                    "search": "",
-                    "state": undefined,
-                  },
-                ],
-                "go": [Function],
-                "goBack": [Function],
-                "goForward": [Function],
-                "index": 0,
-                "length": 1,
-                "listen": [Function],
-                "location": Object {
-                  "hash": "",
-                  "pathname": "/",
-                  "search": "",
-                  "state": undefined,
-                },
-                "push": [Function],
-                "replace": [Function],
-              }
-            }
-          >
-            <MockedDevUIRoutes
-              dataIndexUrl="http://localhost:8180"
-              navigate="JobsManagement"
-              trustyServiceUrl="http://localhost:8081"
-            />
-          </Router>
-        </MemoryRouter>
-      </main>
+                Workflows
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-2"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="jobs-management-nav"
+                href="/JobsManagement"
+              >
+                Jobs
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-3"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="task-inbox-nav"
+                href="/TaskInbox"
+              >
+                Tasks
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-4"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="forms-list-nav"
+                href="/Forms"
+              >
+                Forms
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-5"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="monitoring-nav"
+                href="/Monitoring"
+              >
+                Monitoring
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-6"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="customDashboard-nav"
+                href="/CustomDashboard"
+              >
+                Dashboards
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-7"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe="true"
+            >
+              <a
+                class="pf-c-nav__link"
+                data-ouia-navigation-name="audit-nav"
+                href="/Audit"
+              >
+                Audit investigation
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
-  </Page>
-</PageLayout>
+    <main
+      class="pf-c-page__main"
+      data-ouia-main="true"
+      id="main-content-page-layout-default-nav"
+      tabindex="-1"
+    />
+  </div>
+</div>
 `;

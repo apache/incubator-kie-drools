@@ -17,24 +17,24 @@
 import React from 'react';
 import { PageTitle } from '../PageTitle';
 import { Label } from '@patternfly/react-core/dist/js/components/Label';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
 describe('PageTitle test', () => {
   it('default snapshot testing', () => {
-    const wrapper = mount(<PageTitle title="Title" />).find('PageTitle');
+    const { container } = render(<PageTitle title="Title" />);
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('snapshot testing with extra', () => {
-    const wrapper = mount(
+    const { container } = render(
       <PageTitle title="Title" extra={<Label>Label</Label>} />
-    ).find('PageTitle');
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const extra = wrapper.find(Label);
+    const extra = screen.getAllByText('Label');
 
-    expect(extra.exists()).toBeTruthy();
+    expect(extra).toBeTruthy();
   });
 });

@@ -1,395 +1,241 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`customDashboard card tests renders card - with html 1`] = `
-<CustomDashboardCard
-  customDashboardData={
-    Object {
-      "lastModified": 2022-07-11T18:30:00.000Z,
-      "name": "dashboard2",
-      "path": "/user/home",
-    }
-  }
-  driver={MockedCustomDashboardListDriver {}}
->
-  <Card
-    data-ouia-component-type="customDashboard-card"
-    data-ouia-safe={true}
-    isSelectable={true}
-    onClick={[Function]}
+<div>
+  <article
+    class="pf-c-card pf-m-selectable"
+    data-ouia-component-id="OUIA-Generated-Card-2"
+    data-ouia-component-type="PF4/Card"
+    data-ouia-safe="true"
+    data-testid="card"
+    id=""
+    tabindex="0"
   >
-    <article
-      className="pf-c-card pf-m-selectable"
-      data-ouia-component-id="OUIA-Generated-Card-2"
-      data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
-      id=""
-      onClick={[Function]}
-      tabIndex="0"
+    <div
+      class="pf-c-card__header"
     >
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
-        >
-          <CardHeaderMain>
-            <div
-              className=""
-            >
-              Empty
-            </div>
-          </CardHeaderMain>
-        </div>
-      </CardHeader>
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
-        >
-          <Text
-            className="pf-u-font-weight-bold"
-            component="h1"
-          >
-            <h1
-              className="pf-u-font-weight-bold"
-              data-ouia-component-id="OUIA-Generated-Text-4"
-              data-ouia-component-type="PF4/Text"
-              data-ouia-safe={true}
-              data-pf-content={true}
-            >
-              dashboard2
-            </h1>
-          </Text>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <div
-          className="pf-c-card__body"
+      <div
+        class=""
+      >
+        Empty
+      </div>
+    </div>
+    <div
+      class="pf-c-card__header"
+    >
+      <h1
+        class="pf-u-font-weight-bold"
+        data-ouia-component-id="OUIA-Generated-Text-4"
+        data-ouia-component-type="PF4/Text"
+        data-ouia-safe="true"
+        data-pf-content="true"
+      >
+        dashboard2
+      </h1>
+    </div>
+    <div
+      class="pf-c-card__body"
+    >
+      <div
+        class="pf-u-mt-md"
+      >
+        <form
+          class="pf-c-form"
+          novalidate=""
         >
           <div
-            className="pf-u-mt-md"
+            class="pf-c-form__group"
           >
-            <Form>
-              <FormBase
-                innerRef={null}
+            <div
+              class="pf-c-form__group-label"
+            >
+              <label
+                class="pf-c-form__label"
+                for="path"
               >
-                <form
-                  className="pf-c-form"
-                  noValidate={true}
+                <span
+                  class="pf-c-form__label-text"
                 >
-                  <FormGroup
-                    fieldId="path"
-                    label="Path"
-                  >
-                    <GenerateId
-                      prefix="pf-random-id-"
-                    >
-                      <div
-                        className="pf-c-form__group"
-                      >
-                        <div
-                          className="pf-c-form__group-label"
-                        >
-                          <label
-                            className="pf-c-form__label"
-                            htmlFor="path"
-                          >
-                            <span
-                              className="pf-c-form__label-text"
-                            >
-                              Path
-                            </span>
-                          </label>
-                           
-                        </div>
-                        <div
-                          className="pf-c-form__group-control"
-                        >
-                          <Text
-                            component="p"
-                          >
-                            <p
-                              className=""
-                              data-ouia-component-id="OUIA-Generated-Text-5"
-                              data-ouia-component-type="PF4/Text"
-                              data-ouia-safe={true}
-                              data-pf-content={true}
-                            >
-                              /user/home
-                            </p>
-                          </Text>
-                        </div>
-                      </div>
-                    </GenerateId>
-                  </FormGroup>
-                  <FormGroup
-                    fieldId="lastModified"
-                    label="LastModified"
-                  >
-                    <GenerateId
-                      prefix="pf-random-id-"
-                    >
-                      <div
-                        className="pf-c-form__group"
-                      >
-                        <div
-                          className="pf-c-form__group-label"
-                        >
-                          <label
-                            className="pf-c-form__label"
-                            htmlFor="lastModified"
-                          >
-                            <span
-                              className="pf-c-form__label-text"
-                            >
-                              LastModified
-                            </span>
-                          </label>
-                           
-                        </div>
-                        <div
-                          className="pf-c-form__group-control"
-                        >
-                          <Text
-                            component="p"
-                          >
-                            <p
-                              className=""
-                              data-ouia-component-id="OUIA-Generated-Text-6"
-                              data-ouia-component-type="PF4/Text"
-                              data-ouia-safe={true}
-                              data-pf-content={true}
-                            >
-                              <t
-                                ago={false}
-                                calendar={false}
-                                decimal={false}
-                                element={null}
-                                filter={[Function]}
-                                fromNow={true}
-                                interval={60000}
-                                local={false}
-                                onChange={[Function]}
-                                titleFormat=""
-                                toNow={false}
-                                unit={null}
-                                unix={false}
-                                utc={false}
-                                withTitle={false}
-                              >
-                                <time
-                                  dateTime={"2022-07-11T18:30:00.000Z"}
-                                >
-                                  in 5 years
-                                </time>
-                              </t>
-                            </p>
-                          </Text>
-                        </div>
-                      </div>
-                    </GenerateId>
-                  </FormGroup>
-                </form>
-              </FormBase>
-            </Form>
+                  Path
+                </span>
+              </label>
+               
+            </div>
+            <div
+              class="pf-c-form__group-control"
+            >
+              <p
+                class=""
+                data-ouia-component-id="OUIA-Generated-Text-5"
+                data-ouia-component-type="PF4/Text"
+                data-ouia-safe="true"
+                data-pf-content="true"
+              >
+                /user/home
+              </p>
+              
+            </div>
           </div>
-        </div>
-      </CardBody>
-    </article>
-  </Card>
-</CustomDashboardCard>
+          <div
+            class="pf-c-form__group"
+          >
+            <div
+              class="pf-c-form__group-label"
+            >
+              <label
+                class="pf-c-form__label"
+                for="lastModified"
+              >
+                <span
+                  class="pf-c-form__label-text"
+                >
+                  LastModified
+                </span>
+              </label>
+               
+            </div>
+            <div
+              class="pf-c-form__group-control"
+            >
+              <p
+                class=""
+                data-ouia-component-id="OUIA-Generated-Text-6"
+                data-ouia-component-type="PF4/Text"
+                data-ouia-safe="true"
+                data-pf-content="true"
+              >
+                <time
+                  datetime="1657564200000"
+                >
+                  in 5 years
+                </time>
+              </p>
+              
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </article>
+</div>
 `;
 
 exports[`customDashboard card tests renders card - with tsx 1`] = `
-<CustomDashboardCard
-  customDashboardData={
-    Object {
-      "lastModified": 2022-07-11T18:30:00.000Z,
-      "name": "dashboard1",
-      "path": "/user/home",
-    }
-  }
-  driver={MockedCustomDashboardListDriver {}}
->
-  <Card
-    data-ouia-component-type="customDashboard-card"
-    data-ouia-safe={true}
-    isSelectable={true}
-    onClick={[Function]}
+<div>
+  <article
+    class="pf-c-card pf-m-selectable"
+    data-ouia-component-id="OUIA-Generated-Card-1"
+    data-ouia-component-type="PF4/Card"
+    data-ouia-safe="true"
+    data-testid="card"
+    id=""
+    tabindex="0"
   >
-    <article
-      className="pf-c-card pf-m-selectable"
-      data-ouia-component-id="OUIA-Generated-Card-1"
-      data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
-      id=""
-      onClick={[Function]}
-      tabIndex="0"
+    <div
+      class="pf-c-card__header"
     >
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
-        >
-          <CardHeaderMain>
-            <div
-              className=""
-            >
-              Empty
-            </div>
-          </CardHeaderMain>
-        </div>
-      </CardHeader>
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
-        >
-          <Text
-            className="pf-u-font-weight-bold"
-            component="h1"
-          >
-            <h1
-              className="pf-u-font-weight-bold"
-              data-ouia-component-id="OUIA-Generated-Text-1"
-              data-ouia-component-type="PF4/Text"
-              data-ouia-safe={true}
-              data-pf-content={true}
-            >
-              dashboard1
-            </h1>
-          </Text>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <div
-          className="pf-c-card__body"
+      <div
+        class=""
+      >
+        Empty
+      </div>
+    </div>
+    <div
+      class="pf-c-card__header"
+    >
+      <h1
+        class="pf-u-font-weight-bold"
+        data-ouia-component-id="OUIA-Generated-Text-1"
+        data-ouia-component-type="PF4/Text"
+        data-ouia-safe="true"
+        data-pf-content="true"
+      >
+        dashboard1
+      </h1>
+    </div>
+    <div
+      class="pf-c-card__body"
+    >
+      <div
+        class="pf-u-mt-md"
+      >
+        <form
+          class="pf-c-form"
+          novalidate=""
         >
           <div
-            className="pf-u-mt-md"
+            class="pf-c-form__group"
           >
-            <Form>
-              <FormBase
-                innerRef={null}
+            <div
+              class="pf-c-form__group-label"
+            >
+              <label
+                class="pf-c-form__label"
+                for="path"
               >
-                <form
-                  className="pf-c-form"
-                  noValidate={true}
+                <span
+                  class="pf-c-form__label-text"
                 >
-                  <FormGroup
-                    fieldId="path"
-                    label="Path"
-                  >
-                    <GenerateId
-                      prefix="pf-random-id-"
-                    >
-                      <div
-                        className="pf-c-form__group"
-                      >
-                        <div
-                          className="pf-c-form__group-label"
-                        >
-                          <label
-                            className="pf-c-form__label"
-                            htmlFor="path"
-                          >
-                            <span
-                              className="pf-c-form__label-text"
-                            >
-                              Path
-                            </span>
-                          </label>
-                           
-                        </div>
-                        <div
-                          className="pf-c-form__group-control"
-                        >
-                          <Text
-                            component="p"
-                          >
-                            <p
-                              className=""
-                              data-ouia-component-id="OUIA-Generated-Text-2"
-                              data-ouia-component-type="PF4/Text"
-                              data-ouia-safe={true}
-                              data-pf-content={true}
-                            >
-                              /user/home
-                            </p>
-                          </Text>
-                        </div>
-                      </div>
-                    </GenerateId>
-                  </FormGroup>
-                  <FormGroup
-                    fieldId="lastModified"
-                    label="LastModified"
-                  >
-                    <GenerateId
-                      prefix="pf-random-id-"
-                    >
-                      <div
-                        className="pf-c-form__group"
-                      >
-                        <div
-                          className="pf-c-form__group-label"
-                        >
-                          <label
-                            className="pf-c-form__label"
-                            htmlFor="lastModified"
-                          >
-                            <span
-                              className="pf-c-form__label-text"
-                            >
-                              LastModified
-                            </span>
-                          </label>
-                           
-                        </div>
-                        <div
-                          className="pf-c-form__group-control"
-                        >
-                          <Text
-                            component="p"
-                          >
-                            <p
-                              className=""
-                              data-ouia-component-id="OUIA-Generated-Text-3"
-                              data-ouia-component-type="PF4/Text"
-                              data-ouia-safe={true}
-                              data-pf-content={true}
-                            >
-                              <t
-                                ago={false}
-                                calendar={false}
-                                decimal={false}
-                                element={null}
-                                filter={[Function]}
-                                fromNow={true}
-                                interval={60000}
-                                local={false}
-                                onChange={[Function]}
-                                titleFormat=""
-                                toNow={false}
-                                unit={null}
-                                unix={false}
-                                utc={false}
-                                withTitle={false}
-                              >
-                                <time
-                                  dateTime={"2022-07-11T18:30:00.000Z"}
-                                >
-                                  in 5 years
-                                </time>
-                              </t>
-                            </p>
-                          </Text>
-                        </div>
-                      </div>
-                    </GenerateId>
-                  </FormGroup>
-                </form>
-              </FormBase>
-            </Form>
+                  Path
+                </span>
+              </label>
+               
+            </div>
+            <div
+              class="pf-c-form__group-control"
+            >
+              <p
+                class=""
+                data-ouia-component-id="OUIA-Generated-Text-2"
+                data-ouia-component-type="PF4/Text"
+                data-ouia-safe="true"
+                data-pf-content="true"
+              >
+                /user/home
+              </p>
+              
+            </div>
           </div>
-        </div>
-      </CardBody>
-    </article>
-  </Card>
-</CustomDashboardCard>
+          <div
+            class="pf-c-form__group"
+          >
+            <div
+              class="pf-c-form__group-label"
+            >
+              <label
+                class="pf-c-form__label"
+                for="lastModified"
+              >
+                <span
+                  class="pf-c-form__label-text"
+                >
+                  LastModified
+                </span>
+              </label>
+               
+            </div>
+            <div
+              class="pf-c-form__group-control"
+            >
+              <p
+                class=""
+                data-ouia-component-id="OUIA-Generated-Text-3"
+                data-ouia-component-type="PF4/Text"
+                data-ouia-safe="true"
+                data-pf-content="true"
+              >
+                <time
+                  datetime="1657564200000"
+                >
+                  in 5 years
+                </time>
+              </p>
+              
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </article>
+</div>
 `;

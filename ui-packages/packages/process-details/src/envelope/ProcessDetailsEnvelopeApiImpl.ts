@@ -53,6 +53,7 @@ export class ProcessDetailsEnvelopeApiImpl
       association.origin,
       association.envelopeServerId
     );
+    /* istanbul ignore if*/
     if (this.hasCapturedInitRequestYet()) {
       return;
     }

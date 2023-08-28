@@ -1,42 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EmbeddedProcessDefinitionList tests Snapshot 1`] = `
-<ForwardRef
-  driver={
-    Object {
-      "getProcessDefinitionFilter": [MockFunction],
-      "getProcessDefinitionsQuery": [MockFunction],
-      "openProcessForm": [MockFunction],
-      "openTriggerCloudEvent": [MockFunction],
-      "setProcessDefinitionFilter": [MockFunction],
-    }
-  }
-  envelopePath="path"
-  singularProcessLabel="Workflow"
-  targetOrigin="origin"
->
-  <ForwardRef(RefForwardingEmbeddedEnvelope)
-    apiImpl={
-      ProcessDefinitionListChannelApiImpl {
-        "driver": Object {
-          "getProcessDefinitionFilter": [MockFunction],
-          "getProcessDefinitionsQuery": [MockFunction],
-          "openProcessForm": [MockFunction],
-          "openTriggerCloudEvent": [MockFunction],
-          "setProcessDefinitionFilter": [MockFunction],
-        },
-      }
-    }
-    config={
-      Object {
-        "containerType": "div",
-      }
-    }
-    origin="origin"
-    pollInit={[Function]}
-    refDelegate={[Function]}
-  >
-    <div />
-  </ForwardRef(RefForwardingEmbeddedEnvelope)>
-</ForwardRef>
+<div>
+  <div />
+</div>
 `;

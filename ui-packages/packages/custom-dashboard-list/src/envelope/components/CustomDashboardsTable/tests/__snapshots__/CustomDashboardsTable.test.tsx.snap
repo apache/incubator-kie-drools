@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`customDashboard table test renders table 1`] = `
+<div>
+  <div
+    data-ouia-component-type="customDashboard-table"
+    data-ouia-safe="true"
+  >
+    <table
+      aria-label="Data Table"
+      class="pf-c-table pf-m-grid-md"
+      data-ouia-component-id="OUIA-Generated-Table-2"
+      data-ouia-component-type="data-table"
+      data-ouia-safe="true"
+      role="grid"
+    >
+      <thead
+        class=""
+      >
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-1"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <th
+            aria-sort="none"
+            class="pf-c-table__sort"
+            data-key="0"
+            data-label="Name"
+            scope="col"
+          >
+            <button
+              class="pf-c-table__button"
+              type="button"
+            >
+              <div
+                class="pf-c-table__button-content"
+              >
+                <span
+                  class="pf-c-table__text"
+                >
+                  Name
+                </span>
+                <span
+                  class="pf-c-table__sort-indicator"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 256 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M214.059 377.941H168V134.059h46.059c21.382 0 32.09-25.851 16.971-40.971L144.971 7.029c-9.373-9.373-24.568-9.373-33.941 0L24.971 93.088c-15.119 15.119-4.411 40.971 16.971 40.971H88v243.882H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.568 9.373 33.941 0l86.059-86.059c15.12-15.119 4.412-40.971-16.97-40.971z"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </button>
+          </th>
+          <th
+            aria-sort="descending"
+            class="pf-c-table__sort pf-m-selected"
+            data-key="1"
+            data-label="Last Modified"
+            scope="col"
+          >
+            <button
+              class="pf-c-table__button"
+              type="button"
+            >
+              <div
+                class="pf-c-table__button-content"
+              >
+                <span
+                  class="pf-c-table__text"
+                >
+                  Last Modified
+                </span>
+                <span
+                  class="pf-c-table__sort-indicator"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 256 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M168 345.941V44c0-6.627-5.373-12-12-12h-56c-6.627 0-12 5.373-12 12v301.941H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.569 9.373 33.941 0l86.059-86.059c15.119-15.119 4.411-40.971-16.971-40.971H168z"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class=""
+        role="rowgroup"
+      >
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-2"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <td
+            class=""
+            data-key="0"
+            data-label="Name"
+          >
+            <a>
+              <strong>
+                dashboard1
+              </strong>
+            </a>
+          </td>
+          <td
+            class=""
+            data-key="1"
+            data-label="Last Modified"
+          >
+            <time
+              datetime="NaN"
+            >
+              Invalid date
+            </time>
+          </td>
+        </tr>
+        <tr
+          class=""
+          data-ouia-component-id="OUIA-Generated-TableRow-3"
+          data-ouia-component-type="PF4/TableRow"
+          data-ouia-safe="true"
+        >
+          <td
+            class=""
+            data-key="0"
+            data-label="Name"
+          >
+            <a>
+              <strong>
+                dashboard2
+              </strong>
+            </a>
+          </td>
+          <td
+            class=""
+            data-key="1"
+            data-label="Last Modified"
+          >
+            <time
+              datetime="NaN"
+            >
+              Invalid date
+            </time>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;

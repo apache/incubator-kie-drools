@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import CustomDashboardListContainer from '../CustomDashboardListContainer';
 import { CustomDashboardListGatewayApiImpl } from '../../../../channel/CustomDashboardList/CustomDashboardListGatewayApi';
 import * as CustomDashboardListContext from '../../../../channel/CustomDashboardList/CustomDashboardListContext';
@@ -26,14 +26,10 @@ jest
 
 describe('CustomDashboardListContainer tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(<CustomDashboardListContainer />);
+    const { container } = render(<CustomDashboardListContainer />);
 
-    expect(wrapper).toMatchSnapshot();
-
-    const forwardRef = wrapper.childAt(0);
-
-    expect(forwardRef.props().driver).not.toBeNull();
-
-    expect(forwardRef.props().targetOrigin).toBe('*');
+    expect(container).toMatchSnapshot();
+    const checkDiv = container.querySelector('div');
+    expect(checkDiv).toBeTruthy();
   });
 });

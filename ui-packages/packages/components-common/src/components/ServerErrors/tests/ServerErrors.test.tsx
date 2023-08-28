@@ -15,9 +15,8 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Button } from '@patternfly/react-core/dist/js/components/Button';
-import { EmptyStateBody } from '@patternfly/react-core/dist/js/components';
 import { ServerErrors } from '../ServerErrors';
 
 const errorMessage1 =
@@ -73,96 +72,75 @@ const props4 = {
 
 describe('ServerErrors component tests', () => {
   it('snapshot testing ', () => {
-    const wrapper = mount(<ServerErrors {...props} />).find('ServerErrors');
-
-    expect(wrapper.find(EmptyStateBody).first().text()).toEqual(
+    const { container } = render(<ServerErrors {...props} />);
+    expect(screen.queryByTestId('empty-state-body')?.textContent).toContain(
       'An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments. See more details'
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('snapshot with children ', () => {
     const onClickMock = jest.fn();
 
-    const wrapper = mount(
+    const { container } = render(
       <ServerErrors {...props}>
         <Button onClick={onClickMock}>Go back</Button>
       </ServerErrors>
-    ).find('ServerErrors');
+    );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
+    expect(screen.getByText('Go back')).toBeTruthy();
 
-    const backButton = wrapper
-      .find(Button)
-      .findWhere((button) => button.text() === 'Go back')
-      .first();
-
-    expect(backButton.exists()).toBeTruthy();
-
-    backButton.simulate('click');
-
+    fireEvent.click(screen.getByText('Go back'));
     expect(onClickMock).toHaveBeenCalled();
   });
 
-  it('display error button click ', () => {
-    let wrapper = mount(<ServerErrors {...props} />).find('ServerErrors');
+  it('display error button click ', async () => {
+    const { container } = render(<ServerErrors {...props} />);
 
-    wrapper.find('#display-error').first().simulate('click');
+    fireEvent.click(screen.getByTestId('display-error'));
+    const result = await container.querySelector('pre')?.textContent;
 
-    wrapper = wrapper.update();
-
-    const result = JSON.parse(
-      wrapper.find('#content-0').find('pre').props()['children'].toString()
-    );
-
-    expect(result.name).toEqual('ServerError');
-    expect(result.statusCode).toEqual(500);
+    expect(JSON.parse(result!).name).toEqual('ServerError');
+    expect(JSON.parse(result!).statusCode).toEqual(500);
   });
 
   it('snapshot testing with small variant ', () => {
-    const wrapper = mount(<ServerErrors {...props2} />).find('ServerErrors');
+    const { container } = render(<ServerErrors {...props2} />);
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('display error button click with small variant ', () => {
-    let wrapper = mount(<ServerErrors {...props2} />).find('ServerErrors');
+    const { container } = render(<ServerErrors {...props2} />);
 
-    wrapper.find('#display-error').first().simulate('click');
+    fireEvent.click(screen.getByTestId('display-error'));
+    const result = container.querySelector('pre')?.textContent;
 
-    wrapper = wrapper.update();
-
-    const result = JSON.parse(
-      wrapper.find('pre').props()['children'].toString()
-    );
-    expect(result.name).toEqual('ServerError');
+    expect(JSON.parse(result!).name).toEqual('ServerError');
   });
 
   it('display error button click with small variant and not full error message ', () => {
-    let wrapper = mount(<ServerErrors {...props3} />).find('ServerErrors');
-    expect(wrapper.find(EmptyStateBody).first().text()).toEqual(
+    const { container } = render(<ServerErrors {...props3} />);
+    expect(screen.getByTestId('empty-state-body').textContent).toEqual(
       'An error occurred while accessing data. See more details'
     );
 
-    wrapper.find('#display-error').first().simulate('click');
+    fireEvent.click(screen.getByTestId('display-error'));
+    const result = container.querySelector('pre')?.textContent;
 
-    wrapper = wrapper.update();
-
-    expect(wrapper.find('pre').props()['children']).toEqual('error occured');
+    expect(result).toEqual('error occured');
   });
 
   it('display error title ', () => {
-    let wrapper = mount(<ServerErrors {...props4} />).find('ServerErrors');
-    expect(wrapper.find(EmptyStateBody).first().text()).toEqual(
+    const { container } = render(<ServerErrors {...props4} />);
+    expect(screen.getByTestId('empty-state-body').textContent).toEqual(
       'An error occurred while accessing data. It is possible the data index is still being loaded, please try again in a few moments. See more details'
     );
 
-    wrapper.find('#display-error').first().simulate('click');
-
-    wrapper = wrapper.update();
-
-    expect(wrapper.find('pre').props()['children'].toString()).toContain(
+    fireEvent.click(screen.getByTestId('display-error'));
+    expect(container.querySelector('pre')?.textContent).toContain(
       'Network error: Failed to fetch'
     );
   });

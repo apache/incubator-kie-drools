@@ -15,51 +15,32 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import TaskInboxSwitchUser from '../TaskInboxSwitchUser';
 import DevUIAppContextProvider from '../../../../contexts/DevUIAppContextProvider';
-import { act } from 'react-dom/test-utils';
 
 describe('TaskInboxSwitchUser tests', () => {
   it('Snapshot test with default props', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[{ id: 'John snow', groups: ['admin'] }]}>
         <TaskInboxSwitchUser user="John" />
       </DevUIAppContextProvider>
     );
-    expect(wrapper.find(TaskInboxSwitchUser)).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('Trigger onSelect event', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[{ id: 'John snow', groups: ['admin'] }]}>
         <TaskInboxSwitchUser user="John" />
       </DevUIAppContextProvider>
     );
 
-    const event: any = { target: { innerHTML: 'admin' } };
-    act(() => {
-      wrapper.find('Dropdown').props()['onSelect'](event);
-    });
-    wrapper.update();
-    expect(
-      wrapper
-        .find('Toggle')
-        .find('button')
-        .find('.pf-c-dropdown__toggle-text')
-        .text()
-    ).toEqual('admin');
-  });
+    const checkButton = screen.getByLabelText('Applications');
+    fireEvent.click(checkButton);
 
-  it('Trigger toggle event', () => {
-    const wrapper = mount(
-      <DevUIAppContextProvider users={[{ id: 'John snow', groups: ['admin'] }]}>
-        <TaskInboxSwitchUser user="John" />
-      </DevUIAppContextProvider>
-    );
-
-    act(() => {
-      wrapper.find('DropdownToggle').props()['onToggle']();
-    });
+    const checkDropdownText = container.querySelector('a').textContent;
+    expect(checkDropdownText).toEqual('John snow');
+    fireEvent.click(container.querySelector('a'));
   });
 });

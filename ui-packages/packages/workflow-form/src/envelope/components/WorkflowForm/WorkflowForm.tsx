@@ -158,7 +158,11 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({
               />
             </FormGroup>
             <ActionGroup>
-              <Button variant="primary" onClick={onSubmit}>
+              <Button
+                variant="primary"
+                onClick={onSubmit}
+                data-testid="start-button"
+              >
                 Start
               </Button>
               <Button variant="secondary" onClick={resetForm}>

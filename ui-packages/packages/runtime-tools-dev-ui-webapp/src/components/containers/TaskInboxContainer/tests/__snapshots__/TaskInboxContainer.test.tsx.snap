@@ -1,69 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TaskInboxContainer tests Snapshot 1`] = `
-<TaskInboxContainer>
-  <ForwardRef
-    activeTaskStates={
-      Array [
-        "Ready",
-        "Reserved",
-      ]
-    }
-    allTaskStates={
-      Array [
-        "Ready",
-        "Reserved",
-        "Completed",
-        "Aborted",
-        "Skipped",
-      ]
-    }
-    data-ouia-component-type="task-inbox-container"
-    data-ouia-safe={true}
-    driver={
-      TaskInboxGatewayApiImpl {
-        "getCurrentUser": [MockFunction],
-        "listeners": Array [
-          Object {
-            "onOpen": [Function],
-          },
-        ],
-        "queries": Object {
-          "getUserTaskById": [MockFunction],
-          "getUserTasks": [MockFunction],
-        },
-      }
-    }
-    targetOrigin="http://localhost:9000"
-  >
-    <ForwardRef(RefForwardingEmbeddedEnvelope)
-      apiImpl={
-        TaskInboxChannelApiImpl {
-          "driver": TaskInboxGatewayApiImpl {
-            "getCurrentUser": [MockFunction],
-            "listeners": Array [
-              Object {
-                "onOpen": [Function],
-              },
-            ],
-            "queries": Object {
-              "getUserTaskById": [MockFunction],
-              "getUserTasks": [MockFunction],
-            },
-          },
-        }
-      }
-      config={
-        Object {
-          "containerType": "div",
-        }
-      }
-      origin="http://localhost:9000"
-      pollInit={[Function]}
-      refDelegate={[Function]}
-    >
-      <div />
-    </ForwardRef(RefForwardingEmbeddedEnvelope)>
-  </ForwardRef>
-</TaskInboxContainer>
+<div>
+  <div />
+</div>
 `;

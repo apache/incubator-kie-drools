@@ -16,64 +16,15 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { ProcessInstances } from './mocks/Mocks';
-import { mount } from 'enzyme';
 import ProcessListTable, { ProcessListTableProps } from '../ProcessListTable';
-import { Button } from '@patternfly/react-core/dist/js/components/Button';
-import { Checkbox } from '@patternfly/react-core/dist/js/components/Checkbox';
 import _ from 'lodash';
 import axios from 'axios';
-import { BrowserRouter } from 'react-router-dom';
 import TestProcessListDriver from '../../ProcessList/tests/mocks/TestProcessListDriver';
 import { OrderBy } from '@kogito-apps/management-console-shared/dist/types';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-jest.mock('../../ProcessListChildTable/ProcessListChildTable');
-jest.mock('../../DisablePopup/DisablePopup');
-jest.mock('../../ProcessListActionsKebab/ProcessListActionsKebab');
-jest.mock('../../ErrorPopover/ErrorPopover');
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
-
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@kogito-apps/components-common/dist/components/LoadMore', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    LoadMore: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock(
-  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
-  () =>
-    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      }
-    })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/KogitoSpinner', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    KogitoSpinner: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-const mockMath = Object.create(global.Math);
-mockMath.random = () => 0.5;
-global.Math = mockMath;
-
-jest.mock('@kogito-apps/management-console-shared', () =>
-  Object.assign(jest.requireActual('@kogito-apps/management-console-shared'), {
-    ProcessInfo: () => {
-      return <MockedComponent />;
-    }
-  })
-);
 
 const props: ProcessListTableProps = {
   processInstances: ProcessInstances,
@@ -92,43 +43,57 @@ const props: ProcessListTableProps = {
   setSelectableInstances: jest.fn(),
   setIsAllChecked: jest.fn(),
   singularProcessLabel: 'Workflow',
-  pluralProcessLabel: 'Workflows'
+  pluralProcessLabel: 'Workflows',
+  isTriggerCloudEventEnabled: true
 };
 describe('ProcessListTable test', () => {
+  beforeEach(() => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
+  });
+  afterEach(() => {
+    jest.spyOn(global.Math, 'random').mockRestore();
+  });
   it('initial render with data', () => {
-    const wrapper = mount(<ProcessListTable {...props} />).find(
-      'ProcessListTable'
-    );
-    expect(wrapper).toMatchSnapshot();
+    const container = render(<ProcessListTable {...props} />);
+    expect(container).toMatchSnapshot();
   });
   it('loading state', () => {
-    const wrapper = mount(
+    const container = render(
       <ProcessListTable
         {...{ ...props, isLoading: true, processInstances: [] }}
       />
-    ).find('ProcessListTable');
-    const kogitoSpinner = wrapper.find('KogitoSpinner');
-    expect(kogitoSpinner.exists()).toBeTruthy();
-    expect(kogitoSpinner).toMatchSnapshot();
+    );
+    expect(container).toMatchSnapshot();
+    expect(
+      screen.getAllByText('Loading process instances...').length
+    ).not.toEqual(0);
   });
 
   it('no results found state', () => {
-    const wrapper = mount(
+    const container = render(
       <ProcessListTable {...{ ...props, processInstances: [] }} />
-    ).find('ProcessListTable');
-    const kogitoEmptyState = wrapper.find('KogitoEmptyState');
-    expect(kogitoEmptyState.exists()).toBeTruthy();
-    expect(kogitoEmptyState).toMatchSnapshot();
+    );
+    expect(container).toMatchSnapshot();
+    expect(screen.getAllByText('No results found').length).not.toEqual(0);
   });
+
   it('expand parent process', async () => {
-    let wrapper = mount(
-      <ProcessListTable {...{ ...props, expanded: { 0: true } }} />
-    ).find('ProcessListTable');
+    const container = render(
+      <ProcessListTable {...{ ...props, expanded: { 0: false } }} />
+    );
+    await waitFor(() => screen.findAllByText('travels'));
     await act(async () => {
-      wrapper.find('td').at(0).find('Button').simulate('click');
+      fireEvent.click(container.container.querySelector('#expand-toggle0')!);
     });
-    wrapper = wrapper.update();
-    expect(wrapper.find('MockedProcessListChildTable').exists()).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(
+        container.container.querySelector('.kogito-process-list__link')!
+      );
+    });
+    expect(container).toMatchSnapshot();
+    expect(
+      container.container.querySelector('.pf-c-table__expandable-row-content')
+    ).toBeTruthy();
   });
 
   it('snapshot test for process list - with expanded', async () => {
@@ -140,123 +105,76 @@ describe('ProcessListTable test', () => {
     clonedProps.selectedInstances = [{ ...ProcessInstances[0] }];
     clonedProps.selectableInstances = 1;
 
-    const wrapper = mount(
-      <BrowserRouter>
-        <ProcessListTable {...clonedProps} />
-      </BrowserRouter>
-    ).find('ProcessListTable');
+    const container = render(<ProcessListTable {...clonedProps} />);
+    await waitFor(() => screen.findAllByText('travels'));
     await act(async () => {
-      wrapper.find('CollapseColumn').at(0).find('Button').simulate('click');
+      fireEvent.click(container.container.querySelector('#expand-toggle0')!);
     });
-    const ProcessListChildTable = wrapper
-      .update()
-      .find('MockedProcessListChildTable');
-    expect(ProcessListChildTable.exists()).toBeTruthy();
-    expect(ProcessListChildTable).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
+    expect(
+      container.container.querySelector('.pf-c-table__expandable-row-content')
+    ).toBeTruthy();
   });
-  it('checkbox click tests - selected', async () => {
+  it('checkbox click tests - selected/unselected', async () => {
     const clonedProps = _.cloneDeep(props);
-    let wrapper = mount(
-      <BrowserRouter>
-        <ProcessListTable {...clonedProps} />
-      </BrowserRouter>
-    ).find('ProcessListTable');
+    render(<ProcessListTable {...clonedProps} />);
+    await waitFor(() => screen.findAllByText('travels'));
     await act(async () => {
-      wrapper
-        .find(Checkbox)
-        .at(0)
-        .find('input')
-        .simulate('change', { target: { checked: true } });
+      fireEvent.click(
+        screen.getAllByTestId(
+          'checkbox-538f9feb-5a14-4096-b791-2055b38da7c6'
+        )[0]
+      );
     });
-    wrapper = wrapper.update();
+    expect(props.setSelectedInstances).toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(
+        screen.getAllByTestId(
+          'checkbox-538f9feb-5a14-4096-b791-2055b38da7c6'
+        )[0]
+      );
+    });
     expect(props.setSelectedInstances).toHaveBeenCalled();
   });
-  it('checkbox click tests - unselected', async () => {
-    let wrapper = mount(
-      <BrowserRouter>
-        <ProcessListTable {...props} />
-      </BrowserRouter>
-    ).find('ProcessListTable');
+  it('on skip success', async () => {
+    const container = render(<ProcessListTable {...props} />);
+    await waitFor(() => screen.findAllByText('travels'));
+    mockedAxios.post.mockResolvedValue({});
     await act(async () => {
-      wrapper
-        .find(Checkbox)
-        .at(1)
-        .find('input')
-        .simulate('change', { target: { checked: false } });
+      fireEvent.click(screen.getAllByTestId('kebab-toggle')[0]);
     });
-    wrapper = wrapper.update();
-    expect(props.setSelectedInstances).toHaveBeenCalled();
-  });
-  describe('skip call tests', () => {
-    const wrapper = mount(
-      <BrowserRouter>
-        <ProcessListTable {...props} />
-      </BrowserRouter>
-    ).find('ProcessListTable');
-    it('on skip success', async () => {
-      mockedAxios.post.mockResolvedValue({});
-      await act(async () => {
-        wrapper
-          .find('MockedProcessListActionsKebab')
-          .at(0)
-          .props()
-          ['onSkipClick'](props.processInstances[0]);
-      });
-      const skipSuccessWrapper = wrapper.update();
-      expect(skipSuccessWrapper.find('ProcessInfoModal').exists()).toBeTruthy();
-      expect(
-        skipSuccessWrapper.find('ProcessInfoModal').props()['modalContent']
-      ).toEqual('The workflow travels was successfully skipped.');
+    await waitFor(() => screen.findAllByText('Skip'));
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('Skip')[0]);
     });
+    expect(container).toMatchSnapshot();
   });
 
-  describe('Retry call tests', () => {
-    const wrapper = mount(
-      <BrowserRouter>
-        <ProcessListTable {...props} />
-      </BrowserRouter>
-    ).find('ProcessListTable');
-    it('on retry success', async () => {
-      mockedAxios.post.mockResolvedValue({});
-      await act(async () => {
-        wrapper
-          .find('MockedProcessListActionsKebab')
-          .at(0)
-          .props()
-          ['onRetryClick'](props.processInstances[0]);
-      });
-      const retrySuccessWrapper = wrapper.update();
-      expect(
-        retrySuccessWrapper.find('ProcessInfoModal').exists()
-      ).toBeTruthy();
-      expect(
-        retrySuccessWrapper.find('ProcessInfoModal').props()['modalContent']
-      ).toEqual('The workflow travels was successfully re-executed.');
+  it('on retry success', async () => {
+    const container = render(<ProcessListTable {...props} />);
+    await waitFor(() => screen.findAllByText('travels'));
+    mockedAxios.post.mockResolvedValue({});
+    await act(async () => {
+      fireEvent.click(screen.getAllByTestId('kebab-toggle')[0]);
     });
+    await waitFor(() => screen.findAllByText('Retry'));
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('Retry')[0]);
+    });
+    expect(container).toMatchSnapshot();
   });
-
-  describe('Abort call tests', () => {
-    const wrapper = mount(
-      <BrowserRouter>
-        <ProcessListTable {...props} />
-      </BrowserRouter>
-    ).find('ProcessListTable');
-    it('on Abort success', async () => {
-      mockedAxios.delete.mockResolvedValue({});
-      await act(async () => {
-        wrapper
-          .find('MockedProcessListActionsKebab')
-          .at(0)
-          .props()
-          ['onAbortClick'](props.processInstances[0]);
-      });
-      const abortSuccessWrapper = wrapper.update();
-      expect(
-        abortSuccessWrapper.find('ProcessInfoModal').exists()
-      ).toBeTruthy();
-      expect(
-        abortSuccessWrapper.find('ProcessInfoModal').props()['modalContent']
-      ).toEqual('The workflow travels was successfully aborted.');
+  it('on Abort success', async () => {
+    mockedAxios.delete.mockResolvedValue({});
+    const container = render(<ProcessListTable {...props} />);
+    await waitFor(() => screen.findAllByText('travels'));
+    mockedAxios.post.mockResolvedValue({});
+    await act(async () => {
+      fireEvent.click(screen.getAllByTestId('kebab-toggle')[0]);
     });
+    await waitFor(() => screen.findAllByText('Abort'));
+    await act(async () => {
+      fireEvent.click(screen.getAllByText('Abort')[0]);
+    });
+    expect(container).toMatchSnapshot();
   });
 });

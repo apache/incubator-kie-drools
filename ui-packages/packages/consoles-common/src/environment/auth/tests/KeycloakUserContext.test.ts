@@ -50,6 +50,14 @@ describe('KeycloakUserSystem tests', () => {
     expect(user.groups).toContainEqual('user');
     expect(user.groups).toContainEqual('manager');
 
+    const token = userSystem.getToken();
+
+    expect(token).toEqual('token');
+
+    const getTokenMinValidity = userSystem.getTokenMinValidity();
+
+    expect(getTokenMinValidity).toEqual(30);
+
     userSystem.logout();
 
     expect(handleLogout.mock.calls).toHaveLength(1);

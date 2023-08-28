@@ -1,525 +1,675 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Process details page milestones panel Snapshot test with default props 1`] = `
-<ProcessDetailsMilestonesPanel
-  milestones={
-    Array [
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
-        "name": "Milestone 1: Order placed",
-        "status": "ACTIVE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
-        "name": "Milestone 2: Order shipped",
-        "status": "AVAILABLE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m88",
-        "name": "Milestone 3: Order delivered and closed with customer sign off",
-        "status": "AVAILABLE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
-        "name": "Manager decision",
-        "status": "COMPLETED",
-      },
-    ]
-  }
->
-  <Card
-    data-ouia-component-type="milestones"
-    data-ouia-safe={true}
-  >
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <article
+        class="pf-c-card"
+        data-ouia-component-id="OUIA-Generated-Card-1"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
+      >
+        <div
+          class="pf-c-card__header"
+        >
+          <h3
+            class="pf-c-title pf-m-xl"
+            data-ouia-component-id="OUIA-Generated-Title-1"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
+          >
+            Milestones
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-c-content kogito-process-details--milestones__nameText"
+          >
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-1"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 1: Order placed
+               
+              <span
+                class="pf-c-label pf-m-blue"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Active
+                </span>
+              </span>
+            </p>
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-2"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 2: Order shipped
+               
+              <span
+                class="pf-c-label"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Available
+                </span>
+              </span>
+            </p>
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-3"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              <span
+                class="kogito-process-details--milestones__nameTextEllipses"
+              >
+                Milestone 3: Order delivered and closed with customer sign off
+              </span>
+               
+              <span
+                class="pf-c-label"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Available
+                </span>
+              </span>
+            </p>
+             
+            <blockquote
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-4"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Manager decision
+               
+              <span
+                class="pf-c-label pf-m-green"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Completed
+                </span>
+              </span>
+            </blockquote>
+          </div>
+        </div>
+      </article>
+    </div>
+  </body>,
+  "container": <div>
     <article
-      className="pf-c-card"
+      class="pf-c-card"
       data-ouia-component-id="OUIA-Generated-Card-1"
       data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
+      data-ouia-safe="true"
       id=""
     >
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
+      <div
+        class="pf-c-card__header"
+      >
+        <h3
+          class="pf-c-title pf-m-xl"
+          data-ouia-component-id="OUIA-Generated-Title-1"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
         >
-          <Title
-            headingLevel="h3"
-            size="xl"
-          >
-            <h3
-              className="pf-c-title pf-m-xl"
-              data-ouia-component-id="OUIA-Generated-Title-1"
-              data-ouia-component-type="PF4/Title"
-              data-ouia-safe={true}
-            >
-              Milestones
-            </h3>
-          </Title>
-        </div>
-      </CardHeader>
-      <CardBody>
+          Milestones
+        </h3>
+      </div>
+      <div
+        class="pf-c-card__body"
+      >
         <div
-          className="pf-c-card__body"
+          class="pf-c-content kogito-process-details--milestones__nameText"
         >
-          <TextContent
-            className="kogito-process-details--milestones__nameText"
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-1"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
           >
-            <div
-              className="pf-c-content kogito-process-details--milestones__nameText"
+            Milestone 1: Order placed
+             
+            <span
+              class="pf-c-label pf-m-blue"
             >
-              <Text
-                component="p"
-                key="0"
+              <span
+                class="pf-c-label__content"
               >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-1"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 1: Order placed
-                   
-                  <Label
-                    color="blue"
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label pf-m-blue"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Active
-                      </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
-              <Text
-                component="p"
-                key="1"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Active
+              </span>
+            </span>
+          </p>
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-2"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            Milestone 2: Order shipped
+             
+            <span
+              class="pf-c-label"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-2"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 2: Order shipped
-                   
-                  <Label
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Available
-                      </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
-              <Tooltip
-                content="Milestone 3: Order delivered and closed with customer sign off"
-                key="2"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Available
+              </span>
+            </span>
+          </p>
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-3"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            <span
+              class="kogito-process-details--milestones__nameTextEllipses"
+            >
+              Milestone 3: Order delivered and closed with customer sign off
+            </span>
+             
+            <span
+              class="pf-c-label"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <Text
-                  component="p"
-                >
-                  <p
-                    className=""
-                    data-ouia-component-id="OUIA-Generated-Text-3"
-                    data-ouia-component-type="PF4/Text"
-                    data-ouia-safe={true}
-                    data-pf-content={true}
-                  >
-                    <span
-                      className="kogito-process-details--milestones__nameTextEllipses"
-                    >
-                      Milestone 3: Order delivered and closed with customer sign off
-                    </span>
-                     
-                    <Label
-                      icon={<InfoCircleIcon />}
-                    >
-                      <span
-                        className="pf-c-label"
-                      >
-                        <span
-                          className="pf-c-label__content"
-                        >
-                          <span
-                            className="pf-c-label__icon"
-                          >
-                            <InfoCircleIcon>
-                              <MockedComponent />
-                            </InfoCircleIcon>
-                          </span>
-                          Available
-                        </span>
-                      </span>
-                    </Label>
-                  </p>
-                </Text>
-                 
-              </Tooltip>
-              <Text
-                component="blockquote"
-                key="3"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Available
+              </span>
+            </span>
+          </p>
+           
+          <blockquote
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-4"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            Manager decision
+             
+            <span
+              class="pf-c-label pf-m-green"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <blockquote
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-4"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Manager decision
-                   
-                  <Label
-                    color="green"
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label pf-m-green"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Completed
-                      </span>
-                    </span>
-                  </Label>
-                </blockquote>
-              </Text>
-            </div>
-          </TextContent>
+                <span
+                  class="pf-c-label__icon"
+                />
+                Completed
+              </span>
+            </span>
+          </blockquote>
         </div>
-      </CardBody>
+      </div>
     </article>
-  </Card>
-</ProcessDetailsMilestonesPanel>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
 `;
 
 exports[`Process details page milestones panel test assertions 1`] = `
-<ProcessDetailsMilestonesPanel
-  milestones={
-    Array [
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m36",
-        "name": "Milestone 1: Order placed",
-        "status": "ACTIVE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
-        "name": "Milestone 2: Order shipped",
-        "status": "AVAILABLE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m88",
-        "name": "Milestone 3: Order delivered",
-        "status": "AVAILABLE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
-        "name": "Milestone 2: Order shipped",
-        "status": "AVAILABLE",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75i86",
-        "name": "Milestone 3: Order delivered and closed with customer sign off",
-        "status": "COMPLETED",
-      },
-      Object {
-        "__typename": "Milestones",
-        "id": "27107f38-d888-4edf-9a4f-11b9e6d75m66",
-        "name": "Milestone 2: Order shipped",
-        "status": undefined,
-      },
-    ]
-  }
->
-  <Card
-    data-ouia-component-type="milestones"
-    data-ouia-safe={true}
-  >
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <article
+        class="pf-c-card"
+        data-ouia-component-id="OUIA-Generated-Card-2"
+        data-ouia-component-type="PF4/Card"
+        data-ouia-safe="true"
+        id=""
+      >
+        <div
+          class="pf-c-card__header"
+        >
+          <h3
+            class="pf-c-title pf-m-xl"
+            data-ouia-component-id="OUIA-Generated-Title-2"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
+          >
+            Milestones
+          </h3>
+        </div>
+        <div
+          class="pf-c-card__body"
+        >
+          <div
+            class="pf-c-content kogito-process-details--milestones__nameText"
+          >
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-5"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 1: Order placed
+               
+              <span
+                class="pf-c-label pf-m-blue"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Active
+                </span>
+              </span>
+            </p>
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-6"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 2: Order shipped
+               
+              <span
+                class="pf-c-label"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Available
+                </span>
+              </span>
+            </p>
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-7"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 3: Order delivered
+               
+              <span
+                class="pf-c-label"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Available
+                </span>
+              </span>
+            </p>
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-8"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 2: Order shipped
+               
+              <span
+                class="pf-c-label"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Available
+                </span>
+              </span>
+            </p>
+            <blockquote
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-9"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              <span
+                class="kogito-process-details--milestones__nameTextEllipses"
+              >
+                Milestone 3: Order delivered and closed with customer sign off
+              </span>
+               
+              <span
+                class="pf-c-label pf-m-green"
+              >
+                <span
+                  class="pf-c-label__content"
+                >
+                  <span
+                    class="pf-c-label__icon"
+                  />
+                  Completed
+                </span>
+              </span>
+            </blockquote>
+             
+            <p
+              class=""
+              data-ouia-component-id="OUIA-Generated-Text-10"
+              data-ouia-component-type="PF4/Text"
+              data-ouia-safe="true"
+              data-pf-content="true"
+            >
+              Milestone 2: Order shipped
+               
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </body>,
+  "container": <div>
     <article
-      className="pf-c-card"
+      class="pf-c-card"
       data-ouia-component-id="OUIA-Generated-Card-2"
       data-ouia-component-type="PF4/Card"
-      data-ouia-safe={true}
+      data-ouia-safe="true"
       id=""
     >
-      <CardHeader>
-        <div
-          className="pf-c-card__header"
+      <div
+        class="pf-c-card__header"
+      >
+        <h3
+          class="pf-c-title pf-m-xl"
+          data-ouia-component-id="OUIA-Generated-Title-2"
+          data-ouia-component-type="PF4/Title"
+          data-ouia-safe="true"
         >
-          <Title
-            headingLevel="h3"
-            size="xl"
-          >
-            <h3
-              className="pf-c-title pf-m-xl"
-              data-ouia-component-id="OUIA-Generated-Title-2"
-              data-ouia-component-type="PF4/Title"
-              data-ouia-safe={true}
-            >
-              Milestones
-            </h3>
-          </Title>
-        </div>
-      </CardHeader>
-      <CardBody>
+          Milestones
+        </h3>
+      </div>
+      <div
+        class="pf-c-card__body"
+      >
         <div
-          className="pf-c-card__body"
+          class="pf-c-content kogito-process-details--milestones__nameText"
         >
-          <TextContent
-            className="kogito-process-details--milestones__nameText"
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-5"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
           >
-            <div
-              className="pf-c-content kogito-process-details--milestones__nameText"
+            Milestone 1: Order placed
+             
+            <span
+              class="pf-c-label pf-m-blue"
             >
-              <Text
-                component="p"
-                key="0"
+              <span
+                class="pf-c-label__content"
               >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-5"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 1: Order placed
-                   
-                  <Label
-                    color="blue"
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label pf-m-blue"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Active
-                      </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
-              <Text
-                component="p"
-                key="1"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Active
+              </span>
+            </span>
+          </p>
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-6"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            Milestone 2: Order shipped
+             
+            <span
+              class="pf-c-label"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-6"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 2: Order shipped
-                   
-                  <Label
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Available
-                      </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
-              <Text
-                component="p"
-                key="2"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Available
+              </span>
+            </span>
+          </p>
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-7"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            Milestone 3: Order delivered
+             
+            <span
+              class="pf-c-label"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-7"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 3: Order delivered
-                   
-                  <Label
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Available
-                      </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
-              <Text
-                component="p"
-                key="3"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Available
+              </span>
+            </span>
+          </p>
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-8"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            Milestone 2: Order shipped
+             
+            <span
+              class="pf-c-label"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-8"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 2: Order shipped
-                   
-                  <Label
-                    icon={<InfoCircleIcon />}
-                  >
-                    <span
-                      className="pf-c-label"
-                    >
-                      <span
-                        className="pf-c-label__content"
-                      >
-                        <span
-                          className="pf-c-label__icon"
-                        >
-                          <InfoCircleIcon>
-                            <MockedComponent />
-                          </InfoCircleIcon>
-                        </span>
-                        Available
-                      </span>
-                    </span>
-                  </Label>
-                </p>
-              </Text>
-              <Tooltip
-                content="Milestone 3: Order delivered and closed with customer sign off"
-                key="4"
+                <span
+                  class="pf-c-label__icon"
+                />
+                Available
+              </span>
+            </span>
+          </p>
+          <blockquote
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-9"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            <span
+              class="kogito-process-details--milestones__nameTextEllipses"
+            >
+              Milestone 3: Order delivered and closed with customer sign off
+            </span>
+             
+            <span
+              class="pf-c-label pf-m-green"
+            >
+              <span
+                class="pf-c-label__content"
               >
-                <Text
-                  component="blockquote"
-                >
-                  <blockquote
-                    className=""
-                    data-ouia-component-id="OUIA-Generated-Text-9"
-                    data-ouia-component-type="PF4/Text"
-                    data-ouia-safe={true}
-                    data-pf-content={true}
-                  >
-                    <span
-                      className="kogito-process-details--milestones__nameTextEllipses"
-                    >
-                      Milestone 3: Order delivered and closed with customer sign off
-                    </span>
-                     
-                    <Label
-                      color="green"
-                      icon={<InfoCircleIcon />}
-                    >
-                      <span
-                        className="pf-c-label pf-m-green"
-                      >
-                        <span
-                          className="pf-c-label__content"
-                        >
-                          <span
-                            className="pf-c-label__icon"
-                          >
-                            <InfoCircleIcon>
-                              <MockedComponent />
-                            </InfoCircleIcon>
-                          </span>
-                          Completed
-                        </span>
-                      </span>
-                    </Label>
-                  </blockquote>
-                </Text>
-                 
-              </Tooltip>
-              <Text
-                component="p"
-                key="5"
-              >
-                <p
-                  className=""
-                  data-ouia-component-id="OUIA-Generated-Text-10"
-                  data-ouia-component-type="PF4/Text"
-                  data-ouia-safe={true}
-                  data-pf-content={true}
-                >
-                  Milestone 2: Order shipped
-                   
-                </p>
-              </Text>
-            </div>
-          </TextContent>
+                <span
+                  class="pf-c-label__icon"
+                />
+                Completed
+              </span>
+            </span>
+          </blockquote>
+           
+          <p
+            class=""
+            data-ouia-component-id="OUIA-Generated-Text-10"
+            data-ouia-component-type="PF4/Text"
+            data-ouia-safe="true"
+            data-pf-content="true"
+          >
+            Milestone 2: Order shipped
+             
+          </p>
         </div>
-      </CardBody>
+      </div>
     </article>
-  </Card>
-</ProcessDetailsMilestonesPanel>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
 `;

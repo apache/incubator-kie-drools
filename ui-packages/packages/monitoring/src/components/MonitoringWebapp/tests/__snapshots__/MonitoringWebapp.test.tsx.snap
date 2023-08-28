@@ -1,35 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Monitoring Webapp Tests Snapshot - Monitoring Webapp 1`] = `
-<MonitoringWebapp>
+<div>
   <iframe
     src="resources/webapp/monitoring-webapp/index.html?"
-    style={
-      Object {
-        "height": "100%",
-        "padding": "10px",
-        "width": "100%",
-      }
-    }
+    style="width: 100%; height: 100%; padding: 10px;"
   />
-</MonitoringWebapp>
+</div>
 `;
 
 exports[`Monitoring Webapp Tests Snapshot - Monitoring Webapp with parameters 1`] = `
-<MonitoringWebapp
-  dashboard="someDashboard.yml"
-  dataIndexUrl="http://localhost:8180"
-  workflow="test123"
->
+<div>
   <iframe
     src="resources/webapp/monitoring-webapp/index.html?dataIndexUrl=http%3A%2F%2Flocalhost%3A8180&import=someDashboard.yml&workflowId=test123"
-    style={
-      Object {
-        "height": "100%",
-        "padding": "10px",
-        "width": "100%",
-      }
-    }
+    style="width: 100%; height: 100%; padding: 10px;"
   />
-</MonitoringWebapp>
+</div>
 `;

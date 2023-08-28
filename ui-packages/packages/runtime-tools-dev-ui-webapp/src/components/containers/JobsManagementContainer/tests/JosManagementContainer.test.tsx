@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import JobsManagementContainer from '../JobsManagementContainer';
 import DevUIAppContextProvider from '../../../contexts/DevUIAppContextProvider';
@@ -41,11 +41,12 @@ const appContextProps = {
 
 describe('WebApp - JobsManagementContainer tests', () => {
   it('Snapshot test with default values', () => {
-    const wrapper = mount(
+    const { container } = render(
       <DevUIAppContextProvider users={[user]} {...appContextProps}>
         <JobsManagementContainer />
       </DevUIAppContextProvider>
     );
-    expect(wrapper.find('JobsManagementContainer')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
+    expect(container.querySelector('div')).toBeTruthy();
   });
 });

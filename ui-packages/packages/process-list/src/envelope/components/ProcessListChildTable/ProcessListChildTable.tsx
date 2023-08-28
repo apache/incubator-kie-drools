@@ -150,6 +150,7 @@ const ProcessListChildTable: React.FC<
                     aria-label="process-list-checkbox"
                     id={`checkbox-${child.id}`}
                     name={`checkbox-${child.id}`}
+                    data-testid={`checkbox-${child.id}`}
                   />
                 ) : (
                   <DisablePopup

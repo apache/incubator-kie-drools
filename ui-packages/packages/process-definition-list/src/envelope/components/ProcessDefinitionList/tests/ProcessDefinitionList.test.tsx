@@ -15,13 +15,10 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import ProcessDefinitionList from '../ProcessDefinitionList';
 import { MockedProcessDefinitionListDriver } from '../../../tests/mocks/MockedProcessDefinitionListDriver';
 import { act } from 'react-dom/test-utils';
-import ProcessDefinitionListToolbar from '../../ProcessDefinitionListToolbar/ProcessDefinitionListToolbar';
-
-jest.mock('../../ProcessDefinitionListToolbar/ProcessDefinitionListToolbar');
 
 describe('ProcessDefinition list tests', () => {
   Date.now = jest.fn(() => 1487076708000);
@@ -33,15 +30,15 @@ describe('ProcessDefinition list tests', () => {
       driver: null,
       singularProcessLabel: 'Workflow'
     };
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessDefinitionList {...props} />);
+      container = render(<ProcessDefinitionList {...props} />).container;
     });
-    expect(
-      wrapper.find(ProcessDefinitionList).props()[
-        'isEnvelopeConnectedToChannel'
-      ]
-    ).toBeFalsy();
+
+    const checkIsEnvelopeConnectedToChannel = container.querySelector('h3');
+    expect(checkIsEnvelopeConnectedToChannel.textContent).toEqual(
+      'Loading workflow definitions...'
+    );
   });
 
   it('render ProcessDefinition list - table', async () => {
@@ -50,14 +47,19 @@ describe('ProcessDefinition list tests', () => {
       driver: driver,
       singularProcessLabel: 'Workflow'
     };
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessDefinitionList {...props} />);
+      container = render(<ProcessDefinitionList {...props} />).container;
     });
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const toolbar = wrapper.find(ProcessDefinitionListToolbar);
-    expect(toolbar.props().onOpenTriggerCloudEvent).toBeUndefined();
+    const checkToolbar = container.querySelector(
+      '[class="pf-c-toolbar__content"]'
+    );
+    expect(checkToolbar).toBeTruthy();
+
+    const checkToolbarButton = container.querySelector('[type="button"]');
+    expect(checkToolbarButton).toBeTruthy();
   });
 
   it('render ProcessDefinition list - table with cloud event enabled', async () => {
@@ -67,13 +69,18 @@ describe('ProcessDefinition list tests', () => {
       singularProcessLabel: 'Workflow',
       isTriggerCloudEventEnabled: true
     };
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(<ProcessDefinitionList {...props} />);
+      container = render(<ProcessDefinitionList {...props} />).container;
     });
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const toolbar = wrapper.find(ProcessDefinitionListToolbar);
-    expect(toolbar.props().onOpenTriggerCloudEvent).not.toBeUndefined();
+    const checkToolbar = container.querySelector(
+      '[class="pf-c-toolbar__content"]'
+    );
+    expect(checkToolbar).toBeTruthy();
+
+    const checkToolbarButton = container.querySelector('[type="button"]');
+    expect(checkToolbarButton).toBeTruthy();
   });
 });

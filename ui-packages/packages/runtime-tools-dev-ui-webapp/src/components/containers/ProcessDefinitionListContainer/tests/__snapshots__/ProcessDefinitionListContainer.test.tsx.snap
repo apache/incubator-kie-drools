@@ -1,54 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessDefinitionListContainer tests Snapshot 1`] = `
-<ProcessDefinitionListContainer>
-  <ForwardRef
-    data-ouia-component-type="process-definition-list-container"
-    data-ouia-safe={true}
-    driver={
-      ProcessDefinitionListGatewayApiImpl {
-        "devUIUrl": "http://localhost:9000",
-        "onOpenProcessListeners": Array [
-          Object {
-            "onOpen": [Function],
-          },
-        ],
-        "onOpenTriggerCloudEventListeners": Array [],
-        "openApiPath": "/mocked",
-        "processDefinitonFilter": Array [],
-      }
-    }
-    isTriggerCloudEventEnabled={false}
-    singularProcessLabel="test-singular"
-    targetOrigin="http://localhost:9000"
-  >
-    <ForwardRef(RefForwardingEmbeddedEnvelope)
-      apiImpl={
-        ProcessDefinitionListChannelApiImpl {
-          "driver": ProcessDefinitionListGatewayApiImpl {
-            "devUIUrl": "http://localhost:9000",
-            "onOpenProcessListeners": Array [
-              Object {
-                "onOpen": [Function],
-              },
-            ],
-            "onOpenTriggerCloudEventListeners": Array [],
-            "openApiPath": "/mocked",
-            "processDefinitonFilter": Array [],
-          },
-        }
-      }
-      config={
-        Object {
-          "containerType": "div",
-        }
-      }
-      origin="http://localhost:9000"
-      pollInit={[Function]}
-      refDelegate={[Function]}
-    >
-      <div />
-    </ForwardRef(RefForwardingEmbeddedEnvelope)>
-  </ForwardRef>
-</ProcessDefinitionListContainer>
+<div>
+  <div />
+</div>
 `;

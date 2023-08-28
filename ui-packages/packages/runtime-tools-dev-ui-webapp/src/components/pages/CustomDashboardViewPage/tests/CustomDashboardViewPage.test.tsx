@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import CustomDashboardViewPage from '../CustomDashboardViewPage';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -38,13 +38,12 @@ jest.mock('react-router-dom', () => ({
 
 describe('CustomDashboardViewPage tests', () => {
   it('Snapshot', () => {
-    const wrapper = mount(
+    const { container } = render(
       <BrowserRouter>
         <CustomDashboardViewPage />
       </BrowserRouter>
     );
 
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('MockedCustomDashboardViewContainer').exists());
+    expect(container).toMatchSnapshot();
   });
 });

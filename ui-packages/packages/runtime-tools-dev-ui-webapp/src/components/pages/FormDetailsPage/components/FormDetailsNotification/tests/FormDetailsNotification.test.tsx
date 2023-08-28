@@ -15,12 +15,7 @@
  */
 
 import React from 'react';
-import {
-  AlertActionCloseButton,
-  AlertActionLink,
-  Alert
-} from '@patternfly/react-core/dist/js/components/Alert';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import FormDetailsNotification, {
   Notification
 } from '../FormDetailsNotification';
@@ -33,22 +28,23 @@ describe('FormDetailsNotification test', () => {
       close: jest.fn()
     };
 
-    const wrapper = mount(
+    const { container } = render(
       <FormDetailsNotification notification={notificationProps} />
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    const alert = wrapper.find(Alert);
+    const successAlert = screen.getByLabelText('Success Alert');
 
-    expect(alert.exists()).toBeTruthy();
-    expect(alert.props().variant).toBe('success');
+    expect(successAlert).toBeTruthy();
 
-    expect(wrapper.html()).toContain(notificationProps.message);
+    const message = container.querySelector('h4')?.textContent;
+    expect(message).toBe('Success alert:The form has been stored');
 
-    const button = wrapper.find(AlertActionCloseButton).find('button');
-
-    button.simulate('click');
+    const button = screen.getByLabelText(
+      'Close Success alert: alert: The form has been stored'
+    );
+    fireEvent.click(button);
 
     expect(notificationProps.close).toBeCalled();
   });
@@ -61,29 +57,25 @@ describe('FormDetailsNotification test', () => {
       details: 'The details here!'
     };
 
-    let wrapper = mount(
+    const { container } = render(
       <FormDetailsNotification notification={notificationProps} />
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    expect(wrapper.html()).toContain(notificationProps.message);
+    const dangerAlert = screen.getByLabelText('Danger Alert');
 
-    const alert = wrapper.find(Alert);
+    expect(dangerAlert).toBeTruthy();
 
-    expect(alert.exists()).toBeTruthy();
-    expect(alert.props().variant).toBe('danger');
+    const alertActions = container.querySelector(
+      '[class="pf-c-alert__action"]'
+    );
 
-    const button = wrapper.find(AlertActionLink).find('button');
+    expect(alertActions).toBeTruthy();
 
-    expect(button.exists()).toBeTruthy();
-    expect(button.getDOMNode().innerHTML).toBe('View details');
+    const detailsButton = screen.getByText('View details');
 
-    button.simulate('click');
+    fireEvent.click(detailsButton);
 
-    expect(wrapper).toMatchSnapshot();
-
-    wrapper = wrapper.update().find('FormDetailsNotification');
-
-    expect(wrapper.html()).toContain(notificationProps.details);
+    expect(detailsButton).toMatchSnapshot();
   });
 });

@@ -250,6 +250,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                   isChecked={processInstance.isSelected}
                   onChange={() => checkBoxSelect(processInstance)}
                   aria-label="process-list-checkbox"
+                  data-testid={`checkbox-${processInstance.id}`}
                   id={`checkbox-${processInstance.id}`}
                   name={`checkbox-${processInstance.id}`}
                 />
@@ -259,6 +260,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                   component={
                     <Checkbox
                       aria-label="process-list-checkbox-disabled"
+                      data-testid={`checkbox-${processInstance.id}`}
                       id={`checkbox-${processInstance.id}`}
                       isDisabled={true}
                     />
@@ -445,6 +447,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         }
       />
       <TableComposable
+        data-testid="process-list-table"
         aria-label="Process List Table"
         {...componentOuiaProps(
           ouiaId,

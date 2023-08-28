@@ -13,47 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mount } from 'enzyme';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import TestProcessListDriver from './mocks/TestProcessListDriver';
 import ProcessList from '../ProcessList';
 import { processInstances } from './mocks/Mocks';
-import wait from 'waait';
 import { act } from 'react-dom/test-utils';
-import { ProcessInstanceState } from '@kogito-apps/management-console-shared/dist/types';
-
-jest.mock('../../ProcessListTable/ProcessListTable');
-jest.mock('../../ProcessListToolbar/ProcessListToolbar');
-
-const MockedComponent = (): React.ReactElement => {
-  return <></>;
-};
-
-jest.mock('@kogito-apps/components-common/dist/components/ServerErrors', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    ServerErrors: () => {
-      return <MockedComponent />;
-    }
-  })
-);
-
-jest.mock(
-  '@kogito-apps/components-common/dist/components/KogitoEmptyState',
-  () =>
-    Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-      KogitoEmptyState: () => {
-        return <MockedComponent />;
-      }
-    })
-);
-
-jest.mock('@kogito-apps/components-common/dist/components/LoadMore', () =>
-  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
-    LoadMore: () => {
-      return <MockedComponent />;
-    }
-  })
-);
 
 let driverQueryMock;
 let driverApplyFilterMock;
@@ -73,8 +38,7 @@ const getProcessListDriver = (items: number): TestProcessListDriver => {
 };
 let props;
 
-const getProcessListWrapper = () =>
-  mount(<ProcessList {...props} />).find('ProcessList');
+const getProcessListWrapper = () => render(<ProcessList {...props} />);
 describe('ProcessList test', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -89,47 +53,29 @@ describe('ProcessList test', () => {
 
     props.isEnvelopeConnectedToChannel = false;
 
-    const wrapper = getProcessListWrapper();
-
-    expect(wrapper).toMatchSnapshot();
+    const container = getProcessListWrapper();
+    expect(container).toMatchSnapshot();
     expect(driver.initialLoad).not.toHaveBeenCalled();
     expect(driver.query).not.toHaveBeenCalled();
-
-    const toolbar = wrapper.find('MockedProcessListToolbar');
-    expect(toolbar.exists()).toBeTruthy();
-
-    const table = wrapper.find('MockedProcessListTable');
-    expect(table.exists()).toBeTruthy();
-    expect(table.props()['processInstances']).toHaveLength(0);
+    const toolbar = container.getByTestId('data-toolbar-with-filter');
+    expect(toolbar).toBeTruthy();
+    const Loading = container.getAllByText(/Loading process instances../);
+    expect(Loading).toBeTruthy();
   });
 
   it('ProcessList initialLoad', async () => {
     const driver = getProcessListDriver(3);
-
-    let wrapper;
-
     await act(async () => {
-      wrapper = getProcessListWrapper();
-      wait();
+      getProcessListWrapper();
     });
-
-    wrapper = wrapper.update();
-
+    await waitFor(() => screen.getAllByText('Travels'));
     expect(driver.initialLoad).toHaveBeenCalled();
     expect(driver.query).toHaveBeenCalledWith(0, 10);
-
-    const toolbar = wrapper.find('MockedProcessListToolbar');
-    expect(toolbar.exists()).toBeTruthy();
-
-    const table = wrapper.find('MockedProcessListTable');
-    expect(table.exists()).toBeTruthy();
-    expect(table.props().isLoading).toBeFalsy();
-    expect(table.props().processInstances).toHaveLength(3);
-    expect(Object.keys(table.props().sortBy)[0]).toBe('lastUpdate');
-    expect(Object.values(table.props().sortBy)[0]).toBe('DESC');
-
-    const loadMore = wrapper.find('LoadMore');
-    expect(loadMore.exists()).toBeFalsy();
+    const toolbar = screen.getByTestId('data-toolbar-with-filter');
+    expect(toolbar).toBeTruthy();
+    const processListTable = screen.getByTestId('process-list-table');
+    expect(processListTable).toBeTruthy();
+    expect(processListTable.querySelectorAll('tr').length).toBe(7);
   });
 
   it('error page', async () => {
@@ -137,97 +83,91 @@ describe('ProcessList test', () => {
     driverQueryMock.mockRejectedValue(
       JSON.parse('{"errorMessage":"404 error"}')
     );
-
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = getProcessListWrapper();
-      wait();
+      container = getProcessListWrapper();
     });
-
-    wrapper = wrapper.update();
-    expect(driver.initialLoad).toHaveBeenCalled();
-    const serverErrors = wrapper.find('ServerErrors');
-    expect(serverErrors).toMatchSnapshot();
-    expect(serverErrors.exists()).toBeTruthy();
+    await waitFor(() => screen.getAllByText('Error fetching data'));
+    expect(container).toMatchSnapshot();
   });
 
   it('apply filter', async () => {
     const driver = getProcessListDriver(3);
-    let wrapper;
     await act(async () => {
-      wrapper = getProcessListWrapper();
-      wait();
+      getProcessListWrapper();
     });
 
-    wrapper = wrapper.update();
+    await waitFor(() => screen.getAllByText('Travels'));
     expect(driver.initialLoad).toHaveBeenCalled();
-    const toolbar = wrapper.find('MockedProcessListToolbar');
-    const filters = [
-      ProcessInstanceState.Active,
-      ProcessInstanceState.Error,
-      ProcessInstanceState.Completed
-    ];
     await act(async () => {
-      toolbar.props()['applyFilter'](filters);
+      fireEvent.click(screen.getByTestId('apply-filter-button'));
     });
-    expect(driverApplyFilterMock).toHaveBeenCalledWith(filters);
+    expect(driverApplyFilterMock).toHaveBeenCalled();
   });
 
-  it('apply sorting', async () => {
-    const driver = getProcessListDriver(3);
-    let wrapper;
+  it('apply sort', async () => {
+    getProcessListDriver(3);
+    let container;
     await act(async () => {
-      wrapper = getProcessListWrapper();
-      wait();
+      container = getProcessListWrapper().container;
     });
-
-    wrapper = wrapper.update();
-    expect(driver.initialLoad).toHaveBeenCalled();
-    const processListTable = wrapper.find('MockedProcessListTable');
+    await waitFor(() => screen.getAllByText('Travels'));
     await act(async () => {
-      processListTable
-        .props()
-        ['onSort']({ target: { innerText: 'Status' } }, 1, 'asc');
-      wait();
+      fireEvent.click(container.querySelector('.pf-c-table__button'));
     });
-    wrapper = wrapper.update();
-    expect(driverApplySortingMock).toHaveBeenCalledWith({ state: 'ASC' });
+    expect(driverApplySortingMock).toHaveBeenCalled();
   });
 
   it('do refresh', async () => {
     const driver = getProcessListDriver(3);
-    let wrapper;
     await act(async () => {
-      wrapper = getProcessListWrapper();
-      wait();
+      getProcessListWrapper();
     });
-
-    wrapper = wrapper.update();
+    await waitFor(() => screen.getAllByText('Travels'));
     expect(driver.initialLoad).toHaveBeenCalled();
-    const toolbar = wrapper.find('MockedProcessListToolbar');
     await act(async () => {
-      toolbar.props()['refresh']();
-      wait();
+      fireEvent.click(screen.getByTestId('refresh'));
     });
-    wrapper = wrapper.update();
-    expect(driverQueryMock).toHaveBeenCalledWith(0, 10);
+    expect(driverQueryMock).toHaveBeenCalled();
   });
+
+  it('do reset', async () => {
+    const driver = getProcessListDriver(0);
+    let container;
+    props['initialState'] = {
+      filters: {
+        status: []
+      }
+    };
+    await act(async () => {
+      container = getProcessListWrapper();
+    });
+    expect(container).toMatchSnapshot();
+    await waitFor(() =>
+      screen.getAllByText('Try applying at least one filter to see results')
+    );
+    expect(driver.initialLoad).toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(
+        screen.getAllByText('Reset to default', { selector: 'button' })[0]
+      );
+    });
+    expect(driverQueryMock).toHaveBeenCalled();
+  });
+
   it('load more', async () => {
     const driver = getProcessListDriver(10);
-    let wrapper;
     await act(async () => {
-      wrapper = getProcessListWrapper();
-      wait();
+      getProcessListWrapper();
     });
-
-    wrapper = wrapper.update();
+    await waitFor(() => screen.getAllByText('Load 10 more'));
     expect(driver.initialLoad).toHaveBeenCalled();
-    const loadMore = wrapper.find('LoadMore');
-    expect(loadMore.exists()).toBeTruthy();
+    expect(screen.getAllByText('Load 10 more').length).toBeTruthy();
     await act(async () => {
-      loadMore.props()['getMoreItems'](10, 13);
-      wait();
+      fireEvent.click(
+        screen.getAllByText('Load 10 more', { selector: 'button' })[0]
+      );
     });
-    expect(driverQueryMock).toHaveBeenCalledWith(10, 13);
+    expect(driverQueryMock).toHaveBeenCalled();
   });
 });

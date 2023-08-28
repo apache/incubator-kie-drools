@@ -15,7 +15,14 @@
  */
 import React from 'react';
 
-const MockedProcessFormContainer = (): React.ReactElement => {
+const MockedProcessFormContainer = ({
+  onSubmitSuccess,
+  onSubmitError
+}): React.ReactElement => {
+  React.useEffect(() => {
+    onSubmitSuccess();
+    onSubmitError();
+  }, []);
   return <></>;
 };
 

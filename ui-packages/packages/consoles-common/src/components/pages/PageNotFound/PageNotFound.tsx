@@ -81,7 +81,11 @@ export const PageNotFound: React.FC<
               404 Error: page not found
             </Title>
             <EmptyStateBody>This page could not be found.</EmptyStateBody>
-            <Button variant="primary" onClick={redirectHandler}>
+            <Button
+              variant="primary"
+              onClick={redirectHandler}
+              data-testid="redirect-button"
+            >
               {props.defaultButton}
             </Button>
           </EmptyState>

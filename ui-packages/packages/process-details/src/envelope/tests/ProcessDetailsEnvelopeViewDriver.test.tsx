@@ -35,7 +35,6 @@ let requests: Pick<
   ProcessDetailsChannelApi,
   RequestPropertyNames<ProcessDetailsChannelApi>
 >;
-
 let driver: ProcessDetailsEnvelopeViewDriver;
 
 const id = 'a1e139d5-4e77-48c9-84ae-34578e904e5a';
@@ -271,6 +270,20 @@ describe('ProcessDetailsEnvelopeViewDriver tests', () => {
       expect(
         requests.processDetails__handleNodeInstanceRetrigger
       ).toHaveBeenCalledWith(processInstance, node);
+    });
+
+    it('processDetails__handleProcessVariableUpdate', () => {
+      driver.handleProcessVariableUpdate(processInstance, {});
+      expect(
+        requests.processDetails__handleProcessVariableUpdate
+      ).toHaveBeenCalledWith(processInstance, {});
+    });
+
+    it('processDetails__openProcessDetails', () => {
+      driver.openProcessInstanceDetails('1234');
+      expect(
+        channelApi.notifications.processDetails__openProcessDetails.send
+      ).toHaveBeenCalledWith('1234');
     });
   });
 });

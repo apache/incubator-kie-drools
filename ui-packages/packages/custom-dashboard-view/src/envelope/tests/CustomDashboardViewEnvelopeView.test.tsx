@@ -16,19 +16,13 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
-import CustomDashboardView from '../components/CustomDashboardView/CustomDashboardView';
 import CustomDashboardViewEnvelopeView, {
   CustomDashboardViewEnvelopeViewApi
 } from '../CustomDashboardViewEnvelopeView';
 
 describe('CustomDashboardViewEnvelopeView tests', () => {
-  beforeEach(() => {
-    jest.mock('../components/CustomDashboardView/CustomDashboardView');
-    jest.mock('../../api/CustomDashboardViewDriver');
-  });
-
   it('Snapshot', async () => {
     const channelApi = new MockedMessageBusClientApi();
     (
@@ -36,18 +30,16 @@ describe('CustomDashboardViewEnvelopeView tests', () => {
         .customDashboardView__getCustomDashboardView as jest.Mock
     ).mockResolvedValue('its a yml file');
     const forwardRef = React.createRef<CustomDashboardViewEnvelopeViewApi>();
-
-    let wrapper;
+    let container;
     await act(async () => {
-      wrapper = mount(
+      container = render(
         <CustomDashboardViewEnvelopeView
           channelApi={channelApi}
           ref={forwardRef}
         />
-      ).find('CustomDashboardViewEnvelopeView');
+      ).container;
     });
-
-    expect(wrapper).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
     act(() => {
       if (forwardRef.current) {
@@ -55,23 +47,13 @@ describe('CustomDashboardViewEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update();
+    const checkIframe = container.querySelector('iframe');
 
-    expect(wrapper.find(CustomDashboardViewEnvelopeView)).toMatchSnapshot();
+    expect(checkIframe).toMatchSnapshot();
+    const iframeWrapper = container.querySelector('iframe');
 
-    const envelopeView = wrapper.find(CustomDashboardView);
-
-    envelopeView.update();
-    expect(
-      envelopeView.find(CustomDashboardView).props()[
-        'isEnvelopeConnectedToChannel'
-      ]
-    ).toEqual(true);
-    expect(
-      envelopeView.find('CustomDashboardView').props()['driver']
-    ).not.toBeNull();
-    expect(
-      envelopeView.find('CustomDashboardView').props()['customDashboardName']
-    ).toEqual('name');
+    expect(iframeWrapper?.getAttribute('src')).toEqual(
+      'resources/webapp/custom-dashboard-view/dashbuilder/index.html'
+    );
   });
 });
