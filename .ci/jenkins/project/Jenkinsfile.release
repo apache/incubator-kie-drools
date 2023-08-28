@@ -73,9 +73,6 @@ pipeline {
         }
 
         stage('Build & Deploy KIE jpmml integration') {
-            when {
-                expression { return isMainStream() }
-            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
@@ -131,7 +128,7 @@ pipeline {
 
         stage('Promote KIE jpmml integration') {
             when {
-                expression { return isMainStream() && isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
+                expression { return isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
             }
             steps {
                 script {
@@ -409,8 +406,4 @@ boolean areArtifactsReleased() {
 
 void setArtifactsReleased() {
     setReleasePropertyIfneeded(ARTIFACTS_RELEASE_STAGE, true)
-}
-
-boolean isMainStream() {
-    return env.STREAM == 'main'
 }
