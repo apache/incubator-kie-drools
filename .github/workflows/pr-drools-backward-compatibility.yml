@@ -40,6 +40,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+          allow-snapshots: true
       - name: Build Drools
         run: mvn -B clean install -DskipTests
       - name: Backward Compatibility Test with previous minor version
