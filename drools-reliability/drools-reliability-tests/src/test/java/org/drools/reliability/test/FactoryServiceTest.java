@@ -21,14 +21,14 @@ import org.drools.reliability.core.StorageManagerFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class FactoryServiceTest {
 
     @Test
     void getStorageManagerFactoryWithDifferentReliabilityPersistanceLayer_shouldThrowException() {
-        assertThrows(IllegalStateException.class, () -> {
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
             StorageManagerFactory.get("infinispan");
             StorageManagerFactory.get("h2mvstore");
         });
@@ -36,7 +36,7 @@ class FactoryServiceTest {
 
     @Test
     void getReliableGlobalResolverFactoryWithDifferentReliabilityPersistanceLayer_shouldThrowException() {
-        assertThrows(IllegalStateException.class, () -> {
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
             ReliableGlobalResolverFactory.get("infinispan");
             ReliableGlobalResolverFactory.get("core");
         });
@@ -44,7 +44,7 @@ class FactoryServiceTest {
 
     @Test
     void getSimpleReliableObjectStoreFactoryWithDifferentReliabilityPersistanceLayer_shouldThrowException() {
-        assertThrows(IllegalStateException.class, () -> {
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
             SimpleReliableObjectStoreFactory.get("infinispan");
             SimpleReliableObjectStoreFactory.get("core");
         });

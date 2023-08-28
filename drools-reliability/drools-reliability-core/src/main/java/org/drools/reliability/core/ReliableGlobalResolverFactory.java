@@ -56,13 +56,12 @@ public interface ReliableGlobalResolverFactory extends KieService {
      * Once a factory is instantiated, get() is enough to get the same instance.
      */
     static ReliableGlobalResolverFactory get(String reliabilityPersistanceLayer) {
-        if (Tag.reliabilityPersistanceLayer == null) {
-            Tag.reliabilityPersistanceLayer = reliabilityPersistanceLayer;
-        } else if (!Tag.reliabilityPersistanceLayer.equals(reliabilityPersistanceLayer)) {
+        if (Tag.reliabilityPersistanceLayer != null && !Tag.reliabilityPersistanceLayer.equals(reliabilityPersistanceLayer)) {
             throw new IllegalStateException("You must call the same service with the same reliabilityPersistanceLayer. " +
                                             "Previous reliabilityPersistanceLayer was " + Tag.reliabilityPersistanceLayer +
                                             " and current reliabilityPersistanceLayer is " + reliabilityPersistanceLayer);
         }
+        Tag.reliabilityPersistanceLayer = reliabilityPersistanceLayer;
         return ReliableGlobalResolverFactory.Holder.INSTANCE;
     }
 
