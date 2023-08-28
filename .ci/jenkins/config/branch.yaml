@@ -33,7 +33,6 @@ environments:
       BUILD_MAVEN_TOOL: kie-maven-3.9.1
       BUILD_JDK_TOOL: kie-jdk17
       BUILD_MVN_OPTS: -Denforcer.skip
-      # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
       BUILD_MVN_OPTS_QUARKUS_UPDATE: -Dfull
     ids:
     - quarkus
