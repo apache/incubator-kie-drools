@@ -13,6 +13,13 @@ paths:
           schema:
             type: string
           required: true
+        - in: query
+          name: unusedList
+          required: false
+          schema: 
+            type: array
+            items: 
+              type: string
       requestBody:
         content:
           application/json:
@@ -33,6 +40,7 @@ components:
   schemas:
     MultiplicationOperation:
       type: object
+      required: [leftElement,rightElement]
       properties:
         leftElement:
           format: float
@@ -40,3 +48,7 @@ components:
         rightElement:
           format: float
           type: number
+        unusedElement:
+          type: array
+          items:
+            type: string

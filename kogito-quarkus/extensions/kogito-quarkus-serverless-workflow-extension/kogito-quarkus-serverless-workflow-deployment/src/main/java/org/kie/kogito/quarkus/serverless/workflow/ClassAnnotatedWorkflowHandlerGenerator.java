@@ -26,6 +26,8 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
+import com.github.javaparser.ast.NodeList;
+
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
 
@@ -46,6 +48,9 @@ public abstract class ClassAnnotatedWorkflowHandlerGenerator implements Workflow
                 return parseClassOrInterfaceType(param.asClassType().name().toString());
             case PRIMITIVE:
                 return parseType(param.asPrimitiveType().name().toString());
+            case PARAMETERIZED_TYPE:
+                return parseClassOrInterfaceType(param.asParameterizedType().name().toString())
+                        .setTypeArguments(NodeList.nodeList(param.asParameterizedType().arguments().stream().map(this::fromClass).collect(Collectors.toList())));
             default:
                 throw new UnsupportedOperationException("Kind " + param.kind() + " is not supported");
         }
