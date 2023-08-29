@@ -17,15 +17,6 @@
 
 package org.drools.model.codegen.execmodel.generator.visitor.accumulate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
@@ -36,17 +27,20 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.PatternDescr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.base.rule.Pattern;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
-import org.drools.base.rule.Pattern;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
@@ -65,23 +59,33 @@ import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTy
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.model.codegen.execmodel.generator.visitor.ModelGeneratorVisitor;
 import org.drools.model.codegen.execmodel.util.LambdaUtil;
+import org.drools.modelcompiler.constraints.GenericCollectAccumulator;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.AND_CALL;
-import static org.drools.model.codegen.execmodel.generator.DslMethodNames.BIND_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.BIND_AS_CALL;
-import static org.drools.model.codegen.execmodel.generator.DslMethodNames.VALUE_OF_CALL;
+import static org.drools.model.codegen.execmodel.generator.DslMethodNames.BIND_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.REACT_ON_CALL;
+import static org.drools.model.codegen.execmodel.generator.DslMethodNames.VALUE_OF_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createDslTopLevelMethod;
+import static org.drools.model.codegen.execmodel.generator.visitor.FromCollectVisitor.GENERIC_COLLECT;
 import static org.drools.model.codegen.execmodel.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambdaAndIndex;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
@@ -228,7 +232,7 @@ public class AccumulateVisitor {
         functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
         functionDSL.addArgument(createDslTopLevelMethod(VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
 
-        addBindingAsDeclaration(context, bindingId, accumulateFunction);
+        addBindingAsDeclaration(context, bindingId, accumulateFunction.getResultType());
     }
 
     private void nameExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
@@ -244,13 +248,22 @@ public class AccumulateVisitor {
             }
         }
 
-        AccumulateFunction accumulateFunction = getAccumulateFunction(function, declaration.get().getDeclarationClass());
+        DeclarationSpec decSpec = declaration.get();
+        String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> decSpec.getDeclarationClass(), function.getFunction());
+        if (GENERIC_COLLECT.equals(accumulateFunctionName)) {
+            String collectorType = basePattern.getObjectType();
+            MethodReferenceExpr collectorSupplierExpr = new MethodReferenceExpr(new NameExpr(collectorType), new NodeList<>(), "new");
+            ObjectCreationExpr accumulatorConstructor = new ObjectCreationExpr(null, new ClassOrInterfaceType(null, GenericCollectAccumulator.class.getCanonicalName()), NodeList.nodeList(collectorSupplierExpr));
+            functionDSL.addArgument(new LambdaExpr(new NodeList<>(), accumulatorConstructor));
+            functionDSL.addArgument(context.getVarExpr(nameExpr));
+            return;
+        }
 
+        AccumulateFunction accumulateFunction = getAccumulateFunction(accumulateFunctionName, function);
         validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
         functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
         functionDSL.addArgument(context.getVarExpr(nameExpr));
-
-        addBindingAsDeclaration(context, bindingId, accumulateFunction);
+        addBindingAsDeclaration(context, bindingId, accumulateFunction.getResultType());
     }
 
     private Optional<NewBinding> methodCallExprParameter(PatternDescr basePattern, BaseDescr input, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
@@ -470,9 +483,8 @@ public class AccumulateVisitor {
         context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName()), Optional.of(context.getRuleDescr())));
     }
 
-    private void addBindingAsDeclaration(RuleContext context, String bindingId, AccumulateFunction accumulateFunction) {
+    private void addBindingAsDeclaration(RuleContext context, String bindingId, Class accumulateFunctionResultType) {
         if (bindingId != null) {
-            Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
             if (context.getExpressions().size() > 1) {
                 // replace the type of the lambda with the one resulting from the accumulate operation only in the pattern immediately before it
@@ -483,6 +495,10 @@ public class AccumulateVisitor {
 
     private AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
         final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
+        return getAccumulateFunction(accumulateFunctionName, function);
+    }
+
+    private AccumulateFunction getAccumulateFunction(String accumulateFunctionName, AccumulateDescr.AccumulateFunctionCallDescr function) {
         final Optional<AccumulateFunction> bundledAccumulateFunction = ofNullable(packageModel.getConfiguration().getOption(AccumulateFunctionOption.KEY, accumulateFunctionName).getFunction());
         final Optional<AccumulateFunction> importedAccumulateFunction = ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
 
