@@ -304,7 +304,7 @@ index 25ee8cade..e0c7a7934 100644
  import org.kie.kogito.index.graphql.GraphQLObjectTypeMapper;
  import org.kie.kogito.index.graphql.query.GraphQLInputObjectTypeMapper;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
-index 5518de494..ca80a4a63 100644
+index 36f929873..8416c9d68 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 +++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 @@ -22,9 +22,9 @@ import java.util.Optional;
@@ -2011,7 +2011,7 @@ index 4508553b7..faa23385f 100644
  import org.eclipse.microprofile.context.ManagedExecutor;
  import org.kie.kogito.addon.source.files.SourceFilesProvider;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
-index d3f4c10f2..004c4fa8e 100644
+index e5146a109..0d22b909e 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 +++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 @@ -15,7 +15,7 @@
