@@ -42,7 +42,7 @@ if (Utils.isMainBranch(this) && isStream8()) { // When there is Drools 9, we may
 KogitoJobUtils.createQuarkusPlatformUpdateToolsJob(this, 'optaplanner')
 KogitoJobUtils.createMainQuarkusUpdateToolsJob(this,
         [ 'optaplanner', 'optaplanner-quickstarts' ],
-        [ 'rsynek', 'triceo']
+        [ 'radtriste', 'lucamolteni']
 )
 
 void setupProjectDroolsJob(String droolsBranch) {
