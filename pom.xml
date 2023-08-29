@@ -10,6 +10,7 @@
     <version>36</version>
   </parent>
 
+         
   <groupId>org.kie</groupId>
   <artifactId>drools-parent</artifactId>
   <packaging>pom</packaging>
