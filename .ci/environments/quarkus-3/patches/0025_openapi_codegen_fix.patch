@@ -1,0 +1,20 @@
+diff --git a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java
+--- a/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java	(revision eae1492e2f8e90587095c369fe0506ae272ec12a)
++++ b/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-deployment/src/main/java/org/kie/kogito/quarkus/serverless/workflow/openapi/WorkflowOpenApiHandlerGenerator.java	(date 1693311380768)
+@@ -27,6 +27,7 @@
+ import org.jboss.jandex.DotName;
+ import org.jboss.jandex.MethodInfo;
+ import org.jboss.jandex.Type;
++import org.jboss.jandex.VoidType;
+ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+ import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerGenerator;
+ import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
+@@ -88,7 +89,7 @@
+         BlockStmt body = executeMethod.createBody();
+         MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(OPEN_API_REF), m.name());
+         final NameExpr parameters = new NameExpr(WORK_ITEM_PARAMETERS);
+-        if (m.returnType().name().equals(DotName.createSimple(Response.class.getName()))) {
++        if (m.returnType().name().equals(DotName.createSimple(Response.class.getName())) || (m.returnType() instanceof VoidType)) {
+             body.addStatement(methodCallExpr).addStatement(new ReturnStmt(new NullLiteralExpr()));
+         } else {
+             body.addStatement(new ReturnStmt(methodCallExpr));
