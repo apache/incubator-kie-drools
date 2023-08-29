@@ -46,7 +46,7 @@ recipeList:
   # Quarkiverse versions
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.io.quarkiverse.openapi.generator
-      newValue: 2.2.8
+      newValue: 2.2.9
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.io.quarkiverse.asyncapi
       newValue: 0.2.0

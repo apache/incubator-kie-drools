@@ -93,7 +93,7 @@ recipeList:
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.io.quarkiverse.openapi.generator,
-    newValue: 2.2.8
+    newValue: 2.2.9
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.io.quarkiverse.asyncapi,
@@ -142,6 +142,8 @@ recipeList:
     newArtifactId: infinispan-client-hotrod-jakarta
   }
 ---
+description: Update all managed dependencies based on dependency updates from Quarkus.
+name: org.kie.ManagedDependencies
 displayName: Update Managed Dependencies
 recipeList:
 - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId: {
@@ -528,8 +530,6 @@ recipeList:
     newArtifactId: keycloak-admin-client-jakarta
   }
 type: specs.openrewrite.org/v1beta/recipe
-description: Update all managed dependencies based on dependency updates from Quarkus.
-name: org.kie.ManagedDependencies
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
