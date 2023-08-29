@@ -54,7 +54,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.1</version.info.picocli>
     <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.9.Final</version.io.quarkus>
+    <version.io.quarkus>2.16.10.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
