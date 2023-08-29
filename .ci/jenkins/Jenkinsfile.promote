@@ -8,12 +8,10 @@ pipelineProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -222,7 +220,7 @@ void uploadFileMgmt(String directory) {
 }
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 boolean isMainStream() {

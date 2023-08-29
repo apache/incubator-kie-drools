@@ -4,45 +4,28 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
-  - name: kie-jpmml-integration
-    ignore_productization: true
-    regexs:
-    - kie-jpmml-integration.*
+    - incubator-kie-drools.*
+  # - name: kie-jpmml-integration
+  #   regexs:
+  #   - kie-jpmml-integration.*
   - name: kie-benchmarks
     ignore_release: true
-    ignore_productization: true
     regexs:
     - kie-benchmarks.*
+    - incubator-kie-benchmarks.*
 git:
   branches:
   - name: main
     main_branch: true
-    seed:
-      branch: main
-  - name: 8.38.x-prod
-    seed:
-      branch: seed-drools-8.38.x
-  - name: 8.40.x-prod
-    seed:
-      branch: seed-drools-8.40.x
-  - name: 8.43.x
-    seed:
-      branch: seed-drools-8.43.x
-  - name: 8.43.x-prod
-    seed:
-      branch: seed-drools-8.43.x
-  - name: 8.44.x
-    seed:
-      branch: seed-drools-8.44.x
 seed:
   config_file:
     git:
-      repository: drools
+      repository: incubator-kie-drools
       author:
-        name: kiegroup
-        credentials_id: kie-ci4
+        name: apache
+        credentials_id: ASF_Cloudbees_Jenkins_ci-builds
       branch: main
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
-  email_creds_id: DROOLS_CI_EMAIL_TO
+  email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
