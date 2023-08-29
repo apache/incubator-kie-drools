@@ -10,16 +10,6 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
   quarkus-main:
     enabled: false
     env_vars:
@@ -44,15 +34,6 @@ environments:
       DROOLS_BUILD_MVN_OPTS: -Dfull
     ids:
     - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
   sonarcloud:
     auto_generation: false
     env_vars:
@@ -61,17 +42,13 @@ environments:
     ids:
     - sonarcloud
     - coverage
-productized_branch: true
 disable:
   triggers: false
 repositories:
 - name: drools
 - name: drools-website
 - name: kie-benchmarks
-- name: kie-jpmml-integration
-productized_repositories:
-- name: drools
-- name: drools-website
+# - name: kie-jpmml-integration ## TODO to check if enabled
 git:
   author:
     name: kiegroup
