@@ -25,10 +25,10 @@ import org.kie.kogito.index.model.ProcessInstanceState;
 
 import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 
-import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
-import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
+import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
 public abstract class AbstractDomainMessagingHttpConsumerIT extends AbstractDomainMessagingConsumerIT {
 

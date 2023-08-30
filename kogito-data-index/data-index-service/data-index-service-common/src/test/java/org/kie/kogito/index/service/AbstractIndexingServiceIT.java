@@ -53,10 +53,6 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.kie.kogito.index.DateTimeUtils.formatDateTime;
 import static org.kie.kogito.index.DateTimeUtils.formatOffsetDateTime;
 import static org.kie.kogito.index.DateTimeUtils.formatZonedDateTime;
-import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
-import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
-import static org.kie.kogito.index.TestUtils.getProcessInstanceVariablesMap;
-import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
@@ -84,6 +80,10 @@ import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdA
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdAndStarted;
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdAndState;
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
+import static org.kie.kogito.index.test.TestUtils.getJobCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getProcessInstanceVariablesMap;
+import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
 public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
 

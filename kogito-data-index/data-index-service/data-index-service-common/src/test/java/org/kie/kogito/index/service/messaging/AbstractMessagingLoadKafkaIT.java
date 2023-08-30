@@ -45,14 +45,14 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
-import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceById;
 import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByProcessInstanceId;
 import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByUserTaskId;
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByProcessInstanceId;
+import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
 public abstract class AbstractMessagingLoadKafkaIT {
 

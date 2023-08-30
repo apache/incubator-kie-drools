@@ -19,14 +19,21 @@ package org.kie.kogito.index.spring;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.resources.kafka.DataIndexPostgreSqlKafkaResource;
+import org.kie.kogito.index.test.quarkus.kafka.DataIndexPostgreSqlKafkaResource;
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
+import org.springframework.context.ConfigurableApplicationContext;
 
-import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
+import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
 public class DataIndexPostgreSqlSpringTestResource extends ConditionalSpringBootTestResource<DataIndexPostgreSqlKafkaResource> {
     public DataIndexPostgreSqlSpringTestResource() {
         super(new DataIndexPostgreSqlKafkaResource());
+    }
+
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        getTestResource().getDataIndex().migrateDB();
+        super.initialize(applicationContext);
     }
 
     @Override

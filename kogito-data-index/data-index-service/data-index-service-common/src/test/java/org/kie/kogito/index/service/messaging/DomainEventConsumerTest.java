@@ -34,8 +34,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
-import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;

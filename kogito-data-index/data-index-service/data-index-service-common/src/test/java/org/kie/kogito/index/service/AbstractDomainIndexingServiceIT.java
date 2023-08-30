@@ -29,7 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
-import org.kie.kogito.index.TestUtils;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import io.restassured.http.ContentType;
@@ -44,9 +44,6 @@ import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.kie.kogito.index.DateTimeUtils.formatDateTime;
 import static org.kie.kogito.index.DateTimeUtils.formatOffsetDateTime;
-import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
-import static org.kie.kogito.index.TestUtils.getProcessInstanceVariablesMap;
-import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
@@ -61,6 +58,9 @@ import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByUserTaskId;
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceById;
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdAndActualOwner;
 import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
+import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getProcessInstanceVariablesMap;
+import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
 public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingServiceIT {
 
@@ -125,7 +125,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
         }
     }
 
-    @Test //Reproducer for KOGITO-7690
+    @Test
+    //Reproducer for KOGITO-7690
     void testProtoWithoutSortingAttribute() throws Exception {
         String proto = TestUtils.readFileContent("books.proto");
         protobufService.registerProtoBufferType(proto);
@@ -135,7 +136,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .then().log().ifValidationFails().statusCode(200).body("data.Books", isA(Collection.class));
     }
 
-    @Test //Reproducer for KOGITO-172
+    @Test
+    //Reproducer for KOGITO-172
     void testAddProtoFileTwice() throws Exception {
         protobufService.registerProtoBufferType(getProtoBufferFileV1());
         given().contentType(ContentType.JSON)

@@ -18,7 +18,7 @@ package org.kie.kogito.test.resources;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.testcontainers.DataIndexPostgreSqlContainer;
+import org.kie.kogito.index.test.containers.DataIndexPostgreSqlContainer;
 import org.kie.kogito.testcontainers.JobServiceContainer;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;

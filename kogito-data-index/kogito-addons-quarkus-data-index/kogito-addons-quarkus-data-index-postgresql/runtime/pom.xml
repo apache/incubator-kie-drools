@@ -16,7 +16,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-storage-postgresql</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-persistence-postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

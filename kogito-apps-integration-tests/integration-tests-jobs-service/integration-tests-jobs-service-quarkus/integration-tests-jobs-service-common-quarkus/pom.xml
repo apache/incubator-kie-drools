@@ -23,8 +23,13 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>integration-tests-data-index-service-common</artifactId>
-      <version>${project.version}</version>
+      <artifactId>data-index-test-utils</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>data-index-common</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

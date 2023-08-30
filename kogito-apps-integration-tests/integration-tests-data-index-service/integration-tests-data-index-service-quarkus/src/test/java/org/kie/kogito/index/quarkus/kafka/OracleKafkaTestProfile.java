@@ -19,6 +19,8 @@ package org.kie.kogito.index.quarkus.kafka;
 import java.util.Arrays;
 import java.util.List;
 
+import org.kie.kogito.index.test.quarkus.kafka.DataIndexOracleQuarkusKafkaTestResource;
+
 import io.quarkus.test.junit.QuarkusTestProfile;
 
 public class OracleKafkaTestProfile implements QuarkusTestProfile {

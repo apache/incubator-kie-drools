@@ -17,7 +17,10 @@
   <modules>
     <module>data-index-storage</module>
     <module>data-index-common</module>
+    <module>data-index-test-utils</module>
+    <module>data-index-graphql</module>
     <module>data-index-service</module>
+    <module>kogito-addons-quarkus-data-index-persistence</module>
     <module>kogito-addons-quarkus-data-index</module>
   </modules>
 

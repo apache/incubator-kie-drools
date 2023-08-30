@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-common</artifactId>
+      <artifactId>data-index-graphql</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -89,8 +89,7 @@
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-common</artifactId>
-      <type>test-jar</type>
+      <artifactId>data-index-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

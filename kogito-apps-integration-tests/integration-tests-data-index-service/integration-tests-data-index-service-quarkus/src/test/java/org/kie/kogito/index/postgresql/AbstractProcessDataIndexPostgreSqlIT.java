@@ -18,7 +18,7 @@ package org.kie.kogito.index.postgresql;
 import org.kie.kogito.index.AbstractProcessDataIndexIT;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
-import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
+import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
 public abstract class AbstractProcessDataIndexPostgreSqlIT extends AbstractProcessDataIndexIT {
 

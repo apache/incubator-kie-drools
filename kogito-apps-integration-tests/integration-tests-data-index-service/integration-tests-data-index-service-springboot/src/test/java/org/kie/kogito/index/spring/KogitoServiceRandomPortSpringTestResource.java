@@ -17,7 +17,7 @@ package org.kie.kogito.index.spring;
 
 import java.util.Map;
 
-import org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource;
+import org.kie.kogito.index.test.quarkus.KogitoServiceRandomPortTestResource;
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 
 import static java.util.Collections.singletonMap;

@@ -24,9 +24,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
-import org.kie.kogito.index.json.ProcessInstanceMetaMapper;
-import org.kie.kogito.index.json.UserTaskInstanceMetaMapper;
 import org.kie.kogito.index.service.IndexingService;
+import org.kie.kogito.index.service.json.ProcessInstanceMetaMapper;
+import org.kie.kogito.index.service.json.UserTaskInstanceMetaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,10 +18,10 @@ package org.kie.kogito.index.quarkus.http;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource;
+import org.kie.kogito.index.test.quarkus.KogitoServiceRandomPortTestResource;
 import org.kie.kogito.test.resources.ConditionalQuarkusTestResource;
 
-import static org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource.KOGITO_SERVICE_URL;
+import static org.kie.kogito.index.test.quarkus.KogitoServiceRandomPortTestResource.KOGITO_SERVICE_URL;
 
 public class KogitoServiceRandomPortQuarkusHttpTestResource extends ConditionalQuarkusTestResource {
 

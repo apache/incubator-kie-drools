@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.kogito.index.quarkus.http.KogitoServiceRandomPortQuarkusHttpTestResource;
+import org.kie.kogito.index.test.quarkus.DataIndexInMemoryQuarkusTestResource;
 
 import io.quarkus.test.junit.QuarkusTestProfile;
 

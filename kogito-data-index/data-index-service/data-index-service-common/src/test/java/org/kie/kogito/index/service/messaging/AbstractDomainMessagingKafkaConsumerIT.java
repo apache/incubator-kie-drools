@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
-import static org.kie.kogito.index.TestUtils.readFileContent;
+import static org.kie.kogito.index.test.TestUtils.readFileContent;
 
 public abstract class AbstractDomainMessagingKafkaConsumerIT extends AbstractDomainMessagingConsumerIT {
 

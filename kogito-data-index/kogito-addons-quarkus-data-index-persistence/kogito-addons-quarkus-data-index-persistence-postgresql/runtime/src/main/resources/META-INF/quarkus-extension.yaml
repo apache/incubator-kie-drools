@@ -1,0 +1,9 @@
+name: Kogito Addons Quarkus Data Index Persistence PostgreSQL
+description: Kogito Data Index Persistence PostgreSQL Add-On
+metadata:
+  keywords:
+    - data-index
+    - kogito
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

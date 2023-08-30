@@ -41,7 +41,7 @@ import io.vertx.core.buffer.Buffer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.kie.kogito.index.TestUtils.readFileContent;
+import static org.kie.kogito.index.test.TestUtils.readFileContent;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)

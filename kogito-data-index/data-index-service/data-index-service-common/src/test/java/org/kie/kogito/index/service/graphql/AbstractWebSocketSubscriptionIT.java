@@ -28,11 +28,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
-import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.index.storage.DataIndexStorageService;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import io.restassured.http.ContentType;
@@ -55,9 +55,9 @@ import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.START;
 import static java.lang.String.format;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.hamcrest.CoreMatchers.isA;
-import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
-import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
-import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getJobCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
+import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;
 
 public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT {
 

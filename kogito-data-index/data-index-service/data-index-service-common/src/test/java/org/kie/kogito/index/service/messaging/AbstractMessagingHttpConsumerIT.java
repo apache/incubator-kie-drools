@@ -26,8 +26,8 @@ import org.kie.kogito.index.model.ProcessInstanceState;
 
 import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 
-import static org.kie.kogito.index.TestUtils.*;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.*;
+import static org.kie.kogito.index.test.TestUtils.*;
 
 public abstract class AbstractMessagingHttpConsumerIT extends AbstractMessagingConsumerIT {
 

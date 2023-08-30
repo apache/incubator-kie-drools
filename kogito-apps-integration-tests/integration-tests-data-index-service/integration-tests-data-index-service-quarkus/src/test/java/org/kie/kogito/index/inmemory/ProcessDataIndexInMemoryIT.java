@@ -22,7 +22,7 @@ import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.TestProfile;
 
-import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
+import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
 @QuarkusIntegrationTest
 @TestProfile(InMemoryTestProfile.class)
