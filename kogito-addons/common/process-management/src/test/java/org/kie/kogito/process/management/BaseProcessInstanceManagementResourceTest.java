@@ -226,7 +226,7 @@ class BaseProcessInstanceManagementResourceTest {
                 .hasFieldOrPropertyWithValue("id", node.getId())
                 .hasFieldOrPropertyWithValue("name", node.getName())
                 .hasFieldOrPropertyWithValue("uniqueId", node.getUniqueId())
-                .hasFieldOrPropertyWithValue("nodeDefinitionId", NODE_UNIQUE_ID)
+                .hasFieldOrProperty("metadata")
                 .hasFieldOrPropertyWithValue("type", node.getClass().getSimpleName());
     }
 

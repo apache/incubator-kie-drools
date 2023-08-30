@@ -28,6 +28,7 @@ import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.workflow.core.node.Join;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespaceFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -129,6 +130,15 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         return actionNode;
     }
 
+    @SuppressWarnings("squid:S1452")
+    protected NodeFactory<?, ?> addActionMetadata(NodeFactory<?, ?> node, Action action) {
+        String actionName = action.getName();
+        if (actionName != null) {
+            node.metaData(SWFConstants.ACTION_NAME, actionName);
+        }
+        return node.metaData(SWFConstants.STATE_NAME, state.getName());
+    }
+
     private MakeNodeResult processActionFilter(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             Action action, String collectVar, boolean shouldMerge) {
         ActionDataFilter actionFilter = action.getActionDataFilter();
@@ -144,13 +154,13 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         }
         if (action.getFunctionRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
-                    (factory, inputVar, outputVar) -> getActionNode(factory, action.getFunctionRef(), inputVar, outputVar));
+                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getFunctionRef(), inputVar, outputVar), action));
         } else if (action.getEventRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
-                    (factory, inputVar, outputVar) -> getActionNode(factory, action.getEventRef(), inputVar));
+                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getEventRef(), inputVar), action));
         } else if (action.getSubFlowRef() != null) {
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
-                    (factory, inputVar, outputVar) -> getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar));
+                    (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar), action));
         } else {
             throw new IllegalArgumentException("Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
         }

@@ -31,6 +31,9 @@ public class SWFConstants {
     public static final String WORKITEM_OPERATION = "Operation";
     public static final String SERVICE_TASK_TYPE = "Service Task";
     public static final String SERVICE_IMPL_KEY = "implementation";
+    public static final String STATE_NAME = "state";
+    public static final String BRANCH_NAME = "branch";
+    public static final String ACTION_NAME = "action";
 
     private SWFConstants() {
     }

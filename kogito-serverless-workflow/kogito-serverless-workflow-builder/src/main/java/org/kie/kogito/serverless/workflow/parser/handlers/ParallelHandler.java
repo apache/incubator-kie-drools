@@ -19,6 +19,7 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.JoinFactory;
+import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
@@ -29,6 +30,7 @@ import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionReturnValueEvaluatorSupplier;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.actions.Action;
 import io.serverlessworkflow.api.branches.Branch;
 import io.serverlessworkflow.api.states.ParallelState;
 import io.serverlessworkflow.api.states.ParallelState.CompletionType;
@@ -38,6 +40,8 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
     protected ParallelHandler(ParallelState state, Workflow workflow, ParserContext parserContext) {
         super(state, workflow, parserContext);
     }
+
+    private Branch currentBranch;
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
@@ -56,6 +60,7 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
             }
         }
         for (Branch branch : state.getBranches()) {
+            currentBranch = branch;
             CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory, getName(branch)), branch.getActions());
             long branchId = embeddedSubProcess.getNode().getId();
             embeddedSubProcess.done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
@@ -71,6 +76,15 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
             sb.append('-').append(branchName);
         }
         return sb.toString();
+    }
+
+    @Override
+    protected NodeFactory<?, ?> addActionMetadata(NodeFactory<?, ?> node, Action action) {
+        node = super.addActionMetadata(node, action);
+        if (currentBranch != null && currentBranch.getName() != null) {
+            node.metaData(SWFConstants.BRANCH_NAME, currentBranch.getName());
+        }
+        return node;
     }
 
     @Override
