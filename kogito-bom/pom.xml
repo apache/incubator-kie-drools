@@ -331,7 +331,6 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-deployment</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
 
       <dependency>
