@@ -24,7 +24,7 @@ import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.base.beliefsystem.Mode;
 

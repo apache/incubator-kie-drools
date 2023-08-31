@@ -19,7 +19,7 @@ import junit.framework.AssertionFailedError;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
-import org.drools.core.util.bitmask.OpenBitSet;
+import org.drools.util.bitmask.OpenBitSet;
 import org.junit.Test;
 
 import java.math.BigDecimal;

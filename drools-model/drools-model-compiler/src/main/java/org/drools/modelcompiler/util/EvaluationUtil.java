@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import org.drools.base.time.TimeUtils;
-import org.drools.core.base.CoercionUtil;
+import org.drools.util.CoercionUtil;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -303,28 +303,28 @@ public class EvaluationUtil {
     }
 
 
-    public static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
+    public static org.drools.util.bitmask.BitMask adaptBitMask(BitMask mask) {
         if (mask == null) {
             return null;
         }
         if (mask instanceof LongBitMask ) {
             long maskValue = (( LongBitMask ) mask).asLong();
-            return maskValue == 0L ? org.drools.core.util.bitmask.EmptyBitMask.get() : new org.drools.core.util.bitmask.LongBitMask( maskValue );
+            return maskValue == 0L ? org.drools.util.bitmask.EmptyBitMask.get() : new org.drools.util.bitmask.LongBitMask( maskValue );
         }
         if (mask instanceof EmptyBitMask ) {
-            return org.drools.core.util.bitmask.EmptyBitMask.get();
+            return org.drools.util.bitmask.EmptyBitMask.get();
         }
         if (mask instanceof AllSetBitMask ) {
-            return org.drools.core.util.bitmask.AllSetBitMask.get();
+            return org.drools.util.bitmask.AllSetBitMask.get();
         }
         if (mask instanceof AllSetButLastBitMask ) {
-            return org.drools.core.util.bitmask.AllSetButLastBitMask.get();
+            return org.drools.util.bitmask.AllSetButLastBitMask.get();
         }
         if (mask instanceof EmptyButLastBitMask ) {
-            return org.drools.core.util.bitmask.EmptyButLastBitMask.get();
+            return org.drools.util.bitmask.EmptyButLastBitMask.get();
         }
         if (mask instanceof OpenBitSet ) {
-            return new org.drools.core.util.bitmask.OpenBitSet( ( (OpenBitSet) mask ).getBits(), ( (OpenBitSet) mask ).getNumWords() );
+            return new org.drools.util.bitmask.OpenBitSet( ( (OpenBitSet) mask ).getBits(), ( (OpenBitSet) mask ).getNumWords() );
         }
         throw new IllegalArgumentException( "Unknown bitmask: " + mask );
     }

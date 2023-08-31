@@ -15,6 +15,12 @@
 
 package org.drools.core.util.bitmask;
 
+import org.drools.util.bitmask.AllSetBitMask;
+import org.drools.util.bitmask.AllSetButLastBitMask;
+import org.drools.util.bitmask.EmptyBitMask;
+import org.drools.util.bitmask.EmptyButLastBitMask;
+import org.drools.util.bitmask.LongBitMask;
+import org.drools.util.bitmask.OpenBitSet;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.util.bitmask;
+package org.drools.util.bitmask;
 
 import java.io.Serializable;
 import java.util.Arrays;

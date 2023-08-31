@@ -35,8 +35,8 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.bitmask.EmptyBitMask;
+import org.drools.util.bitmask.BitMask;
+import org.drools.util.bitmask.EmptyBitMask;
 
 import java.io.Externalizable;
 import java.io.IOException;

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.util.bitmask;
+package org.drools.util.bitmask;
 
 public class LongBitMask extends SingleLongBitMask implements BitMask {
 
