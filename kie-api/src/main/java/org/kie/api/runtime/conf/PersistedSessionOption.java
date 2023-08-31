@@ -41,6 +41,14 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
     }
 
     /**
+     * NONE : On restoring a session, filter firing based on StoredObject.isPropagated
+     * ACTIVATION_KEY : On restoring a session, filter firing based on StoredObject.isPropagated and persisted ActivationKey
+     */
+    public enum ActivationStrategy {
+        NONE, ACTIVATION_KEY
+    }
+
+    /**
      * The property name for the clock type configuration
      */
     public static final String PROPERTY_NAME = "drools.persistedsession";
@@ -52,6 +60,8 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
     private PersistenceObjectsStrategy persistenceObjectsStrategy = PersistenceObjectsStrategy.SIMPLE;
 
     private SafepointStrategy safepointStrategy = SafepointStrategy.ALWAYS;
+
+    private ActivationStrategy activationStrategy = ActivationStrategy.NONE;
 
     private PersistedSessionOption() {
         this(-1L);
@@ -102,6 +112,15 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
 
     public PersistedSessionOption withSafepointStrategy(SafepointStrategy safepointStrategy) {
         this.safepointStrategy = safepointStrategy;
+        return this;
+    }
+
+    public ActivationStrategy getActivationStrategy() {
+        return activationStrategy;
+    }
+
+    public PersistedSessionOption withActivationStrategy(ActivationStrategy activationStrategy) {
+        this.activationStrategy = activationStrategy;
         return this;
     }
 

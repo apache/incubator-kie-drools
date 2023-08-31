@@ -41,9 +41,10 @@ public abstract class BaseStoredEvent extends BaseStoredObject implements Stored
     }
 
     @Override
-    public void repropagate(InternalWorkingMemoryEntryPoint ep) {
+    public long repropagate(InternalWorkingMemoryEntryPoint ep) {
         FactHandleFactory fhFactory = ep.getHandleFactory();
         DefaultEventHandle eFh = fhFactory.createEventFactHandle(fhFactory.getNextId(), getObject(), fhFactory.getNextRecency(), ep, timestamp, duration);
         ep.insert(eFh);
+        return eFh.getId();
     }
 }

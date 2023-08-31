@@ -27,5 +27,5 @@ public interface StoredObject {
 
     Object getObject();
 
-    void repropagate(InternalWorkingMemoryEntryPoint ep);
+    long repropagate(InternalWorkingMemoryEntryPoint ep);
 }
