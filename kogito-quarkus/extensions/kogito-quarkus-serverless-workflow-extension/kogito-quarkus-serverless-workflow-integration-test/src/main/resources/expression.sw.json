@@ -37,6 +37,11 @@
       "operation": ".message |=.+\" and in my native language dog is translated to \"+$CONST.dog.castellano"
     },
     {
+      "name": "userMessage",
+      "type": "expression",
+      "operation": ".user |= $WORKFLOW.identity"
+    },
+    {
       "name": "contextMessage",
       "type": "expression",
       "operation": ".message |=.+\" and the header pepe is \"+$WORKFLOW.headers.pepe"
@@ -95,6 +100,10 @@
          {
            "name": "costantMessageAction",
            "functionRef" : "constantMessage"
+         },
+         {
+           "name": "userMessageAction",
+           "functionRef" : "userMessage"
          },
          {
            "name": "contextMessageAction",
