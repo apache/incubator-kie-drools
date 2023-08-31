@@ -13,19 +13,11 @@
  * limitations under the License.
 */
 
-package org.drools.core.util.bitmask;
+package org.drools.util.bitmask;
 
-import org.drools.util.bitmask.AllSetBitMask;
-import org.drools.util.bitmask.AllSetButLastBitMask;
-import org.drools.util.bitmask.EmptyBitMask;
-import org.drools.util.bitmask.EmptyButLastBitMask;
-import org.drools.util.bitmask.LongBitMask;
-import org.drools.util.bitmask.OpenBitSet;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.lang.Long;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,10 +94,10 @@ public class LongBitMaskTest {
 
   @Test
   public void testGetInstancingStatement() {
-      assertThat(new LongBitMask(0L).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.EmptyBitMask.get()");
-      assertThat(new LongBitMask(1L).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.EmptyButLastBitMask.get()");
-      assertThat(new LongBitMask(Long.MAX_VALUE).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.AllSetButLastBitMask.get()");
-      assertThat(new LongBitMask(-1L).getInstancingStatement()).isEqualTo("org.drools.core.util.bitmask.AllSetBitMask.get()");
-      assertThat(new LongBitMask(2L).getInstancingStatement()).isEqualTo("new org.drools.core.util.bitmask.LongBitMask(2L)");
+      assertThat(new LongBitMask(0L).getInstancingStatement()).isEqualTo("org.drools.util.bitmask.EmptyBitMask.get()");
+      assertThat(new LongBitMask(1L).getInstancingStatement()).isEqualTo("org.drools.util.bitmask.EmptyButLastBitMask.get()");
+      assertThat(new LongBitMask(Long.MAX_VALUE).getInstancingStatement()).isEqualTo("org.drools.util.bitmask.AllSetButLastBitMask.get()");
+      assertThat(new LongBitMask(-1L).getInstancingStatement()).isEqualTo("org.drools.util.bitmask.AllSetBitMask.get()");
+      assertThat(new LongBitMask(2L).getInstancingStatement()).isEqualTo("new org.drools.util.bitmask.LongBitMask(2L)");
   }
 }
