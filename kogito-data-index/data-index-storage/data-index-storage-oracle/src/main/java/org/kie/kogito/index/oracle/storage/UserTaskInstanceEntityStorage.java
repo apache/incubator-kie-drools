@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.oracle.mapper.UserTaskInstanceEntityMapper;
+import org.kie.kogito.index.oracle.model.AbstractEntity;
 import org.kie.kogito.index.oracle.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.oracle.model.UserTaskInstanceEntityRepository;
 
@@ -32,6 +33,6 @@ public class UserTaskInstanceEntityStorage extends AbstractStorage<UserTaskInsta
 
     @Inject
     public UserTaskInstanceEntityStorage(UserTaskInstanceEntityRepository repository, UserTaskInstanceEntityMapper mapper) {
-        super(repository, UserTaskInstance.class, UserTaskInstanceEntity.class, e -> mapper.mapToModel(e), m -> mapper.mapToEntity(m));
+        super(repository, UserTaskInstance.class, UserTaskInstanceEntity.class, mapper::mapToModel, mapper::mapToEntity, AbstractEntity::getId);
     }
 }

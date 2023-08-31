@@ -54,11 +54,13 @@ public abstract class AbstractQueryIT {
 
     @BeforeEach
     void setup() {
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
     }
 
     @AfterEach
     void tearDown() {
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
     }
 

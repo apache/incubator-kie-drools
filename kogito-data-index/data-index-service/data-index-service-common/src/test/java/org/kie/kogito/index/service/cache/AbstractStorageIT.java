@@ -82,6 +82,7 @@ public abstract class AbstractStorageIT {
 
     @AfterEach
     void tearDown() {
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
     }
 }

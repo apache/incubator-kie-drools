@@ -41,6 +41,7 @@ public abstract class AbstractMessagingConsumerIT {
     @BeforeEach
     void setup() {
         cacheService.getJobsCache().clear();
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
         cacheService.getUserTaskInstancesCache().clear();
     }
@@ -48,6 +49,7 @@ public abstract class AbstractMessagingConsumerIT {
     @AfterEach
     void close() {
         cacheService.getJobsCache().clear();
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
         cacheService.getUserTaskInstancesCache().clear();
     }

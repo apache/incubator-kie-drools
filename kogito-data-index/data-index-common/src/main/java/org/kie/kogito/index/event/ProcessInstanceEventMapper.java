@@ -24,6 +24,7 @@ import org.kie.kogito.event.process.NodeInstanceEventBody;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.NodeInstance;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 
@@ -61,7 +62,22 @@ public class ProcessInstanceEventMapper implements Function<ProcessInstanceDataE
         pi.setAddons(isNullOrEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
         pi.setEndpoint(event.getSource() == null ? null : event.getSource().toString());
         pi.setLastUpdate(toZonedDateTime(event.getTime()));
+        pi.setDefinition(definitions().apply(event));
         return pi;
+    }
+
+    private Function<ProcessInstanceDataEvent, ProcessDefinition> definitions() {
+        return event -> {
+            ProcessDefinition pd = new ProcessDefinition();
+            pd.setId(event.getData().getProcessId());
+            pd.setName(event.getData().getProcessName());
+            pd.setVersion(event.getData().getVersion());
+            pd.setAddons(isNullOrEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
+            pd.setRoles(event.getData().getRoles());
+            pd.setType(event.getKogitoProcessType());
+            pd.setEndpoint(event.getSource() == null ? null : event.getSource().toString());
+            return pd;
+        };
     }
 
     private Function<NodeInstanceEventBody, NodeInstance> nodeInstance() {

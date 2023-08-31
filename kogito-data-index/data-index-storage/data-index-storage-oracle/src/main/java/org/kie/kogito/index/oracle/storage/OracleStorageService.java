@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.api.Storage;
@@ -35,6 +36,9 @@ import static org.kie.kogito.persistence.oracle.Constants.ORACLE_STORAGE;
 @ApplicationScoped
 @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = ORACLE_STORAGE)
 public class OracleStorageService implements StorageService {
+
+    @Inject
+    ProcessDefinitionEntityStorage definitionStorage;
 
     @Inject
     ProcessInstanceEntityStorage processStorage;
@@ -54,6 +58,9 @@ public class OracleStorageService implements StorageService {
     public <T> Storage<String, T> getCache(String name, Class<T> type) {
         if (type == ProcessInstance.class) {
             return (Storage<String, T>) processStorage;
+        }
+        if (type == ProcessDefinition.class) {
+            return (Storage<String, T>) definitionStorage;
         }
         if (type == Job.class) {
             return (Storage<String, T>) jobStorage;

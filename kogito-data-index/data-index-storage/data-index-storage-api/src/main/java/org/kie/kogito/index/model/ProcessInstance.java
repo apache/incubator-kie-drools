@@ -30,6 +30,7 @@ public class ProcessInstance extends ProcessInstanceMeta {
     private Set<String> addons;
 
     private ProcessInstanceError error;
+    private ProcessDefinition definition;
 
     public ObjectNode getVariables() {
         return variables;
@@ -71,12 +72,21 @@ public class ProcessInstance extends ProcessInstanceMeta {
         this.milestones = milestones;
     }
 
+    public ProcessDefinition getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(ProcessDefinition definition) {
+        this.definition = definition;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstance{" +
                 "variables=" + variables +
                 ", nodes=" + nodes +
                 ", milestones=" + milestones +
+                ", definition=" + definition +
                 ", addons=" + addons +
                 ", error=" + error +
                 "} " + super.toString();

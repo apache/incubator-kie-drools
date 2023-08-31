@@ -57,6 +57,7 @@ import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
 import static org.kie.kogito.index.service.GraphQLUtils.getJobById;
+import static org.kie.kogito.index.service.GraphQLUtils.getProcessDefinitionByIdAndVersion;
 import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceByBusinessKey;
 import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceById;
 import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceByIdAndAddon;
@@ -104,6 +105,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     @Transactional
     void tearDown() {
         cacheService.getJobsCache().clear();
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
         cacheService.getUserTaskInstancesCache().clear();
     }
@@ -111,6 +113,10 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     @Test
     //Reproducer for KOGITO-334
     void testDefaultGraphqlTypes() {
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessDefinitions", isA(Collection.class));
+
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
@@ -122,6 +128,21 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{Jobs{ id } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Jobs", isA(Collection.class));
+    }
+
+    protected void validateProcessDefinition(String query, ProcessInstanceDataEvent event) {
+        LOGGER.debug("GraphQL query: {}", query);
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body(query)
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.ProcessDefinitions[0].id", is(event.getData().getProcessId()))
+                        .body("data.ProcessDefinitions[0].name", is(event.getData().getProcessName()))
+                        .body("data.ProcessDefinitions[0].version", is(event.getData().getVersion()))
+                        .body("data.ProcessDefinitions[0].type", is(event.getData().getProcessType()))
+                        .body("data.ProcessDefinitions[0].addons", event.getKogitoAddons() == null ? is(nullValue()) : hasItems(event.getKogitoAddons().split(",")))
+                        .body("data.ProcessDefinitions[0].roles", event.getData().getRoles() == null ? is(nullValue()) : hasItems(event.getData().getRoles().toArray())));
     }
 
     protected void validateProcessInstance(String query, ProcessInstanceDataEvent event, String childProcessInstanceId) {
@@ -272,6 +293,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
         indexProcessCloudEvent(startEvent);
 
+        validateProcessDefinition(getProcessDefinitionByIdAndVersion(startEvent.getKogitoProcessId(), startEvent.getData().getVersion()), startEvent);
         validateProcessInstance(getProcessInstanceById(processInstanceId), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
         validateProcessInstance(getProcessInstanceByIdAndProcessId(processInstanceId, processId), startEvent);

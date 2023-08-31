@@ -8,9 +8,38 @@ schema {
 }
 
 type Query {
+    ProcessDefinitions(where: ProcessDefinitionArgument, orderBy: ProcessDefinitionOrderBy, pagination: Pagination): [ProcessDefinition]
     ProcessInstances(where: ProcessInstanceArgument, orderBy: ProcessInstanceOrderBy, pagination: Pagination): [ProcessInstance]
     UserTaskInstances(where: UserTaskInstanceArgument, orderBy: UserTaskInstanceOrderBy, pagination: Pagination):  [UserTaskInstance]
     Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination):  [Job]
+}
+
+type ProcessDefinition {
+    id: String!
+    name: String
+    version: String
+    nodes: [Node!]
+    source: String
+    addons: [String!]
+    roles: [String!]
+    type: String
+    endpoint: String!
+    serviceUrl: String
+}
+
+input ProcessDefinitionOrderBy {
+    id: OrderBy
+    name: OrderBy
+    version: OrderBy
+}
+
+input ProcessDefinitionArgument {
+    and: [ProcessDefinitionArgument!]
+    or: [ProcessDefinitionArgument!]
+    not: ProcessDefinitionArgument
+    id: StringArgument
+    name: StringArgument
+    version: StringArgument
 }
 
 type ProcessInstance {

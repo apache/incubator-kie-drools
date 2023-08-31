@@ -47,6 +47,7 @@ import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
+import static org.kie.kogito.index.service.GraphQLUtils.getProcessDefinitionByIdAndVersion;
 import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceById;
 import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByProcessInstanceId;
 import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByUserTaskId;
@@ -127,7 +128,21 @@ public abstract class AbstractMessagingLoadKafkaIT {
         }).forEach(pId -> {
             validateUserTaskInstance(pId, "Completed");
             validateProcessInstance(pId, COMPLETED);
+            validateProcessDefinition(processId, "1.0");
         });
+    }
+
+    private void validateProcessDefinition(String processId, String version) {
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> {
+                    given().contentType(ContentType.JSON).body(getProcessDefinitionByIdAndVersion(processId, version))
+                            .when().post("/graphql")
+                            .then().statusCode(200)
+                            .body("data.ProcessDefinitions.size()", is(1))
+                            .body("data.ProcessDefinitions[0].id", is(processId))
+                            .body("data.ProcessDefinitions[0].version", is(version));
+                });
     }
 
     private void validateProcessInstance(String processInstanceId, ProcessInstanceState state) {

@@ -35,6 +35,11 @@ class InMemoryQuarkusAddonDataIndexIT {
 
     @Test
     void testDataIndexAddon() {
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(0));
+
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
@@ -58,6 +63,14 @@ class InMemoryQuarkusAddonDataIndexIT {
                 .body("data.ProcessInstances[0].diagram", is(notNullValue()))
                 .body("data.ProcessInstances[0].source", is(notNullValue()))
                 .body("data.ProcessInstances[0].nodeDefinitions.size()", is(2));
+
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id, version, name } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(1))
+                .body("data.ProcessDefinitions[0].id", is("hello"))
+                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].name", is("hello"));
     }
 
     @Test

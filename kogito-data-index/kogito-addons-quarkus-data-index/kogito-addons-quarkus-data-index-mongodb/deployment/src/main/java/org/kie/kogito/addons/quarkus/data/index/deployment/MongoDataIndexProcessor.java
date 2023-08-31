@@ -16,6 +16,7 @@
 
 package org.kie.kogito.addons.quarkus.data.index.deployment;
 
+import org.kie.kogito.index.mongodb.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntity;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntity;
 
@@ -36,6 +37,7 @@ public class MongoDataIndexProcessor extends AbstractKogitoAddonsQuarkusDataInde
 
     @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
     public void mongoNativeResources(BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass) {
+        reflectiveHierarchy(ProcessDefinitionEntity.class, reflectiveHierarchyClass);
         reflectiveHierarchy(ProcessInstanceEntity.class, reflectiveHierarchyClass);
         reflectiveHierarchy(UserTaskInstanceEntity.class, reflectiveHierarchyClass);
     }

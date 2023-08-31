@@ -87,6 +87,7 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
 
         RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
                 .type("Query", builder -> {
+                    builder.dataFetcher("ProcessDefinitions", this::getProcessDefinitionsValues);
                     builder.dataFetcher("ProcessInstances", this::getProcessInstancesValues);
                     builder.dataFetcher("UserTaskInstances", this::getUserTaskInstancesValues);
                     builder.dataFetcher("Jobs", this::getJobsValues);
@@ -111,13 +112,19 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                     builder.dataFetcher("UserTaskInstanceAttachmentDelete", this::deleteUserTaskAttachment);
                     return builder;
                 })
+                .type("ProcessDefinition", builder -> {
+                    builder.dataFetcher("source", this::getProcessDefinitionSourceFileContent);
+                    builder.dataFetcher("nodes", this::getProcessDefinitionNodes);
+                    builder.dataFetcher("serviceUrl", this::getProcessDefinitionServiceUrl);
+                    return builder;
+                })
                 .type("ProcessInstance", builder -> {
                     builder.dataFetcher("parentProcessInstance", this::getParentProcessInstanceValue);
                     builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
                     builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
                     builder.dataFetcher("diagram", this::getProcessInstanceDiagram);
                     builder.dataFetcher("source", this::getProcessInstanceSourceFileContent);
-                    builder.dataFetcher("nodeDefinitions", this::getProcessNodes);
+                    builder.dataFetcher("nodeDefinitions", this::getProcessInstanceNodes);
                     return builder;
                 })
                 .type("UserTaskInstance", builder -> {

@@ -38,9 +38,9 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 import static java.util.stream.Collectors.toList;
 
-public class PostgreSqlQuery<E extends AbstractEntity, T> implements Query<T> {
+public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T> {
 
-    private PanacheRepositoryBase<E, String> repository;
+    private PanacheRepositoryBase<E, K> repository;
     private Integer limit;
     private Integer offset;
     private List<AttributeFilter<?>> filters;
@@ -48,7 +48,7 @@ public class PostgreSqlQuery<E extends AbstractEntity, T> implements Query<T> {
     private Class<E> entityClass;
     private Function<E, T> mapper;
 
-    public PostgreSqlQuery(PanacheRepositoryBase<E, String> repository, Function<E, T> mapper, Class<E> entityClass) {
+    public PostgreSqlQuery(PanacheRepositoryBase<E, K> repository, Function<E, T> mapper, Class<E> entityClass) {
         this.repository = repository;
         this.mapper = mapper;
         this.entityClass = entityClass;

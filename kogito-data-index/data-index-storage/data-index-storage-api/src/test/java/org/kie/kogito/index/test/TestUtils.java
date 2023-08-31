@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -32,6 +33,7 @@ import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.NodeInstance;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.model.ProcessInstanceState;
@@ -45,7 +47,17 @@ import static java.util.Collections.singletonList;
 
 public class TestUtils {
 
-    private static ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    public static ProcessDefinition createProcessDefinition(String processId, String version, Set<String> roles) {
+        ProcessDefinition pd = new ProcessDefinition();
+        pd.setId(processId);
+        pd.setName(RandomStringUtils.randomAlphabetic(10));
+        pd.setVersion(version);
+        pd.setAddons(singleton("kogito-events"));
+        pd.setRoles(roles);
+        return pd;
+    }
 
     public static ProcessInstance createProcessInstance(String processInstanceId,
             String processId,

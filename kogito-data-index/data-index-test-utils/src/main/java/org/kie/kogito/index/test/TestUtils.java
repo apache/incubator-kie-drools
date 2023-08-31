@@ -102,6 +102,7 @@ public final class TestUtils {
                 .parentInstanceId(parentProcessInstanceId)
                 .rootInstanceId(rootProcessInstanceId)
                 .processId(processId)
+                .version("1.0")
                 .rootProcessId(rootProcessId)
                 .processName(RandomStringUtils.randomAlphabetic(10))
                 .startDate(new Date())

@@ -144,16 +144,16 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     }
 
     @Override
-    public CompletableFuture<String> getProcessInstanceSourceFileContent(String serviceURL, ProcessInstance processInstance) {
-        String requestURI = format(GET_PROCESS_INSTANCE_SOURCE_PATH, processInstance.getProcessId());
+    public CompletableFuture<String> getProcessDefinitionSourceFileContent(String serviceURL, String processId) {
+        String requestURI = format(GET_PROCESS_INSTANCE_SOURCE_PATH, processId);
         return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance source file with processId: " +
-                processInstance.getProcessId(), null);
+                processId, null);
     }
 
     @Override
-    public CompletableFuture<List<Node>> getProcessInstanceNodeDefinitions(String serviceURL, ProcessInstance processInstance) {
-        String requestURI = format(GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH, processInstance.getProcessId());
-        return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance available nodes with id: " + processInstance.getId(), List.class);
+    public CompletableFuture<List<Node>> getProcessDefinitionNodes(String serviceURL, String processId) {
+        String requestURI = format(GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH, processId);
+        return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process available nodes with id: " + processId, List.class);
     }
 
     @Override

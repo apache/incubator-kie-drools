@@ -33,6 +33,7 @@ import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.DataIndexStorageService;
@@ -71,6 +72,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     public void setup() {
         schema = createSchema();
         GraphQLQueryParserRegistry.get().registerParsers(
+                (GraphQLInputObjectType) schema.getType("ProcessDefinitionArgument"),
                 (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
                 (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
                 (GraphQLInputObjectType) schema.getType("JobArgument"));
@@ -102,6 +104,14 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public void setDataIndexApiExecutor(KogitoRuntimeClient dataIndexApiExecutor) {
         this.dataIndexApiExecutor = dataIndexApiExecutor;
+    }
+
+    public String getProcessDefinitionServiceUrl(DataFetchingEnvironment env) {
+        ProcessDefinition source = env.getSource();
+        if (source == null || source.getEndpoint() == null || source.getId() == null) {
+            return null;
+        }
+        return getServiceUrl(source.getEndpoint(), source.getId());
     }
 
     public String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
@@ -147,6 +157,10 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         query.filter(singletonList(equalTo("id", source.getParentProcessInstanceId())));
         List<ProcessInstance> execute = query.execute();
         return !execute.isEmpty() ? execute.get(0) : null;
+    }
+
+    protected Collection<ProcessDefinition> getProcessDefinitionsValues(DataFetchingEnvironment env) {
+        return executeAdvancedQueryForCache(cacheService.getProcessDefinitionsCache(), env);
     }
 
     protected Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {
@@ -195,13 +209,23 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     public CompletableFuture<String> getProcessInstanceSourceFileContent(DataFetchingEnvironment env) {
-        ProcessInstance processInstance = env.getSource();
-        return dataIndexApiExecutor.getProcessInstanceSourceFileContent(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+        ProcessInstance pi = env.getSource();
+        return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
     }
 
-    public CompletableFuture<List<Node>> getProcessNodes(DataFetchingEnvironment env) {
-        ProcessInstance processInstance = env.getSource();
-        return dataIndexApiExecutor.getProcessInstanceNodeDefinitions(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+    public CompletableFuture<List<Node>> getProcessInstanceNodes(DataFetchingEnvironment env) {
+        ProcessInstance pi = env.getSource();
+        return dataIndexApiExecutor.getProcessDefinitionNodes(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
+    }
+
+    public CompletableFuture<String> getProcessDefinitionSourceFileContent(DataFetchingEnvironment env) {
+        ProcessDefinition pd = env.getSource();
+        return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pd.getEndpoint(), pd.getId()), pd.getId());
+    }
+
+    public CompletableFuture<List<Node>> getProcessDefinitionNodes(DataFetchingEnvironment env) {
+        ProcessDefinition pd = env.getSource();
+        return dataIndexApiExecutor.getProcessDefinitionNodes(getServiceUrl(pd.getEndpoint(), pd.getId()), pd.getId());
     }
 
     @Override

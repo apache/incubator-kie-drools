@@ -95,6 +95,16 @@ public class KogitoDevServiceTest {
                         .body("data.ProcessInstances[0].id", is(processId))
                         .body("data.ProcessInstances[0].processId", is("greet"))
                         .body("data.ProcessInstances[0].processName", is("Greeting workflow")));
+
+        given().contentType(ContentType.JSON)
+                .baseUri("http://localhost:" + dataIndexHttpPort)
+                .body("{ \"query\" : \"{ProcessDefinitions{ id, version, name } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(1))
+                .body("data.ProcessDefinitions[0].id", is("greet"))
+                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].name", is("Greeting workflow"));
     }
 
     private static String getApplicationPropertiesContent() {

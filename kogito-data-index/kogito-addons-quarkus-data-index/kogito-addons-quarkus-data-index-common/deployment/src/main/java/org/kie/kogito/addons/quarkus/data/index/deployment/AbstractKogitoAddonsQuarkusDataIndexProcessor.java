@@ -19,6 +19,7 @@ package org.kie.kogito.addons.quarkus.data.index.deployment;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Type;
 import org.kie.kogito.index.addon.vertx.VertxGraphiQLSetup;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
@@ -49,6 +50,7 @@ public abstract class AbstractKogitoAddonsQuarkusDataIndexProcessor extends OneO
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass) {
         resource.produce(new NativeImageResourceBuildItem("basic.schema.graphqls"));
         resource.produce(new NativeImageResourceBuildItem("io/vertx/ext/web/handler/graphiql/index.html"));
+        reflectiveHierarchy(ProcessDefinition.class, reflectiveHierarchyClass);
         reflectiveHierarchy(ProcessInstance.class, reflectiveHierarchyClass);
         reflectiveHierarchy(UserTaskInstance.class, reflectiveHierarchyClass);
     }

@@ -285,16 +285,16 @@ public class KogitoRuntimeClientTest {
     }
 
     @Test
-    public void testGetProcessInstanceNodeDefinitions() {
+    public void testGetProcessDefinitionNodes() {
         setupIdentityMock();
         when(webClientMock.get(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
-        client.getProcessInstanceNodeDefinitions(SERVICE_URL, pI);
+        client.getProcessDefinitionNodes(SERVICE_URL, pI.getProcessId());
         verify(client).sendGetClientRequest(webClientMock,
                 format(GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH, pI.getProcessId(), pI.getId()),
-                "Get Process Instance available nodes with id: " + pI.getId(),
+                "Get Process available nodes with id: " + pI.getProcessId(),
                 List.class);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
@@ -314,13 +314,13 @@ public class KogitoRuntimeClientTest {
     }
 
     @Test
-    public void testGetProcessInstanceSource() {
+    public void testGetProcessDefinitionSource() {
         setupIdentityMock();
         when(webClientMock.get(anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
-        client.getProcessInstanceSourceFileContent(SERVICE_URL, pI);
+        client.getProcessDefinitionSourceFileContent(SERVICE_URL, pI.getProcessId());
         verify(client).sendGetClientRequest(webClientMock,
                 format(GET_PROCESS_INSTANCE_SOURCE_PATH, pI.getProcessId()),
                 "Get Process Instance source file with processId: " + pI.getProcessId(),

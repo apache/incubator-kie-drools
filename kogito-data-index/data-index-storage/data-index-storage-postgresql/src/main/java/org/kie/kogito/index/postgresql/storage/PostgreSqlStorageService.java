@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.api.Storage;
@@ -36,6 +37,7 @@ import static org.kie.kogito.persistence.postgresql.Constants.POSTGRESQL_STORAGE
 @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = POSTGRESQL_STORAGE)
 public class PostgreSqlStorageService implements StorageService {
 
+    private ProcessDefinitionEntityStorage definitionStorage;
     private ProcessInstanceEntityStorage processStorage;
     private JobEntityStorage jobStorage;
     private UserTaskInstanceEntityStorage taskStorage;
@@ -45,9 +47,11 @@ public class PostgreSqlStorageService implements StorageService {
     }
 
     @Inject
-    public PostgreSqlStorageService(final ProcessInstanceEntityStorage processStorage,
+    public PostgreSqlStorageService(final ProcessDefinitionEntityStorage definitionStorage,
+            final ProcessInstanceEntityStorage processStorage,
             final JobEntityStorage jobStorage,
             final UserTaskInstanceEntityStorage taskStorage) {
+        this.definitionStorage = definitionStorage;
         this.processStorage = processStorage;
         this.jobStorage = jobStorage;
         this.taskStorage = taskStorage;
@@ -62,6 +66,9 @@ public class PostgreSqlStorageService implements StorageService {
     public <T> Storage<String, T> getCache(String name, Class<T> type) {
         if (type == ProcessInstance.class) {
             return (Storage<String, T>) processStorage;
+        }
+        if (type == ProcessDefinition.class) {
+            return (Storage<String, T>) definitionStorage;
         }
         if (type == Job.class) {
             return (Storage<String, T>) jobStorage;

@@ -32,17 +32,16 @@ import org.kie.kogito.index.oracle.model.CommentEntity;
 import org.kie.kogito.index.oracle.model.JobEntity;
 import org.kie.kogito.index.oracle.model.MilestoneEntity;
 import org.kie.kogito.index.oracle.model.NodeInstanceEntity;
+import org.kie.kogito.index.oracle.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.oracle.model.ProcessInstanceEntity;
 import org.kie.kogito.index.oracle.model.ProcessInstanceErrorEntity;
 import org.kie.kogito.index.oracle.model.UserTaskInstanceEntity;
 import org.kie.kogito.testcontainers.KogitoOracleSqlContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 public class DDLSchemaExporter {
 
     public static void main(String[] args) {
         try (KogitoOracleSqlContainer oracleSql = new KogitoOracleSqlContainer()) {
-            oracleSql.waitingFor(Wait.forListeningPort());
             oracleSql.start();
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.URL, oracleSql.getJdbcUrl());
@@ -53,6 +52,7 @@ public class DDLSchemaExporter {
             StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(settings).build();
 
             MetadataSources metadataSources = new MetadataSources(serviceRegistry);
+            metadataSources.addAnnotatedClass(ProcessDefinitionEntity.class);
             metadataSources.addAnnotatedClass(JobEntity.class);
             metadataSources.addAnnotatedClass(MilestoneEntity.class);
             metadataSources.addAnnotatedClass(NodeInstanceEntity.class);

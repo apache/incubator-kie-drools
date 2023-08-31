@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -52,8 +53,9 @@ public class GraphQLUtils {
     private static final Map<String, String> QUERIES = new HashMap<>();
 
     static {
+        QUERY_FIELDS.put(ProcessDefinition.class, getAllFieldsList(ProcessDefinition.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFieldName()).collect(joining(", ")));
-        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFieldName()).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).filter(field -> !field.getName().equals("definition")).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.put(Job.class, getAllFieldsList(Job.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", serviceUrl");
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstances { id, processName }");
@@ -69,6 +71,10 @@ public class GraphQLUtils {
             LOGGER.error("Failed to parse graphql_queries.json file: {}", ex.getMessage(), ex);
             throw new RuntimeException(ex);
         }
+    }
+
+    public static String getProcessDefinitionByIdAndVersion(String id, String version) {
+        return getProcessDefinitionQuery("ProcessDefinitionByIdAndVersion", id, version);
     }
 
     public static String getProcessInstanceById(String id) {
@@ -205,6 +211,10 @@ public class GraphQLUtils {
 
     private static String getProcessInstanceQuery(String name, String... args) {
         return getQuery(name, ProcessInstance.class, args);
+    }
+
+    private static String getProcessDefinitionQuery(String name, String... args) {
+        return getQuery(name, ProcessDefinition.class, args);
     }
 
     private static String getUserTaskInstanceQuery(String name, String... args) {

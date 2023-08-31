@@ -1,4 +1,11 @@
 {
+  "ProcessDefinitionByIdAndVersion": {
+    "query": "query ($id: String, $version: String) { ProcessDefinitions( where: {  id: {  equal : $id }, version: {  equal : $version } }, orderBy: { version: ASC }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+    "variables": {
+      "id": "%s",
+      "version": "%s"
+    }
+  },
   "ProcessInstanceById": {
     "query": "query ($id: String) { ProcessInstances( where: {  id: {  equal : $id } }, orderBy: { lastUpdate: ASC }, pagination : { limit: 10, offset: 0 } ){ %s } }",
     "variables": {

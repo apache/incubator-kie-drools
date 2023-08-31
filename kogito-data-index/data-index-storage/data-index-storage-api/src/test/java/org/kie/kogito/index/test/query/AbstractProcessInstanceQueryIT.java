@@ -47,7 +47,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.like;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 
-public abstract class AbstractProcessInstanceQueryIT<T> extends QueryTestBase<String, ProcessInstance> {
+public abstract class AbstractProcessInstanceQueryIT extends QueryTestBase<String, ProcessInstance> {
 
     @Test
     void testProcessInstanceQuery() {

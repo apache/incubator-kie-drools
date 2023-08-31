@@ -40,6 +40,11 @@ public class ProtostreamProducer {
     }
 
     @Produces
+    MessageMarshaller processDefinitionMarshaller() {
+        return new ProcessDefinitionMarshaller(mapper);
+    }
+
+    @Produces
     MessageMarshaller nodeInstanceMarshaller() {
         return new NodeInstanceMarshaller(mapper);
     }

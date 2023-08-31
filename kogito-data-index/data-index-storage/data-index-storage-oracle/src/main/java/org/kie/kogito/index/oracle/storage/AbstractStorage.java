@@ -40,16 +40,19 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> implements St
     private Function<E, V> mapToModel;
     private Function<V, E> mapToEntity;
 
+    private Function<E, String> mapEntityToKey;
+
     protected AbstractStorage() {
     }
 
     protected AbstractStorage(PanacheRepositoryBase<E, String> repository, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
-            Function<V, E> mapToEntity) {
+            Function<V, E> mapToEntity, Function<E, String> mapEntityToKey) {
         this.repository = repository;
         this.modelClass = modelClass;
         this.mapToModel = mapToModel;
         this.mapToEntity = mapToEntity;
         this.entityClass = entityClass;
+        this.mapEntityToKey = mapEntityToKey;
     }
 
     @Override
@@ -103,7 +106,7 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> implements St
 
     @Override
     public Map<String, V> entries() {
-        return repository.streamAll().collect(toMap(AbstractEntity::getId, mapToModel));
+        return repository.streamAll().collect(toMap(mapEntityToKey, mapToModel));
     }
 
     @Override
@@ -115,5 +118,9 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> implements St
     @Override
     public String getRootType() {
         return modelClass.getCanonicalName();
+    }
+
+    protected PanacheRepositoryBase<E, String> getRepository() {
+        return repository;
     }
 }

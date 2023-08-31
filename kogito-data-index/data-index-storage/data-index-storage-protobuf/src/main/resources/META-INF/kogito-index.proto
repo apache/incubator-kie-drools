@@ -39,6 +39,24 @@ message ProcessInstanceMeta {
 }
 
 /* @Indexed */
+message ProcessDefinition {
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) @SortableField */
+    optional string version = 2;
+    /* @Field(store = Store.YES) @SortableField */
+    optional string name = 3;
+    /* @Field(store = Store.YES) */
+    repeated string roles = 4;
+    /* @Field(store = Store.YES) */
+    repeated string addons = 5;
+    /* @Field(store = Store.YES) @SortableField */
+    optional string type = 6;
+    /* @Field(store = Store.YES) */
+    optional string endpoint = 7;
+}
+
+/* @Indexed */
 message ProcessInstance {
     /* @Field(store = Store.YES) */
     optional string id = 1;

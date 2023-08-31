@@ -37,6 +37,11 @@ class PostgreSQLQuarkusAddonDataIndexIT {
 
     @Test
     void testDataIndexAddon() {
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(0));
+
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
@@ -62,6 +67,14 @@ class PostgreSQLQuarkusAddonDataIndexIT {
                 .body("data.ProcessInstances[0].diagram", is(nullValue()))
                 .body("data.ProcessInstances[0].source", is(notNullValue()))
                 .body("data.ProcessInstances[0].nodeDefinitions.size()", is(12));
+
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id, version, name } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(1))
+                .body("data.ProcessDefinitions[0].id", is("greet"))
+                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].name", is("Greeting workflow"));
     }
 
     @Test

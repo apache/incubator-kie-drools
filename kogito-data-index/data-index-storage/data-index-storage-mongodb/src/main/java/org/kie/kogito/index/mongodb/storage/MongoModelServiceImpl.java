@@ -26,10 +26,12 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.mongodb.model.DomainEntityMapper;
 import org.kie.kogito.index.mongodb.model.JobEntityMapper;
+import org.kie.kogito.index.mongodb.model.ProcessDefinitionEntityMapper;
 import org.kie.kogito.index.mongodb.model.ProcessIdEntityMapper;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntityMapper;
@@ -39,6 +41,7 @@ import org.kie.kogito.persistence.mongodb.storage.MongoModelService;
 
 import static org.kie.kogito.index.mongodb.Constants.isDomainCollection;
 import static org.kie.kogito.index.storage.Constants.JOBS_STORAGE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_DEFINITIONS_STORAGE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_ID_MODEL_STORAGE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_STORAGE;
 import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_STORAGE;
@@ -51,12 +54,14 @@ public class MongoModelServiceImpl implements MongoModelService {
 
     static final Map<String, Supplier<MongoEntityMapper<?, ?>>> ENTITY_MAPPER_MAP = Map.of(
             JOBS_STORAGE, JobEntityMapper::new,
+            PROCESS_DEFINITIONS_STORAGE, ProcessDefinitionEntityMapper::new,
             PROCESS_INSTANCES_STORAGE, ProcessInstanceEntityMapper::new,
             USER_TASK_INSTANCES_STORAGE, UserTaskInstanceEntityMapper::new,
             PROCESS_ID_MODEL_STORAGE, ProcessIdEntityMapper::new);
 
     @PostConstruct
     void init() {
+        indexCreateOrUpdateEvent.fire(new IndexCreateOrUpdateEvent(PROCESS_DEFINITIONS_STORAGE, ProcessDefinition.class.getName()));
         indexCreateOrUpdateEvent.fire(new IndexCreateOrUpdateEvent(PROCESS_INSTANCES_STORAGE, ProcessInstance.class.getName()));
         indexCreateOrUpdateEvent.fire(new IndexCreateOrUpdateEvent(USER_TASK_INSTANCES_STORAGE, UserTaskInstance.class.getName()));
         indexCreateOrUpdateEvent.fire(new IndexCreateOrUpdateEvent(JOBS_STORAGE, Job.class.getName()));

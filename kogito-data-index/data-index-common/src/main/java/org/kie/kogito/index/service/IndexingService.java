@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.NodeInstance;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.DataIndexStorageService;
@@ -56,6 +57,8 @@ public class IndexingService {
             List<NodeInstance> nodes = previousPI.getNodes().stream().filter(n -> !pi.getNodes().contains(n)).collect(toList());
             pi.getNodes().addAll(nodes);
         }
+        ProcessDefinition definition = pi.getDefinition();
+        manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
         manager.getProcessInstancesCache().put(pi.getId(), pi);
     }
 

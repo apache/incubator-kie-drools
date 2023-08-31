@@ -8,6 +8,7 @@
     "parentInstanceId": "",
     "rootInstanceId": "",
     "processId": "travels",
+    "version": "1.0",
     "rootProcessId": "",
     "processName": "travels",
     "startDate": "2022-03-18T15:32:21.887+10:00",

@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.postgresql.mapper.ProcessInstanceEntityMapper;
+import org.kie.kogito.index.postgresql.model.AbstractEntity;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntity;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntityRepository;
 
@@ -32,6 +33,6 @@ public class ProcessInstanceEntityStorage extends AbstractStorage<ProcessInstanc
 
     @Inject
     public ProcessInstanceEntityStorage(ProcessInstanceEntityRepository repository, ProcessInstanceEntityMapper mapper) {
-        super(repository, ProcessInstance.class, ProcessInstanceEntity.class, e -> mapper.mapToModel(e), m -> mapper.mapToEntity(m));
+        super(repository, ProcessInstance.class, ProcessInstanceEntity.class, mapper::mapToModel, mapper::mapToEntity, AbstractEntity::getId);
     }
 }

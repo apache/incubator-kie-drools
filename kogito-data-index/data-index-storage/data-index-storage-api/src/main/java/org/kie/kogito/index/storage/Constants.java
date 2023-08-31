@@ -28,6 +28,7 @@ public final class Constants {
     public static final String PROCESS_NAME = "processName";
     public static final String ID = "id";
 
+    public static final String PROCESS_DEFINITIONS_STORAGE = "processdefinitions";
     public static final String PROCESS_INSTANCES_STORAGE = "processinstances";
     public static final String USER_TASK_INSTANCES_STORAGE = "usertaskinstances";
     public static final String JOBS_STORAGE = "jobs";

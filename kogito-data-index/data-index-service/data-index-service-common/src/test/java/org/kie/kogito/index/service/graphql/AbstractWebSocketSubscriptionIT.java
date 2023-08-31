@@ -83,6 +83,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
     void tearDown() {
         httpClient.close();
         cacheService.getJobsCache().clear();
+        cacheService.getProcessDefinitionsCache().clear();
         cacheService.getProcessInstancesCache().clear();
         cacheService.getUserTaskInstancesCache().clear();
         if (cacheService.getDomainModelCache("travels") != null) {

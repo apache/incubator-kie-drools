@@ -36,6 +36,11 @@ class InfinispanQuarkusAddonDataIndexIT {
 
     @Test
     void testDataIndexAddon() {
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id } }\" }")
+                .when().post("/graphql")
+                .then().statusCode(200)
+                .body("data.ProcessDefinitions.size()", is(0));
+
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
