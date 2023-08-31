@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 public class SerializableStoredEvent extends BaseStoredEvent {
 
-    private final Serializable object;
+    protected final Serializable object;
 
     public SerializableStoredEvent(Object object, boolean propagated, long timestamp, long duration) {
         super(propagated, timestamp, duration);

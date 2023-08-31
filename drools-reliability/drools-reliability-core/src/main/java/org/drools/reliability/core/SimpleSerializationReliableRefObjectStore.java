@@ -53,7 +53,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         Storage<Long, StoredObject> updateStorage = storage;
 
         for (Long key : storage.keySet()) {
-            updateStorage.put(key, ((SerializableStoredRefObject) storage.get(key)).updateReferencedObjects(storage));
+            updateStorage.put(key, ((ReferenceWireable) storage.get(key)).updateReferencedObjects(storage));
         }
         return updateStorage;
     }
@@ -81,6 +81,11 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         return new SerializableStoredRefObject(object, propagated);
     }
 
+    @Override
+    protected StoredEvent createStoredEvent(boolean propagated, Object object, long timestamp, long duration) {
+        return new SerializableStoredRefEvent(object, propagated, timestamp, duration);
+    }
+
     private StoredObject setReferencedObjects(StoredObject object) {
         List<Field> referencedObjects = getReferencedObjects(object.getObject());
         if (!referencedObjects.isEmpty()) {
@@ -97,7 +102,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
                 }
                 Long objectKey = fromObjectToFactHandleId(fieldObject);
                 if (objectKey != null) {
-                    ((SerializableStoredRefObject) object).addReferencedObject(field.getName(), objectKey);
+                    ((ReferenceWireable) object).addReferencedObject(field.getName(), objectKey);
                 }
             });
         }
