@@ -27,7 +27,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
 import org.junit.jupiter.api.Test;
@@ -78,7 +77,7 @@ public class KiePMMLLocalTransformationsFactoryTest {
         Constant constant = new Constant();
         constant.setValue(value1);
         DerivedField toReturn = new DerivedField();
-        toReturn.setName(FieldName.create(PARAM_2 + counter));
+        toReturn.setName(PARAM_2 + counter);
         toReturn.setDataType(DataType.DOUBLE);
         toReturn.setOpType(OpType.CONTINUOUS);
         toReturn.setExpression(constant);

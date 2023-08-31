@@ -38,7 +38,7 @@ public class KiePMMLFieldColumnPairInstanceFactory {
     }
 
     static KiePMMLFieldColumnPair getKiePMMLFieldColumnPair(final FieldColumnPair fieldColumnPair) {
-        return new KiePMMLFieldColumnPair(fieldColumnPair.getField().getValue(),
+        return new KiePMMLFieldColumnPair(fieldColumnPair.getField(),
                                           getKiePMMLExtensions(fieldColumnPair.getExtensions()),
                                           fieldColumnPair.getColumn());
     }

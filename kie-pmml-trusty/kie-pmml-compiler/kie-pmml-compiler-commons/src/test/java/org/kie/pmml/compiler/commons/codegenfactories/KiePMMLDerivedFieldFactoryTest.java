@@ -27,7 +27,6 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.junit.jupiter.api.Test;
@@ -59,7 +58,7 @@ public class KiePMMLDerivedFieldFactoryTest {
         Constant constant = new Constant();
         constant.setValue(value1);
         DerivedField derivedField = new DerivedField();
-        derivedField.setName(FieldName.create(PARAM_1));
+        derivedField.setName(PARAM_1);
         derivedField.setDataType(DataType.DOUBLE);
         derivedField.setOpType(OpType.CONTINUOUS);
         derivedField.setExpression(constant);
@@ -70,8 +69,7 @@ public class KiePMMLDerivedFieldFactoryTest {
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text, constant.getValue(),
-                                          variableName,
-                                          derivedField.getName().getValue(),
+                                          variableName,derivedField.getName(),
                                           dataType,
                                           opType));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
@@ -85,9 +83,9 @@ public class KiePMMLDerivedFieldFactoryTest {
     void getDerivedFieldVariableDeclarationWithFieldRef() throws IOException {
         final String variableName = "variableName";
         FieldRef fieldRef = new FieldRef();
-        fieldRef.setField(FieldName.create("FIELD_REF"));
+        fieldRef.setField("FIELD_REF");
         DerivedField derivedField = new DerivedField();
-        derivedField.setName(FieldName.create(PARAM_1));
+        derivedField.setName(PARAM_1);
         derivedField.setDataType(DataType.DOUBLE);
         derivedField.setOpType(OpType.CONTINUOUS);
         derivedField.setExpression(fieldRef);
@@ -97,9 +95,8 @@ public class KiePMMLDerivedFieldFactoryTest {
                 org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         String text = getFileContent(TEST_02_SOURCE);
         Statement expected = JavaParserUtils
-                .parseBlock(String.format(text, fieldRef.getField().getValue(),
-                                          variableName,
-                                          derivedField.getName().getValue(),
+                .parseBlock(String.format(text,fieldRef.getField(),
+                                          variableName,derivedField.getName(),
                                           dataType,
                                           opType));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
@@ -115,12 +112,12 @@ public class KiePMMLDerivedFieldFactoryTest {
         Constant constant = new Constant();
         constant.setValue(value1);
         FieldRef fieldRef = new FieldRef();
-        fieldRef.setField(FieldName.create("FIELD_REF"));
+        fieldRef.setField("FIELD_REF");
         Apply apply = new Apply();
         apply.setFunction("/");
         apply.addExpressions(constant, fieldRef);
         DerivedField derivedField = new DerivedField();
-        derivedField.setName(FieldName.create(PARAM_1));
+        derivedField.setName(PARAM_1);
         derivedField.setDataType(DataType.DOUBLE);
         derivedField.setOpType(OpType.CONTINUOUS);
         derivedField.setExpression(apply);
@@ -130,12 +127,10 @@ public class KiePMMLDerivedFieldFactoryTest {
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format(text,
-                                          constant.getValue(),
-                                          fieldRef.getField().getValue(),
+                                          constant.getValue(),fieldRef.getField(),
                                           apply.getFunction(),
                                           apply.getInvalidValueTreatment().value(),
-                                          variableName,
-                                          derivedField.getName().getValue(),
+                                          variableName,derivedField.getName(),
                                           dataType,
                                           opType));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();

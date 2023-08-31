@@ -34,7 +34,7 @@ public class KiePMMLSimpleSetPredicateInstanceFactory {
     }
 
     static KiePMMLSimpleSetPredicate getKiePMMLSimpleSetPredicate(final SimpleSetPredicate simpleSetPredicate) {
-        return KiePMMLSimpleSetPredicate.builder(simpleSetPredicate.getField().getValue(),
+        return KiePMMLSimpleSetPredicate.builder(simpleSetPredicate.getField(),
                                                  getKiePMMLExtensions(simpleSetPredicate.getExtensions()),
                                                  ARRAY_TYPE.byName(simpleSetPredicate.getArray().getType().value()),
                                                  IN_NOTIN.byName(simpleSetPredicate.getBooleanOperator().value()))
