@@ -113,7 +113,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     private TerminalNode ensureAgendaItemCreated(ActivationsManager activationsManager) {
-        TerminalNode rtn = (TerminalNode) getPathEndNode();
+        AbstractTerminalNode rtn = (AbstractTerminalNode) getPathEndNode();
         if (agendaItem == null) {
             int salience = rtn.getRule().getSalience().isDynamic() ? 0 : rtn.getRule().getSalience().getValue();
             agendaItem = activationsManager.createRuleAgendaItem(salience, this, rtn);
