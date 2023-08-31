@@ -198,7 +198,7 @@ Closure setup3AMCronTriggerJobParamsGetter = { script ->
 }
 
 Closure nightlyJobParamsGetter = isMainStream() ? JobParamsUtils.DEFAULT_PARAMS_GETTER : setup3AMCronTriggerJobParamsGetter
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, nightlyJobParamsGetter)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
 setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
