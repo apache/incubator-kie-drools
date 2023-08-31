@@ -92,6 +92,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
                 Map<String, Object> data = new HashMap<>();
                 data.put("id", n.getId());
                 data.put("uniqueId", ((Node) n).getUniqueId());
+                data.put("nodeDefinitionId", n.getMetaData().get(Metadata.UNIQUE_ID));
                 data.put("metadata", n.getMetaData());
                 data.put("type", n.getClass().getSimpleName());
                 data.put("name", n.getName());
