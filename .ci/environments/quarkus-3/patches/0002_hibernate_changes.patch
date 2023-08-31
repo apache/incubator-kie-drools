@@ -1,7 +1,7 @@
-diff --git a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
-index 3b29157b6..5ecd962a4 100644
---- a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
-+++ b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
+diff --git a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
+index 1e20eccb9..23450b07f 100644
+--- a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
++++ b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
 @@ -107,7 +107,7 @@ public abstract class AbstractProcessDataIndexIT {
                  .get("/approvals/{processId}/tasks")
                  .then()
@@ -11,7 +11,7 @@ index 3b29157b6..5ecd962a4 100644
                  .body("[0].name", is("firstLineApproval"))
                  .body("[0].id", notNullValue())
                  .extract()
-@@ -189,7 +189,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -200,7 +200,7 @@ public abstract class AbstractProcessDataIndexIT {
                  .get("/approvals/{processId}/tasks")
                  .then()
                  .statusCode(200)
@@ -20,7 +20,7 @@ index 3b29157b6..5ecd962a4 100644
                  .body("[0].name", is("secondLineApproval"))
                  .body("[0].id", notNullValue())
                  .extract()
-@@ -447,7 +447,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -458,7 +458,7 @@ public abstract class AbstractProcessDataIndexIT {
                          .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
                          .then()
                          .statusCode(200)
@@ -29,7 +29,7 @@ index 3b29157b6..5ecd962a4 100644
                          .body("[0].content", is(commentContent)));
  
          Map<String, String> commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-@@ -545,7 +545,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -556,7 +556,7 @@ public abstract class AbstractProcessDataIndexIT {
                          .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
                          .then()
                          .statusCode(200)
@@ -39,10 +39,10 @@ index 3b29157b6..5ecd962a4 100644
  
          Map<String, String> attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
-index 6026abaf5..d7be19727 100644
+index 99c322de0..aae30d88d 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
-@@ -42,11 +42,27 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
+@@ -43,11 +43,28 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  
  import static java.lang.String.format;
  import static java.util.stream.Collectors.joining;
@@ -52,6 +52,7 @@ index 6026abaf5..d7be19727 100644
  public class GraphQLUtils {
  
 +    private static final String ID = "id";
++    private static final String VERSION = "version";
 +    private static final String STATE = "state";
 +    private static final String START = "start";
 +    private static final String PROCESS_ID = "processId";
@@ -71,7 +72,12 @@ index 6026abaf5..d7be19727 100644
      private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLUtils.class);
      private static final Map<Class, String> QUERY_FIELDS = new HashMap<>();
      private static final Map<String, String> QUERIES = new HashMap<>();
-@@ -72,103 +88,103 @@ public class GraphQLUtils {
+@@ -74,107 +91,107 @@ public class GraphQLUtils {
+     }
+ 
+     public static String getProcessDefinitionByIdAndVersion(String id, String version) {
+-        return getProcessDefinitionQuery("ProcessDefinitionByIdAndVersion", id, version);
++        return getProcessDefinitionQuery("ProcessDefinitionByIdAndVersion", Map.of(ID, id, VERSION, version));
      }
  
      public static String getProcessInstanceById(String id) {
@@ -106,7 +112,7 @@ index 6026abaf5..d7be19727 100644
  
      public static String getProcessInstanceByIdAndNullParentProcessInstanceId(String id, Boolean isNull) {
 -        return getProcessInstanceQuery("ProcessInstanceByIdAndNullParentProcessInstanceId", id, isNull.toString());
-+        return getProcessInstanceQuery("ProcessInstanceByIdAndNullParentProcessInstanceId",  Map.of(ID, id, IS_NULL, isNull));
++        return getProcessInstanceQuery("ProcessInstanceByIdAndNullParentProcessInstanceId", Map.of(ID, id, IS_NULL, isNull));
      }
  
      public static String getProcessInstanceByIdAndNullRootProcessInstanceId(String id, Boolean isNull) {
@@ -201,7 +207,7 @@ index 6026abaf5..d7be19727 100644
      }
  
      public static String getTravelsByUserTaskId(String id) {
-@@ -191,10 +207,10 @@ public class GraphQLUtils {
+@@ -197,10 +214,10 @@ public class GraphQLUtils {
          return getQuery("DealsByTaskIdNoActualOwner", id);
      }
  
@@ -214,13 +220,18 @@ index 6026abaf5..d7be19727 100644
          values.forEach(g -> pg.add(g));
          return jsonNode.toString();
      }
-@@ -203,20 +219,30 @@ public class GraphQLUtils {
+@@ -209,25 +226,35 @@ public class GraphQLUtils {
          return format(QUERIES.get(name), args);
      }
  
 -    private static String getProcessInstanceQuery(String name, String... args) {
 +    private static String getProcessInstanceQuery(String name, Map<String, Object> args) {
          return getQuery(name, ProcessInstance.class, args);
+     }
+ 
+-    private static String getProcessDefinitionQuery(String name, String... args) {
++    private static String getProcessDefinitionQuery(String name, Map<String, Object> args) {
+         return getQuery(name, ProcessDefinition.class, args);
      }
  
 -    private static String getUserTaskInstanceQuery(String name, String... args) {
@@ -235,6 +246,7 @@ index 6026abaf5..d7be19727 100644
  
 -    private static String getQuery(String name, Class clazz, String... args) {
 -        return format(QUERIES.get(name), insert(0, args, QUERY_FIELDS.get(clazz)));
+-    }
 +    private static String getQuery(String name, Class clazz, Map<String, Object> args) {
 +        try {
 +            String query = format(QUERIES.get(name), QUERY_FIELDS.get(clazz));
@@ -247,15 +259,24 @@ index 6026abaf5..d7be19727 100644
 +        } catch (Exception e) {
 +            throw new RuntimeException(e);
 +        }
-     }
++     }
  
      private static Stream<Field> getAllFieldsList(Class clazz) {
+         return FieldUtils.getAllFieldsList(clazz).stream().filter(f -> getJacocoPredicate().test(f));
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json b/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json
-index 6f0f72396..4b22aa924 100644
+index 8da0f683d..0825ff420 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json
 +++ b/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json
-@@ -1,200 +1,122 @@
+@@ -1,207 +1,126 @@
  {
+   "ProcessDefinitionByIdAndVersion": {
+     "query": "query ($id: String, $version: String) { ProcessDefinitions( where: {  id: {  equal : $id }, version: {  equal : $version } }, orderBy: { version: ASC }, pagination : { limit: 10, offset: 0 } ){ %s } }",
+-    "variables": {
+-      "id": "%s",
+-      "version": "%s"
+-    }
++    "variables": {}
+   },
    "ProcessInstanceById": {
      "query": "query ($id: String) { ProcessInstances( where: {  id: {  equal : $id } }, orderBy: { lastUpdate: ASC }, pagination : { limit: 10, offset: 0 } ){ %s } }",
 -    "variables": {
@@ -587,12 +608,12 @@ index d848509ae..f698d913a 100644
          return ((List<AttributeFilter<?>>) filter.getValue())
                  .stream()
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/schema/DDLSchemaExporter.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/schema/DDLSchemaExporter.java
-index c2fe8a6a8..10f4e88b6 100644
+index 7f2bf10f9..420d0ee8a 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/schema/DDLSchemaExporter.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/schema/DDLSchemaExporter.java
-@@ -44,7 +44,7 @@ public class DDLSchemaExporter {
+@@ -43,7 +43,7 @@ public class DDLSchemaExporter {
+     public static void main(String[] args) {
          try (KogitoOracleSqlContainer oracleSql = new KogitoOracleSqlContainer()) {
-             oracleSql.waitingFor(Wait.forListeningPort());
              oracleSql.start();
 -            Map<String, String> settings = new HashMap<>();
 +            Map<String, Object> settings = new HashMap<>();
@@ -658,7 +679,7 @@ index 2e28ef813..3a709e6a8 100644
      private ObjectNode outputs;
      private String endpoint;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java
-index 10b132749..8952b9486 100644
+index 74fd17bd9..e2c373f78 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java
 @@ -26,8 +26,8 @@ import jakarta.persistence.criteria.Order;
@@ -671,7 +692,7 @@ index 10b132749..8952b9486 100644
  import org.kie.kogito.index.postgresql.model.AbstractEntity;
  import org.kie.kogito.persistence.api.query.AttributeFilter;
  import org.kie.kogito.persistence.api.query.AttributeSort;
-@@ -132,10 +132,10 @@ public class PostgreSqlQuery<E extends AbstractEntity, T> implements Query<T> {
+@@ -132,10 +132,10 @@ public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T>
                      return builder.equal(getAttributePath(root, filter.getAttribute()), filter.getValue());
                  case IS_NULL:
                      Path pathNull = getAttributePath(root, filter.getAttribute());
@@ -684,7 +705,7 @@ index 10b132749..8952b9486 100644
                  case BETWEEN:
                      List<Object> value = (List<Object>) filter.getValue();
                      return builder
-@@ -176,6 +176,12 @@ public class PostgreSqlQuery<E extends AbstractEntity, T> implements Query<T> {
+@@ -176,6 +176,12 @@ public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T>
          return join.get(split[split.length - 1]);
      }
  
@@ -698,10 +719,10 @@ index 10b132749..8952b9486 100644
          return ((List<AttributeFilter<?>>) filter.getValue())
                  .stream()
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/schema/DDLSchemaExporter.java b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/schema/DDLSchemaExporter.java
-index 485218875..58b366a3e 100644
+index 4f0d95a71..15b2ad7cc 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/schema/DDLSchemaExporter.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/schema/DDLSchemaExporter.java
-@@ -44,7 +44,7 @@ public class DDLSchemaExporter {
+@@ -45,7 +45,7 @@ public class DDLSchemaExporter {
          try (KogitoPostgreSqlContainer postgresql = new KogitoPostgreSqlContainer()) {
              postgresql.waitingFor(Wait.forListeningPort());
              postgresql.start();
