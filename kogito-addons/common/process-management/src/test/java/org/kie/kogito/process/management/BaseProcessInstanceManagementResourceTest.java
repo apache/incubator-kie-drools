@@ -113,7 +113,7 @@ class BaseProcessInstanceManagementResourceTest {
         lenient().when(process.version()).thenReturn("1_0");
         lenient().when(process.type()).thenReturn("BPMN");
 
-        lenient().when(workflowProcess.getMetaData()).thenReturn(Map.of(Metadata.DESCRIPTION, "cool"));
+        lenient().when(workflowProcess.getMetaData()).thenReturn(Map.of(Metadata.DESCRIPTION, "cool", Metadata.ANNOTATIONS, Arrays.asList("good")));
         lenient().when(workflowValidator.schema(JsonNode.class)).thenReturn(Optional.of(NullNode.instance));
         lenient().when(workflowProcess.getInputValidator()).thenReturn(Optional.of(workflowValidator));
         lenient().when(workflowProcess.getOutputValidator()).thenReturn(Optional.empty());
@@ -210,7 +210,8 @@ class BaseProcessInstanceManagementResourceTest {
         Object response = tested.doGetProcessInfo(PROCESS_ID);
         assertThat(response).isInstanceOf(Map.class);
         Map<String, Object> data = (Map<String, Object>) response;
-        assertThat(data).containsKey("type").containsKey("id").containsKey("version").containsKey("description").containsEntry("inputSchema", NullNode.instance).containsKey("name")
+        assertThat(data).containsKey("type").containsKey("id").containsKey("version").containsKey("description").containsKey("annotations").containsEntry("inputSchema", NullNode.instance)
+                .containsKey("name")
                 .doesNotContainKey("outputSchema");
     }
 

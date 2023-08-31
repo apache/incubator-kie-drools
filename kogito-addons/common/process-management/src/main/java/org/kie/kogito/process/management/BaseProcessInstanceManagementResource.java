@@ -74,7 +74,15 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             data.put("version", process.version());
             if (process instanceof Supplier) {
                 org.kie.api.definition.process.Process processDefinition = ((Supplier<org.kie.api.definition.process.Process>) process).get();
-                data.put("description", processDefinition.getMetaData().get(Metadata.DESCRIPTION));
+                Map<String, Object> metadata = processDefinition.getMetaData();
+                String description = (String) metadata.get(Metadata.DESCRIPTION);
+                if (description != null) {
+                    data.put("description", description);
+                }
+                List<String> annotations = (List<String>) metadata.get(Metadata.ANNOTATIONS);
+                if (annotations != null) {
+                    data.put("annotations", annotations);
+                }
                 if (processDefinition instanceof WorkflowProcess) {
                     WorkflowProcess workflowProcess = (WorkflowProcess) processDefinition;
                     workflowProcess.getInputValidator().flatMap(v -> v.schema(JsonNode.class)).ifPresent(s -> data.put("inputSchema", s));

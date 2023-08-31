@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,16 +28,23 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusIntegrationTest
 class ManagementFlowIT {
 
     @Test
-    void testManagementAPI() {
+    void testManagementAPINodes() {
         assertThat(given().contentType(ContentType.JSON).accept(ContentType.JSON).get("management/processes/parallel/nodes")
                 .then().statusCode(200).extract().as(new TypeRef<List<Map<String, Object>>>() {
                 }).stream().map(m -> (Map<String, Object>) m.get("metadata")).filter(m -> m.containsKey(SWFConstants.STATE_NAME) && m.containsKey(SWFConstants.ACTION_NAME)
                         && m.containsKey(SWFConstants.BRANCH_NAME))
                 .count()).isGreaterThanOrEqualTo(3);
+    }
+
+    @Test
+    void testManagementAPIProcess() {
+        given().contentType(ContentType.JSON).accept(ContentType.JSON).get("management/processes/parallel")
+                .then().statusCode(200).body("annotations", is(Arrays.asList("Football", "Betis")));
     }
 }

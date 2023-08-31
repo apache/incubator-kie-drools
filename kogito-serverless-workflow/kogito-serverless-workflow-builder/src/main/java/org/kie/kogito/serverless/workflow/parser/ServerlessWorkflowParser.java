@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -128,7 +129,6 @@ public class ServerlessWorkflowParser {
                 .type(KogitoWorkflowProcess.SW_TYPE);
         ParserContext parserContext =
                 new ParserContext(idGenerator, factory, context, WorkflowOperationIdFactoryProvider.getFactory(context.getApplicationProperty(WorkflowOperationIdFactoryProvider.PROPERTY_NAME)));
-
         modelValidator(parserContext, Optional.ofNullable(workflow.getDataInputSchema())).ifPresent(factory::inputValidator);
         modelValidator(parserContext, ServerlessWorkflowUtils.getExtension(workflow, OutputSchema.class).map(OutputSchema::getOutputSchema)).ifPresent(factory::outputValidator);
         loadConstants(factory, parserContext);
@@ -144,7 +144,6 @@ public class ServerlessWorkflowParser {
             factory.metaData(Metadata.COMPENSATION, true);
             factory.addCompensationContext(workflow.getId());
         }
-
         TimeoutsDefinition timeouts = workflow.getTimeouts();
         if (timeouts != null) {
             WorkflowExecTimeout workflowTimeout = timeouts.getWorkflowExecTimeout();
@@ -161,6 +160,11 @@ public class ServerlessWorkflowParser {
         if (!ConversionUtils.isEmpty(description)) {
             factory.metaData(Metadata.DESCRIPTION, description);
         }
+        List<String> annotations = workflow.getAnnotations();
+        if (!annotations.isEmpty()) {
+            factory.metaData(Metadata.ANNOTATIONS, annotations);
+        }
+
         return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());
     }
 

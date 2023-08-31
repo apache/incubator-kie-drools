@@ -19,6 +19,7 @@ public class Metadata {
 
     public static final String ASSOCIATION = "association";
     public static final String ACTION = "Action";
+    public static final String ANNOTATIONS = "annotations";
     public static final String TRIGGER_REF = "TriggerRef";
     public static final String REF = "Ref";
     public static final String MESSAGE_TYPE = "MessageType";

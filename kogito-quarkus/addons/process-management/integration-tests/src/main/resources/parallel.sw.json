@@ -3,6 +3,7 @@
 "version": "1.0",
 "name": "Welcome to the Parallel dimension",
 "description": "Testing parallelism",
+"annotations": ["Football", "Betis"],
 "start": "Parallel",
 "functions": [
     {
