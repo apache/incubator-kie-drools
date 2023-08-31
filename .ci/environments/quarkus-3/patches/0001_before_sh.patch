@@ -66,116 +66,6 @@ index ecce9235e..c9675ba78 100644
  @Disabled("https://issues.redhat.com/browse/FAI-748")
  public class NativeQuarkusTrustyExplainabilityEnd2EndIT extends AbstractTrustyExplainabilityEnd2EndIT {
  
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
-index 412f35bd6..3bec26ad5 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
-@@ -25,8 +25,7 @@ import java.util.Objects;
- import java.util.concurrent.CompletableFuture;
- import java.util.function.Consumer;
- 
--import javax.annotation.PostConstruct;
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import org.kie.kogito.index.api.KogitoRuntimeClient;
- import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
-@@ -48,6 +47,7 @@ import graphql.schema.GraphQLScalarType;
- import graphql.schema.GraphQLSchema;
- import graphql.schema.idl.SchemaParser;
- import graphql.schema.idl.TypeDefinitionRegistry;
-+import jakarta.annotation.PostConstruct;
- 
- import static java.util.Collections.singletonList;
- import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java
-index 6db75dc9b..3fdc95d03 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java
-@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
- import java.time.format.DateTimeParseException;
- import java.time.temporal.ChronoUnit;
- 
--import javax.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- import org.kie.kogito.index.DateTimeUtils;
- 
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java
-index 9c23020dd..1cf3e7988 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java
-@@ -15,8 +15,8 @@
-  */
- package org.kie.kogito.index.graphql;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import com.fasterxml.jackson.databind.JsonNode;
- 
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java
-index b375c9852..0b47d6699 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java
-@@ -15,9 +15,9 @@
-  */
- package org.kie.kogito.index.graphql;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Produces;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Produces;
-+import jakarta.inject.Inject;
- 
- import graphql.GraphQL;
- 
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java
-index abcdc8525..d061122f1 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java
-@@ -15,9 +15,9 @@
-  */
- package org.kie.kogito.index.graphql;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.enterprise.inject.Produces;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.inject.Produces;
-+import jakarta.inject.Inject;
- 
- import graphql.schema.GraphQLScalarType;
- 
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java
-index 10e1e44da..a310e924f 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.index.graphql;
- 
- import java.time.ZonedDateTime;
- 
--import javax.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- import io.quarkus.arc.properties.IfBuildProperty;
- 
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java
-index 2fa0e148d..c7e3ebaf8 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java
-@@ -18,7 +18,7 @@ package org.kie.kogito.index.graphql;
- 
- import java.time.ZonedDateTime;
- 
--import javax.enterprise.context.ApplicationScoped;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- import io.quarkus.arc.properties.IfBuildProperty;
- 
 diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/json/ObjectMapperProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/json/ObjectMapperProducer.java
 index 998101ea6..1a65df37a 100644
 --- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/json/ObjectMapperProducer.java
@@ -204,10 +94,120 @@ index cd27e6f65..b6fa180e3 100644
  
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.model.NodeInstance;
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
+index 412f35bd6..3bec26ad5 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
+@@ -25,8 +25,7 @@ import java.util.Objects;
+ import java.util.concurrent.CompletableFuture;
+ import java.util.function.Consumer;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.index.api.KogitoRuntimeClient;
+ import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
+@@ -48,6 +47,7 @@ import graphql.schema.GraphQLScalarType;
+ import graphql.schema.GraphQLSchema;
+ import graphql.schema.idl.SchemaParser;
+ import graphql.schema.idl.TypeDefinitionRegistry;
++import jakarta.annotation.PostConstruct;
+ 
+ import static java.util.Collections.singletonList;
+ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java
+index 6db75dc9b..3fdc95d03 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/DefaultDateTimeCoercing.java
+@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
+ import java.time.format.DateTimeParseException;
+ import java.time.temporal.ChronoUnit;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import org.kie.kogito.index.DateTimeUtils;
+ 
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java
+index 9c23020dd..1cf3e7988 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLInstrumentation.java
+@@ -15,8 +15,8 @@
+  */
+ package org.kie.kogito.index.graphql;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import com.fasterxml.jackson.databind.JsonNode;
+ 
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java
+index b375c9852..0b47d6699 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLProducer.java
+@@ -15,9 +15,9 @@
+  */
+ package org.kie.kogito.index.graphql;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
++import jakarta.inject.Inject;
+ 
+ import graphql.GraphQL;
+ 
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java
+index abcdc8525..d061122f1 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/GraphQLScalarTypeProducer.java
+@@ -15,9 +15,9 @@
+  */
+ package org.kie.kogito.index.graphql;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.inject.Produces;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.inject.Produces;
++import jakarta.inject.Inject;
+ 
+ import graphql.schema.GraphQLScalarType;
+ 
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java
+index 10e1e44da..a310e924f 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/OracleDateTimeCoercing.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.index.graphql;
+ 
+ import java.time.ZonedDateTime;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import io.quarkus.arc.properties.IfBuildProperty;
+ 
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java
+index 2fa0e148d..c7e3ebaf8 100644
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/PostgreSqlDateTimeCoercing.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.index.graphql;
+ 
+ import java.time.ZonedDateTime;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import io.quarkus.arc.properties.IfBuildProperty;
+ 
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
 index 3008c56ae..fa5d6a83f 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/BlockingGraphqlRouterProducer.java
 @@ -15,9 +15,8 @@
   */
  package org.kie.kogito.index.vertx;
@@ -229,10 +229,10 @@ index 3008c56ae..fa5d6a83f 100644
  import graphql.GraphQL;
  
  import static io.quarkus.vertx.web.Route.HttpMethod.GET;
-diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
+diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
 index f4c030201..182fb2e3c 100644
---- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
-+++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
+--- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
++++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/vertx/ReactiveGraphqlRouterProducer.java
 @@ -15,9 +15,8 @@
   */
  package org.kie.kogito.index.vertx;
@@ -339,7 +339,7 @@ index ab2c22960..11027f70d 100644
  import org.eclipse.microprofile.reactive.messaging.Incoming;
  import org.kie.kogito.event.DataEvent;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/DomainEventConsumer.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/DomainEventConsumer.java
-index 99282e0b8..e953db86c 100644
+index 16be6bcff..da659d46e 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/DomainEventConsumer.java
 +++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/messaging/DomainEventConsumer.java
 @@ -16,9 +16,9 @@
@@ -405,7 +405,7 @@ index a1cff2fac..8306e3279 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractDomainIndexingServiceIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractDomainIndexingServiceIT.java
-index 03b26e573..605687999 100644
+index 20fcc7b6f..0ad467ae9 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractDomainIndexingServiceIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractDomainIndexingServiceIT.java
 @@ -22,7 +22,7 @@ import java.util.Map;
@@ -441,7 +441,7 @@ index b40ae732d..cc55dc3a7 100644
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
-index c91115005..ecba3ed57 100644
+index 9128d8050..9148e48af 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
 @@ -24,8 +24,8 @@ import java.util.Map;
@@ -456,7 +456,7 @@ index c91115005..ecba3ed57 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeAll;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java
-index 9de6ee4c1..ceeec7726 100644
+index 7c093ac1f..f0071c861 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java
 @@ -19,7 +19,7 @@ import java.util.Date;
@@ -469,7 +469,7 @@ index 9de6ee4c1..ceeec7726 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeEach;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java
-index 76381f680..d7858075d 100644
+index 4dc6710ae..131540c00 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java
 @@ -19,7 +19,7 @@ import java.util.UUID;
@@ -482,7 +482,7 @@ index 76381f680..d7858075d 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.Test;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java
-index 5ea727715..d19c25d4b 100644
+index b267c85d6..19cb648cc 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java
 @@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
@@ -508,7 +508,7 @@ index 710dccaad..79c86b5a5 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.index.service.graphql.GraphQLSchemaManagerImpl;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java
-index 95af0e64b..84e5cc589 100644
+index ad05ddf7a..4206b13a1 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java
 @@ -20,7 +20,7 @@ import java.util.List;
@@ -534,7 +534,7 @@ index 370e15479..029860971 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeEach;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingHttpConsumerIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingHttpConsumerIT.java
-index b28e55014..cad61fd38 100644
+index f80c8c2cf..bce3174a1 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingHttpConsumerIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingHttpConsumerIT.java
 @@ -16,15 +16,14 @@
@@ -553,9 +553,9 @@ index b28e55014..cad61fd38 100644
  
 -import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 -
- import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
- import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
+ import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
+ import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java
 index 804592132..221f952a7 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java
@@ -570,7 +570,7 @@ index 804592132..221f952a7 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeEach;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingHttpConsumerIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingHttpConsumerIT.java
-index 5acf897b2..da3ef3a04 100644
+index baeeeb9a5..4bdacbf8b 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingHttpConsumerIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingHttpConsumerIT.java
 @@ -16,16 +16,15 @@
@@ -590,11 +590,11 @@ index 5acf897b2..da3ef3a04 100644
  
 -import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 -
- import static org.kie.kogito.index.TestUtils.*;
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.*;
+ import static org.kie.kogito.index.test.TestUtils.*;
  
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java
-index b63a883d0..6bf913ef3 100644
+index c567bc0a5..3de7d613d 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java
 @@ -23,7 +23,7 @@ import java.util.UUID;
@@ -607,7 +607,7 @@ index b63a883d0..6bf913ef3 100644
  import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.junit.jupiter.api.AfterEach;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumerTest.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumerTest.java
-index 9796b8501..9639d55d7 100644
+index d2592c9b4..9706c7e37 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumerTest.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/ReactiveMessagingEventConsumerTest.java
 @@ -17,7 +17,7 @@ package org.kie.kogito.index.service.messaging;
@@ -1978,10 +1978,10 @@ index fb1fa800b..66eab3ebe 100644
  
  import org.infinispan.protostream.FileDescriptorSource;
  
-diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
+diff --git a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
 index 0d53d229f..f9a6c3a10 100644
---- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
-+++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
+--- a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
++++ b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
 @@ -20,8 +20,8 @@ import java.io.IOException;
  import java.io.UncheckedIOException;
  import java.util.Collection;
