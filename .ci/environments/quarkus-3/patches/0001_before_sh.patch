@@ -80,7 +80,7 @@ index 998101ea6..1a65df37a 100644
  import com.fasterxml.jackson.databind.ObjectMapper;
  
 diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java
-index cd27e6f65..b6fa180e3 100644
+index a696309be..d3fd47798 100644
 --- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java
 +++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java
 @@ -17,8 +17,8 @@ package org.kie.kogito.index.service;
@@ -95,7 +95,7 @@ index cd27e6f65..b6fa180e3 100644
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.model.NodeInstance;
 diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
-index 412f35bd6..3bec26ad5 100644
+index 6d50e6b2e..8173c26c0 100644
 --- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
 +++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
 @@ -25,8 +25,7 @@ import java.util.Objects;
@@ -108,7 +108,7 @@ index 412f35bd6..3bec26ad5 100644
  
  import org.kie.kogito.index.api.KogitoRuntimeClient;
  import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
-@@ -48,6 +47,7 @@ import graphql.schema.GraphQLScalarType;
+@@ -49,6 +48,7 @@ import graphql.schema.GraphQLScalarType;
  import graphql.schema.GraphQLSchema;
  import graphql.schema.idl.SchemaParser;
  import graphql.schema.idl.TypeDefinitionRegistry;
@@ -255,7 +255,7 @@ index f4c030201..182fb2e3c 100644
  
  import static io.quarkus.vertx.web.Route.HttpMethod.GET;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java
-index 3c74b1e28..f44d1ccab 100644
+index 4ac42ab22..684f87d44 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java
 +++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/api/KogitoRuntimeClientImpl.java
 @@ -23,9 +23,9 @@ import java.util.Map;
@@ -304,7 +304,7 @@ index 25ee8cade..e0c7a7934 100644
  import org.kie.kogito.index.graphql.GraphQLObjectTypeMapper;
  import org.kie.kogito.index.graphql.query.GraphQLInputObjectTypeMapper;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
-index 36f929873..8416c9d68 100644
+index 61bd69f6b..b0d1086ae 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 +++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 @@ -22,9 +22,9 @@ import java.util.Optional;
@@ -441,7 +441,7 @@ index b40ae732d..cc55dc3a7 100644
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
-index 9128d8050..9148e48af 100644
+index 5e2aaf58b..fcc22c226 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
 @@ -24,8 +24,8 @@ import java.util.Map;
@@ -456,7 +456,7 @@ index 9128d8050..9148e48af 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeAll;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java
-index 7c093ac1f..f0071c861 100644
+index 563ed1b6f..e904915d2 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractQueryIT.java
 @@ -19,7 +19,7 @@ import java.util.Date;
@@ -469,7 +469,7 @@ index 7c093ac1f..f0071c861 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.BeforeEach;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java
-index 4dc6710ae..131540c00 100644
+index 482a87f69..b43b3e90a 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/cache/AbstractStorageIT.java
 @@ -19,7 +19,7 @@ import java.util.UUID;
@@ -482,7 +482,7 @@ index 4dc6710ae..131540c00 100644
  import org.junit.jupiter.api.AfterEach;
  import org.junit.jupiter.api.Test;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java
-index b267c85d6..19cb648cc 100644
+index 0f2bf8b60..94c582f2d 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/AbstractWebSocketSubscriptionIT.java
 @@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
@@ -508,7 +508,7 @@ index 710dccaad..79c86b5a5 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.index.service.graphql.GraphQLSchemaManagerImpl;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java
-index ad05ddf7a..4206b13a1 100644
+index 3d7a4823a..4986d3eea 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/graphql/query/AbstractGraphQLRuntimesQueriesIT.java
 @@ -20,7 +20,7 @@ import java.util.List;
@@ -521,7 +521,7 @@ index ad05ddf7a..4206b13a1 100644
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingConsumerIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingConsumerIT.java
-index 370e15479..029860971 100644
+index 62d5e7816..ef1025c57 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingConsumerIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractDomainMessagingConsumerIT.java
 @@ -19,7 +19,7 @@ package org.kie.kogito.index.service.messaging;
@@ -557,7 +557,7 @@ index f80c8c2cf..bce3174a1 100644
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
  import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java
-index 804592132..221f952a7 100644
+index d9a6e5761..b3a7818cc 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingConsumerIT.java
 @@ -18,7 +18,7 @@ package org.kie.kogito.index.service.messaging;
@@ -594,7 +594,7 @@ index baeeeb9a5..4bdacbf8b 100644
  import static org.kie.kogito.index.test.TestUtils.*;
  
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java
-index c567bc0a5..3de7d613d 100644
+index 34b83ea61..673606577 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/messaging/AbstractMessagingLoadKafkaIT.java
 @@ -23,7 +23,7 @@ import java.util.UUID;
@@ -633,7 +633,7 @@ index 8ba74733f..c14d09d57 100644
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_JOBS_EVENTS;
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
 diff --git a/data-index/data-index-storage/data-index-storage-api/src/main/java/org/kie/kogito/index/storage/DataIndexStorageServiceImpl.java b/data-index/data-index-storage/data-index-storage-api/src/main/java/org/kie/kogito/index/storage/DataIndexStorageServiceImpl.java
-index cf1f6ace6..de40c06e3 100644
+index c661a01e7..8f16962a6 100644
 --- a/data-index/data-index-storage/data-index-storage-api/src/main/java/org/kie/kogito/index/storage/DataIndexStorageServiceImpl.java
 +++ b/data-index/data-index-storage/data-index-storage-api/src/main/java/org/kie/kogito/index/storage/DataIndexStorageServiceImpl.java
 @@ -16,8 +16,8 @@
@@ -646,9 +646,9 @@ index cf1f6ace6..de40c06e3 100644
 +import jakarta.inject.Inject;
  
  import org.kie.kogito.index.model.Job;
- import org.kie.kogito.index.model.ProcessInstance;
+ import org.kie.kogito.index.model.ProcessDefinition;
 diff --git a/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/InfinispanCacheStartup.java b/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/InfinispanCacheStartup.java
-index 282bb6569..f7ae3c417 100644
+index c190c7353..e5189f5a5 100644
 --- a/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/InfinispanCacheStartup.java
 +++ b/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/InfinispanCacheStartup.java
 @@ -15,10 +15,10 @@
@@ -666,7 +666,7 @@ index 282bb6569..f7ae3c417 100644
  
  import io.quarkus.runtime.Startup;
 diff --git a/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/protostream/ProtostreamProducer.java b/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/protostream/ProtostreamProducer.java
-index 67a758732..3bcdb7279 100644
+index 03f7693c7..d893bf50c 100644
 --- a/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/protostream/ProtostreamProducer.java
 +++ b/data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/protostream/ProtostreamProducer.java
 @@ -15,9 +15,9 @@
@@ -713,7 +713,7 @@ index 24b7f2ebc..8ac91631a 100644
  import org.infinispan.client.hotrod.RemoteCacheManager;
  import org.infinispan.commons.configuration.XMLStringConfiguration;
 diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImpl.java b/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImpl.java
-index 3927afb46..c57a1174d 100644
+index aab322ab8..efd0a5c04 100644
 --- a/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImpl.java
 +++ b/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImpl.java
 @@ -20,11 +20,11 @@ import java.util.Map;
@@ -730,8 +730,8 @@ index 3927afb46..c57a1174d 100644
  
 +import jakarta.annotation.PostConstruct;
  import org.kie.kogito.index.model.Job;
+ import org.kie.kogito.index.model.ProcessDefinition;
  import org.kie.kogito.index.model.ProcessInstance;
- import org.kie.kogito.index.model.UserTaskInstance;
 diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/ProcessIndexObserver.java b/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/ProcessIndexObserver.java
 index 22a3c5020..bd36d998e 100644
 --- a/data-index/data-index-storage/data-index-storage-mongodb/src/main/java/org/kie/kogito/index/mongodb/storage/ProcessIndexObserver.java
@@ -792,6 +792,19 @@ index 0b339b3b7..0026c7bc6 100644
  
  import org.junit.jupiter.api.BeforeEach;
  import org.kie.kogito.index.model.Job;
+diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessDefinitionQueryIT.java b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessDefinitionQueryIT.java
+index 739e57746..c70a0de42 100644
+--- a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessDefinitionQueryIT.java
++++ b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessDefinitionQueryIT.java
+@@ -16,7 +16,7 @@
+ 
+ package org.kie.kogito.index.mongodb.query;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.BeforeEach;
+ import org.kie.kogito.index.model.ProcessDefinition;
 diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessIdQueryIT.java b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessIdQueryIT.java
 index 41195a849..042ee20d5 100644
 --- a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/query/ProcessIdQueryIT.java
@@ -858,7 +871,7 @@ index 2d621acd7..076a4bc46 100644
  import org.apache.commons.lang3.RandomStringUtils;
  import org.junit.jupiter.api.AfterEach;
 diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImplIT.java b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImplIT.java
-index a57d2bf2e..78cd81793 100644
+index b0f15736b..8cb1bc3da 100644
 --- a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImplIT.java
 +++ b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/MongoModelServiceImplIT.java
 @@ -16,7 +16,7 @@
@@ -870,6 +883,19 @@ index a57d2bf2e..78cd81793 100644
  
  import org.bson.Document;
  import org.junit.jupiter.api.AfterEach;
+diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessDefinitionStorageIT.java b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessDefinitionStorageIT.java
+index bdd558f29..eb99bcd86 100644
+--- a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessDefinitionStorageIT.java
++++ b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessDefinitionStorageIT.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.index.mongodb.storage;
+ 
+ import java.util.Set;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.AfterEach;
+ import org.junit.jupiter.api.BeforeEach;
 diff --git a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessIdStorageIT.java b/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessIdStorageIT.java
 index 591a5fa50..0153d534d 100644
 --- a/data-index/data-index-storage/data-index-storage-mongodb/src/test/java/org/kie/kogito/index/mongodb/storage/ProcessIdStorageIT.java
@@ -1054,6 +1080,48 @@ index 2759fea98..366dcfeff 100644
  
  import org.hibernate.annotations.OnDelete;
  import org.hibernate.annotations.OnDeleteAction;
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java
+index 839dcbb3b..c617f3253 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java
+@@ -19,15 +19,15 @@ package org.kie.kogito.index.oracle.model;
+ import java.util.Objects;
+ import java.util.Set;
+ 
+-import javax.persistence.CollectionTable;
+-import javax.persistence.Column;
+-import javax.persistence.ElementCollection;
+-import javax.persistence.Entity;
+-import javax.persistence.ForeignKey;
+-import javax.persistence.Id;
+-import javax.persistence.IdClass;
+-import javax.persistence.JoinColumn;
+-import javax.persistence.Table;
++import jakarta.persistence.CollectionTable;
++import jakarta.persistence.Column;
++import jakarta.persistence.ElementCollection;
++import jakarta.persistence.Entity;
++import jakarta.persistence.ForeignKey;
++import jakarta.persistence.Id;
++import jakarta.persistence.IdClass;
++import jakarta.persistence.JoinColumn;
++import jakarta.persistence.Table;
+ 
+ import org.hibernate.annotations.OnDelete;
+ import org.hibernate.annotations.OnDeleteAction;
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntityRepository.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntityRepository.java
+index 88be8193c..4977378ff 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntityRepository.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntityRepository.java
+@@ -16,7 +16,7 @@
+ 
+ package org.kie.kogito.index.oracle.model;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+ 
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 index 73d1c9426..c19fa1eb5 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
@@ -1158,7 +1226,7 @@ index ed0c35dda..634096498 100644
  import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
  
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/AbstractStorage.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/AbstractStorage.java
-index a82cea497..e04665662 100644
+index d365088eb..708cc46f9 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/AbstractStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/AbstractStorage.java
 @@ -19,7 +19,7 @@ package org.kie.kogito.index.oracle.storage;
@@ -1171,7 +1239,7 @@ index a82cea497..e04665662 100644
  import org.kie.kogito.index.oracle.model.AbstractEntity;
  import org.kie.kogito.persistence.api.Storage;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/JobEntityStorage.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/JobEntityStorage.java
-index 0ba57a841..8fb11d72e 100644
+index c6e1f20bb..1bbc9e400 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/JobEntityStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/JobEntityStorage.java
 @@ -16,8 +16,8 @@
@@ -1220,7 +1288,7 @@ index 1e9d336c6..d848509ae 100644
          if (limit != null) {
              query.setMaxResults(limit);
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java
-index 5a3cdeec9..a11b9fe52 100644
+index 3af6c90b3..672206bb4 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/OracleStorageService.java
 @@ -15,8 +15,8 @@
@@ -1233,9 +1301,26 @@ index 5a3cdeec9..a11b9fe52 100644
 +import jakarta.inject.Inject;
  
  import org.kie.kogito.index.model.Job;
- import org.kie.kogito.index.model.ProcessInstance;
+ import org.kie.kogito.index.model.ProcessDefinition;
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionEntityStorage.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionEntityStorage.java
+index 890479188..3baec9aa7 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionEntityStorage.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionEntityStorage.java
+@@ -18,9 +18,9 @@ package org.kie.kogito.index.oracle.storage;
+ 
+ import java.util.Optional;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
+-import javax.persistence.EntityManager;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
++import jakarta.persistence.EntityManager;
+ 
+ import org.kie.kogito.index.model.ProcessDefinition;
+ import org.kie.kogito.index.oracle.mapper.ProcessDefinitionEntityMapper;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessInstanceEntityStorage.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessInstanceEntityStorage.java
-index 46e84b715..b4aa5fbdf 100644
+index eafdce942..47203e5bb 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessInstanceEntityStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/ProcessInstanceEntityStorage.java
 @@ -16,8 +16,8 @@
@@ -1250,7 +1335,7 @@ index 46e84b715..b4aa5fbdf 100644
  import org.kie.kogito.index.model.ProcessInstance;
  import org.kie.kogito.index.oracle.mapper.ProcessInstanceEntityMapper;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/UserTaskInstanceEntityStorage.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/UserTaskInstanceEntityStorage.java
-index 7335a17c9..ac247847f 100644
+index 9cc2f5077..fef9eca39 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/UserTaskInstanceEntityStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/storage/UserTaskInstanceEntityStorage.java
 @@ -16,8 +16,8 @@
@@ -1271,6 +1356,19 @@ index 90a12128c..0a50caeea 100644
 @@ -18,7 +18,7 @@ package org.kie.kogito.index.oracle.mapper;
  
  import java.time.ZonedDateTime;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessDefinitionEntityMapperIT.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessDefinitionEntityMapperIT.java
+index 21ace047c..2e1b91285 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessDefinitionEntityMapperIT.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessDefinitionEntityMapperIT.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.index.oracle.mapper;
+ 
+ import java.util.Set;
  
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
@@ -1316,6 +1414,19 @@ index 54905e6d0..fee65f818 100644
  
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.oracle.storage.JobEntityStorage;
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessDefinitionEntityQueryIT.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessDefinitionEntityQueryIT.java
+index 5829e4260..171656270 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessDefinitionEntityQueryIT.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessDefinitionEntityQueryIT.java
+@@ -16,7 +16,7 @@
+ 
+ package org.kie.kogito.index.oracle.query;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.index.model.ProcessDefinition;
+ import org.kie.kogito.index.oracle.storage.ProcessDefinitionEntityStorage;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessInstanceEntityQueryIT.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessInstanceEntityQueryIT.java
 index c9bd0be58..476b9ed9e 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/query/ProcessInstanceEntityQueryIT.java
@@ -1384,6 +1495,21 @@ index 61c53189c..61fec3c9e 100644
  
  import org.apache.commons.lang3.RandomStringUtils;
  import org.junit.jupiter.api.BeforeEach;
+diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionStorageIT.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionStorageIT.java
+index da331e67c..b995ce074 100644
+--- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionStorageIT.java
++++ b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessDefinitionStorageIT.java
+@@ -18,8 +18,8 @@ package org.kie.kogito.index.oracle.storage;
+ 
+ import java.util.Set;
+ 
+-import javax.inject.Inject;
+-import javax.transaction.Transactional;
++import jakarta.inject.Inject;
++import jakarta.transaction.Transactional;
+ 
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.index.model.ProcessDefinition;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessInstanceStorageIT.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessInstanceStorageIT.java
 index e5e7c260a..8ee120129 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/storage/ProcessInstanceStorageIT.java
@@ -1603,6 +1729,48 @@ index 5c85028b8..733dba486 100644
  
  import org.hibernate.annotations.OnDelete;
  import org.hibernate.annotations.OnDeleteAction;
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java
+index e94e2ec0f..8cf52fb1a 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java
+@@ -19,15 +19,15 @@ package org.kie.kogito.index.postgresql.model;
+ import java.util.Objects;
+ import java.util.Set;
+ 
+-import javax.persistence.CollectionTable;
+-import javax.persistence.Column;
+-import javax.persistence.ElementCollection;
+-import javax.persistence.Entity;
+-import javax.persistence.ForeignKey;
+-import javax.persistence.Id;
+-import javax.persistence.IdClass;
+-import javax.persistence.JoinColumn;
+-import javax.persistence.Table;
++import jakarta.persistence.CollectionTable;
++import jakarta.persistence.Column;
++import jakarta.persistence.ElementCollection;
++import jakarta.persistence.Entity;
++import jakarta.persistence.ForeignKey;
++import jakarta.persistence.Id;
++import jakarta.persistence.IdClass;
++import jakarta.persistence.JoinColumn;
++import jakarta.persistence.Table;
+ 
+ import org.hibernate.annotations.OnDelete;
+ import org.hibernate.annotations.OnDeleteAction;
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntityRepository.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntityRepository.java
+index 198cd99b2..d7d07ea69 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntityRepository.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntityRepository.java
+@@ -16,7 +16,7 @@
+ 
+ package org.kie.kogito.index.postgresql.model;
+ 
+-import javax.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.context.ApplicationScoped;
+ 
+ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+ 
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
 index a50ee0230..e5ed19ef9 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
@@ -1707,7 +1875,7 @@ index a36b9f91d..273b2ffdb 100644
  import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
  
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/AbstractStorage.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/AbstractStorage.java
-index f0ea0ec5b..450a9de63 100644
+index 2118fa991..ce4728140 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/AbstractStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/AbstractStorage.java
 @@ -19,7 +19,7 @@ package org.kie.kogito.index.postgresql.storage;
@@ -1720,7 +1888,7 @@ index f0ea0ec5b..450a9de63 100644
  import org.kie.kogito.index.postgresql.model.AbstractEntity;
  import org.kie.kogito.persistence.api.Storage;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/JobEntityStorage.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/JobEntityStorage.java
-index f7bec0e6c..b91c4e6d3 100644
+index 6e5f96f49..dce59ac20 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/JobEntityStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/JobEntityStorage.java
 @@ -16,8 +16,8 @@
@@ -1735,7 +1903,7 @@ index f7bec0e6c..b91c4e6d3 100644
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.postgresql.mapper.JobEntityMapper;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java
-index 8216e9939..10b132749 100644
+index 3e6ce9e28..74fd17bd9 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlQuery.java
 @@ -19,13 +19,13 @@ import java.util.Collection;
@@ -1759,7 +1927,7 @@ index 8216e9939..10b132749 100644
  
  import org.hibernate.query.criteria.internal.path.PluralAttributePath;
  import org.kie.kogito.index.postgresql.model.AbstractEntity;
-@@ -95,7 +95,7 @@ public class PostgreSqlQuery<E extends AbstractEntity, T> implements Query<T> {
+@@ -95,7 +95,7 @@ public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T>
              criteriaQuery.orderBy(orderBy);
          }
  
@@ -1769,7 +1937,7 @@ index 8216e9939..10b132749 100644
          if (limit != null) {
              query.setMaxResults(limit);
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java
-index b1176c1c0..969d73231 100644
+index 05fed4071..e5b4a840f 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/PostgreSqlStorageService.java
 @@ -15,8 +15,8 @@
@@ -1782,9 +1950,26 @@ index b1176c1c0..969d73231 100644
 +import jakarta.inject.Inject;
  
  import org.kie.kogito.index.model.Job;
- import org.kie.kogito.index.model.ProcessInstance;
+ import org.kie.kogito.index.model.ProcessDefinition;
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionEntityStorage.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionEntityStorage.java
+index 2e5eef758..9b3eadb87 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionEntityStorage.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionEntityStorage.java
+@@ -18,9 +18,9 @@ package org.kie.kogito.index.postgresql.storage;
+ 
+ import java.util.Optional;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
+-import javax.persistence.EntityManager;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
++import jakarta.persistence.EntityManager;
+ 
+ import org.kie.kogito.index.model.ProcessDefinition;
+ import org.kie.kogito.index.postgresql.mapper.ProcessDefinitionEntityMapper;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceEntityStorage.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceEntityStorage.java
-index 090d68464..77503f458 100644
+index 5b6313f03..204e3b7d4 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceEntityStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceEntityStorage.java
 @@ -16,8 +16,8 @@
@@ -1799,7 +1984,7 @@ index 090d68464..77503f458 100644
  import org.kie.kogito.index.model.ProcessInstance;
  import org.kie.kogito.index.postgresql.mapper.ProcessInstanceEntityMapper;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/UserTaskInstanceEntityStorage.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/UserTaskInstanceEntityStorage.java
-index 62dc7e993..5b5fc52e6 100644
+index cc1ba8aeb..518e4a5bd 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/UserTaskInstanceEntityStorage.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/storage/UserTaskInstanceEntityStorage.java
 @@ -16,8 +16,8 @@
@@ -1820,6 +2005,19 @@ index 0dddb30c0..cfb12c6ad 100644
 @@ -18,7 +18,7 @@ package org.kie.kogito.index.postgresql.mapper;
  
  import java.time.ZonedDateTime;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/mapper/ProcessDefinitionEntityMapperIT.java b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/mapper/ProcessDefinitionEntityMapperIT.java
+index 37bdc834d..2a5c7a98b 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/mapper/ProcessDefinitionEntityMapperIT.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/mapper/ProcessDefinitionEntityMapperIT.java
+@@ -18,7 +18,7 @@ package org.kie.kogito.index.postgresql.mapper;
+ 
+ import java.util.Set;
  
 -import javax.inject.Inject;
 +import jakarta.inject.Inject;
@@ -1865,6 +2063,19 @@ index fc48c8fb0..efa2d6c25 100644
  
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.postgresql.storage.JobEntityStorage;
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessDefinitionEntityQueryIT.java b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessDefinitionEntityQueryIT.java
+index a7fd475db..7b3ffd90e 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessDefinitionEntityQueryIT.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessDefinitionEntityQueryIT.java
+@@ -16,7 +16,7 @@
+ 
+ package org.kie.kogito.index.postgresql.query;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import org.kie.kogito.index.model.ProcessDefinition;
+ import org.kie.kogito.index.postgresql.storage.ProcessDefinitionEntityStorage;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessInstanceEntityQueryIT.java b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessInstanceEntityQueryIT.java
 index 60760dc54..3eb6079b1 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/query/ProcessInstanceEntityQueryIT.java
@@ -1933,6 +2144,21 @@ index 6b27fbc49..5953447d3 100644
  
  import org.apache.commons.lang3.RandomStringUtils;
  import org.junit.jupiter.api.BeforeEach;
+diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionStorageIT.java b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionStorageIT.java
+index a928c69ae..b105c5ddd 100644
+--- a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionStorageIT.java
++++ b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessDefinitionStorageIT.java
+@@ -18,8 +18,8 @@ package org.kie.kogito.index.postgresql.storage;
+ 
+ import java.util.Set;
+ 
+-import javax.inject.Inject;
+-import javax.transaction.Transactional;
++import jakarta.inject.Inject;
++import jakarta.transaction.Transactional;
+ 
+ import org.junit.jupiter.api.Test;
+ import org.kie.kogito.index.model.ProcessDefinition;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceStorageIT.java b/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceStorageIT.java
 index 8fefdc1e1..d543d5416 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/test/java/org/kie/kogito/index/postgresql/storage/ProcessInstanceStorageIT.java
@@ -1994,7 +2220,7 @@ index 0d53d229f..f9a6c3a10 100644
  import org.kie.kogito.event.DataEvent;
  import org.kie.kogito.event.EventPublisher;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
-index 4508553b7..faa23385f 100644
+index 182b02105..a70564369 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 +++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 @@ -23,9 +23,9 @@ import java.util.Map;
@@ -2011,7 +2237,7 @@ index 4508553b7..faa23385f 100644
  import org.eclipse.microprofile.context.ManagedExecutor;
  import org.kie.kogito.addon.source.files.SourceFilesProvider;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
-index e5146a109..0d22b909e 100644
+index 101ddf0bb..5cd68f981 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 +++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 @@ -15,7 +15,7 @@
