@@ -16,6 +16,31 @@
 
 package org.drools.base.definitions.rule.impl;
 
+import org.drools.base.base.EnabledBoolean;
+import org.drools.base.base.SalienceInteger;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.ConsequenceMetaData;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Dialectable;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElementFactory;
+import org.drools.base.rule.InvalidPatternException;
+import org.drools.base.rule.InvalidRuleException;
+import org.drools.base.rule.LogicTransformer;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.accessor.CompiledInvoker;
+import org.drools.base.rule.accessor.Enabled;
+import org.drools.base.rule.accessor.Salience;
+import org.drools.base.rule.accessor.Wireable;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.time.impl.Timer;
+import org.drools.util.StringUtils;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.AgendaGroup;
+import org.kie.internal.definition.rule.InternalRule;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,31 +55,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.base.base.ValueResolver;
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.ConsequenceMetaData;
-import org.drools.base.rule.Dialectable;
-import org.drools.base.rule.InvalidPatternException;
-import org.drools.base.rule.InvalidRuleException;
-import org.drools.base.rule.LogicTransformer;
-import org.drools.base.rule.accessor.CompiledInvoker;
-import org.drools.base.rule.accessor.Enabled;
-import org.drools.base.rule.accessor.Salience;
-import org.drools.base.rule.accessor.Wireable;
-import org.drools.base.rule.consequence.Consequence;
-import org.drools.base.time.impl.Timer;
-import org.drools.base.base.EnabledBoolean;
-import org.drools.base.base.SalienceInteger;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.GroupElementFactory;
-import org.drools.base.rule.RuleConditionElement;
-import org.drools.util.StringUtils;
-import org.kie.api.definition.rule.Query;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.rule.AgendaGroup;
-import org.kie.internal.definition.rule.InternalRule;
 
 public class RuleImpl implements Externalizable,
         Wireable,
@@ -806,7 +806,7 @@ public class RuleImpl implements Externalizable,
         return parent;
     }
 
-    public void addChild(RuleImpl child) {
+    public synchronized void addChild(RuleImpl child) {
         if (children == null) {
             children = new ArrayList<>();
         }

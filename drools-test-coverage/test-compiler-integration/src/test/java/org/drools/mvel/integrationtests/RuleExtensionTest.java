@@ -16,10 +16,6 @@
 
 package org.drools.mvel.integrationtests;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -31,6 +27,10 @@ import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -418,5 +418,34 @@ public class RuleExtensionTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
 
         assertThat(errors.iterator().next().toString().contains("Circular")).isTrue();
+    }
+
+    @Test
+    public void testManyExtensions() {
+        // DROOLS-7542
+        String base =
+                "package org.drools.test;\n" +
+                "\n" +
+                "rule R0 when\n" +
+                "  $s : String()\n" +
+                "then\n" +
+                "end\n";
+
+        StringBuilder drl = new StringBuilder(base);
+        for (int i = 1; i < 100; i++) {
+            drl.append(getExtendedRule(i));
+        }
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, drl.toString());
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertThat(errors.isEmpty()).isTrue();
+     }
+
+    private String getExtendedRule(int i) {
+        return  "rule R" + i +" extends R0 when\n" +
+                "  $i : Integer( this == " + i + " )\n" +
+                "then\n" +
+                "end\n";
+
     }
 }
