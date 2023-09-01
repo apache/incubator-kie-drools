@@ -26,6 +26,7 @@
       </activation>
       <modules>
         <module>kogito-addons-quarkus-data-index-persistence-infinispan</module>
+        <module>kogito-addons-quarkus-data-index-persistence-mongodb</module>
       </modules>
     </profile>
   </profiles>
