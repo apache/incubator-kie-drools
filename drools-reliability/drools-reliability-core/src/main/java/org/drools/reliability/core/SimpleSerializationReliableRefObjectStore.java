@@ -38,12 +38,6 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
         setInverseStorage(storage);
-        /*if (storage.isEmpty()) {
-            this.storage = storage; // why is this code here? this is done by the super constructor
-        } else {
-            updateObjectTypesList();
-            this.storage = updateObjectReferences(storage);
-        }*/
         if (!storage.isEmpty()) {
             updateObjectTypesList();
             this.storage = updateObjectReferences(storage);
@@ -112,12 +106,6 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
 
     private Long fromObjectToFactHandleId(Object object) {
         return this.inverseStorage.get(object);
-        /*for (Long key : this.storage.keySet()) {
-            if (((SerializableStoredRefObject) storage.get(key)).getObject() == object) {
-                return key;
-            }
-        }
-        return null;*/
     }
 
     private List<Field> getReferencedObjects(Object object) {
