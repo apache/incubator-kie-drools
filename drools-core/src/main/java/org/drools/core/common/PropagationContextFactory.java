@@ -19,7 +19,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.base.rule.EntryPointId;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 public interface PropagationContextFactory {
 

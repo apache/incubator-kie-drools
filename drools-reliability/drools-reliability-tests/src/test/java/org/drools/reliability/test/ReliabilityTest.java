@@ -493,4 +493,28 @@ class ReliabilityTest extends ReliabilityTestBasics {
         assertThat(fireAllRules(session1)).isEqualTo(1);
         assertThat(getResults(session1)).containsExactlyInAnyOrder("Toshiya");
     }
+
+    @ParameterizedTest
+    @MethodSource("strategyProviderStoresOnlyWithAllSafepointsWithActivationKey")
+    void insertFireLimitFailoverFire_shouldFireRemainingActivations(PersistedSessionOption.PersistenceStrategy persistenceStrategy, PersistedSessionOption.SafepointStrategy safepointStrategy,
+                                                                    PersistedSessionOption.ActivationStrategy activationStrategy) {
+        createSession(BASIC_RULE, persistenceStrategy, safepointStrategy, activationStrategy);
+
+        insert("M");
+        insertMatchingPerson("Matching Person One");
+        insertMatchingPerson("Matching Person Two");
+        insertMatchingPerson("Matching Person Three");
+
+        fireAllRules(1);
+        assertThat(getResults()).as("Firing is limited to 1")
+                .hasSize(1);
+
+        failover();
+
+        restoreSession(BASIC_RULE, persistenceStrategy, safepointStrategy, activationStrategy);
+
+        fireAllRules();
+        assertThat(getResults()).as("All remaining activations should fire")
+                .containsExactlyInAnyOrder("Matching Person One", "Matching Person Two", "Matching Person Three");
+    }
 }

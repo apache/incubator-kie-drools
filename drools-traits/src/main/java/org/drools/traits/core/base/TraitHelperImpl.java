@@ -58,7 +58,7 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.common.PropagationContext;
 import org.drools.traits.core.factmodel.HierarchyEncoder;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.base.beliefsystem.Mode;
 import org.drools.traits.core.reteoo.TraitRuntimeComponentFactory;
 import org.kie.api.runtime.rule.EntryPoint;

@@ -16,20 +16,6 @@
 
 package org.drools.model.codegen.execmodel;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.drools.model.codegen.execmodel.FunctionsTest.Pojo;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Adult;
@@ -47,6 +33,20 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -710,6 +710,47 @@ public class FromTest extends BaseModelTest {
         ksession.insert(p3);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testFromCollectCustomSet() {
+        // DROOLS-7534
+        String str =
+                "package org.drools.compiler.test  \n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import " + MyHashSet.class.getCanonicalName() + "\n" +
+                     "import " + FromTest.class.getCanonicalName() + "\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "    $set : MyHashSet (size == 2) from collect (Person (age >= 30))\n" +
+                     "then\n" +
+                     "    FromTest.printPersons($set);" +
+                     "end \n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p1 = new Person("John", 32);
+        Person p1a = new Person("John", 32);
+        Person p2 = new Person("Paul", 30);
+        Person p3 = new Person("George", 29);
+
+        ksession.insert(p1);
+        ksession.insert(p1a);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    public static void printPersons(MyHashSet<Person> persons) {
+        System.out.println("persons found: " + persons);
+    }
+
+    public static class MyHashSet<T> extends HashSet<T> {
+
+        public MyHashSet() {
+            super();
+        }
     }
 
     @Test

@@ -16,7 +16,7 @@
 package org.drools.reliability.core;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.Storage;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -26,6 +26,8 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import static org.drools.reliability.core.StorageManager.getSessionIdentifier;
 
 public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl implements ReliableKieSession {
+
+    private transient Storage<String, Object> activationsStorage;
 
     public ReliableStatefulKnowledgeSessionImpl() {
     }
@@ -74,7 +76,21 @@ public class ReliableStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
     }
 
     @Override
+    public Storage<String, Object> getActivationsStorage() {
+        return activationsStorage;
+    }
+
+    @Override
+    public void setActivationsStorage(Storage<String, Object> activationsStorage) {
+        this.activationsStorage = activationsStorage;
+    }
+
+    @Override
     public void safepoint() {
         getEntryPoints().stream().map(ReliableNamedEntryPoint.class::cast).forEach(ReliableNamedEntryPoint::safepoint);
+        if (getSessionConfiguration().getPersistedSessionOption().getActivationStrategy() == PersistedSessionOption.ActivationStrategy.ACTIVATION_KEY
+                && activationsStorage.requiresFlush()) {
+            activationsStorage.flush();
+        }
     }
 }

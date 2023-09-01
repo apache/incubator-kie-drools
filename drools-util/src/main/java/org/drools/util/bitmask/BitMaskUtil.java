@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.util;
+package org.drools.util.bitmask;
 
 public class BitMaskUtil {
 

@@ -247,7 +247,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public TerminalNode getTerminalNode() {
-        return (TerminalNode) getTupleSink();
+        return (AbstractTerminalNode) getTupleSink();
     }
 
     public List<FactHandle> getFactHandles() {

@@ -15,6 +15,10 @@
 
 package org.drools.reliability.core;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
@@ -22,16 +26,17 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.reliability.core.util.ReliabilityUtils;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.EntryPoint;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.reliability.core.ReliablePropagationList.PROPAGATION_LIST;
 
@@ -54,13 +59,24 @@ public class ReliableSessionInitializer {
 
         @Override
         public InternalWorkingMemory init(InternalWorkingMemory session, PersistedSessionOption persistedSessionOption) {
+
+            if (persistedSessionOption.getActivationStrategy() == PersistedSessionOption.ActivationStrategy.ACTIVATION_KEY) {
+                Storage<String, Object> activationsStorage = StorageManagerFactory.get().getStorageManager().getOrCreateStorageForSession(session, "activations");
+                ((ReliableKieSession)session).setActivationsStorage(activationsStorage);
+            }
+
             if (!persistedSessionOption.isNewSession()) {
                 // re-propagate objects from the storage to the new session
                 populateSessionFromStorage(session);
             }
 
+            // These listeners should be added after populateSessionFromStorage()
             session.setWorkingMemoryActionListener(entry -> onWorkingMemoryAction(session, entry));
             session.getRuleRuntimeEventSupport().addEventListener(new SimpleStoreRuntimeEventListener(session));
+            if (persistedSessionOption.getActivationStrategy() == PersistedSessionOption.ActivationStrategy.ACTIVATION_KEY) {
+                ((ReliableKieSession)session).getActivationsStorage().clear();
+                session.getAgendaEventSupport().addEventListener(new SimpleStoreAgendaEventListener((ReliableKieSession)session));
+            }
 
             return session;
         }
@@ -106,6 +122,30 @@ public class ReliableSessionInitializer {
                 InternalFactHandle fh = (InternalFactHandle) ev.getFactHandle();
                 SimpleReliableObjectStore store = (SimpleReliableObjectStore) fh.getEntryPoint(session).getObjectStore();
                 store.putIntoPersistedStorage(fh, false);
+            }
+        }
+
+        static class SimpleStoreAgendaEventListener extends DefaultAgendaEventListener {
+
+            private final ReliableKieSession session;
+
+            public SimpleStoreAgendaEventListener(ReliableKieSession session) {
+                this.session = session;
+            }
+
+            @Override
+            public void matchCreated(MatchCreatedEvent event) {
+                session.getActivationsStorage().put(ReliabilityUtils.getActivationKey(event.getMatch()), true);
+            }
+
+            @Override
+            public void matchCancelled(MatchCancelledEvent event) {
+                session.getActivationsStorage().remove(ReliabilityUtils.getActivationKey(event.getMatch()));
+            }
+
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                session.getActivationsStorage().remove(ReliabilityUtils.getActivationKey(event.getMatch()));
             }
         }
     }

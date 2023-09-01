@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.util.bitmask;
+package org.drools.util.bitmask;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

@@ -38,7 +38,7 @@ import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.time.Interval;
 import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex2;

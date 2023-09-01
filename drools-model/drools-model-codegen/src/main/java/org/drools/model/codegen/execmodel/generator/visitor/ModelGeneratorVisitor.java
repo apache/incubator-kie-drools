@@ -113,7 +113,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
     public void visit(PatternDescr descr) {
         final PatternSourceDescr patternSource = descr.getSource();
         if (patternSource instanceof CollectDescr) {
-            new FromCollectVisitor(this).trasformFromCollectToCollectList(descr, (CollectDescr) patternSource);
+            new FromCollectVisitor(this).transformFromCollectToCollectList(descr, (CollectDescr) patternSource);
         } else if (patternSource instanceof GroupByDescr) {
             new GroupByVisitor(this, context, packageModel).visit((GroupByDescr) patternSource, descr);
             new PatternVisitor(context, packageModel).visit(descr).buildPattern();

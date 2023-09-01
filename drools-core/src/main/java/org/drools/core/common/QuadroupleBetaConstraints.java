@@ -27,7 +27,7 @@ import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.IndexPrecedenceOption;
 

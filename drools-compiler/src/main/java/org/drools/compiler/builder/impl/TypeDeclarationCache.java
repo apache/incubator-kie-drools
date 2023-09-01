@@ -41,7 +41,7 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processMvelBasedAccessors;
-import static org.drools.util.BitMaskUtil.isSet;
+import static org.drools.util.bitmask.BitMaskUtil.isSet;
 import static org.drools.base.util.Drools.hasMvel;
 
 public class TypeDeclarationCache {

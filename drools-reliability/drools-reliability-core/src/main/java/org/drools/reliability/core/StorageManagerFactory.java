@@ -27,14 +27,24 @@ public interface StorageManagerFactory extends KieService {
 
     StorageManager getStorageManager();
 
+    class Tag {
+
+        private Tag() {
+            // hide constructor
+        }
+
+        private static String reliabilityPersistanceLayer = null;
+    }
+
     class Holder {
+
         private static final StorageManagerFactory INSTANCE = createInstance();
 
         private Holder() {
         }
 
         static StorageManagerFactory createInstance() {
-            StorageManagerFactory factory = KieService.load( StorageManagerFactory.class );
+            StorageManagerFactory factory = KieService.loadWithTag(StorageManagerFactory.class, Tag.reliabilityPersistanceLayer);
             if (factory == null) {
                 throwExceptionForMissingRuntime();
                 return null;
@@ -45,6 +55,20 @@ public interface StorageManagerFactory extends KieService {
     }
 
     static StorageManagerFactory get() {
+        return StorageManagerFactory.Holder.INSTANCE;
+    }
+
+    /**
+     * Use this method first to specify reliabilityPersistanceLayer when you have dependencies covering multiple persistence layers (e.g. infinispan and h2mvstore)
+     * Once a factory is instantiated, get() is enough to get the same instance.
+     */
+    static StorageManagerFactory get(String reliabilityPersistanceLayer) {
+        if (Tag.reliabilityPersistanceLayer != null && !Tag.reliabilityPersistanceLayer.equals(reliabilityPersistanceLayer)) {
+            throw new IllegalStateException("You must call the same service with the same reliabilityPersistanceLayer. " +
+                                            "Previous reliabilityPersistanceLayer was " + Tag.reliabilityPersistanceLayer +
+                                            " and current reliabilityPersistanceLayer is " + reliabilityPersistanceLayer);
+        }
+        Tag.reliabilityPersistanceLayer = reliabilityPersistanceLayer;
         return StorageManagerFactory.Holder.INSTANCE;
     }
 

@@ -25,6 +25,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
+import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -327,7 +328,7 @@ public class RuleNetworkEvaluator {
             boolean terminalNode = true;
             switch (node.getType()) {
                 case NodeTypeEnums.RuleTerminalNode:
-                    pRtNode.doNode(( TerminalNode ) node, activationsManager, srcTuples, executor);
+                    pRtNode.doNode((AbstractTerminalNode) node, activationsManager, srcTuples, executor);
                     break;
                 case NodeTypeEnums.QueryTerminalNode:
                     pQtNode.doNode((QueryTerminalNode) node, activationsManager, srcTuples, stack);

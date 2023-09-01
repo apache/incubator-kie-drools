@@ -22,7 +22,7 @@ import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.base.rule.EntryPointId;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 public class PhreakPropagationContextFactory implements PropagationContextFactory, Serializable  {
 

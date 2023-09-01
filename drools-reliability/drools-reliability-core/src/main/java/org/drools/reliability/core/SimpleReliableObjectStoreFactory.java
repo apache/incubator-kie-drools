@@ -23,6 +23,15 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
 
     SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage, PersistedSessionOption persistedSessionOption);
 
+    class Tag {
+
+        private Tag() {
+            // hide constructor
+        }
+
+        private static String reliabilityPersistanceLayer = null;
+    }
+
     class Holder {
 
         private static final SimpleReliableObjectStoreFactory INSTANCE = createInstance();
@@ -31,12 +40,26 @@ public interface SimpleReliableObjectStoreFactory extends KieService {
         }
 
         static SimpleReliableObjectStoreFactory createInstance() {
-            SimpleReliableObjectStoreFactory factory = KieService.load(SimpleReliableObjectStoreFactory.class);
+            SimpleReliableObjectStoreFactory factory = KieService.loadWithTag(SimpleReliableObjectStoreFactory.class, Tag.reliabilityPersistanceLayer);
             if (factory == null) {
                 return new SimpleSerializationReliableObjectStoreFactory();
             }
             return factory;
         }
+    }
+
+    /**
+     * Use this method first to specify reliabilityPersistanceLayer when you have dependencies covering multiple persistence layers (e.g. infinispan and core)
+     * Once a factory is instantiated, get() is enough to get the same instance.
+     */
+    static SimpleReliableObjectStoreFactory get(String reliabilityPersistanceLayer) {
+        if (Tag.reliabilityPersistanceLayer != null && !Tag.reliabilityPersistanceLayer.equals(reliabilityPersistanceLayer)) {
+            throw new IllegalStateException("You must call the same service with the same reliabilityPersistanceLayer. " +
+                                            "Previous reliabilityPersistanceLayer was " + Tag.reliabilityPersistanceLayer +
+                                            " and current reliabilityPersistanceLayer is " + reliabilityPersistanceLayer);
+        }
+        Tag.reliabilityPersistanceLayer = reliabilityPersistanceLayer;
+        return SimpleReliableObjectStoreFactory.Holder.INSTANCE;
     }
 
     static SimpleReliableObjectStoreFactory get() {
