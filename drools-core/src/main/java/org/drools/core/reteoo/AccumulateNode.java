@@ -42,7 +42,7 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
 /**

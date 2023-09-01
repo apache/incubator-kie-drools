@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.base;
+package org.drools.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

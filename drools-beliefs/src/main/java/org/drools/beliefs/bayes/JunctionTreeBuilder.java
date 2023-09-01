@@ -18,7 +18,7 @@ package org.drools.beliefs.bayes;
 import org.drools.beliefs.graph.Edge;
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
-import org.drools.core.util.bitmask.OpenBitSet;
+import org.drools.util.bitmask.OpenBitSet;
 import org.kie.api.io.Resource;
 
 import java.util.ArrayList;

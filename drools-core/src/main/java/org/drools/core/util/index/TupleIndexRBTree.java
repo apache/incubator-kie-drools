@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.core.base.CoercionUtil;
+import org.drools.util.CoercionUtil;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.base.util.FieldIndex;

@@ -15,7 +15,7 @@
 
 package org.drools.base.factmodel.traits;
 
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 import java.io.Externalizable;
 

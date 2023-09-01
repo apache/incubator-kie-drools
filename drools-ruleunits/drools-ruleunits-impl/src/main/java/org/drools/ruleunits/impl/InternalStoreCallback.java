@@ -18,7 +18,7 @@ package org.drools.ruleunits.impl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.impl.facthandles.RuleUnitInternalFactHandle;
 import org.kie.api.runtime.rule.FactHandle;

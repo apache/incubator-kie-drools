@@ -40,8 +40,8 @@ import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.AllSetBitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;

@@ -34,7 +34,7 @@ import org.drools.core.rule.BehaviorContext;
 import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 import java.util.ArrayList;
 import java.util.Collection;

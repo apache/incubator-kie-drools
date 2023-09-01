@@ -13,79 +13,76 @@
  * limitations under the License.
 */
 
-package org.drools.core.util.bitmask;
+package org.drools.util.bitmask;
 
-public class AllSetBitMask extends SingleLongBitMask implements BitMask, AllSetMask {
+public class EmptyButLastBitMask extends SingleLongBitMask implements BitMask, EmptyMask {
 
-    private static final AllSetBitMask INSTANCE = new AllSetBitMask();
+    private static final EmptyButLastBitMask INSTANCE = new EmptyButLastBitMask();
 
-    private AllSetBitMask() { }
+    private EmptyButLastBitMask() { }
 
-    public static AllSetBitMask get() {
+    public static EmptyButLastBitMask get() {
         return INSTANCE;
     }
 
     @Override
     public BitMask set(int index) {
-        return this;
+        return BitMask.getEmpty(index+1).set(index).set(0);
     }
 
     @Override
     public BitMask setAll(BitMask mask) {
-        return this;
+        return mask.isEmpty() ? this : mask.clone().set(0);
     }
 
     @Override
     public BitMask reset(int index) {
-        return BitMask.getFull(index+1).reset(index);
+        if (index == 0) {
+            return EmptyBitMask.get();
+        }
+        return this;
     }
 
     @Override
     public BitMask resetAll(BitMask mask) {
-        if (mask.isEmpty()) {
-            return this;
-        } else if (mask instanceof EmptyButLastBitMask) {
-            return AllSetButLastBitMask.get();
-        } else if (mask instanceof AllSetBitMask) {
+        if (mask.isSet(0)) {
             return EmptyBitMask.get();
-        } else if (mask instanceof AllSetButLastBitMask) {
-            return EmptyButLastBitMask.get();
         }
-        return BitMask.getFull(mask instanceof LongBitMask ? 1 : 65).resetAll(mask);
+        return this;
     }
 
     @Override
     public boolean isSet(int index) {
-        return true;
+        return index == 0;
     }
 
     @Override
     public boolean isAllSet() {
-        return true;
-    }
-
-    @Override
-    public boolean isEmpty() {
         return false;
     }
 
     @Override
-    public boolean intersects(BitMask mask) {
+    public boolean isEmpty() {
         return true;
     }
 
     @Override
-    public long asLong() {
-        return -1L;
+    public boolean intersects(BitMask mask) {
+        return mask.isSet(0);
     }
 
     @Override
-    public AllSetBitMask clone() {
+    public EmptyButLastBitMask clone() {
         return this;
     }
 
     @Override
     public String getInstancingStatement() {
-        return AllSetBitMask.class.getCanonicalName() + ".get()";
+        return EmptyButLastBitMask.class.getCanonicalName() + ".get()";
+    }
+
+    @Override
+    public long asLong() {
+        return 1L;
     }
 }

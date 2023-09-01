@@ -26,7 +26,7 @@ import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.mvel.EvaluatorConstraint;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Operator;
 
 public class TraitAlphaNode extends AlphaNode {
