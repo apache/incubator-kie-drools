@@ -4,19 +4,23 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-data-index-infinispan-parent</artifactId>
+    <artifactId>kogito-addons-quarkus-data-index-persistence-infinispan-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-data-index-infinispan</artifactId>
-  <name>Kogito Apps :: Kogito Addons Quarkus Data Index Infinispan :: Runtime</name>
+  <artifactId>kogito-addons-quarkus-data-index-persistence-infinispan</artifactId>
+  <name>Kogito Apps :: Kogito Addons Quarkus Data Index Persistence Infinispan :: Runtime</name>
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-common-runtime</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-persistence-common-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-persistence-infinispan</artifactId>
+      <artifactId>data-index-storage-infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-storage-protobuf</artifactId>
     </dependency>
   </dependencies>
   <build>
@@ -34,7 +38,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.data-index</provides>
+                <provides>org.kie.kogito.data-index.persistence</provides>
               </capabilities>
             </configuration>
           </execution>

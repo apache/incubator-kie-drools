@@ -16,11 +16,8 @@
 
 package org.kie.kogito.addons.quarkus.data.index.deployment;
 
-import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 
 public class InfinispanDataIndexProcessor extends AbstractKogitoAddonsQuarkusDataIndexProcessor {
 
@@ -31,9 +28,4 @@ public class InfinispanDataIndexProcessor extends AbstractKogitoAddonsQuarkusDat
         return new FeatureBuildItem(FEATURE);
     }
 
-    @BuildStep(onlyIf = NativeOrNativeSourcesBuild.class)
-    public void infinispanNativeResources(BuildProducer<NativeImageResourceBuildItem> resource) {
-        resource.produce(new NativeImageResourceBuildItem("META-INF/kogito-index.proto"));
-        resource.produce(new NativeImageResourceBuildItem("META-INF/kogito-types.proto"));
-    }
 }

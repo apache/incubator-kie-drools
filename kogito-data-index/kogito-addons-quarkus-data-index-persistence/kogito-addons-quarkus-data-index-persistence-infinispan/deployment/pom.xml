@@ -4,42 +4,31 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-data-index-infinispan-parent</artifactId>
+    <artifactId>kogito-addons-quarkus-data-index-persistence-infinispan-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-data-index-infinispan</artifactId>
-  <name>Kogito Apps :: Kogito Addons Quarkus Data Index Infinispan :: Runtime</name>
+  <artifactId>kogito-addons-quarkus-data-index-persistence-infinispan-deployment</artifactId>
+  <name>Kogito Apps :: Kogito Addons Quarkus Data Index Persistence Infinispan :: Deployment</name>
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-common-runtime</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-persistence-common-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-data-index-persistence-infinispan</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-infinispan-client-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-qute-deployment</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-extension-maven-plugin</artifactId>
-        <version>${version.io.quarkus}</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>extension-descriptor</goal>
-            </goals>
-            <configuration>
-              <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
-              <capabilities>
-                <provides>org.kie.kogito.data-index</provides>
-              </capabilities>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
