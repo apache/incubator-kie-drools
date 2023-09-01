@@ -2220,7 +2220,7 @@ index 0d53d229f..f9a6c3a10 100644
  import org.kie.kogito.event.DataEvent;
  import org.kie.kogito.event.EventPublisher;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
-index 182b02105..a70564369 100644
+index 44f283138..2d3fa2bb6 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 +++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 @@ -23,9 +23,9 @@ import java.util.Map;
