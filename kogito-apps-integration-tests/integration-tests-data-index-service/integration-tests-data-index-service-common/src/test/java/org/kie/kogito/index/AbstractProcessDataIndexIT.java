@@ -43,6 +43,7 @@ import static java.util.Collections.singletonMap;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -107,7 +108,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .get("/approvals/{processId}/tasks")
                 .then()
                 .statusCode(200)
-                .body("$.size", is(1))
+                .body("$.size()", is(1))
                 .body("[0].name", is("firstLineApproval"))
                 .body("[0].id", notNullValue())
                 .extract()
@@ -200,7 +201,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .get("/approvals/{processId}/tasks")
                 .then()
                 .statusCode(200)
-                .body("$.size", is(1))
+                .body("$.size()", is(1))
                 .body("[0].name", is("secondLineApproval"))
                 .body("[0].id", notNullValue())
                 .extract()
@@ -290,13 +291,21 @@ public abstract class AbstractProcessDataIndexIT {
         await()
                 .atMost(TIMEOUT)
                 .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                        .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + pId2 + "\\\"}}) { nodeDefinitions {id} nodes {id}} }\"}")
+                        .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + pId2
+                                + "\\\"}}) { nodeDefinitions { id, name, type, uniqueId, metadata { UniqueId } } nodes { name, definitionId }} }\"}")
                         .when().post("/graphql")
                         .then()
                         .statusCode(200)
                         .body("data.ProcessInstances[0].nodeDefinitions", notNullValue())
                         .body("data.ProcessInstances[0].nodeDefinitions.size()", is(4))
-                        .body("data.ProcessInstances[0].nodes.size()", is(2)));
+                        .body("data.ProcessInstances[0].nodeDefinitions[0].id", is("1"))
+                        .body("data.ProcessInstances[0].nodeDefinitions[0].name", is("First Line Approval"))
+                        .body("data.ProcessInstances[0].nodeDefinitions[0].type", is("HumanTaskNode"))
+                        .body("data.ProcessInstances[0].nodeDefinitions[0].uniqueId", is("1"))
+                        .body("data.ProcessInstances[0].nodeDefinitions[0].metadata.UniqueId", is("_8B62D3CA-5D03-4B2B-832B-126469288BB4"))
+                        .body("data.ProcessInstances[0].nodes.size()", is(2))
+                        .body("data.ProcessInstances[0].nodes.name", hasItem("First Line Approval"))
+                        .body("data.ProcessInstances[0].nodes.definitionId", hasItem("_8B62D3CA-5D03-4B2B-832B-126469288BB4")));
 
         final String taskId = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + pId2 + "\\\"}}) { id description potentialGroups } }\"}")
@@ -458,7 +467,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
                         .then()
                         .statusCode(200)
-                        .body("$.size", is(1))
+                        .body("$.size()", is(1))
                         .body("[0].content", is(commentContent)));
 
         Map<String, String> commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
@@ -556,7 +565,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
                         .then()
                         .statusCode(200)
-                        .body("$.size", is(1))
+                        .body("$.size()", is(1))
                         .body("[0].name", is(attachmentName)));
 
         Map<String, String> attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)

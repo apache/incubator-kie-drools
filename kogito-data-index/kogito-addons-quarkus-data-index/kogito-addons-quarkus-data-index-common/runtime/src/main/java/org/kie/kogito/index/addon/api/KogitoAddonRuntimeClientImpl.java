@@ -41,8 +41,6 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.svg.ProcessSvgService;
 
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
-
 @ApplicationScoped
 public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
@@ -122,7 +120,7 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
                 Node data = new Node();
                 data.setId(String.valueOf(n.getId()));
                 data.setNodeId(((org.jbpm.workflow.core.Node) n).getUniqueId());
-                data.setDefinitionId((String) n.getMetaData().get(UNIQUE_ID));
+                data.setMetadata(n.getMetaData());
                 data.setType(n.getClass().getSimpleName());
                 data.setName(n.getName());
                 return data;

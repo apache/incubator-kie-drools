@@ -85,10 +85,17 @@ enum ProcessInstanceState {
 
 type Node {
     id: String!
-    nodeDefinitionId: String!
+    metadata: NodeMetadata!
     name: String!
     type: String!
     uniqueId: String!
+}
+
+type NodeMetadata {
+    UniqueId: String!
+    state: String
+    branch: String
+    action: String
 }
 
 type NodeInstance {

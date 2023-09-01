@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.index.model;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Node {
@@ -26,8 +28,7 @@ public class Node {
     private String type;
     @JsonProperty("uniqueId")
     private String nodeId;
-    @JsonProperty("nodeDefinitionId")
-    private String definitionId;
+    private Map<String, Object> metadata;
 
     public String getId() {
         return id;
@@ -61,12 +62,12 @@ public class Node {
         this.nodeId = nodeId;
     }
 
-    public String getDefinitionId() {
-        return definitionId;
+    public Map<String, Object> getMetadata() {
+        return metadata;
     }
 
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
     }
 
     @Override
@@ -90,12 +91,12 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node {" +
+        return "Node{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", nodeId='" + nodeId + '\'' +
                 ", type='" + type + '\'' +
-                ", definitionId='" + definitionId + '\'' +
+                ", nodeId='" + nodeId + '\'' +
+                ", metadata=" + metadata +
                 '}';
     }
 }

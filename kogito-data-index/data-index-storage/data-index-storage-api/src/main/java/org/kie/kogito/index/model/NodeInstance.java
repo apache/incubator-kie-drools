@@ -19,15 +19,24 @@ import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class NodeInstance extends Node {
+public class NodeInstance {
 
     private String id;
     private String nodeId;
+
+    @JsonProperty("nodeName")
+    private String name;
+
+    @JsonProperty("nodeType")
+    private String type;
 
     @JsonProperty("triggerTime")
     private ZonedDateTime enter;
     @JsonProperty("leaveTime")
     private ZonedDateTime exit;
+
+    @JsonProperty("nodeDefinitionId")
+    private String definitionId;
 
     public String getId() {
         return id;
@@ -61,6 +70,30 @@ public class NodeInstance extends Node {
         this.nodeId = nodeId;
     }
 
+    public String getDefinitionId() {
+        return definitionId;
+    }
+
+    public void setDefinitionId(String definitionId) {
+        this.definitionId = definitionId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -84,12 +117,12 @@ public class NodeInstance extends Node {
     public String toString() {
         return "NodeInstance{" +
                 "id='" + id + '\'' +
-                ", name='" + getName() + '\'' +
+                ", name='" + name + '\'' +
                 ", nodeId='" + nodeId + '\'' +
-                ", type='" + getType() + '\'' +
+                ", type='" + type + '\'' +
                 ", enter=" + enter +
                 ", exit=" + exit +
-                ", definitionId='" + getDefinitionId() + '\'' +
+                ", definitionId='" + definitionId + '\'' +
                 '}';
     }
 }
