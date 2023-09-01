@@ -1,39 +1,39 @@
 diff --git a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
-index 1e20eccb9..23450b07f 100644
+index 2edebf340..a0e91004d 100644
 --- a/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
 +++ b/apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/test/java/org/kie/kogito/index/AbstractProcessDataIndexIT.java
-@@ -107,7 +107,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -108,7 +108,7 @@ public abstract class AbstractProcessDataIndexIT {
                  .get("/approvals/{processId}/tasks")
                  .then()
                  .statusCode(200)
--                .body("$.size", is(1))
+-                .body("$.size()", is(1))
 +                .body("size()", is(1))
                  .body("[0].name", is("firstLineApproval"))
                  .body("[0].id", notNullValue())
                  .extract()
-@@ -200,7 +200,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -201,7 +201,7 @@ public abstract class AbstractProcessDataIndexIT {
                  .get("/approvals/{processId}/tasks")
                  .then()
                  .statusCode(200)
--                .body("$.size", is(1))
+-                .body("$.size()", is(1))
 +                .body("size()", is(1))
                  .body("[0].name", is("secondLineApproval"))
                  .body("[0].id", notNullValue())
                  .extract()
-@@ -458,7 +458,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -467,7 +467,7 @@ public abstract class AbstractProcessDataIndexIT {
                          .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
                          .then()
                          .statusCode(200)
--                        .body("$.size", is(1))
+-                        .body("$.size()", is(1))
 +                        .body("size()", is(1))
                          .body("[0].content", is(commentContent)));
  
          Map<String, String> commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-@@ -556,7 +556,7 @@ public abstract class AbstractProcessDataIndexIT {
+@@ -565,7 +565,7 @@ public abstract class AbstractProcessDataIndexIT {
                          .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
                          .then()
                          .statusCode(200)
--                        .body("$.size", is(1))
+-                        .body("$.size()", is(1))
 +                        .body("size()", is(1))
                          .body("[0].name", is(attachmentName)));
  
