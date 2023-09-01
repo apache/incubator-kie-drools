@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 
 public class SimpleInfinispanReliableObjectStoreFactory implements SimpleReliableObjectStoreFactory {
 
-    static int servicePriorityValue = 0; // package access for test purposes
-
     private static final Logger LOG = LoggerFactory.getLogger(SimpleInfinispanReliableObjectStoreFactory.class);
 
     public SimpleReliableObjectStore createSimpleReliableObjectStore(Storage<Long, StoredObject> storage, PersistedSessionOption persistedSessionOption) {
@@ -50,7 +48,12 @@ public class SimpleInfinispanReliableObjectStoreFactory implements SimpleReliabl
 
     @Override
     public int servicePriority() {
-        return servicePriorityValue;
+        return 0;
+    }
+
+    @Override
+    public String serviceTag() {
+        return "infinispan";
     }
 
 }
