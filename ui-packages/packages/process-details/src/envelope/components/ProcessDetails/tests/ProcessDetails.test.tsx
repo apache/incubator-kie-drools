@@ -43,8 +43,38 @@ describe('ProcessDetails tests', () => {
       parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
       parentProcessInstance: null,
       roles: [],
-      variables:
-        '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+      variables: {
+        trip: {
+          begin: '2019-10-22T22:00:00Z[UTC]',
+          city: 'Bangalore',
+          country: 'India',
+          end: '2019-10-30T22:00:00Z[UTC]',
+          visaRequired: false
+        },
+        hotel: {
+          address: {
+            city: 'Bangalore',
+            country: 'India',
+            street: 'street',
+            zipCode: '12345'
+          },
+          bookingNumber: 'XX-012345',
+          name: 'Perfect hotel',
+          phone: '09876543'
+        },
+        traveller: {
+          address: {
+            city: 'Bangalore',
+            country: 'US',
+            street: 'Bangalore',
+            zipCode: '560093'
+          },
+          email: 'ajaganat@redhat.com',
+          firstName: 'Ajay',
+          lastName: 'Jaganathan',
+          nationality: 'US'
+        }
+      } as any,
       state: ProcessInstanceState.Active,
       start: new Date('2019-10-22T03:40:44.089Z'),
       lastUpdate: new Date('Thu, 22 Apr 2021 14:53:04 GMT'),
@@ -232,8 +262,38 @@ describe('ProcessDetails tests', () => {
       parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
       parentProcessInstance: null,
       roles: [],
-      variables:
-        '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+      variables: {
+        trip: {
+          begin: '2019-10-22T22:00:00Z[UTC]',
+          city: 'Bangalore',
+          country: 'India',
+          end: '2019-10-30T22:00:00Z[UTC]',
+          visaRequired: false
+        },
+        hotel: {
+          address: {
+            city: 'Bangalore',
+            country: 'India',
+            street: 'street',
+            zipCode: '12345'
+          },
+          bookingNumber: 'XX-012345',
+          name: 'Perfect hotel',
+          phone: '09876543'
+        },
+        traveller: {
+          address: {
+            city: 'Bangalore',
+            country: 'US',
+            street: 'Bangalore',
+            zipCode: '560093'
+          },
+          email: 'ajaganat@redhat.com',
+          firstName: 'Ajay',
+          lastName: 'Jaganathan',
+          nationality: 'US'
+        }
+      } as any,
       state: ProcessInstanceState.Completed,
       start: new Date('2019-10-22T03:40:44.089Z'),
       lastUpdate: new Date('Thu, 22 Apr 2021 14:53:04 GMT'),

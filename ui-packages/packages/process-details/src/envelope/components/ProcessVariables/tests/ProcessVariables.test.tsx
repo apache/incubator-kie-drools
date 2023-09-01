@@ -40,12 +40,9 @@ const processInstance = {
   id: 'tEE12-fo54-l665-mp112-akou112345566',
   processId: 'travels',
   businessKey: 'TEE12',
-  parentProcessInstanceId: null,
-  parentProcessInstance: null,
   processName: 'travels',
   roles: [],
   state: ProcessInstanceState.Completed,
-  rootProcessInstanceId: null,
   addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
   start: new Date('2019-10-22T03:40:44.089Z'),
   lastUpdate: new Date('2019-10-22T03:40:44.089Z'),
@@ -56,8 +53,43 @@ const processInstance = {
   },
   serviceUrl: 'http://localhost:4000',
   endpoint: 'http://localhost:4000',
-  variables:
-    '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+  variables: {
+    flight: {
+      arrival: '2019-10-30T22:00:00Z[UTC]',
+      departure: '2019-10-22T22:00:00Z[UTC]',
+      flightNumber: 'MX555'
+    },
+    trip: {
+      begin: '2019-10-22T22:00:00Z[UTC]',
+      city: 'Bangalore',
+      country: 'India',
+      end: '2019-10-30T22:00:00Z[UTC]',
+      visaRequired: false
+    },
+    hotel: {
+      address: {
+        city: 'Bangalore',
+        country: 'India',
+        street: 'street',
+        zipCode: '12345'
+      },
+      bookingNumber: 'XX-012345',
+      name: 'Perfect hotel',
+      phone: '09876543'
+    },
+    traveller: {
+      address: {
+        city: 'Bangalore',
+        country: 'US',
+        street: 'Bangalore',
+        zipCode: '560093'
+      },
+      email: 'ajaganat@redhat.com',
+      firstName: 'Ajay',
+      lastName: 'Jaganathan',
+      nationality: 'US'
+    }
+  } as any,
   nodes: [
     {
       nodeId: '1',

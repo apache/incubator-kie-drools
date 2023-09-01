@@ -153,7 +153,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     };
     const getVariableJSON = (): void => {
       if (data && data.id === processDetails.id) {
-        setUpdateJson(JSON.parse(data.variables));
+        setUpdateJson(data.variables);
       }
     };
     /* istanbul ignore else*/
