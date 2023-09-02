@@ -4007,7 +4007,7 @@ index 361aa9932..a9069cf8d 100644
  import org.junit.jupiter.api.Test;
  import org.kie.kogito.event.EventPublisher;
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index a3e8888fb..bb7dc287a 100644
+index f65eb1287..2e24461df 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
 @@ -45,7 +45,7 @@
