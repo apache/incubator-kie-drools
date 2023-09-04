@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.addons.quarkus.k8s.config;
 
+import java.util.Arrays;
+
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesProtocol;
 
 import io.smallrye.config.ConfigValue;
@@ -28,22 +30,42 @@ class ConfigValueExpander {
     }
 
     ConfigValue expand(ConfigValue configValue) {
-        if (configValue == null || !valueContainsDiscovery(configValue)) {
-            return configValue;
-        }
-
-        return kubeDiscoveryConfigCache.get(configValue.getName(), configValue.getValue())
-                .map(configValue::withValue)
-                .orElse(configValue);
-    }
-
-    private boolean valueContainsDiscovery(ConfigValue configValue) {
-        for (KubernetesProtocol protocol : KubernetesProtocol.values()) {
-            String value = configValue.getValue();
-            if (value != null && value.startsWith(protocol.getValue() + ":")) {
-                return true;
+        if (configValue != null && configValue.getRawValue() != null) {
+            String serviceCoordinates = extractServiceCoordinates(configValue.getRawValue());
+            if (serviceCoordinates != null) {
+                return kubeDiscoveryConfigCache.get(configValue.getName(), serviceCoordinates)
+                        .map(value -> interpolate(configValue.getRawValue(), value))
+                        .map(configValue::withValue)
+                        .orElse(configValue);
             }
         }
-        return false;
+
+        return configValue;
+    }
+
+    public static String interpolate(String input, String replacement) {
+        int startIndex = input.indexOf("${");
+        int endIndex = input.indexOf("}", startIndex);
+
+        return input.substring(0, startIndex) + replacement + input.substring(endIndex + 1);
+    }
+
+    static String extractServiceCoordinates(String rawValue) {
+        int startIndex = rawValue.indexOf("${");
+        int endIndex = rawValue.indexOf("}", startIndex);
+
+        if (startIndex != -1 && endIndex != -1) {
+            String substring = rawValue.substring(startIndex + 2, endIndex);
+
+            boolean isKubernetesServiceCoordinate = Arrays.stream(KubernetesProtocol.values())
+                    .map(KubernetesProtocol::getValue)
+                    .anyMatch(protocol -> substring.startsWith(protocol + ":"));
+
+            if (isKubernetesServiceCoordinate) {
+                return substring;
+            }
+        }
+
+        return null;
     }
 }
