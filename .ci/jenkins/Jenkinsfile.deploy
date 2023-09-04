@@ -62,7 +62,7 @@ pipeline {
                         checkoutRepo()
                     }
 
-                    setupCypressEnv('9.7.0')
+                    setupCypressEnv('12.17.0')
                 }
             }
             post {
