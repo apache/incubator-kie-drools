@@ -63,8 +63,8 @@ public class KiePMMLDataDictionaryASTFactory {
      * @param field
      */
     public KiePMMLDroolsType declareType(Field field) {
-        String generatedType = getGeneratedClassName(field.getName().getValue());
-        String fieldName = field.getName().getValue();
+        String generatedType = getGeneratedClassName(field.getName());
+        String fieldName =field.getName();
         String fieldType = field.getDataType().value();
         fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));
         return new KiePMMLDroolsType(generatedType, DATA_TYPE.byName(fieldType).getMappedClass().getSimpleName());
