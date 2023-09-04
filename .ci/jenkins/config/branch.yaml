@@ -55,7 +55,7 @@ environments:
     - coverage
 productized_branch: false
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: drools
   branch: 9.42.x
