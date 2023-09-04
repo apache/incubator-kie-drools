@@ -4,6 +4,10 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
+  - name: kie-jpmml-integration
+    ignore_productization: true
+    regexs:
+    - kie-jpmml-integration.*
 git:
   branches:
   - name: 9.x
