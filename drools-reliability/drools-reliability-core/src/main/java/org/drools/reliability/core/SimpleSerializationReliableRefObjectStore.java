@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
     private Map<String, Long> uniqueObjectTypesInStore;  // object type name, occurances
-    private IdentityHashMap<Object, Long> inverseStorage;
+    private transient IdentityHashMap<Object, Long> inverseStorage;
 
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
@@ -46,7 +46,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
 
     private void setInverseStorage(Storage<Long, StoredObject> storage){
         inverseStorage = new IdentityHashMap<>();
-        storage.keySet().forEach(key -> inverseStorage.put(((StoredObject)storage.get(key)).getObject(),key));
+        storage.keySet().forEach(key -> inverseStorage.put((storage.get(key)).getObject(),key));
     }
 
     private Storage<Long, StoredObject> updateObjectReferences(Storage<Long, StoredObject> storage) {
@@ -86,6 +86,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         return new SerializableStoredRefEvent(object, propagated, timestamp, duration);
     }
 
+    @SuppressWarnings("squid:S3011") // SONAR IGNORE "Make sure that this accessibility update is safe here."
     private StoredObject setReferencedObjects(StoredObject object) {
         List<Field> referencedObjects = getReferencedObjects(object.getObject());
         if (!referencedObjects.isEmpty()) {

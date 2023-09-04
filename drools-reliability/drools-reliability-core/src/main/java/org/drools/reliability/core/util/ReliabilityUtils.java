@@ -71,6 +71,7 @@ public class ReliabilityUtils {
         return "ActivationKey [packageName=" + packageName + ", ruleName=" + ruleName + ", factHandleIdList=" + factHandleIdList + "]";
     }
 
+    @SuppressWarnings("squid:S3011") // SONAR IGNORE "Make sure that this accessibility update is safe here."
     public static void updateReferencedObjects(Storage<Long, StoredObject> storage, Map<String, Long> referencedObjects, Object object) {
         referencedObjects.keySet().forEach(fieldName -> {
             Optional<Field> refField = Arrays.stream(object.getClass().getDeclaredFields())
