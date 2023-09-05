@@ -39,7 +39,7 @@ index 2edebf340..a0e91004d 100644
  
          Map<String, String> attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
-index 99c322de0..aae30d88d 100644
+index 5c1275858..83fbb42c3 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/GraphQLUtils.java
 @@ -43,11 +43,28 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -262,7 +262,7 @@ index 99c322de0..aae30d88d 100644
 +     }
  
      private static Stream<Field> getAllFieldsList(Class clazz) {
-         return FieldUtils.getAllFieldsList(clazz).stream().filter(f -> getJacocoPredicate().test(f));
+         return FieldUtils.getAllFieldsList(clazz).stream().filter(getSoourcePredicate().or(getSoourcePredicate()));
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json b/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json
 index 8da0f683d..0825ff420 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/resources/graphql_queries.json
@@ -507,7 +507,7 @@ index 8da0f683d..0825ff420 100644
    }
  }
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
-index c19fa1eb5..f4f218b30 100644
+index f477b3a20..dd87921de 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 @@ -36,14 +36,13 @@ import jakarta.persistence.Table;
@@ -527,7 +527,7 @@ index c19fa1eb5..f4f218b30 100644
  public class ProcessInstanceEntity extends AbstractEntity {
  
      @Id
-@@ -68,7 +67,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
+@@ -69,7 +68,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
      private String parentProcessInstanceId;
      @Column(name = "lastUpdateTime")
      private ZonedDateTime lastUpdate;
@@ -621,7 +621,7 @@ index 7f2bf10f9..420d0ee8a 100644
              settings.put(Environment.USER, oracleSql.getUsername());
              settings.put(Environment.PASS, oracleSql.getPassword());
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
-index e5ed19ef9..0f59c2811 100644
+index 5c6ce9fbb..5bf3ea843 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
 @@ -36,13 +36,11 @@ import jakarta.persistence.Table;
@@ -638,7 +638,7 @@ index e5ed19ef9..0f59c2811 100644
  @Table(name = "processes")
  public class ProcessInstanceEntity extends AbstractEntity {
  
-@@ -68,7 +66,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
+@@ -69,7 +67,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
      private String parentProcessInstanceId;
      @Column(name = "lastUpdateTime")
      private ZonedDateTime lastUpdate;
@@ -732,7 +732,7 @@ index 4f0d95a71..15b2ad7cc 100644
              settings.put(Environment.USER, postgresql.getUsername());
              settings.put(Environment.PASS, postgresql.getPassword());
 diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index bb7dc287a..9ef5fe1c1 100644
+index 2e24461df..f965430b6 100644
 --- a/kogito-apps-build-parent/pom.xml
 +++ b/kogito-apps-build-parent/pom.xml
 @@ -47,7 +47,7 @@
