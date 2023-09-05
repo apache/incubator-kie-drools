@@ -548,15 +548,15 @@ index b5586ee40a..ac8b59bb73 100644
        </dependency>
        <dependency>
 diff --git a/kogito-build/kogito-kie-bom/pom.xml b/kogito-build/kogito-kie-bom/pom.xml
-index 5e1c48c982..29dfa25959 100644
+index 715dbf66c8..17a69d138e 100644
 --- a/kogito-build/kogito-kie-bom/pom.xml
 +++ b/kogito-build/kogito-kie-bom/pom.xml
 @@ -18,7 +18,7 @@
    </description>
  
    <properties>
--    <version.org.kie>8.44.0-SNAPSHOT</version.org.kie>
-+    <version.org.kie>9.44.0-SNAPSHOT</version.org.kie>
+-    <version.org.kie>8.45.0-SNAPSHOT</version.org.kie>
++    <version.org.kie>9.45.0-SNAPSHOT</version.org.kie>
    </properties>
  
    <dependencyManagement>
@@ -1391,6 +1391,27 @@ index e1549df41b..77a4491cbd 100644
  
  import org.jboss.shrinkwrap.api.ShrinkWrap;
  import org.jboss.shrinkwrap.api.spec.JavaArchive;
+diff --git a/quarkus/addons/kubernetes/integration-tests/src/main/java/org/kie/kogito/addons/quarkus/kubernetes/Foo.java b/quarkus/addons/kubernetes/integration-tests/src/main/java/org/kie/kogito/addons/quarkus/kubernetes/Foo.java
+index abcbda4799..dd6c4a130a 100644
+--- a/quarkus/addons/kubernetes/integration-tests/src/main/java/org/kie/kogito/addons/quarkus/kubernetes/Foo.java
++++ b/quarkus/addons/kubernetes/integration-tests/src/main/java/org/kie/kogito/addons/quarkus/kubernetes/Foo.java
+@@ -15,11 +15,11 @@
+  */
+ package org.kie.kogito.addons.quarkus.kubernetes;
+ 
+-import javax.inject.Inject;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.inject.Inject;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.eclipse.microprofile.config.inject.ConfigProperty;
+ 
 diff --git a/quarkus/addons/kubernetes/runtime/pom.xml b/quarkus/addons/kubernetes/runtime/pom.xml
 index 32ed7e88c9..f9df0a85c5 100644
 --- a/quarkus/addons/kubernetes/runtime/pom.xml
