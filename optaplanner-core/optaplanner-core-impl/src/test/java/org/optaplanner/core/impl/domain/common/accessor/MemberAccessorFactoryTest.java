@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Member;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,5 +108,12 @@ class MemberAccessorFactoryTest {
                 DomainAccessType.REFLECTION);
         assertThat(memberAccessor)
                 .isSameAs(mockMemberAccessor);
+    }
+
+    @Test
+    void gizmoUsesCorrectParentClassLoader() {
+        MemberAccessorFactory memberAccessorFactory = new MemberAccessorFactory(Collections.emptyMap());
+        assertThat(memberAccessorFactory.getGizmoClassLoader().getParent())
+                .isSameAs(memberAccessorFactory.getClass().getClassLoader());
     }
 }
