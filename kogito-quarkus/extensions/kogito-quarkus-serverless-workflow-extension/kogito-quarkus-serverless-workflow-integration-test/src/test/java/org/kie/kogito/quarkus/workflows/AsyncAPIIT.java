@@ -26,6 +26,7 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.Converter;
@@ -64,6 +65,7 @@ class AsyncAPIIT extends AbstractCallbackStateIT {
 
     private final static Logger logger = LoggerFactory.getLogger(AsyncAPIIT.class);
 
+    @Override
     @BeforeEach
     void setup() {
         kafkaClient = new KafkaTypedTestClient<>(kafkaBootstrapServers, ByteArraySerializer.class, ByteArrayDeserializer.class);
@@ -74,6 +76,7 @@ class AsyncAPIIT extends AbstractCallbackStateIT {
         marshaller = new ByteArrayCloudEventMarshaller(objectMapper);
     }
 
+    @Override
     @AfterEach
     void cleanUp() {
         if (kafkaClient != null) {
@@ -82,23 +85,14 @@ class AsyncAPIIT extends AbstractCallbackStateIT {
     }
 
     @Test
-    void testConsumer() throws IOException {
-        final String flowId = "asyncEventConsumer";
-        String id = startProcess(flowId);
-        kafkaClient.produce(marshaller.marshall(buildCloudEvent(id, "wait", marshaller)), "wait");
-        waitForFinish(flowId, id, Duration.ofSeconds(10));
-    }
-
-    @Test
+    @Order(1)
     void testPublisher() throws InterruptedException {
         String id = startProcessNoCheck("asyncEventPublisher");
-        logger.debug("Process instance id is " + id);
         Converter<byte[], CloudEvent> converter = new ByteArrayCloudEventUnmarshallerFactory(objectMapper).unmarshaller(Map.class).cloudEvent();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         kafkaClient.consume("wait", v -> {
             try {
                 CloudEvent event = converter.convert(v);
-                logger.debug("Cloud event is {}", event);
                 if (id.equals(event.getExtension(CloudEventExtensionConstants.PROCESS_INSTANCE_ID))) {
                     countDownLatch.countDown();
                 }
@@ -108,5 +102,14 @@ class AsyncAPIIT extends AbstractCallbackStateIT {
         });
         countDownLatch.await(10, TimeUnit.SECONDS);
         assertThat(countDownLatch.getCount()).isZero();
+    }
+
+    @Test
+    @Order(2)
+    void testConsumer() throws IOException {
+        final String flowId = "asyncEventConsumer";
+        String id = startProcess(flowId);
+        kafkaClient.produce(marshaller.marshall(buildCloudEvent(id, "wait", marshaller)), "wait");
+        waitForFinish(flowId, id, Duration.ofSeconds(10));
     }
 }
