@@ -87,6 +87,12 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
     }
 
     @Override
+    public MapInput fromMap(Map<String, Object> params) {
+        update(params);
+        return this;
+    }
+
+    @Override
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put(SWFConstants.DEFAULT_WORKFLOW_VAR, workflowdata);
