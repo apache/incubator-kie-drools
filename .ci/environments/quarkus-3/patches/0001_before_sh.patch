@@ -80,7 +80,7 @@ index 998101ea6..1a65df37a 100644
  import com.fasterxml.jackson.databind.ObjectMapper;
  
 diff --git a/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java b/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java
-index a696309be..d3fd47798 100644
+index ce929cfa9..e8ef5765e 100644
 --- a/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java
 +++ b/data-index/data-index-common/src/main/java/org/kie/kogito/index/service/IndexingService.java
 @@ -17,8 +17,8 @@ package org.kie.kogito.index.service;
@@ -95,7 +95,7 @@ index a696309be..d3fd47798 100644
  import org.kie.kogito.index.model.Job;
  import org.kie.kogito.index.model.NodeInstance;
 diff --git a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
-index 6d50e6b2e..8173c26c0 100644
+index 93a8dfedd..a5853d023 100644
 --- a/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
 +++ b/data-index/data-index-graphql/src/main/java/org/kie/kogito/index/graphql/AbstractGraphQLSchemaManager.java
 @@ -25,8 +25,7 @@ import java.util.Objects;
@@ -304,7 +304,7 @@ index 25ee8cade..e0c7a7934 100644
  import org.kie.kogito.index.graphql.GraphQLObjectTypeMapper;
  import org.kie.kogito.index.graphql.query.GraphQLInputObjectTypeMapper;
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
-index 61bd69f6b..b0d1086ae 100644
+index 616315994..af18e9b57 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 +++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 @@ -22,9 +22,9 @@ import java.util.Optional;
@@ -441,7 +441,7 @@ index b40ae732d..cc55dc3a7 100644
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
  import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
 diff --git a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
-index 5e2aaf58b..fcc22c226 100644
+index 67b9621f2..09576f171 100644
 --- a/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
 +++ b/data-index/data-index-service/data-index-service-common/src/test/java/org/kie/kogito/index/service/AbstractIndexingServiceIT.java
 @@ -24,8 +24,8 @@ import java.util.Map;
@@ -1081,7 +1081,7 @@ index 2759fea98..366dcfeff 100644
  import org.hibernate.annotations.OnDelete;
  import org.hibernate.annotations.OnDeleteAction;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java
-index 839dcbb3b..c617f3253 100644
+index 3c815c29f..f1f42b952 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessDefinitionEntity.java
 @@ -19,15 +19,15 @@ package org.kie.kogito.index.oracle.model;
@@ -1123,7 +1123,7 @@ index 88be8193c..4977378ff 100644
  import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
  
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
-index 73d1c9426..c19fa1eb5 100644
+index f8875af09..f477b3a20 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/main/java/org/kie/kogito/index/oracle/model/ProcessInstanceEntity.java
 @@ -21,17 +21,17 @@ import java.util.List;
@@ -1376,7 +1376,7 @@ index 21ace047c..2e1b91285 100644
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Test;
 diff --git a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessInstanceEntityMapperIT.java b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessInstanceEntityMapperIT.java
-index ee8643523..5bd44db77 100644
+index c0fff697d..dc8ff7ee4 100644
 --- a/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessInstanceEntityMapperIT.java
 +++ b/data-index/data-index-storage/data-index-storage-oracle/src/test/java/org/kie/kogito/index/oracle/mapper/ProcessInstanceEntityMapperIT.java
 @@ -19,7 +19,7 @@ package org.kie.kogito.index.oracle.mapper;
@@ -1730,7 +1730,7 @@ index 5c85028b8..733dba486 100644
  import org.hibernate.annotations.OnDelete;
  import org.hibernate.annotations.OnDeleteAction;
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java
-index e94e2ec0f..8cf52fb1a 100644
+index 6d5832815..a1b21cd34 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessDefinitionEntity.java
 @@ -19,15 +19,15 @@ package org.kie.kogito.index.postgresql.model;
@@ -1772,7 +1772,7 @@ index 198cd99b2..d7d07ea69 100644
  import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
  
 diff --git a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
-index a50ee0230..e5ed19ef9 100644
+index 1fb60781d..5c6ce9fbb 100644
 --- a/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
 +++ b/data-index/data-index-storage/data-index-storage-postgresql/src/main/java/org/kie/kogito/index/postgresql/model/ProcessInstanceEntity.java
 @@ -21,17 +21,17 @@ import java.util.List;
@@ -2205,24 +2205,41 @@ index fb1fa800b..66eab3ebe 100644
  import org.infinispan.protostream.FileDescriptorSource;
  
 diff --git a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
-index 0d53d229f..f9a6c3a10 100644
+index ebf34ecdb..2d8b34c40 100644
 --- a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
 +++ b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/DataIndexEventPublisher.java
-@@ -20,8 +20,8 @@ import java.io.IOException;
+@@ -20,9 +20,9 @@ import java.io.IOException;
  import java.io.UncheckedIOException;
  import java.util.Collection;
  
 -import javax.enterprise.context.ApplicationScoped;
 -import javax.inject.Inject;
+-import javax.transaction.Transactional;
 +import jakarta.enterprise.context.ApplicationScoped;
 +import jakarta.inject.Inject;
++import jakarta.transaction.Transactional;
  
  import org.kie.kogito.event.DataEvent;
  import org.kie.kogito.event.EventPublisher;
-diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
+diff --git a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/ProcessDefinitionRegister.java b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/ProcessDefinitionRegister.java
+index 227eeb39a..977ffa0ed 100644
+--- a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/ProcessDefinitionRegister.java
++++ b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/ProcessDefinitionRegister.java
+@@ -20,8 +20,8 @@ import java.util.Optional;
+ import java.util.Set;
+ import java.util.function.Function;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.enterprise.event.Observes;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.enterprise.event.Observes;
+ 
+ import org.eclipse.microprofile.config.inject.ConfigProperty;
+ import org.kie.kogito.Application;
+diff --git a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 index 44f283138..2d3fa2bb6 100644
---- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
-+++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
+--- a/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
++++ b/data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-common/runtime/src/main/java/org/kie/kogito/index/addon/api/KogitoAddonRuntimeClientImpl.java
 @@ -23,9 +23,9 @@ import java.util.Map;
  import java.util.concurrent.CompletableFuture;
  import java.util.stream.Collectors;
@@ -2237,7 +2254,7 @@ index 44f283138..2d3fa2bb6 100644
  import org.eclipse.microprofile.context.ManagedExecutor;
  import org.kie.kogito.addon.source.files.SourceFilesProvider;
 diff --git a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
-index 101ddf0bb..5cd68f981 100644
+index 06c6b58f4..f80878834 100644
 --- a/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 +++ b/data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-common/runtime/src/main/java/org/kie/kogito/index/addon/graphql/GraphQLAddonSchemaManagerImpl.java
 @@ -15,7 +15,7 @@
