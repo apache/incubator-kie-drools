@@ -1,5 +1,4 @@
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import org.apache.commons.io.IOUtils;
 
 import io.quarkus.devtools.project.BuildTool;
 import io.quarkus.devtools.project.update.QuarkusUpdateRecipe;
@@ -21,7 +18,7 @@ import picocli.CommandLine.Option;
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 // Version to be changed when needed
-//DEPS io.quarkus:quarkus-devtools-common:3.0.0.Final
+//DEPS io.quarkus:quarkus-devtools-common:3.2.5.Final
 //DEPS info.picocli:picocli:4.5.0
 
 /*
@@ -35,17 +32,18 @@ import picocli.CommandLine.Option;
  *   - Reads all modified direct dependencies from the Quarkus recipe
  *   - Generates one managed dependency rule for each of them
  */
-@Command(name = "migrationrecipecli", mixinStandardHelpOptions = true, version = "migrationrecipecli 0.1",
-        description = "migrationrecipecli to create the Q3 migration recipe for a project")
- class CreateKieQuarkusProjectMigrationRecipeCli implements Callable<Integer> {
+@Command(name = "migrationrecipecli", mixinStandardHelpOptions = true, version = "migrationrecipecli 0.1", description = "migrationrecipecli to create the Q3 migration recipe for a project")
+class CreateKieQuarkusProjectMigrationRecipeCli implements Callable<Integer> {
 
-    @Option(names={ "-d", "--download-quarkus-recipe"}, description = "Download quarkus update recipe for final recipe generation")
+    @Option(names = { "-d",
+            "--download-quarkus-recipe" }, description = "Download quarkus update recipe for final recipe generation")
     private boolean downloadQuarkusRecipe = false;
 
-    @Option(names={ "-v", "--property-version"}, description = "(multi). Add a dynamic property version to the final recipe")
+    @Option(names = { "-v",
+            "--property-version" }, description = "(multi). Add a dynamic property version to the final recipe")
     private Map<String, String> versionProperties = new HashMap<>();
 
-    static final String QUARKUS_UPDATES_BASE_URL = "https://raw.githubusercontent.com/quarkusio/quarkus-updates/1.0.0/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml";
+    static final String QUARKUS_UPDATES_BASE_URL = "https://raw.githubusercontent.com/quarkusio/quarkus-updates/1.0.4/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml";
 
     static final Path quarkus3DownloadedRecipePath = Paths.get("quarkus3-base-recipe.yml");
     static final Path quarkus3GeneratedRecipePath = Paths.get("quarkus3.yml");
@@ -97,7 +95,6 @@ import picocli.CommandLine.Option;
 
         return 0;
     }
-
 
     public static void main(String... args) throws Exception {
         int exitCode = new CommandLine(new CreateKieQuarkusProjectMigrationRecipeCli()).execute(args);
