@@ -7,7 +7,7 @@ changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
+        label 'ubuntu'
     }
     tools {
         maven env.BUILD_MAVEN_TOOL

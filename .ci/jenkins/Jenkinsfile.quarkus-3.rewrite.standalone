@@ -7,7 +7,7 @@ previousHash = ''
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
+        label 'ubuntu'
     }
 
     tools {

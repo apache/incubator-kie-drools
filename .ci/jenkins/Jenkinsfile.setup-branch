@@ -5,7 +5,7 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
+        label 'ubuntu'
     }
 
     tools {

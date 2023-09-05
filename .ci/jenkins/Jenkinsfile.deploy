@@ -10,7 +10,7 @@ droolsRepository = 'drools'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
+        label 'ubuntu'
     }
 
     tools {
