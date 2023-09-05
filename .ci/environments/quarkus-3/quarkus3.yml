@@ -65,7 +65,7 @@ displayName: All Quarkus 3 Migration for Drools project
 recipeList:
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.jakarta.json,
-    newValue: 1.1.1
+    newValue: 1.1.2
   }
 - org.openrewrite.java.ChangeType: {
     oldFullyQualifiedTypeName: io.smallrye.reactive.messaging.providers.connectors.InMemorySink,
@@ -109,7 +109,7 @@ recipeList:
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.org.hibernate,
-    newValue: 6.2.0.Final
+    newValue: 6.2.7.Final
   }
 - org.openrewrite.maven.ChangePropertyValue: {
     key: version.org.apache.tomcat.tomcat-dbcp,
@@ -117,8 +117,6 @@ recipeList:
   }
 - org.kie.openrewrite.recipe.jpmml.JPMMLRecipe
 ---
-description: Update all managed dependencies based on dependency updates from Quarkus.
-name: org.kie.ManagedDependencies
 displayName: Update Managed Dependencies
 recipeList:
 - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId: {
@@ -505,6 +503,8 @@ recipeList:
     newArtifactId: keycloak-admin-client-jakarta
   }
 type: specs.openrewrite.org/v1beta/recipe
+description: Update all managed dependencies based on dependency updates from Quarkus.
+name: org.kie.ManagedDependencies
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse

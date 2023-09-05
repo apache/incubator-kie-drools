@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.quarkus.devtools.project.BuildTool;
-import io.quarkus.devtools.project.update.QuarkusUpdateRecipe;
-import io.quarkus.devtools.project.update.QuarkusUpdateRecipeIO;
-import io.quarkus.devtools.project.update.operations.UpdatePropertyOperation;
+import io.quarkus.devtools.project.update.rewrite.QuarkusUpdateRecipe;
+import io.quarkus.devtools.project.update.rewrite.QuarkusUpdateRecipeIO;
+import io.quarkus.devtools.project.update.rewrite.operations.UpdatePropertyOperation;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
