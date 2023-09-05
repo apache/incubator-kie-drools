@@ -21,7 +21,7 @@ recipeList:
   # parsson validation
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.jakarta.json
-      newValue: 1.1.1
+      newValue: 1.1.2
   
 #   - org.openrewrite.java.ChangeType:
 #       oldFullyQualifiedTypeName: io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector
@@ -64,7 +64,7 @@ recipeList:
       artifactId: hibernate-entitymanager
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.hibernate
-      newValue: 6.2.0.Final
+      newValue: 6.2.7.Final
 
 #   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
 #       oldGroupId: org.hibernate
