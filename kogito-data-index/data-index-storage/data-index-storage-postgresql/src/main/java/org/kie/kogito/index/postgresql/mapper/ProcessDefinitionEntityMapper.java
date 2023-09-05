@@ -29,4 +29,12 @@ public interface ProcessDefinitionEntityMapper {
     @InheritInverseConfiguration
     ProcessDefinition mapToModel(ProcessDefinitionEntity pd);
 
+    default byte[] map(String value) {
+        return value == null ? null : value.getBytes();
+    }
+
+    default String map(byte[] value) {
+        return value == null ? null : new String(value);
+    }
+
 }

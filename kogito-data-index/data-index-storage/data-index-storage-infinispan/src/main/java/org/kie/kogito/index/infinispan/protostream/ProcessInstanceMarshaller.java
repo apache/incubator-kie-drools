@@ -44,6 +44,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
     protected static final String ROOT_PROCESS_ID = "rootProcessId";
     protected static final String PARENT_PROCESS_INSTANCE_ID = "parentProcessInstanceId";
     protected static final String PROCESS_NAME = "processName";
+    protected static final String VERSION = "version";
     protected static final String ERROR = "error";
     protected static final String ADDONS = "addons";
     protected static final String LAST_UPDATE = "lastUpdate";
@@ -75,6 +76,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setLastUpdate(dateToZonedDateTime(reader.readDate(LAST_UPDATE)));
         pi.setBusinessKey(reader.readString(BUSINESS_KEY));
         pi.setMilestones(reader.readCollection(MILESTONES, new ArrayList<>(), Milestone.class));
+        pi.setVersion(reader.readString(VERSION));
         return pi;
     }
 
@@ -98,6 +100,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeDate(LAST_UPDATE, zonedDateTimeToDate(pi.getLastUpdate()));
         writer.writeString(BUSINESS_KEY, pi.getBusinessKey());
         writer.writeCollection(MILESTONES, pi.getMilestones(), Milestone.class);
+        writer.writeString(VERSION, pi.getVersion());
     }
 
     @Override

@@ -36,10 +36,13 @@ class MongoQuarkusAddonDataIndexIT {
 
     @Test
     void testDataIndexAddon() {
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id, version, name } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
-                .body("data.ProcessDefinitions.size()", is(0));
+                .body("data.ProcessDefinitions.size()", is(1))
+                .body("data.ProcessDefinitions[0].id", is("greet"))
+                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].name", is("Greeting workflow"));
 
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .when().post("/graphql")
@@ -65,14 +68,6 @@ class MongoQuarkusAddonDataIndexIT {
                 .body("data.ProcessInstances[0].diagram", is(nullValue()))
                 .body("data.ProcessInstances[0].source", is(notNullValue()))
                 .body("data.ProcessInstances[0].nodeDefinitions.size()", is(12));
-
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id, version, name } }\" }")
-                .when().post("/graphql")
-                .then().statusCode(200)
-                .body("data.ProcessDefinitions.size()", is(1))
-                .body("data.ProcessDefinitions[0].id", is("greet"))
-                .body("data.ProcessDefinitions[0].version", is("1.0"))
-                .body("data.ProcessDefinitions[0].name", is("Greeting workflow"));
     }
 
     @Test

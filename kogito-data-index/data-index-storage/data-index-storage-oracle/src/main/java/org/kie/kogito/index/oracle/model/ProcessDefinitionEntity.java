@@ -47,6 +47,8 @@ public class ProcessDefinitionEntity extends AbstractEntity {
 
     private String endpoint;
 
+    private byte[] source;
+
     @ElementCollection
     @JoinColumn(name = "id")
     @CollectionTable(name = "definitions_roles", joinColumns = { @JoinColumn(name = "process_id"),
@@ -118,6 +120,14 @@ public class ProcessDefinitionEntity extends AbstractEntity {
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public byte[] getSource() {
+        return source;
+    }
+
+    public void setSource(byte[] source) {
+        this.source = source;
     }
 
     @Override

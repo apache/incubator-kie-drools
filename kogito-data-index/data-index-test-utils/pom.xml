@@ -18,10 +18,6 @@
       <artifactId>data-index-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-test-utils</artifactId>
     </dependency>

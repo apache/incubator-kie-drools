@@ -26,6 +26,8 @@ public class ProcessInstanceMeta {
     private String id;
     private String processId;
     private String processName;
+
+    private String version;
     private Integer state;
     private String businessKey;
     private String endpoint;
@@ -153,6 +155,14 @@ public class ProcessInstanceMeta {
         this.lastUpdate = lastUpdate;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "ProcessInstanceMeta{" +
@@ -169,6 +179,7 @@ public class ProcessInstanceMeta {
                 ", rootProcessId='" + rootProcessId + '\'' +
                 ", parentProcessInstanceId='" + parentProcessInstanceId + '\'' +
                 ", lastUpdated=" + lastUpdate +
+                ", version=" + version +
                 '}';
     }
 

@@ -36,6 +36,8 @@ message ProcessInstanceMeta {
     optional int64 lastUpdate = 12;    
     /* @Field(store = Store.YES) */
     optional string businessKey = 13;
+    /* @Field(store = Store.YES) */
+    optional string version = 14;
 }
 
 /* @Indexed */
@@ -54,6 +56,7 @@ message ProcessDefinition {
     optional string type = 6;
     /* @Field(store = Store.YES) */
     optional string endpoint = 7;
+    optional bytes source = 8;
 }
 
 /* @Indexed */
@@ -91,6 +94,8 @@ message ProcessInstance {
     /* @Field(store = Store.YES) @SortableField */
     optional string businessKey = 17;
     repeated Milestone milestones = 18;
+    /* @Field(store = Store.YES) */
+    optional string version = 19;
 }
 
 /* @Indexed */

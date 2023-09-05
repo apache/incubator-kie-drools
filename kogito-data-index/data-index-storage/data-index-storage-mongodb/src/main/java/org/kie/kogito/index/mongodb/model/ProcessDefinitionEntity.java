@@ -38,6 +38,8 @@ public class ProcessDefinitionEntity {
 
     private String endpoint;
 
+    private byte[] source;
+
     public String getId() {
         return id;
     }
@@ -100,6 +102,14 @@ public class ProcessDefinitionEntity {
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public byte[] getSource() {
+        return source;
+    }
+
+    public void setSource(byte[] source) {
+        this.source = source;
     }
 
     @Override

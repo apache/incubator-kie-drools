@@ -25,9 +25,14 @@ import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 import static org.kie.kogito.index.test.quarkus.http.DataIndexPostgreSqlHttpQuarkusTestResource.DATA_INDEX_MIGRATE_DB;
@@ -45,6 +50,22 @@ class PostgreSQLQuarkusAddonDataIndexPersistenceIT {
 
     @Test
     void testDataIndexAddon() {
+        String source = given().contentType(ContentType.JSON)
+                .baseUri(dataIndex)
+                .body("{ \"query\" : \"{ ProcessDefinitions{ id, name, version, endpoint, addons, source } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200)
+                .body("data.ProcessDefinitions[0].id", is("greet"))
+                .body("data.ProcessDefinitions[0].name", is("Greeting workflow"))
+                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].endpoint", is("http://localhost:8080/greet"))
+                .body("data.ProcessDefinitions[0].addons", hasItem("jdbc-persistence"))
+                .body("data.ProcessDefinitions[0].source", is(not(emptyOrNullString())))
+                .extract().path("data.ProcessDefinitions[0].source");
+
+        assertThat(JsonPath.from(source).getString("id")).isEqualTo("greet");
+        assertThat(JsonPath.from(source).getString("version")).isEqualTo("1.0");
+
         given().contentType(ContentType.JSON)
                 .baseUri(dataIndex)
                 .body("{ \"query\" : \"{ProcessInstances{ id } }\" }")

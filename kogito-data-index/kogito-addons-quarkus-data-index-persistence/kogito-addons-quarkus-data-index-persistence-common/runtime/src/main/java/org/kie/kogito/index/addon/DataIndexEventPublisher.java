@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
@@ -45,6 +46,7 @@ public class DataIndexEventPublisher implements EventPublisher {
     IndexingService indexingService;
 
     @Override
+    @Transactional
     public void publish(DataEvent<?> event) {
         LOGGER.debug("Sending event to embedded data index: {}", event);
         switch (event.getType()) {

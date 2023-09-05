@@ -23,18 +23,6 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-quarkus-data-index-persistence-common-runtime</artifactId>
         </dependency>
-        <dependency>
-             <groupId>org.kie.kogito</groupId>
-             <artifactId>jbpm-flow</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-process-svg</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-source-files</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

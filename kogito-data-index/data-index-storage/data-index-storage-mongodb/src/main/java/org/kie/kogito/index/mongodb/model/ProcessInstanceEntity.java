@@ -52,6 +52,8 @@ public class ProcessInstanceEntity {
 
     String processName;
 
+    String version;
+
     ProcessInstanceErrorEntity error;
 
     Set<String> addons;
@@ -204,6 +206,14 @@ public class ProcessInstanceEntity {
 
     public void setMilestones(List<MilestoneEntity> milestones) {
         this.milestones = milestones;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     @Override

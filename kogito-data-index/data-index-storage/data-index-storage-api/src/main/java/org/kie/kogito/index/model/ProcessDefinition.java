@@ -29,6 +29,8 @@ public class ProcessDefinition {
 
     private String endpoint;
 
+    private String source;
+
     public String getId() {
         return id;
     }
@@ -85,8 +87,20 @@ public class ProcessDefinition {
         this.endpoint = endpoint;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public String getKey() {
-        return String.format("%s-%s", id, version);
+        return toKey(id, version);
+    }
+
+    public static String toKey(String processId, String version) {
+        return String.format("%s-%s", processId, version);
     }
 
     @Override

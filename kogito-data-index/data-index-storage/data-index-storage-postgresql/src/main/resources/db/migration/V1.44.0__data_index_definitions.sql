@@ -4,6 +4,7 @@ create table definitions
     version  varchar(255) not null,
     name     varchar(255),
     type     varchar(255),
+    source   bytea,
     endpoint varchar(255),
     primary key (id, version)
 );
@@ -39,3 +40,6 @@ alter table if exists definitions_roles
     on
 delete
 cascade;
+
+alter table if exists processes
+    add column version varchar (255);

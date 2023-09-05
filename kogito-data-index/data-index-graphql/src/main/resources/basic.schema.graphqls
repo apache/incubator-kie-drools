@@ -45,6 +45,7 @@ input ProcessDefinitionArgument {
 type ProcessInstance {
     id: String!
     processId: String!
+    version: String
     processName: String
     parentProcessInstanceId: String
     rootProcessInstanceId: String
@@ -67,6 +68,7 @@ type ProcessInstance {
     nodeDefinitions: [Node!]
     diagram: String
     source: String
+    definition: ProcessDefinition
 }
 
 type ProcessInstanceError {

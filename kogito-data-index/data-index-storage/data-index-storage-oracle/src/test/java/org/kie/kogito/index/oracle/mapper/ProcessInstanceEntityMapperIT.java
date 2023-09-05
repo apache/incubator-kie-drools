@@ -69,6 +69,7 @@ class ProcessInstanceEntityMapperIT {
 
         String testId = "testId";
         String processId = "testProcessId";
+        String version = "1.0";
         Set<String> roles = singleton("testRoles");
         ObjectNode variables = jsonMapper.createObjectNode();
         variables.put("test", "testValue");
@@ -102,6 +103,7 @@ class ProcessInstanceEntityMapperIT {
 
         processInstance.setId(testId);
         processInstance.setProcessId(processId);
+        processInstance.setVersion(version);
         processInstance.setRoles(roles);
         processInstance.setVariables(variables);
         processInstance.setEndpoint(endpoint);
@@ -144,6 +146,7 @@ class ProcessInstanceEntityMapperIT {
 
         processInstanceEntity.setId(testId);
         processInstanceEntity.setProcessId(processId);
+        processInstanceEntity.setVersion(version);
         processInstanceEntity.setRoles(roles);
         processInstanceEntity.setVariables(variables);
         processInstanceEntity.setEndpoint(endpoint);

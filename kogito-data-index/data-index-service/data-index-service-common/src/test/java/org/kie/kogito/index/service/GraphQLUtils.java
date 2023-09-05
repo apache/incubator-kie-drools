@@ -55,7 +55,7 @@ public class GraphQLUtils {
     static {
         QUERY_FIELDS.put(ProcessDefinition.class, getAllFieldsList(ProcessDefinition.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.put(UserTaskInstance.class, getAllFieldsList(UserTaskInstance.class).map(getFieldName()).collect(joining(", ")));
-        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).filter(field -> !field.getName().equals("definition")).map(getFieldName()).collect(joining(", ")));
+        QUERY_FIELDS.put(ProcessInstance.class, getAllFieldsList(ProcessInstance.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.put(Job.class, getAllFieldsList(Job.class).map(getFieldName()).collect(joining(", ")));
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", serviceUrl");
         QUERY_FIELDS.computeIfPresent(ProcessInstance.class, (k, v) -> v + ", childProcessInstances { id, processName }");
@@ -230,7 +230,7 @@ public class GraphQLUtils {
     }
 
     private static Stream<Field> getAllFieldsList(Class clazz) {
-        return FieldUtils.getAllFieldsList(clazz).stream().filter(f -> getJacocoPredicate().test(f));
+        return FieldUtils.getAllFieldsList(clazz).stream().filter(getSoourcePredicate().or(getSoourcePredicate()));
     }
 
     private static Function<Field, String> getFieldName() {
@@ -262,5 +262,9 @@ public class GraphQLUtils {
     //  See https://www.eclemma.org/jacoco/trunk/doc/faq.html    
     private static Predicate<Field> getJacocoPredicate() {
         return field -> !field.getName().equals("$jacocoData");
+    }
+
+    private static Predicate<Field> getSoourcePredicate() {
+        return field -> !(field.getDeclaringClass().equals(ProcessDefinition.class) && field.getName().equals("source"));
     }
 }

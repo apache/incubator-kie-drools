@@ -49,6 +49,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
     @Id
     private String id;
     private String processId;
+    private String version;
     private String processName;
     private Integer state;
     private String businessKey;
@@ -228,6 +229,14 @@ public class ProcessInstanceEntity extends AbstractEntity {
         this.error = error;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -266,6 +275,7 @@ public class ProcessInstanceEntity extends AbstractEntity {
                 ", milestones=" + milestones +
                 ", addons=" + addons +
                 ", error=" + error +
+                ", version=" + version +
                 '}';
     }
 }

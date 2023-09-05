@@ -32,7 +32,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.event.process.AttachmentEventBody;
 import org.kie.kogito.event.process.CommentEventBody;
@@ -104,11 +103,11 @@ public final class TestUtils {
                 .processId(processId)
                 .version("1.0")
                 .rootProcessId(rootProcessId)
-                .processName(RandomStringUtils.randomAlphabetic(10))
+                .processName(String.format("%s-name", processId))
                 .startDate(new Date())
                 .endDate(status == ProcessInstanceState.COMPLETED ? Date.from(Instant.now().plus(1, ChronoUnit.HOURS)) : null)
                 .state(status.ordinal())
-                .businessKey(RandomStringUtils.randomAlphabetic(10))
+                .businessKey(String.format("%s-key", processId))
                 .variables(getProcessInstanceVariablesMap())
                 .milestones(Set.of(
                         MilestoneEventBody.create()
@@ -139,7 +138,8 @@ public final class TestUtils {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
-        pi.setProcessName(RandomStringUtils.randomAlphabetic(10));
+        pi.setVersion("1.0");
+        pi.setProcessName(String.format("%s-name", processId));
         pi.setRootProcessInstanceId(rootProcessInstanceId);
         pi.setParentProcessInstanceId(rootProcessInstanceId);
         pi.setRootProcessId(rootProcessId);
@@ -153,7 +153,7 @@ public final class TestUtils {
             pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
         }
         pi.setMilestones(getMilestones());
-        pi.setBusinessKey(RandomStringUtils.randomAlphabetic(10));
+        pi.setBusinessKey(String.format("%s-key", processId));
         return pi;
     }
 

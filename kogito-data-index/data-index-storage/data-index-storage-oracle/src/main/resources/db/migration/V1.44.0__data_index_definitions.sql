@@ -3,6 +3,7 @@ create table definitions
     id       varchar2(255 char) not null,
     version  varchar2(255 char) not null,
     name     varchar2(255 char),
+    source   blob,
     type     varchar2(255 char),
     endpoint varchar2(255 char),
     primary key (id, version)
@@ -35,3 +36,6 @@ alter table definitions_roles
         foreign key (process_id, process_version)
             references definitions
             on delete cascade;
+
+alter table processes
+    add version varchar2(255 char);

@@ -72,6 +72,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         entity.setLastUpdate(zonedDateTimeToInstant(instance.getLastUpdate()));
         entity.setBusinessKey(instance.getBusinessKey());
         entity.setMilestones(Optional.ofNullable(instance.getMilestones()).map(milestones -> milestones.stream().map(this::fromMilestone).collect(toList())).orElse(null));
+        entity.setVersion(instance.getVersion());
         return entity;
     }
 
@@ -99,7 +100,8 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setAddons(entity.getAddons());
         instance.setLastUpdate(instantToZonedDateTime(entity.getLastUpdate()));
         instance.setBusinessKey(entity.getBusinessKey());
-        instance.setMilestones(Optional.ofNullable(entity.getMilestones()).map(milesteons -> milesteons.stream().map(this::toMilestone).collect(toList())).orElse(null));
+        instance.setMilestones(Optional.ofNullable(entity.getMilestones()).map(milestones -> milestones.stream().map(this::toMilestone).collect(toList())).orElse(null));
+        instance.setVersion(entity.getVersion());
         return instance;
     }
 

@@ -155,6 +155,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                         .body("data.ProcessInstances[0].id", is(event.getData().getId()))
                         .body("data.ProcessInstances[0].processId", is(event.getData().getProcessId()))
                         .body("data.ProcessInstances[0].processName", is(event.getData().getProcessName()))
+                        .body("data.ProcessInstances[0].version", is(event.getData().getVersion()))
                         .body("data.ProcessInstances[0].rootProcessId", is(event.getData().getRootProcessId()))
                         .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getData().getRootInstanceId()))
                         .body("data.ProcessInstances[0].parentProcessInstanceId", is(event.getData().getParentInstanceId()))
@@ -183,7 +184,10 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                         .body("data.ProcessInstances[0].milestones.size()", is(event.getData().getMilestones().size()))
                         .body("data.ProcessInstances[0].milestones[0].id", is(event.getData().getMilestones().stream().findFirst().get().getId()))
                         .body("data.ProcessInstances[0].milestones[0].name", is(event.getData().getMilestones().stream().findFirst().get().getName()))
-                        .body("data.ProcessInstances[0].milestones[0].status", is(event.getData().getMilestones().stream().findFirst().get().getStatus())));
+                        .body("data.ProcessInstances[0].milestones[0].status", is(event.getData().getMilestones().stream().findFirst().get().getStatus()))
+                        .body("data.ProcessInstances[0].definition.id", is(event.getData().getProcessId()))
+                        .body("data.ProcessInstances[0].definition.version", is(event.getData().getVersion()))
+                        .body("data.ProcessInstances[0].definition.name", is(event.getData().getProcessName())));
     }
 
     protected void validateProcessInstance(String query, ProcessInstanceDataEvent event) {

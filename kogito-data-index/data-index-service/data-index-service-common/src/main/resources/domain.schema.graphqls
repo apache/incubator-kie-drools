@@ -43,6 +43,7 @@ input KogitoMetadataArgument {
 type ProcessInstanceMeta {
     id: String!
     processId: String!
+    version: String
     processName: String
     parentProcessInstanceId: String
     rootProcessInstanceId: String

@@ -27,8 +27,11 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 import static org.kie.kogito.index.test.quarkus.http.DataIndexPostgreSqlHttpQuarkusTestResource.DATA_INDEX_MIGRATE_DB;
@@ -46,6 +49,18 @@ class PostgreSQLQuarkusAddonDataIndexPersistenceIT {
 
     @Test
     void testDataIndexAddon() {
+        given().contentType(ContentType.JSON)
+                .baseUri(dataIndex)
+                .body("{ \"query\" : \"{ ProcessDefinitions{ id, name, version, endpoint, addons, source } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200)
+                .body("data.ProcessDefinitions[0].id", is("hello"))
+                .body("data.ProcessDefinitions[0].name", is("hello"))
+                .body("data.ProcessDefinitions[0].version", is("1.0"))
+                .body("data.ProcessDefinitions[0].endpoint", is("http://localhost:8080/hello"))
+                .body("data.ProcessDefinitions[0].addons", hasItem("jdbc-persistence"))
+                .body("data.ProcessDefinitions[0].source", is(not(emptyOrNullString())));
+
         given().contentType(ContentType.JSON)
                 .baseUri(dataIndex)
                 .body("{ \"query\" : \"{ProcessInstances{ id } }\" }")

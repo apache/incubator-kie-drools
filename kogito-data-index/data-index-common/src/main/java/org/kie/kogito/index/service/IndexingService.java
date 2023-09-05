@@ -58,7 +58,9 @@ public class IndexingService {
             pi.getNodes().addAll(nodes);
         }
         ProcessDefinition definition = pi.getDefinition();
-        manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
+        if (!manager.getProcessDefinitionsCache().containsKey(definition.getKey())) {
+            manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
+        }
         manager.getProcessInstancesCache().put(pi.getId(), pi);
     }
 

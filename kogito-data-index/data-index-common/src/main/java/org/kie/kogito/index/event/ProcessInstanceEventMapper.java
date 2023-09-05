@@ -62,11 +62,12 @@ public class ProcessInstanceEventMapper implements Function<ProcessInstanceDataE
         pi.setAddons(isNullOrEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));
         pi.setEndpoint(event.getSource() == null ? null : event.getSource().toString());
         pi.setLastUpdate(toZonedDateTime(event.getTime()));
-        pi.setDefinition(definitions().apply(event));
+        pi.setVersion(event.getData().getVersion());
+        pi.setDefinition(definition().apply(event));
         return pi;
     }
 
-    private Function<ProcessInstanceDataEvent, ProcessDefinition> definitions() {
+    private Function<ProcessInstanceDataEvent, ProcessDefinition> definition() {
         return event -> {
             ProcessDefinition pd = new ProcessDefinition();
             pd.setId(event.getData().getProcessId());

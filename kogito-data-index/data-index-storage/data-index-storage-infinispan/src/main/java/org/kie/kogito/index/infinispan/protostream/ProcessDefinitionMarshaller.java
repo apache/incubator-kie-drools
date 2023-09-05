@@ -34,6 +34,8 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
     protected static final String TYPE = "type";
     protected static final String ENDPOINT = "endpoint";
 
+    protected static final String SOURCE = "source";
+
     public ProcessDefinitionMarshaller(ObjectMapper mapper) {
         super(mapper);
     }
@@ -48,6 +50,8 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
         pd.setAddons(reader.readCollection(ADDONS, new HashSet<>(), String.class));
         pd.setType(reader.readString(TYPE));
         pd.setEndpoint(reader.readString(ENDPOINT));
+        byte[] bytes = reader.readBytes(SOURCE);
+        pd.setSource(bytes == null ? null : new String(bytes));
         return pd;
     }
 
@@ -60,6 +64,7 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
         writer.writeCollection(ADDONS, pd.getAddons(), String.class);
         writer.writeString(TYPE, pd.getType());
         writer.writeString(ENDPOINT, pd.getEndpoint());
+        writer.writeBytes(SOURCE, pd.getSource() == null ? null : pd.getSource().getBytes());
     }
 
     @Override

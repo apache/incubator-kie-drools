@@ -122,6 +122,11 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         return getServiceUrl(source.getEndpoint(), source.getProcessId());
     }
 
+    public ProcessDefinition getProcessDefinition(DataFetchingEnvironment env) {
+        ProcessInstance source = env.getSource();
+        return cacheService.getProcessDefinitionsCache().get(ProcessDefinition.toKey(source.getProcessId(), source.getVersion()));
+    }
+
     protected String getServiceUrl(String endpoint, String processId) {
         LOGGER.debug("Process endpoint {}", endpoint);
         if (endpoint.startsWith("/")) {
@@ -210,7 +215,12 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> getProcessInstanceSourceFileContent(DataFetchingEnvironment env) {
         ProcessInstance pi = env.getSource();
-        return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
+        ProcessDefinition pd = cacheService.getProcessDefinitionsCache().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
+        if (pd == null) {
+            return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
+        } else {
+            return getProcessDefinitionSource(pd);
+        }
     }
 
     public CompletableFuture<List<Node>> getProcessInstanceNodes(DataFetchingEnvironment env) {
@@ -219,8 +229,17 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     public CompletableFuture<String> getProcessDefinitionSourceFileContent(DataFetchingEnvironment env) {
-        ProcessDefinition pd = env.getSource();
-        return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pd.getEndpoint(), pd.getId()), pd.getId());
+        return getProcessDefinitionSource(env.getSource());
+    }
+
+    private CompletableFuture<String> getProcessDefinitionSource(ProcessDefinition pd) {
+        if (pd == null) {
+            return CompletableFuture.completedFuture(null);
+        } else if (pd.getSource() == null) {
+            return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pd.getEndpoint(), pd.getId()), pd.getId());
+        } else {
+            return CompletableFuture.completedFuture(pd.getSource());
+        }
     }
 
     public CompletableFuture<List<Node>> getProcessDefinitionNodes(DataFetchingEnvironment env) {
