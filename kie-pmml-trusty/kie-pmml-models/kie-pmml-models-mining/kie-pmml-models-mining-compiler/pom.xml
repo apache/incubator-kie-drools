@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-mining</artifactId>
-    <version>8.44.0.Final</version>
+    <version>8.44.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.44.0.Final</version>
+        <version>8.44.1-SNAPSHOT</version>
     </parent>
 
     <name>Drools :: Quarkus Extension :: Quickstart Integration Test</name>
