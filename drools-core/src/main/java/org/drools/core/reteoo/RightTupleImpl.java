@@ -35,6 +35,10 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     private LeftTuple            tempBlocked;
 
     private boolean              retracted;
+    
+    protected RightTuple handlePrevious;
+    protected RightTuple handleNext;
+
 
     public RightTupleImpl() { }
     
@@ -123,11 +127,11 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     }
 
     public RightTuple getHandlePrevious() {
-        return (RightTuple) handlePrevious;
+        return handlePrevious;
     }
 
     public RightTuple getHandleNext() {
-        return (RightTuple) handleNext;
+        return handleNext;
     }
 
     public LeftTuple getFirstChild() {
@@ -278,4 +282,15 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     public InternalFactHandle getFactHandleForEvaluation() {
         return getFactHandle();
     }
+
+	@Override
+	public void setHandlePrevious(Tuple handlePrevious) {
+		this.handlePrevious = (RightTuple) handlePrevious;
+		
+	}
+
+	@Override
+	public void setHandleNext(Tuple handleNext) {
+		this.handleNext = (RightTuple) handleNext;
+	}
 }

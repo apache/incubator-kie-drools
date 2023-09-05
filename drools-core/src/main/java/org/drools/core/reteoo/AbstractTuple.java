@@ -39,9 +39,6 @@ public abstract class AbstractTuple implements Tuple {
 
     private Sink sink;
 
-    protected Tuple handlePrevious;
-    protected Tuple handleNext;
-
     private boolean expired;
 
     public Object getObject(Declaration declaration) {
@@ -153,24 +150,16 @@ public abstract class AbstractTuple implements Tuple {
     }
 
     @Override
-    public Tuple getHandlePrevious() {
-        return handlePrevious;
-    }
+    public abstract Tuple getHandlePrevious();
 
     @Override
-    public void setHandlePrevious(Tuple handlePrevious) {
-        this.handlePrevious = handlePrevious;
-    }
+    public abstract void setHandlePrevious(Tuple handlePrevious);
 
     @Override
-    public Tuple getHandleNext() {
-        return handleNext;
-    }
+    public abstract Tuple getHandleNext();
 
     @Override
-    public void setHandleNext(Tuple handleNext) {
-        this.handleNext = handleNext;
-    }
+    public abstract void setHandleNext(Tuple handleNext);
 
     @Override
     public boolean isExpired() {

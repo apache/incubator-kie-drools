@@ -35,6 +35,10 @@ public class LeftTuple
     private static final long  serialVersionUID = 540l;
 
     private int                index;
+    
+
+    protected LeftTuple handlePrevious;
+    protected LeftTuple handleNext;
 
     private LeftTuple parent;
 
@@ -364,12 +368,12 @@ public class LeftTuple
 
     @Override
     public LeftTuple getHandlePrevious() {
-        return (LeftTuple) handlePrevious;
+        return handlePrevious;
     }
 
     @Override
     public LeftTuple getHandleNext() {
-        return (LeftTuple) handleNext;
+        return handleNext;
     }
 
     public RightTuple getRightParent() {
@@ -665,4 +669,15 @@ public class LeftTuple
         }
         return result;
     }
+
+	@Override
+	public void setHandlePrevious(Tuple handlePrevious) {
+		this.handlePrevious = (LeftTuple) handlePrevious;
+		
+	}
+
+	@Override
+	public void setHandleNext(Tuple handleNext) {
+		this.handleNext = (LeftTuple) handleNext;
+	}
 }
