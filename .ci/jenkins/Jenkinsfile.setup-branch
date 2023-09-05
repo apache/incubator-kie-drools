@@ -126,7 +126,15 @@ void checkoutRepo(String repository, String branch) {
 }
 
 String getDroolsTargetBranch() {
-    return util.calculateTargetReleaseBranch(getBuildBranch(), 7)
+    String targetBranch = getBuildBranch()
+    List versionSplit = targetBranch.split("\\.") as List
+
+    if (versionSplit[0].isNumber()) {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit.tail().join('.')}"
+    } else {
+        echo "Cannot parse targetBranch as release branch so going further with current value: ${targetBranch}"
+    }
+    return targetBranch
 }
 
 String getRepoName() {
