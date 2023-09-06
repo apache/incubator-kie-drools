@@ -20,8 +20,8 @@ environments:
   quarkus-3:
     pull_request_default_check: false
     env_vars:
-      BUILD_MAVEN_TOOL: kie-maven-3.9.1
-      BUILD_JDK_TOOL: kie-jdk17
+      BUILD_MAVEN_TOOL: maven_3.9.1
+      BUILD_JDK_TOOL: jdk_17_latest
       BUILD_MVN_OPTS: -Denforcer.skip
       # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
       # BUILD_MVN_OPTS_QUARKUS_UPDATE: -Dfull
@@ -68,7 +68,7 @@ buildchain_config:
     repository: drools
     file_path: .ci/buildchain-config.yaml
 maven:
-  settings_file_id: kogito_release_settings
+  settings_file_id: kie-release-settings
   nexus:
     release_url: https://repository.jboss.org/nexus
     release_repository: jboss-releases-repository
@@ -93,6 +93,6 @@ cloud:
 jenkins:
   email_creds_id: KOGITO_CI_EMAIL_TO
   default_tools:
-    jdk: kie-jdk11
-    maven: kie-maven-3.8.7
-    sonar_jdk: kie-jdk17
+    jdk: jdk_11_latest
+    maven: maven_3.8.6
+    sonar_jdk: jdk_17_latest
