@@ -50,7 +50,7 @@ class InfinispanQuarkusAddonDataIndexPersistenceIT {
     void testDataIndexAddon() {
         String source = given().contentType(ContentType.JSON)
                 .baseUri(dataIndex)
-                .body("{ \"query\" : \"{ ProcessDefinitions{ id, name, version, endpoint, addons, source } }\" }")
+                .body("{ \"query\" : \"{ ProcessDefinitions{ id, name, version, endpoint, addons, source, nodes { id, name, type, uniqueId, metadata { UniqueId } } } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.ProcessDefinitions[0].id", is("greet"))
@@ -59,6 +59,12 @@ class InfinispanQuarkusAddonDataIndexPersistenceIT {
                 .body("data.ProcessDefinitions[0].endpoint", is("http://localhost:8080/greet"))
                 .body("data.ProcessDefinitions[0].addons", hasItem("infinispan-persistence"))
                 .body("data.ProcessDefinitions[0].source", is(not(emptyOrNullString())))
+                .body("data.ProcessDefinitions[0].nodes.size()", is(12))
+                .body("data.ProcessDefinitions[0].nodes[0].id", is("1"))
+                .body("data.ProcessDefinitions[0].nodes[0].name", is("Start"))
+                .body("data.ProcessDefinitions[0].nodes[0].type", is("StartNode"))
+                .body("data.ProcessDefinitions[0].nodes[0].uniqueId", is("1"))
+                .body("data.ProcessDefinitions[0].nodes[0].metadata.UniqueId", is("_jbpm-unique-0"))
                 .extract().path("data.ProcessDefinitions[0].source");
 
         assertThat(JsonPath.from(source).getString("id")).isEqualTo("greet");

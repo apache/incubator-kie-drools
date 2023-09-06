@@ -16,9 +16,11 @@
 
 package org.kie.kogito.index.oracle.model;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -27,6 +29,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.OnDelete;
@@ -44,9 +47,6 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     private String version;
     private String name;
     private String type;
-
-    private String endpoint;
-
     private byte[] source;
 
     @ElementCollection
@@ -64,6 +64,11 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @Column(name = "addon", nullable = false)
     private Set<String> addons;
+
+    private String endpoint;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "processDefinition")
+    private List<NodeEntity> nodes;
 
     @Override
     public String getId() {
@@ -130,6 +135,14 @@ public class ProcessDefinitionEntity extends AbstractEntity {
         this.source = source;
     }
 
+    public List<NodeEntity> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<NodeEntity> nodes) {
+        this.nodes = nodes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -152,9 +165,10 @@ public class ProcessDefinitionEntity extends AbstractEntity {
                 ", version='" + version + '\'' +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", endpoint='" + endpoint + '\'' +
                 ", roles=" + roles +
                 ", addons=" + addons +
+                ", endpoint='" + endpoint + '\'' +
+                ", nodes='" + nodes + '\'' +
                 '}';
     }
 }

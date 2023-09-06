@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.mongodb.model;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,6 +41,8 @@ public class ProcessDefinitionEntity {
     private String endpoint;
 
     private byte[] source;
+
+    private List<NodeEntity> nodes;
 
     public String getId() {
         return id;
@@ -112,6 +116,14 @@ public class ProcessDefinitionEntity {
         this.source = source;
     }
 
+    public List<NodeEntity> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<NodeEntity> nodes) {
+        this.nodes = nodes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -138,6 +150,85 @@ public class ProcessDefinitionEntity {
                 ", roles=" + roles +
                 ", addons=" + addons +
                 ", endpoint='" + endpoint + '\'' +
+                ", nodes='" + nodes + '\'' +
                 '}';
+    }
+
+    public static class NodeEntity {
+
+        private String id;
+        private String name;
+        private String uniqueId;
+        private String type;
+
+        private Map<String, String> metadata;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getUniqueId() {
+            return uniqueId;
+        }
+
+        public void setUniqueId(String nodeId) {
+            this.uniqueId = nodeId;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public Map<String, String> getMetadata() {
+            return metadata;
+        }
+
+        public void setMetadata(Map<String, String> metadata) {
+            this.metadata = metadata;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            NodeEntity that = (NodeEntity) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
+
+        @Override
+        public String toString() {
+            return "NodeEntity{" +
+                    "id='" + id + '\'' +
+                    ", name='" + name + '\'' +
+                    ", nodeId='" + uniqueId + '\'' +
+                    ", type='" + type + '\'' +
+                    ", metadata=" + metadata +
+                    '}';
+        }
     }
 }

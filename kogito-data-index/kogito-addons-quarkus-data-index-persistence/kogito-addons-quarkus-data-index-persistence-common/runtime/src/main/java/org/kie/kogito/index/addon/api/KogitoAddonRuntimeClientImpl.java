@@ -41,6 +41,8 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.svg.ProcessSvgService;
 
+import static java.util.stream.Collectors.toMap;
+
 @ApplicationScoped
 public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
@@ -119,14 +121,18 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
             List<Node> list = nodes.stream().map(n -> {
                 Node data = new Node();
                 data.setId(String.valueOf(n.getId()));
-                data.setNodeId(((org.jbpm.workflow.core.Node) n).getUniqueId());
-                data.setMetadata(n.getMetaData());
+                data.setUniqueId(((org.jbpm.workflow.core.Node) n).getUniqueId());
+                data.setMetadata(n.getMetaData() == null ? null : mapMetadata(n));
                 data.setType(n.getClass().getSimpleName());
                 data.setName(n.getName());
                 return data;
             }).collect(Collectors.toList());
             return CompletableFuture.completedFuture(list);
         }
+    }
+
+    private static Map<String, String> mapMetadata(org.kie.api.definition.process.Node n) {
+        return n.getMetaData().entrySet().stream().filter(e -> e.getValue() != null).collect(toMap(Map.Entry::getKey, e -> e.getValue().toString()));
     }
 
     @Override

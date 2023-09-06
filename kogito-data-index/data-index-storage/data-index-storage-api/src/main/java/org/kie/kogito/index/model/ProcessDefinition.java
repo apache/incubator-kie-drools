@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.index.model;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,10 +27,10 @@ public class ProcessDefinition {
     private String type;
     private Set<String> roles;
     private Set<String> addons;
-
     private String endpoint;
-
     private String source;
+
+    private List<Node> nodes;
 
     public String getId() {
         return id;
@@ -95,6 +96,14 @@ public class ProcessDefinition {
         this.source = source;
     }
 
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
+    }
+
     public String getKey() {
         return toKey(id, version);
     }
@@ -128,6 +137,7 @@ public class ProcessDefinition {
                 ", roles=" + roles +
                 ", addons=" + addons +
                 ", endpoint='" + endpoint + '\'' +
+                ", nodes='" + nodes + '\'' +
                 '}';
     }
 

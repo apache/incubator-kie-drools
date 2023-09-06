@@ -45,6 +45,16 @@ public class ProtostreamProducer {
     }
 
     @Produces
+    MessageMarshaller nodeMarshaller() {
+        return new NodeMarshaller(mapper);
+    }
+
+    @Produces
+    MessageMarshaller nodeMetadataMarshaller() {
+        return new NodeMetadataMarshaller(mapper);
+    }
+
+    @Produces
     MessageMarshaller nodeInstanceMarshaller() {
         return new NodeInstanceMarshaller(mapper);
     }

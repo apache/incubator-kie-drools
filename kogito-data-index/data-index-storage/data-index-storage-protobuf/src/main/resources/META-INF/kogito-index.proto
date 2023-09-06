@@ -57,6 +57,26 @@ message ProcessDefinition {
     /* @Field(store = Store.YES) */
     optional string endpoint = 7;
     optional bytes source = 8;
+    repeated Node nodes = 9;
+}
+
+/* @Indexed */
+message Node {
+    /* @Field(store = Store.YES) */
+    optional string id = 1;
+    /* @Field(store = Store.YES) */
+    optional string name = 2;
+    /* @Field(store = Store.YES) */
+    optional string type = 3;
+    optional string uniqueId = 4;
+    optional NodeMetadata metadata = 5;
+}
+
+message NodeMetadata {
+    optional string UniqueId = 1;
+    optional string state = 2;
+    optional string branch = 3;
+    optional string action = 4;
 }
 
 /* @Indexed */

@@ -42,8 +42,8 @@ public class GraphQLAddonSchemaManagerImpl extends AbstractGraphQLSchemaManager 
                     return builder;
                 })
                 .type("ProcessDefinition", builder -> {
-                    builder.dataFetcher("source", this::getProcessDefinitionSourceFileContent);
-                    builder.dataFetcher("nodes", this::getProcessDefinitionNodes);
+                    builder.dataFetcher("source", e -> getProcessDefinitionSource(e.getSource()));
+                    builder.dataFetcher("nodes", e -> getProcessDefinitionNodes(e.getSource()));
                     builder.dataFetcher("serviceUrl", this::getProcessDefinitionServiceUrl);
                     return builder;
                 })
@@ -52,7 +52,7 @@ public class GraphQLAddonSchemaManagerImpl extends AbstractGraphQLSchemaManager 
                     builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
                     builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
                     builder.dataFetcher("diagram", this::getProcessInstanceDiagram);
-                    builder.dataFetcher("source", this::getProcessInstanceSourceFileContent);
+                    builder.dataFetcher("source", this::getProcessInstanceSource);
                     builder.dataFetcher("nodeDefinitions", this::getProcessInstanceNodes);
                     builder.dataFetcher("definition", this::getProcessDefinition);
                     return builder;

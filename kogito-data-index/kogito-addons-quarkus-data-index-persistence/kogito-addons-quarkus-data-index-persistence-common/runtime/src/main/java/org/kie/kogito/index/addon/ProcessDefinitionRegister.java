@@ -75,6 +75,14 @@ public class ProcessDefinitionRegister {
             } catch (Exception e) {
                 throw new DataIndexServiceException(format("Failed to register process definition with id: %s", p.id()), e);
             }
+            try {
+                pd.setNodes(client.getProcessDefinitionNodes(null, p.id()).get());
+            } catch (InterruptedException e) {
+                LOGGER.warn("Interrupted thread while registering process definition with id: {}", p.id(), e);
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                throw new DataIndexServiceException(format("Failed to register process definition with id: %s", p.id()), e);
+            }
             return pd;
         };
     }

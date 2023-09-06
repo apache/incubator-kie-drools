@@ -265,6 +265,6 @@ public class GraphQLUtils {
     }
 
     private static Predicate<Field> getSoourcePredicate() {
-        return field -> !(field.getDeclaringClass().equals(ProcessDefinition.class) && field.getName().equals("source"));
+        return field -> !(field.getDeclaringClass().equals(ProcessDefinition.class) && (field.getName().equals("source") || field.getName().equals("nodes")));
     }
 }

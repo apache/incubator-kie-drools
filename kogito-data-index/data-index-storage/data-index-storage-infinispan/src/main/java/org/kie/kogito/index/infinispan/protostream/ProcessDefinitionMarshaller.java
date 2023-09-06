@@ -16,9 +16,11 @@
 package org.kie.kogito.index.infinispan.protostream;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.infinispan.protostream.MessageMarshaller;
+import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.persistence.infinispan.protostream.AbstractMarshaller;
 
@@ -35,6 +37,7 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
     protected static final String ENDPOINT = "endpoint";
 
     protected static final String SOURCE = "source";
+    protected static final String NODES = "nodes";
 
     public ProcessDefinitionMarshaller(ObjectMapper mapper) {
         super(mapper);
@@ -52,6 +55,7 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
         pd.setEndpoint(reader.readString(ENDPOINT));
         byte[] bytes = reader.readBytes(SOURCE);
         pd.setSource(bytes == null ? null : new String(bytes));
+        pd.setNodes(reader.readCollection(NODES, new ArrayList<>(), Node.class));
         return pd;
     }
 
@@ -65,6 +69,7 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
         writer.writeString(TYPE, pd.getType());
         writer.writeString(ENDPOINT, pd.getEndpoint());
         writer.writeBytes(SOURCE, pd.getSource() == null ? null : pd.getSource().getBytes());
+        writer.writeCollection(NODES, pd.getNodes(), Node.class);
     }
 
     @Override

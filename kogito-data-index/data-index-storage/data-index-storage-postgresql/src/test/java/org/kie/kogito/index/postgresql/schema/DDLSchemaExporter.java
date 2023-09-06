@@ -31,6 +31,7 @@ import org.kie.kogito.index.postgresql.model.AttachmentEntity;
 import org.kie.kogito.index.postgresql.model.CommentEntity;
 import org.kie.kogito.index.postgresql.model.JobEntity;
 import org.kie.kogito.index.postgresql.model.MilestoneEntity;
+import org.kie.kogito.index.postgresql.model.NodeEntity;
 import org.kie.kogito.index.postgresql.model.NodeInstanceEntity;
 import org.kie.kogito.index.postgresql.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntity;
@@ -54,6 +55,7 @@ public class DDLSchemaExporter {
             StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(settings).build();
 
             MetadataSources metadataSources = new MetadataSources(serviceRegistry);
+            metadataSources.addAnnotatedClass(NodeEntity.class);
             metadataSources.addAnnotatedClass(ProcessDefinitionEntity.class);
             metadataSources.addAnnotatedClass(JobEntity.class);
             metadataSources.addAnnotatedClass(MilestoneEntity.class);

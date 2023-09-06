@@ -26,9 +26,8 @@ public class Node {
     private String name;
     @JsonProperty("nodeType")
     private String type;
-    @JsonProperty("uniqueId")
-    private String nodeId;
-    private Map<String, Object> metadata;
+    private String uniqueId;
+    private Map<String, String> metadata;
 
     public String getId() {
         return id;
@@ -54,19 +53,19 @@ public class Node {
         this.type = type;
     }
 
-    public String getNodeId() {
-        return nodeId;
+    public String getUniqueId() {
+        return uniqueId;
     }
 
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
-    public Map<String, Object> getMetadata() {
+    public Map<String, String> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, Object> metadata) {
+    public void setMetadata(Map<String, String> metadata) {
         this.metadata = metadata;
     }
 
@@ -95,7 +94,7 @@ public class Node {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", nodeId='" + nodeId + '\'' +
+                ", uniqueId='" + uniqueId + '\'' +
                 ", metadata=" + metadata +
                 '}';
     }
