@@ -368,7 +368,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightInputIsRiaNode = NodeTypeEnums.RightInputAdapterNode == rightInput.getType();
     }
 
-    public FastIterator<Tuple> getRightIterator( TupleMemory memory ) {
+    public FastIterator<AbstractTuple> getRightIterator( TupleMemory memory ) {
         if ( this.indexedUnificationJoin ) {
             return memory.fullFastIterator();
         } else {
@@ -376,17 +376,17 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public RightTuple getFirstRightTuple(final Tuple leftTuple,
+    public RightTupleImpl getFirstRightTuple(final Tuple leftTuple,
                                          final TupleMemory memory,
                                          final FastIterator<Tuple> it) {
         if ( this.indexedUnificationJoin ) {
-            return (RightTuple) it.next( null );
+            return (RightTupleImpl) it.next( null );
         } else {
-            return (RightTuple) memory.getFirst(leftTuple);
+            return (RightTupleImpl) memory.getFirst(leftTuple);
         }
     }
 
-    public FastIterator<Tuple> getLeftIterator(TupleMemory memory) {
+    public FastIterator<AbstractTuple> getLeftIterator(TupleMemory memory) {
         if (rightInputIsRiaNode) {
             return FastIterator.NullFastIterator.INSTANCE;
         } else {

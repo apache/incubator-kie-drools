@@ -61,6 +61,7 @@ import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -458,7 +459,7 @@ public class ProtobufOutputMarshaller {
 
                 if ( key.size() > 1 ) {
                     // add all the other key's if they exist
-                    FastIterator keyIter = key.fastIterator();
+                    FastIterator keyIter = new LinkedList.TMSLinkedListFastIterator();
                     for ( DefaultFactHandle handle = key.getFirst().getNext(); handle != null; handle = (DefaultFactHandle) keyIter.next( handle ) ) {
                         _key.addOtherHandle( handle.getId() );
                     }
@@ -485,7 +486,7 @@ public class ProtobufOutputMarshaller {
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.getObjectMarshallingStrategyStore();
 
         // for ( LinkedListEntry node = (LinkedListEntry) beliefSet.getFirst(); node != null; node = (LinkedListEntry) node.getNext() ) {
-        FastIterator it =  beliefSet.iterator();
+        FastIterator it =  new LinkedList.TMSLinkedListFastIterator();
         for ( LinkedListEntry node = (LinkedListEntry) beliefSet.getFirst(); node != null; node = (LinkedListEntry) it.next(node) ) {
             LogicalDependency belief = (LogicalDependency) node.getObject();
             ProtobufMessages.LogicalDependency.Builder _logicalDependency = ProtobufMessages.LogicalDependency.newBuilder();

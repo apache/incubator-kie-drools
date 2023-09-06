@@ -193,7 +193,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    public RightTuple createRightTuple( final LeftTuple leftTuple,
+    public RightTupleImpl createRightTuple( final LeftTuple leftTuple,
                                         final PropagationContext context,
                                         final ReteEvaluator reteEvaluator,
                                         final Object object ) {
