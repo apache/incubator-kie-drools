@@ -15,12 +15,17 @@
 
 package org.drools.reliability.core.util;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.core.common.Storage;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.reliability.core.ReliabilityRuntimeException;
+import org.drools.reliability.core.StoredObject;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
@@ -64,5 +69,21 @@ public class ReliabilityUtils {
                                                  })
                                                  .collect(Collectors.toList());
         return "ActivationKey [packageName=" + packageName + ", ruleName=" + ruleName + ", factHandleIdList=" + factHandleIdList + "]";
+    }
+
+    @SuppressWarnings("squid:S3011") // SONAR IGNORE "Make sure that this accessibility update is safe here."
+    public static void updateReferencedObjects(Storage<Long, StoredObject> storage, Map<String, Long> referencedObjects, Object object) {
+        referencedObjects.keySet().forEach(fieldName -> {
+            Optional<Field> refField = Arrays.stream(object.getClass().getDeclaredFields())
+                    .filter(f -> f.getName().equals(fieldName)).findFirst();
+            if (refField.isPresent()){
+                refField.get().setAccessible(true);
+                try {
+                    refField.get().set(object, storage.get(referencedObjects.get(refField.get().getName())).getObject());
+                } catch (IllegalAccessException e) {
+                    throw new ReliabilityRuntimeException(e);
+                }
+            }
+        });
     }
 }

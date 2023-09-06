@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.reliability.core;
 
 import java.util.HashMap;
@@ -21,22 +20,22 @@ import java.util.Map;
 import org.drools.core.common.Storage;
 import org.drools.reliability.core.util.ReliabilityUtils;
 
-public class SerializableStoredRefObject extends  SerializableStoredObject implements ReferenceWireable {
+public class SerializableStoredRefEvent extends SerializableStoredEvent implements ReferenceWireable {
 
     private final Map<String, Long> referencedObjects;
 
-    public SerializableStoredRefObject(Object object, boolean propagated) {
-        super(object, propagated);
-        referencedObjects=new HashMap<>();
+    public SerializableStoredRefEvent(Object object, boolean propagated, long timestamp, long duration) {
+        super(object, propagated, timestamp, duration);
+        referencedObjects = new HashMap<>();
     }
 
     @Override
-    public void addReferencedObject(String fieldName, Long refObjectKey){
+    public void addReferencedObject(String fieldName, Long refObjectKey) {
         this.referencedObjects.put(fieldName, refObjectKey);
     }
 
     @Override
-    public StoredObject updateReferencedObjects(Storage<Long, StoredObject> storage){
+    public StoredObject updateReferencedObjects(Storage<Long, StoredObject> storage) {
         ReliabilityUtils.updateReferencedObjects(storage, this.referencedObjects, this.object);
         return this;
     }
