@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.Application;
@@ -46,14 +47,19 @@ public class ProcessDefinitionRegister {
     @ConfigProperty(name = "kogito.service.url")
     Optional<String> kogitoServiceUrl;
 
-    void startup(@Observes StartupEvent event, Processes processes, Application app, DataIndexStorageService storage, KogitoRuntimeClient client) {
-        processes.processIds().stream()
-                .map(processes::processById)
-                .map(mapProcessDefinition(app.config().addons().availableAddons(), kogitoServiceUrl.orElse(null), client))
-                .forEach(process -> {
-                    LOGGER.debug("Registering process definition with id: {}", process.getId());
-                    storage.getProcessDefinitionsCache().put(process.getKey(), process);
-                });
+    void startup(@Observes StartupEvent event, Instance<Processes> processesInstance, Application app, DataIndexStorageService storage, KogitoRuntimeClient client) {
+        if (processesInstance.isResolvable()) {
+            Processes processes = processesInstance.get();
+            processes.processIds().stream()
+                    .map(processes::processById)
+                    .map(mapProcessDefinition(app.config().addons().availableAddons(), kogitoServiceUrl.orElse(null), client))
+                    .forEach(process -> {
+                        LOGGER.debug("Registering process definition with id: {}", process.getId());
+                        storage.getProcessDefinitionsCache().put(process.getKey(), process);
+                    });
+        } else {
+            LOGGER.info("No process definitions to register.");
+        }
     }
 
     private Function<Process<?>, ProcessDefinition> mapProcessDefinition(Set<String> addons, String endpoint, KogitoRuntimeClient client) {
