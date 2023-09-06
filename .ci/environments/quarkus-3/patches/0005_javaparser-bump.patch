@@ -1,13 +1,13 @@
 diff --git a/drools-model/drools-mvel-parser/src/main/java/org/drools/mvel/parser/MvelParser.java b/drools-model/drools-mvel-parser/src/main/java/org/drools/mvel/parser/MvelParser.java
-index b7eb48d674..081579deda 100644
+index 081579deda..b7eb48d674 100644
 --- a/drools-model/drools-mvel-parser/src/main/java/org/drools/mvel/parser/MvelParser.java
 +++ b/drools-model/drools-mvel-parser/src/main/java/org/drools/mvel/parser/MvelParser.java
 @@ -86,7 +86,7 @@ public final class MvelParser {
  
      public MvelParser(ParserConfiguration configuration, boolean optionalSemicolon) {
          this.configuration = configuration;
--        configuration.getProcessors().clear();
-+        configuration.getPostProcessors().clear();
+-        configuration.getPostProcessors().clear();
++        configuration.getProcessors().clear();
          this.optionalSemicolon = optionalSemicolon;
      }
  
@@ -15,35 +15,35 @@ index b7eb48d674..081579deda 100644
              N resultNode = start.parse(parser);
              ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getCommentsCollection());
  
--            configuration.getProcessors().forEach(processor ->
--                    processor.get().postProcess(result, configuration));
-+            configuration.getPostProcessors().forEach(postProcessor ->
-+                    postProcessor.process(result, configuration));
+-            configuration.getPostProcessors().forEach(postProcessor ->
+-                    postProcessor.process(result, configuration));
++            configuration.getProcessors().forEach(processor ->
++                    processor.get().postProcess(result, configuration));
  
              result.getProblems().sort(PROBLEM_BY_BEGIN_POSITION);
  
 diff --git a/drools-model/drools-mvel-parser/src/main/javacc/mvel.jj b/drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
-index 7ef702abdb..ca4d9da7dc 100644
+index 615512de3f..d4752e980d 100644
 --- a/drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
 +++ b/drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
-@@ -1370,14 +1370,13 @@ ModifierHolder Modifiers():
+@@ -1370,13 +1370,14 @@ ModifierHolder Modifiers():
   * Also note that JavaParser handles the hierarchy/specialisations of classes, interfaces, and enums differently to the JLS.
   * <ul>
   *   <li>This {@code ClassOrInterfaceDeclaration} refers to the {@code NormalClassDeclaration} and {@code NormalInterfaceDeclaration},</li>
-- *   <li>while {@code AnnotationTypeDeclaration}, {@code EnumDeclaration}, and {@code RecordDeclaration} are handled separately within this grammar.</li>
-+ *   <li>while {@code AnnotationTypeDeclaration} and {@code EnumDeclaration} are handled separately within this grammar.</li>
+- *   <li>while {@code AnnotationTypeDeclaration} and {@code EnumDeclaration} are handled separately within this grammar.</li>
++ *   <li>while {@code AnnotationTypeDeclaration}, {@code EnumDeclaration}, and {@code RecordDeclaration} are handled separately within this grammar.</li>
   * </ul>
-- * https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.1
-+ * https://docs.oracle.com/javase/specs/jls/se15/html/jls-8.html#jls-8.1
+- * https://docs.oracle.com/javase/specs/jls/se15/html/jls-8.html#jls-8.1
++ * https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.1
   * <pre>{@code
   *     ClassDeclaration:
   *         NormalClassDeclaration
   *         EnumDeclaration
-- *         RecordDeclaration
++ *         RecordDeclaration
   *     NormalClassDeclaration:
   *         {ClassModifier} class TypeIdentifier [TypeParameters] [Superclass] [Superinterfaces] ClassBody
   * }</pre>
-@@ -1397,6 +1396,7 @@ ClassOrInterfaceDeclaration ClassOrInterfaceDeclaration(ModifierHolder modifier)
+@@ -1396,6 +1397,7 @@ ClassOrInterfaceDeclaration ClassOrInterfaceDeclaration(ModifierHolder modifier)
      RangedList<TypeParameter> typePar = new RangedList<TypeParameter>(emptyNodeList());
      NodeList<ClassOrInterfaceType> extList = emptyNodeList();
      NodeList<ClassOrInterfaceType> impList = emptyNodeList();
@@ -51,7 +51,7 @@ index 7ef702abdb..ca4d9da7dc 100644
      NodeList<BodyDeclaration<?>> members = emptyNodeList();
      JavaToken begin = modifier.begin;
  }
-@@ -1414,15 +1414,15 @@ ClassOrInterfaceDeclaration ClassOrInterfaceDeclaration(ModifierHolder modifier)
+@@ -1413,15 +1415,15 @@ ClassOrInterfaceDeclaration ClassOrInterfaceDeclaration(ModifierHolder modifier)
  
      members = ClassOrInterfaceBody()
  
@@ -60,70 +60,70 @@ index 7ef702abdb..ca4d9da7dc 100644
  }
  
  /**
-- * https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.10
-+ * https://openjdk.java.net/jeps/395#Java-grammar
+- * https://openjdk.java.net/jeps/395#Java-grammar
++ * https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.10
   * <pre>{@code
   *     RecordDeclaration:
   *        {ClassModifier} `record` TypeIdentifier [TypeParameters]
-- *          RecordHeader [ClassImplements] RecordBody
-+ *          RecordHeader [SuperInterfaces] RecordBody
+- *          RecordHeader [SuperInterfaces] RecordBody
++ *          RecordHeader [ClassImplements] RecordBody
   *
   *      RecordHeader:
   *       `(` [RecordComponentList] `)`
-@@ -1431,15 +1431,11 @@ ClassOrInterfaceDeclaration ClassOrInterfaceDeclaration(ModifierHolder modifier)
+@@ -1430,11 +1432,15 @@ ClassOrInterfaceDeclaration ClassOrInterfaceDeclaration(ModifierHolder modifier)
   *       RecordComponent { `,` RecordComponent}
   *
   *      RecordComponent:
-- *       {RecordComponentModifier} UnannType Identifier
-+ *       {Annotation} UnannType Identifier
+- *       {Annotation} UnannType Identifier
++ *       {RecordComponentModifier} UnannType Identifier
   *       VariableArityRecordComponent
   *
   *      VariableArityRecordComponent:
   *       {Annotation} UnannType {Annotation} `...` Identifier
-- *       {RecordComponentModifier} UnannType {Annotation} `...` Identifier
-- *
-- *      RecordComponentModifier:
-- *       Annotation
++ *       {RecordComponentModifier} UnannType {Annotation} `...` Identifier
++ *
++ *      RecordComponentModifier:
++ *       Annotation
   *
   *      RecordBody:
   *        `{` {RecordBodyDeclaration} `}`
-@@ -1864,9 +1860,6 @@ BodyDeclaration<?> RecordBodyDeclaration():
+@@ -1859,6 +1865,9 @@ BodyDeclaration<?> RecordBodyDeclaration():
           |
              LOOKAHEAD("enum")
              ret = EnumDeclaration(modifiers)
--         |
--            LOOKAHEAD("record")
--            ret = RecordDeclaration(modifiers)
++         |
++            LOOKAHEAD("record")
++            ret = RecordDeclaration(modifiers)
           |
              LOOKAHEAD("@" "interface")
              ret = AnnotationTypeDeclaration(modifiers)
-@@ -3373,15 +3366,13 @@ Expression EqualityExpression():
+@@ -3365,13 +3374,15 @@ Expression EqualityExpression():
   */
  PatternExpr PatternExpression():
  {
--    ModifierHolder modifier;
++    ModifierHolder modifier;
      ReferenceType type;
      SimpleName name;
  }
  {
--    modifier = Modifiers()
--    type = ReferenceType(modifier.annotations)
-+    type = AnnotatedReferenceType()
+-    type = AnnotatedReferenceType()
++    modifier = Modifiers()
++    type = ReferenceType(modifier.annotations)
      name = SimpleName()
--    { return new PatternExpr(range(type, token()), modifier.modifiers, type, name); }
-+    { return new PatternExpr(range(type, token()), type, name); }
+-    { return new PatternExpr(range(type, token()), type, name); }
++    { return new PatternExpr(range(type, token()), modifier.modifiers, type, name); }
  }
  
  
-@@ -4537,11 +4528,6 @@ Statement BlockStatement():
+@@ -4527,6 +4538,11 @@ Statement BlockStatement():
              LOOKAHEAD( Modifiers() "record" SimpleName() [ TypeParameters() ] Parameters() )
              modifier = Modifiers()
              recordDeclaration = RecordDeclaration(modifier) { ret = new LocalRecordDeclarationStmt(range(recordDeclaration, token()), recordDeclaration); }
--         |
--            // try yield statement separate from more general Statement() because yield is not a keyword but
--            // just a restricted identifier and a yield statement can be confused with VariableDeclarationExpression sometimes
--            LOOKAHEAD( YieldStatement() )
--            ret = YieldStatement()
++         |
++            // try yield statement separate from more general Statement() because yield is not a keyword but
++            // just a restricted identifier and a yield statement can be confused with VariableDeclarationExpression sometimes
++            LOOKAHEAD( YieldStatement() )
++            ret = YieldStatement()
           |
              LOOKAHEAD( VariableDeclarationExpression() )
              expr = VariableDeclarationExpression()
