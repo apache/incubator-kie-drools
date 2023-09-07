@@ -185,7 +185,8 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
 }
 
 // PR checks
-KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
+// TODO create PR job with branch source plugin
+// KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 
 // Init branch
 createSetupBranchJob()
@@ -221,7 +222,8 @@ if (isMainStream()) {
 
     // Quarkus 3
     if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-        setupPrQuarkus3RewriteJob()
+        // TODO create PR job with branch source plugin. How to ?
+        // setupPrQuarkus3RewriteJob()
         setupStandaloneQuarkus3RewriteJob()
     }
 }
