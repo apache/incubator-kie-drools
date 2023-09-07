@@ -807,7 +807,6 @@ public class ProtobufInputMarshaller {
             while ( (rai = rneaToFire.poll()) != null ) {
                 RuleExecutor ruleExecutor = rai.getRuleExecutor();
                 ruleExecutor.evaluateNetworkIfDirty( wm );
-                ruleExecutor.removeRuleAgendaItemWhenEmpty( wm );
             }
         }
 
