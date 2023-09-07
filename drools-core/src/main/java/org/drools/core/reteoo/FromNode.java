@@ -42,8 +42,8 @@ import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.AllSetBitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;
@@ -195,7 +195,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    public RightTuple createRightTuple( final LeftTuple leftTuple,
+    public RightTupleImpl createRightTuple( final LeftTuple leftTuple,
                                         final PropagationContext context,
                                         final ReteEvaluator reteEvaluator,
                                         final Object object ) {

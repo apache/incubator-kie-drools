@@ -26,7 +26,7 @@ import org.drools.base.base.ObjectType;
 import org.drools.base.factmodel.AnnotationDefinition;
 import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 import java.io.Externalizable;
 import java.io.IOException;

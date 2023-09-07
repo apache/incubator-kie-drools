@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,23 +35,28 @@ import java.util.stream.Collectors;
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
     private Map<String, Long> uniqueObjectTypesInStore;  // object type name, occurances
+    private transient IdentityHashMap<Object, Long> inverseStorage;
 
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
-        if (storage.isEmpty()) {
-            this.storage = storage;
-        } else {
+        setInverseStorage(storage);
+        if (!storage.isEmpty()) {
             updateObjectTypesList();
             this.storage = updateObjectReferences(storage);
         }
+    }
+
+    private void setInverseStorage(Storage<Long, StoredObject> storage){
+        inverseStorage = new IdentityHashMap<>();
+        storage.keySet().forEach(key -> inverseStorage.put((storage.get(key)).getObject(),key));
     }
 
     private Storage<Long, StoredObject> updateObjectReferences(Storage<Long, StoredObject> storage) {
         Storage<Long, StoredObject> updateStorage = storage;
 
         for (Long key : storage.keySet()) {
-            updateStorage.put(key, ((SerializableStoredRefObject) storage.get(key)).updateReferencedObjects(storage));
+            updateStorage.put(key, ((ReferenceWireable) storage.get(key)).updateReferencedObjects(storage));
         }
         return updateStorage;
     }
@@ -60,6 +66,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         Object object = handle.getObject();
         StoredObject storedObject = factHandleToStoredObject(handle, reInitPropagated || propagated, object);
         storage.put(getHandleForObject(object).getId(), setReferencedObjects(storedObject));
+        inverseStorage.put(object, getHandleForObject(object).getId());
         // also add the type of the object into the uniqueObjectTypesInStore list (if not already there)
         this.updateObjectTypesList(object);
     }
@@ -67,6 +74,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     @Override
     public void removeFromPersistedStorage(Object object) {
         super.removeFromPersistedStorage(object);
+        inverseStorage.remove(object);
         // also remove instance from uniqueObjectTypesInStore
         this.updateObjectTypesList(object);
     }
@@ -76,6 +84,12 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
         return new SerializableStoredRefObject(object, propagated);
     }
 
+    @Override
+    protected StoredEvent createStoredEvent(boolean propagated, Object object, long timestamp, long duration) {
+        return new SerializableStoredRefEvent(object, propagated, timestamp, duration);
+    }
+
+    @SuppressWarnings("squid:S3011") // SONAR IGNORE "Make sure that this accessibility update is safe here."
     private StoredObject setReferencedObjects(StoredObject object) {
         List<Field> referencedObjects = getReferencedObjects(object.getObject());
         if (!referencedObjects.isEmpty()) {
@@ -92,7 +106,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
                 }
                 Long objectKey = fromObjectToFactHandleId(fieldObject);
                 if (objectKey != null) {
-                    ((SerializableStoredRefObject) object).addReferencedObject(field.getName(), objectKey);
+                    ((ReferenceWireable) object).addReferencedObject(field.getName(), objectKey);
                 }
             });
         }
@@ -100,12 +114,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     }
 
     private Long fromObjectToFactHandleId(Object object) {
-        for (Long key : this.storage.keySet()) {
-            if (((SerializableStoredRefObject) storage.get(key)).getObject() == object) {
-                return key;
-            }
-        }
-        return null;
+        return this.inverseStorage.get(object);
     }
 
     private List<Field> getReferencedObjects(Object object) {

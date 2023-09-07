@@ -18,6 +18,7 @@
  */
 package org.drools.core.util;
 
+import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
@@ -65,7 +66,7 @@ public class IndexedHashtableIteratorTest {
         // test fast
         TupleIndexHashTable.FullFastIterator iter = new TupleIndexHashTable.FullFastIterator( table );
         List<RightTuple> list = new ArrayList<RightTuple>();
-        for ( RightTuple rightTuple = (RightTuple) iter.next( null ); rightTuple != null; rightTuple = (RightTuple) iter.next( rightTuple ) ) {
+        for ( RightTuple rightTuple = (RightTuple) iter.next( null ); rightTuple != null; rightTuple = (RightTupleImpl) iter.next((AbstractTuple) rightTuple) ) {
             assertThat(contains(list, rightTuple)).isFalse(); // ensure no duplicate
             list.add( rightTuple );
         }

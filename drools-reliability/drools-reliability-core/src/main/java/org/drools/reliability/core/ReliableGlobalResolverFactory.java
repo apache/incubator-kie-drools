@@ -25,6 +25,15 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
     ReliableGlobalResolver createReliableGlobalResolver(Storage<String, Object> storage);
 
+    class Tag {
+
+        private Tag() {
+            // hide constructor
+        }
+
+        private static String reliabilityPersistanceLayer = null;
+    }
+
     class Holder {
 
         private static final ReliableGlobalResolverFactory INSTANCE = createInstance();
@@ -33,7 +42,7 @@ public interface ReliableGlobalResolverFactory extends KieService {
         }
 
         static ReliableGlobalResolverFactory createInstance() {
-            ReliableGlobalResolverFactory factory = KieService.load(ReliableGlobalResolverFactory.class);
+            ReliableGlobalResolverFactory factory = KieService.loadWithTag(ReliableGlobalResolverFactory.class, Tag.reliabilityPersistanceLayer);
             if (factory == null) {
                 return new ReliableGlobalResolverFactoryImpl();
             }
@@ -45,9 +54,21 @@ public interface ReliableGlobalResolverFactory extends KieService {
         return ReliableGlobalResolverFactory.Holder.INSTANCE;
     }
 
-    static class ReliableGlobalResolverFactoryImpl implements ReliableGlobalResolverFactory {
+    /**
+     * Use this method first to specify reliabilityPersistanceLayer when you have dependencies covering multiple persistence layers (e.g. infinispan and core)
+     * Once a factory is instantiated, get() is enough to get the same instance.
+     */
+    static ReliableGlobalResolverFactory get(String reliabilityPersistanceLayer) {
+        if (Tag.reliabilityPersistanceLayer != null && !Tag.reliabilityPersistanceLayer.equals(reliabilityPersistanceLayer)) {
+            throw new IllegalStateException("You must call the same service with the same reliabilityPersistanceLayer. " +
+                                            "Previous reliabilityPersistanceLayer was " + Tag.reliabilityPersistanceLayer +
+                                            " and current reliabilityPersistanceLayer is " + reliabilityPersistanceLayer);
+        }
+        Tag.reliabilityPersistanceLayer = reliabilityPersistanceLayer;
+        return ReliableGlobalResolverFactory.Holder.INSTANCE;
+    }
 
-        static int servicePriorityValue = 0; // package access for test purposes
+    static class ReliableGlobalResolverFactoryImpl implements ReliableGlobalResolverFactory {
 
         @Override
         public ReliableGlobalResolver createReliableGlobalResolver(Storage<String, Object> storage) {
@@ -56,7 +77,12 @@ public interface ReliableGlobalResolverFactory extends KieService {
 
         @Override
         public int servicePriority() {
-            return servicePriorityValue;
+            return 0;
+        }
+
+        @Override
+        public String serviceTag() {
+            return "core";
         }
     }
 }

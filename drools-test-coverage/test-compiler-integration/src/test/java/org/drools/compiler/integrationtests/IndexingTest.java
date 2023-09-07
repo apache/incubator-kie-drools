@@ -45,7 +45,10 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -480,8 +483,9 @@ public class IndexingTest {
 
             // check we can resume from each entry in the list above.
             for (int i = 0; i < 100; i++) {
-                final RightTuple rightTuple = list.get(i);
-                it = bm.getRightTupleMemory().fullFastIterator(rightTuple); // resumes from the current rightTuple
+                final RightTupleImpl rightTuple = (RightTupleImpl) list.get(i);
+                TupleMemory rightTupleMemory = bm.getRightTupleMemory();
+                it = (rightTupleMemory).fullFastIterator(rightTuple); // resumes from the current rightTuple
                 int j = i + 1;
                 for (RightTuple rt = (RightTuple) it.next(rightTuple); rt != null; rt = (RightTuple) it.next(rt)) {
                     assertThat(rt).isSameAs(list.get(j));

@@ -114,7 +114,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void update(Object object, String... modifiedProperties) {
-        org.drools.core.util.bitmask.BitMask mask = calculateUpdateBitMask(reteEvaluator.getKnowledgeBase(), object, modifiedProperties);
+        org.drools.util.bitmask.BitMask mask = calculateUpdateBitMask(reteEvaluator.getKnowledgeBase(), object, modifiedProperties);
         knowledgeHelper.update( getFactHandleForObject( object ), mask, object.getClass() );
     }
 

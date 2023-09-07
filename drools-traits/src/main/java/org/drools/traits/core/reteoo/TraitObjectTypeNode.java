@@ -33,7 +33,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.base.ObjectType;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 import org.drools.traits.core.factmodel.TraitTypeMapImpl;
 

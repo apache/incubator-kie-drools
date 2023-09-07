@@ -23,7 +23,7 @@ import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;

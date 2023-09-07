@@ -30,9 +30,9 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.bitmask.EmptyBitMask;
+import org.drools.util.bitmask.AllSetBitMask;
+import org.drools.util.bitmask.BitMask;
+import org.drools.util.bitmask.EmptyBitMask;
 
 import java.util.Arrays;
 import java.util.List;

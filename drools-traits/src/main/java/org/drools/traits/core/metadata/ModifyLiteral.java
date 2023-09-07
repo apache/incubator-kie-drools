@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.drools.base.reteoo.PropertySpecificUtil;
 import org.drools.base.util.PropertyReactivityUtil;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.traits.core.factmodel.TraitProxyImpl;
 

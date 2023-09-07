@@ -32,6 +32,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.ContextEntry;
@@ -173,8 +174,8 @@ public class PhreakAccumulateNode {
 
             FastIterator rightIt = accNode.getRightIterator(rtm);
 
-            for (RightTuple rightTuple = accNode.getFirstRightTuple(leftTuple, rtm, rightIt); rightTuple != null; ) {
-                RightTuple nextRightTuple = (RightTuple) rightIt.next(rightTuple);
+            for (RightTupleImpl rightTuple = accNode.getFirstRightTuple(leftTuple, rtm, rightIt); rightTuple != null; ) {
+                RightTupleImpl nextRightTuple = (RightTupleImpl) rightIt.next(rightTuple);
 
                 if (constraints.isAllowedCachedLeft(contextEntry,
                                                     rightTuple.getFactHandleForEvaluation())) {

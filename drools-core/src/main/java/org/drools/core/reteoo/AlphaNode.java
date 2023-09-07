@@ -29,7 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
 import java.util.List;

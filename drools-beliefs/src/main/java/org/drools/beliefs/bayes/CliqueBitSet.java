@@ -18,10 +18,10 @@
  */
 package org.drools.beliefs.bayes;
 
-import org.drools.core.util.bitmask.OpenBitSet;
+import org.drools.util.bitmask.OpenBitSet;
 
 public class CliqueBitSet {
-    private org.drools.core.util.bitmask.OpenBitSet OpenBitSet;
+    private org.drools.util.bitmask.OpenBitSet OpenBitSet;
 
     private int weight;
 

@@ -23,8 +23,6 @@ import org.drools.reliability.core.StorageManagerFactory;
 
 public class H2MVStoreStorageManagerFactory implements StorageManagerFactory {
 
-    static int servicePriorityValue = 0; // package access for test purposes
-
     private final StorageManager storageManager;
 
     public H2MVStoreStorageManagerFactory() {
@@ -40,6 +38,11 @@ public class H2MVStoreStorageManagerFactory implements StorageManagerFactory {
 
     @Override
     public int servicePriority() {
-        return servicePriorityValue;
+        return 0;
+    }
+
+    @Override
+    public String serviceTag() {
+        return "h2mvstore";
     }
 }

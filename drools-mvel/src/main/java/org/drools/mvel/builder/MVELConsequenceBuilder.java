@@ -29,7 +29,7 @@ import org.drools.base.rule.Declaration;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.accessor.DeclarationScopeResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;

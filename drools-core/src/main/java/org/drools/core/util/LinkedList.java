@@ -18,6 +18,9 @@
  */
 package org.drools.core.util;
 
+import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.Tuple;
 
 import java.io.Externalizable;
@@ -54,7 +57,7 @@ public class LinkedList<T extends LinkedListNode<T>>
 
     private int                      size;
     
-    public static final FastIterator<Tuple> fastIterator = new LinkedListFastIterator(); // contains no state, so ok to be static
+    public static final FastIterator<AbstractTuple> fastIterator = new LinkedListFastIterator(); // contains no state, so ok to be static
 
     /**
      * Construct an empty <code>LinkedList</code>
@@ -354,15 +357,28 @@ public class LinkedList<T extends LinkedListNode<T>>
     public FastIterator fastIterator() {
         return fastIterator;
     }
-    
-    public static class LinkedListFastIterator<K extends Entry<K>> implements FastIterator<K> {
-        public K next(K object) {
+
+    // All the tuples except for TMS are AbstractTuple
+    public static class LinkedListFastIterator implements FastIterator<AbstractTuple> {
+
+        public AbstractTuple next(AbstractTuple object) {
             return object.getNext();
         }
         
         public boolean isFullIterator() {
             return false;
         }        
+    }
+
+    // Special case of iterator that uses K extends Entry<K> to support TMS custom objects
+    public static class TMSLinkedListFastIterator<K extends Entry<K>> implements FastIterator<K> {
+        public K next(K object) {
+            return object.getNext();
+        }
+
+        public boolean isFullIterator() {
+            return false;
+        }
     }
 
     public java.util.Iterator<T> javaUtilIterator() {

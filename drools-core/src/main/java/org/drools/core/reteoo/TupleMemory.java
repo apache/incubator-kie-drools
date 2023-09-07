@@ -56,20 +56,20 @@ public interface TupleMemory {
 
     Iterator<Tuple> iterator();
     
-    FastIterator<Tuple> fastIterator();
-    
+    FastIterator<AbstractTuple> fastIterator();
+
     /**
      * Iterates the entire data structure, regardless of whether TupleMemory is hashed or not.
      * @return
      */
-    FastIterator<Tuple> fullFastIterator();
-    
+    FastIterator<AbstractTuple> fullFastIterator();
+
     /**
      * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
      * @param tuple
      * @return
      */
-    FastIterator<Tuple> fullFastIterator( Tuple tuple );
+    FastIterator<AbstractTuple> fullFastIterator( AbstractTuple tuple );
 
     Tuple[] toArray();
 

@@ -26,8 +26,6 @@ import org.drools.reliability.infinispan.proto.ProtoStreamReliableGlobalResolver
 
 public class InfinispanReliableGlobalResolverFactory implements ReliableGlobalResolverFactory {
 
-    static int servicePriorityValue = 0; // package access for test purposes
-
     @Override
     public ReliableGlobalResolver createReliableGlobalResolver(Storage<String, Object> storage) {
         if (((InfinispanStorageManager) StorageManagerFactory.get().getStorageManager()).isProtoStream()) {
@@ -39,6 +37,11 @@ public class InfinispanReliableGlobalResolverFactory implements ReliableGlobalRe
 
     @Override
     public int servicePriority() {
-        return servicePriorityValue;
+        return 0;
+    }
+
+    @Override
+    public String serviceTag() {
+        return "infinispan";
     }
 }

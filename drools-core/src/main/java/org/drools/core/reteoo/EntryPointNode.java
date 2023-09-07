@@ -34,7 +34,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

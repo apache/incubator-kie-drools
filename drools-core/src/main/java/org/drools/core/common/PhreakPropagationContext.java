@@ -27,7 +27,7 @@ import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.IOException;

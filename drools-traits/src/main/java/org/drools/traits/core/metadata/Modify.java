@@ -19,7 +19,7 @@
 package org.drools.traits.core.metadata;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 public interface Modify<T> extends WorkingMemoryTask<T> {
 

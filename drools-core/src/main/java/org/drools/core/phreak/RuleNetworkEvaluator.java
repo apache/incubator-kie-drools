@@ -62,6 +62,7 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TerminalNode;

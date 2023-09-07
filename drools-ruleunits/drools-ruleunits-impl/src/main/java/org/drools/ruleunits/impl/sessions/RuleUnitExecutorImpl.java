@@ -60,7 +60,7 @@ import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

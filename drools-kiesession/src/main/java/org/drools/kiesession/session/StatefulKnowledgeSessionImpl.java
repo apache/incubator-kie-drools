@@ -80,7 +80,7 @@ import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.rule.impl.LiveQueryImpl;
 import org.drools.core.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.core.time.TimerService;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.entrypoints.NamedEntryPointsManager;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;

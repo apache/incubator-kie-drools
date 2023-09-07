@@ -32,7 +32,7 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
 

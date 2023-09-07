@@ -51,8 +51,6 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
         }
         initialized = true;
 
-        TestConfigurationUtils.configureServicePriorities();
-
         System.setProperty(INFINISPAN_STORAGE_ALLOWED_PACKAGES, "org.test.domain");
         FileUtils.deleteDirectory(Path.of(EmbeddedStorageManager.GLOBAL_STATE_DIR));
         LOG.info("### Deleted directory {}", EmbeddedStorageManager.GLOBAL_STATE_DIR);
@@ -62,5 +60,8 @@ public class BeforeAllMethodExtension implements BeforeAllCallback {
 
         LOG.info("### Set marshaller to {}", System.getProperty(INFINISPAN_STORAGE_MARSHALLER));
         LOG.info("### Set initializer to {}", System.getProperty(INFINISPAN_STORAGE_SERIALIZATION_CONTEXT_INITIALIZER));
+
+        // configureServicePriorities triggers Factory instantiation, so should be called after directory cleanup
+        TestConfigurationUtils.configureServicePriorities();
     }
 }

@@ -98,7 +98,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
-import static org.drools.util.BitMaskUtil.isSet;
+import static org.drools.util.bitmask.BitMaskUtil.isSet;
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
 public class KnowledgeBaseImpl implements InternalRuleBase {

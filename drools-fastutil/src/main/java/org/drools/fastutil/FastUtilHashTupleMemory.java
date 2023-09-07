@@ -20,6 +20,7 @@ package org.drools.fastutil;
 
 import it.unimi.dsi.fastutil.Hash.Strategy;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
@@ -184,18 +185,18 @@ public class FastUtilHashTupleMemory implements TupleMemory {
     }
 
     @Override
-    public FastIterator<Tuple> fastIterator() {
+    public FastIterator<AbstractTuple> fastIterator() {
         return LinkedList.fastIterator;
     }
 
     @Override
-    public FastIterator<Tuple> fullFastIterator() {
+    public FastIterator<AbstractTuple> fullFastIterator() {
         fullFastIterator.reset();
         return fullFastIterator;
     }
 
     @Override
-    public FastIterator<Tuple> fullFastIterator(Tuple tuple) {
+    public FastIterator<AbstractTuple> fullFastIterator(AbstractTuple tuple) {
         fullFastIterator.resume(tuple);
         return fullFastIterator;
     }
@@ -268,7 +269,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
     }
 
 
-    public static class FullIterator implements Iterator<Tuple> {
+    public static class FullIterator implements Iterator<AbstractTuple> {
         private FullFastIterator fullFastIterator;
         private Tuple tuple;
 
@@ -277,13 +278,13 @@ public class FastUtilHashTupleMemory implements TupleMemory {
         }
 
         @Override
-        public Tuple next() {
-            this.tuple = fullFastIterator.next(tuple);
-            return this.tuple;
+        public AbstractTuple next() {
+            this.tuple = fullFastIterator.next((AbstractTuple) tuple);
+            return (AbstractTuple) this.tuple;
         }
     }
 
-    public static class FullFastIterator implements FastIterator<Tuple> {
+    public static class FullFastIterator implements FastIterator<AbstractTuple> {
 
         private FastUtilMergableHashSet<HashEntry> set;
 
@@ -297,7 +298,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
          * This only seems to be used in tests, so is not performance sensitive
          * @param target
          */
-        public void resume(Tuple target) {
+        public void resume(AbstractTuple target) {
             reset();
 
             TupleList targetMemory = target.getMemory(); // not ideal as this is a linear search to find the resume point
@@ -309,8 +310,8 @@ public class FastUtilHashTupleMemory implements TupleMemory {
             }
         }
 
-        public Tuple next(Tuple tuple) {
-            Tuple next = null;
+        public AbstractTuple next(AbstractTuple tuple) {
+            AbstractTuple next = null;
             if (tuple != null) {
                 next = tuple.getNext();
                 if (next != null) {
@@ -319,7 +320,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
             }
 
             if (it.hasNext()) {
-                next = ((TupleList)it.next()).getFirst();
+                next = (AbstractTuple) ((TupleList)it.next()).getFirst();
             }
             return next;
         }

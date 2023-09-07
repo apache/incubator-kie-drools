@@ -29,7 +29,7 @@ import org.drools.base.InitialFact;
 import org.drools.base.common.DroolsObjectInput;
 import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.util.ClassUtils;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Match;
 
 /**

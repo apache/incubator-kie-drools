@@ -42,7 +42,7 @@ import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.ConditionAnalyzer.CombinedCondition;
 import org.drools.mvel.ConditionAnalyzer.Condition;

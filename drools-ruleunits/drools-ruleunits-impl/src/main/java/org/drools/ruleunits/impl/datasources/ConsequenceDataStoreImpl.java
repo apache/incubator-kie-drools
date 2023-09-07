@@ -20,8 +20,8 @@ package org.drools.ruleunits.impl.datasources;
 
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.AllSetBitMask;
+import org.drools.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.impl.InternalStoreCallback;
 import org.kie.api.runtime.rule.RuleContext;

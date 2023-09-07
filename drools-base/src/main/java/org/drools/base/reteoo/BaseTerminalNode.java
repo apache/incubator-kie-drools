@@ -22,7 +22,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
-import org.drools.core.util.bitmask.BitMask;
+import org.drools.util.bitmask.BitMask;
 
 public interface BaseTerminalNode extends NetworkNode {
     Declaration[] getAllDeclarations();

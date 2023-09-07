@@ -49,9 +49,9 @@ import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.bitmask.EmptyBitMask;
+import org.drools.util.bitmask.AllSetBitMask;
+import org.drools.util.bitmask.BitMask;
+import org.drools.util.bitmask.EmptyBitMask;
 import org.drools.base.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -370,7 +370,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightInputIsRiaNode = NodeTypeEnums.RightInputAdapterNode == rightInput.getType();
     }
 
-    public FastIterator<Tuple> getRightIterator( TupleMemory memory ) {
+    public FastIterator<AbstractTuple> getRightIterator( TupleMemory memory ) {
         if ( this.indexedUnificationJoin ) {
             return memory.fullFastIterator();
         } else {
@@ -378,17 +378,17 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public RightTuple getFirstRightTuple(final Tuple leftTuple,
+    public RightTupleImpl getFirstRightTuple(final Tuple leftTuple,
                                          final TupleMemory memory,
                                          final FastIterator<Tuple> it) {
         if ( this.indexedUnificationJoin ) {
-            return (RightTuple) it.next( null );
+            return (RightTupleImpl) it.next( null );
         } else {
-            return (RightTuple) memory.getFirst(leftTuple);
+            return (RightTupleImpl) memory.getFirst(leftTuple);
         }
     }
 
-    public FastIterator<Tuple> getLeftIterator(TupleMemory memory) {
+    public FastIterator<AbstractTuple> getLeftIterator(TupleMemory memory) {
         if (rightInputIsRiaNode) {
             return FastIterator.NullFastIterator.INSTANCE;
         } else {

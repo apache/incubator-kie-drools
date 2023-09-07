@@ -28,7 +28,7 @@ import java.util.function.Function;
 import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.Trait;
 import org.drools.base.facttemplates.FactTemplate;
-import org.drools.core.base.CoercionUtil;
+import org.drools.util.CoercionUtil;
 import org.kie.api.runtime.rule.EventHandle;
 
 public enum ValueType {

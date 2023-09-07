@@ -10,6 +10,8 @@ dependencies:
         default:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
+      exclude:
+        - kiegroup/kie-jpmml-integration
 
   - project: kiegroup/kogito-runtimes
     dependencies:

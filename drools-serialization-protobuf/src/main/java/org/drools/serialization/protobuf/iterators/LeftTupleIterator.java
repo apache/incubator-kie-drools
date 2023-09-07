@@ -41,6 +41,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -295,7 +296,7 @@ public class LeftTupleIterator
         if ( source instanceof ExistsNode ) {
             BetaMemory memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
             if (leftTuple != null) {
-                RightTuple rightTuple = leftTuple.getLeftParent().getBlocker();
+                RightTupleImpl rightTuple = (RightTupleImpl) leftTuple.getLeftParent().getBlocker();
                 FastIterator localIt = memory.getRightTupleMemory().fullFastIterator( rightTuple );
 
                 for ( LeftTuple childleftTuple = leftTuple.getHandleNext(); childleftTuple != null; childleftTuple = childleftTuple.getHandleNext() ) {
@@ -323,7 +324,7 @@ public class LeftTupleIterator
                         }
 
                     }
-                    rightTuple = (RightTuple) localIt.next( rightTuple );
+                    rightTuple = (RightTupleImpl) localIt.next( rightTuple );
                 }
             }
         } else if ( source instanceof EvalConditionNode || source instanceof QueryElementNode ) {
