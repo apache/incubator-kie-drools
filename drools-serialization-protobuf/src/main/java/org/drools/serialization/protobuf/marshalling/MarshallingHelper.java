@@ -32,7 +32,7 @@ public class MarshallingHelper {
     }
 
     public static ActivationKey createActivationKey( String pkgName, String ruleName) {
-        return new ActivationKey( pkgName, ruleName, null );
+        return new ActivationKey( pkgName, ruleName, new Object[0] );
     }
 
     protected static Object[] toArrayOfObject(long[] longs) {

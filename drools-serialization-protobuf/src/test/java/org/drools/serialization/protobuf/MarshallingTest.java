@@ -64,6 +64,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -2007,6 +2008,45 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         assertThat(ksession.getObjects().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void cepActivation_shouldFireActivation() throws Exception {
+        String str =
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                     "declare A\n" +
+                     " @role( event )\n" +
+                     " @expires( 10m )\n" +
+                     "end\n" +
+                     "declare B\n" +
+                     " @role( event )\n" +
+                     " @expires( 10m )\n" +
+                     "end\n" +
+                     "rule one\n" +
+                     "when\n" +
+                     "   $a : A()\n" +
+                     "   not ( B(this after[0s, 5s] $a) )\n" +
+                     "then\n" +
+                     "  System.out.println(\"Fired!\");\n" +
+                     "end\n";
+
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+
+        KieBase kBase = loadKnowledgeBaseFromString(config, str);
+
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption(ClockTypeOption.PSEUDO);
+        KieSession ksession = kBase.newKieSession(ksconf, null);
+        PseudoClockScheduler sessionClock = (PseudoClockScheduler) ksession.getSessionClock();
+
+        ksession.insert(new A());
+        sessionClock.advanceTime(6, TimeUnit.SECONDS);
+
+        ksession = marshallStatefulKnowledgeSession(ksession);
+
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
     }
 
     @Test @Ignore("This test is suspicious to say the least...")
