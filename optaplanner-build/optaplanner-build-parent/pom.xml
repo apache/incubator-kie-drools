@@ -70,7 +70,7 @@
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.dependency.plugin>3.5.0</version.dependency.plugin>
-    <version.formatter.plugin>2.22.0</version.formatter.plugin>
+    <version.formatter.plugin>2.23.0</version.formatter.plugin>
     <version.impsort.plugin>1.9.0</version.impsort.plugin>
     <version.jacoco.plugin>0.8.10</version.jacoco.plugin>
     <!--
