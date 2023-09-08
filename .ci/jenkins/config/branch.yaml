@@ -20,7 +20,7 @@ environments:
   quarkus-3:
     pull_request_default_check: false
     env_vars:
-      BUILD_MAVEN_TOOL: maven_3.9.1
+      BUILD_MAVEN_TOOL: maven_3.9.3
       BUILD_JDK_TOOL: jdk_17_latest
       BUILD_MVN_OPTS: -Denforcer.skip
       # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
@@ -43,12 +43,14 @@ environments:
     - sonarcloud
     - coverage
 disable:
-  triggers: false
+  triggers: true # TODO to set back
 repositories:
 - name: drools
 - name: drools-website
 - name: kie-benchmarks
-# - name: kie-jpmml-integration ## TODO to check if enabled
+  author:
+    name: radtriste # TODO set back. Could not push to kiegroup
+# - name: kie-jpmml-integration ## TODO to check if should be enabled
 git:
   author:
     name: kiegroup
@@ -70,28 +72,27 @@ buildchain_config:
 maven:
   settings_file_id: kie-release-settings
   nexus:
-    release_url: https://repository.jboss.org/nexus
-    release_repository: jboss-releases-repository
-    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
-    staging_profile_id: 1976dd1c18392a
-    build_promotion_profile_id: ea49ccd6f174
-  artifacts_repository: ''
+    release_url: TO_DEFINE
+    release_repository: TO_DEFINE
+    staging_profile_url: TO_DEFINE
+    staging_profile_id: TO_DEFINE
+    build_promotion_profile_id: TO_DEFINE
   artifacts_upload_repository:
-    url: https://repository.jboss.org/nexus/content/repositories/snapshots/
-    creds_id: kogito-snapshots-upload
-  pr_checks:
-    repository:
-      url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
-      creds_id: unpacks-zip-on-qa-nexus
+    url: TO_DEFINE
+    creds_id: TO_DEFINE
 cloud:
   image:
-    registry_credentials_nightly: nightly_kogito
-    registry_credentials_release: release_kogito
+    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
     registry: quay.io
-    namespace: kiegroup
+    namespace: tradisso
     latest_git_branch: main
 jenkins:
   email_creds_id: KOGITO_CI_EMAIL_TO
+  agent:
+    docker:
+      builder:
+        image: quay.io/kiegroup/kogito-ci-build:latest
+        args: -v /var/run/docker.sock:/var/run/docker.sock --group-add docker --group-add input --group-add render
   default_tools:
     jdk: jdk_11_latest
     maven: maven_3.8.6

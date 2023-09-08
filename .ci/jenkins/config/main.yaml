@@ -13,10 +13,8 @@ ecosystem:
     - kie-benchmarks.*
 git:
   branches:
-  - name: main
+  - name: apache_migration
     main_branch: true
-    seed:
-      branch: main
 seed:
   config_file:
     git:
@@ -24,8 +22,8 @@ seed:
       author:
         name: kiegroup
         credentials_id: kie-ci4
-      branch: main
+      branch: apache_migration
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
-  email_creds_id: DROOLS_CI_EMAIL_TO
+  email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS
