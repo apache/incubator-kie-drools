@@ -123,17 +123,16 @@ public class URIContentLoaderFactory {
         }
 
         public URIContentLoader build() {
-            if (baseURI != null) {
-                uri = compoundURI(baseURI, uri);
-            }
-            switch (URIContentLoaderType.from(uri)) {
+            final URI finalURI = baseURI != null ? compoundURI(baseURI, uri) : uri;
+            switch (URIContentLoaderType.from(finalURI)) {
                 default:
                 case FILE:
-                    return new FileContentLoader(uri);
+                    return new FileContentLoader(finalURI, new ClassPathContentLoader(uri, Optional.ofNullable(cl)));
                 case HTTP:
-                    return new HttpContentLoader(uri, Optional.ofNullable(workflow), authRef);
+                    return new HttpContentLoader(finalURI, Optional.ofNullable(workflow), authRef);
                 case CLASSPATH:
-                    return new ClassPathContentLoader(uri, Optional.ofNullable(cl));
+                    Optional<ClassLoader> optionalCl = Optional.ofNullable(cl);
+                    return finalURI == uri ? new ClassPathContentLoader(finalURI, optionalCl) : new ClassPathContentLoader(finalURI, optionalCl, new ClassPathContentLoader(uri, optionalCl));
             }
         }
     }

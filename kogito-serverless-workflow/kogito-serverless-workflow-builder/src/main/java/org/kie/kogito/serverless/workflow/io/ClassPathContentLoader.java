@@ -19,18 +19,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class ClassPathContentLoader extends CachedContentLoader {
 
     private final Optional<URL> resource;
-    private final String path;
+    private final String classpath;
 
-    ClassPathContentLoader(URI uri, Optional<ClassLoader> cl) {
-        super(uri);
-        this.path = getPath(uri);
-        this.resource = Optional.ofNullable(cl.orElse(Thread.currentThread().getContextClassLoader()).getResource(path));
+    ClassPathContentLoader(URI uri, Optional<ClassLoader> cl, URIContentLoader... fallbackContentLoaders) {
+        super(uri, fallbackContentLoaders);
+        this.classpath = getPath(uri);
+        this.resource = Optional.ofNullable(cl.orElse(Thread.currentThread().getContextClassLoader()).getResource(classpath));
     }
 
     static String getPath(URI uri) {
@@ -49,13 +51,26 @@ public class ClassPathContentLoader extends CachedContentLoader {
         return resource;
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    protected Optional<Path> internalGetPath() {
+        return resource.map(ClassPathContentLoader::fromURL);
+    }
+
+    String classpath() {
+        return classpath;
+    }
+
+    private static Path fromURL(URL url) {
+        try {
+            return Path.of(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid URI " + url, e);
+        }
     }
 
     @Override
     protected byte[] loadURI(URI uri) {
-        return resource.map(this::loadBytes).orElseThrow(() -> new IllegalArgumentException("cannot find classpath resource " + path));
+        return resource.map(this::loadBytes).orElseThrow(() -> new IllegalArgumentException("cannot find classpath resource " + classpath));
     }
 
     private byte[] loadBytes(URL r) {

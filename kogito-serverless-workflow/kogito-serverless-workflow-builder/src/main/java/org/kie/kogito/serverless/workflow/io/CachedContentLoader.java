@@ -18,8 +18,15 @@ package org.kie.kogito.serverless.workflow.io;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Path;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class CachedContentLoader implements URIContentLoader {
+
+    private static final Logger logger = LoggerFactory.getLogger(CachedContentLoader.class);
 
     private static class NoCopyByteArrayInputStream extends ByteArrayInputStream {
         public NoCopyByteArrayInputStream(byte[] buf) {
@@ -39,14 +46,46 @@ public abstract class CachedContentLoader implements URIContentLoader {
     }
 
     private final URI uri;
+    private URIContentLoader[] fallbackContentLoaders;
 
-    protected CachedContentLoader(URI uri) {
+    protected CachedContentLoader(URI uri, URIContentLoader... fallbackContentLoaders) {
         this.uri = uri;
+        this.fallbackContentLoaders = fallbackContentLoaders;
+    }
+
+    protected Optional<Path> internalGetPath() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Path> getPath() {
+        return internalGetPath().or(() -> {
+            for (URIContentLoader contentLoader : fallbackContentLoaders) {
+                Optional<Path> alternativePath = contentLoader.getPath();
+                if (alternativePath.isPresent()) {
+                    return alternativePath;
+                }
+            }
+            return Optional.empty();
+        });
     }
 
     @Override
     public InputStream getInputStream() {
-        return new NoCopyByteArrayInputStream(ResourceCacheFactory.getCache().get(uri, this::loadURI));
+        try {
+            return new NoCopyByteArrayInputStream(ResourceCacheFactory.getCache().get(uri, this::loadURI));
+        } catch (RuntimeException ex) {
+            for (URIContentLoader contentLoader : fallbackContentLoaders) {
+                try {
+                    InputStream stream = contentLoader.getInputStream();
+                    logger.warn("URI {} was retrieved using a fallback mechanism {} rather than original {}", uri, contentLoader.type(), type());
+                    return stream;
+                } catch (RuntimeException supressed) {
+                    ex.addSuppressed(supressed);
+                }
+            }
+            throw ex;
+        }
     }
 
     protected abstract byte[] loadURI(URI uri);

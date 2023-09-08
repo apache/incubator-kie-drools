@@ -20,23 +20,25 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class FileContentLoader extends CachedContentLoader {
 
     private final Path path;
 
-    FileContentLoader(URI uri) {
-        super(uri);
+    FileContentLoader(URI uri, URIContentLoader... fallbackContentLoaders) {
+        super(uri, fallbackContentLoaders);
         this.path = Path.of(getPath(uri));
-    }
-
-    public Path getPath() {
-        return path;
     }
 
     @Override
     public URIContentLoaderType type() {
         return URIContentLoaderType.FILE;
+    }
+
+    @Override
+    protected Optional<Path> internalGetPath() {
+        return Files.exists(path) ? Optional.of(path) : Optional.empty();
     }
 
     @Override

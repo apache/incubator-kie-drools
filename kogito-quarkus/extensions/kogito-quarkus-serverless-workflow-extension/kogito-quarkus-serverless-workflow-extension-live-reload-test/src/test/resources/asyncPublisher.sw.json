@@ -8,7 +8,7 @@
     {
       "name": "publishEvent",
       "type": "asyncapi",
-      "operation": "classpath:specs/asyncAPI.yaml#sendWait" 
+      "operation": "specs/asyncAPI.yaml#sendWait" 
     }
   ],
   "states": [
