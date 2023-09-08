@@ -4,3 +4,7 @@
 :hello-world-java-quickstart-url: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/hello-world
 :spring-boot-quickstart-url: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/technology/java-spring-boot
 :quarkus-quickstart-url: https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/school-timetabling
+:optaplanner: OptaPlanner
+:quarkus: Quarkus
+:optaplanner-jdk-version: 11
+:optaplanner-maven-version: 3.6

@@ -1,0 +1,224 @@
+[[vaccinationScheduler]]
+= OptaPlanner Vaccination Scheduler
+
+
+Use the {optaplanner} vaccination appointment scheduler quick start to develop a vaccination schedule that is both efficient and fair. The vaccination appointment scheduler uses artificial intelligence (AI) to prioritize people and allocate time slots based on multiple constraints and priorities.
+
+.Prerequisites
+
+* OpenJDK {optaplanner-jdk-version}or later is installed.
+
+* Apache Maven {optaplanner-maven-version}or higher is installed. Maven is available from the https://maven.apache.org/[Apache Maven Project] website.
+
+* An IDE, such as IntelliJ IDEA, VSCode, Eclipse, or NetBeans is available.
+
+* You have created a Quakus OptaPlanner project as described in https://www.optaplanner.org/docs/optaplanner/latest/quickstart/quickstart.html#quarkusJavaQuickStart[Quarkus Java quick start].
+
+
+[[vaccinationSchedulerApproach]]
+== How the {optaplanner} vaccination appointment scheduler works
+
+There are two main approaches to scheduling appointments. The system can either let a person choose an appointment slot (user-selects) or the system assigns a slot and tells the person when and where to attend (system-automatically-assigns). The OptaPlanner vaccination appointment scheduler uses the system-automatically-assigns approach. With the OptaPlanner vaccination appointment scheduler, you can create an application where people provide their information to the system and the system assigns an appointment.
+
+Characteristics of this approach:
+
+* Appointment slots are allocated based on priority.
+* The system allocates the best appointment time and location based on preconfigured planning constraints.
+* The system is not overwhelmed by a large number of users competing for a limited number of appointments.
+
+This approach solves the problem of vaccinating as many people as possible by using planning constraints to create a score for each person. The person’s score determines when they get an appointment. The higher the person’s score, the better chance they have of receiving an earlier appointment.
+
+
+[[vaccinationContraints]]
+== {optaplanner} vaccination appointment scheduler constraints
+
+OptaPlanner vaccination appointment scheduler constraints are either hard, medium, or soft:
+
+* Hard constraints cannot be broken. If any hard constraint is broken, the plan is unfeasible and cannot be executed:
+** Capacity: Do not over-book vaccine capacity at any time at any location.
+** Vaccine max age: If a vaccine has a maximum age, do not administer it to people who at the time of the first dose vaccination are older than the vaccine maximum age. Ensure people are given a vaccine type appropriate for their age. For example, do not assign a 75 year old person an appointment for a vaccine that has a maximum age restriction of 65 years.
+** Required vaccine type: Use the required vaccine type. For example, the second dose of a vaccine must be the same vaccine type as the first dose.
+** Ready date: Administer the vaccine on or after the specified date. For example, if a person receives a second dose, do not administer it before the recommended earliest possible vaccination date for the specific vaccine type, for example 26 days after the first dose.
+** Due date: Administer the vaccine on or before the specified date. For example, if a person receives a second dose, administer it before the recommended vaccination final due date for the specific vaccine, for example three months after the first dose.
+** Restrict maximum travel distance: Assign each person to one of a group of vaccination centers nearest to them. This is typically one of three centers. This restriction is calculated by travel time, not distance, so a person that lives in an urban area usually has a lower maximum distance to travel than a person living in a rural area.
+
+* Medium constraints decide who does not get an appointment when there is not enough capacity to assign appointments to everyone. This is called overconstrained planning:
+** Schedule second dose vaccinations: Do not leave any second dose vaccination appointments unassigned unless the ideal date falls outside of the planning window.
+** Schedule people based on their priority rating: Each person has a priority rating. This is typically their age but it can be much higher if they are, for example, a health care worker. Leave only people with the lowest priority ratings unassigned. They will be considered in the next run. This constraint is softer than the previous constraint because the second dose is always prioritized over priority rating.
+* Soft constraints should not be broken:
+** Preferred vaccination center: If a person has a preferred vaccination center, give them an appointment at that center.
+** Distance: Minimize the distance that a person must travel to their assigned vaccination center.
+** Ideal date: Administer the vaccine on or as close to the specified date as possible. For example, if a person receives a second dose, administer it on the ideal date for the specific vaccine, for example 28 days after the first dose. This constraint is softer than the distance constraint to avoid sending people halfway across the country just to be one day closer to their ideal date.
+** Priority rating: Schedule people with a higher priority rating earlier in the planning window. This constraint is softer than the distance constraint to avoid sending people halfway across the country. This constraint is also softer than the ideal date constraint because the second dose is prioritized over priority rating.
+
+Hard constraints are weighted against other hard constraints. Soft constraints are weighted against other soft constraints. However, hard constraints always take precedence over medium and soft constraints. If a hard constraint is broken, then the plan is not feasible. But if no hard constraints are broken then soft and medium constraints are considered in order to determine priority.
+Because there are often more people than available appointment slots, you must prioritize. Second dose appointments are always assigned first to avoid creating a backlog that would overwhelm your system later. After that, people are assigned based on their priority rating. Everyone starts with a priority rating that is their age. Doing this prioritizes older people over younger people. After that, people that are in specific priority groups receive, for example, a few hundred extra points. This  varies based on the priority of their group. For example, nurses might receive an extra 1000 points. This way, older nurses are prioritized over younger nurses and young nurses are prioritized over people who are not nurses. The following table illustrates this concept:
+
+.Priority rating table
+[cols="2,2,3", options="header"]
+|===
+|Age
+|Job
+|Priority rating
+
+|60
+|nurse
+|1060
+
+|33
+|nurse
+|1033
+
+|71
+|retired
+|71
+
+|52
+|office worker
+|52
+|===
+
+
+[[optaplannerSolver]]
+== The {optaplanner} solver
+
+At the core of {optaplanner} is the solver, the engine that takes the problem data set and overlays the planning constraints and configurations. The problem data set includes all of the information about the people, the vaccines, and the vaccination centers. The solver works through the various combinations of data and eventually determines an optimized appointment schedule with people assigned to vaccination appointments at a specific center.  The following illustration shows a schedule that the solver created:
+
+
+
+image::use-cases-and-examples/vaccination-scheduling/vaccinationSchedulingValueProposal.png[]
+
+
+
+[[vaccinationContinuousPlanning]]
+== Continuous planning
+
+Continuous planning is the technique of managing one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly, or even more frequently. The planning window advances incrementally by a specified interval. The following illustration shows a two week planning window that is updated daily:
+
+image::use-cases-and-examples/vaccination-scheduling/vaccinationSchedulingContinuousPlanning.png[]
+
+The two week planning window is divided in half. The first week is in the published state and the second week is in the draft state.  People are assigned to appointments in both the published and draft parts of the planning window. However, only people in the published part of the planning window are notified of their appointments. The other appointments can still change easily in the next run. Doing this gives {optaplanner} the flexibility to change the appointments in the draft part when you run the solver again, if necessary. For example, if a person who needs a second dose has a ready date of Monday and an ideal date of Wednesday, OptaPlanner does not have to give them an appointment for Monday if you can prove OptaPlanner can demonstrate that it can give them a draft appointment later in the week.
+
+You can determine the size of the planning window but just be aware of the size of the problem space. The problem space is all of the various elements that go into creating the schedule. The more days you plan ahead, the larger the problem space.
+
+
+[[vaccinationPinnedPlanningEntities]]
+== Pinned planning entities
+
+If you are continuously planning on a daily basis, there will be appointments within the two week period that are already allocated to people. To ensure that appointments are not double-booked, {optaplanner} marks existing appointments as allocated by pinning them. Pinning is used to anchor one or more specific assignments and force OptaPlanner to schedule around those fixed assignments.  A pinned planning entity, such as an appointment, does not change during solving.
+
+Whether an entity is pinned or not is determined by the appointment state. An appointment can have five states : `Open`, `Invited`, `Accepted`, `Rejected`, or `Rescheduled`.
+
+NOTE: You do not actually see these states directly in the quick start demo code because the OptaPlanner engine is only interested in whether the appointment is pinned or not.
+
+You need to be able to plan around appointments that have already been scheduled. An appointment with the `Invited` or `Accepted` state is pinned. Appointments with the `Open`, `Reschedule`, and `Rejected` state are not pinned and are available for scheduling.
+
+In this example, when the solver runs it searches across the entire two week planning window in both the published and draft ranges. The solver considers any unpinned entities, appointments with the `Open`, `Reschedule`, or `Rejected` states, in addition to the unscheduled input data, to find the optimal solution. If the solver is run daily, you will see a new day added to the schedule before you run the solver.
+
+Notice that the appointments on the new day have been assigned and Amy and Edna who were previously scheduled in the draft part of the planning window are now scheduled in the published part of the window. This was possible because Gus and Hugo requested a reschedule. This will not cause any confusion because Amy and Edna were never notified about their draft dates. Now, because they have appointments in the published section of the planning window, they will be notified and asked to accept or reject their appointments, and their appointments are now pinned.
+
+
+[[vaccinationSchedulerDownload]]
+== Downloading and running the {optaplanner} vaccination appointment scheduler
+
+Download the OptaPlanner vaccination appointment scheduler quick start archive, start it in Quarkus development mode, and view the application in a browser. Quarkus development mode enables you to make changes and update your application while it is running.
+
+.Procedure
+
+. Clone the `https://github.com/kiegroup/optaplanner-quickstarts` GitHub repository:
++
+[source]
+----
+git clone https://github.com/kiegroup/optaplanner-quickstarts.git
+----
+. Navigate to the `optaplanner-quickstarts/quarkus-vaccination-scheduling`  directory.
+
+. Enter the following command to start the OptaPlanner vaccination appointment scheduler in development mode:
++
+[source, shell]
+----
+$ mvn quarkus:dev
+----
+
+. To view the OptaPlanner vaccination appointment scheduler, enter the following URL in a web browser.
++
+[source]
+----
+http://localhost:8080/
+----
+
+. To run the OptaPlanner vaccination appointment scheduler, click *Solve*.
+. Make changes to the source code then press the F5 key to refresh your browser. Notice that the changes that you made are now available.
+
+[[vaccinationSchedulerPackage]]
+== Package and run the {optaplanner} vaccination appointment scheduler
+
+When you have completed development work on the OptaPlanner vaccination appointment scheduler in `quarkus:dev` mode, run the application as a conventional JAR file.
+
+.Prerequisites
+
+* You have downloaded the OptaPlanner vaccination appointment scheduler quick start.
+
+.Procedure
+. Navigate to the `quarkus-vaccination-scheduling` directory.
+. To compile the OptaPlanner vaccination appointment scheduler, enter the following command:
++
+[source, shell]
+----
+$ mvn package
+----
+
+. To run the compiled OptaPlanner vaccination appointment scheduler, enter the following command:
++
+[source, shell]
+----
+$ java -jar ./target/*-runner.jar
+----
++
+[NOTE]
+====
+To run the application on port 8081, add `-Dquarkus.http.port=8081` to the preceding command.
+====
+
+. To start the OptaPlanner vaccination appointment scheduler, enter the following URL in a web browser.
++
+[source]
+----
+http://localhost:8080/
+----
+
+[[vaccinationNativeExecutable]]
+== Run the {optaplanner} vaccination appointment scheduler as a native executable
+
+To take advantage of the small memory footprint and access speeds that Quarkus offers, compile the OptaPlanner vaccination appointment scheduler in Quarkus native mode.
+
+.Prerequistes.
+
+.Procedure
+
+. Install GraalVM and the `native-image` tool. For information, see https://quarkus.io/guides/building-native-image#configuring-graalvm[Configuring GraalVMl] on the Quarkus website.
+. Navigate to the `quarkus-vaccination-scheduling` directory.
+
+. To compile the OptaPlanner vaccination appointment scheduler natively, enter the following command:
++
+[source, shell]
+----
+$ mvn package -Dnative -DskipTests
+----
+
+. To run the native executable, enter the following command:
++
+[source, shell]
+----
+$ ./target/*-runner
+----
+
+. To start the OptaPlanner vaccination appointment scheduler, enter the following URL in a web browser.
++
+[source]
+----
+http://localhost:8080/
+----
+
+== Additional resources
+* https://www.youtube.com/watch?v=LTkoaBk-P6U[Vaccination appointment scheduling video]
