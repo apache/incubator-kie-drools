@@ -5,12 +5,10 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'ubuntu'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -18,17 +16,8 @@ pipeline {
         timeout(time: 60, unit: 'MINUTES')
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Static env is defined into ./dsl/jobs.groovy file
-
         DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        // Keep here for visitibility
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         BRANCH_HASH = "${util.generateHash(10)}"
     }

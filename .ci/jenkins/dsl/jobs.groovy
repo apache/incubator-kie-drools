@@ -106,7 +106,7 @@ void setupProjectReleaseJob() {
 
 void setupProjectPostReleaseJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-post-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.post-release", 'Drools Post Release')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -148,9 +148,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
             ], [
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
-                env : [
-                    NODE_OPTIONS: '--max_old_space_size=4096',
-                ]
             ], [
                 id: 'kogito-quarkus-examples',
                 repository: 'kogito-examples',
@@ -242,7 +239,7 @@ void setupSpecificBuildChainNightlyJob(String envName, Closure defaultJobParamsG
 
 void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Drools Setup branch')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'drools',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -270,7 +267,7 @@ void createSetupBranchJob() {
 
 void setupDeployJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-deploy', jobType, "${jenkins_path}/Jenkinsfile.deploy", 'Drools Deploy')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'drools',
         PROPERTIES_FILE_NAME: 'deployment.properties',
@@ -314,7 +311,7 @@ void setupDeployJob(JobType jobType) {
 
 void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'drools',
         PROPERTIES_FILE_NAME: 'deployment.properties',
@@ -346,7 +343,7 @@ void setupPromoteJob(JobType jobType) {
 
 void setupPrQuarkus3RewriteJob() {
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'drools.rewrite', JobType.PULL_REQUEST, 'quarkus-3', "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.pr", 'Drools Quarkus 3 rewrite patch regeneration')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.jenkinsfile = "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.pr"
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
@@ -365,7 +362,7 @@ void setupPrQuarkus3RewriteJob() {
 
 void setupStandaloneQuarkus3RewriteJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools.quarkus-3.rewrite', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.standalone", 'Drools Quarkus 3 rewrite patch regeneration')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll(EnvUtils.getEnvironmentEnvVars(this, 'quarkus-3'))
     jobParams.env.putAll([
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
