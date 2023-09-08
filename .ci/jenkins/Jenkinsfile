@@ -1,0 +1,43 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pr_check_script = null
+
+pipeline {
+    agent {
+        label 'ubuntu'
+    }
+    options {
+        timestamps()
+        timeout(time: '720', unit: 'MINUTES')
+    }
+    environment {
+        BUILDCHAIN_PROJECT = 'kiegroup/drools'
+        BUILDCHAIN_CONFIG_REPO = 'drools'
+        BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
+
+        ENABLE_SONARCLOUD = 'true'
+        DROOLS_BUILD_MVN_OPTS = '-Prun-code-coverage'
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    // load `pr_check.groovy` file from kogito-pipelines:main
+                    dir('kogito-pipelines') {
+                        checkout(githubscm.resolveRepository('kogito-pipelines', 'kiegroup', 'apache_migration', false, 'kie-ci')) // TODO to change back to kiegroup:main
+                        pr_check_script = load 'dsl/scripts/pr_check.groovy'
+                    }
+                }
+            }
+        }
+        stage('PR check') {
+            steps {
+                script {
+                    dir('kogito-pipelines') {
+                        pr_check_script.launch()
+                    }
+                }
+            }
+        }
+    }
+}

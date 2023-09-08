@@ -21,13 +21,7 @@ pipeline {
         label 'ubuntu'
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into ./dsl/jobs.groovy file
-
         DROOLS_CI_EMAIL = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
 
