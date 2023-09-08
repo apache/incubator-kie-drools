@@ -129,6 +129,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 1`] = `
       "type": "object",
     }
   }
+  targetOrigin="http://localhost:9000"
   user={
     Object {
       "groups": Array [
@@ -391,7 +392,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 1`] = `
                 }
               }
               onOpenForm={[Function]}
-              targetOrigin="http://localhost"
+              targetOrigin="http://localhost:9000"
             >
               <ForwardRef(RefForwardingEmbeddedEnvelope)
                 apiImpl={
@@ -405,7 +406,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 1`] = `
                     "envelopePath": "resources/form-displayer.html",
                   }
                 }
-                origin="http://localhost"
+                origin="http://localhost:9000"
                 pollInit={[Function]}
                 refDelegate={[Function]}
               >
@@ -565,6 +566,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
       "type": "object",
     }
   }
+  targetOrigin="http://localhost:9000"
   user={
     Object {
       "groups": Array [
@@ -809,7 +811,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
                 }
               }
               onOpenForm={[Function]}
-              targetOrigin="http://localhost"
+              targetOrigin="http://localhost:9000"
             >
               <ForwardRef(RefForwardingEmbeddedEnvelope)
                 apiImpl={
@@ -823,7 +825,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form 2`] = `
                     "envelopePath": "resources/form-displayer.html",
                   }
                 }
-                origin="http://localhost"
+                origin="http://localhost:9000"
                 pollInit={[Function]}
                 refDelegate={[Function]}
               >
@@ -1006,6 +1008,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 1`] = `
       "type": "object",
     }
   }
+  targetOrigin="http://localhost:9000"
   user={
     Object {
       "groups": Array [
@@ -1268,7 +1271,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 1`] = `
                 }
               }
               onOpenForm={[Function]}
-              targetOrigin="http://localhost"
+              targetOrigin="http://localhost:9000"
             >
               <ForwardRef(RefForwardingEmbeddedEnvelope)
                 apiImpl={
@@ -1282,7 +1285,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 1`] = `
                     "envelopePath": "resources/form-displayer.html",
                   }
                 }
-                origin="http://localhost"
+                origin="http://localhost:9000"
                 pollInit={[Function]}
                 refDelegate={[Function]}
               >
@@ -1442,6 +1445,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 2`] = `
       "type": "object",
     }
   }
+  targetOrigin="http://localhost:9000"
   user={
     Object {
       "groups": Array [
@@ -1686,7 +1690,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 2`] = `
                 }
               }
               onOpenForm={[Function]}
-              targetOrigin="http://localhost"
+              targetOrigin="http://localhost:9000"
             >
               <ForwardRef(RefForwardingEmbeddedEnvelope)
                 apiImpl={
@@ -1700,7 +1704,7 @@ exports[`CustomTaskFormDisplayer Test Rendering form with error 2`] = `
                     "envelopePath": "resources/form-displayer.html",
                   }
                 }
-                origin="http://localhost"
+                origin="http://localhost:9000"
                 pollInit={[Function]}
                 refDelegate={[Function]}
               >

@@ -64,7 +64,8 @@ export const EmbeddedFormDetails = React.forwardRef(
             postMessage(message, targetOrigin, transfer) {
               window.postMessage(message, targetOrigin, transfer);
             }
-          }
+          },
+          targetOrigin: props.targetOrigin
         });
         return envelopeServer.envelopeApi.requests.formDetails__init(
           {

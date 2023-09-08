@@ -36,6 +36,7 @@ import {
   Notification
 } from '@kogito-apps/components-common/dist/components/FormNotification';
 import Moment from 'react-moment';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 const FormDetailsPage: React.FC<OUIAProps> = () => {
   const [notification, setNotification] = useState<Notification>();
 
@@ -82,6 +83,8 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
     }
   };
 
+  const appContext = useDevUIAppContext();
+
   return (
     <React.Fragment>
       <PageSection variant="light">
@@ -105,6 +108,7 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
             formData={formData}
             onSuccess={onSuccess}
             onError={onError}
+            targetOrigin={appContext.getDevUIUrl()}
           />
         </Card>
       </PageSection>

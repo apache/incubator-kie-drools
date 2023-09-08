@@ -24,22 +24,22 @@ import { useFormDetailsGatewayApi } from '../../../channel/FormDetails/FormDetai
 import { EmbeddedFormDetails, FormContent } from '@kogito-apps/form-details';
 import { FormInfo } from '@kogito-apps/forms-list';
 import { Form } from '@kogito-apps/form-displayer';
-import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface FormDetailsContainerProps {
   formData: FormInfo;
   onSuccess: () => void;
   onError: (details?: string) => void;
+  targetOrigin: string;
 }
 const FormDetailsContainer: React.FC<FormDetailsContainerProps & OUIAProps> = ({
   formData,
   onSuccess,
   onError,
   ouiaId,
-  ouiaSafe
+  ouiaSafe,
+  targetOrigin
 }) => {
   const gatewayApi: FormDetailsGatewayApi = useFormDetailsGatewayApi();
-  const appContext = useDevUIAppContext();
 
   return (
     <EmbeddedFormDetails
@@ -60,7 +60,7 @@ const FormDetailsContainer: React.FC<FormDetailsContainerProps & OUIAProps> = ({
             });
         }
       }}
-      targetOrigin={appContext.getDevUIUrl()}
+      targetOrigin={targetOrigin}
       formData={formData}
     />
   );

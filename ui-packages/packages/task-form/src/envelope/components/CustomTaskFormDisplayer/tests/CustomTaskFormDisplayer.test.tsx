@@ -136,7 +136,8 @@ describe('CustomTaskFormDisplayer Test', () => {
       },
       schema: _.cloneDeep(ApplyForVisaForm),
       customForm: customForm,
-      driver: getTaskFormDriver()
+      driver: getTaskFormDriver(),
+      targetOrigin: 'http://localhost:9000'
     };
   });
 

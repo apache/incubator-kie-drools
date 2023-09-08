@@ -32,7 +32,11 @@ describe('FormDetailsEnvelopeView tests', () => {
     const forwardRef = React.createRef<FormDetailsEnvelopeViewApi>();
 
     let wrapper = mount(
-      <FormDetailsEnvelopeView channelApi={channelApi} ref={forwardRef} />
+      <FormDetailsEnvelopeView
+        channelApi={channelApi}
+        ref={forwardRef}
+        targetOrigin="http://localhost:9000"
+      />
     ).find('FormDetailsEnvelopeView');
 
     expect(wrapper).toMatchSnapshot();

@@ -37,6 +37,7 @@ export function init(args: {
   config: EnvelopeDivConfig;
   container: HTMLDivElement;
   bus: EnvelopeBus;
+  targetOrigin: string;
 }): Promise<any> {
   /**
    * Creates a new generic Envelope, typed with the right interfaces.
@@ -59,7 +60,11 @@ export function init(args: {
     return new Promise<() => FormDetailsEnvelopeViewApi>((res) => {
       args.container.className = 'kogito-form-details-container';
       ReactDOM.render(
-        <FormDetailsEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
+        <FormDetailsEnvelopeView
+          ref={ref}
+          channelApi={envelope.channelApi}
+          targetOrigin={args.targetOrigin}
+        />,
         args.container,
         () => res(() => ref.current)
       );

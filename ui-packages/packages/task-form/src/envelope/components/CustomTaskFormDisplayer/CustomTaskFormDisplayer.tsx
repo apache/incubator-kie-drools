@@ -44,11 +44,21 @@ export interface CustomTaskFormDisplayerProps {
   customForm: CustomForm;
   user: User;
   driver: TaskFormDriver;
+  targetOrigin: string;
 }
 
 const CustomTaskFormDisplayer: React.FC<
   CustomTaskFormDisplayerProps & OUIAProps
-> = ({ userTask, customForm, schema, user, driver, ouiaId, ouiaSafe }) => {
+> = ({
+  userTask,
+  customForm,
+  schema,
+  user,
+  driver,
+  targetOrigin,
+  ouiaId,
+  ouiaSafe
+}) => {
   const formDisplayerApiRef = useRef<FormDisplayerApi>();
   const [formUUID] = useState<string>(uuidv4());
   const [formData] = useState(generateFormData(userTask));
@@ -127,7 +137,7 @@ const CustomTaskFormDisplayer: React.FC<
           style={{ visibility: 'hidden', height: 'inherit' }}
         >
           <EmbeddedFormDisplayer
-            targetOrigin={window.location.origin}
+            targetOrigin={targetOrigin}
             envelopePath={'resources/form-displayer.html'}
             formContent={customForm}
             data={formData}

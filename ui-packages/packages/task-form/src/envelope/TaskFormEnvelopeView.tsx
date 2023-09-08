@@ -46,12 +46,13 @@ export interface TaskFormEnvelopeViewApi {
 
 interface Props {
   channelApi: MessageBusClientApi<TaskFormChannelApi>;
+  targetOrigin: string;
 }
 
 export const TaskFormEnvelopeView = React.forwardRef<
   TaskFormEnvelopeViewApi,
   Props & OUIAProps
->(({ channelApi, ouiaId, ouiaSafe }, forwardedRef) => {
+>(({ channelApi, targetOrigin, ouiaId, ouiaSafe }, forwardedRef) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
     useState<boolean>(false);
@@ -141,6 +142,7 @@ export const TaskFormEnvelopeView = React.forwardRef<
           customForm={customForm}
           user={user}
           driver={driver}
+          targetOrigin={targetOrigin}
         />
       );
     }

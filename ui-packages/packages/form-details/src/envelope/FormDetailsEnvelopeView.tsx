@@ -29,6 +29,7 @@ export interface FormDetailsEnvelopeViewApi {
 
 interface Props {
   channelApi: MessageBusClientApi<FormDetailsChannelApi>;
+  targetOrigin: string;
 }
 
 export const FormDetailsEnvelopeView = React.forwardRef<
@@ -56,6 +57,7 @@ export const FormDetailsEnvelopeView = React.forwardRef<
           isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
           driver={new FormDetailsEnvelopeViewDriver(props.channelApi)}
           formData={formData}
+          targetOrigin={props.targetOrigin}
         />
       </FormDetailsContextProvider>
     </React.Fragment>

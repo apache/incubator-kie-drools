@@ -45,6 +45,7 @@ export interface FormDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: FormDetailsDriver;
   formData: FormInfo;
+  targetOrigin: string;
 }
 
 export interface ResizableContent {
@@ -56,7 +57,8 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   driver,
   formData,
   ouiaId,
-  ouiaSafe
+  ouiaSafe,
+  targetOrigin
 }) => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [formContent, setFormContent] = useState<Form>(null);
@@ -107,7 +109,10 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
       <DrawerHead style={{ height: '100%' }}>
         {formContent && Object.keys(formContent)[0].length > 0 && (
           <span>
-            <FormDisplayerContainer formContent={formContent} />
+            <FormDisplayerContainer
+              formContent={formContent}
+              targetOrigin={targetOrigin}
+            />
           </span>
         )}
       </DrawerHead>

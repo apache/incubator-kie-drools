@@ -30,7 +30,8 @@ Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
 describe('FormDisplayerContainer', () => {
   const props = {
-    formContent: formContent
+    formContent: formContent,
+    targetOrigin: 'http://localhost:9000'
   };
   it('render embeded formdisplayer', () => {
     const wrapper = mount(

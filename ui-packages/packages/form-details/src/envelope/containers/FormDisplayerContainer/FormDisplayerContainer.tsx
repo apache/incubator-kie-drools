@@ -26,10 +26,12 @@ import { buildTestContext } from './utils/utils';
 
 interface FormDisplayerContainerProps {
   formContent: Form;
+  targetOrigin: string;
 }
 
 const FormDisplayerContainer: React.FC<FormDisplayerContainerProps> = ({
-  formContent
+  formContent,
+  targetOrigin
 }) => {
   const [displayerKey, setDisplayerKey] = useState<string>(uuidv4());
   const appContext = useFormDetailsContext();
@@ -48,7 +50,7 @@ const FormDisplayerContainer: React.FC<FormDisplayerContainerProps> = ({
 
   return (
     <EmbeddedFormDisplayer
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin}
       envelopePath={'resources/form-displayer.html'}
       formContent={formContent}
       context={buildTestContext(formContent)}

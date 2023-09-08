@@ -19,6 +19,7 @@ exports[`FormDisplayerContainer render embeded formdisplayer 1`] = `
       "source": "html source code",
     }
   }
+  targetOrigin="http://localhost:9000"
 >
   <ForwardRef
     context={
@@ -100,7 +101,7 @@ exports[`FormDisplayerContainer render embeded formdisplayer 1`] = `
       }
     }
     key="testId"
-    targetOrigin="http://localhost"
+    targetOrigin="http://localhost:9000"
   >
     <ForwardRef(RefForwardingEmbeddedEnvelope)
       apiImpl={
@@ -114,7 +115,7 @@ exports[`FormDisplayerContainer render embeded formdisplayer 1`] = `
           "envelopePath": "resources/form-displayer.html",
         }
       }
-      origin="http://localhost"
+      origin="http://localhost:9000"
       pollInit={[Function]}
       refDelegate={[Function]}
     >

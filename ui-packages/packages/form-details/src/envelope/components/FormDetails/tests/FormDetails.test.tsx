@@ -34,7 +34,8 @@ describe('form details tests', () => {
         name: 'form1',
         type: 'HTML' as any,
         lastModified: new Date('2020-07-11T18:30:00.000Z')
-      }
+      },
+      targetOrigin: 'http://localhost:9000'
     };
     let wrapper;
     await act(async () => {
@@ -52,7 +53,8 @@ describe('form details tests', () => {
         name: 'form1',
         type: 'html' as any,
         lastModified: new Date('2020-07-11T18:30:00.000Z')
-      }
+      },
+      targetOrigin: 'http://localhost:9000'
     };
     let wrapper;
     await act(async () => {

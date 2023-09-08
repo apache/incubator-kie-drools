@@ -62,7 +62,8 @@ export const EmbeddedTaskForm = React.forwardRef(
             postMessage(message, targetOrigin, transfer) {
               window.postMessage(message, targetOrigin, transfer);
             }
-          }
+          },
+          targetOrigin: props.targetOrigin
         });
         return envelopeServer.envelopeApi.requests.taskForm__init(
           {

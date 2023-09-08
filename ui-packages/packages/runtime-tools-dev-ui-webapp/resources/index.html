@@ -18,39 +18,45 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <style>
-    #webapp {
-      height: calc(100vh - 50px);
-    }
-  </style>
+  <head>
+    <style>
+      #webapp {
+        height: calc(100vh - 50px);
+      }
+    </style>
 
-  <title></title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <script src="../standalone.js"></script>
-</head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="../standalone.js"></script>
+  </head>
 
-<body>
-<div id="webapp"></div>
+  <body>
+    <div id="webapp"></div>
 
-<script>
-  const devUI = RuntimeToolsDevUI.open({
-    container: document.getElementById("webapp"),
-    isDataIndexAvailable: true,
-    isTracingEnabled: true,
-    users: [ { id: "admin", groups: ["admin"] }, { id: "pere", groups: ["admin", "analyst", "managers", "employees"] }, { id: "paulo", groups: ["admin", "analyst"] }, { id: "saravana", groups: [] }, { id: "john", groups: [] } ],
-    dataIndexUrl: "http://localhost:4000/graphql",
-    trustyServiceUrl: "http://localhost:1336",
-    page: "JobsManagement",
-    devUIUrl:"http://localhost:4000",
-    openApiPath:"q/openapi.json",
-    customLabels: {
-      singularProcessLabel: "Workflow",
-      pluralProcessLabel: "Workflows"
-    }
-  })
-</script>
-</body>
+    <script>
+      const devUI = RuntimeToolsDevUI.open({
+        container: document.getElementById('webapp'),
+        isDataIndexAvailable: true,
+        isTracingEnabled: true,
+        users: [
+          { id: 'admin', groups: ['admin'] },
+          { id: 'pere', groups: ['admin', 'analyst', 'managers', 'employees'] },
+          { id: 'paulo', groups: ['admin', 'analyst'] },
+          { id: 'saravana', groups: [] },
+          { id: 'john', groups: [] }
+        ],
+        dataIndexUrl: 'http://localhost:4000/graphql',
+        trustyServiceUrl: 'http://localhost:1336',
+        page: 'JobsManagement',
+        devUIUrl: 'http://localhost:9000',
+        openApiPath: 'q/openapi.json',
+        customLabels: {
+          singularProcessLabel: 'Workflow',
+          pluralProcessLabel: 'Workflows'
+        }
+      });
+    </script>
+  </body>
 </html>

@@ -11,6 +11,7 @@ exports[`form details tests render form details - config 1`] = `
     }
   }
   isEnvelopeConnectedToChannel={true}
+  targetOrigin="http://localhost:9000"
 >
   <div
     data-ouia-component-type="form-details"
@@ -55,6 +56,7 @@ exports[`form details tests render form details - config 1`] = `
                         "source": "html source code",
                       }
                     }
+                    targetOrigin="http://localhost:9000"
                   />
                 </span>
               </DrawerHead>
@@ -549,6 +551,7 @@ exports[`form details tests render form details - config 1`] = `
                                       "source": "html source code",
                                     }
                                   }
+                                  targetOrigin="http://localhost:9000"
                                 />
                               </span>
                             </div>
@@ -579,6 +582,7 @@ exports[`form details tests render form details - source 1`] = `
     }
   }
   isEnvelopeConnectedToChannel={true}
+  targetOrigin="http://localhost:9000"
 >
   <div
     data-ouia-component-type="form-details"
@@ -623,6 +627,7 @@ exports[`form details tests render form details - source 1`] = `
                         "source": "html source code",
                       }
                     }
+                    targetOrigin="http://localhost:9000"
                   />
                 </span>
               </DrawerHead>
@@ -1111,6 +1116,7 @@ exports[`form details tests render form details - source 1`] = `
                                       "source": "html source code",
                                     }
                                   }
+                                  targetOrigin="http://localhost:9000"
                                 />
                               </span>
                             </div>

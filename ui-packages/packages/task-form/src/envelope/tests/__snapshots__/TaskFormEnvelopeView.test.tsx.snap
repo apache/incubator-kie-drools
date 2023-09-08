@@ -35,6 +35,7 @@ exports[`TaskFormEnvelopeView tests Custom Task Form 1`] = `
       "unsubscribe": [MockFunction],
     }
   }
+  targetOrigin="http://localhost:9000"
 >
   <MockedCustomTaskFormDisplayer
     customForm={
@@ -195,6 +196,7 @@ exports[`TaskFormEnvelopeView tests Custom Task Form 1`] = `
         "type": "object",
       }
     }
+    targetOrigin="http://localhost:9000"
     user={
       Object {
         "groups": Array [
@@ -268,6 +270,7 @@ exports[`TaskFormEnvelopeView tests Empty State 1`] = `
       "unsubscribe": [MockFunction],
     }
   }
+  targetOrigin="http://localhost:9000"
 >
   <KogitoEmptyState
     body="Cannot find form for task  Apply for visa (45a73)"
@@ -297,6 +300,7 @@ exports[`TaskFormEnvelopeView tests Loading 1`] = `
       "unsubscribe": [MockFunction],
     }
   }
+  targetOrigin="http://localhost:9000"
 >
   <Bullseye
     data-ouia-component-id="task-form-envelope-view-loading-spinner"
@@ -354,6 +358,7 @@ exports[`TaskFormEnvelopeView tests Task Form 1`] = `
       "unsubscribe": [MockFunction],
     }
   }
+  targetOrigin="http://localhost:9000"
 >
   <MockedTaskForm
     data-ouia-component-id="task-form-envelope-view-task-form"

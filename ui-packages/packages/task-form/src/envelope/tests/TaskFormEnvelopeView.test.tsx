@@ -78,7 +78,11 @@ describe('TaskFormEnvelopeView tests', () => {
     const forwardRef = React.createRef<TaskFormEnvelopeViewApi>();
 
     const wrapper = mount(
-      <TaskFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+      <TaskFormEnvelopeView
+        channelApi={channelApi}
+        ref={forwardRef}
+        targetOrigin="http://localhost:9000"
+      />
     );
 
     expect(wrapper).toMatchSnapshot();
@@ -108,7 +112,11 @@ describe('TaskFormEnvelopeView tests', () => {
     );
 
     let wrapper = mount(
-      <TaskFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+      <TaskFormEnvelopeView
+        channelApi={channelApi}
+        ref={forwardRef}
+        targetOrigin="http://localhost:9000"
+      />
     );
 
     await act(async () => {
@@ -145,7 +153,11 @@ describe('TaskFormEnvelopeView tests', () => {
     );
 
     let wrapper = mount(
-      <TaskFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+      <TaskFormEnvelopeView
+        channelApi={channelApi}
+        ref={forwardRef}
+        targetOrigin="http://localhost:9000"
+      />
     );
 
     await act(async () => {
@@ -180,7 +192,11 @@ describe('TaskFormEnvelopeView tests', () => {
     taskForm__getCustomFormMock.mockReturnValue(Promise.resolve(customForm));
 
     let wrapper = mount(
-      <TaskFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+      <TaskFormEnvelopeView
+        channelApi={channelApi}
+        ref={forwardRef}
+        targetOrigin="http://localhost:9000"
+      />
     );
 
     await act(async () => {

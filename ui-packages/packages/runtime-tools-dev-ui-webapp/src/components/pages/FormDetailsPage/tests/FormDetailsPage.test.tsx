@@ -18,6 +18,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import FormDetailsPage from '../FormDetailsPage';
 import { BrowserRouter } from 'react-router-dom';
+import * as DevUIAppContext from '../../../contexts/DevUIAppContext';
 
 jest.mock('../../../containers/FormDetailsContainer/FormDetailsContainer');
 
@@ -37,6 +38,19 @@ jest.mock('react-router-dom', () => ({
     }
   })
 }));
+
+// mocking DevUIAppContext.devUIUrl
+jest.spyOn(DevUIAppContext, 'useDevUIAppContext').mockImplementation(
+  () =>
+    new DevUIAppContext.DevUIAppContextImpl({
+      devUIUrl: 'http://localhost:9000',
+      openApiPath: 'mockedPath',
+      isProcessEnabled: false,
+      isStunnerEnabled: false,
+      isTracingEnabled: false,
+      omittedProcessTimelineEvents: []
+    })
+);
 
 describe('FormDetailsPage tests', () => {
   it('Snapshot', () => {
