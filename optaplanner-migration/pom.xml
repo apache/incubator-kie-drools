@@ -40,7 +40,7 @@
 
   <properties>
     <java.module.name>org.optaplanner.migration</java.module.name>
-    <version.org.antlr>4.11.1</version.org.antlr>
+    <version.org.antlr>4.13.0</version.org.antlr>
     <version.jakarta.xml.bind.override>2.3.3</version.jakarta.xml.bind.override>
   </properties>
 
