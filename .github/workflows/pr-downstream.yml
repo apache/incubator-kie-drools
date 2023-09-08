@@ -60,9 +60,9 @@ jobs:
       - name: Build Chain
         uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/${{ matrix.repository }}
+          starting-project: apache/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
         env: 
           BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }}

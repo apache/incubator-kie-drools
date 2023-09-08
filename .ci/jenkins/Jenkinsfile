@@ -11,7 +11,7 @@ pipeline {
         timeout(time: '720', unit: 'MINUTES')
     }
     environment {
-        BUILDCHAIN_PROJECT = 'kiegroup/drools'
+        BUILDCHAIN_PROJECT = 'apache/drools'
         BUILDCHAIN_CONFIG_REPO = 'drools'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
 
@@ -24,7 +24,7 @@ pipeline {
                 script {
                     // load `pr_check.groovy` file from kogito-pipelines:main
                     dir('kogito-pipelines') {
-                        checkout(githubscm.resolveRepository('kogito-pipelines', 'kiegroup', 'apache_migration', false, 'kie-ci')) // TODO to change back to kiegroup:main
+                        checkout(githubscm.resolveRepository('kogito-pipelines', 'apache', 'main', false, 'ASF_Cloudbees_Jenkins_ci-builds'))
                         pr_check_script = load 'dsl/scripts/pr_check.groovy'
                     }
                 }

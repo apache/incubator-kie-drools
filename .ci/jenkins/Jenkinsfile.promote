@@ -220,7 +220,7 @@ void uploadFileMgmt(String directory) {
 }
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 boolean isMainStream() {

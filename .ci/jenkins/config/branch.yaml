@@ -53,9 +53,11 @@ repositories:
 # - name: kie-jpmml-integration ## TODO to check if should be enabled
 git:
   author:
-    name: kiegroup
-    credentials_id: kie-ci4
-    token_credentials_id: kie-ci4-token
+    name: apache
+    # Taken from https://ci-builds.apache.org/credentials/
+    # Need to be verified
+    credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
+    token_credentials_id: ci-builds
   fork_author:
     name: kie-ci
     credentials_id: kie-ci

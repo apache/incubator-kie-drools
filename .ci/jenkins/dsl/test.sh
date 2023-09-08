@@ -23,12 +23,12 @@ fi
 git_author="$(echo ${git_url} | awk -F"${git_server_url}" '{print $2}' | awk -F. '{print $1}'  | awk -F/ '{print $1}')"
 
 export DSL_DEFAULT_MAIN_CONFIG_FILE_REPO="${git_author}"/drools
-export DSL_DEFAULT_FALLBACK_MAIN_CONFIG_FILE_REPO=kiegroup/drools
+export DSL_DEFAULT_FALLBACK_MAIN_CONFIG_FILE_REPO=apache/drools
 export DSL_DEFAULT_MAIN_CONFIG_FILE_PATH=.ci/jenkins/config/main.yaml
 export DSL_DEFAULT_BRANCH_CONFIG_FILE_REPO="${git_author}"/drools
 
 file=$(mktemp)
 # For more usage of the script, use ./test.sh -h
-curl -o ${file} https://raw.githubusercontent.com/kiegroup/kogito-pipelines/main/dsl/seed/scripts/seed_test.sh
+curl -o ${file} https://raw.githubusercontent.com/apache/kogito-pipelines/main/dsl/seed/scripts/seed_test.sh
 chmod u+x ${file}
 ${file} $@

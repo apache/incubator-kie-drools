@@ -1,6 +1,6 @@
 version: "2.1"
 dependencies:
-  - project: kiegroup/drools
+  - project: apache/drools
     mapping:
       dependencies:
         default:
@@ -11,11 +11,11 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
       exclude:
-        - kiegroup/kie-jpmml-integration
+        - apache/kie-jpmml-integration
 
-  - project: kiegroup/kogito-runtimes
+  - project: apache/kogito-runtimes
     dependencies:
-      - project: kiegroup/drools
+      - project: apache/drools
     mapping:
       dependencies:
         default:
@@ -26,12 +26,12 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
-        - kiegroup/kogito-examples
-        - kiegroup/kogito-apps
+        - apache/kogito-examples
+        - apache/kogito-apps
   
-  - project: kiegroup/kogito-apps
+  - project: apache/kogito-apps
     dependencies:
-      - project: kiegroup/kogito-runtimes
+      - project: apache/kogito-runtimes
     mapping:
       dependencies:
         default:
@@ -42,13 +42,13 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
-        - kiegroup/kogito-examples
-        - kiegroup/kogito-runtimes
+        - apache/kogito-examples
+        - apache/kogito-runtimes
 
-  - project: kiegroup/kogito-examples
+  - project: apache/kogito-examples
     dependencies:
-      - project: kiegroup/kogito-runtimes
-      - project: kiegroup/kogito-apps
+      - project: apache/kogito-runtimes
+      - project: apache/kogito-apps
     mapping:
       dependencies:
         default:
@@ -59,10 +59,10 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
-        - kiegroup/kogito-apps
-        - kiegroup/kogito-runtimes
+        - apache/kogito-apps
+        - apache/kogito-runtimes
   
-  - project: kiegroup/kie-jpmml-integration
+  - project: apache/kie-jpmml-integration
     dependencies:
-      - project: kiegroup/drools
+      - project: apache/drools
     # no mapping needed
