@@ -2531,7 +2531,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
         assertThat(ksession.getFactCount()).isEqualTo(2);
-        ksession.fireAllRules();
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(ksession.getFactCount()).isEqualTo(0);
     }
 
@@ -2830,5 +2830,45 @@ public class MarshallingTest extends CommonTestMethodBase {
         // Wait for our thread to exit
         // ** The thread exits if we call t.interrupt();
         t.join();
+    }
+
+    @Test
+    public void cepActivation_shouldFireActivation() throws Exception {
+        // DROOLS-7531
+        String str =
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                "declare A\n" +
+                " @role( event )\n" +
+                " @expires( 10m )\n" +
+                "end\n" +
+                "declare B\n" +
+                " @role( event )\n" +
+                " @expires( 10m )\n" +
+                "end\n" +
+                "rule one\n" +
+                "when\n" +
+                "   $a : A()\n" +
+                "   not ( B(this after[0s, 5s] $a) )\n" +
+                "then\n" +
+                "  System.out.println(\"Fired!\");\n" +
+                "end\n";
+
+        KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+
+        KieBase kBase = loadKnowledgeBaseFromString(config, str);
+
+        KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption(ClockTypeOption.PSEUDO);
+        KieSession ksession = kBase.newKieSession(ksconf, null);
+        PseudoClockScheduler sessionClock = (PseudoClockScheduler) ksession.getSessionClock();
+
+        ksession.insert(new A());
+        sessionClock.advanceTime(6, TimeUnit.SECONDS);
+
+        ksession = marshallStatefulKnowledgeSession(ksession);
+
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
     }
 }

@@ -26,7 +26,5 @@ import org.kie.api.runtime.rule.AgendaFilter;
  */
 public interface ActivationsFilter extends AgendaFilter {
 
-    boolean accept(RuleAgendaItem activation);
-
-    void fireRNEAs(InternalWorkingMemory wm);
+    void accept(RuleAgendaItem activation);
 }

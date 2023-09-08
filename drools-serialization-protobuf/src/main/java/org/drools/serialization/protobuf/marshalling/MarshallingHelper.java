@@ -35,10 +35,6 @@ public class MarshallingHelper {
         return new ActivationKey( pkgName, ruleName, tuple );
     }
 
-    public static ActivationKey createActivationKey( String pkgName, String ruleName) {
-        return new ActivationKey( pkgName, ruleName, null );
-    }
-
     protected static Object[] toArrayOfObject(long[] longs) {
         Object[] objects = new Object[longs.length];
         for(int i = 0; i < longs.length; i++) {
