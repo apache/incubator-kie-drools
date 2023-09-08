@@ -73,11 +73,6 @@ public class DefaultDMNMessagesManager
 
     @Override
     public DMNMessage addMessage(DMNMessage newMessage) {
-        for( DMNMessage existingMessage : messages ) {
-            if( isDuplicate( existingMessage, newMessage ) ) {
-                return existingMessage;
-            }
-        }
         this.messages.add( newMessage );
         return newMessage;
     }
@@ -98,11 +93,6 @@ public class DefaultDMNMessagesManager
     public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, FEELEvent feelEvent) {
         DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, feelEvent ).withPath(path);
         return addMessage( msg );
-    }
-
-    private boolean isDuplicate(DMNMessage existingMsg, DMNMessage newMessage) {
-        return existingMsg.getMessageType().equals( newMessage.getMessageType() ) &&
-               existingMsg.getSourceReference() == newMessage.getSourceReference();
     }
 
 }

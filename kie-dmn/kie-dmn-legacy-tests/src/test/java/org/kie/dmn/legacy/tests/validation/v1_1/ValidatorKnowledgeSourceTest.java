@@ -72,7 +72,7 @@ public class ValidatorKnowledgeSourceTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
     }
@@ -82,7 +82,7 @@ public class ValidatorKnowledgeSourceTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "knowledgesource/KNOW_SOURCE_OWNER_NOT_ORG_UNIT.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 
@@ -93,7 +93,7 @@ public class ValidatorKnowledgeSourceTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "KNOW_SOURCE_OWNER_NOT_ORG_UNIT"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(3);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
 }

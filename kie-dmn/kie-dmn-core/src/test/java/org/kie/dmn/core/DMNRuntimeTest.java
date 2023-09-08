@@ -3174,4 +3174,19 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat(dmnResult.getDecisionResultByName("Evaluation").getResult()).isEqualTo("Unknown");
     }
+
+    @Test
+    public void testKieIssue270() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("habitability.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_93836704-04E9-45B6-8D10-51409FEBDF25", "habitability" );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+        assertThat(dmnResult.getMessages()).hasSize(2);
+        assertThat(dmnResult.getMessages()).extracting(DMNMessage::getText).contains("DMN: Required dependency 'temperature' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ", "DMN: Required dependency 'oxygene' not found on node 'habitability' (DMN id: _0699341C-A1BE-4B6D-B8D5-3972D67FCA45, The referenced node was not found) ");
+    }
 }

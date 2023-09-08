@@ -41,7 +41,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
@@ -52,7 +52,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_MISSING_INPUT.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -64,7 +64,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "INFOREQ_MISSING_INPUT"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -75,7 +75,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
@@ -86,7 +86,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_INPUT_NOT_INPUTDATA.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -98,7 +98,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "INFOREQ_INPUT_NOT_INPUTDATA"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -109,7 +109,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
@@ -120,7 +120,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_MISSING_DECISION.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -132,7 +132,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "INFOREQ_MISSING_DECISION"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -143,7 +143,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(
                     reader,
                     VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+            assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
             assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
         }
@@ -154,7 +154,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_DECISION_NOT_DECISION.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
@@ -166,7 +166,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
                                 "https://github.com/kiegroup/kie-dmn",
                                 "INFOREQ_DECISION_NOT_DECISION"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(2);
+        assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(4);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND))).isTrue();
     }
