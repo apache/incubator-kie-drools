@@ -87,7 +87,7 @@ cloud:
     namespace: tradisso
     latest_git_branch: main
 jenkins:
-  email_creds_id: KOGITO_CI_EMAIL_TO
+  email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS
   agent:
     docker:
       builder:
