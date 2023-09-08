@@ -18,8 +18,8 @@ package org.drools.codegen.common.context;
 public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
     public static final String CONTEXT_NAME = "Quarkus";
-    public static final String QUARKUS_REST = "javax.ws.rs.Path";
-    public static final String QUARKUS_DI = "javax.inject.Inject";
+    public static final String QUARKUS_REST = "jakarta.ws.rs.Path";
+    public static final String QUARKUS_DI = "jakarta.inject.Inject";
 
     protected QuarkusDroolsModelBuildContext(QuarkusKogitoBuildContextBuilder builder) {
         super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);

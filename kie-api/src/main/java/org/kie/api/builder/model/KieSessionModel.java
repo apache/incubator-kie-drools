@@ -98,7 +98,7 @@ public interface KieSessionModel {
     
     /**
      * Sets the CDI scope for this KieSessionModel
-     * Default is javax.enterprise.context.ApplicationScoped
+     * Default is jakarta.enterprise.context.ApplicationScoped
      */
     KieSessionModel setScope(String scope);
 

@@ -70,7 +70,7 @@ public class KieBaseModelImpl
 
     private KieModuleModel               kModule;
     
-    private String                       scope = "javax.enterprise.context.ApplicationScoped";
+    private String                       scope = "jakarta.enterprise.context.ApplicationScoped";
 
     private List<RuleTemplateModel>      ruleTemplates = new ArrayList<>();
 
