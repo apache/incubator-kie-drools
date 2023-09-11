@@ -8,7 +8,7 @@ pipeline {
     }
     options {
         timestamps()
-        timeout(time: '720', unit: 'MINUTES')
+        timeout(time: 360, unit: 'MINUTES')
     }
     environment {
         BUILDCHAIN_PROJECT = 'kiegroup/drools'
