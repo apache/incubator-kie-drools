@@ -1,6 +1,6 @@
 version: "2.1"
 dependencies:
-  - project: apache/drools
+  - project: apache/incubator-kie-drools
     mapping:
       dependencies:
         default:
@@ -11,11 +11,11 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1+7}.${n2}`)"
       exclude:
-        - apache/kie-jpmml-integration
+        - kiegroup/kie-jpmml-integration
 
-  - project: apache/kogito-runtimes
+  - project: apache/incubator-kie-kogito-runtimes
     dependencies:
-      - project: apache/drools
+      - project: apache/incubator-kie-drools
     mapping:
       dependencies:
         default:
@@ -26,12 +26,12 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
-        - apache/kogito-examples
-        - apache/kogito-apps
+        - apache/incubator-kie-kogito-examples
+        - apache/incubator-kie-kogito-apps
   
-  - project: apache/kogito-apps
+  - project: apache/incubator-kie-kogito-apps
     dependencies:
-      - project: apache/kogito-runtimes
+      - project: apache/incubator-kie-kogito-runtimes
     mapping:
       dependencies:
         default:
@@ -42,13 +42,13 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
-        - apache/kogito-examples
-        - apache/kogito-runtimes
+        - apache/incubator-kie-kogito-examples
+        - apache/incubator-kie-kogito-runtimes
 
-  - project: apache/kogito-examples
+  - project: apache/incubator-kie-kogito-examples
     dependencies:
-      - project: apache/kogito-runtimes
-      - project: apache/kogito-apps
+      - project: apache/incubator-kie-kogito-runtimes
+      - project: apache/incubator-kie-kogito-apps
     mapping:
       dependencies:
         default:
@@ -59,10 +59,10 @@ dependencies:
           - source: (\d*)\.(.*)
             targetExpression: "process.env.GITHUB_BASE_REF.replace(/(\\d*)\\.(.*)/g, (m, n1, n2) => `${+n1-7}.${n2}`)"
       exclude:
-        - apache/kogito-apps
-        - apache/kogito-runtimes
+        - apache/incubator-kie-kogito-apps
+        - apache/incubator-kie-kogito-runtimes
   
-  - project: apache/kie-jpmml-integration
+  - project: kiegroup/kie-jpmml-integration
     dependencies:
-      - project: apache/drools
+      - project: apache/incubator-kie-drools
     # no mapping needed

@@ -11,7 +11,7 @@ pipeline {
         timeout(time: '720', unit: 'MINUTES')
     }
     environment {
-        BUILDCHAIN_PROJECT = 'apache/drools'
+        BUILDCHAIN_PROJECT = 'apache/incubator-kie-drools'
         BUILDCHAIN_CONFIG_REPO = 'drools'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
 

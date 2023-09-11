@@ -26,21 +26,21 @@ jobs:
         maven-version: ['3.8.7']
         include:
           - job_name: kogito-runtimes
-            repository: kogito-runtimes
+            repository: incubator-kie-kogito-runtimes
           - job_name: kogito-apps
-            repository: kogito-apps
+            repository: incubator-kie-kogito-apps
             env_BUILD_MVN_OPTS: "-DskipUI"
           - job_name: kogito-quarkus-examples
-            repository: kogito-examples
+            repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
           - job_name: kogito-springboot-examples
-            repository: kogito-examples
+            repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
           - job_name: serverless-workflow-examples
-            repository: kogito-examples
+            repository: incubator-kie-kogito-examples
             env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
           - job_name: kie-jpmml-integration
-            repository: kie-jpmml-integration
+            repository: incubator-kie-kie-jpmml-integration
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
@@ -60,7 +60,7 @@ jobs:
       - name: Build Chain
         uses: kiegroup/kie-ci/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           starting-project: apache/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
