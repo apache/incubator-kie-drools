@@ -79,6 +79,7 @@ maven:
     staging_profile_url: TO_DEFINE
     staging_profile_id: TO_DEFINE
     build_promotion_profile_id: TO_DEFINE
+  artifacts_repository: ''
   artifacts_upload_repository:
     url: TO_DEFINE
     creds_id: TO_DEFINE
@@ -89,7 +90,7 @@ cloud:
     namespace: tradisso
     latest_git_branch: main
 jenkins:
-  email_creds_id: KOGITO_CI_EMAIL_TO
+  email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS
   agent:
     docker:
       builder:
