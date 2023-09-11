@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,21 +34,14 @@ import java.util.stream.Collectors;
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
     private Map<String, Long> uniqueObjectTypesInStore;  // object type name, occurances
-    private transient IdentityHashMap<Object, Long> inverseStorage;
 
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
         uniqueObjectTypesInStore = new HashMap<>();
-        setInverseStorage(storage);
         if (!storage.isEmpty()) {
             updateObjectTypesList();
             this.storage = updateObjectReferences(storage);
         }
-    }
-
-    private void setInverseStorage(Storage<Long, StoredObject> storage){
-        inverseStorage = new IdentityHashMap<>();
-        storage.keySet().forEach(key -> inverseStorage.put((storage.get(key)).getObject(),key));
     }
 
     private Storage<Long, StoredObject> updateObjectReferences(Storage<Long, StoredObject> storage) {
@@ -62,11 +54,19 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     }
 
     @Override
+    public void addHandle(InternalFactHandle handle, Object object) {
+        if (object instanceof ReferencedObjectAbstract){
+            ((ReferencedObjectAbstract) object).setFactHandleId(handle.getId());
+        }
+        super.addHandle(handle, object);
+        putIntoPersistedStorage(handle, handle.hasMatches());
+    }
+
+    @Override
     public void putIntoPersistedStorage(InternalFactHandle handle, boolean propagated) {
         Object object = handle.getObject();
         StoredObject storedObject = factHandleToStoredObject(handle, reInitPropagated || propagated, object);
         storage.put(getHandleForObject(object).getId(), setReferencedObjects(storedObject));
-        inverseStorage.put(object, getHandleForObject(object).getId());
         // also add the type of the object into the uniqueObjectTypesInStore list (if not already there)
         this.updateObjectTypesList(object);
     }
@@ -74,7 +74,6 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     @Override
     public void removeFromPersistedStorage(Object object) {
         super.removeFromPersistedStorage(object);
-        inverseStorage.remove(object);
         // also remove instance from uniqueObjectTypesInStore
         this.updateObjectTypesList(object);
     }
@@ -114,7 +113,16 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     }
 
     private Long fromObjectToFactHandleId(Object object) {
-        return this.inverseStorage.get(object);
+        if (object instanceof ReferencedObjectAbstract){
+            return ((ReferencedObjectAbstract) object).getFactHandleId();
+        }else {
+            for (Long key : this.storage.keySet()) {
+                if (((SerializableStoredRefObject) storage.get(key)).getObject() == object) {
+                    return key;
+                }
+            }
+            return null;
+        }
     }
 
     private List<Field> getReferencedObjects(Object object) {

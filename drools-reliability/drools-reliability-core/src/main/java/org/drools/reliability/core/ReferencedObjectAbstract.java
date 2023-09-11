@@ -16,30 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.test.domain.fireandalarm;
 
-import org.drools.reliability.core.ReferencedObjectAbstract;
+package org.drools.reliability.core;
 
-public class Room extends ReferencedObjectAbstract {
+import java.io.Serializable;
 
-    private String name;
+public abstract class ReferencedObjectAbstract implements Serializable {
 
-    public Room() { }
+    protected Long factHandleId;
 
-    public Room(String name) {
-        this.name = name;
-    }
+    public void setFactHandleId(Long factHandleId){this.factHandleId=factHandleId;}
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
+    public Long getFactHandleId() {return this.factHandleId;}
 }
