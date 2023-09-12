@@ -3,7 +3,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
 droolsRepo = 'drools'
-kieJpmmlIntegrationRepo = 'kie-jpmml-integration'
+// kieJpmmlIntegrationRepo = 'kie-jpmml-integration' // Commented as not migrated for now
 
 ARTIFACTS_STAGING_STAGE = 'stage.artifacts.staging'
 ARTIFACTS_RELEASE_STAGE = 'stage.artifacts.release'
@@ -66,16 +66,16 @@ pipeline {
             }
         }
 
-        stage('Build & Deploy KIE jpmml integration') {
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addSkipTestsParam(buildParams)
+        // stage('Build & Deploy KIE jpmml integration') {
+        //     steps {
+        //         script {
+        //             def buildParams = getDefaultBuildParams()
+        //             addSkipTestsParam(buildParams)
 
-                    buildJob(getDeployJobName(kieJpmmlIntegrationRepo), buildParams)
-                }
-            }
-        }
+        //             buildJob(getDeployJobName(kieJpmmlIntegrationRepo), buildParams)
+        //         }
+        //     }
+        // }
 
         stage('Artifacts\' staging finalization') {
             steps {
@@ -120,19 +120,19 @@ pipeline {
             }
         }
 
-        stage('Promote KIE jpmml integration') {
-            when {
-                expression { return isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
-            }
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addDeployBuildUrlParam(buildParams, getDeployJobName(kieJpmmlIntegrationRepo))
+        // stage('Promote KIE jpmml integration') {
+        //     when {
+        //         expression { return isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
+        //     }
+        //     steps {
+        //         script {
+        //             def buildParams = getDefaultBuildParams()
+        //             addDeployBuildUrlParam(buildParams, getDeployJobName(kieJpmmlIntegrationRepo))
 
-                    buildJob(getPromoteJobName(kieJpmmlIntegrationRepo), buildParams)
-                }
-            }
-        }
+        //             buildJob(getPromoteJobName(kieJpmmlIntegrationRepo), buildParams)
+        //         }
+        //     }
+        // }
 
         stage('Setup next snapshot version') {
             steps {

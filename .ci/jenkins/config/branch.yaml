@@ -47,8 +47,9 @@ disable:
 repositories:
 - name: incubator-kie-drools
   job_display_name: drools
-- name: incubator-kie-drools-website
-  job_display_name: drools-website
+# Not yet migrated to Apache
+# - name: incubator-kie-drools-website
+#   job_display_name: drools-website
 - name: incubator-kie-kie-benchmarks
   job_display_name: kie-benchmarks
   author:
@@ -74,7 +75,7 @@ git:
   jenkins_config_path: .ci/jenkins
 buildchain_config:
   git:
-    repository: drools
+    repository: incubator-kie-drools
     file_path: .ci/buildchain-config.yaml
 maven:
   settings_file_id: kie-release-settings

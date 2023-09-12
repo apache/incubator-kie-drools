@@ -12,7 +12,7 @@ pipeline {
     }
     environment {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-drools'
-        BUILDCHAIN_CONFIG_REPO = 'drools'
+        BUILDCHAIN_CONFIG_REPO = 'incubator-kie-drools'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
 
         ENABLE_SONARCLOUD = 'true'

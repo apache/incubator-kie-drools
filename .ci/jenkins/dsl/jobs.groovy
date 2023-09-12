@@ -166,9 +166,10 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
                 ],
-            ], [
-                id: 'kie-jpmml-integration',
-                repository: 'incubator-kie-kie-jpmml-integration'
+            // Commented as not migrated
+            // ], [
+            //     id: 'kie-jpmml-integration',
+            //     repository: 'incubator-kie-kie-jpmml-integration'
             ]
         ]
     ]
@@ -241,7 +242,6 @@ void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Drools Setup branch')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'drools',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -269,7 +269,6 @@ void setupDeployJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-deploy', jobType, "${jenkins_path}/Jenkinsfile.deploy", 'Drools Deploy')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'drools',
         PROPERTIES_FILE_NAME: 'deployment.properties',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -313,7 +312,6 @@ void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Drools Promote')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'drools',
         PROPERTIES_FILE_NAME: 'deployment.properties',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 

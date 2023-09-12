@@ -55,20 +55,21 @@ pipeline {
             }
         }
 
-        stage('Init KIE jpmml integration') {
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addDroolsVersionParam(buildParams)
-                    buildJob('kie-jpmml-integration', buildParams)
-                }
-            }
-            post {
-                failure {
-                    addFailedStage('kie-jpmml-integration')
-                }
-            }
-        }
+        // Commented as not migrated for now
+        // stage('Init KIE jpmml integration') {
+        //     steps {
+        //         script {
+        //             def buildParams = getDefaultBuildParams()
+        //             addDroolsVersionParam(buildParams)
+        //             buildJob('kie-jpmml-integration', buildParams)
+        //         }
+        //     }
+        //     post {
+        //         failure {
+        //             addFailedStage('kie-jpmml-integration')
+        //         }
+        //     }
+        // }
 
         // Launch the nightly to deploy all artifacts from the branch
         stage('Launch the nightly') {

@@ -4,13 +4,15 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
-  - name: kie-jpmml-integration
-    regexs:
-    - kie-jpmml-integration.*
+    - incubator-kie-drools.*
+  # - name: kie-jpmml-integration
+  #   regexs:
+  #   - kie-jpmml-integration.*
   - name: kie-benchmarks
     ignore_release: true
     regexs:
     - kie-benchmarks.*
+    - incubator-kie-kie-benchmarks.*
 git:
   branches:
   - name: main
@@ -18,7 +20,7 @@ git:
 seed:
   config_file:
     git:
-      repository: drools
+      repository: incubator-kie-drools
       author:
         name: apache
         credentials_id: kie-ci4

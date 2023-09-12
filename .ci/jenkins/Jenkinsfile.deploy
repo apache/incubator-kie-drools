@@ -6,8 +6,6 @@ import org.kie.jenkins.MavenStagingHelper
 
 deployProperties = [:]
 
-droolsRepository = 'drools'
-
 pipeline {
     agent {
         docker { 
