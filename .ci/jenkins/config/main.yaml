@@ -4,9 +4,9 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
-  - name: kie-jpmml-integration
-    regexs:
-    - kie-jpmml-integration.*
+  # - name: kie-jpmml-integration
+  #   regexs:
+  #   - kie-jpmml-integration.*
   - name: kie-benchmarks
     ignore_release: true
     regexs:
