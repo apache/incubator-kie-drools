@@ -24,7 +24,7 @@ pipeline {
                 script {
                     // load `pr_check.groovy` file from kogito-pipelines:main
                     dir('kogito-pipelines') {
-                        checkout(githubscm.resolveRepository('kogito-pipelines', 'apache', 'main', false, 'ASF_Cloudbees_Jenkins_ci-builds'))
+                        checkout(githubscm.resolveRepository('incubator-kie-kogito-pipelines', 'apache', 'main', false, 'ASF_Cloudbees_Jenkins_ci-builds'))
                         pr_check_script = load 'dsl/scripts/pr_check.groovy'
                     }
                 }
