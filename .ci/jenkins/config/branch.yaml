@@ -45,12 +45,17 @@ environments:
 disable:
   triggers: true # TODO to set back
 repositories:
-- name: drools
-- name: drools-website
-- name: kie-benchmarks
+- name: incubator-kie-drools
+  job_display_name: drools
+- name: incubator-kie-drools-website
+  job_display_name: drools-website
+- name: incubator-kie-kie-benchmarks
+  job_display_name: kie-benchmarks
   author:
     name: radtriste # TODO set back. Could not push to kiegroup
-# - name: kie-jpmml-integration ## TODO to check if should be enabled
+## TODO to check if should be enabled
+# - name: incubator-kie-kie-jpmml-integration
+#   job_display_name: kie-jpmml-integration
 git:
   author:
     name: apache
