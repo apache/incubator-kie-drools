@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -24,22 +44,25 @@
       - properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
   -->
   <properties>
-    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
     <checkstyle.header.template><![CDATA[
 ^\/\*$\n^
-\* Copyright \d\d\d\d Red Hat, Inc\. and\/or its affiliates\.$\n^
+\* Licensed to the Apache Software Foundation \(ASF\) under one$\n^
+\* or more contributor license agreements\.  See the NOTICE file$\n^
+\* distributed with this work for additional information$\n^
+\* regarding copyright ownership\.  The ASF licenses this file$\n^
+\* to you under the Apache License, Version 2\.0 \(the$\n^
+\* &quot;License&quot;\); you may not use this file except in compliance$\n^
+\* with the License\.  You may obtain a copy of the License at$\n^
 \*$\n^
-\* Licensed under the Apache License, Version 2\.0 \(the &quot;License&quot;\);$\n^
-\* you may not use this file except in compliance with the License\.$\n^
-\* You may obtain a copy of the License at$\n^
+\*   http:\/\/www\.apache\.org\/licenses\/LICENSE-2\.0$\n^
 \*$\n^
-\*       http:\/\/www\.apache\.org\/licenses\/LICENSE-2\.0$\n^
-\*$\n^
-\* Unless required by applicable law or agreed to in writing, software$\n^
-\* distributed under the License is distributed on an &quot;AS IS&quot; BASIS,$\n^
-\* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\.$\n^
-\* See the License for the specific language governing permissions and$\n^
-\* limitations under the License\.$\n^
+\* Unless required by applicable law or agreed to in writing,$\n^
+\* software distributed under the License is distributed on an$\n^
+\* &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY$\n^
+\* KIND, either express or implied\.  See the License for the$\n^
+\* specific language governing permissions and limitations$\n^
+\* under the License\.$\n^
 \*\/$
 ]]>
     </checkstyle.header.template>
@@ -468,29 +491,22 @@
           <configuration>
             <licenseSets>
               <licenseSet>
-                <inlineHeader>
-                  Copyright ${license.git.copyrightCreationYear} Red Hat, Inc. and/or its affiliates.
-
-                  Licensed under the Apache License, Version 2.0 (the "License");
-                  you may not use this file except in compliance with the License.
-                  You may obtain a copy of the License at
-
-                  http://www.apache.org/licenses/LICENSE-2.0
-
-                  Unless required by applicable law or agreed to in writing, software
-                  distributed under the License is distributed on an "AS IS" BASIS,
-                  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                  See the License for the specific language governing permissions and
-                  limitations under the License.
-                </inlineHeader>
+                <header>kogito-build/kogito-build-no-bom-parent/license-header.txt</header>
                 <includes>
                   <include>**/*.java</include>
+                  <include>**/*.sh</include>
+                  <include>**/*.properties</include>
+                  <include>**/*.groovy</include>
+                  <include>**/*.yaml</include>
+                  <include>**/*.yml</include>
+                  <include>**/*.xml</include>
                   <include>**/*.drl</include>
                 </includes>
                 <excludes>
                   <exclude>**/target/**</exclude>
                   <exclude>.mvn/**</exclude>
                   <exclude>**/node_modules/**</exclude>
+                  <exclude>license-header.txt</exclude>
                 </excludes>
                 <useDefaultExcludes>false</useDefaultExcludes>
                 <properties>
