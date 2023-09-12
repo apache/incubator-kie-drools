@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useImperativeHandle, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
 import {
   componentOuiaProps,
@@ -68,6 +73,10 @@ export const FormDisplayer = React.forwardRef<
       return api;
     };
 
+    const canDisplayForm = useCallback(() => {
+      return isEnvelopeConnectedToChannel && !isExecuting && source;
+    }, [isEnvelopeConnectedToChannel, isExecuting, source]);
+
     useEffect(() => {
       window.Form = {
         openForm: doOpenForm
@@ -105,7 +114,7 @@ export const FormDisplayer = React.forwardRef<
 
     return (
       <div {...componentOuiaProps(ouiaId, 'form-displayer', ouiaSafe)}>
-        {isEnvelopeConnectedToChannel && !isExecuting ? (
+        {canDisplayForm() ? (
           <div id={'inner-form-container'}>
             {content.formInfo && content.formInfo.type === 'TSX' ? (
               <ReactFormRenderer
