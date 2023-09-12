@@ -46,7 +46,7 @@ disable:
   triggers: true # TODO to set back
 repositories:
 - name: drools
-- name: drools-website
+# - name: drools-website # not migrated yet
 - name: kie-benchmarks
   author:
     name: radtriste # TODO set back. Could not push to kiegroup
