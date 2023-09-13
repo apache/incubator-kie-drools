@@ -45,4 +45,4 @@ seed:
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
-  email_creds_id: KOGITO_CI_EMAIL_TO
+  email_creds_id: DROOLS_CI_EMAIL_TO
