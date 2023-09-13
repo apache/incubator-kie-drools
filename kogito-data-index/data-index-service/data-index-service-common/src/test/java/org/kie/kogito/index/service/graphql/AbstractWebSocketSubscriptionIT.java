@@ -149,7 +149,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null, "currentUser");
         indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
@@ -168,7 +168,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null, "currentUser");
         indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);

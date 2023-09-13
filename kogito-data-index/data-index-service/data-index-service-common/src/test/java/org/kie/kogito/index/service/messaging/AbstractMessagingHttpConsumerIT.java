@@ -44,7 +44,7 @@ public abstract class AbstractMessagingHttpConsumerIT extends AbstractMessagingC
     protected void sendProcessInstanceEvent() throws Exception {
         ProcessInstanceDataEvent event = getProcessCloudEvent("travels", "2308e23d-9998-47e9-a772-a078cf5b891b",
                 ProcessInstanceState.ACTIVE, null,
-                null, null);
+                null, null, "currentUser");
         connector.source(KOGITO_PROCESSINSTANCES_EVENTS).send(event);
     }
 

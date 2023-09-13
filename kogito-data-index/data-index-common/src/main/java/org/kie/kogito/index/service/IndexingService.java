@@ -56,6 +56,8 @@ public class IndexingService {
         if (previousPI != null) {
             List<NodeInstance> nodes = previousPI.getNodes().stream().filter(n -> !pi.getNodes().contains(n)).collect(toList());
             pi.getNodes().addAll(nodes);
+        } else {
+            pi.setCreatedBy(pi.getUpdatedBy());
         }
         ProcessDefinition definition = pi.getDefinition();
         if (!manager.getProcessDefinitionsCache().containsKey(definition.getKey())) {

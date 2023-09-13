@@ -82,6 +82,8 @@ class ProcessInstanceEntityMapperIT {
         String processName = "testProcessName";
         Set<String> addons = singleton("testAddons");
         String businessKey = "testBusinessKey";
+        String createdBy = "initiatorUser";
+        String updatedBy = "currentUser";
 
         NodeInstance nodeInstance = new NodeInstance();
         nodeInstance.setId(nodeInstanceId);
@@ -120,6 +122,8 @@ class ProcessInstanceEntityMapperIT {
         processInstance.setLastUpdate(time);
         processInstance.setBusinessKey(businessKey);
         processInstance.setMilestones(singletonList(milestone));
+        processInstance.setCreatedBy(createdBy);
+        processInstance.setUpdatedBy(updatedBy);
 
         NodeInstanceEntity nodeInstanceEntity = new NodeInstanceEntity();
         nodeInstanceEntity.setId(nodeInstanceId);
@@ -162,6 +166,8 @@ class ProcessInstanceEntityMapperIT {
         processInstanceEntity.setAddons(addons);
         processInstanceEntity.setLastUpdate(time);
         processInstanceEntity.setBusinessKey(businessKey);
+        processInstanceEntity.setCreatedBy(createdBy);
+        processInstanceEntity.setUpdatedBy(updatedBy);
         processInstanceEntity.setMilestones(singletonList(milestoneEntity));
     }
 

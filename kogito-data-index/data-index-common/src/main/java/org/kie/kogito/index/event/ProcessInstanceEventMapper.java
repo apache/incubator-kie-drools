@@ -64,6 +64,7 @@ public class ProcessInstanceEventMapper implements Function<ProcessInstanceDataE
         pi.setLastUpdate(toZonedDateTime(event.getTime()));
         pi.setVersion(event.getData().getVersion());
         pi.setDefinition(definition().apply(event));
+        pi.setUpdatedBy(event.getData().getIdentity());
         return pi;
     }
 

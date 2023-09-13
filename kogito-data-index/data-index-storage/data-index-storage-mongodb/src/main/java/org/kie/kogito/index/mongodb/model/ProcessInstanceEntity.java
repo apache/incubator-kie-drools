@@ -64,6 +64,10 @@ public class ProcessInstanceEntity {
 
     List<MilestoneEntity> milestones;
 
+    String createdBy;
+
+    String updatedBy;
+
     public String getId() {
         return id;
     }
@@ -214,6 +218,22 @@ public class ProcessInstanceEntity {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     @Override

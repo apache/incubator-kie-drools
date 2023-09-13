@@ -69,6 +69,9 @@ type ProcessInstance {
     diagram: String
     source: String
     definition: ProcessDefinition
+    identity: String
+    createdBy: String
+    updatedBy: String
 }
 
 type ProcessInstanceError {
@@ -132,6 +135,8 @@ input ProcessInstanceOrderBy {
     error: ProcessInstanceErrorOrderBy
     lastUpdate: OrderBy
     businessKey: OrderBy
+    createdBy: OrderBy
+    updatedBy: OrderBy
 }
 
 input ProcessInstanceErrorOrderBy {
@@ -160,6 +165,8 @@ input ProcessInstanceArgument {
     addons: StringArrayArgument
     lastUpdate: DateArgument
     businessKey: StringArgument
+    createdBy: StringArgument
+    updatedBy: StringArgument
 }
 
 input ProcessInstanceErrorArgument {

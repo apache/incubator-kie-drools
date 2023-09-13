@@ -115,7 +115,7 @@ public class DomainEventConsumerTest {
         String processInstanceId = UUID.randomUUID().toString();
 
         ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null,
-                null, null);
+                null, null, "currentUser");
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> consumer.onDomainEvent(event));
         verify(service).indexModel(any());

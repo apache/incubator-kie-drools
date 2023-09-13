@@ -78,7 +78,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceAbort() {
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceAbort ( id: \\\"" + processInstanceId + "\\\")}\"}");
@@ -90,7 +90,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceRetry() {
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceRetry ( id: \\\"" + processInstanceId + "\\\")}\"}");
@@ -102,7 +102,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceSkip() {
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceSkip ( id: \\\"" + processInstanceId + "\\\")}\"}");
@@ -116,7 +116,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String variablesUpdated = "variablesUpdated";
         String processInstanceId = UUID.randomUUID().toString();
 
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ ProcessInstanceUpdateVariables ( id: \\\"" + processInstanceId + "\\\", variables: \\\"" + variablesUpdated + "\\\")}\"}");
@@ -128,7 +128,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessDefinitionNodes() {
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"query { ProcessInstances (where: { id: {equal: \\\"" + processInstanceId + "\\\"}}) { nodeDefinitions { id }} }\" }");
@@ -138,7 +138,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessInstanceDiagram() {
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"query { ProcessInstances (where: { id: {equal: \\\"" + processInstanceId + "\\\"}}) {diagram} }\" }");
@@ -150,7 +150,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     @Test
     void testProcessDefinitionSource() {
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"query { ProcessInstances (where: { id: {equal: \\\"" + processInstanceId + "\\\"}}) {source} }\" }");
@@ -162,7 +162,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     void testNodeInstanceTrigger() {
         String nodeId = "nodeIdToTrigger";
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ NodeInstanceTrigger ( id: \\\"" + processInstanceId + "\\\", nodeId: \\\"" + nodeId + "\\\")}\"}");
@@ -175,7 +175,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     void testNodeInstanceRetrigger() {
         String nodeInstanceId = "nodeInstanceIdToRetrigger";
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ NodeInstanceRetrigger ( id: \\\"" + processInstanceId + "\\\", nodeInstanceId: \\\"" + nodeInstanceId + "\\\")}\"}");
@@ -188,7 +188,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
     void testNodeInstanceCancel() {
         String nodeInstanceId = "nodeInstanceIdToCancel";
         String processInstanceId = UUID.randomUUID().toString();
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         checkOkResponse("{ \"query\" : \"mutation{ NodeInstanceCancel ( id: \\\"" + processInstanceId + "\\\", nodeInstanceId: \\\"" + nodeInstanceId + "\\\")}\"}");

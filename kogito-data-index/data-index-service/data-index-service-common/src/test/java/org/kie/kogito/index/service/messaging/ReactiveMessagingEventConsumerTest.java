@@ -61,7 +61,7 @@ public class ReactiveMessagingEventConsumerTest {
         String processInstanceId = UUID.randomUUID().toString();
 
         ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null,
-                null, null);
+                null, null, "currentUser");
 
         UniAssertSubscriber<Void> future = consumer.onProcessInstanceEvent(event).subscribe()
                 .withSubscriber(UniAssertSubscriber.create());

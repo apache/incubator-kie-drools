@@ -107,7 +107,7 @@ public abstract class AbstractMessagingLoadKafkaIT {
                 String processInstanceId = UUID.randomUUID().toString();
                 String taskId = UUID.randomUUID().toString();
 
-                ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+                ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
 
                 sendProcessInstanceEvent(client, startEvent);
 
@@ -117,7 +117,7 @@ public abstract class AbstractMessagingLoadKafkaIT {
                 userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "Completed");
                 sendUserTaskEvent(client, userTaskEvent);
 
-                ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+                ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null, "currentUser");
                 sendProcessInstanceEvent(client, endEvent);
 
                 return processInstanceId;

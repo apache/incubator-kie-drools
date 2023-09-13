@@ -56,6 +56,8 @@ type ProcessInstanceMeta {
     end: DateTime
     lastUpdate: DateTime!
     businessKey: String
+    createdBy: String
+    updatedBy: String
 }
 
 input ProcessInstanceMetaArgument {
@@ -71,6 +73,8 @@ input ProcessInstanceMetaArgument {
     start: DateArgument
     end: DateArgument
     businessKey: StringArgument
+    createdBy: StringArgument
+    updatedBy: StringArgument
 }
 
 extend type UserTaskInstance {

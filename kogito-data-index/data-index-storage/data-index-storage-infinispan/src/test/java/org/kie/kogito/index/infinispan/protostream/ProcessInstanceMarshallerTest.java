@@ -36,6 +36,7 @@ import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.infinispan.protostream.ProcessInstanceMarshaller.ADDONS;
 import static org.kie.kogito.index.infinispan.protostream.ProcessInstanceMarshaller.BUSINESS_KEY;
+import static org.kie.kogito.index.infinispan.protostream.ProcessInstanceMarshaller.CREATED_BY;
 import static org.kie.kogito.index.infinispan.protostream.ProcessInstanceMarshaller.END;
 import static org.kie.kogito.index.infinispan.protostream.ProcessInstanceMarshaller.ENDPOINT;
 import static org.kie.kogito.index.infinispan.protostream.ProcessInstanceMarshaller.ERROR;
@@ -82,6 +83,7 @@ class ProcessInstanceMarshallerTest {
         when(reader.readDate(LAST_UPDATE)).thenReturn(now);
         when(reader.readString(BUSINESS_KEY)).thenReturn("businessKey");
         when(reader.readCollection(eq(MILESTONES), any(), eq(Milestone.class))).thenReturn(new ArrayList<>());
+        when(reader.readString(CREATED_BY)).thenReturn("currentUser");
 
         ProcessInstanceMarshaller marshaller = new ProcessInstanceMarshaller(null);
         ProcessInstance pi = marshaller.readFrom(reader);
@@ -105,7 +107,8 @@ class ProcessInstanceMarshallerTest {
                 .hasFieldOrPropertyWithValue(ERROR, null)
                 .hasFieldOrPropertyWithValue(LAST_UPDATE, marshaller.dateToZonedDateTime(now))
                 .hasFieldOrPropertyWithValue(BUSINESS_KEY, "businessKey")
-                .hasFieldOrPropertyWithValue(MILESTONES, emptyList());
+                .hasFieldOrPropertyWithValue(MILESTONES, emptyList())
+                .hasFieldOrPropertyWithValue(CREATED_BY, "currentUser");
 
         InOrder inOrder = inOrder(reader);
         inOrder.verify(reader).readString(ID);
@@ -126,6 +129,7 @@ class ProcessInstanceMarshallerTest {
         inOrder.verify(reader).readDate(LAST_UPDATE);
         inOrder.verify(reader).readString(BUSINESS_KEY);
         inOrder.verify(reader).readCollection(MILESTONES, new ArrayList<>(), Milestone.class);
+        inOrder.verify(reader).readString(CREATED_BY);
     }
 
     @Test
@@ -145,6 +149,7 @@ class ProcessInstanceMarshallerTest {
         pi.setStart(ZonedDateTime.now());
         pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
         pi.setMilestones(emptyList());
+        pi.setCreatedBy("currentUser");
 
         MessageMarshaller.ProtoStreamWriter writer = mock(MessageMarshaller.ProtoStreamWriter.class);
 
@@ -170,5 +175,6 @@ class ProcessInstanceMarshallerTest {
         inOrder.verify(writer).writeDate(LAST_UPDATE, marshaller.zonedDateTimeToDate(pi.getLastUpdate()));
         inOrder.verify(writer).writeString(BUSINESS_KEY, pi.getBusinessKey());
         inOrder.verify(writer).writeCollection(MILESTONES, pi.getMilestones(), Milestone.class);
+        inOrder.verify(writer).writeString(CREATED_BY, pi.getCreatedBy());
     }
 }

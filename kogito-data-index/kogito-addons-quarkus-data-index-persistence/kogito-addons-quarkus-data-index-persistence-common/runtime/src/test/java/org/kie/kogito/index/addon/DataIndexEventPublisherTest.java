@@ -72,7 +72,7 @@ public class DataIndexEventPublisherTest {
     void onProcessInstanceEvent() {
         ArgumentCaptor<ProcessInstance> eventCaptor = ArgumentCaptor.forClass(ProcessInstance.class);
         ProcessInstanceDataEvent event = getProcessCloudEvent(PROCESS_ID, PROCESS_INSTANCE_ID, COMPLETED,
-                ROOT_PROCESS_INSTANCE_ID, ROOT_PROCESS_ID, ROOT_PROCESS_INSTANCE_ID);
+                ROOT_PROCESS_INSTANCE_ID, ROOT_PROCESS_ID, ROOT_PROCESS_INSTANCE_ID, "currentUser");
 
         dataIndexEventPublisher.publish(event);
 

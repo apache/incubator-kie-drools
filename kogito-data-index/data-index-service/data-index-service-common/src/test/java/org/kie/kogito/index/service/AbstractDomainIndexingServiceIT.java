@@ -176,7 +176,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, ACTIVE), startEvent);
@@ -205,7 +205,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
 
         ProcessInstanceDataEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE,
-                processInstanceId, processId, processInstanceId);
+                processInstanceId, processId, processInstanceId, "currentUser");
         Map<String, Object> travellerMap = new HashMap<>();
         travellerMap.put("firstName", "Maciej");
         travellerMap.put("email", "mail@mail.com");
@@ -271,7 +271,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.34Z"))
                 .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.34Z"));
 
-        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null, "currentUser");
         indexProcessCloudEvent(endEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(processInstanceId, COMPLETED), endEvent, subProcessInstanceId);
@@ -420,7 +420,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].metadata.userTasks[0].lastUpdate", is(formatOffsetDateTime(userTaskEvent.getTime())))
                 .body("data.Travels[0].metadata.processInstances", is(nullValue()));
 
-        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(processEvent);
 
         given().contentType(ContentType.JSON)
@@ -466,7 +466,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(processEvent);
 
         given().contentType(ContentType.JSON)
@@ -535,7 +535,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent processEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         UserTaskInstanceDataEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
 
         CompletableFuture.allOf(
@@ -585,7 +585,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null);
+        ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
         indexProcessCloudEvent(startEvent);
 
         validateProcessInstance(getProcessInstanceById(processInstanceId), startEvent);
@@ -613,7 +613,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
-        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
+        ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null, "currentUser");
         endEvent.getData().update().endDate(new Date());
         Map<String, Object> variablesMap = getProcessInstanceVariablesMap();
         ((Map<String, Object>) variablesMap.get("hotel")).put("name", "Ibis");
@@ -647,13 +647,13 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
 
         ProcessInstanceDataEvent event = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId,
-                processId, processInstanceId);
+                processId, processInstanceId, "currentUser");
         indexProcessCloudEvent(event);
 
         validateProcessInstance(getProcessInstanceByParentProcessInstanceId(processInstanceId), event);
 
         ProcessInstanceDataEvent errorEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ERROR, processInstanceId,
-                processId, processInstanceId);
+                processId, processInstanceId, "currentUser");
         indexProcessCloudEvent(errorEvent);
 
         validateProcessInstance(

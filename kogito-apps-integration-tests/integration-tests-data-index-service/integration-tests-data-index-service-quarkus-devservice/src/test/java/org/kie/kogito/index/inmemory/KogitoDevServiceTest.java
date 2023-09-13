@@ -31,8 +31,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 
 public class KogitoDevServiceTest {
 
@@ -88,13 +87,14 @@ public class KogitoDevServiceTest {
                         .baseUri("http://localhost:" + dataIndexHttpPort)
                         .contentType(ContentType.JSON)
                         .accept(ContentType.JSON)
-                        .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + processId + "\\\"}}) { id, processId, processName } }\"}")
+                        .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + processId + "\\\"}}) { id, processId, processName, createdBy } }\"}")
                         .when().post("/graphql")
                         .then()
                         .statusCode(200)
                         .body("data.ProcessInstances[0].id", is(processId))
                         .body("data.ProcessInstances[0].processId", is("greet"))
-                        .body("data.ProcessInstances[0].processName", is("Greeting workflow")));
+                        .body("data.ProcessInstances[0].processName", is("Greeting workflow"))
+                        .body("data.ProcessInstances[0].createdBy", nullValue()));
 
         given().contentType(ContentType.JSON)
                 .baseUri("http://localhost:" + dataIndexHttpPort)

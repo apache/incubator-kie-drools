@@ -94,7 +94,7 @@ public final class TestUtils {
     }
 
     public static ProcessInstanceDataEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId,
-            String parentProcessInstanceId) {
+            String parentProcessInstanceId, String identity) {
 
         ProcessInstanceEventBody body = ProcessInstanceEventBody.create()
                 .id(processInstanceId)
@@ -108,6 +108,7 @@ public final class TestUtils {
                 .endDate(status == ProcessInstanceState.COMPLETED ? Date.from(Instant.now().plus(1, ChronoUnit.HOURS)) : null)
                 .state(status.ordinal())
                 .businessKey(String.format("%s-key", processId))
+                .identity(identity)
                 .variables(getProcessInstanceVariablesMap())
                 .milestones(Set.of(
                         MilestoneEventBody.create()
@@ -131,7 +132,7 @@ public final class TestUtils {
                         .build() : null)
                 .build();
 
-        return new ProcessInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", null, body.metaData(), body);
+        return new ProcessInstanceDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", identity, body.metaData(), body);
     }
 
     public static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
@@ -154,6 +155,8 @@ public final class TestUtils {
         }
         pi.setMilestones(getMilestones());
         pi.setBusinessKey(String.format("%s-key", processId));
+        pi.setCreatedBy("currentUser");
+        pi.setUpdatedBy("currentUser");
         return pi;
     }
 

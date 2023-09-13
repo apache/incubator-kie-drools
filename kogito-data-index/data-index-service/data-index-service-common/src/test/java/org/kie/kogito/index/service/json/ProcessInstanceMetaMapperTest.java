@@ -38,7 +38,7 @@ public class ProcessInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         String piPrefix = KOGITO_DOMAIN_ATTRIBUTE + "." + PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId, "currentUser");
         ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
         assertThat(json).isNotNull();
         assertThatJson(json.toString()).and(
@@ -59,6 +59,7 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].endpoint").isEqualTo(event.getSource().toString()),
                 a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStartDate().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEndDate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].updatedBy").isEqualTo(event.getData().getIdentity().toString()),
                 a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getTime().toInstant().toEpochMilli()));
     }
 
@@ -69,7 +70,7 @@ public class ProcessInstanceMetaMapperTest {
         String processInstanceId = UUID.randomUUID().toString();
         String rootProcessInstanceId = UUID.randomUUID().toString();
         String piPrefix = KOGITO_DOMAIN_ATTRIBUTE + "." + PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
+        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId, "currentUser");
         event.getData().update().businessKey("custom-key");
         ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
         assertThat(json).isNotNull();
@@ -92,6 +93,7 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStartDate().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEndDate().toInstant().toEpochMilli()),
                 a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getTime().toInstant().toEpochMilli()),
-                a -> a.node(piPrefix + "[0].businessKey").isEqualTo(event.getData().getBusinessKey()));
+                a -> a.node(piPrefix + "[0].businessKey").isEqualTo(event.getData().getBusinessKey()),
+                a -> a.node(piPrefix + "[0].updatedBy").isEqualTo(event.getData().getIdentity().toString()));
     }
 }
