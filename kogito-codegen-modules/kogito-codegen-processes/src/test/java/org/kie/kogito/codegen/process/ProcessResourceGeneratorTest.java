@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.drools.io.FileSystemResource;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -46,7 +47,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProcessResourceGeneratorTest {
-
+    private static final String SIGNAL_METHOD = "signal_";
     private static final List<String> JAVA_AND_QUARKUS_REST_ANNOTATIONS = List.of("DELETE", "GET", "POST");
     private static final List<String> SPRING_BOOT_REST_ANNOTATIONS = List.of("DeleteMapping", "GetMapping", "PostMapping");
 
@@ -82,7 +83,72 @@ class ProcessResourceGeneratorTest {
         String outputType = new ModelClassGenerator(contextBuilder.build(), process).simpleName() + "Output";
 
         classDeclaration.getMethods().stream()
-                .filter(method -> isRestMethod(method) && method.getNameAsString().startsWith("signal_"))
+                .filter(method -> isRestMethod(method) && method.getNameAsString().startsWith(SIGNAL_METHOD))
+                .forEach(method -> assertMethodOutputModelType(method, outputType));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void testGenerateStartSignalEventStringPayload(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/startsignal/StartSignalEventStringPayload.bpmn2";
+        String signalName = "start";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        KogitoWorkflowProcess process = parseProcess(fileName);
+
+        MethodDeclaration startSignalMethod = classDeclaration.getMethods().stream()
+                .filter(method -> isRestMethod(method) && method.getNameAsString().equals(SIGNAL_METHOD + signalName))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(startSignalMethod.isPublic()).isTrue();
+        assertThat(startSignalMethod.getParameters()).hasSize(4);
+        assertThat(startSignalMethod.getParameters().stream()
+                .filter(parameter -> parameter.getNameAsString().equals("data"))
+                .findFirst()
+                .get()).matches(parameter -> parameter.getTypeAsString().equals("java.lang.String"));
+
+        assertThat(startSignalMethod.getBody().get().getChildNodes()
+                .stream()
+                .anyMatch(child -> child.toString().equals("model.setMessage(data);"))).isTrue();
+
+        String outputType = new ModelClassGenerator(contextBuilder.build(), process).simpleName() + "Output";
+
+        classDeclaration.getMethods().stream()
+                .filter(method -> isRestMethod(method) && method.getNameAsString().startsWith(SIGNAL_METHOD + "0"))
+                .forEach(method -> assertMethodOutputModelType(method, outputType));
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void testGenerateStartSignalEventNoPayload(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/startsignal/StartSignalEventNoPayload.bpmn2";
+        String signalName = "start";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        KogitoWorkflowProcess process = parseProcess(fileName);
+
+        MethodDeclaration startSignalMethod = classDeclaration.getMethods().stream()
+                .filter(method -> isRestMethod(method) && method.getNameAsString().equals(SIGNAL_METHOD + signalName))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(startSignalMethod.isPublic()).isTrue();
+        assertThat(startSignalMethod.getParameters()).hasSize(3);
+        assertThat(startSignalMethod.getParameters()
+                .stream()
+                .anyMatch(parameter -> parameter.getNameAsString().equals("data"))).isFalse();
+
+        assertThat(startSignalMethod.getBody().get().getChildNodes()
+                .stream()
+                .anyMatch(child -> child.toString().equals("model.setMessage(data);"))).isFalse();
+
+        String outputType = new ModelClassGenerator(contextBuilder.build(), process).simpleName() + "Output";
+
+        classDeclaration.getMethods().stream()
+                .filter(method -> isRestMethod(method) && method.getNameAsString().startsWith(SIGNAL_METHOD + "0"))
                 .forEach(method -> assertMethodOutputModelType(method, outputType));
     }
 
@@ -117,8 +183,11 @@ class ProcessResourceGeneratorTest {
                 execModelGen.className(),
                 context.getPackageName() + ".Application");
 
+        ProcessMetaData metaData = execModelGen.generate();
+
         processResourceGenerator
-                .withSignals(execModelGen.generate().getSignals());
+                .withSignals(metaData.getSignals())
+                .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers());
 
         return StaticJavaParser.parse(processResourceGenerator.generate());
     }

@@ -19,16 +19,38 @@
 package com.myspace.demo;
 
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessInstance;
 
 public class $Type$Resource {
 
     Process<$Type$> process;
 
     @POST
+    @Path("/$signalPath$")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response signalProcess(@Context HttpHeaders httpHeaders,
+                                  @Context UriInfo uriInfo,
+                                  @QueryParam("businessKey") @DefaultValue("") String businessKey,
+                                  $signalType$ data) {
+        $Type$ model = new $Type$();
+        model.set$SetModelMethodName$(data);
+        this.processService.createProcessInstance(process,
+                                                  businessKey,
+                                                  model,
+                                                  httpHeaders.getRequestHeaders(),
+                                                  httpHeaders.getHeaderString("X-KOGITO-StartFromNode"),
+                                                  "$signalName$",
+                                                  httpHeaders.getHeaderString("X-KOGITO-ReferenceId"),
+                                                  null);
+        return Response.accepted().build();
+    }
+
+    @POST
     @Path("/{id}/$signalPath$")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$Output signal(@PathParam("id") final String id, final $signalType$ data) {
+    public $Type$Output signalInstance(@PathParam("id") final String id, final $signalType$ data) {
         return processService.signalProcessInstance(process, id, data, "$signalName$")
                 .orElseThrow(() -> new NotFoundException());
     }

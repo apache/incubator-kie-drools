@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -34,6 +35,25 @@ import static org.hamcrest.Matchers.nullValue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 class SignalProcessTest extends BaseRestTest {
 
+    @Test
+    void testSignalStartProcess() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body("hello world")
+                .post("/signalStart/start")
+                .then()
+                .statusCode(202);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/signalStart/")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .body("[0].message", equalTo("hello world"));
+    }
     @Test
     void testProcessSignals() {
         String pid = given()

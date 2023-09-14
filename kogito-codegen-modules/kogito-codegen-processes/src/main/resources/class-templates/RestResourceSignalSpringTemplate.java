@@ -31,9 +31,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class $Type$Resource {
 
     Process<$Type$> process;
+    @PostMapping(value = "/$signalName$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<$Type$Output> signalProcess(@RequestHeader HttpHeaders httpHeaders,
+                                                      @RequestParam(value = "businessKey", required = false) String businessKey,
+                                                      @RequestBody(required = false) $signalType$ data,
+                                                      UriComponentsBuilder uriComponentsBuilder) {
+
+        $Type$ model = new $Type$();
+        model.set$SetModelMethodName$(data);
+
+        this.processService.createProcessInstance(process,
+                                                  businessKey,
+                                                  model,
+                                                  httpHeaders,
+                                                  httpHeaders.getOrEmpty("X-KOGITO-StartFromNode").stream().findFirst().orElse(null),
+                                                  "$signalName$",
+                                                  httpHeaders.getOrEmpty("X-KOGITO-ReferenceId").stream().findFirst().orElse(null),
+                                                  null);
+
+        return ResponseEntity.accepted().build();
+    }
 
     @PostMapping(value = "/{id}/$signalPath$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public $Type$Output signal(@PathVariable("id") final String id, final @RequestBody(required = false) $signalType$ data) {
+    public $Type$Output signalInstance(@PathVariable("id") final String id, final @RequestBody(required = false) $signalType$ data) {
         return processService.signalProcessInstance(process, id, data, "$signalName$")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

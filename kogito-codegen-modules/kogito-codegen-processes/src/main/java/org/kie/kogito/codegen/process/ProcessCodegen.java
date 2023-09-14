@@ -362,7 +362,7 @@ public class ProcessCodegen extends AbstractGenerator {
             processResourceGenerator
                     .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                     .withSignals(metaData.getSignals())
-                    .withTriggers(metaData.isStartable(), metaData.isDynamic());
+                    .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers());
 
             rgs.add(processResourceGenerator);
 
