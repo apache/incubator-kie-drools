@@ -60,21 +60,21 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
     <version.common-text>1.10.0</version.common-text>
-    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.14.2</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
-    <version.com.h2database>2.2.220</version.com.h2database>
+    <version.com.h2database>2.1.214</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.1</version.info.picocli>
     <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.10.Final</version.io.quarkus>
+    <version.io.quarkus>2.16.999-SNAPSHOT</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -211,7 +211,7 @@
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.com.google.guava>31.1-jre</version.com.google.guava>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
