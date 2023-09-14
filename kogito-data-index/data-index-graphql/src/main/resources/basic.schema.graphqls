@@ -5,6 +5,7 @@ scalar JSON
 
 schema {
     query: Query
+    mutation: Mutation
 }
 
 type Query {
@@ -12,6 +13,26 @@ type Query {
     ProcessInstances(where: ProcessInstanceArgument, orderBy: ProcessInstanceOrderBy, pagination: Pagination): [ProcessInstance]
     UserTaskInstances(where: UserTaskInstanceArgument, orderBy: UserTaskInstanceOrderBy, pagination: Pagination):  [UserTaskInstance]
     Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination):  [Job]
+}
+type Mutation {
+    ProcessInstanceAbort(id: String): String
+    ProcessInstanceRetry(id: String): String
+    ProcessInstanceSkip(id: String): String
+    ProcessInstanceUpdateVariables(id: String, variables: String): String
+    NodeInstanceTrigger(id: String, nodeId: String): String
+    NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
+    NodeInstanceCancel(id: String, nodeInstanceId: String): String
+    JobCancel(id: String): String
+    JobReschedule(id: String, data: String): String
+    UserTaskInstanceUpdate(taskId: String, user: String, groups: [String],  description: String, priority: String,
+        actualOwner: String, adminGroups: [String!], adminUsers: [String!], excludedUsers: [String!],
+        potentialGroups: [String!], potentialUsers: [String!], inputParams: String): String
+    UserTaskInstanceCommentCreate(taskId: String, user: String, groups: [String], comment: String): String
+    UserTaskInstanceAttachmentCreate(taskId: String, user: String, groups: [String], name: String, uri: String): String
+    UserTaskInstanceCommentUpdate(user:String, groups:[String],commentId: String, comment: String): String
+    UserTaskInstanceCommentDelete(user:String, groups:[String],commentId: String): String
+    UserTaskInstanceAttachmentUpdate(user:String, groups:[String],attachmentId: String,  name: String, uri: String): String
+    UserTaskInstanceAttachmentDelete(user:String, groups:[String], attachmentId: String): String
 }
 
 type ProcessDefinition {

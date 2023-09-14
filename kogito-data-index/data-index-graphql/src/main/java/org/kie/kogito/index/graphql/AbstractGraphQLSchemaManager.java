@@ -36,6 +36,7 @@ import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
@@ -50,10 +51,20 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 
+import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
 
 public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManager {
+
+    private static final String ID = "id";
+    private static final String USER = "user";
+    private static final String GROUPS = "groups";
+    private static final String TASK_ID = "taskId";
+    private static final String COMMENT_ID = "commentId";
+    private static final String ATTACHMENT_ID = "attachmentId";
+
+    private static final String UNABLE_TO_FIND_ERROR_MSG = "Unable to find the instance with %s %s";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGraphQLSchemaManager.class);
 
@@ -260,6 +271,178 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public void transform(Consumer<GraphQLSchema.Builder> builder) {
         schema = schema.transform(builder);
+    }
+
+    public CompletableFuture<String> abortProcessInstance(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().abortProcessInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> retryProcessInstance(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().retryProcessInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> skipProcessInstance(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().skipProcessInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> updateProcessInstanceVariables(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().updateProcessInstanceVariables(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance,
+                    env.getArgument("variables"));
+
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> triggerNodeInstance(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().triggerNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
+                    processInstance,
+                    env.getArgument("nodeId"));
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> retriggerNodeInstance(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().retriggerNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
+                    processInstance,
+                    env.getArgument("nodeInstanceId"));
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> cancelNodeInstance(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        if (processInstance != null) {
+            return getDataIndexApiExecutor().cancelNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
+                    processInstance,
+                    env.getArgument("nodeInstanceId"));
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> cancelJob(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        Job job = getCacheService().getJobsCache().get(id);
+        if (job != null) {
+            return getDataIndexApiExecutor().cancelJob(job.getEndpoint(), job);
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    public CompletableFuture<String> rescheduleJob(DataFetchingEnvironment env) {
+        String id = env.getArgument("id");
+        Job job = getCacheService().getJobsCache().get(id);
+        if (job != null) {
+            return getDataIndexApiExecutor().rescheduleJob(job.getEndpoint(), job, env.getArgument("data"));
+        }
+        return CompletableFuture.failedFuture(new DataIndexServiceException(format(UNABLE_TO_FIND_ERROR_MSG, ID, id)));
+    }
+
+    protected CompletableFuture<String> getUserTaskInstanceSchema(DataFetchingEnvironment env) {
+        UserTaskInstance userTaskInstance = env.getSource();
+        return getDataIndexApiExecutor().getUserTaskSchema(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS));
+    }
+
+    protected CompletableFuture<String> updateUserTaskInstance(DataFetchingEnvironment env) {
+        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstancesCache().get(env.getArgument(TASK_ID));
+        return getDataIndexApiExecutor().updateUserTaskInstance(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArguments());
+    }
+
+    protected CompletableFuture<String> createTaskInstanceComment(DataFetchingEnvironment env) {
+        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstancesCache().get(env.getArgument(TASK_ID));
+        return getDataIndexApiExecutor().createUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArgument("comment"));
+    }
+
+    protected CompletableFuture<String> createTaskInstanceAttachment(DataFetchingEnvironment env) {
+        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstancesCache().get(env.getArgument(TASK_ID));
+        return getDataIndexApiExecutor().createUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArgument("name"),
+                env.getArgument("uri"));
+    }
+
+    protected CompletableFuture<String> updateUserTaskComment(DataFetchingEnvironment env) {
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        query.filter(singletonList(equalTo("comments.id", env.getArgument(COMMENT_ID))));
+        UserTaskInstance userTaskInstance = query.execute().get(0);
+        return getDataIndexApiExecutor().updateUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArgument(COMMENT_ID),
+                env.getArgument("comment"));
+    }
+
+    protected CompletableFuture<String> deleteUserTaskComment(DataFetchingEnvironment env) {
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        query.filter(singletonList(equalTo("comments.id", env.getArgument(COMMENT_ID))));
+        UserTaskInstance userTaskInstance = query.execute().get(0);
+        return getDataIndexApiExecutor().deleteUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArgument(COMMENT_ID));
+    }
+
+    protected CompletableFuture<String> updateUserTaskAttachment(DataFetchingEnvironment env) {
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        query.filter(singletonList(equalTo("attachments.id", env.getArgument(ATTACHMENT_ID))));
+        UserTaskInstance userTaskInstance = query.execute().get(0);
+        return getDataIndexApiExecutor().updateUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArgument(ATTACHMENT_ID),
+                env.getArgument("name"),
+                env.getArgument("uri"));
+    }
+
+    protected CompletableFuture<String> deleteUserTaskAttachment(DataFetchingEnvironment env) {
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        query.filter(singletonList(equalTo("attachments.id", env.getArgument(ATTACHMENT_ID))));
+        UserTaskInstance userTaskInstance = query.execute().get(0);
+        return getDataIndexApiExecutor().deleteUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument(USER),
+                env.getArgument(GROUPS),
+                env.getArgument(ATTACHMENT_ID));
     }
 
 }
