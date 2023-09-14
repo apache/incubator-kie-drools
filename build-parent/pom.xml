@@ -60,22 +60,22 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
     <version.common-text>1.10.0</version.common-text>
-    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.13.4.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.13.4</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-    <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
-    <version.com.h2database>2.2.220</version.com.h2database>
+    <version.com.google.protobuf>3.19.6</version.com.google.protobuf>
+    <version.com.h2database>2.1.214</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
-    <version.info.picocli>4.7.1</version.info.picocli>
-    <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.10.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
+    <version.info.picocli>4.6.3</version.info.picocli>
+    <version.io.micrometer>1.9.4</version.io.micrometer>
+    <version.io.quarkus>999-SNAPSHOT</version.io.quarkus>
+    <version.io.smallrye.openapi.core>2.2.1</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -124,7 +124,7 @@
     <version.jakarta.json>1.1.6</version.jakarta.json>
     <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
     <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-    <version.org.junit>5.9.2</version.org.junit>
+    <version.org.junit>5.9.1</version.org.junit>
     <version.org.mvel>2.5.0.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
@@ -138,7 +138,7 @@
     <!-- New and overwritten dependencies -->
     <!-- ################################################################################ -->
 
-    <version.org.antlr4>4.10.1</version.org.antlr4>
+    <version.org.antlr4>4.9.2</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
@@ -152,7 +152,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.11.0</version.org.mockito>
+    <version.org.mockito>4.8.1</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -174,7 +174,7 @@
     <version.plugin.annotations>3.6.0</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.3.4</version.shared.utils>
-    <version.common.compress>1.22</version.common.compress>
+    <version.common.compress>1.21</version.common.compress>
     <version.common.exec>1.3</version.common.exec>
     <!-- -->
     <!-- Jacoco plugin configurations -->
@@ -202,7 +202,7 @@
 
     <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
 
-    <version.org.postgresql>42.5.4</version.org.postgresql>
+    <version.org.postgresql>42.5.1</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
@@ -211,7 +211,7 @@
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
 
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.com.google.guava>31.1-jre</version.com.google.guava>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
