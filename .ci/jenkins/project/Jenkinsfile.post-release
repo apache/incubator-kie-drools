@@ -36,7 +36,7 @@ pipeline {
         stage('Update drools version in drools-website') {
             steps {
                 script {
-                    String droolsWebsiteRepository = 'drools-website'
+                    String droolsWebsiteRepository = 'incubator-kie-drools-website'
                     String prLink = null
                     String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
                     dir(droolsWebsiteRepository) {

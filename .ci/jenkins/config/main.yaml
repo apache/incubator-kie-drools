@@ -4,6 +4,7 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
+    - incubator-kie-drools.*
   # - name: kie-jpmml-integration
   #   regexs:
   #   - kie-jpmml-integration.*
@@ -11,19 +12,20 @@ ecosystem:
     ignore_release: true
     regexs:
     - kie-benchmarks.*
+    - incubator-kie-kie-benchmarks.*
 git:
   branches:
-  - name: apache_migration
+  - name: main
     main_branch: true
 seed:
   config_file:
     git:
-      repository: drools
+      repository: incubator-kie-drools
       author:
-        name: kiegroup
+        name: apache
         credentials_id: kie-ci4
-      branch: apache_migration
+      branch: main
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
-  email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS
+  email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS

@@ -6,8 +6,6 @@ import org.kie.jenkins.MavenStagingHelper
 
 deployProperties = [:]
 
-droolsRepository = 'drools'
-
 pipeline {
     agent {
         docker { 
@@ -209,7 +207,7 @@ boolean shouldStageArtifacts() {
 }
 
 boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
+    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'apache'
 }
 
 boolean isRelease() {

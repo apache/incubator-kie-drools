@@ -55,6 +55,7 @@ pipeline {
             }
         }
 
+        // Commented as not migrated for now
         // stage('Init KIE jpmml integration') {
         //     steps {
         //         script {
