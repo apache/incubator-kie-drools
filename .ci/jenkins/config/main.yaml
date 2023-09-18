@@ -12,7 +12,7 @@ ecosystem:
     ignore_release: true
     regexs:
     - kie-benchmarks.*
-    - incubator-kie-kie-benchmarks.*
+    - incubator-kie-benchmarks.*
 git:
   branches:
   - name: main

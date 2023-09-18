@@ -169,7 +169,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
             // Commented as not migrated
             // ], [
             //     id: 'kie-jpmml-integration',
-            //     repository: 'incubator-kie-kie-jpmml-integration'
+            //     repository: 'incubator-kie-jpmml-integration'
             ]
         ]
     ]

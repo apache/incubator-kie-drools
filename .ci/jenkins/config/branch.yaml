@@ -50,12 +50,12 @@ repositories:
 # Not yet migrated to Apache
 # - name: incubator-kie-drools-website
 #   job_display_name: drools-website
-- name: incubator-kie-kie-benchmarks
+- name: incubator-kie-benchmarks
   job_display_name: kie-benchmarks
   author:
     name: radtriste # TODO set back. Could not push to kiegroup
 ## TODO to check if should be enabled
-# - name: incubator-kie-kie-jpmml-integration
+# - name: incubator-kie-jpmml-integration
 #   job_display_name: kie-jpmml-integration
 git:
   author:
