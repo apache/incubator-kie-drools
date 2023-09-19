@@ -2053,6 +2053,19 @@
           <artifactId>sonar-maven-plugin</artifactId>
           <version>3.6.0.1398</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.maven-javadoc-plugin}</version>
+          <configuration>
+            <header><![CDATA[<b>${project.name} ${project.version}</b>]]></header>
+            <footer><![CDATA[<b>${project.name} ${project.version}</b>]]></footer>
+            <archive>
+              <index>true</index>
+            </archive>
+            <additionalOptions>${javadoc.additional.params}</additionalOptions>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 
