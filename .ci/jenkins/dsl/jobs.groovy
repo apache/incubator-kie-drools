@@ -2,10 +2,10 @@
 * This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
 * needed by the Kogito pipelines.
 *
-* The main part of Jenkins job generation is defined into the https://github.com/kiegroup/kogito-pipelines repository.
+* The main part of Jenkins job generation is defined into the https://github.com/apache/incubator-kie-kogito-pipelines repository.
 *
 * This file is making use of shared libraries defined in
-* https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+* https://github.com/apache/incubator-kie-kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
 */
 
 import org.kie.jenkins.jobdsl.model.JenkinsFolder
@@ -29,8 +29,6 @@ Closure setup4AMCronTriggerJobParamsGetter = { script ->
     return jobParams
 }
 
-
-
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     String defaultBuildMvnOptsCurrent = jobFolder.getDefaultEnvVarValue('BUILD_MVN_OPTS_CURRENT') ?: ''
     def jobConfig = [
@@ -49,27 +47,24 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
             ], [
                 id: 'kogito-apps',
                 dependsOn: 'kogito-runtimes',
-                repository: 'kogito-apps',
-                env  : [
-                    NODE_OPTIONS: '--max_old_space_size=4096',
-                ]
+                repository: 'incubator-kie-kogito-apps',
             ], [
                 id: 'kogito-quarkus-examples',
-                repository: 'kogito-examples',
+                repository: 'incubator-kie-kogito-examples',
                 dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
                 ],
             ], [
                 id: 'kogito-springboot-examples',
-                repository: 'kogito-examples',
+                repository: 'incubator-kie-kogito-examples',
                 dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
                 ],
             ], [
                 id: 'serverless-workflow-examples',
-                repository: 'kogito-examples',
+                repository: 'incubator-kie-kogito-examples',
                 dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
@@ -98,7 +93,7 @@ List getRuntimesBuildMvnOptions(JenkinsFolder jobFolder) {
 }
 
 // PR checks
-KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
+Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile")
 
 // Init branch
 createSetupBranchJob()
@@ -119,7 +114,7 @@ setupReleasePromoteJob()
 
 // Tools job
 if (isMainStream()) {
-    KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', [
+    KogitoJobUtils.createQuarkusVersionUpdateToolsJobForCurrentRepo(this, [
         modules: [ 'kogito-dependencies-bom', 'kogito-build-parent', 'kogito-quarkus-bom', 'kogito-build-no-bom-parent' ],
         compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
         properties: [ 'version.io.quarkus' ],
@@ -127,7 +122,8 @@ if (isMainStream()) {
 
     // Quarkus 3
     if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-        setupPrQuarkus3RewriteJob()
+        // TODO create PR job with branch source plugin. How to ?
+        // setupPrQuarkus3RewriteJob() // Deactivated due to ghprb not available on Apache Jenkins
         setupStandaloneQuarkus3RewriteJob()
     }
 }
@@ -146,9 +142,8 @@ void setupSpecificBuildChainNightlyJob(String envName, Closure defaultJobParamsG
 
 void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Runtimes Setup branch')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-runtimes',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -174,7 +169,7 @@ void createSetupBranchJob() {
 
 void setupReleaseDeployJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes-deploy', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Runtimes Deploy')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -214,7 +209,7 @@ void setupReleaseDeployJob() {
 
 void setupReleasePromoteJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes-promote', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Runtimes Promote')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
@@ -251,7 +246,7 @@ void setupReleasePromoteJob() {
 
 void setupPrQuarkus3RewriteJob() {
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-runtimes.rewrite', JobType.PULL_REQUEST, 'quarkus-3', "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.pr", 'Kogito Runtimes Quarkus 3 rewrite patch regeneration')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.jenkinsfile = "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.pr"
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
@@ -271,7 +266,7 @@ void setupPrQuarkus3RewriteJob() {
 void setupStandaloneQuarkus3RewriteJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes.quarkus-3.rewrite', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.standalone", 'Kogito Runtimes Quarkus 3 rewrite patch regeneration')
     jobParams.env.putAll(EnvUtils.getEnvironmentEnvVars(this, 'quarkus-3'))
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",

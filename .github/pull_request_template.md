@@ -3,7 +3,7 @@ Many thanks for submitting your Pull Request :heart:!
 Please make sure that your PR meets the following requirements:
 
 - [ ] You have read the [contributors guide](CONTRIBUTING.md)
-- [ ] Your code is properly formatted according to [this configuration](https://github.com/kiegroup/kogito-runtimes/tree/main/kogito-build/kogito-ide-config)
+- [ ] Your code is properly formatted according to [this configuration](https://github.com/apache/incubator-kie-kogito-runtimes/tree/main/kogito-build/kogito-ide-config)
 - [ ] Pull Request title is properly formatted: `KOGITO-XYZ Subject`
 - [ ] Pull Request title contains the target branch if not targeting main: `[0.9.x] KOGITO-XYZ Subject`
 - [ ] Pull Request contains link to the JIRA issue

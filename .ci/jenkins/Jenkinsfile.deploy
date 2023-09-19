@@ -8,17 +8,15 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
         timestamps()
-        timeout(time: 180, unit: 'MINUTES')
+        timeout(time: 360, unit: 'MINUTES')
     }
 
     // parameters {
@@ -30,11 +28,8 @@ pipeline {
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        // Keep here for visibility
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
-
         PR_BRANCH_HASH = "${util.generateHash(10)}"
-        MAVEN_DEPLOY_LOCAL_DIR = "${WORKSPACE}/maven_deploy_dir"
+        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
     }
 
     stages {
@@ -117,7 +112,7 @@ pipeline {
                         if (params.SKIP_TESTS) {
                             mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
                         }
-                        util.runWithPythonVirtualEnv(mvnCmd.getFullRunCommand('clean install'), 'swf')
+                        mvnCmd.run('clean install')
                     }
                 }
             }
@@ -242,7 +237,7 @@ boolean shouldStageArtifacts() {
 }
 
 boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'kiegroup'
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'apache'
 }
 
 boolean isRelease() {
@@ -308,7 +303,7 @@ void runMavenDeploy(boolean localDeployment = false) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    util.runWithPythonVirtualEnv(mvnCmd.skipTests(true).getFullRunCommand('clean deploy'), 'swf')
+    mvnCmd.skipTests(true).run('clean deploy')
 }
 
 String getMavenRepoZipUrl() {

@@ -6,7 +6,10 @@ pipelineProperties = [:]
 
 pipeline {
     agent {
-        label 'rhel8 && !built-in'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
