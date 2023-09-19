@@ -64,6 +64,7 @@ environments:
 productized_branch: true
 disable:
   triggers: false
+  deploy: true
 repositories:
 - name: drools
 - name: drools-website
