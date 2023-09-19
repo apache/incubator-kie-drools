@@ -7,12 +7,10 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -21,13 +19,7 @@ pipeline {
         disableConcurrentBuilds(abortPrevious: true)
     }
 
-    // parameters {
-    // For parameters, check into .jenkins/dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
-
         DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
@@ -44,7 +36,7 @@ pipeline {
         stage('Update drools version in drools-website') {
             steps {
                 script {
-                    String droolsWebsiteRepository = 'drools-website'
+                    String droolsWebsiteRepository = 'incubator-kie-drools-website'
                     String prLink = null
                     String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
                     dir(droolsWebsiteRepository) {

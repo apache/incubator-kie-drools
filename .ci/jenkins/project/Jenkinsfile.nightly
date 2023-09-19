@@ -4,7 +4,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 
 // Deploy jobs
 DROOLS_DEPLOY = 'drools.build-and-deploy'
-KIE_JPMML_INTEGRATION_DEPLOY = 'kie-jpmml-integration.build-and-deploy'
+// KIE_JPMML_INTEGRATION_DEPLOY = 'kie-jpmml-integration.build-and-deploy' // Commented as not migrated for now
 
 // Map of executed jobs
 // See https://javadoc.jenkins.io/plugin/workflow-support/org/jenkinsci/plugins/workflow/support/steps/build/RunWrapper.html
@@ -17,7 +17,7 @@ UNSTABLE_STAGES = [:]
 // Should be multibranch pipeline
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
+        label 'ubuntu'
     }
 
     options {
@@ -60,22 +60,22 @@ pipeline {
                 }
             }
         }
-        stage('Build & Deploy KIE jpmml integration') {
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addSkipTestsParam(buildParams)
-                    addSkipIntegrationTestsParam(buildParams)
+        // stage('Build & Deploy KIE jpmml integration') {
+        //     steps {
+        //         script {
+        //             def buildParams = getDefaultBuildParams()
+        //             addSkipTestsParam(buildParams)
+        //             addSkipIntegrationTestsParam(buildParams)
 
-                    buildJob(KIE_JPMML_INTEGRATION_DEPLOY, buildParams)
-                }
-            }
-            post {
-                failure {
-                    addFailedStage(KIE_JPMML_INTEGRATION_DEPLOY)
-                }
-            }
-        }
+        //             buildJob(KIE_JPMML_INTEGRATION_DEPLOY, buildParams)
+        //         }
+        //     }
+        //     post {
+        //         failure {
+        //             addFailedStage(KIE_JPMML_INTEGRATION_DEPLOY)
+        //         }
+        //     }
+        // }
     }
     post {
         unsuccessful {

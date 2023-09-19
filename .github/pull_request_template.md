@@ -45,8 +45,6 @@ How to retest this PR or trigger a specific build:
 
 - <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
 
-- <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
-
 - <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
 
 - for <b>quarkus branch checks</b>  

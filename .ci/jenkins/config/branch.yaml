@@ -10,16 +10,6 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
   quarkus-main:
     enabled: false
     env_vars:
@@ -30,8 +20,8 @@ environments:
   quarkus-3:
     pull_request_default_check: false
     env_vars:
-      BUILD_MAVEN_TOOL: kie-maven-3.9.1
-      BUILD_JDK_TOOL: kie-jdk17
+      BUILD_MAVEN_TOOL: maven_3.9.3
+      BUILD_JDK_TOOL: jdk_17_latest
       BUILD_MVN_OPTS: -Denforcer.skip
       # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
       # BUILD_MVN_OPTS_QUARKUS_UPDATE: -Dfull
@@ -44,15 +34,6 @@ environments:
       DROOLS_BUILD_MVN_OPTS: -Dfull
     ids:
     - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
   sonarcloud:
     auto_generation: false
     env_vars:
@@ -61,22 +42,26 @@ environments:
     ids:
     - sonarcloud
     - coverage
-productized_branch: true
 disable:
-  triggers: false
+  triggers: true # TODO to set back
 repositories:
-- name: drools
-- name: drools-website
-- name: kie-benchmarks
-- name: kie-jpmml-integration
-productized_repositories:
-- name: drools
-- name: drools-website
+- name: incubator-kie-drools
+  job_display_name: drools
+# Not yet migrated to Apache
+# - name: incubator-kie-drools-website
+#   job_display_name: drools-website
+- name: incubator-kie-benchmarks
+  job_display_name: kie-benchmarks
+## TODO to check if should be enabled
+# - name: incubator-kie-jpmml-integration
+#   job_display_name: kie-jpmml-integration
 git:
   author:
-    name: kiegroup
-    credentials_id: kie-ci4
-    token_credentials_id: kie-ci4-token
+    name: apache
+    # Taken from https://ci-builds.apache.org/credentials/
+    # Need to be verified
+    credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
+    token_credentials_id: ci-builds
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
@@ -88,34 +73,34 @@ git:
   jenkins_config_path: .ci/jenkins
 buildchain_config:
   git:
-    repository: drools
+    repository: incubator-kie-drools
     file_path: .ci/buildchain-config.yaml
 maven:
-  settings_file_id: kogito_release_settings
+  settings_file_id: kie-release-settings
   nexus:
-    release_url: https://repository.jboss.org/nexus
-    release_repository: jboss-releases-repository
-    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
-    staging_profile_id: 1976dd1c18392a
-    build_promotion_profile_id: ea49ccd6f174
+    release_url: TO_DEFINE
+    release_repository: TO_DEFINE
+    staging_profile_url: TO_DEFINE
+    staging_profile_id: TO_DEFINE
+    build_promotion_profile_id: TO_DEFINE
   artifacts_repository: ''
   artifacts_upload_repository:
-    url: https://repository.jboss.org/nexus/content/repositories/snapshots/
-    creds_id: kogito-snapshots-upload
-  pr_checks:
-    repository:
-      url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
-      creds_id: unpacks-zip-on-qa-nexus
+    url: TO_DEFINE
+    creds_id: TO_DEFINE
 cloud:
   image:
-    registry_credentials_nightly: nightly_kogito
-    registry_credentials_release: release_kogito
+    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
     registry: quay.io
-    namespace: kiegroup
+    namespace: tradisso
     latest_git_branch: main
 jenkins:
-  email_creds_id: DROOLS_CI_EMAIL_TO
+  email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
+  agent:
+    docker:
+      builder:
+        image: quay.io/kiegroup/kogito-ci-build:latest
+        args: -v /var/run/docker.sock:/var/run/docker.sock --group-add docker --group-add input --group-add render
   default_tools:
-    jdk: kie-jdk11
-    maven: kie-maven-3.8.7
-    sonar_jdk: kie-jdk17
+    jdk: jdk_11_latest
+    maven: maven_3.8.6
+    sonar_jdk: jdk_17_latest

@@ -10,23 +10,16 @@ JOBS = [:]
 FAILED_STAGES = [:]
 UNSTABLE_STAGES = [:]
 
-// Should be multibranch pipeline
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
+        label 'ubuntu'
     }
 
     options {
         timeout(time: 360, unit: 'MINUTES')
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into ./dsl/jobs.groovy file
-
         DROOLS_CI_EMAIL = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         // Use branch name in nightly tag as we may have parallel main and release branch builds
@@ -62,20 +55,21 @@ pipeline {
             }
         }
 
-        stage('Init KIE jpmml integration') {
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addDroolsVersionParam(buildParams)
-                    buildJob('kie-jpmml-integration', buildParams)
-                }
-            }
-            post {
-                failure {
-                    addFailedStage('kie-jpmml-integration')
-                }
-            }
-        }
+        // Commented as not migrated for now
+        // stage('Init KIE jpmml integration') {
+        //     steps {
+        //         script {
+        //             def buildParams = getDefaultBuildParams()
+        //             addDroolsVersionParam(buildParams)
+        //             buildJob('kie-jpmml-integration', buildParams)
+        //         }
+        //     }
+        //     post {
+        //         failure {
+        //             addFailedStage('kie-jpmml-integration')
+        //         }
+        //     }
+        // }
 
         // Launch the nightly to deploy all artifacts from the branch
         stage('Launch the nightly') {

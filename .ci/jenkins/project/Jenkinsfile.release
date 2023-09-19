@@ -3,7 +3,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
 droolsRepo = 'drools'
-kieJpmmlIntegrationRepo = 'kie-jpmml-integration'
+// kieJpmmlIntegrationRepo = 'kie-jpmml-integration' // Commented as not migrated for now
 
 ARTIFACTS_STAGING_STAGE = 'stage.artifacts.staging'
 ARTIFACTS_RELEASE_STAGE = 'stage.artifacts.release'
@@ -18,16 +18,10 @@ releaseProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
+        label 'ubuntu'
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into ./dsl/jobs.groovy file
-
         DROOLS_CI_EMAIL = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
 
@@ -48,8 +42,8 @@ pipeline {
                     sendNotification("Release Pipeline has started...\nDrools version = ${getDroolsVersion()}\n=> ${env.BUILD_URL}")
 
                     // Safety measure to not publish to main JBoss
-                    if (getGitAuthor() != 'kiegroup' && !getArtifactsRepositoryParam()) {
-                        sendNotification("Git Author is different from `kiegroup` and no `ARTIFACTS_REPOSITORY` parameter has been provided. Are you sure you want to continue ? => ${env.BUILD_URL}input")
+                    if (getGitAuthor() != 'apache' && !getArtifactsRepositoryParam()) {
+                        sendNotification("Git Author is different from `apache` and no `ARTIFACTS_REPOSITORY` parameter has been provided. Are you sure you want to continue ? => ${env.BUILD_URL}input")
                         input message: 'Should the pipeline continue with no `ARTIFACTS_REPOSITORY` defined ?', ok: 'Yes'
                     }
                 }
