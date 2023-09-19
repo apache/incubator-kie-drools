@@ -6,7 +6,10 @@ pipelineProperties = [:]
 
 pipeline {
     agent {
-        label 'rhel8 && !built-in'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -16,8 +19,6 @@ pipeline {
 
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        NODE_OPTIONS = '--max_old_space_size=4096'
     }
 
     stages {

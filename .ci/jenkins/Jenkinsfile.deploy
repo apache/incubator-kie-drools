@@ -8,12 +8,10 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -30,12 +28,8 @@ pipeline {
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        // Keep here for visitibility
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
-        NODE_OPTIONS = '--max_old_space_size=4096'
-
         PR_BRANCH_HASH = "${util.generateHash(10)}"
-        MAVEN_DEPLOY_LOCAL_DIR = "${WORKSPACE}/maven_deploy_dir"
+        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
     }
 
     stages {
@@ -61,8 +55,6 @@ pipeline {
                     dir(getRepoName()) {
                         checkoutRepo()
                     }
-
-                    setupCypressEnv('12.17.0')
                 }
             }
             post {
@@ -190,12 +182,6 @@ pipeline {
     }
 }
 
-void setupCypressEnv(String cypressVersion) {
-    if (env.CYPRESS_BINARY_URL) {
-        env.CYPRESS_INSTALL_BINARY = "${CYPRESS_BINARY_URL}/cypress-${cypressVersion}.zip"
-    }
-}
-
 void sendNotification() {
     if (params.SEND_NOTIFICATION) {
         mailer.sendMarkdownTestSummaryNotification('Deploy', "[${getBuildBranch()}] Kogito Apps", [env.KOGITO_CI_EMAIL_TO])
@@ -239,7 +225,7 @@ boolean shouldStageArtifacts() {
 }
 
 boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'kiegroup'
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'apache'
 }
 
 boolean isRelease() {

@@ -7,12 +7,10 @@ previousHash = ''
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -57,7 +55,7 @@ pipeline {
         stage('Build upstream projects') {
             steps {
                 script {
-                    [ 'drools', 'kogito-runtimes' ].each { project -> 
+                    [ 'incubator-kie-drools', 'incubator-kie-kogito-runtimes' ].each { project -> 
                         dir(project) {
                             githubscm.checkoutIfExists(project, getGitAuthor(), getBuildBranch(), getBaseAuthor(), getBaseBranch(), true)
                             sh '.ci/environments/update.sh quarkus-3'

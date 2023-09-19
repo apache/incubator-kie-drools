@@ -16,8 +16,8 @@ jobs:
     name: DSL
     steps:
     - name: DSL tests
-      uses: kiegroup/kie-ci/.ci/actions/dsl-tests@main
+      uses: apache/incubator-kie-kie-ci/.ci/actions/dsl-tests@main
       with:
-        main-config-file-repo: kiegroup/kogito-pipelines
+        main-config-file-repo: apache/incubator-kie-kogito-pipelines
         main-config-file-path: .ci/jenkins/config/main.yaml
-        branch-config-file-repo: kiegroup/kogito-pipelines
+        branch-config-file-repo: apache/incubator-kie-kogito-pipelines

@@ -2,18 +2,17 @@
 
 import org.kie.jenkins.MavenCommand
 
-droolsRepo = 'drools'
-optaplannerRepo = 'optaplanner'
-kogitoRuntimesRepo = 'kogito-runtimes'
-kogitoAppsRepo = 'kogito-apps'
+droolsRepo = 'incubator-kie-drools'
+optaplannerRepo = 'incubator-kie-optaplanner'
+kogitoRuntimesRepo = 'incubator-kie-kogito-runtimes'
+kogitoAppsRepo = 'incubator-kie-kogito-apps'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g'
-    }
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
     options {
         timestamps()
@@ -21,7 +20,6 @@ pipeline {
     }
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-        MAVEN_OPTS = '-Xms1024m -Xmx6g'
     }
     stages {
         stage('Initialize') {
@@ -84,7 +82,7 @@ pipeline {
                         .withProperty('skipUI')
                         .withProperty('maven.test.failure.ignore', true)
                         .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
-                        .withProperty('optaplanner') // Use specific profile https://github.com/kiegroup/kogito-apps/blob/48a5c8f9a905a2c17b9d0e01cee744902a4824f0/pom.xml#L63
+                        .withProperty('optaplanner') // Use specific profile https://github.com/apache/incubator-kie-kogito-apps/blob/48a5c8f9a905a2c17b9d0e01cee744902a4824f0/pom.xml#L63
                         .run('clean install')
                 }
             }
@@ -134,7 +132,7 @@ void checkoutDroolsRepo() {
 
 void checkoutOptaplannerRepo() {
     dir(optaplannerRepo) {
-        checkout(githubscm.resolveRepository(optaplannerRepo, 'kiegroup', getOptaPlannerBranch(), false))
+        checkout(githubscm.resolveRepository(optaplannerRepo, 'apache', getOptaPlannerBranch(), false))
     }
 }
 
@@ -169,7 +167,7 @@ String getOptaPlannerBranch() {
 
 MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kogito_release_settings')
+                .withSettingsXmlId('kie-release-settings')
                 .withProperty('java.net.preferIPv4Stack', true)
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
