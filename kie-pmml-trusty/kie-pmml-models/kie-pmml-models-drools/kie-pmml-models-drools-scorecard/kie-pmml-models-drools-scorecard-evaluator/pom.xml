@@ -31,6 +31,10 @@
   <name>KIE :: PMML :: Models :: Drools :: Scorecard :: Evaluator</name>
   <description>PMML Scorecard Evaluator</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.drools.scorecard.evaluator</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

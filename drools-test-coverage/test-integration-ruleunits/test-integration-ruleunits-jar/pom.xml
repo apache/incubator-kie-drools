@@ -33,6 +33,10 @@
   <artifactId>test-integration-ruleunits-jar</artifactId>
   <name>Drools :: Test Coverage :: Jar for Integration tests with Rule Units</name>
 
+  <properties>
+    <java.module.name>org.drools.testcoverage.integrationtests.ruleunits.testjar</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

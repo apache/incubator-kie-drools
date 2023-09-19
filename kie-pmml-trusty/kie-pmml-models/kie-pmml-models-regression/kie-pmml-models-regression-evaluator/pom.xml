@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Models :: Regression :: Evaluator</name>
   <description>PMML Regression Evaluator</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.regression.evaluator</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

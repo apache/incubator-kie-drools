@@ -33,6 +33,10 @@
   <artifactId>drools-scenario-simulation-api</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.drools.scenariosimulation.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

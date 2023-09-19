@@ -37,6 +37,7 @@
   <name>KIE :: Maven Plugin</name>
 
   <properties>
+    <java.module.name>org.kie.maven.plugin</java.module.name>
     <plugin.testing.harness.version>3.3.0</plugin.testing.harness.version>
     <plugin.plugin.version>3.6.4</plugin.plugin.version>
     <maven.version>3.8.4</maven.version>

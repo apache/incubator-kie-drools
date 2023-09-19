@@ -34,7 +34,7 @@
   <name>Drools :: Test Coverage :: Integration tests with Rule Units</name>
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests</java.module.name>
+    <java.module.name>org.drools.testcoverage.integrationtests.ruleunit.tests</java.module.name>
     <surefire.forkCount>1</surefire.forkCount>
   </properties>
 

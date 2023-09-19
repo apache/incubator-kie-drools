@@ -228,6 +228,10 @@
     <!-- Override with old org.jboss if relying on quarkus 2.13.x or older -->
     <jandex.group-id>io.smallrye</jandex.group-id>
     <jandex-maven-plugin.group-id>${jandex.group-id}</jandex-maven-plugin.group-id>
+
+    <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
+    <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
+    <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
     
   </properties>
 
@@ -1577,7 +1581,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${version.checkstyle.plugin}</version>
+          <version>${version.maven-checkstyle}</version>
           <executions>
             <execution>
               <id>validate</id>
@@ -1675,7 +1679,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.failsafe.plugin}</version>
+          <version>${version.maven-surefire}</version>
           <executions>
             <execution>
               <goals>
@@ -1895,7 +1899,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>${version.deploy.plugin}</version>
+          <version>${version.maven-deploy-plugin}</version>
           <configuration>
             <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
           </configuration>
@@ -2064,6 +2068,7 @@
         <!-- also adds generated sources to -source artifact -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${version.build.helper.maven.plugin}</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -2083,7 +2088,7 @@
         <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>${version.jar.plugin}</version>
+        <version>${version.maven-jar-plugin}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

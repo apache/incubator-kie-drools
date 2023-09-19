@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Tree :: Model</name>
   <description>KiePMML Model for Tree implementation</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.tree.model</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

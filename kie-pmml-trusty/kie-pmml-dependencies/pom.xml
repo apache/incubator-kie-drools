@@ -37,6 +37,10 @@
     Declare this artifact as "pom" dependency to import all default kie-pmml-trusty modules.
   </description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.dependencies</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

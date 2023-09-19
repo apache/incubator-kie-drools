@@ -34,6 +34,7 @@
   <name>Efesto :: Runtime :: Manager :: Api</name>
 
   <properties>
+    <java.module.name>org.drools.efesto.core.runtimemanager.api</java.module.name>
     <skip.jdepend>false</skip.jdepend>
   </properties>
 

@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Drools :: Scorecard :: Tests</name>
   <description>PMML Scorecard Tests</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.drools.scorecard.tests</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- TEST -->
     <!-- PMML -->

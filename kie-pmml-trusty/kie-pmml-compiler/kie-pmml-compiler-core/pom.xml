@@ -35,6 +35,7 @@
   <description>PMML Compiler Core</description>
 
   <properties>
+    <java.module.name>org.kie.pmml.compiler.core</java.module.name>
     <skip.jdepend>false</skip.jdepend>
   </properties>
 

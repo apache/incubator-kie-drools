@@ -22,41 +22,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>kie-drl-map-input</artifactId>
-        <groupId>org.kie</groupId>
-        <version>8.45.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>kie-drl-map-input</artifactId>
+    <groupId>org.kie</groupId>
+    <version>8.45.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>kie-drl-map-input-runtime</artifactId>
+  <artifactId>kie-drl-map-input-runtime</artifactId>
 
-    <name>KIE :: DRL :: MapInput :: Runtime</name>
-    <description>DRL runtime for sending maps as input. To be used for inter-engine communication (e.g. PMML -> Drl)</description>
+  <name>KIE :: DRL :: MapInput :: Runtime</name>
+  <description>DRL runtime for sending maps as input. To be used for inter-engine communication (e.g. PMML -> Drl)
+  </description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-drl-runtime-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-canonical-model</artifactId>
-            <scope>compile</scope>
-        </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-api</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
+  <properties>
+    <java.module.name>org.kie.drl.implementations.drlmapinput.runtime</java.module.name>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
 
-    <properties>
-        <skip.jdepend>false</skip.jdepend>
-    </properties>
-    
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-runtime-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-canonical-model</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
