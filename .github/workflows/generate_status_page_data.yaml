@@ -6,7 +6,7 @@ on:
     - cron: '0 * * * *'
 jobs:
   generate-status-page-data:
-    if: github.repository == 'kiegroup/optaplanner'
+    if: github.repository == 'apache/incubator-kie-optaplanner'
     concurrency:
       group: generate-status-page-data
       cancel-in-progress: true
@@ -20,11 +20,11 @@ jobs:
       - name: Generate status page data
         uses: kiegroup/chain-status/.ci/actions/generate-data@main
         with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/optaplanner/main/.ci/builchain-config.yaml
+          definition-file: https://raw.githubusercontent.com/apache/incubator-kie-optaplanner/main/.ci/builchain-config.yaml
           title: Pull Request Status
           subtitle: OptaPlanner organization repositories CI Status
           base-branch-filter: main,8\.*
-          project-filter: kiegroup/opta.*$
+          project-filter: apache/incubator-kie-opta.*$
           created-by: GitHub Action
           created-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"

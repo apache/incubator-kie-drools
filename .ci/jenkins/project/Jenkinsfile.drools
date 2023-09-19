@@ -2,24 +2,19 @@
 
 import org.kie.jenkins.MavenCommand
 
-droolsRepo = 'drools'
-optaplannerRepo = 'optaplanner'
-quickstartsRepo = 'optaplanner-quickstarts'
+droolsRepo = 'incubator-kie-drools'
+optaplannerRepo = 'incubator-kie-optaplanner'
+quickstartsRepo = 'incubator-kie-optaplanner-quickstarts'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
     environment {
-        // DROOLS_BRANCH should be defined directly into the job environment
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
-    }
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
     }
     options {
         timestamps()
@@ -145,13 +140,13 @@ void checkoutOptaplannerQuickstartsRepo() {
 
 void checkoutDroolsRepo() {
     dir(droolsRepo) {
-        checkout(githubscm.resolveRepository(droolsRepo, 'kiegroup', getDroolsBranch(), false))
+        checkout(githubscm.resolveRepository(droolsRepo, 'apache', getDroolsBranch(), false))
     }
 }
 
 MavenCommand getMavenCommand(String directory) {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kogito_release_settings')
+                .withSettingsXmlId('kie-release-settings')
                 .inDirectory(directory)
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])

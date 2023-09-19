@@ -20,6 +20,6 @@ jobs:
       uses: kiegroup/kie-ci/.ci/actions/dsl-tests@main
       with:
         project: optaplanner
-        main-config-file-repo: kiegroup/optaplanner
+        main-config-file-repo: apache/incubator-kie-optaplanner
         main-config-file-path: .ci/jenkins/config/main.yaml
-        branch-config-file-repo: kiegroup/optaplanner
+        branch-config-file-repo: apache/incubator-kie-optaplanner

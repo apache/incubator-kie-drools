@@ -4,18 +4,16 @@ import org.jenkinsci.plugins.workflow.libs.Library
 
 import org.kie.jenkins.MavenCommand
 
-String optaplannerRepository = 'optaplanner'
-String quickstartsRepository = 'optaplanner-quickstarts'
+String optaplannerRepository = 'incubator-kie-optaplanner'
+String quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 String stableBranchName = 'stable'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -24,13 +22,7 @@ pipeline {
         disableConcurrentBuilds(abortPrevious: true)
     }
 
-    // parameters {
-    // For parameters, check into .jenkins/dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
@@ -48,10 +40,7 @@ pipeline {
 
                     // Verify version is set and if on right release branch
                     assert getProjectVersion()
-
                     assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
-
-                    installGithubCLI()
                 }
             }
         }
@@ -93,40 +82,41 @@ pipeline {
             }
         }
 
-        stage('Update OptaPlanner website') {
-            steps {
-                script {
-                    final String websiteRepository = 'optaplanner-website'
-                    String prLink = null
-                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
-                    dir("$websiteRepository-pr") {
-                        checkoutRepo(websiteRepository, 'main') // there is no other branch
-                        githubscm.createBranch(prBranchName)
+        // Optaplanner website is not migrated to Apache
+        // stage('Update OptaPlanner website') {
+        //     steps {
+        //         script {
+        //             final String websiteRepository = 'optaplanner-website'
+        //             String prLink = null
+        //             String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
+        //             dir("$websiteRepository-pr") {
+        //                 checkoutRepo(websiteRepository, 'main') // there is no other branch
+        //                 githubscm.createBranch(prBranchName)
 
-                        // Update versions in links on the website and in the docs.
-                        sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
+        //                 // Update versions in links on the website and in the docs.
+        //                 sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
-                        // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
-                        String optaplannerRoot = "${WORKSPACE}/${optaplannerRepository}"
-                        String optaplannerWebsiteModule = 'optaplanner-website-root'
-                        String optaplannerWebsiteXsd = "${optaplannerWebsiteModule}/content/xsd"
-                        String optaplannerWebsiteDocs = 'optaplanner-website-docs'
-                        sh "cp ${optaplannerRoot}/core/optaplanner-core-impl/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
-                        sh "cp ${optaplannerRoot}/optaplanner-benchmark/target/classes/benchmark.xsd ${optaplannerWebsiteXsd}/benchmark/benchmark-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
+        //                 // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
+        //                 String optaplannerRoot = "${WORKSPACE}/${optaplannerRepository}"
+        //                 String optaplannerWebsiteModule = 'optaplanner-website-root'
+        //                 String optaplannerWebsiteXsd = "${optaplannerWebsiteModule}/content/xsd"
+        //                 String optaplannerWebsiteDocs = 'optaplanner-website-docs'
+        //                 sh "cp ${optaplannerRoot}/core/optaplanner-core-impl/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
+        //                 sh "cp ${optaplannerRoot}/optaplanner-benchmark/target/classes/benchmark.xsd ${optaplannerWebsiteXsd}/benchmark/benchmark-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
 
-                        // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}",
-                                { sh "git add $optaplannerWebsiteXsd/\\*.xsd $optaplannerWebsiteModule/data/pom.yml $optaplannerWebsiteDocs/antora-playbook.yml" },
-                                prBranchName, 'main')
-                    }
-                    dir(websiteRepository) {
-                        checkoutRepo(websiteRepository, 'main')
-                        mergeAndPush(prLink, 'main')
-                        githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
-                    }
-                }
-            }
-        }
+        //                 // Add changed files, commit, open and merge PR
+        //                 prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}",
+        //                         { sh "git add $optaplannerWebsiteXsd/\\*.xsd $optaplannerWebsiteModule/data/pom.yml $optaplannerWebsiteDocs/antora-playbook.yml" },
+        //                         prBranchName, 'main')
+        //             }
+        //             dir(websiteRepository) {
+        //                 checkoutRepo(websiteRepository, 'main')
+        //                 mergeAndPush(prLink, 'main')
+        //                 githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
+        //             }
+        //         }
+        //     }
+        // }
     }
     post {
         unsuccessful {
@@ -150,7 +140,7 @@ void sendErrorNotification() {
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 String getProjectVersion() {
@@ -230,15 +220,6 @@ void commitAndForcePushBranch(String repo, String branch) {
         println "[ERROR] Force push branch: ${branch} from repo : ${repo} failed with exception: ${exception}"
         currentBuild.result = 'UNSTABLE'
     }
-}
-
-void installGithubCLI() {
-    sh """
-    wget https://github.com/cli/cli/releases/download/v${env.GITHUB_CLI_VERSION}/gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
-    tar xzf gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
-    mv gh_${env.GITHUB_CLI_VERSION}_linux_amd64/bin/gh .
-    rm -r gh_${env.GITHUB_CLI_VERSION}_linux_amd64*
-    """
 }
 
 void uploadDistribution(String directory) {

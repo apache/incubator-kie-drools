@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   generate-status-page:
-    if: github.repository == 'kiegroup/optaplanner'
+    if: github.repository == 'apache/incubator-kie-optaplanner'
     concurrency:
       group: generate-status-page
       cancel-in-progress: true
@@ -18,6 +18,6 @@ jobs:
       - name: Generate status page
         uses: kiegroup/chain-status/.ci/actions/generate-app@main
         with:
-          info-md-url: "https://raw.githubusercontent.com/kiegroup/optaplanner/main/.ci/chain-status-info.md"
+          info-md-url: "https://raw.githubusercontent.com/apache/incubator-kie-optaplanner/main/.ci/chain-status-info.md"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 

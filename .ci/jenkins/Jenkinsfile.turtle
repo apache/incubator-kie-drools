@@ -2,26 +2,21 @@
 
 import org.kie.jenkins.MavenCommand
 
-optaplannerRepo = 'optaplanner'
+optaplannerRepo = 'incubator-kie-optaplanner'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
-    }
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
     options {
         timestamps()
         timeout(time: 3, unit: 'DAYS') // Turtle tests take ~2 days to complete.
         disableConcurrentBuilds(abortPrevious: true)
     }
-    // parameters {
-    // For parameters, check the .jenkins/dsl/jobs.groovy file.
-    // }
     environment {
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
         // Contains the email address of the team's Zulip channel.
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
@@ -38,7 +33,7 @@ pipeline {
                 script {
                     new MavenCommand(this)
                             // Use the same settings.xml as for the nightly builds, including a maven mirror.
-                            .withSettingsXmlId('kogito_release_settings')
+                            .withSettingsXmlId('kie-release-settings')
                             .inDirectory(optaplannerRepo)
                             .withOptions(['-U', '-e', '-fae', '-ntp'])
                             .withProperty('full')

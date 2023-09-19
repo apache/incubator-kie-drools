@@ -17,52 +17,30 @@ environments:
       QUARKUS_BRANCH: '2.16'
     ids:
     - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MVN_OPTS: -Dproductized
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
-    - lts
   ecosystem:
     auto_generation: false
     ids:
     - ecosystem
-productized_branch: true
 disable:
-  triggers: false
+  triggers: true # TODO to set back
 repositories:
-- name: optaplanner
-  branch: main
-- name: optaplanner-quickstarts
+- name: incubator-kie-optaplanner
+  job_display_name: optaplanner
+- name: incubator-kie-optaplanner-quickstarts
+  job_display_name: optaplanner-quickstarts
   branch: 8.x
-- name: optaplanner-website
-  branch: main
-- name: kie-benchmarks
-  branch: main
-productized_repositories:
-- name: optaplanner
-- name: optaplanner-quickstarts
-- name: optaplanner-website
+# Not migrated to Apache yet
+# - name: incubator-kie-optaplanner-website
+#   job_display_name: optaplanner-website
+- name: incubator-kie-benchmarks
+  job_display_name: kie-benchmarks
 git:
   author:
-    name: kiegroup
-    credentials_id: kie-ci5
-    token_credentials_id: kie-ci5-token
+    name: apache
+    # Taken from https://ci-builds.apache.org/credentials/
+    # Need to be verified
+    credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
+    token_credentials_id: ci-builds
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
@@ -74,30 +52,31 @@ git:
   jenkins_config_path: .ci/jenkins
 buildchain_config:
   git:
-    repository: optaplanner
+    repository: incubator-kie-optaplanner
     file_path: .ci/buildchain-config.yaml
 maven:
-  settings_file_id: kogito_release_settings
+  settings_file_id: kie-release-settings
   nexus:
-    release_url: https://repository.jboss.org/nexus
-    release_repository: jboss-releases-repository
-    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
-    staging_profile_id: 2161b7b8da0080
-    build_promotion_profile_id: ea49ccd6f174
+    release_url: TO_DEFINE
+    release_repository: TO_DEFINE
+    staging_profile_url: TO_DEFINE
+    staging_profile_id: TO_DEFINE
+    build_promotion_profile_id: TO_DEFINE
   artifacts_repository: ''
-  pr_checks:
-    repository:
-      url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
-      creds_id: unpacks-zip-on-qa-nexus
 cloud:
   image:
-    registry_credentials: optaplanner-quay-token
+    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
     registry: quay.io
-    namespace: optaplanner
+    namespace: tradisso
     latest_git_branch: main
 jenkins:
-  email_creds_id: OPTAPLANNER_CI_EMAIL
+  email_creds_id: OPTAPLANNER_CI_NOTIFICATION_EMAILS
+  agent:
+    docker:
+      builder:
+        image: quay.io/kiegroup/kogito-ci-build:latest
+        args: -v /var/run/docker.sock:/var/run/docker.sock --group-add docker --group-add input --group-add render
   default_tools:
-    jdk: kie-jdk17
-    maven: kie-maven-3.8.7
-    sonar_jdk: kie-jdk17
+    jdk: jdk_17_latest
+    maven: maven_3.8.6
+    sonar_jdk: jdk_17_latest

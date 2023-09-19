@@ -7,19 +7,17 @@ import org.kie.jenkins.MavenStagingHelper
 
 deployProperties = [:]
 
-optaplannerRepository = 'optaplanner'
-quickstartsRepository = 'optaplanner-quickstarts'
+optaplannerRepository = 'incubator-kie-optaplanner'
+quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 
 imageUtils = null
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -28,21 +26,13 @@ pipeline {
         disableConcurrentBuilds(abortPrevious: true)
     }
 
-    // parameters {
-    // For parameters, check into .jenkins/dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
 
         // Maven configuration
-        MAVEN_DEPLOY_LOCAL_DIR = "${WORKSPACE}/maven_deploy_dir"
+        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
     }
 
     stages {
@@ -197,9 +187,6 @@ pipeline {
             when {
                 expression { return shouldStageArtifacts() }
             }
-            tools {
-                jdk 'kie-jdk11'
-            }
             steps {
                 script {
                     // Stage release artifacts
@@ -320,7 +307,7 @@ void checkoutRepo(String repo, String dirName = repo) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
-            githubscm.checkoutIfExists(repo, getGitAuthor(), getBuildBranch(), 'kiegroup', getFallbackBranch(repo), true)
+            githubscm.checkoutIfExists(repo, getGitAuthor(), getBuildBranch(), 'apache', getFallbackBranch(repo), true)
         } else {
             checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
         }
@@ -331,7 +318,7 @@ void checkoutQuickstarts(String dirName = quickstartsRepository) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
-            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getBuildBranch(), 'kiegroup', getQuickStartsBranch(), true)
+            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getBuildBranch(), 'apache', getQuickStartsBranch(), true)
         } else {
             checkout(githubscm.resolveRepository(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), false))
         }
@@ -339,7 +326,7 @@ void checkoutQuickstarts(String dirName = quickstartsRepository) {
 }
 
 String getFallbackBranch(String repo) {
-    def repositoryScm = githubscm.getRepositoryScm(repo, 'kiegroup', params.PR_TARGET_BRANCH)
+    def repositoryScm = githubscm.getRepositoryScm(repo, 'apache', params.PR_TARGET_BRANCH)
     return repositoryScm ? params.PR_TARGET_BRANCH : 'main'
 }
 
@@ -452,7 +439,7 @@ boolean shouldDeployToRepository() {
 }
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 boolean isRelease() {

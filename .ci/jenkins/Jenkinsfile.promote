@@ -6,19 +6,17 @@ import org.kie.jenkins.MavenCommand
 deployProperties = [:]
 pipelineProperties = [:]
 
-String optaplannerRepository = 'optaplanner'
-String quickstartsRepository = 'optaplanner-quickstarts'
+String optaplannerRepository = 'incubator-kie-optaplanner'
+String quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 
 imageUtils = null
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && !built-in'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -27,13 +25,7 @@ pipeline {
         disableConcurrentBuilds(abortPrevious: true)
     }
 
-    // parameters {
-    // For parameters, check into .jenkins/dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
@@ -181,7 +173,7 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 String getProjectVersion() {

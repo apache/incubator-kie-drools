@@ -21,10 +21,10 @@
 * This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
 * needed by the Kogito pipelines.
 *
-* The main part of Jenkins job generation is defined into the https://github.com/kiegroup/kogito-pipelines repository.
+* The main part of Jenkins job generation is defined into the https://github.com/apache/incubator-kie-kogito-pipelines repository.
 *
 * This file is making use of shared libraries defined in
-* https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+* https://github.com/apache/incubator-kie-kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
 */
 
 import org.kie.jenkins.jobdsl.model.JenkinsFolder
@@ -66,7 +66,7 @@ KogitoJobUtils.createMainQuarkusUpdateToolsJob(this,
 
 void setupProjectDroolsJob(String droolsBranch) {
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'optaplanner-drools-snapshot', JobType.NIGHTLY, 'ecosystem', "${jenkins_path_project}/Jenkinsfile.drools", 'Optaplanner testing against Drools snapshot')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 2 * * *' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -149,7 +149,7 @@ void setupProjectReleaseJob() {
 
 void setupProjectPostReleaseJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner-post-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.post-release", 'Optaplanner Post Release')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -198,7 +198,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 ]
             ], [
                 id: 'optaplanner-quickstarts',
-                repository: 'optaplanner-quickstarts',
+                repository: 'incubator-kie-optaplanner-quickstarts',
                 env : [
                     BUILD_MVN_OPTS_CURRENT: '-Dfull',
                     OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull',
@@ -211,7 +211,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
 }
 
 // Optaplanner PR checks
-KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
+Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile")
 
 // Setup branch branch
 createSetupBranchJob()
@@ -251,9 +251,8 @@ void setupSpecificBuildChainNightlyJob(String envName) {
 
 void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'OptaPlanner Setup Branch')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'optaplanner',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
@@ -279,7 +278,7 @@ void createSetupBranchJob() {
 
 void setupDeployJob(JobType jobType, String envName = '') {
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'optaplanner-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Optaplanner Deploy')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     if (jobType == JobType.PULL_REQUEST) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
@@ -357,7 +356,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
 void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -400,7 +399,7 @@ void setupPromoteJob(JobType jobType) {
 void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, "optaplanner-turtle-tests-${constraintStreamImplType}", JobType.OTHER, "${jenkins_path}/Jenkinsfile.turtle",
             "Run OptaPlanner turtle tests with CS-${constraintStreamImplType} on a weekly basis.")
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
             CONSTRAINT_STREAM_IMPL_TYPE: "${constraintStreamImplType}",
             JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}"

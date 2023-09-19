@@ -59,9 +59,9 @@ jobs:
           # maven-assembly-plugin occasionally fails on heap space when building the ZIP in optaplanner-docs
           MAVEN_OPTS: "-Xmx2048m"
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/optaplanner/${BRANCH:main}/.ci/buildchain-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-optaplanner/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/optaplanner
+          starting-project: apache/incubator-kie-optaplanner
           flow-type: ${{ env.FLOW_TYPE }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
