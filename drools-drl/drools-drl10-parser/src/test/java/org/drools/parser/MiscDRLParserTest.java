@@ -305,7 +305,6 @@ class MiscDRLParserTest {
                 " System.err.println(\"Invalid customer id found!\"); \n" +
                 " o.addError(\"Invalid customer id\"); \n" +
                 "end \n";
-        System.out.println(source);
         PackageDescr pkg = parser.parse(source);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -2011,7 +2010,6 @@ class MiscDRLParserTest {
         assertThat(p.getObjectType()).isEqualTo("com.cheeseco.Cheese");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_Accumulate() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2034,7 +2032,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateWithBindings() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2356,7 +2353,6 @@ class MiscDRLParserTest {
         assertThat(rule1.getLhs().getDescrs().size()).isEqualTo(1);
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateReverse() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2382,7 +2378,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateExternalFunction() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2426,7 +2421,7 @@ class MiscDRLParserTest {
         assertThat(people.getObjectType()).isEqualTo("People");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
+    @Disabled("Priority : High | Implement accumulate and Implement from collect")
     @Test
     public void parse_AccumulateWithNestedFrom() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2448,7 +2443,6 @@ class MiscDRLParserTest {
         assertThat(people.getObjectType()).isEqualTo("People");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateMultipleFunctions() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2482,7 +2476,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateMnemonic() throws Exception {
         String drl = "package org.drools.mvel.compiler\n" +
@@ -2515,7 +2508,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateMnemonic2() throws Exception {
         String drl = "package org.drools.mvel.compiler\n" +
@@ -2596,7 +2588,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateMultipleFunctionsConstraint() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2701,7 +2692,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement accumulate")
     @Test
     public void parse_AccumulateMultiPattern() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
