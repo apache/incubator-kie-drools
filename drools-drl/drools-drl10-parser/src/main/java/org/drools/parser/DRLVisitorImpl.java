@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
+import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
@@ -25,6 +26,7 @@ import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.UnitDescr;
 
@@ -234,15 +236,64 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
         PatternDescr patternDescr = new PatternDescr(ctx.objectType.getText());
         if (ctx.patternSource() != null) {
-            String expression = ctx.patternSource().getText();
-            FromDescr from = new FromDescr();
-            from.setDataSource(new MVELExprDescr(expression));
-            from.setResource(patternDescr.getResource());
-            patternDescr.setSource(from);
+            PatternSourceDescr patternSourceDescr = (PatternSourceDescr) visitPatternSource(ctx.patternSource());
+            patternSourceDescr.setResource(patternDescr.getResource());
+            patternDescr.setSource(patternSourceDescr);
         }
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
         constraintDescrList.forEach(patternDescr::addConstraint);
         return patternDescr;
+    }
+
+    @Override
+    public PatternDescr visitLhsAccumulate(DRLParser.LhsAccumulateContext ctx) {
+        AccumulateDescr accumulateDescr = new AccumulateDescr();
+        accumulateDescr.setInput(visitLhsAndForAccumulate(ctx.lhsAndForAccumulate()));
+
+        // accumulate function
+        for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
+            accumulateDescr.addFunction(visitAccumulateFunction(accumulateFunctionContext));
+        }
+
+        PatternDescr patternDescr = new PatternDescr("Object");
+        patternDescr.setSource(accumulateDescr);
+        List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
+        constraintDescrList.forEach(patternDescr::addConstraint);
+        return patternDescr;
+    }
+
+    @Override
+    public FromDescr visitFromExpression(DRLParser.FromExpressionContext ctx) {
+        FromDescr fromDescr = new FromDescr();
+        fromDescr.setDataSource(new MVELExprDescr(ctx.getText()));
+        return fromDescr;
+    }
+
+    @Override
+    public AccumulateDescr visitFromAccumulate(DRLParser.FromAccumulateContext ctx) {
+        AccumulateDescr accumulateDescr = new AccumulateDescr();
+        accumulateDescr.setInput(visitLhsAndForAccumulate(ctx.lhsAndForAccumulate()));
+        if (ctx.DRL_INIT() != null) {
+            // inline custom accumulate
+            accumulateDescr.setInitCode(getTextPreservingWhitespace(ctx.initBlockStatements));
+            accumulateDescr.setActionCode(getTextPreservingWhitespace(ctx.actionBlockStatements));
+            if (ctx.DRL_REVERSE() != null) {
+                accumulateDescr.setReverseCode(getTextPreservingWhitespace(ctx.reverseBlockStatements));
+            }
+            accumulateDescr.setResultCode(ctx.expression().getText());
+        } else {
+            // accumulate function
+            accumulateDescr.addFunction(visitAccumulateFunction(ctx.accumulateFunction()));
+        }
+        return accumulateDescr;
+    }
+
+    @Override
+    public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
+        String function = ctx.IDENTIFIER().getText();
+        String bind = ctx.label() == null ? null : ctx.label().IDENTIFIER().getText();
+        String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
+        return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
     }
 
     @Override
@@ -304,10 +355,18 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public BaseDescr visitLhsAnd(DRLParser.LhsAndContext ctx) {
+        return createAndDescr(visitDescrChildren(ctx));
+    }
+
+    private AndDescr createAndDescr(List<BaseDescr> descrList) {
         AndDescr andDescr = new AndDescr();
-        List<BaseDescr> descrList = visitDescrChildren(ctx);
         descrList.forEach(andDescr::addDescr);
         return andDescr;
+    }
+
+    @Override
+    public BaseDescr visitLhsAndForAccumulate(DRLParser.LhsAndForAccumulateContext ctx) {
+        return createAndDescr(visitDescrChildren(ctx));
     }
 
     @Override
