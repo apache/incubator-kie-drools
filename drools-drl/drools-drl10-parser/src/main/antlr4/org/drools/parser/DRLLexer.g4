@@ -44,6 +44,11 @@ DRL_NOT : 'not';
 DRL_IN : 'in';
 DRL_FROM : 'from';
 DRL_MATCHES : 'matches';
+DRL_ACCUMULATE : 'accumulate' | 'acc';
+DRL_INIT : 'init';
+DRL_ACTION : 'action';
+DRL_REVERSE : 'reverse';
+DRL_RESULT : 'result';
 
 DRL_SALIENCE : 'salience';
 DRL_ENABLED : 'enabled';
