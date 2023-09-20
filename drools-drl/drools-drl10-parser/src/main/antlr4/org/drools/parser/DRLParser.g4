@@ -46,6 +46,11 @@ lhsExpression : LPAREN lhsExpression RPAREN             #lhsExpressionEnclosed
               | lhsExpression (DRL_OR lhsExpression)+   #lhsOr
               ;
 
+// and is accepted for accumulate
+lhsAndForAccumulate : lhsUnary (DRL_AND lhsUnary)+
+                    | LPAREN DRL_AND lhsUnary+ RPAREN
+                    ;
+
 /*
 lhsUnary : ( lhsExists namedConsequence?
            | lhsNot namedConsequence?
@@ -61,6 +66,7 @@ lhsUnary : (
            lhsExists
            | lhsNot
            | lhsPatternBind
+           | lhsAccumulate
            ) ;
 
 lhsPatternBind : label? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
@@ -257,8 +263,34 @@ mapEntry
                 | fromWindow
                 | fromExpression )
 */
-patternSource : fromExpression ;
+patternSource : fromExpression
+              | fromAccumulate
+              ;
+
 fromExpression : conditionalOrExpression ;
+
+
+/*
+fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
+                        ( INIT chunk_(_) COMMA ACTION chunk_(_) COMMA
+                          ( REVERSE chunk_(_) COMMA)? RESULT chunk_(_)
+                        | accumulateFunction
+                        ) RIGHT_PAREN
+*/
+fromAccumulate : DRL_ACCUMULATE LPAREN lhsAndForAccumulate (COMMA|SEMI)
+                   ( DRL_INIT LPAREN initBlockStatements=blockStatements RPAREN COMMA DRL_ACTION LPAREN actionBlockStatements=blockStatements RPAREN COMMA ( DRL_REVERSE LPAREN reverseBlockStatements=blockStatements RPAREN COMMA)? DRL_RESULT LPAREN expression RPAREN
+                   | accumulateFunction
+                   )
+                 RPAREN (SEMI)?
+                 ;
+
+blockStatements : blockStatement* ;
+
+/*
+accumulateFunction := label? ID parameters
+*/
+accumulateFunction : label? IDENTIFIER LPAREN drlExpression RPAREN;
+
 
 /*
  lhsExists := EXISTS
@@ -276,6 +308,19 @@ lhsExists : DRL_EXISTS lhsPatternBind ;
            )
 */
 lhsNot : DRL_NOT lhsPatternBind ;
+
+/**
+ * lhsAccumulate := (ACCUMULATE|ACC) LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
+ *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
+ *                      (SEMICOLON constraints)?
+ *                  RIGHT_PAREN SEMICOLON?
+ */
+
+lhsAccumulate : DRL_ACCUMULATE LPAREN lhsAndForAccumulate (COMMA|SEMI)
+                   accumulateFunction (COMMA accumulateFunction)*
+                   (SEMI constraints)?
+                 RPAREN (SEMI)?
+                 ;
 
 rhs : DRL_THEN consequence ;
 
