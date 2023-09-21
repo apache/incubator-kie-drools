@@ -23,23 +23,20 @@ import org.drools.core.common.Storage;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SimpleSerializationReliableRefObjectStore extends SimpleSerializationReliableObjectStore {
 
-    private Map<String, Long> uniqueObjectTypesInStore;  // object type name, occurances
+    private Set<String> uniqueObjectTypesInStorage;
     private transient IdentityHashMap<Object, Long> inverseStorage;
 
     public SimpleSerializationReliableRefObjectStore(Storage<Long, StoredObject> storage) {
         super(storage);
-        uniqueObjectTypesInStore = new HashMap<>();
+        uniqueObjectTypesInStorage = new HashSet<>();
         setInverseStorage(storage);
         if (!storage.isEmpty()) {
             updateObjectTypesList();
@@ -119,32 +116,25 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
 
     private List<Field> getReferencedObjects(Object object) {
         Field[] fields = object.getClass().getDeclaredFields();
-
         return Arrays.stream(fields)
-                .filter(field -> uniqueObjectTypesInStore.containsKey(field.getType().getName()))
+                .filter(field -> uniqueObjectTypesInStorage.contains(field.getType().getName()))
                 .collect(Collectors.toList());
     }
 
     private void updateObjectTypesList(Object object) {
-        uniqueObjectTypesInStore.put(object.getClass().getName(),
-                storage.values().stream().filter(sObject -> sObject.getObject().getClass().equals(object.getClass())).count());
-        // if count==0 then remove entry
-        if (uniqueObjectTypesInStore.get(object.getClass().getName()) == 0) {
-            uniqueObjectTypesInStore.remove(object.getClass().getName());
+        if (inverseStorage.keySet().stream().filter(sObject -> sObject.getClass().equals(object.getClass())).findAny()!=null){
+            uniqueObjectTypesInStorage.add(object.getClass().getName());
+        }else{
+            uniqueObjectTypesInStorage.remove(object.getClass().getName());
         }
     }
 
     private void updateObjectTypesList() {
         // list of unique object types in storage
-        Set<String> uTypeNames = new HashSet<String>();
+        uniqueObjectTypesInStorage.clear();
         storage.values().forEach(sObject -> {
-            uTypeNames.add(sObject.getObject().getClass().getName());
+            uniqueObjectTypesInStorage.add(sObject.getObject().getClass().getName());
         });
-        // add unique object types + their occurrences in the uniqueObjectTypesInStore
-        uniqueObjectTypesInStore.putAll(storage.values().stream()
-                .map(sObject -> sObject.getObject().getClass().getName())
-                .filter(uTypeNames::contains)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())));
     }
 }
 
