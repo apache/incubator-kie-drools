@@ -2902,7 +2902,6 @@ class MiscDRLParserTest {
         assertThat(g.getObjectType()).isEqualTo("G");
     }
 
-    @Disabled("Priority : High | Implement from entry-point")
     @Test
     public void parse_EntryPoint() throws Exception {
         final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point StreamA then end";
@@ -2923,7 +2922,6 @@ class MiscDRLParserTest {
         assertThat(entry.getEntryId()).isEqualTo("StreamA");
     }
 
-    @Disabled("Priority : High | Implement from entry-point")
     @Test
     public void parse_EntryPoint2() throws Exception {
         final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point \"StreamA\" then end";
