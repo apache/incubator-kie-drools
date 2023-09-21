@@ -39,7 +39,7 @@
 
   <properties>
     <java.module.name>org.drools.efesto.dependencies</java.module.name>
-    <skip.jdepend>false</skip.jdepend>
+    <skip.jdepend>true</skip.jdepend>
   </properties>
 
   <dependencies>
