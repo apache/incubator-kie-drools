@@ -14,6 +14,7 @@ import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
@@ -294,6 +295,11 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         String bind = ctx.label() == null ? null : ctx.label().IDENTIFIER().getText();
         String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
+    }
+
+    @Override
+    public EntryPointDescr visitFromEntryPoint(DRLParser.FromEntryPointContext ctx) {
+        return new EntryPointDescr(safeStripStringDelimiters(ctx.stringId().getText()));
     }
 
     @Override
