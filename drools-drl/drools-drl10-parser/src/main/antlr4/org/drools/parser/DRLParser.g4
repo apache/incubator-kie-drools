@@ -265,6 +265,7 @@ mapEntry
 */
 patternSource : fromExpression
               | fromAccumulate
+              | fromEntryPoint
               ;
 
 fromExpression : conditionalOrExpression ;
@@ -291,6 +292,7 @@ accumulateFunction := label? ID parameters
 */
 accumulateFunction : label? IDENTIFIER LPAREN drlExpression RPAREN;
 
+fromEntryPoint : DRL_ENTRY_POINT stringId ;
 
 /*
  lhsExists := EXISTS
