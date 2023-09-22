@@ -22,47 +22,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>kie-drl</artifactId>
-        <groupId>org.kie</groupId>
-        <version>8.45.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>kie-drl</artifactId>
+    <groupId>org.kie</groupId>
+    <version>8.45.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-drl-compilation-common</artifactId>
+  <artifactId>kie-drl-compilation-common</artifactId>
 
-    <name>KIE :: DRL :: Compilation :: Common</name>
-    <description>Common code for DRL Compilation</description>
+  <name>KIE :: DRL :: Compilation :: Common</name>
+  <description>Common code for DRL Compilation</description>
 
-    <properties>
-        <skip.jdepend>false</skip.jdepend>
-    </properties>
+  <properties>
+    <java.module.name>org.kie.drl.compilationcommon</java.module.name>
+    <skip.jdepend>false</skip.jdepend>
+  </properties>
 
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>efesto-compilation-manager-core</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-model-codegen</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-api</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-ruleunits-impl</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-drl-api</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-compilation-manager-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-codegen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-drl-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-    </dependencies>
+  </dependencies>
 </project>

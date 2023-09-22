@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Models :: Drools :: Common</name>
   <description>Common code for PMML Models with Drools Implementations</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.drools.common</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

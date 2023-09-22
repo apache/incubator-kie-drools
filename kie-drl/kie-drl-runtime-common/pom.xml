@@ -22,34 +22,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>kie-drl</artifactId>
-        <groupId>org.kie</groupId>
-        <version>8.45.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>kie-drl</artifactId>
+    <groupId>org.kie</groupId>
+    <version>8.45.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-drl-runtime-common</artifactId>
+  <artifactId>kie-drl-runtime-common</artifactId>
 
-    <name>KIE :: DRL :: Runtime :: Common</name>
-    <description>Common code for DRL Runtime</description>
+  <name>KIE :: DRL :: Runtime :: Common</name>
+  <description>Common code for DRL Runtime</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>efesto-runtime-manager-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-model-compiler</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <properties>
+    <java.module.name>org.kie.drl.runtimecommon</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 
 </project>

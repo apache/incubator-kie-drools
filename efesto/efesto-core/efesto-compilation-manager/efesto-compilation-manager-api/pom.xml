@@ -34,6 +34,7 @@
   <name>Efesto :: Compilation :: Manager :: Api</name>
 
   <properties>
+    <java.module.name>org.drools.efesto.core.compilationmanager.api</java.module.name>
     <skip.jdepend>false</skip.jdepend>
   </properties>
 

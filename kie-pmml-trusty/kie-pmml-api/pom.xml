@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: API</name>
   <description>Public APIs from Trusty PMML</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.api</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- KIE -->
     <dependency>

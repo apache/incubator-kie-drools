@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Tree :: Tests</name>
   <description>PMML Tree Tests</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.tree.tests</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- TEST -->
     <!-- PMML -->

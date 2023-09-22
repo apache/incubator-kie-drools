@@ -35,6 +35,10 @@
 
   <name>Drools :: Test Coverage :: KIE-CI with Domain classes :: Domain</name>
 
+  <properties>
+    <java.module.name>org.drools.testcoverage.standalone.kieciwithdomain.testdomain</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

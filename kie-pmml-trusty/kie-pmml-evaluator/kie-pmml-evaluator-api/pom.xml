@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Evaluator :: API</name>
   <description>API specific for PMML evaluator</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.evaluator.api</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

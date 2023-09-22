@@ -22,164 +22,168 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.45.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-drl-quarkus-extension</artifactId>
+    <version>8.45.0-SNAPSHOT</version>
+  </parent>
 
-    <name>Drools :: Quarkus Extension :: Integration Test with Rule Unit</name>
-    <artifactId>drools-drl-quarkus-ruleunit-integration-test</artifactId>
+  <name>Drools :: Quarkus Extension :: Integration Test with Rule Unit</name>
+  <artifactId>drools-drl-quarkus-ruleunit-integration-test</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-drl-quarkus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-ruleunits-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-core</artifactId>
-        </dependency>
-        
-        <dependency> <!-- enable REST endpoint as hook point for E2E opaque testing -->
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive</artifactId>
-        </dependency>
-        <dependency> <!-- enable assertions in REST endpoint as hook point for E2E opaque testing -->
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
+  <properties>
+    <java.module.name>org.drools.drl.quarkus.ruleunit.integrationtest</java.module.name>
+  </properties>
 
-        <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-drl-quarkus-deployment</artifactId>
-            <type>pom</type>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drl-quarkus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-core</artifactId>
+    </dependency>
 
-    </dependencies>
+    <dependency> <!-- enable REST endpoint as hook point for E2E opaque testing -->
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-reactive</artifactId>
+    </dependency>
+    <dependency> <!-- enable assertions in REST endpoint as hook point for E2E opaque testing -->
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-maven-plugin</artifactId>
-                    <version>${version.io.quarkus}</version>
-                    <configuration>
-                        <noDeps>true</noDeps>
-                        <skip>${skipTests}</skip>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+    <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drl-quarkus-deployment</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${version.io.quarkus}</version>
+          <configuration>
+            <noDeps>true</noDeps>
+            <skip>${skipTests}</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <useModulePath>false</useModulePath>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+          <excludes>
+            <exclude>**/*Test.java</exclude>
+            <exclude>**/Native*</exclude>
+          </excludes>
+          <argLine>-Xmx2048m -Xmx4g</argLine>
+          <systemPropertyVariables>
+            <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
+            <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+      <!-- quarkus-resteasy brings in a couple of dependencies in the javax.* namespace that cannot be excluded -->
+      <!-- that's why it is necessary to disable the plugin that checks for banned dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-blacklisted-dependencies</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <fail>false</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>native</id>
+      <activation>
+        <property>
+          <name>native</name>
+        </property>
+      </activation>
+      <properties>
+        <quarkus.package.type>native</quarkus.package.type>
+      </properties>
+      <build>
         <plugins>
-            <plugin>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
                 <configuration>
-                    <useModulePath>false</useModulePath>
-                    <includes>
-                        <include>**/*IT.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*Test.java</exclude>
-                        <exclude>**/Native*</exclude>
-                    </excludes>
-                    <argLine>-Xmx2048m -Xmx4g</argLine>
-                    <systemPropertyVariables>
-                        <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
-                        <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
-                    </systemPropertyVariables>
+                  <systemProperties>
+                    <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                  </systemProperties>
                 </configuration>
-            </plugin>
-
-            <!-- quarkus-resteasy brings in a couple of dependencies in the javax.* namespace that cannot be excluded -->
-            <!-- that's why it is necessary to disable the plugin that checks for banned dependencies -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>ban-blacklisted-dependencies</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <fail>false</fail>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>native</id>
-            <activation>
-                <property>
-                    <name>native</name>
-                </property>
-            </activation>
-            <properties>
-                <quarkus.package.type>native</quarkus.package.type>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <systemProperties>
-                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                                    </systemProperties>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+      </build>
+    </profile>
+  </profiles>
 </project>

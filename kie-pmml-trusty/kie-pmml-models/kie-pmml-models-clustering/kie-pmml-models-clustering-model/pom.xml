@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Clustering :: Model</name>
   <description>KiePMML Model for Clustering implementation</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.clustering.model</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

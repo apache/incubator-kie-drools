@@ -32,6 +32,10 @@
   <name>Drools :: Quarkus Extension :: Examples :: Reactive</name>
   <artifactId>drools-drl-quarkus-examples-reactive</artifactId>
 
+  <properties>
+    <java.module.name>org.drools.drl.quarkus.examples.reactive</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
