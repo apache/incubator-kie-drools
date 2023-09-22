@@ -9,6 +9,7 @@ pipeline {
     options {
         timestamps()
         timeout(time: 480, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
     }
     environment {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-drools'
