@@ -20,4 +20,5 @@ rule simple_rule
     Bar()
     eval(abc("foo"))
   then
+    Kapow
 end
