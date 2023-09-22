@@ -43,7 +43,8 @@ environments:
     - sonarcloud
     - coverage
 disable:
-  triggers: true # TODO to set back
+  triggers: false
+  deploy: true
 repositories:
 - name: incubator-kie-drools
   job_display_name: drools
@@ -60,8 +61,8 @@ git:
     name: apache
     # Taken from https://ci-builds.apache.org/credentials/
     # Need to be verified
-    credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
-    token_credentials_id: ci-builds
+    credentials_id: kie-ci
+    token_credentials_id: kie-ci-token
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
@@ -98,8 +99,8 @@ jenkins:
   agent:
     docker:
       builder:
-        image: quay.io/kiegroup/kogito-ci-build:latest
-        args: -v /var/run/docker.sock:/var/run/docker.sock --group-add docker --group-add input --group-add render
+        image: quay.io/kiegroup/kogito-ci-build:main-latest
+        args: -v /var/run/docker.sock:/var/run/docker.sock --network host --group-add docker --group-add input --group-add render
   default_tools:
     jdk: jdk_11_latest
     maven: maven_3.8.6
