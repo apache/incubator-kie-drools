@@ -28,20 +28,20 @@ jobs:
     name: Ansible Integration / ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     steps:
       - name: Clean Disk Space
-        uses: kiegroup/kie-ci/.ci/actions/ubuntu-disk-space@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: kiegroup/kie-ci/.ci/actions/long-paths@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
       - name: Java and Maven Setup
-        uses: kiegroup/kie-ci/.ci/actions/maven@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
           allow-snapshots: true
       - name: Build Chain
-        uses: kiegroup/kie-ci/.ci/actions/build-chain@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools-ansible-rulebook-integration/${BRANCH:main}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
