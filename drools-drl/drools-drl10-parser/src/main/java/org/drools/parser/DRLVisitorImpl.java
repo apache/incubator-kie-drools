@@ -16,6 +16,7 @@ import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
@@ -355,6 +356,11 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         BaseDescr descr = visitLhsPatternBind(ctx.lhsPatternBind());
         notDescr.addDescr(descr);
         return notDescr;
+    }
+
+    @Override
+    public EvalDescr visitLhsEval(DRLParser.LhsEvalContext ctx) {
+        return new EvalDescr(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
     }
 
     @Override
