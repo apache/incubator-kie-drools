@@ -50,6 +50,7 @@ DRL_ACTION : 'action';
 DRL_REVERSE : 'reverse';
 DRL_RESULT : 'result';
 DRL_ENTRY_POINT : 'entry-point';
+DRL_EVAL : 'eval';
 
 DRL_SALIENCE : 'salience';
 DRL_ENABLED : 'enabled';
