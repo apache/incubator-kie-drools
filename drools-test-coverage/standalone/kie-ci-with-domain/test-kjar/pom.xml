@@ -35,6 +35,10 @@
 
   <name>Drools :: Test Coverage :: KIE-CI with Domain classes :: KJar</name>
 
+  <properties>
+    <java.module.name>org.drools.testcoverage.standalone.kieciwithdomain.testkjar</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools.testcoverage</groupId>

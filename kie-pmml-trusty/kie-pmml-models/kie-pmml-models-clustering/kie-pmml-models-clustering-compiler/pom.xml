@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Clustering :: Compiler</name>
   <description>PMML Clustering Compiler</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.clustering.compiler</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

@@ -33,6 +33,7 @@
   <description>KiePMML Model for Mining implementation</description>
 
   <properties>
+    <java.module.name>org.kie.pmml.models.mining.model</java.module.name>
     <sonar.coverage.exclusions>**/segmentation/**.java</sonar.coverage.exclusions>
   </properties>
 

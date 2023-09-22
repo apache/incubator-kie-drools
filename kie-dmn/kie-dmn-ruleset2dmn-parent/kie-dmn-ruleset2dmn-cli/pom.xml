@@ -28,6 +28,10 @@
   <artifactId>kie-dmn-ruleset2dmn-cli</artifactId>
   
   <name>KIE :: Decision Model Notation :: ruleset2dmn CLI</name>
+
+  <properties>
+    <java.module.name>org.kie.dmn.ruleset2dmn.cli</java.module.name>
+  </properties>
   
   <dependencyManagement>
     <dependencies>

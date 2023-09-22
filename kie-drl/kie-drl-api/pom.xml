@@ -22,17 +22,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>kie-drl</artifactId>
-        <groupId>org.kie</groupId>
-        <version>8.45.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>kie-drl</artifactId>
+    <groupId>org.kie</groupId>
+    <version>8.45.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kie-drl-api</artifactId>
+  <artifactId>kie-drl-api</artifactId>
 
-    <name>KIE :: DRL :: API</name>
-    <description>Common API for DRL</description>
+  <name>KIE :: DRL :: API</name>
+  <description>Common API for DRL</description>
+
+  <properties>
+    <java.module.name>org.kie.drl.api</java.module.name>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -45,7 +49,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 
 
 </project>

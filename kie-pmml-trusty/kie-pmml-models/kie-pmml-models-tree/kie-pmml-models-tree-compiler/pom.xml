@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Tree :: Compiler</name>
   <description>PMML Tree Compiler</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.tree.compiler</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

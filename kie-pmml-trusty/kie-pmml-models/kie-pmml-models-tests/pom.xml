@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Models :: Tests</name>
   <description>PMML Common classes for Tests</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.tests</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

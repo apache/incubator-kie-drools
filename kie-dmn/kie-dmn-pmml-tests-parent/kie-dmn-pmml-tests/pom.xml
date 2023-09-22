@@ -32,6 +32,10 @@
   <name>KiE :: Decision Model Notation - PMML Tests</name>
   <artifactId>kie-dmn-pmml-tests</artifactId>
 
+  <properties>
+    <java.module.name>org.kie.dmn.pmml.tests</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

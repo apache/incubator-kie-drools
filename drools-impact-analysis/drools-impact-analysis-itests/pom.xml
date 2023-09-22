@@ -33,8 +33,11 @@
 
   <name>Drools :: Impact Analysis :: Integration Tests</name>
 
-  <dependencies>
+  <properties>
+    <java.module.name>org.drools.impact.analysis.integrationtests</java.module.name>
+  </properties>
 
+  <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-parser</artifactId>

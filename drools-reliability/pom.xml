@@ -36,7 +36,7 @@
   <name>Drools :: Reliability</name>
 
   <properties>
-    <java.module.name>org.drools.reliability</java.module.name>
+    <java.module.name>org.drools.reliability.tests</java.module.name>
   </properties>
 
   <packaging>pom</packaging>

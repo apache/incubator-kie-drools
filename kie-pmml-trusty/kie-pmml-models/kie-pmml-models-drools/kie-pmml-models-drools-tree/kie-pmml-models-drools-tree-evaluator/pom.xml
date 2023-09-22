@@ -31,6 +31,10 @@
   <name>KIE :: PMML :: Models :: Drools :: Tree :: Evaluator</name>
   <description>PMML Tree Evaluator</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.drools.tree.evaluator</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

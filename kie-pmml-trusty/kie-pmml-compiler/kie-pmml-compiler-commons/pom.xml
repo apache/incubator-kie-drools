@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Compiler :: Commons</name>
   <description>Kie PMML Compiler Commons</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.compiler.commons</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

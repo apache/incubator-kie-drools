@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Compiler :: API</name>
   <description>API specific for PMML Compiler</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.compiler.api</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

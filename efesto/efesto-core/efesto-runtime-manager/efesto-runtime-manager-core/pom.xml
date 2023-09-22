@@ -34,6 +34,7 @@
   <name>Efesto :: Runtime :: Manager :: Core</name>
 
   <properties>
+    <java.module.name>org.drools.efesto.core.compilationmanager.core</java.module.name>
     <skip.jdepend>false</skip.jdepend>
   </properties>
 

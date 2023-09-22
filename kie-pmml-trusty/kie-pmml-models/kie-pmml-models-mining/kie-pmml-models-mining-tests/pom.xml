@@ -31,6 +31,10 @@
   <name>KIE :: PMML :: Models :: Mining :: Tests</name>
   <description>PMML Mining Tests</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.mining.tests</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- TEST -->
     <!-- PMML -->

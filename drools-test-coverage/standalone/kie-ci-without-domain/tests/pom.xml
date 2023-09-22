@@ -35,6 +35,10 @@
 
   <name>Drools :: Test Coverage :: KIE-CI without Domain classes :: Tests</name>
 
+  <properties>
+    <java.module.name>org.drools.testcoverage.standalone.kieciwithoutdomain.tests</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <!-- This module must NOT depend on org.drools.testcoverage:drools-kie-ci-without-domain-test-domain -->

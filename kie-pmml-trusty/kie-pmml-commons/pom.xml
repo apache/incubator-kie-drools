@@ -36,6 +36,7 @@
 
   <properties>
     <sonar.coverage.exclusions>**/exceptions/**.java,**/model/predicates/**.java</sonar.coverage.exclusions>
+    <java.module.name>org.kie.pmml.commons</java.module.name>
   </properties>
 
   <dependencies>

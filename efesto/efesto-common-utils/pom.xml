@@ -34,6 +34,7 @@
   <name>Efesto :: Common :: Utils</name>
 
   <properties>
+    <java.module.name>org.drools.efesto.commonutils</java.module.name>
     <skip.jdepend>false</skip.jdepend>
   </properties>
 
