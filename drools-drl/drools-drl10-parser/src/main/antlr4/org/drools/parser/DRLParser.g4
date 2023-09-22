@@ -67,8 +67,9 @@ lhsUnary : ( lhsExists namedConsequence?
 lhsUnary : (
            lhsExists
            | lhsNot
-           | lhsPatternBind
+           | lhsEval
            | lhsAccumulate
+           | lhsPatternBind
            ) ;
 
 lhsPatternBind : label? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
@@ -139,6 +140,7 @@ drlKeywords
     : DRL_UNIT
     | DRL_FUNCTION
     | DRL_GLOBAL
+    | DRL_DECLARE
     | DRL_RULE
     | DRL_QUERY
     | DRL_WHEN
@@ -151,6 +153,13 @@ drlKeywords
     | DRL_IN
     | DRL_FROM
     | DRL_MATCHES
+    | DRL_ACCUMULATE
+    | DRL_INIT
+    | DRL_ACTION
+    | DRL_REVERSE
+    | DRL_RESULT
+    | DRL_ENTRY_POINT
+    | DRL_EVAL
     | DRL_SALIENCE
     | DRL_ENABLED
     | DRL_NO_LOOP
@@ -182,6 +191,7 @@ drlExpression
        | explicitGenericInvocation
       )
     | drlExpression LBRACK drlExpression RBRACK
+    | DRL_EVAL LPAREN conditionalOrExpression RPAREN
     | methodCall
     | NEW drlCreator
     | LPAREN annotation* typeType (BITAND typeType)* RPAREN drlExpression
@@ -267,9 +277,9 @@ mapEntry
                 | fromWindow
                 | fromExpression )
 */
-patternSource : fromExpression
-              | fromAccumulate
+patternSource : fromAccumulate
               | fromEntryPoint
+              | fromExpression
               ;
 
 fromExpression : conditionalOrExpression ;
@@ -314,6 +324,11 @@ lhsExists : DRL_EXISTS lhsPatternBind ;
            )
 */
 lhsNot : DRL_NOT lhsPatternBind ;
+
+/**
+ * lhsEval := EVAL LEFT_PAREN conditionalExpression RIGHT_PAREN
+ */
+lhsEval : DRL_EVAL LPAREN conditionalOrExpression RPAREN ;
 
 /**
  * lhsAccumulate := (ACCUMULATE|ACC) LEFT_PAREN lhsAnd (COMMA|SEMICOLON)

@@ -1519,7 +1519,6 @@ class MiscDRLParserTest {
         assertThat(bar3.getObjectType()).isEqualTo("Bar");
     }
 
-    @Disabled("Priority : High | Implement eval")
     @Test
     public void parse_EvalMultiple() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -1537,7 +1536,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement eval")
     @Test
     public void parse_WithEval() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
