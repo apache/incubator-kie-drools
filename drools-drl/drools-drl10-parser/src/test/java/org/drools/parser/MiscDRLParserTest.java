@@ -3176,13 +3176,12 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement BigInteger literal, BigDecimal literal")
     @Test
-    public void parse_BigLiterals() throws Exception {
+    public void parse_BigLiterals() {
         final String text = "rule X when Primitives( bigInteger == (10I), " +
                 "                        bigDecimal == (10B), " +
                 "                        bigInteger < 50I, " +
-                "                        bigDecimal < 50B ) then end";
+                "                        bigDecimal < 50.2B ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
@@ -3197,7 +3196,7 @@ class MiscDRLParserTest {
         assertThat(ecd.getExpression()).isEqualTo("bigInteger < 50I");
 
         ecd = (ExprConstraintDescr) pattern.getDescrs().get( 3 );
-        assertThat(ecd.getExpression()).isEqualTo("bigDecimal < 50B");
+        assertThat(ecd.getExpression()).isEqualTo("bigDecimal < 50.2B");
     }
 
     @Test
