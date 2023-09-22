@@ -85,6 +85,15 @@ DRL_STRING_LITERAL
     |  ('\'' ( DrlEscapeSequence | ~('\\'|'\'') )* '\'') { setText( normalizeString( getText() ) ); }
     ;
 
+DRL_BIG_DECIMAL_LITERAL
+    :  ('0'..'9')+ [B]
+    |  ('0'..'9')+ '.' ('0'..'9')+ [B]
+    ;
+
+DRL_BIG_INTEGER_LITERAL
+    :  ('0'..'9')+ [I]
+    ;
+
 /////////////////
 // SYMBOLS
 /////////////////

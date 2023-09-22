@@ -230,6 +230,8 @@ drlPrimary
 drlLiteral
     : integerLiteral
     | floatLiteral
+    | DRL_BIG_DECIMAL_LITERAL
+    | DRL_BIG_INTEGER_LITERAL
     | CHAR_LITERAL
     | DRL_STRING_LITERAL
     | BOOL_LITERAL
