@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
@@ -65,6 +66,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 packageDescr.addGlobal((GlobalDescr) descr);
             } else if (descr instanceof FunctionImportDescr) {
                 packageDescr.addFunctionImport((FunctionImportDescr) descr);
+            } else if (descr instanceof AccumulateImportDescr) {
+                packageDescr.addAccumulateImport((AccumulateImportDescr) descr);
             } else if (descr instanceof ImportDescr) {
                 packageDescr.addImport((ImportDescr) descr);
             } else if (descr instanceof FunctionDescr) {
@@ -96,7 +99,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public ImportDescr visitImportdef(DRLParser.ImportdefContext ctx) {
+    public ImportDescr visitImportStandardDef(DRLParser.ImportStandardDefContext ctx) {
         String target = ctx.drlQualifiedName().getText() + (ctx.MUL() != null ? ".*" : "");
         if (ctx.DRL_FUNCTION() != null || ctx.STATIC() != null) {
             FunctionImportDescr functionImportDescr = new FunctionImportDescr();
@@ -109,6 +112,14 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             populateStartEnd(importDescr, ctx);
             return importDescr;
         }
+    }
+
+    @Override
+    public AccumulateImportDescr visitImportAccumulateDef(DRLParser.ImportAccumulateDefContext ctx) {
+        AccumulateImportDescr accumulateImportDescr = new AccumulateImportDescr();
+        accumulateImportDescr.setTarget(ctx.drlQualifiedName().getText());
+        accumulateImportDescr.setFunctionName(ctx.IDENTIFIER().getText());
+        return accumulateImportDescr;
     }
 
     @Override

@@ -28,7 +28,9 @@ packagedef : PACKAGE name=drlQualifiedName SEMI? ;
 
 unitdef : DRL_UNIT name=drlQualifiedName SEMI? ;
 
-importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)? SEMI? ;
+importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)? SEMI? #importStandardDef
+          | IMPORT DRL_ACCUMULATE drlQualifiedName IDENTIFIER SEMI?         #importAccumulateDef
+          ;
 
 globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
@@ -47,7 +49,7 @@ lhsExpression : LPAREN lhsExpression RPAREN             #lhsExpressionEnclosed
               ;
 
 // and is accepted for accumulate
-lhsAndForAccumulate : lhsUnary (DRL_AND lhsUnary)+
+lhsAndForAccumulate : lhsUnary (DRL_AND lhsUnary)*
                     | LPAREN DRL_AND lhsUnary+ RPAREN
                     ;
 

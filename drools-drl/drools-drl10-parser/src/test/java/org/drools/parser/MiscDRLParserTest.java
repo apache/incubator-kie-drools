@@ -2539,7 +2539,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : High | Implement import accumulate")
     @Test
     public void parse_ImportAccumulate() throws Exception {
         String drl = "package org.drools.mvel.compiler\n" +
