@@ -43,7 +43,6 @@ environments:
     - sonarcloud
     - coverage
 disable:
-  triggers: false
   deploy: true
 repositories:
 - name: incubator-kie-drools
