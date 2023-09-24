@@ -61,7 +61,7 @@ git:
     # Taken from https://ci-builds.apache.org/credentials/
     # Need to be verified
     credentials_id: kie-ci
-    token_credentials_id: kie-ci-token
+    token_credentials_id: kie-ci3-token
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
