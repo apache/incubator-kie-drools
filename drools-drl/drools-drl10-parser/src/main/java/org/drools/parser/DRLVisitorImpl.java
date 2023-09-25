@@ -150,6 +150,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public RuleDescr visitRuledef(DRLParser.RuledefContext ctx) {
         RuleDescr ruleDescr = new RuleDescr(safeStripStringDelimiters(ctx.name.getText()));
 
+        if (ctx.EXTENDS() != null) {
+            ruleDescr.setParentName(safeStripStringDelimiters(ctx.parentName.getText()));
+        }
+
         ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(ruleDescr::addAnnotation);
 
         if (ctx.attributes() != null) {
