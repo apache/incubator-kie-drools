@@ -1,20 +1,17 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.drools.codegen.common;
 
@@ -35,7 +32,18 @@ public class AppPaths {
         GRADLE;
 
         public static AppPaths.BuildTool findBuildTool() {
-            return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
+            return System.getProperties()
+                           .keySet()
+                           .stream()
+                           .map(String.class::cast)
+                           .anyMatch(k -> k.contains("gradle")) ||
+                   System.getProperties()
+                           .values()
+                           .stream()
+                           .map(String.class::cast)
+                           .anyMatch(v -> v.contains("gradle"))
+                   ? GRADLE
+                   : MAVEN;
         }
     }
 
@@ -45,11 +53,12 @@ public class AppPaths {
     private final Collection<Path> classesPaths = new ArrayList<>();
 
     private final boolean isJar;
+    private final BuildTool bt;
     private final Path resourcesPath;
     private final Path outputTarget;
 
     public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main", outputTarget);
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), "main", outputTarget);
     }
 
     /**
@@ -59,7 +68,7 @@ public class AppPaths {
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "test", Paths.get(projectDir.toString(), TARGET_DIR));
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), "test", Paths.get(projectDir.toString(), TARGET_DIR));
     }
 
     /**
@@ -72,6 +81,7 @@ public class AppPaths {
     protected AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
             String resourcesBasePath, Path outputTarget) {
         this.isJar = isJar;
+        this.bt = bt;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
         this.outputTarget = outputTarget;
@@ -91,7 +101,9 @@ public class AppPaths {
     }
 
     public Path getFirstProjectPath() {
-        return projectPaths.iterator().next();
+        return bt == BuildTool.MAVEN
+               ? projectPaths.iterator().next()
+               : outputTarget;
     }
 
     private Path[] getJarPaths() {
