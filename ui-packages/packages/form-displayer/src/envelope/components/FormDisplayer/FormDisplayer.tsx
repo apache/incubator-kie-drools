@@ -15,9 +15,9 @@
  */
 
 import React, {
-  useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useState
 } from 'react';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
@@ -73,7 +73,7 @@ export const FormDisplayer = React.forwardRef<
       return api;
     };
 
-    const canDisplayForm = useCallback(() => {
+    const canDisplayForm = useMemo(() => {
       return isEnvelopeConnectedToChannel && !isExecuting && source;
     }, [isEnvelopeConnectedToChannel, isExecuting, source]);
 
@@ -114,7 +114,7 @@ export const FormDisplayer = React.forwardRef<
 
     return (
       <div {...componentOuiaProps(ouiaId, 'form-displayer', ouiaSafe)}>
-        {canDisplayForm() ? (
+        {canDisplayForm ? (
           <div id={'inner-form-container'}>
             {content.formInfo && content.formInfo.type === 'TSX' ? (
               <ReactFormRenderer
