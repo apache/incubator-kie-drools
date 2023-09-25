@@ -36,7 +36,7 @@ globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
 // rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
-ruledef : DRL_RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? lhs rhs DRL_END ;
+ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* attributes? lhs rhs DRL_END ;
 
 lhs : DRL_WHEN lhsExpression* ;
 
