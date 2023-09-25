@@ -2783,7 +2783,6 @@ class MiscDRLParserTest {
                                       );
     }
 
-    @Disabled("Priority : High | Implement extends")
     @Test
     public void parse_RuleExtends() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
