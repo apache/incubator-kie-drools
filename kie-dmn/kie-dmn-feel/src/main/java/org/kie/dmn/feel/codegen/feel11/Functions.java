@@ -79,7 +79,7 @@ public class Functions {
 
     public static DirectCompilerResult declaration(FunctionDefNode n, MethodCallExpr list, Expression fnBody) {
         LambdaExpr lambda = Expressions.lambda(fnBody);
-        String fnName = Constants.functionName(n.getBody().getText());
+        String fnName = Constants.functionName("FNBODY_" + n.getBody().getText());
         DirectCompilerResult r = DirectCompilerResult.of(
                 Functions.internal(list, new NameExpr(fnName)),
                 BuiltInType.FUNCTION);
