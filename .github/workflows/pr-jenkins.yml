@@ -16,7 +16,7 @@ jobs:
     name: DSL
     steps:
     - name: DSL tests
-      uses: kiegroup/kie-ci/.ci/actions/dsl-tests@main
+      uses: apache/incubator-kie-kogito-pipelines/.ci/actions/dsl-tests@main
       with:
         project: incubator-kie-drools
         main-config-file-repo: apache/incubator-kie-drools
