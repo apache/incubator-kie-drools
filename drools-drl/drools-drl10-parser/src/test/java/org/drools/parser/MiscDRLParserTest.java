@@ -2126,7 +2126,6 @@ class MiscDRLParserTest {
         assertThat("Cheese").isEqualTo(cheese3.getObjectType());
     }
 
-    @Disabled("Priority : High | Implement forall")
     @Test
     public void parse_Forall() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2147,7 +2146,6 @@ class MiscDRLParserTest {
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : High | Implement forall")
     @Test
     public void parse_ForallWithFrom() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
