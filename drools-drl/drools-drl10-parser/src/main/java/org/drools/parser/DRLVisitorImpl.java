@@ -19,6 +19,7 @@ import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
+import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
@@ -263,6 +264,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public ForallDescr visitLhsForall(DRLParser.LhsForallContext ctx) {
+        ForallDescr forallDescr = new ForallDescr();
+        visitDescrChildren(ctx).forEach(forallDescr::addDescr);
+        return forallDescr;
+    }
+
+    @Override
     public PatternDescr visitLhsAccumulate(DRLParser.LhsAccumulateContext ctx) {
         AccumulateDescr accumulateDescr = new AccumulateDescr();
         accumulateDescr.setInput(visitLhsAndForAccumulate(ctx.lhsAndForAccumulate()));
@@ -398,7 +406,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public BaseDescr visitLhsUnary(DRLParser.LhsUnaryContext ctx) {
-        return (BaseDescr) visitChildren(ctx);
+        return visitDescrChildren(ctx).get(0);
     }
 
     private void populateStartEnd(BaseDescr descr, ParserRuleContext ctx) {
