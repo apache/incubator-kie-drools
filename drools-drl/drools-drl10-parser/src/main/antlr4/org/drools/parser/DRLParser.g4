@@ -68,9 +68,10 @@ lhsUnary : (
            lhsExists
            | lhsNot
            | lhsEval
+           | lhsForall
            | lhsAccumulate
            | lhsPatternBind
-           ) ;
+           ) SEMI? ;
 
 lhsPatternBind : label? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
 
@@ -329,6 +330,12 @@ lhsNot : DRL_NOT lhsPatternBind ;
  * lhsEval := EVAL LEFT_PAREN conditionalExpression RIGHT_PAREN
  */
 lhsEval : DRL_EVAL LPAREN conditionalOrExpression RPAREN ;
+
+/**
+ * lhsForall := FORALL LEFT_PAREN lhsPatternBind+ RIGHT_PAREN
+ */
+
+lhsForall : DRL_FORALL LPAREN lhsPatternBind+ RPAREN ;
 
 /**
  * lhsAccumulate := (ACCUMULATE|ACC) LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
