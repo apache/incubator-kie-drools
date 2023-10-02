@@ -14,7 +14,7 @@ pipeline {
     environment {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-optaplanner'
         BUILDCHAIN_CONFIG_REPO = 'incubator-kie-optaplanner'
-        BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
+        BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
         ENABLE_SONARCLOUD = 'true'
         SONARCLOUD_ANALYSIS_MVN_OPTS = '-Dsonar.projectKey=org.optaplanner:optaplanner'
