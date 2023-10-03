@@ -3,7 +3,6 @@ package org.drools.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
@@ -258,9 +257,14 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             patternSourceDescr.setResource(patternDescr.getResource());
             patternDescr.setSource(patternSourceDescr);
         }
-        List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
-        constraintDescrList.forEach(patternDescr::addConstraint);
+        List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.positionalConstraints(), ctx.constraints());
+        constraintDescrList.forEach(descr -> addToPatternDescr(patternDescr, descr));
         return patternDescr;
+    }
+
+    private void addToPatternDescr(PatternDescr patternDescr, ExprConstraintDescr exprConstraintDescr) {
+        exprConstraintDescr.setResource(patternDescr.getResource());
+        patternDescr.addConstraint(exprConstraintDescr);
     }
 
     @Override
@@ -328,14 +332,31 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public List<ExprConstraintDescr> visitConstraints(DRLParser.ConstraintsContext ctx) {
+        List<ExprConstraintDescr> exprConstraintDescrList = new ArrayList<>();
+        populateExprConstraintDescrList(ctx, exprConstraintDescrList);
+        return exprConstraintDescrList;
+    }
+
+    private List<ExprConstraintDescr> visitConstraints(DRLParser.PositionalConstraintsContext positionalCtx, DRLParser.ConstraintsContext ctx) {
+        List<ExprConstraintDescr> exprConstraintDescrList = new ArrayList<>();
+        populateExprConstraintDescrList(positionalCtx, exprConstraintDescrList);
+        populateExprConstraintDescrList(ctx, exprConstraintDescrList);
+        return exprConstraintDescrList;
+    }
+
+    private void populateExprConstraintDescrList(ParserRuleContext ctx, List<ExprConstraintDescr> exprConstraintDescrList) {
         if (ctx == null) {
-            return new ArrayList<>();
+            return;
         }
         List<BaseDescr> descrList = visitDescrChildren(ctx);
-        return descrList.stream()
-                .filter(ExprConstraintDescr.class::isInstance)
-                .map(ExprConstraintDescr.class::cast)
-                .collect(Collectors.toList());
+        for (BaseDescr descr : descrList) {
+            if (descr instanceof ExprConstraintDescr) {
+                ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) descr;
+                exprConstraintDescr.setType(ctx instanceof DRLParser.PositionalConstraintsContext ? ExprConstraintDescr.Type.POSITIONAL : ExprConstraintDescr.Type.NAMED);
+                exprConstraintDescr.setPosition(exprConstraintDescrList.size());
+                exprConstraintDescrList.add(exprConstraintDescr);
+            }
+        }
     }
 
     @Override
