@@ -154,6 +154,7 @@ drlKeywords
     | DRL_IN
     | DRL_FROM
     | DRL_MATCHES
+    | DRL_MEMBEROF
     | DRL_ACCUMULATE
     | DRL_INIT
     | DRL_ACTION
@@ -205,6 +206,7 @@ drlExpression
     | drlExpression bop=(LE | GE | GT | LT) drlExpression
     | drlExpression bop=INSTANCEOF (typeType | pattern)
     | drlExpression bop=DRL_MATCHES drlExpression
+    | drlExpression DRL_NOT? DRL_MEMBEROF drlExpression
     | drlExpression bop=(EQUAL | NOTEQUAL) drlExpression
     | drlExpression bop=BITAND drlExpression
     | drlExpression bop=CARET drlExpression
