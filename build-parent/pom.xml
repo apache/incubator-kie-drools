@@ -1963,23 +1963,6 @@
             <includes>**/*Constants.properties,**/*Constants_en.properties</includes>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <source>${maven.compiler.source}</source>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
-            <author>false</author>
-            <breakiterator>true</breakiterator>
-            <quiet>true</quiet>
-            <doclint>none</doclint>
-            <legacyMode>true</legacyMode>
-          </configuration>
-        </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
              It has no influence on the Maven build itself. -->
@@ -2063,6 +2046,7 @@
             <archive>
               <index>true</index>
             </archive>
+            <quiet>true</quiet>
             <doclint>none</doclint>
             <legacyMode>true</legacyMode>
           </configuration>
