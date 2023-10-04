@@ -75,6 +75,7 @@ buildchain_config:
   git:
     repository: incubator-kie-drools
     file_path: .ci/buildchain-config.yaml
+    token_credentials_id: kie-ci3-token
 maven:
   settings_file_id: kie-release-settings
   nexus:
