@@ -60,8 +60,8 @@ git:
     name: apache
     # Taken from https://ci-builds.apache.org/credentials/
     # Need to be verified
-    credentials_id: kie-ci
-    token_credentials_id: kie-ci3-token
+    credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
+    token_credentials_id: ci-builds
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
