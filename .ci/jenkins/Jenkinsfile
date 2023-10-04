@@ -16,7 +16,7 @@ pipeline {
         BUILDCHAIN_CONFIG_REPO = 'incubator-kie-optaplanner'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
-        ENABLE_SONARCLOUD = 'true'
+        ENABLE_SONARCLOUD = 'false'
         SONARCLOUD_ANALYSIS_MVN_OPTS = '-Dsonar.projectKey=org.optaplanner:optaplanner'
         OPTAPLANNER_BUILD_MVN_OPTS = '-Prun-code-coverage'
     }
