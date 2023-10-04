@@ -35,7 +35,6 @@
 
 
   <properties>
-    <javadoc.additional.params>-Xdoclint:none</javadoc.additional.params>
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
@@ -232,7 +231,7 @@
     <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
-    
+    <version.maven-javadoc-plugin.override>3.6.0</version.maven-javadoc-plugin.override>
   </properties>
 
   <dependencyManagement>
@@ -1759,7 +1758,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>${version.source.plugin}</version>
+          <version>${version.maven-source-plugin}</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1964,22 +1963,6 @@
             <includes>**/*Constants.properties,**/*Constants_en.properties</includes>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <source>${maven.compiler.source}</source>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
-            <author>false</author>
-            <breakiterator>true</breakiterator>
-            <quiet>true</quiet>
-            <additionalparam>${javadoc.additional.params}</additionalparam>
-          </configuration>
-        </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
              It has no influence on the Maven build itself. -->
@@ -2056,14 +2039,16 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.maven-javadoc-plugin}</version>
+          <version>${version.maven-javadoc-plugin.override}</version>
           <configuration>
             <header><![CDATA[<b>${project.name} ${project.version}</b>]]></header>
             <footer><![CDATA[<b>${project.name} ${project.version}</b>]]></footer>
             <archive>
               <index>true</index>
             </archive>
-            <additionalOptions>${javadoc.additional.params}</additionalOptions>
+            <quiet>true</quiet>
+            <doclint>none</doclint>
+            <legacyMode>true</legacyMode>
           </configuration>
         </plugin>
       </plugins>
@@ -2094,6 +2079,18 @@
                 <source>target/generated-sources/annotations/</source>
               </sources>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
