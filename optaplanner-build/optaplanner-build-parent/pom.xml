@@ -67,7 +67,6 @@
 
     <version.asciidoctor.plugin>2.2.3</version.asciidoctor.plugin>
     <version.assembly.plugin>3.4.2</version.assembly.plugin>
-    <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.dependency.plugin>3.5.0</version.dependency.plugin>
     <version.formatter.plugin>2.23.0</version.formatter.plugin>
@@ -77,7 +76,6 @@
       Do not upgrade unless prepared to deal with JPMS issues.
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
-    <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.14.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
@@ -109,6 +107,8 @@
     <schema.filename.benchmark>benchmark-with-import.xsd</schema.filename.benchmark>
     <schema.filename.solver>solver.xsd</schema.filename.solver>
     <sonar.coverage.exclusions>**/swingui/**/*.java</sonar.coverage.exclusions>
+
+    <version.maven-javadoc-plugin.override>3.6.0</version.maven-javadoc-plugin.override>
   </properties>
 
   <dependencyManagement>
@@ -469,7 +469,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.javadoc.plugin}</version>
+          <version>${version.maven-javadoc-plugin.override}</version>
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
@@ -478,6 +478,8 @@
             <header combine.self="override" />
             <footer combine.self="override" />
             <quiet>true</quiet>
+            <doclint>none</doclint>
+            <legacyMode>true</legacyMode>
           </configuration>
         </plugin>
         <plugin>
@@ -659,6 +661,18 @@
               <ignoreNonCompile>true</ignoreNonCompile>
               <verbose>true</verbose>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

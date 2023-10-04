@@ -23,10 +23,9 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>39</version>
-    <relativePath/>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>30</version>
   </parent>
 
   <groupId>org.optaplanner</groupId>
