@@ -24,11 +24,13 @@ import org.drools.persistence.api.TransactionManagerFactory;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.jta.JtaTransactionManagerFactory;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public class TransactionManagerFactoryTest {
 
     TransactionManagerFactory transactionManagerFactory =

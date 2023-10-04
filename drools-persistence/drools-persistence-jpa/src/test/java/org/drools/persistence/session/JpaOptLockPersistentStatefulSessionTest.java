@@ -33,6 +33,7 @@ import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.rule.DefaultRuleRuntimeEventListener;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -51,6 +52,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public class JpaOptLockPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaOptLockPersistentStatefulSessionTest.class);

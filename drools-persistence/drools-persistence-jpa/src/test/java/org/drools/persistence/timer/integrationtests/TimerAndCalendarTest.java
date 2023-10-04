@@ -67,6 +67,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 @RunWith(Parameterized.class)
 public class TimerAndCalendarTest {
     

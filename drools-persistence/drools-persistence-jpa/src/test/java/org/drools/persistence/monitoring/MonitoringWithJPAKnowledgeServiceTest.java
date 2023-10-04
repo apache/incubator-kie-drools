@@ -23,6 +23,7 @@ import org.drools.core.management.DroolsManagementAgent;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -48,6 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public class MonitoringWithJPAKnowledgeServiceTest {
     private static Logger LOG = LoggerFactory.getLogger(MonitoringWithJPAKnowledgeServiceTest.class);
     

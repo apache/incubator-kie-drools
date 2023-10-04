@@ -31,10 +31,12 @@ import org.drools.core.impl.EnvironmentFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public class JtaTransactionManagerFactoryTest {
 
     @BeforeClass

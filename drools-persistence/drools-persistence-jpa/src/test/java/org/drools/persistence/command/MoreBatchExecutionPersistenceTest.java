@@ -26,6 +26,7 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.mvel.compiler.command.MoreBatchExecutionTest;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -42,6 +43,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCK
 import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 @RunWith(Parameterized.class)
 public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {
 

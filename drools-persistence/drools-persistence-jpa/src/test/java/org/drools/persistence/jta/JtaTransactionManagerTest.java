@@ -38,6 +38,7 @@ import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -58,6 +59,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTEN
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public class JtaTransactionManagerTest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

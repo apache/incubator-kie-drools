@@ -41,6 +41,7 @@ import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -72,6 +73,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKI
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
 

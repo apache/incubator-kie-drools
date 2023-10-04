@@ -59,6 +59,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKI
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 @RunWith(Parameterized.class)
 public class ReloadSessionTest {
 

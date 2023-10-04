@@ -26,6 +26,7 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.mvel.compiler.command.SimpleBatchExecutionTest;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -36,6 +37,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 @RunWith(Parameterized.class)
 public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTest {
 

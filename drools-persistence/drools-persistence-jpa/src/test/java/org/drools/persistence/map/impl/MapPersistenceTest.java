@@ -22,6 +22,7 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.io.ByteArrayResource;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public abstract class MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);

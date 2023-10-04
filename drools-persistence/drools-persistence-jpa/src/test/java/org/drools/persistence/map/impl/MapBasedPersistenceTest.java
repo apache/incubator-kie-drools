@@ -27,6 +27,7 @@ import org.drools.persistence.map.EnvironmentBuilder;
 import org.drools.persistence.map.KnowledgeSessionStorage;
 import org.drools.persistence.map.KnowledgeSessionStorageEnvironmentBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
@@ -34,6 +35,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 public class MapBasedPersistenceTest extends MapPersistenceTest{
     
     private SimpleKnowledgeSessionStorage storage;

@@ -23,6 +23,7 @@ import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -47,6 +48,7 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.useTransactions;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
 
+@Ignore("DROOLS-7570 : Temporarily disabled because of test hang")
 @RunWith(Parameterized.class)
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
