@@ -18,12 +18,12 @@ jobs:
     name: Jenkinsfiles
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: main
 
     - name: Checkout shared libraries
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: kiegroup/jenkins-pipeline-shared-libraries
         path: shared-libs

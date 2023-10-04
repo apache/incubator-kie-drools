@@ -7,7 +7,7 @@ jobs:
   message:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Send a stream message
       uses: zulip/github-actions-zulip/send-message@cc9efe36b8bd6423eb5688536d98ab5ddc060bc3
       env:
