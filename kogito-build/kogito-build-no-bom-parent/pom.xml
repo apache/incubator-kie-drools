@@ -144,6 +144,9 @@
     <version.versions.plugin>2.5</version.versions.plugin>
     <version.org.jsonschema2pojo-maven-plugin>1.0.1</version.org.jsonschema2pojo-maven-plugin>
     <version.org.codehaus.gmavenplus.plugin>1.5</version.org.codehaus.gmavenplus.plugin>
+
+    <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
+    <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
   </properties>
 
   <build>
@@ -181,7 +184,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${version.checkstyle.plugin}</version>
+          <version>${version.maven-checkstyle}</version>
           <configuration>
             <checkstyleRules>
               <module name="Checker">
@@ -332,7 +335,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.failsafe.plugin}</version>
+          <version>${version.maven-surefire}</version>
           <executions>
             <execution>
               <id>integration-test</id>

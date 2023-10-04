@@ -105,7 +105,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.failsafe.plugin}</version>
+          <version>${version.maven-surefire}</version>
           <configuration>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
