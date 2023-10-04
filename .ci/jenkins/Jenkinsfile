@@ -16,7 +16,7 @@ pipeline {
         BUILDCHAIN_CONFIG_REPO = 'incubator-kie-drools'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
-        ENABLE_SONARCLOUD = 'true'
+        ENABLE_SONARCLOUD = 'false'
         DROOLS_BUILD_MVN_OPTS = '-Prun-code-coverage'
     }
     stages {
