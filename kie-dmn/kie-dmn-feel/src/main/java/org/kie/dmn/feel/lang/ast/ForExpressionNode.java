@@ -76,6 +76,7 @@ public class ForExpressionNode
             while ( nextIteration( ctx, ictx ) ) {
                 Object result = expression.evaluate( ctx );
                 results.add( result );
+                ctx.exitFrame(); // last i-th scope unrolled, see also ForExpressionNode.nextIteration(...)
             }
             return results;
         } catch (EndpointOfRangeNotOfNumberException e) {
@@ -90,9 +91,16 @@ public class ForExpressionNode
         int i = ictx.length-1;
         while ( i >= 0 && i < ictx.length ) {
             if ( ictx[i].hasNextValue() ) {
+                ctx.enterFrame(); // on first iter, open last scope frame; or new ones when prev unrolled
                 setValueIntoContext( ctx, ictx[i] );
                 i++;
             } else {
+                if ( i > 0 ) {
+                    // end of iter loop for this i-th scope; i-th scope is always unrolled as part of the 
+                    // for-loop cycle, so here must unroll the _prev_ scope;
+                    // the if-guard for this code block makes sure NOT to unroll bottom one.
+                    ctx.exitFrame();         
+                }
                 i--;
             }
         }
@@ -114,6 +122,7 @@ public class ForExpressionNode
         for ( IterationContextNode icn : iterationContexts ) {
             ictx[i] = createQuantifiedExpressionIterationContext( ctx, icn );
             if( i < iterationContexts.size()-1 && ictx[i].hasNextValue() ) {
+                ctx.enterFrame(); // open loop scope frame, for every iter ctx, except last one as guarded by if clause above
                 setValueIntoContext( ctx, ictx[i] );
             }
             i++;
