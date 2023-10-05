@@ -262,6 +262,7 @@ public class CompiledFEELSupport {
                 while (ForExpressionNode.nextIteration(ctx, ictx)) {
                     Object result = expression.apply(ctx);
                     results.add(result);
+                    ctx.exitFrame(); // last i-th scope unrolled, see also ForExpressionNode.nextIteration(...)
                 }
                 return results;
             } catch (EndpointOfRangeNotOfNumberException e) {
@@ -278,6 +279,7 @@ public class CompiledFEELSupport {
             for (IterationContextCompiled icn : iterationContexts) {
                 ictx[i] = createQuantifiedExpressionIterationContext(ctx, icn);
                 if (i < iterationContexts.size() - 1 && ictx[i].hasNextValue()) {
+                    ctx.enterFrame(); // open loop scope frame, for every iter ctx, except last one as guarded by if clause above
                     ForExpressionNode.setValueIntoContext(ctx, ictx[i]);
                 }
                 i++;
