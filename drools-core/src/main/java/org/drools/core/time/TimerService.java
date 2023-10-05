@@ -17,6 +17,7 @@
 package org.drools.core.time;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
@@ -56,9 +57,15 @@ public interface TimerService extends SchedulerService {
      * This method may return null for some TimerService implementations that do not want the overhead of maintain this.
      * @return
      */
-    Collection<TimerJobInstance> getTimerJobInstances(long id);
+    Collection<TimerJobInstance> getTimerJobInstances(long kieSessionId);
+
+    default Optional<TimerJobInstance> getTimerJobInstanceByTimerId(Long processInstanceId, Long timerId) {
+        return Optional.empty();
+    }
 
     void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager);
 
     TimerJobFactoryManager getTimerJobFactoryManager();
+
+
 }
