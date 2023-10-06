@@ -28,6 +28,7 @@ import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
+import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.resource.exceptions.BaseExceptionsHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -120,6 +121,11 @@ public class ExceptionsHandler extends BaseExceptionsHandler<ResponseEntity> {
 
     @ExceptionHandler(WorkItemNotFoundException.class)
     public ResponseEntity toResponse(WorkItemNotFoundException exception) {
+        return mapException(exception);
+    }
+
+    @ExceptionHandler(WorkItemExecutionException.class)
+    public ResponseEntity toResponse(WorkItemExecutionException exception) {
         return mapException(exception);
     }
 

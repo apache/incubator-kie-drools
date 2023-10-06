@@ -30,6 +30,7 @@ import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
+import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -139,5 +140,15 @@ class BaseExceptionHandlerTest {
         Object response = tested.mapException(new VariableViolationException("processInstanceId", "variable",
                 "message"));
         assertThat(response).isEqualTo(badRequestResponse);
+    }
+
+    @Test
+    void testMapWorkItemExecutionException() {
+        assertThat(tested.mapException(new WorkItemExecutionException("400", "message"))).isEqualTo(badRequestResponse);
+        assertThat(tested.mapException(new WorkItemExecutionException("404", "message"))).isEqualTo(notFoundResponse);
+        assertThat(tested.mapException(new WorkItemExecutionException("403", "message"))).isEqualTo(forbiddenResponse);
+        assertThat(tested.mapException(new WorkItemExecutionException("409", "message"))).isEqualTo(conflictResponse);
+        assertThat(tested.mapException(new WorkItemExecutionException("500", "message"))).isEqualTo(internalErrorResponse);
+        assertThat(tested.mapException(new WorkItemExecutionException("One error code"))).isEqualTo(internalErrorResponse);
     }
 }
