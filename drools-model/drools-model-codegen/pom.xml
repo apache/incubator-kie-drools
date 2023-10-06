@@ -37,7 +37,6 @@
 
     <properties>
         <java.module.name>org.drools.model.codegen</java.module.name>
-        <version.jmh>1.19</version.jmh>
     </properties>
 
     <dependencyManagement>
@@ -45,13 +44,13 @@
             <dependency>
                 <groupId>org.openjdk.jmh</groupId>
                 <artifactId>jmh-core</artifactId>
-                <version>${version.jmh}</version>
+                <version>${version.org.openjdk.jmh}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.openjdk.jmh</groupId>
                 <artifactId>jmh-generator-annprocess</artifactId>
-                <version>${version.jmh}</version>
+                <version>${version.org.openjdk.jmh}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
