@@ -30,6 +30,7 @@ import org.jboss.jandex.Type;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
@@ -46,16 +47,31 @@ public abstract class ClassAnnotatedWorkflowHandlerGenerator implements Workflow
     protected abstract Stream<WorkflowHandlerGeneratedFile> generateHandler(KogitoBuildContext context, AnnotationInstance a);
 
     protected final com.github.javaparser.ast.type.Type fromClass(Type param) {
+        return fromClass(param, true);
+    }
+
+    protected final com.github.javaparser.ast.type.Type fromClass(Type param, boolean includeGeneric) {
         switch (param.kind()) {
             case CLASS:
-                return parseClassOrInterfaceType(param.asClassType().name().toString());
+                return parseClassOrInterfaceType(fromDotName(param.asClassType().name()));
             case PRIMITIVE:
-                return parseType(param.asPrimitiveType().name().toString());
+                return parseType(fromDotName(param.asPrimitiveType().name()));
             case PARAMETERIZED_TYPE:
-                return parseClassOrInterfaceType(param.asParameterizedType().name().toString())
-                        .setTypeArguments(NodeList.nodeList(param.asParameterizedType().arguments().stream().map(this::fromClass).collect(Collectors.toList())));
+                ClassOrInterfaceType result = parseClassOrInterfaceType(fromDotName(param.asParameterizedType().name()));
+                if (includeGeneric) {
+                    result.setTypeArguments(NodeList.nodeList(param.asParameterizedType().arguments().stream().map(this::fromClass).collect(Collectors.toList())));
+                }
+                return result;
             default:
                 throw new UnsupportedOperationException("Kind " + param.kind() + " is not supported");
         }
+    }
+
+    private String fromDotName(DotName dotName) {
+        String result = dotName.toString();
+        if (dotName.isInner()) {
+            result = result.replace('$', '.');
+        }
+        return result;
     }
 }

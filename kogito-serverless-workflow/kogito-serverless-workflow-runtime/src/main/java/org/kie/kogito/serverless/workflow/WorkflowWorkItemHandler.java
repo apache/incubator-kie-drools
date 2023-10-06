@@ -26,7 +26,6 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,10 +47,13 @@ public abstract class WorkflowWorkItemHandler implements KogitoWorkItemHandler {
     protected static <V> V buildBody(Map<String, Object> params, Class<V> clazz) {
         for (Object obj : params.values()) {
             if (obj != null && clazz.isAssignableFrom(obj.getClass())) {
+                logger.trace("Invoking workitemhandler with value {}", obj);
                 return clazz.cast(obj);
             }
         }
-        return ObjectMapperFactory.get().convertValue(params, clazz);
+        V value = JsonObjectUtils.convertValue(params, clazz);
+        logger.trace("Invoking workitemhandler with value {}", value);
+        return value;
     }
 
     @Override

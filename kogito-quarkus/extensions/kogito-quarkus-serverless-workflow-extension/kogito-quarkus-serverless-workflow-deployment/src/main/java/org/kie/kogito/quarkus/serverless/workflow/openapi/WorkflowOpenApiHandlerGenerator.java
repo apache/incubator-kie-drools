@@ -109,7 +109,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
             if (annotation != null) {
                 methodCallExpr.addArgument(new CastExpr(fromClass(param), new MethodCallExpr(parameters, "remove").addArgument(new StringLiteralExpr(annotation.value().asString()))));
             } else {
-                methodCallExpr.addArgument(new MethodCallExpr("buildBody").addArgument(parameters).addArgument(new ClassExpr(fromClass(param))));
+                methodCallExpr.addArgument(new MethodCallExpr("buildBody").addArgument(parameters).addArgument(new ClassExpr(fromClass(param, false))));
             }
         }
         clazz.addMethod("getRestClass", Keyword.PROTECTED).setType(parseClassOrInterfaceType(Class.class.getCanonicalName()).setTypeArguments(classNameType))
