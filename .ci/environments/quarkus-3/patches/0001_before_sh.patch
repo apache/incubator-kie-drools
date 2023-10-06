@@ -4107,25 +4107,6 @@ index 45015d4b37..6a404100e9 100644
                                 castInteger,
                                 min,
                                 max,
-diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
-index 32c3b862ca..aab45ac852 100644
---- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
-+++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/mocks/TestModel.java
-@@ -125,4 +125,14 @@ public class TestModel extends Model {
-     public VisitorAction accept(Visitor visitor) {
-         return null;
-     }
-+
-+    @Override
-+    public MiningFunction requireMiningFunction() {
-+        return null;
-+    }
-+
-+    @Override
-+    public MiningSchema requireMiningSchema() {
-+        return null;
-+    }
- }
 diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/testutils/PMMLModelTestUtils.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/testutils/PMMLModelTestUtils.java
 index c668e1a6ff..8f919c3e92 100644
 --- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-api/src/test/java/org/kie/pmml/compiler/api/testutils/PMMLModelTestUtils.java
@@ -5896,26 +5877,6 @@ index 46ce5d7bee..df844bcf3a 100644
          assertThat(targetField.getUsageType().value()).isEqualTo("target");
      }
  
-diff --git a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java
-index feb38f91b9..4d7c7c5834 100644
---- a/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java
-+++ b/kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/java/org/kie/pmml/compiler/testingutils/TestingModel.java
-@@ -107,5 +107,15 @@ public class TestingModel extends Model {
-         return modelName;
-     }
- 
-+    @Override
-+    public MiningFunction requireMiningFunction() {
-+        return null;
-+    }
-+
-+    @Override
-+    public MiningSchema requireMiningSchema() {
-+        return null;
-+    }
-+
- 
- }
 diff --git a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/main/java/org/kie/pmml/models/clustering/compiler/factories/KiePMMLClusteringModelFactory.java b/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/main/java/org/kie/pmml/models/clustering/compiler/factories/KiePMMLClusteringModelFactory.java
 index 5570464de9..fd2bfeaab6 100644
 --- a/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/main/java/org/kie/pmml/models/clustering/compiler/factories/KiePMMLClusteringModelFactory.java
