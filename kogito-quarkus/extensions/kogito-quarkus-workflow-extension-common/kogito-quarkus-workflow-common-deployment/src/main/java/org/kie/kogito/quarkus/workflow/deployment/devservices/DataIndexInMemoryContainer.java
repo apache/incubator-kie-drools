@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.quarkus.workflow.deployment.devservices;
 
+import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -60,7 +62,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         withEnv("KOGITO_DATA_INDEX_VERTX_GRAPHQL_UI_PATH", "/q/graphql-ui");
         withEnv("KOGITO_DATA_INDEX_QUARKUS_PROFILE", "http-events-support");
         withExposedPorts(PORT);
-        waitingFor(Wait.forHttp("/q/health/ready").forStatusCode(200));
+        waitingFor(Wait.forHttp("/q/health/ready").forStatusCode(200).withStartupTimeout(Duration.ofMinutes(5)));
     }
 
     @Override

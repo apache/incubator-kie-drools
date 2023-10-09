@@ -43,7 +43,7 @@ public class KogitoKeycloakContainer extends KogitoGenericContainer<KogitoKeyclo
         withEnv("KEYCLOAK_ADMIN", USER);
         withEnv("KEYCLOAK_ADMIN_PASSWORD", PASSWORD);
         withClasspathResourceMapping("testcontainers/keycloak/kogito-realm.json", REALM_FILE, BindMode.READ_ONLY);
-        waitingFor(Wait.forLogMessage(".*Keycloak.*started.*", 1));
+        waitingFor(Wait.forLogMessage(".*Keycloak.*started.*", 1).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT));
         withCommand("start-dev --import-realm");
     }
 
