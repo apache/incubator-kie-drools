@@ -34,6 +34,9 @@ git:
   - name: 8.44.x
     seed:
       branch: seed-drools-8.44.x
+  - name: 8.44.2.x
+    seed:
+      branch: seed-drools-8.44.2.x
 seed:
   config_file:
     git:
