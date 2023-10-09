@@ -275,6 +275,12 @@ class JqExpressionHandlerTest {
         assertThat(parsedExpression.eval(getObjectNode(), String.class, context)).isEqualTo(expectedResult);
     }
 
+    @Test
+    void testHardcodedStringIsValidOrNot() {
+        assertThat(ExpressionHandlerFactory.get("jq", "kserve_payload = to_kserve(image)").isValid()).isFalse();
+        assertThat(ExpressionHandlerFactory.get("jq", "length .variable").isValid()).isTrue();
+    }
+
     private static Stream<Arguments> provideMagicWordExpressionsToTest() {
         return Stream.of(
                 Arguments.of("$WORKFLOW.instanceId", "1111-2222-3333", getContext()),

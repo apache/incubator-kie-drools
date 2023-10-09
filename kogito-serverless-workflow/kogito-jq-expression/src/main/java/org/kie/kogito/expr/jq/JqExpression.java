@@ -18,10 +18,13 @@
  */
 package org.kie.kogito.expr.jq;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.FunctionJsonNode;
@@ -36,27 +39,47 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Output;
 import net.thisptr.jackson.jq.Scope;
 import net.thisptr.jackson.jq.Version;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
+import net.thisptr.jackson.jq.internal.javacc.ExpressionParser;
+import net.thisptr.jackson.jq.internal.tree.FunctionCall;
+import net.thisptr.jackson.jq.internal.tree.binaryop.BinaryOperatorExpression;
 
 public class JqExpression implements Expression {
 
     static final String LANG = "jq";
 
     private static final Logger logger = LoggerFactory.getLogger(JqExpression.class);
+    private final Map<Class<? extends net.thisptr.jackson.jq.Expression>, Collection<Field>> declaredFieldsMap = new ConcurrentHashMap<>();
+    private final Map<Class<? extends net.thisptr.jackson.jq.Expression>, Collection<Field>> allFieldsMap = new ConcurrentHashMap<>();
+
     private final Supplier<Scope> scope;
     private final String expr;
-    private final Version version;
-    private JsonQuery query;
+
+    private net.thisptr.jackson.jq.Expression internalExpr;
     private JsonQueryException validationError;
+    private static Field rhsField;
+
+    static {
+        try {
+            rhsField = BinaryOperatorExpression.class.getDeclaredField("rhs");
+            rhsField.setAccessible(true);
+        } catch (ReflectiveOperationException e) {
+            logger.warn("Unexpected exception while resolving rhs field", e);
+        }
+    }
 
     public JqExpression(Supplier<Scope> scope, String expr, Version version) {
         this.expr = expr;
         this.scope = scope;
-        this.version = version;
+        try {
+            this.internalExpr = ExpressionParser.compile(expr, version);
+            checkFunctionCall(internalExpr);
+        } catch (JsonQueryException ex) {
+            validationError = ex;
+        }
     }
 
     private interface TypedOutput extends Output {
@@ -158,42 +181,68 @@ public class JqExpression implements Expression {
     }
 
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
+        if (validationError != null) {
+            throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, validationError);
+        }
+        TypedOutput output = output(returnClass);
         try (JsonNodeContext jsonNode = JsonNodeContext.from(context, processInfo)) {
-            TypedOutput output = output(returnClass);
-            compile();
-            query.apply(getScope(processInfo), jsonNode.getNode(), output);
+            internalExpr.apply(getScope(processInfo), jsonNode.getNode(), output);
             return JsonObjectUtils.convertValue(output.getResult(), returnClass);
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);
         }
     }
 
-    private void compile() throws JsonQueryException {
-        if (this.query == null) {
-            try {
-                this.query = JsonQuery.compile(expr, version);
-            } catch (JsonQueryException ex) {
-                validationError = ex;
-                throw ex;
+    @Override
+    public boolean isValid() {
+        return validationError == null;
+    }
+
+    private void checkFunctionCall(net.thisptr.jackson.jq.Expression toCheck) throws JsonQueryException {
+        if (toCheck instanceof FunctionCall) {
+            toCheck.apply(scope.get(), ObjectMapperFactory.get().createObjectNode(), out -> {
+            });
+        } else if (toCheck instanceof BinaryOperatorExpression) {
+            if (rhsField != null) {
+                try {
+                    checkFunctionCall((net.thisptr.jackson.jq.Expression) rhsField.get(toCheck));
+                } catch (ReflectiveOperationException e) {
+                    logger.warn("Ignoring unexpected error {} while accesing field {} for class{} and expression {}", e.getMessage(), rhsField.getName(), toCheck.getClass(), expr);
+                }
             }
+        } else if (toCheck != null) {
+            for (Field f : getAllExprFields(toCheck))
+                try {
+                    checkFunctionCall((net.thisptr.jackson.jq.Expression) f.get(toCheck));
+                } catch (ReflectiveOperationException e) {
+                    logger.warn("Ignoring unexpected error {} while accesing field {} for class{} and expression {}", e.getMessage(), f.getName(), toCheck.getClass(), expr);
+                }
         }
     }
 
-    private static final Pattern JQ_FUNCTION_NAME = Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*");
+    private Collection<Field> getAllExprFields(net.thisptr.jackson.jq.Expression toCheck) {
+        return allFieldsMap.computeIfAbsent(toCheck.getClass(), this::getAllExprFields);
+    }
 
-    @Override
-    public boolean isValid() {
-        try {
-            compile();
-            if (JQ_FUNCTION_NAME.matcher(expr).matches()) {
-                query.apply(scope.get(), ObjectMapperFactory.get().createObjectNode(), out -> {
-                });
+    private Collection<Field> getAllExprFields(Class<? extends net.thisptr.jackson.jq.Expression> clazz) {
+        Collection<Field> fields = new HashSet<>();
+        Class<?> currentClass = clazz;
+        do {
+            fields.addAll(declaredFieldsMap.computeIfAbsent(currentClass.asSubclass(net.thisptr.jackson.jq.Expression.class), this::getDeclaredExprFields));
+            currentClass = currentClass.getSuperclass();
+        } while (net.thisptr.jackson.jq.Expression.class.isAssignableFrom(currentClass));
+        return fields;
+    }
+
+    private Collection<Field> getDeclaredExprFields(Class<? extends net.thisptr.jackson.jq.Expression> clazz) {
+        Collection<Field> fields = new HashSet<>();
+        for (Field f : clazz.getDeclaredFields()) {
+            if (net.thisptr.jackson.jq.Expression.class.isAssignableFrom(f.getType())) {
+                f.setAccessible(true);
+                fields.add(f);
             }
-        } catch (JsonQueryException ex) {
-            logger.debug("Invalid expression {}", ex.getMessage());
-            return false;
         }
-        return validationError == null;
+        return fields;
     }
 
     @Override
