@@ -32,7 +32,6 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
 public class JsonPathExpression implements Expression {
 
@@ -57,7 +56,7 @@ public class JsonPathExpression implements Expression {
     private Configuration getConfiguration(KogitoProcessContext context) {
         return Configuration
                 .builder()
-                .mappingProvider(new JacksonMappingProvider())
+                .mappingProvider(new JsonPathJacksonProvider())
                 .jsonProvider(new WorkflowJacksonJsonNodeJsonProvider(context))
                 .build();
     }

@@ -21,6 +21,8 @@ package org.kie.kogito.expr.jsonpath;
 import java.util.function.Function;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.FunctionBaseJsonNode;
+import org.kie.kogito.jackson.utils.PrefixJsonNode;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
@@ -37,10 +39,12 @@ public class WorkflowJacksonJsonNodeJsonProvider extends JacksonJsonNodeJsonProv
     public Object getMapValue(Object obj, String key) {
         if (obj instanceof Function) {
             return ((Function<String, Object>) obj).apply(key);
+        } else if (obj instanceof FunctionBaseJsonNode) {
+            return ((FunctionBaseJsonNode) obj).get(key);
         } else {
             switch (key) {
                 case "$" + ExpressionHandlerUtils.SECRET_MAGIC:
-                    return (Function<String, Object>) ExpressionHandlerUtils::getSecret;
+                    return new PrefixJsonNode<>(ExpressionHandlerUtils::getOptionalSecret);
                 case "$" + ExpressionHandlerUtils.CONTEXT_MAGIC:
                     return ExpressionHandlerUtils.getContextFunction(context);
                 case "$" + ExpressionHandlerUtils.CONST_MAGIC:
@@ -53,6 +57,6 @@ public class WorkflowJacksonJsonNodeJsonProvider extends JacksonJsonNodeJsonProv
 
     @Override
     public boolean isMap(Object obj) {
-        return super.isMap(obj) || obj instanceof Function;
+        return super.isMap(obj) || obj instanceof Function || obj instanceof FunctionBaseJsonNode;
     }
 }

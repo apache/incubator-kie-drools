@@ -16,23 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jackson.utils;
+package org.kie.kogito.expr.jsonpath;
 
-import java.util.function.Function;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-public class FunctionJsonNode extends FunctionBaseJsonNode {
-
-    private static final long serialVersionUID = 1L;
-    private transient Function<String, Object> function;
-
-    public FunctionJsonNode(Function<String, Object> function) {
-        this.function = function;
-    }
+public class JsonPathJacksonProvider extends JacksonMappingProvider {
 
     @Override
-    public JsonNode get(String fieldName) {
-        return JsonObjectUtils.fromValue(function.apply(fieldName));
+    public <T> T map(Object source, Class<T> targetType, Configuration configuration) {
+        return targetType.isAssignableFrom(source.getClass()) ? targetType.cast(source) : super.map(source, targetType, configuration);
     }
 }

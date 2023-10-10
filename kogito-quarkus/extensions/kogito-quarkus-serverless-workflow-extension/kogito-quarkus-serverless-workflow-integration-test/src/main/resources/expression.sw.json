@@ -29,7 +29,7 @@
     {
       "name": "secretMessage",
       "type": "expression",
-      "operation": ".message |= \"my name is \"+$SECRET.my_name"
+      "operation": ".message |= \"my name is \"+$SECRET.expression.my_name"
     },
     {
       "name": "constantMessage",

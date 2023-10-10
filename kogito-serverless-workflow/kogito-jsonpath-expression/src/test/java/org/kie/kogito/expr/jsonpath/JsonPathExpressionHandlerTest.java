@@ -238,8 +238,8 @@ class JsonPathExpressionHandlerTest {
         return Stream.of(
                 Arguments.of("$WORKFLOW.instanceId", "1111-2222-3333", getContext()),
                 Arguments.of("$SECRET.lettersonly", "secretlettersonly", getContext()),
-                Arguments.of("$SECRET.none", "null", getContext()),
-                //                Arguments.of("$SECRET.dot.secret", "null", getContext()), // exception due to missing object at path .dot
+                Arguments.of("$SECRET.none", "", getContext()),
+                Arguments.of("$SECRET.dot.secret", "secretdotsecret", getContext()),
                 Arguments.of("$SECRET[\"dot.secret\"]", "secretdotsecret", getContext()),
                 Arguments.of("$SECRET[\"dash-secret\"]", "secretdashsecret", getContext()),
                 Arguments.of("$CONST.someconstant", "value", getContext()),

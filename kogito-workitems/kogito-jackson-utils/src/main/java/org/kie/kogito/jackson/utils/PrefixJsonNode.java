@@ -18,21 +18,42 @@
  */
 package org.kie.kogito.jackson.utils;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 
-public class FunctionJsonNode extends FunctionBaseJsonNode {
+public class PrefixJsonNode<T> extends FunctionBaseJsonNode {
 
     private static final long serialVersionUID = 1L;
-    private transient Function<String, Object> function;
 
-    public FunctionJsonNode(Function<String, Object> function) {
+    private transient final String prefix;
+    private transient final Function<String, Optional<T>> function;
+    private transient Optional<T> value;
+
+    public PrefixJsonNode(Function<String, Optional<T>> function) {
+        this(null, function);
+    }
+
+    public PrefixJsonNode(String prefix, Function<String, Optional<T>> function) {
+        this.prefix = prefix;
         this.function = function;
+        this.value = prefix == null ? Optional.empty() : function.apply(prefix);
+    }
+
+    @Override
+    public JsonNodeType getNodeType() {
+        return value.isPresent() ? JsonNodeType.STRING : JsonNodeType.OBJECT;
+    }
+
+    @Override
+    public String asText() {
+        return value.map(Object::toString).orElse(null);
     }
 
     @Override
     public JsonNode get(String fieldName) {
-        return JsonObjectUtils.fromValue(function.apply(fieldName));
+        return new PrefixJsonNode<>(prefix == null ? fieldName : prefix + "." + fieldName, function);
     }
 }

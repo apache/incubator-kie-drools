@@ -290,7 +290,7 @@ class JqExpressionHandlerTest {
                 Arguments.of("$SECRET.none", "null", getContext()),
                 Arguments.of("\"$SECRET.none\"", "$SECRET.none", getContext()),
                 Arguments.of("$SECRET.lettersonly", "secretlettersonly", getContext()),
-                Arguments.of("$SECRET.dot.secret", "null", getContext()),
+                Arguments.of("$SECRET.dot.secret", "secretdotsecret", getContext()),
                 Arguments.of("$SECRET.\"dot.secret\"", "secretdotsecret", getContext()),
                 Arguments.of("$SECRET.\"dash-secret\"", "secretdashsecret", getContext()),
                 Arguments.of("$CONST.someconstant", "value", getContext()),
