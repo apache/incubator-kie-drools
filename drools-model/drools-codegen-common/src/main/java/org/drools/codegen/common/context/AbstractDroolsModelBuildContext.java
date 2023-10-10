@@ -18,6 +18,15 @@
  */
 package org.drools.codegen.common.context;
 
+import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.DroolsModelApplicationPropertyProvider;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,13 +39,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
-import javax.lang.model.SourceVersion;
-
-import org.drools.codegen.common.AppPaths;
-import org.drools.codegen.common.DroolsModelApplicationPropertyProvider;
-import org.drools.codegen.common.DroolsModelBuildContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuildContext {
 
@@ -51,9 +53,15 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
     protected final String contextName;
     protected final Map<String, Object> contextAttributes;
 
+    protected final DependencyInjectionAnnotator dependencyInjectionAnnotator;
+    protected final RestAnnotator restAnnotator;
 
     protected AbstractDroolsModelBuildContext(AbstractBuilder builder,
+                                              DependencyInjectionAnnotator dependencyInjectionAnnotator,
+                                              RestAnnotator restAnnotator,
                                               String contextName) {
+        this.dependencyInjectionAnnotator = dependencyInjectionAnnotator;
+        this.restAnnotator = restAnnotator;
         this.packageName = builder.packageName;
         this.classAvailabilityResolver = builder.classAvailabilityResolver;
         this.applicationProperties = builder.applicationProperties;
@@ -115,6 +123,16 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
     @Override
     public AppPaths getAppPaths() {
         return appPaths;
+    }
+
+    @Override
+    public DependencyInjectionAnnotator getDependencyInjectionAnnotator() {
+        return dependencyInjectionAnnotator;
+    }
+
+    @Override
+    public RestAnnotator getRestAnnotator() {
+        return restAnnotator;
     }
 
     @Override

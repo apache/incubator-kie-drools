@@ -18,31 +18,19 @@
  */
 package org.drools.drl.quarkus.deployment;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.Produce;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
-import io.quarkus.deployment.pkg.builditem.ArtifactResultBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
@@ -53,9 +41,13 @@ import org.drools.drl.quarkus.util.deployment.PatternsTypesBuildItem;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.project.RuleCodegen;
 import org.kie.api.io.Resource;
-import org.kie.drl.engine.runtime.mapinput.service.KieRuntimeServiceDrlMapInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
@@ -64,6 +56,7 @@ import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.getHotReloadSupportSource;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.getRuleUnitDefProducerSource;
 import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.registerResources;
+import static org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils.toClassName;
 import static org.drools.model.codegen.project.RuleCodegen.ofResources;
 
 public class DroolsAssetsProcessor {
@@ -95,7 +88,8 @@ public class DroolsAssetsProcessor {
                                  BuildProducer<GeneratedResourceBuildItem> genResBI,
                                  BuildProducer<PatternsTypesBuildItem> otnClasesBI,
                                  BuildProducer<KmoduleKieBaseModelsBuiltItem> kbaseModelsBI,
-                                 BuildProducer<GlobalsBuildItem> globalsBI) {
+                                 BuildProducer<GlobalsBuildItem> globalsBI,
+                                 BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer) {
         DroolsModelBuildContext context =
                 createDroolsBuildContext(outputTargetBuildItem.getOutputDirectory(), root.getPaths(), combinedIndexBuildItem.getIndex());
 
@@ -128,14 +122,13 @@ public class DroolsAssetsProcessor {
             kbaseModelsBI.produce(new KmoduleKieBaseModelsBuiltItem(ruleCodegen.getKmoduleKieBaseModels()));
         }
         globalsBI.produce(new GlobalsBuildItem(ruleCodegen.getPackageModels().stream().collect(Collectors.toMap(PackageModel::getName, PackageModel::getGlobals))));
-    }
 
-    @BuildStep
-    public List<ReflectiveClassBuildItem> reflectiveEfestoRules() {
-        LOGGER.debug("reflectiveEfestoRules()");
-        final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
-        toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServiceDrlMapInput.class));
-        LOGGER.debug("toReturn {}", toReturn.size());
-        return toReturn;
+        Set<String> restResourceClassNameSet = generatedFiles.stream()
+                .filter(file -> file.type() == GeneratedFileType.REST)
+                .map(file -> toClassName(file.path().toString()))
+                .collect(Collectors.toSet());
+        generatedBeanBuildItems.stream()
+                .filter(b -> restResourceClassNameSet.contains(b.getName()))
+                .forEach(b -> jaxrsProducer.produce(new GeneratedJaxRsResourceBuildItem(b.getName(), b.getData())));
     }
 }

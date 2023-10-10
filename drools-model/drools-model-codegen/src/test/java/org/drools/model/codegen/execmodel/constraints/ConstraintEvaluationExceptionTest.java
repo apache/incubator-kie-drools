@@ -18,19 +18,19 @@
  */
 package org.drools.model.codegen.execmodel.constraints;
 
-import java.util.Collections;
-
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.modelcompiler.constraints.ConstraintEvaluationException;
-import org.drools.io.ByteArrayResource;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.io.ByteArrayResource;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.model.functions.PredicateInformation;
 import org.drools.model.codegen.execmodel.BaseModelTest;
+import org.drools.model.functions.PredicateInformation;
+import org.drools.modelcompiler.constraints.ConstraintEvaluationException;
 import org.drools.mvel.MVELConstraint;
 import org.junit.Test;
 import org.kie.api.io.Resource;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

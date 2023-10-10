@@ -64,10 +64,6 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-model-codegen</artifactId>
         </dependency>
-      <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-drl-map-input-runtime</artifactId>
-      </dependency>
 
       <!-- quarkus -->
         <dependency>
@@ -83,6 +79,10 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc-deployment</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive-spi-deployment</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -149,6 +149,25 @@
                   </systemPropertyVariables>
                 </configuration>
               </plugin>
+
+            <!-- quarkus-resteasy brings in a couple of dependencies in the javax.* namespace that cannot be excluded -->
+            <!-- that's why it is necessary to disable the plugin that checks for banned dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ban-blacklisted-dependencies</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <fail>false</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.ruleunit;
+import org.drools.ruleunits.api.RuleUnitInstance;
 
-import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
 
-public interface RuleUnitVariable {
+import static java.util.stream.Collectors.toList;
+public class $unit$Query$name$ {
 
-    boolean isDataSource();
-    boolean isDataStore();
+    public static List<$ReturnType$> execute(RuleUnitInstance<$UnitType$> instance) {
+        return instance.executeQuery( "$queryName$" ).toList().stream().map($unit$Query$name$::toResult).collect(toList());
+    }
 
-    String getName();
-
-    String getter();
-
-    String setter();
-
-    Type getType();
-
-    Class<?> getDataSourceParameterType();
-
-    Class<?> getBoxedVarType();
+    private static $ReturnType$ toResult(Map<String, Object> tuple) {
+        return ($ReturnType$) tuple.get("");
+    }
 }

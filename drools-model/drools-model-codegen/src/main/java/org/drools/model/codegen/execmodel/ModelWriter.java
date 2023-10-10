@@ -18,16 +18,17 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import org.drools.base.util.Drools;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.util.PortablePath;
+import org.kie.api.builder.ReleaseId;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.base.util.Drools;
-import org.kie.api.builder.ReleaseId;
-import org.drools.util.PortablePath;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.RULE_UNIT_SERVICES_FILE;
@@ -59,9 +60,9 @@ public class ModelWriter {
 
         List<String> sourceFiles = new ArrayList<>();
         for (GeneratedFile generatedFile : generatedFiles) {
-            PortablePath path = basePath.resolve(generatedFile.getKiePath());
+            PortablePath path = basePath.resolve(generatedFile.relativePath());
             sourceFiles.add(path.asString());
-            srcMfs.write(path, generatedFile.getData());
+            srcMfs.write(path, generatedFile.contents());
         }
 
         return new Result(sourceFiles, modelFiles, ruleUnitClassNames);
