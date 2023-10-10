@@ -34,7 +34,7 @@ import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.kie.kogito.addon.quarkus.messaging.common.message.CloudEventHttpOutgoingDecorator.CLOUD_EVENTS_CONTENT_TYPE;
+import static org.kie.kogito.addon.quarkus.common.reactive.messaging.http.CloudEventHttpOutgoingDecorator.CLOUD_EVENTS_CONTENT_TYPE;
 
 class KnativeEventingJobsServiceTest extends AbstractReactiveMessagingJobsServiceTest<KnativeEventingJobsService> {
 

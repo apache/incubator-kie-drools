@@ -38,6 +38,8 @@ public class DataIndexEventPublisher implements EventPublisher {
 
     public static final String KOGITO_DATA_INDEX = "kogito.data-index.url";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexEventPublisher.class);
+    private static final String CLOUD_EVENTS_CONTENT_TYPE = "application/cloudevents+json";
+    private static final String CONTENT_TYPE = "content-type";
 
     @ConfigProperty(name = KOGITO_DATA_INDEX)
     Optional<String> dataIndexUrl;
@@ -62,6 +64,7 @@ public class DataIndexEventPublisher implements EventPublisher {
         switch (event.getType()) {
             case "ProcessInstanceEvent":
                 webClient.postAbs(dataIndexUrl.get() + "/processes")
+                        .putHeader(CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE)
                         .expect(ResponsePredicate.SC_ACCEPTED)
                         .sendJson(event, result -> {
                             if (result.failed()) {
@@ -73,6 +76,7 @@ public class DataIndexEventPublisher implements EventPublisher {
                 break;
             case "UserTaskInstanceEvent":
                 webClient.postAbs(dataIndexUrl.get() + "/tasks")
+                        .putHeader(CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE)
                         .expect(ResponsePredicate.SC_ACCEPTED)
                         .sendJson(event, result -> {
                             if (result.failed()) {

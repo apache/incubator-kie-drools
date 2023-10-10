@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addon.quarkus.messaging.common.message;
+package org.kie.kogito.addon.quarkus.messaging.common.message.http;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -26,9 +26,8 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
-import org.kie.kogito.config.ConfigBean;
+import org.kie.kogito.addon.quarkus.common.reactive.messaging.http.CloudEventHttpOutgoingDecorator;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 import io.quarkus.test.junit.QuarkusTest;
@@ -43,25 +42,6 @@ class CloudEventHttpOutgoingDecoratorTest {
 
     @Produces
     CloudEventHttpOutgoingDecorator decorator = new CloudEventHttpOutgoingDecorator();
-
-    @Produces
-    ConfigBean configBean = new ConfigBean() {
-
-        @Override
-        public boolean useCloudEvents() {
-            return true;
-        }
-
-        @Override
-        public String getServiceUrl() {
-            return null;
-        }
-
-        @Override
-        public Optional<KogitoGAV> getGav() {
-            return Optional.empty();
-        }
-    };
 
     @Test
     void verifyOutgoingHttpMetadataIsSet() {

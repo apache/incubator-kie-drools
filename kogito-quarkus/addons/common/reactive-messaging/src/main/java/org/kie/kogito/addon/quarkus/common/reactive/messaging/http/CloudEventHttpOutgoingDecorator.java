@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addon.quarkus.messaging.common.message;
+package org.kie.kogito.addon.quarkus.common.reactive.messaging.http;
 
 import javax.ws.rs.core.HttpHeaders;
 
