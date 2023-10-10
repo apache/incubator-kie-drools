@@ -173,7 +173,7 @@
     <version.plugin.annotations>3.6.0</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.3.4</version.shared.utils>
-    <version.common.compress>1.22</version.common.compress>
+    <version.common.compress>1.24.0</version.common.compress>
     <version.common.exec>1.3</version.common.exec>
     <!-- -->
     <!-- Jacoco plugin configurations -->
