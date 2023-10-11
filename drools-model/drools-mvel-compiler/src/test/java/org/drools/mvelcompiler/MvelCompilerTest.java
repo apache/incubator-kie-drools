@@ -746,6 +746,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalArithmeticWithValueOfDouble() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+            "{ " +
+                    "    $p.salary = $p.salary + BigDecimal.valueOf(0.5);\n" +
+                    "}",
+            "{ " +
+                    "    $p.setSalary($p.getSalary().add(BigDecimal.valueOf(0.5), java.math.MathContext.DECIMAL128));\n" +
+                    "}");
+    }
+
+    @Test
     public void testBigDecimalArithmeticWithConversionLiteral() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +
