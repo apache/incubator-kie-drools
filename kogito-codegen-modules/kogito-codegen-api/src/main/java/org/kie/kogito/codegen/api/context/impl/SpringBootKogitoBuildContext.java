@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.codegen.api.context.impl;
 
-import org.kie.kogito.codegen.api.di.impl.SpringDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.impl.SpringRestAnnotator;
+import org.drools.codegen.common.di.impl.SpringDependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.impl.SpringRestAnnotator;
 
 public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
 
@@ -33,6 +33,11 @@ public class SpringBootKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public static Builder builder() {
         return new SpringBootKogitoBuildContextBuilder();
+    }
+
+    @Override
+    public boolean hasRest() {
+        return hasClassAvailable(SPRING_REST);
     }
 
     protected static class SpringBootKogitoBuildContextBuilder extends AbstractBuilder {

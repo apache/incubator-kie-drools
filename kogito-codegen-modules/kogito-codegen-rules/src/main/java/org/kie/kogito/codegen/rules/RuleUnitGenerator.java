@@ -20,13 +20,11 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.drools.model.codegen.execmodel.QueryModel;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.conf.RuleUnitConfig;
 import org.drools.ruleunits.impl.AbstractRuleUnitDescription;
-import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
@@ -75,14 +73,6 @@ public class RuleUnitGenerator {
 
     public String typeName() {
         return typeName;
-    }
-
-    public Optional<RuleUnitPojoGenerator> pojo(RuleUnitHelper ruleUnitHelper) {
-        if (ruleUnit instanceof GeneratedRuleUnitDescription) {
-            return Optional.of(new RuleUnitPojoGenerator((GeneratedRuleUnitDescription) ruleUnit, ruleUnitHelper));
-        } else {
-            return Optional.empty();
-        }
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {

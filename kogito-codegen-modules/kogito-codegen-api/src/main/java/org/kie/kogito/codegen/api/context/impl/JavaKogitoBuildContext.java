@@ -30,6 +30,11 @@ public class JavaKogitoBuildContext extends AbstractKogitoBuildContext {
         return new JavaKogitoBuildContextBuilder();
     }
 
+    @Override
+    public boolean hasRest() {
+        return false;
+    }
+
     protected static class JavaKogitoBuildContextBuilder extends AbstractBuilder {
 
         protected JavaKogitoBuildContextBuilder() {

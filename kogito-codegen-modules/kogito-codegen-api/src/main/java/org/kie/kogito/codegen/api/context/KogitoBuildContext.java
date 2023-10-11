@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
 
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.SourceFileCodegenBindNotifier;
-import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.RestAnnotator;
 import org.kie.kogito.codegen.api.utils.KogitoCodeGenConstants;
 
 public interface KogitoBuildContext extends DroolsModelBuildContext {
@@ -48,11 +48,6 @@ public interface KogitoBuildContext extends DroolsModelBuildContext {
     boolean hasClassAvailable(String fqcn);
 
     boolean hasImplementationClassAvailable(Class<?> clazz);
-
-    /**
-     * Return DependencyInjectionAnnotator if available or null
-     */
-    DependencyInjectionAnnotator getDependencyInjectionAnnotator();
 
     /**
      * Method to override default dependency injection annotator
@@ -68,11 +63,6 @@ public interface KogitoBuildContext extends DroolsModelBuildContext {
         return getDependencyInjectionAnnotator() != null &&
                 "true".equalsIgnoreCase(getApplicationProperty(KOGITO_GENERATE_DI).orElse("true"));
     }
-
-    /**
-     * Return RestAnnotator if available or null
-     */
-    RestAnnotator getRestAnnotator();
 
     /**
      * Method to override default REST annotator

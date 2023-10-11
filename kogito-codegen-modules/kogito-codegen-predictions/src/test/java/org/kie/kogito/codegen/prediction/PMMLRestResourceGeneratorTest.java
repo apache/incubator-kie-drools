@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.drools.codegen.common.di.impl.CDIDependencyInjectionAnnotator;
 import org.drools.util.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +31,6 @@ import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.api.di.impl.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.pmml.commons.model.KiePMMLModel;
 

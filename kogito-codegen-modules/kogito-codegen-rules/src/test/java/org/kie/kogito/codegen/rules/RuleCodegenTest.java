@@ -286,10 +286,10 @@ public class RuleCodegenTest {
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertThat(generatedFiles).hasSizeGreaterThan(0);
-        if (contextBuilder.build().hasRESTGloballyAvailable()) {
-            assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("KogitoObjectMapper.java"));
+        if (contextBuilder.build().hasRest()) {
+            assertThat(generatedFiles.stream()).anyMatch(f -> f.relativePath().endsWith("ObjectMapper.java"));
         } else {
-            assertThat(generatedFiles.stream()).noneMatch(f -> f.relativePath().endsWith("KogitoObjectMapper.java"));
+            assertThat(generatedFiles.stream()).noneMatch(f -> f.relativePath().endsWith("ObjectMapper.java"));
         }
     }
 

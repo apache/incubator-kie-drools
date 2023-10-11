@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.codegen.api.context.impl;
 
-import org.kie.kogito.codegen.api.di.impl.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.impl.CDIRestAnnotator;
+import org.drools.codegen.common.di.impl.CDIDependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.impl.CDIRestAnnotator;
 
 public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
@@ -33,6 +33,11 @@ public class QuarkusKogitoBuildContext extends AbstractKogitoBuildContext {
 
     public static Builder builder() {
         return new QuarkusKogitoBuildContextBuilder();
+    }
+
+    @Override
+    public boolean hasRest() {
+        return hasClassAvailable(QUARKUS_REST);
     }
 
     protected static class QuarkusKogitoBuildContextBuilder extends AbstractBuilder {

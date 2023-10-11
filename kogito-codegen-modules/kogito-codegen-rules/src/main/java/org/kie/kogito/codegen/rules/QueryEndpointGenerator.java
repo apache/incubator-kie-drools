@@ -47,10 +47,10 @@ import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
+import static org.drools.model.codegen.execmodel.util.RuleCodegenUtils.setGeneric;
+import static org.drools.model.codegen.execmodel.util.RuleCodegenUtils.toKebabCase;
+import static org.drools.model.codegen.execmodel.util.RuleCodegenUtils.toNonPrimitiveType;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
-import static org.kie.kogito.codegen.rules.RuleCodegenUtils.setGeneric;
-import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toKebabCase;
-import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toNonPrimitiveType;
 
 public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
 

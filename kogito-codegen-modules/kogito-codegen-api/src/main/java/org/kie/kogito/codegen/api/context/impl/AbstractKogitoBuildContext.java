@@ -37,14 +37,14 @@ import java.util.function.Predicate;
 import javax.lang.model.SourceVersion;
 
 import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.SourceFileCodegenBindNotifier;
 import org.kie.kogito.codegen.api.context.KogitoApplicationPropertyProvider;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.api.rest.RestAnnotator;
 import org.kie.kogito.codegen.api.utils.AddonsConfigDiscovery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

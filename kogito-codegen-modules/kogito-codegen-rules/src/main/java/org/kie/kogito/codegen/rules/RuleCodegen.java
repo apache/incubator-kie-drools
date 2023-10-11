@@ -29,6 +29,7 @@ import java.util.Optional;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
+import org.drools.drl.parser.DroolsError;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.project.CodegenPackageSources;
 import org.drools.model.codegen.project.DroolsModelBuilder;
@@ -140,9 +141,8 @@ public class RuleCodegen extends AbstractGenerator {
                     .flatMap(pkgSrc -> pkgSrc.getRuleUnits().stream())
                     .forEach(ru -> kieModuleModelWrapper.addRuleUnitConfig(ru, configs.get(ru.getCanonicalName())));
 
-            // main codegen procedure (rule units, rule unit instances, queries, generated pojos)
-            RuleUnitMainCodegen ruleUnitCodegen = new RuleUnitMainCodegen(context(), ruleUnitGenerators, hotReloadMode);
-            generatedFiles.addAll(ruleUnitCodegen.generate());
+            List<DroolsError> errors = new ArrayList<>();
+            List<QueryGenerator> validQueries = validateQueries(errors);
 
             // dashboard for rule unit
             RuleUnitDashboardCodegen dashboardCodegen = new RuleUnitDashboardCodegen(context(), ruleUnitGenerators);
@@ -150,13 +150,12 @@ public class RuleCodegen extends AbstractGenerator {
 
             // "extended" procedure: REST + Event handlers + query dashboards
             if (context().hasRESTForGenerator(this)) {
-                Collection<QueryGenerator> validQueries = ruleUnitCodegen.validQueries();
                 RuleUnitExtendedCodegen ruleUnitExtendedCodegen = new RuleUnitExtendedCodegen(context(), validQueries);
                 generatedFiles.addAll(ruleUnitExtendedCodegen.generate());
             }
 
-            if (!ruleUnitCodegen.errors().isEmpty()) {
-                throw new RuleCodegenError(ruleUnitCodegen.errors());
+            if (!errors.isEmpty()) {
+                throw new RuleCodegenError(errors);
             }
         } else {
             LOGGER.info("No rule unit is present: generate KieRuntimeBuilder implementation.");
@@ -166,6 +165,20 @@ public class RuleCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    private List<QueryGenerator> validateQueries(List<DroolsError> errors) {
+        List<QueryGenerator> validQueries = new ArrayList<>();
+        for (RuleUnitGenerator ruleUnit : ruleUnitGenerators) {
+            for (QueryGenerator queryGenerator : ruleUnit.queries()) {
+                if (queryGenerator.validate()) {
+                    validQueries.add(queryGenerator);
+                } else {
+                    errors.add(queryGenerator.getError());
+                }
+            }
+        }
+        return validQueries;
     }
 
     public RuleCodegen withHotReloadMode() { // fixme this is currently only used in test cases. Drop?
