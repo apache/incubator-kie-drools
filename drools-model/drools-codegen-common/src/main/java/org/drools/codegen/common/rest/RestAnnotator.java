@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.ruleunit;
+package org.drools.codegen.common.rest;
 
-import java.lang.reflect.Type;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
-public interface RuleUnitVariable {
+import java.util.Optional;
 
-    boolean isDataSource();
-    boolean isDataStore();
+public interface RestAnnotator {
+    <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node);
 
-    String getName();
-
-    String getter();
-
-    String setter();
-
-    Type getType();
-
-    Class<?> getDataSourceParameterType();
-
-    Class<?> getBoxedVarType();
+    <T extends NodeWithAnnotations<?>> Optional<String> getEndpointValue(T node);
 }

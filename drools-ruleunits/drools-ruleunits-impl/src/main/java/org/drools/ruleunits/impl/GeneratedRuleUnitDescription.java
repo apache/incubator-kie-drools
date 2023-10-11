@@ -18,11 +18,11 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.function.Function;
-
 import org.drools.ruleunits.api.conf.RuleUnitConfig;
 import org.drools.util.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+
+import java.util.function.Function;
 
 public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
 
@@ -119,5 +119,10 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    @Override
+    public boolean isGenerated() {
+        return true;
     }
 }

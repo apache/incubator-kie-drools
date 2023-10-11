@@ -23,11 +23,21 @@ public class JavaDroolsModelBuildContext extends AbstractDroolsModelBuildContext
     public static final String CONTEXT_NAME = "Java";
 
     protected JavaDroolsModelBuildContext(JavaKogitoBuildContextBuilder builder) {
-        super(builder, CONTEXT_NAME);
+        super(builder, null, null, CONTEXT_NAME);
     }
 
     public static Builder builder() {
         return new JavaKogitoBuildContextBuilder();
+    }
+
+    @Override
+    public boolean hasRest() {
+        return false;
+    }
+
+    @Override
+    public boolean hasDI() {
+        return false;
     }
 
     protected static class JavaKogitoBuildContextBuilder extends AbstractBuilder {

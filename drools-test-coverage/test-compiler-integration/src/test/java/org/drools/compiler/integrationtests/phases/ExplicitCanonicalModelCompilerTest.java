@@ -18,26 +18,25 @@
  */
 package org.drools.compiler.integrationtests.phases;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import org.drools.codegen.common.GeneratedFile;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
-import org.drools.model.codegen.execmodel.GeneratedFile;
+import org.drools.io.ClassPathResource;
 import org.drools.model.codegen.execmodel.PackageSources;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
-import org.drools.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 
-import static java.util.Arrays.asList;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExplicitCanonicalModelCompilerTest {
