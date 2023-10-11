@@ -18,20 +18,36 @@
  */
 package org.drools.compiler.rule.builder;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-
+import org.drools.base.base.AcceptsClassObjectType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueType;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.factmodel.AnnotationDefinition;
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
+import org.drools.base.facttemplates.FactTemplate;
+import org.drools.base.facttemplates.FactTemplateFieldExtractor;
+import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.PatternSource;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.rule.XpathBackReference;
+import org.drools.base.rule.accessor.AcceptsReadAccessor;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
+import org.drools.base.rule.accessor.Evaluator;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.constraint.Constraint;
+import org.drools.base.rule.constraint.NegConstraint;
+import org.drools.base.rule.constraint.XpathConstraint;
+import org.drools.base.time.TimeUtils;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -45,41 +61,10 @@ import org.drools.compiler.lang.DumperContext;
 import org.drools.compiler.rule.builder.EvaluatorDefinition.Target;
 import org.drools.compiler.rule.builder.XpathAnalysis.XpathPart;
 import org.drools.compiler.rule.builder.util.ConstraintUtil;
-import org.drools.base.base.AcceptsClassObjectType;
-import org.drools.base.base.ClassObjectType;
 import org.drools.core.base.FieldNameSupplier;
-import org.drools.base.base.ObjectType;
-import org.drools.base.base.ValueType;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.QueryImpl;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.factmodel.AnnotationDefinition;
-import org.drools.base.factmodel.ClassDefinition;
-import org.drools.base.factmodel.FieldDefinition;
-import org.drools.base.facttemplates.FactTemplate;
-import org.drools.base.facttemplates.FactTemplateFieldExtractor;
-import org.drools.base.facttemplates.FactTemplateObjectType;
-import org.drools.base.reteoo.SortDeclarations;
 import org.drools.core.rule.BehaviorRuntime;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.PatternSource;
-import org.drools.base.rule.PredicateConstraint;
-import org.drools.base.rule.RuleConditionElement;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.base.rule.TypeDeclaration;
-import org.drools.base.rule.XpathBackReference;
-import org.drools.base.rule.accessor.AcceptsReadAccessor;
-import org.drools.base.rule.accessor.DeclarationScopeResolver;
-import org.drools.base.rule.accessor.Evaluator;
-import org.drools.base.rule.accessor.FieldValue;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.rule.constraint.Constraint;
-import org.drools.base.rule.constraint.NegConstraint;
-import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.base.time.TimeUtils;
-import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -111,6 +96,20 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
 
 import static org.drools.compiler.lang.DescrDumper.normalizeEval;
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;
@@ -1520,27 +1519,6 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         Arrays.sort(previousDeclarations, SortDeclarations.instance);
         Arrays.sort(localDeclarations, SortDeclarations.instance);
-
-        boolean isJavaEval = isEvalExpression && context.getDialect().isJava();
-
-        if (isJavaEval) {
-            final PredicateConstraint predicateConstraint = new PredicateConstraint(null,
-                                                                                    previousDeclarations,
-                                                                                    localDeclarations);
-
-            final PredicateBuilder builder = context.getDialect().getPredicateBuilder();
-
-            builder.build(context,
-                          usedIdentifiers,
-                          previousDeclarations,
-                          localDeclarations,
-                          predicateConstraint,
-                          predicateDescr,
-                          analysis);
-
-            return predicateConstraint;
-        }
-
 
         String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray(new String[usedIdentifiers.getGlobals().size()]);
         Declaration[] mvelDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length + requiredGlobals.length];
