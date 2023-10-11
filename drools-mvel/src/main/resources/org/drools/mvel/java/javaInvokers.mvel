@@ -78,47 +78,6 @@ public class @{invokerClassName} implements org.drools.base.rule.accessor.Return
 }
 @end{}
 
-@declare{"predicateInvoker"}
-package @{package};
-
-public class @{invokerClassName} implements org.drools.base.rule.accessor.PredicateExpression, org.drools.base.rule.accessor.CompiledInvoker
-{
-    private static final long serialVersionUID  = 510l;
-
-    public Object createContext() { return null; }
-
-    public boolean evaluate(org.kie.api.runtime.rule.FactHandle handle,
-                            org.drools.base.reteoo.BaseTuple tuple,
-                            org.drools.base.rule.Declaration[] previousDeclarations,
-                            org.drools.base.rule.Declaration[] localDeclarations,
-                            org.drools.base.base.ValueResolver valueResolver,
-                            Object context ) throws Exception {
-
-        @code{i0=0}@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) previousDeclarations[@{i0}].getValue( valueResolver, tuple ) );
-          @code{i0++}
-        @end{}
-        @code{i0=0}@foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} = ( @{declr.boxedTypeName} ) localDeclarations[@{i0}].getValue( valueResolver, handle );
-          @code{i0++}
-        @end{}
-        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) valueResolver.getGlobal( "@{identifier}" );
-        @end{}
-
-        return @{ruleClassName}.@{methodName}(
-            @foreach{declr : declarations} @{declr.identifier}
-            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}
-            @foreach{declr : localDeclarations} @{declr.identifier}
-            @end{","}@if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
-            @foreach{identifier : globals}@{identifier}
-            @end{","} );
-    }
-
-    @includeNamed{"hashCode"}
-
-    @includeNamed{"getMethodBytecode"}
-
-    @includeNamed{"equals"}
-}
-@end{}
 
 @declare{"evalInvoker"}
 package @{package};
