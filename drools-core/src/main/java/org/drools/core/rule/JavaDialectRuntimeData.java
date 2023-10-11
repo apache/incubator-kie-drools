@@ -18,6 +18,24 @@
  */
 package org.drools.core.rule;
 
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.ConditionalElement;
+import org.drools.base.rule.DialectRuntimeData;
+import org.drools.base.rule.DialectRuntimeRegistry;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.Function;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.accessor.Wireable;
+import org.drools.core.util.KeyStoreHelper;
+import org.drools.util.StringUtils;
+import org.drools.wiring.api.ComponentsFactory;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -39,27 +57,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.drools.base.definitions.impl.KnowledgePackageImpl;
-import org.drools.base.definitions.rule.impl.QueryImpl;
-import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.rule.ConditionalElement;
-import org.drools.base.rule.DialectRuntimeData;
-import org.drools.base.rule.DialectRuntimeRegistry;
-import org.drools.base.rule.EvalCondition;
-import org.drools.base.rule.Function;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.PredicateConstraint;
-import org.drools.base.rule.constraint.Constraint;
-import org.drools.base.rule.accessor.Wireable;
-import org.drools.core.util.KeyStoreHelper;
-import org.drools.util.StringUtils;
-import org.drools.wiring.api.ComponentsFactory;
-import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.util.ClassUtils.convertResourceToClassName;
@@ -392,20 +389,10 @@ public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizabl
             for (final Object object : group.getChildren()) {
                 if (object instanceof ConditionalElement) {
                     removeClasses((ConditionalElement) object);
-                } else if (object instanceof Pattern) {
-                    removeClasses((Pattern) object);
                 }
             }
         } else if (ce instanceof EvalCondition) {
             remove( ( (EvalCondition) ce ).getEvalExpression().getClass().getName() );
-        }
-    }
-
-    private void removeClasses( final Pattern pattern ) {
-        for (final Constraint object : pattern.getConstraints()) {
-            if (object instanceof PredicateConstraint) {
-                remove(((PredicateConstraint) object).getPredicateExpression().getClass().getName());
-            }
         }
     }
 

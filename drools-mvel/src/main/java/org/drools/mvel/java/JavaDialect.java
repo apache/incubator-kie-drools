@@ -81,7 +81,6 @@ import org.drools.compiler.rule.builder.JavaRuleClassBuilder;
 import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
-import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.PatternBuilderForQuery;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
@@ -102,7 +101,6 @@ import org.drools.util.IoUtils;
 import org.drools.util.StringUtils;
 import org.drools.mvel.asm.ASMConsequenceStubBuilder;
 import org.drools.mvel.asm.ASMEvalStubBuilder;
-import org.drools.mvel.asm.ASMPredicateStubBuilder;
 import org.drools.mvel.builder.MVELEnabledBuilder;
 import org.drools.mvel.builder.MVELFromBuilder;
 import org.drools.mvel.builder.MVELSalienceBuilder;
@@ -133,7 +131,6 @@ public class JavaDialect implements Dialect {
     protected static final JavaGroupByBuilder GROUP_BY_BUILDER = new JavaGroupByBuilder();
 
     protected static final RuleConditionBuilder EVAL_BUILDER = new ASMEvalStubBuilder();
-    protected static final PredicateBuilder PREDICATE_BUILDER = new ASMPredicateStubBuilder();
     protected static final ConsequenceBuilder CONSEQUENCE_BUILDER = new ASMConsequenceStubBuilder();
 
     protected static final JavaRuleClassBuilder RULE_CLASS_BUILDER = new JavaRuleClassBuilder();
@@ -377,10 +374,6 @@ public class JavaDialect implements Dialect {
 
     public RuleConditionBuilder getEvalBuilder() {
         return EVAL_BUILDER;
-    }
-
-    public PredicateBuilder getPredicateBuilder() {
-        return PREDICATE_BUILDER;
     }
 
     public ConsequenceBuilder getConsequenceBuilder() {
