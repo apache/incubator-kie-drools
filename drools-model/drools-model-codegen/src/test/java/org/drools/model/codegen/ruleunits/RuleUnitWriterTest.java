@@ -18,18 +18,11 @@
  */
 package org.drools.model.codegen.ruleunits;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import com.github.javaparser.ast.CompilationUnit;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
 import org.drools.codegen.common.context.SpringBootDroolsModelBuildContext;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationFactories;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -44,6 +37,12 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -154,6 +153,11 @@ public class RuleUnitWriterTest {
 
         @Override
         public boolean isDataSource() {
+            return true;
+        }
+
+        @Override
+        public boolean isDataStore() {
             return true;
         }
 

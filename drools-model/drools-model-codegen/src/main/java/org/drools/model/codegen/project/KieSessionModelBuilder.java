@@ -18,6 +18,12 @@
  */
 package org.drools.model.codegen.project;
 
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
+import org.drools.model.codegen.execmodel.ModelSourceClass;
+import org.kie.api.builder.model.KieBaseModel;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,11 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import org.drools.codegen.common.GeneratedFile;
-import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.model.codegen.execmodel.ModelSourceClass;
-import org.kie.api.builder.model.KieBaseModel;
 
 import static java.util.stream.Collectors.toList;
 
@@ -57,9 +58,9 @@ public class KieSessionModelBuilder {
                 new ProjectRuntimeGenerator(modelSourceClass.getModelMethod(), context);
 
         return Arrays.asList(
-                new GeneratedFile(RuleCodegen.RULE_TYPE,
+                new GeneratedFile(GeneratedFileType.RULE,
                         modelSourceClass.getName(), modelSourceClass.generate()),
-                new GeneratedFile(RuleCodegen.RULE_TYPE,
+                new GeneratedFile(GeneratedFileType.RULE,
                         projectRuntimeGenerator.getName(), projectRuntimeGenerator.generate()));
 
     }

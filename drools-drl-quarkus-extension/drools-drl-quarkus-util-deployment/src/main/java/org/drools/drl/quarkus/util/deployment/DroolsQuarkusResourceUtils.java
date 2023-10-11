@@ -18,22 +18,19 @@
  */
 package org.drools.drl.quarkus.util.deployment;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.classloading.QuarkusClassLoader;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
+import org.drools.base.util.Drools;
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
-import org.drools.base.util.Drools;
 import org.drools.wiring.api.ComponentsSupplier;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
@@ -44,12 +41,15 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.maven.dependency.ResolvedDependency;
-import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.drools.util.Config.getConfig;
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
@@ -92,7 +92,7 @@ public class DroolsQuarkusResourceUtils {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
                 .withClassLoader(classLoader)
-                .withClassAvailabilityResolver(className -> classAvailabilityResolver(classLoader, index, className))
+                .withClassAvailabilityResolver(className -> classAvailabilityResolver(index, className))
                 .withAppPaths(appPaths)
                 .build();
 
@@ -101,12 +101,8 @@ public class DroolsQuarkusResourceUtils {
 
     /**
      * Verify if a class is available. First uses jandex indexes, then fallback on classLoader
-     *
-     * @param classLoader
-     * @param className
-     * @return
      */
-    private static boolean classAvailabilityResolver(ClassLoader classLoader, IndexView index, String className) {
+    private static boolean classAvailabilityResolver(IndexView index, String className) {
         if (index != null) {
             DotName classDotName = DotName.createSimple(className);
             boolean classFound = !index.getAnnotations(classDotName).isEmpty() ||
@@ -115,12 +111,8 @@ public class DroolsQuarkusResourceUtils {
                 return true;
             }
         }
-        try {
-            classLoader.loadClass(className);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+
+        return QuarkusClassLoader.isClassPresentAtRuntime(className);
     }
 
     public static void dumpFilesToDisk(AppPaths appPaths, Collection<GeneratedFile> generatedFiles) {

@@ -18,10 +18,11 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.lang.reflect.Type;
-
 import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
 import org.kie.internal.ruleunit.RuleUnitVariable;
+
+import java.lang.reflect.Type;
 
 import static org.drools.util.ClassUtils.rawType;
 import static org.drools.util.StringUtils.ucFirst;
@@ -56,6 +57,11 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
     @Override
     public boolean isDataSource() {
         return DataSource.class.isAssignableFrom(boxedVarType) && dataSourceParameterType != null;
+    }
+
+    @Override
+    public boolean isDataStore() {
+        return DataStore.class.isAssignableFrom(boxedVarType) && dataSourceParameterType != null;
     }
 
     @Override

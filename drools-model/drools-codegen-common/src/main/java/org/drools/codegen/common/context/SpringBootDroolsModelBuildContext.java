@@ -18,18 +18,36 @@
  */
 package org.drools.codegen.common.context;
 
+import org.drools.codegen.common.di.impl.SpringDependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.impl.SpringRestAnnotator;
+
 public class SpringBootDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
     public static final String CONTEXT_NAME = "Spring";
     public static final String SPRING_REST = "org.springframework.web.bind.annotation.RestController";
     public static final String SPRING_DI = "org.springframework.beans.factory.annotation.Autowired";
 
+    public final boolean hasRest;
+    public final boolean hasDI;
+
     protected SpringBootDroolsModelBuildContext(SpringBootKogitoBuildContextBuilder builder) {
-        super(builder, /* new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(),*/ CONTEXT_NAME);
+        super(builder, new SpringDependencyInjectionAnnotator(), new SpringRestAnnotator(), CONTEXT_NAME);
+        this.hasRest = hasClassAvailable(SPRING_REST);
+        this.hasDI = hasClassAvailable(SPRING_DI);
     }
 
     public static Builder builder() {
         return new SpringBootKogitoBuildContextBuilder();
+    }
+
+    @Override
+    public boolean hasRest() {
+        return hasRest;
+    }
+
+    @Override
+    public boolean hasDI() {
+        return hasDI;
     }
 
     protected static class SpringBootKogitoBuildContextBuilder extends AbstractBuilder {
