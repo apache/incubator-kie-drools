@@ -122,7 +122,7 @@ public class SimpleSerializationReliableRefObjectStore extends SimpleSerializati
     }
 
     private void updateObjectTypesList(Object object) {
-        if (inverseStorage.keySet().stream().filter(sObject -> sObject.getClass().equals(object.getClass())).findAny()!=null){
+        if (!inverseStorage.keySet().stream().filter(sObject -> sObject.getClass().equals(object.getClass())).findAny().isEmpty()){
             uniqueObjectTypesInStorage.add(object.getClass().getName());
         }else{
             uniqueObjectTypesInStorage.remove(object.getClass().getName());
