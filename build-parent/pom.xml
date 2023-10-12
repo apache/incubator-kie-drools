@@ -236,14 +236,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- dependencies from jboss-ip-bom -->
-      <!--
-  CONVENTIONS:
-  - Dependencies must be SORTED ALPHABETICALLY on groupId (other forms of sorting were found to be unclear and ambiguous).
-  - Do not declare <scope> (exception: import) or <optional>: a child module will declare scope/optional itself.
-  - Always extract the version as a property.
-  - A element's inner order is <groupId>, <artifactId>, [<type>,] [<classifier>,] <version> (following Aether proper)
--->
       <!-- Keep in sync with groupId org.slf4j -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -920,8 +912,6 @@
         <artifactId>xmlunit</artifactId>
         <version>${version.xmlunit}</version>
       </dependency>
-
-      <!-- END of jboss-ip-bom -->
 
       <!--JMH (Benchmarks)-->
       <dependency>

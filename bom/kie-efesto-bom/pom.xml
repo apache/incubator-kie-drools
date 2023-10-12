@@ -21,13 +21,13 @@
   <url>https://www.drools.org</url>
 
   <scm>
-    <connection>scm:git:https://github.com/kiegroup/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
-    <url>https://github.com/kiegroup/drools</url>
+    <connection>scm:git:https://github.com/apache/incubator-kie-drools.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/incubator-kie-drools.git</developerConnection>
+    <url>https://github.com/apache/incubator-kie-drools</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/DROOLS</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
   <developers>
     <developer>

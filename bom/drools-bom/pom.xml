@@ -22,13 +22,13 @@
   <url>https://www.drools.org</url>
 
   <scm>
-    <connection>scm:git:https://github.com/kiegroup/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
-    <url>https://github.com/kiegroup/drools</url>
+    <connection>scm:git:https://github.com/apache/incubator-kie-drools.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/incubator-kie-drools.git</developerConnection>
+    <url>https://github.com/apache/incubator-kie-drools</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/DROOLS</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
   <developers>
     <developer>
@@ -44,7 +44,14 @@
   </contributors>
   <mailingLists>
     <mailingList>
-      <name>setup</name>
+      <name>Development mailing list</name>
+      <post>dev@kie.apache.org</post>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Users</name>
       <subscribe>https://groups.google.com/forum/#!forum/drools-setup</subscribe>
       <unsubscribe>https://groups.google.com/forum/#!forum/drools-setup</unsubscribe>
       <otherArchives>
@@ -56,11 +63,6 @@
       <name>usage</name>
       <subscribe>https://groups.google.com/forum/#!forum/drools-usage</subscribe>
       <unsubscribe>https://groups.google.com/forum/#!forum/drools-usage</unsubscribe>
-    </mailingList>
-    <mailingList>
-      <name>development</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-development</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-development</unsubscribe>
     </mailingList>
   </mailingLists>
 
