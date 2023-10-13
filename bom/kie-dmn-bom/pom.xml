@@ -43,6 +43,13 @@
   </contributors>
   <mailingLists>
     <mailingList>
+      <name>Development mailing list</name>
+      <post>dev@kie.apache.org</post>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
       <name>setup</name>
       <subscribe>https://groups.google.com/forum/#!forum/drools-setup</subscribe>
       <unsubscribe>https://groups.google.com/forum/#!forum/drools-setup</unsubscribe>
@@ -51,11 +58,6 @@
       <name>usage</name>
       <subscribe>https://groups.google.com/forum/#!forum/drools-usage</subscribe>
       <unsubscribe>https://groups.google.com/forum/#!forum/drools-usage</unsubscribe>
-    </mailingList>
-    <mailingList>
-      <name>development</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-development</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-development</unsubscribe>
     </mailingList>
   </mailingLists>
 
