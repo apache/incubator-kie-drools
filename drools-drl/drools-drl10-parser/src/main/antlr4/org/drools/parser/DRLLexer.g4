@@ -53,7 +53,25 @@ DRL_RESULT : 'result';
 DRL_ENTRY_POINT : 'entry-point';
 DRL_EVAL : 'eval';
 DRL_FORALL : 'forall';
+DRL_OVER : 'over';
 
+// temporal operators
+DRL_AFTER : 'after';
+DRL_BEFORE : 'before';
+DRL_COINCIDES : 'coincides';
+DRL_DURING : 'during';
+DRL_INCLUDES : 'includes';
+DRL_FINISHES : 'finishes';
+DRL_FINISHED_BY : 'finishedby';
+DRL_MEETS : 'meets';
+DRL_MET_BY : 'metby';
+DRL_OVERLAPS : 'overlaps';
+DRL_OVERLAPPED_BY : 'overlappedby';
+DRL_STARTS : 'starts';
+DRL_STARTED_BY : 'startedby';
+
+
+// attributes
 DRL_SALIENCE : 'salience';
 DRL_ENABLED : 'enabled';
 DRL_NO_LOOP : 'no-loop';

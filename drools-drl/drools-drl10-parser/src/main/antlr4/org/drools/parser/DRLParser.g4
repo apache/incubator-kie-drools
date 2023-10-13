@@ -80,7 +80,7 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
              ( QUESTION? qualifiedIdentifier LPAREN positionalConstraints? constraints? RPAREN (OVER patternFilter)? (FROM patternSource)? ) ;
 */
 
-lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN (DRL_FROM patternSource)? ;
+lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN (DRL_OVER patternFilter)? (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
@@ -105,6 +105,7 @@ relationalOperator
     | GE
     | GT
     | LT
+    | temporalOperator
     ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
@@ -204,6 +205,7 @@ drlExpression
     | drlExpression bop=(ADD|SUB) drlExpression
     | drlExpression (LT LT | GT GT GT | GT GT) drlExpression
     | drlExpression bop=(LE | GE | GT | LT) drlExpression
+    | drlExpression temporalOperator drlExpression
     | drlExpression bop=INSTANCEOF (typeType | pattern)
     | drlExpression bop=DRL_MATCHES drlExpression
     | drlExpression DRL_NOT? DRL_MEMBEROF drlExpression
@@ -225,6 +227,10 @@ drlExpression
     | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
     ;
+
+temporalOperator : DRL_NOT? bop=(DRL_AFTER | DRL_BEFORE | DRL_COINCIDES | DRL_DURING | DRL_INCLUDES | DRL_FINISHES | DRL_FINISHED_BY | DRL_MEETS | DRL_MET_BY | DRL_OVERLAPS | DRL_OVERLAPPED_BY | DRL_STARTS | DRL_STARTED_BY) timeAmount? ;
+
+timeAmount : LBRACK (TIME_INTERVAL | DECIMAL_LITERAL | MUL | SUB MUL) (COMMA (TIME_INTERVAL | DECIMAL_LITERAL | MUL | SUB MUL))* RBRACK ;
 
 /* extending JavaParser primary */
 drlPrimary
@@ -271,6 +277,12 @@ mapExpressionList
 mapEntry
     :	drlExpression COLON drlExpression
     ;
+
+/*
+ patternFilter :=   OVER filterDef
+ filterDef := label ID LEFT_PAREN parameters RIGHT_PAREN
+*/
+patternFilter : label IDENTIFIER LPAREN expressionList RPAREN ;
 
 /*
  patternSource := FROM

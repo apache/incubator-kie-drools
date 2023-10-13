@@ -3,6 +3,7 @@ package org.drools.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
@@ -14,6 +15,7 @@ import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
@@ -42,7 +44,7 @@ import static org.drools.util.StringUtils.unescapeJava;
 
 public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
-    private TokenStream tokenStream;
+    private final TokenStream tokenStream;
 
     public DRLVisitorImpl(TokenStream tokenStream) {
         this.tokenStream = tokenStream;
@@ -252,6 +254,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
         PatternDescr patternDescr = new PatternDescr(ctx.objectType.getText());
+        if (ctx.patternFilter() != null) {
+            patternDescr.addBehavior(visitPatternFilter(ctx.patternFilter()));
+        }
         if (ctx.patternSource() != null) {
             PatternSourceDescr patternSourceDescr = (PatternSourceDescr) visitPatternSource(ctx.patternSource());
             patternSourceDescr.setResource(patternDescr.getResource());
@@ -289,6 +294,17 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
         constraintDescrList.forEach(patternDescr::addConstraint);
         return patternDescr;
+    }
+
+    @Override
+    public BehaviorDescr visitPatternFilter(DRLParser.PatternFilterContext ctx) {
+        BehaviorDescr behaviorDescr = new BehaviorDescr();
+        behaviorDescr.setType(ctx.label().IDENTIFIER().getText());
+        behaviorDescr.setSubType(ctx.IDENTIFIER().getText());
+        List<DRLParser.DrlExpressionContext> drlExpressionContexts = ctx.expressionList().drlExpression();
+        List<String> parameters = drlExpressionContexts.stream().map(ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
+        behaviorDescr.setParameters(parameters);
+        return behaviorDescr;
     }
 
     @Override
