@@ -2713,7 +2713,6 @@ class MiscDRLParserTest {
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : High | Implement temporal operators")
     @Test
     public void parse_PluggableOperators() throws Exception {
 
@@ -2934,13 +2933,11 @@ class MiscDRLParserTest {
         assertThat(entry.getEntryId()).isEqualTo("StreamA");
     }
 
-    @Disabled("Priority : High | Implement sliding window")
     @Test
     public void parse_SlidingWindow() throws Exception {
         final String text = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";
 
-        PackageDescr pkg = parser.parse(
-                                                 text );
+        PackageDescr pkg = parser.parse( text );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         RuleDescr rule = pkg.getRules().get( 0 );
@@ -3219,7 +3216,6 @@ class MiscDRLParserTest {
         assertThat(((ExprConstraintDescr) constraints.get(0)).getExpression()).isEqualTo("$name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\"");
     }
 
-    @Disabled("Priority : High | Implement temporal operators")
     @Test
     public void parse_PluggableOperators2() throws Exception {
         final String text = "rule \"tt\"\n" +
@@ -3253,7 +3249,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement temporal operators")
     @Test
     public void parse_InfinityLiteral() throws Exception {
         final String text = "rule \"infinity\"\n" +
