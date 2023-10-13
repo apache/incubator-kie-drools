@@ -32,6 +32,7 @@ import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
+import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.UnitDescr;
 
@@ -85,6 +86,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 packageDescr.addAttribute((AttributeDescr) descr);
             } else if (descr instanceof RuleDescr) {
                 packageDescr.addRule((RuleDescr) descr);
+            } else if (descr instanceof QueryDescr) {
+                packageDescr.addRule((QueryDescr) descr);
             }
         });
     }
@@ -187,6 +190,32 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public QueryDescr visitQuerydef(DRLParser.QuerydefContext ctx) {
+        QueryDescr queryDescr = new QueryDescr(safeStripStringDelimiters(ctx.name.getText()));
+
+        DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
+        if (formalParametersContext != null) {
+            DRLParser.FormalParameterListContext formalParameterListContext = formalParametersContext.formalParameterList();
+            List<DRLParser.FormalParameterContext> formalParameterContexts = formalParameterListContext.formalParameter();
+            formalParameterContexts.forEach(formalParameterContext -> {
+                DRLParser.TypeTypeContext typeTypeContext = formalParameterContext.typeType();
+                DRLParser.VariableDeclaratorIdContext variableDeclaratorIdContext = formalParameterContext.variableDeclaratorId();
+                queryDescr.addParameter(typeTypeContext.getText(), variableDeclaratorIdContext.getText());
+            });
+        }
+
+        ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(queryDescr::addAnnotation);
+
+        ctx.lhsExpression().stream()
+                           .flatMap(lhsExpressionContext -> visitDescrChildren(lhsExpressionContext).stream())
+                           .forEach(descr -> queryDescr.getLhs().addDescr(descr));
+
+        slimLhsRootDescr(queryDescr.getLhs());
+
+        return queryDescr;
+    }
+
+    @Override
     public AnnotationDescr visitDrlAnnotation(DRLParser.DrlAnnotationContext ctx) {
         AnnotationDescr annotationDescr = new AnnotationDescr(ctx.name.getText());
         annotationDescr.setValue(ctx.drlArguments().drlArgument(0).getText());
@@ -254,6 +283,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
         PatternDescr patternDescr = new PatternDescr(ctx.objectType.getText());
+        if (ctx.QUESTION() != null) {
+            patternDescr.setQuery(true);
+        }
         if (ctx.patternFilter() != null) {
             patternDescr.addBehavior(visitPatternFilter(ctx.patternFilter()));
         }
