@@ -913,7 +913,6 @@ class MiscDRLParserTest {
                                    Pattern.DOTALL | Pattern.MULTILINE).matcher(rhs).matches()).isTrue();
     }
 
-    @Disabled("Priority : High | Implement semicolon delimiter")
     @Test
     public void parse_LhsSemicolonDelim() throws Exception {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
@@ -1017,7 +1016,6 @@ class MiscDRLParserTest {
         assertThat(exPattern.getObjectType()).isEqualTo("Foo");
     }
 
-    @Disabled("Priority : High | Implement query")
     @Test
     public void parse_SimpleQuery() throws Exception {
         final QueryDescr query = parseAndGetFirstQueryDescrFromFile(
@@ -1057,7 +1055,6 @@ class MiscDRLParserTest {
         assertThat(bindingDescr.getExpression()).isEqualTo("a4:a==4");
     }
 
-    @Disabled("Priority : High | Implement query")
     @Test
     public void parse_QueryRuleMixed() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2313,7 +2310,7 @@ class MiscDRLParserTest {
         assertThat(fieldConstr.getExpression()).isEqualTo("bar > 1 || == 1");
     }
 
-    @Disabled("Priority : High | Implement semicolon delimiter")
+    @Disabled("Priority : High | Implement semicolon delimiter | Implement from collect")
     @Test
     public void parse_Semicolon() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -3042,7 +3039,6 @@ class MiscDRLParserTest {
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
     }
 
-    @Disabled("Priority : High | Implement query")
     @Test
     public void parse_IsQuery() throws Exception {
         final String text = "rule X when ?person( \"Mark\", 42; ) then end";
@@ -3062,7 +3058,6 @@ class MiscDRLParserTest {
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
     }
 
-    @Disabled("Priority : Mid | Implement query with from")
     @Test
     public void parse_FromFollowedByQuery() throws Exception {
         // the 'from' expression requires a ";" to disambiguate the "?" 
@@ -3083,7 +3078,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : Mid | Implement query with from")
     @Test
     public void parse_FromWithTernaryFollowedByQuery() throws Exception {
         // the 'from' expression requires a ";" to disambiguate the "?" 
