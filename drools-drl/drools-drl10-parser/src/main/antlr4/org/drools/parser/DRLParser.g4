@@ -19,9 +19,10 @@ compilationUnit : packagedef? unitdef? drlStatementdef* ;
 drlStatementdef
     : importdef
     | globaldef
-    | functiondef
-    | attributes
     | ruledef
+    | attributes
+    | functiondef
+    | querydef
     ;
 
 packagedef : PACKAGE name=drlQualifiedName SEMI? ;
@@ -37,6 +38,10 @@ globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 // rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
 ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* attributes? lhs rhs DRL_END ;
+
+// query := QUERY stringId parameters? annotation* lhsExpression END
+
+querydef : DRL_QUERY name=stringId formalParameters? drlAnnotation* lhsExpression+ DRL_QUERY_END SEMI?;
 
 lhs : DRL_WHEN lhsExpression* ;
 
@@ -147,7 +152,7 @@ drlKeywords
     | DRL_QUERY
     | DRL_WHEN
     | DRL_THEN
-    | DRL_END
+    | DRL_QUERY_END
     | DRL_AND
     | DRL_OR
     | DRL_EXISTS
