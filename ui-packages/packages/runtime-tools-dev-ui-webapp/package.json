@@ -119,7 +119,7 @@
     "cypress": "^12.17.0",
     "express": "^4.18.2",
     "file-loader": "^6.2.0",
-    "filemanager-webpack-plugin": "^6.1.7",
+    "filemanager-webpack-plugin": "^7.0.0",
     "html-webpack-plugin": "^5.5.3",
     "https-browserify": "^1.0.0",
     "identity-obj-proxy": "^3.0.0",

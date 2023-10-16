@@ -133,7 +133,7 @@
               <outputDirectory>${basedir}/target/classes/dev-static/webapp</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${path.to.webapp.app}/dist</directory>
+                  <directory>${path.to.webapp.app}/dist/resources/webapp</directory>
                   <filtering>false</filtering>
                 </resource>
               </resources>
