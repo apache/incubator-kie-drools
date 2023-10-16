@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import {
   CFAnalysisResetType,
   CFAnalysisResult,
@@ -88,7 +106,7 @@ export const cfReducer = (state: CFState, action: cfActions): CFState => {
     case 'CF_TOGGLE_ALL_INPUTS': {
       const newState = {
         ...state,
-        searchDomains: state.searchDomains.map(input =>
+        searchDomains: state.searchDomains.map((input) =>
           isSearchInputTypeSupportedForCounterfactual(input)
             ? {
                 ...input,
@@ -176,8 +194,8 @@ export const cfInitState = (parameters: {
 
 const convertOutcomesToGoals = (outcomes: Outcome[]): CFGoal[] => {
   return outcomes
-    .filter(outcome => outcome.evaluationStatus === 'SUCCEEDED')
-    .map(outcome => {
+    .filter((outcome) => outcome.evaluationStatus === 'SUCCEEDED')
+    .map((outcome) => {
       return {
         id: outcome.outcomeId,
         name: outcome.outcomeName,
@@ -207,7 +225,7 @@ const convertInputToSearchDomain = (inputs: ItemObject[]): CFSearchInput[] => {
     }
     return cfSearchInput;
   };
-  return inputs.map(input => {
+  return inputs.map((input) => {
     return addIsFixed(input);
   });
 };
@@ -227,7 +245,7 @@ const convertInputToSearchDomainValue = (
       return {
         kind: 'COLLECTION',
         type: value.type,
-        value: value.value.map(v => convertInputToSearchDomainValue(v))
+        value: value.value.map((v) => convertInputToSearchDomainValue(v))
       };
     case 'STRUCTURE':
       Object.entries(value.value).forEach(([key, value]) => {
@@ -264,15 +282,15 @@ const areRequiredParametersSet = (state: CFState): boolean => {
 const areInputsSelected = (inputs: CFSearchInput[]) => {
   // filtering all non fixed inputs
   const selectedInputValues: CFSearchInputUnit[] = inputs
-    .filter(input => input.value.kind === 'UNIT')
-    .map(input => input.value as CFSearchInputUnit)
-    .filter(input => input.fixed === false);
+    .filter((input) => input.value.kind === 'UNIT')
+    .map((input) => input.value as CFSearchInputUnit)
+    .filter((input) => input.fixed === false);
   // checking if all inputs have a domain specified, with the exception of
   // booleans (do not require one)
   return (
     selectedInputValues.length > 0 &&
     selectedInputValues.every(
-      inputValue =>
+      (inputValue) =>
         inputValue.domain || typeof inputValue.originalValue.value === 'boolean'
     )
   );
@@ -281,7 +299,7 @@ const areInputsSelected = (inputs: CFSearchInput[]) => {
 const areGoalsSelected = (goals: CFGoal[]) => {
   return (
     goals.filter(
-      goal =>
+      (goal) =>
         !(
           goal.role == CFGoalRole.ORIGINAL ||
           goal.role == CFGoalRole.UNSUPPORTED

@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React, { useCallback, useMemo } from 'react';
 import { FeatureScores } from '../../../types';
 import { maxBy } from 'lodash';
@@ -25,10 +43,10 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
 
   const scores = useMemo(() => {
     const positives = featuresScore
-      .filter(feature => feature.featureScore > 0)
+      .filter((feature) => feature.featureScore > 0)
       .sort((a, b) => b.featureScore - a.featureScore);
     const negatives = featuresScore
-      .filter(feature => feature.featureScore < 0)
+      .filter((feature) => feature.featureScore < 0)
       .sort((a, b) => a.featureScore - b.featureScore);
     const maxNumberOfValues = Math.max(positives.length, negatives.length);
     const barWidth = (height - 90) / maxNumberOfValues / 2;
@@ -36,7 +54,7 @@ const FeaturesScoreChartBySign = (props: FeaturesScoreChartBySignProps) => {
   }, [featuresScore, height]);
 
   const maxValue = useMemo(() => {
-    const max = maxBy(featuresScore, item => {
+    const max = maxBy(featuresScore, (item) => {
       return Math.abs(item.featureScore);
     });
     return max ? Math.abs(max.featureScore) : 1;
@@ -110,7 +128,7 @@ const ScoresBarChart = (props: ScoresBarChartProps) => {
   } = props;
 
   const computeOpacity = useCallback(
-    data => {
+    (data) => {
       const computedOpacity = Math.abs(
         Math.floor((data.datum.featureScore / maxValue) * 100) / 100
       );
@@ -119,7 +137,7 @@ const ScoresBarChart = (props: ScoresBarChartProps) => {
     [maxValue]
   );
 
-  const computeColor = useCallback(data => {
+  const computeColor = useCallback((data) => {
     return data.datum.featureScore >= 0
       ? 'var(--pf-global--info-color--100)'
       : 'var(--pf-global--palette--orange-300)';

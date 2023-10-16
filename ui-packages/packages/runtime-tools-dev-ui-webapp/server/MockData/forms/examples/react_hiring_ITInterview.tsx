@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Card,
@@ -15,7 +33,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
   const [candidate__salary, set__candidate__salary] = useState<number>('');
   const [candidate__skills, set__candidate__skills] = useState<string>('');
   /* Utility function that fills the form with the data received from the kogito runtime */
-  const setFormData = data => {
+  const setFormData = (data) => {
     if (!data) {
       return;
     }
@@ -34,7 +52,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
   /* Utility function to validate the form on the 'beforeSubmit' Lifecycle Hook */
   const validateForm = useCallback(() => {}, []);
   /* Utility function to perform actions on the on the 'afterSubmit' Lifecycle Hook */
-  const afterSubmit = useCallback(result => {}, []);
+  const afterSubmit = useCallback((result) => {}, []);
   useEffect(() => {
     if (formApi) {
       /*
@@ -46,7 +64,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
         Form Lifecycle Hook that will be executed after the form is submitted.
         It will receive a response object containing the `type` flag indicating if the submit has been successful and `info` with extra information about the submit result.
       */
-      formApi.afterSubmit = result => afterSubmit(result);
+      formApi.afterSubmit = (result) => afterSubmit(result);
       /* Generates the expected form output object to be posted */
       formApi.getFormData = () => getFormData();
     }

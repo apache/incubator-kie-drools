@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import { useEffect, useState } from 'react';
 import {
   FeatureScores,
@@ -25,7 +43,7 @@ const useFeaturesScores = (
       if (saliencies.data.status === SaliencyStatus.SUCCEEDED) {
         const selectedExplanation = find(
           saliencies.data.saliencies,
-          saliency => {
+          (saliency) => {
             return saliency.outcomeId === outcomeId;
           }
         );
@@ -33,7 +51,7 @@ const useFeaturesScores = (
         if (selectedExplanation) {
           const sortedFeatures = orderBy(
             selectedExplanation.featureImportance,
-            item => Math.abs(item.featureScore),
+            (item) => Math.abs(item.featureScore),
             'asc'
           );
           setFeaturesScores(sortedFeatures as FeatureScores[]);
@@ -44,10 +62,10 @@ const useFeaturesScores = (
           }
 
           const positiveFeatures = sortedFeatures.filter(
-            feature => feature.featureScore > 0
+            (feature) => feature.featureScore > 0
           );
           const negativeFeatures = sortedFeatures.filter(
-            feature => feature.featureScore < 0
+            (feature) => feature.featureScore < 0
           );
           if (positiveFeatures.length > 5 || negativeFeatures.length > 5) {
             setTopFeaturesScoresBySign([

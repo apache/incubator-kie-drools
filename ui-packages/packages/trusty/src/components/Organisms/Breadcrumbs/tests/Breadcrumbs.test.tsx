@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React from 'react';
 import Breadcrumbs from '../Breadcrumbs';
 import { mount } from 'enzyme';
@@ -45,41 +63,23 @@ describe('Breadcrumbs', () => {
 
     expect(breadcrumbs).toMatchSnapshot();
     expect(breadcrumbs.find('li.breadcrumb-item')).toHaveLength(3);
+    expect(breadcrumbs.find('li.breadcrumb-item').at(0).text()).toMatch(
+      'Audit investigation'
+    );
+    expect(breadcrumbs.find('li.breadcrumb-item').at(1).text()).toMatch(
+      `Execution #${executionId.substring(0, 8)}`
+    );
+    expect(breadcrumbs.find('li.breadcrumb-item').at(2).text()).toMatch(
+      'Outcomes'
+    );
     expect(
-      breadcrumbs
-        .find('li.breadcrumb-item')
-        .at(0)
-        .text()
-    ).toMatch('Audit investigation');
-    expect(
-      breadcrumbs
-        .find('li.breadcrumb-item')
-        .at(1)
-        .text()
-    ).toMatch(`Execution #${executionId.substring(0, 8)}`);
-    expect(
-      breadcrumbs
-        .find('li.breadcrumb-item')
-        .at(2)
-        .text()
-    ).toMatch('Outcomes');
-    expect(
-      breadcrumbs
-        .find('BreadcrumbItem')
-        .at(0)
-        .prop('isActive') as boolean
+      breadcrumbs.find('BreadcrumbItem').at(0).prop('isActive') as boolean
     ).toBeFalsy();
     expect(
-      breadcrumbs
-        .find('BreadcrumbItem')
-        .at(1)
-        .prop('isActive') as boolean
+      breadcrumbs.find('BreadcrumbItem').at(1).prop('isActive') as boolean
     ).toBeFalsy();
     expect(
-      breadcrumbs
-        .find('BreadcrumbItem')
-        .at(2)
-        .prop('isActive') as boolean
+      breadcrumbs.find('BreadcrumbItem').at(2).prop('isActive') as boolean
     ).toBeTruthy();
   });
 });

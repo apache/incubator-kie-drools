@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React, {
   useCallback,
   useContext,
@@ -47,13 +65,8 @@ type CounterfactualTableProps = {
 };
 
 const CounterfactualTable = (props: CounterfactualTableProps) => {
-  const {
-    inputs,
-    results,
-    status,
-    onOpenInputDomainEdit,
-    containerWidth
-  } = props;
+  const { inputs, results, status, onOpenInputDomainEdit, containerWidth } =
+    props;
   const dispatch = useContext(CFDispatch);
   const columns = [
     'Input',
@@ -70,9 +83,8 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
   const [displayedResults, setDisplayedResults] = useState(
     convertCFResultsInputs(results)
   );
-  const [isInputSelectionEnabled, setIsInputSelectionEnabled] = useState<
-    boolean
-  >();
+  const [isInputSelectionEnabled, setIsInputSelectionEnabled] =
+    useState<boolean>();
   const [newResults, setNewResults] = useState<string[]>([]);
 
   const scrollbars = useRef(null);
@@ -170,8 +182,8 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
 
   useEffect(() => {
     if (results.length > 0) {
-      const ids = results.map(item => item.solutionId);
-      const firstNewIndex = ids.findIndex(x => newResults.includes(x));
+      const ids = results.map((item) => item.solutionId);
+      const firstNewIndex = ids.findIndex((x) => newResults.includes(x));
       const newItems = firstNewIndex > -1 ? ids.slice(0, firstNewIndex) : ids;
       if (newItems.length > 0 && newItems.join() !== newResults.join()) {
         setNewResults(newItems);
@@ -183,8 +195,8 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
     setRows(inputs);
     setAreAllRowsSelected(
       inputs
-        .filter(input => input.value.kind === 'UNIT')
-        .find(input => (input.value as CFSearchInputUnit).fixed) === undefined
+        .filter((input) => input.value.kind === 'UNIT')
+        .find((input) => (input.value as CFSearchInputUnit).fixed) === undefined
     );
   }, [inputs]);
 
@@ -284,7 +296,7 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                           </Th>
                         )}
                         {displayedResults.length > 0 &&
-                          displayedResults[0].map(result => (
+                          displayedResults[0].map((result) => (
                             <Th
                               key={`result ${result.value}`}
                               className={
@@ -345,7 +357,7 @@ const CounterfactualTable = (props: CounterfactualTableProps) => {
                           <Td key="id-row_3" />
                           <Td key="id-row_4" />
                           {displayedResults.length > 0 &&
-                            displayedResults[0].map(result => (
+                            displayedResults[0].map((result) => (
                               <Td
                                 key={`id-row_${result.value}`}
                                 dataLabel={'Counterfactual Result'}
@@ -558,7 +570,7 @@ const convertCFResultsInputs = (results: CFAnalysisResult[]) => {
   const rows = [];
   if (results.length) {
     rows.push([]);
-    results.forEach(result => {
+    results.forEach((result) => {
       rows[0].push({ value: result.solutionId, stage: result.stage });
       result.inputs.forEach((input, inputIndex) => {
         if (!rows[inputIndex + 1]) {

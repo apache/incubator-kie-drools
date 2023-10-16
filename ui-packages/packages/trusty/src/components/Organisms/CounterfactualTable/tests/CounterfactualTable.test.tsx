@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React from 'react';
 import { mount } from 'enzyme';
 import CounterfactualTable from '../CounterfactualTable';
@@ -30,34 +48,18 @@ describe('CounterfactualTable', () => {
     expect(rows).toHaveLength(4);
 
     for (let i = 0; i < inputs.length; i++) {
-      expect(
-        rows
-          .at(i)
-          .find('[data-label="Input"]')
-          .text()
-      ).toMatch(inputs[i].name);
-      expect(
-        rows
-          .at(i)
-          .find('[data-label="Input Value"]')
-          .text()
-      ).toMatch(
+      expect(rows.at(i).find('[data-label="Input"]').text()).toMatch(
+        inputs[i].name
+      );
+      expect(rows.at(i).find('[data-label="Input Value"]').text()).toMatch(
         (inputs[i].value as CFSearchInputUnit).originalValue.value.toString()
       );
       expect(
-        rows
-          .at(i)
-          .find('[data-label="Counterfactual Result"]')
-          .text()
+        rows.at(i).find('[data-label="Counterfactual Result"]').text()
       ).toMatch('No available results');
     }
 
-    expect(
-      rows
-        .at(0)
-        .find('[data-label="Constraint"]')
-        .text()
-    ).toMatch('');
+    expect(rows.at(0).find('[data-label="Constraint"]').text()).toMatch('');
     expect(
       rows.at(0).find('button.counterfactual-constraint-edit')
     ).toHaveLength(0);
@@ -70,12 +72,9 @@ describe('CounterfactualTable', () => {
     expect(
       rows.at(3).find('button.counterfactual-constraint-edit')
     ).toHaveLength(0);
-    expect(
-      rows
-        .at(3)
-        .find('[data-label="Constraint"]')
-        .text()
-    ).toMatch('Not yet supported');
+    expect(rows.at(3).find('[data-label="Constraint"]').text()).toMatch(
+      'Not yet supported'
+    );
   });
 
   it('renders the table with CF results', () => {
@@ -99,11 +98,7 @@ describe('CounterfactualTable', () => {
 
     for (let i = 0; i < results.length; i++) {
       expect(
-        rows
-          .at(0)
-          .find('[data-label="Counterfactual Result"]')
-          .at(i)
-          .text()
+        rows.at(0).find('[data-label="Counterfactual Result"]').at(i).text()
       ).toMatch(`ID #${results[i].solutionId}`);
     }
 
@@ -115,11 +110,7 @@ describe('CounterfactualTable', () => {
     for (let i = 1; i <= inputsWithSelection.length; i++) {
       for (let j = 0; j < results.length; j++) {
         expect(
-          rows
-            .at(i)
-            .find('[data-label="Counterfactual Result"]')
-            .at(j)
-            .text()
+          rows.at(i).find('[data-label="Counterfactual Result"]').at(j).text()
         ).toMatch(results[j].inputs[i - 1].value.value.toString());
       }
     }

@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 const { gql } = require('apollo-server-express');
 module.exports = typeDefs = gql`
   scalar DateTime
@@ -6,19 +24,19 @@ module.exports = typeDefs = gql`
     query: Query
     mutation: Mutation
   }
-  
+
   type Mutation {
     ProcessInstanceSkip(id: String): String
     ProcessInstanceAbort(id: String): String
     ProcessInstanceRetry(id: String): String
-    ProcessInstanceUpdateVariables(id: String variables: String): String
-    NodeInstanceTrigger(id: String nodeId: String): String
-    NodeInstanceCancel(id: String nodeInstanceId: String): String
-    NodeInstanceRetrigger(id: String nodeInstanceId: String): String
+    ProcessInstanceUpdateVariables(id: String, variables: String): String
+    NodeInstanceTrigger(id: String, nodeId: String): String
+    NodeInstanceCancel(id: String, nodeInstanceId: String): String
+    NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
     JobCancel(id: String): String
-    JobReschedule(id: String data: String): String
+    JobReschedule(id: String, data: String): String
   }
-  
+
   type Query {
     ProcessInstances(
       where: ProcessInstanceArgument
@@ -40,11 +58,7 @@ module.exports = typeDefs = gql`
       orderBy: VisaApplicationsOrderBy
       pagination: Pagination
     ): [VisaApplications]
-    Jobs(
-      where: JobArgument
-      orderBy: JobOrderBy
-      pagination: Pagination
-      ): [Job]
+    Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination): [Job]
   }
 
   type ProcessInstance {
@@ -138,7 +152,7 @@ module.exports = typeDefs = gql`
     type: String!
     uniqueId: String!
   }
-  
+
   type Milestones {
     id: String!
     name: String!
@@ -149,7 +163,7 @@ module.exports = typeDefs = gql`
     AVAILABLE
     COMPLETED
   }
-  
+
   input ProcessInstanceOrderBy {
     processId: OrderBy
     processName: OrderBy
@@ -605,9 +619,9 @@ module.exports = typeDefs = gql`
     lastUpdate: DateArgument
     endpoint: StringArgument
     nodeInstanceId: StringArgument
-}
+  }
 
-input JobOrderBy {
+  input JobOrderBy {
     processId: OrderBy
     rootProcessId: OrderBy
     status: OrderBy
@@ -616,38 +630,38 @@ input JobOrderBy {
     retries: OrderBy
     lastUpdate: OrderBy
     executionCounter: OrderBy
-}
+  }
 
-input JobStatusArgument {
-  equal: JobStatus
-  in: [JobStatus]
-}
+  input JobStatusArgument {
+    equal: JobStatus
+    in: [JobStatus]
+  }
 
-type Job {
-  id: String!
-  processId: String
-  processInstanceId: String
-  rootProcessInstanceId: String
-  rootProcessId: String
-  status: JobStatus!
-  expirationTime: DateTime
-  priority: Int
-  callbackEndpoint: String
-  repeatInterval: Int
-  repeatLimit: Int
-  scheduledId: String
-  retries: Int
-  lastUpdate: DateTime
-  executionCounter: Int
-  endpoint: String
-  nodeInstanceId: String
-}
+  type Job {
+    id: String!
+    processId: String
+    processInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    status: JobStatus!
+    expirationTime: DateTime
+    priority: Int
+    callbackEndpoint: String
+    repeatInterval: Int
+    repeatLimit: Int
+    scheduledId: String
+    retries: Int
+    lastUpdate: DateTime
+    executionCounter: Int
+    endpoint: String
+    nodeInstanceId: String
+  }
 
-enum JobStatus {
-  ERROR
-  EXECUTED
-  SCHEDULED
-  RETRY
-  CANCELED
-}
+  enum JobStatus {
+    ERROR
+    EXECUTED
+    SCHEDULED
+    RETRY
+    CANCELED
+  }
 `;

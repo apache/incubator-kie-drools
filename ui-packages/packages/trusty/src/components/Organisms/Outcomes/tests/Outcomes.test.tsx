@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React from 'react';
 import Outcomes from '../Outcomes';
 import { mount } from 'enzyme';
@@ -14,41 +32,23 @@ describe('Outcomes', () => {
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('OutcomeCard')).toHaveLength(3);
+    expect(wrapper.find('h4.outcome-cards__card__title').at(0).text()).toMatch(
+      'Mortgage Approval'
+    );
     expect(
-      wrapper
-        .find('h4.outcome-cards__card__title')
-        .at(0)
-        .text()
-    ).toMatch('Mortgage Approval');
-    expect(
-      wrapper
-        .find('.outcome__property__value--bigger')
-        .at(0)
-        .text()
+      wrapper.find('.outcome__property__value--bigger').at(0).text()
     ).toMatch('true');
+    expect(wrapper.find('h4.outcome-cards__card__title').at(1).text()).toMatch(
+      'Risk Score'
+    );
     expect(
-      wrapper
-        .find('h4.outcome-cards__card__title')
-        .at(1)
-        .text()
-    ).toMatch('Risk Score');
-    expect(
-      wrapper
-        .find('.outcome__property__value--bigger')
-        .at(1)
-        .text()
+      wrapper.find('.outcome__property__value--bigger').at(1).text()
     ).toMatch('21.7031851958099');
+    expect(wrapper.find('h4.outcome-cards__card__title').at(2).text()).toMatch(
+      'Client Score'
+    );
     expect(
-      wrapper
-        .find('h4.outcome-cards__card__title')
-        .at(2)
-        .text()
-    ).toMatch('Client Score');
-    expect(
-      wrapper
-        .find('.outcome__property__value--bigger')
-        .at(2)
-        .text()
+      wrapper.find('.outcome__property__value--bigger').at(2).text()
     ).toMatch('Null');
   });
 
@@ -71,30 +71,18 @@ describe('Outcomes', () => {
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('OutcomeCard')).toHaveLength(1);
     expect(wrapper.find('.outcome-item')).toHaveLength(2);
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(0)
-        .text()
-    ).toMatch('Auth Code');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(0)
-        .text()
-    ).toMatch('Authorized');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(1)
-        .text()
-    ).toMatch('Amount');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(1)
-        .text()
-    ).toMatch('10000');
+    expect(wrapper.find('div.outcome__property__name').at(0).text()).toMatch(
+      'Auth Code'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(0).text()).toMatch(
+      'Authorized'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(1).text()).toMatch(
+      'Amount'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(1).text()).toMatch(
+      '10000'
+    );
   });
 
   test('renders an outcome with an array of values', () => {
@@ -104,12 +92,9 @@ describe('Outcomes', () => {
     expect(wrapper.find('OutcomeCard')).toHaveLength(1);
     expect(wrapper.find('FormattedList')).toHaveLength(1);
     expect(wrapper.find('FormattedValue')).toHaveLength(4);
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(0)
-        .text()
-    ).toMatch('Result');
+    expect(wrapper.find('div.outcome__property__name').at(0).text()).toMatch(
+      'Result'
+    );
   });
 
   test('renders a recommendation outcome as a list of cards', () => {
@@ -119,10 +104,7 @@ describe('Outcomes', () => {
     expect(wrapper.find('OutcomeCard')).toHaveLength(2);
     expect(wrapper.find('span.outcome-cards__card__label')).toHaveLength(2);
     expect(
-      wrapper
-        .find('span.outcome-cards__card__label')
-        .at(0)
-        .text()
+      wrapper.find('span.outcome-cards__card__label').at(0).text()
     ).toMatch(outcomesRecommendationProps.outcomes[0].outcomeName);
   });
 
@@ -131,123 +113,66 @@ describe('Outcomes', () => {
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('OutcomeCard')).toHaveLength(1);
-    expect(
-      wrapper
-        .find('h4.outcome-cards__card__title')
-        .at(0)
-        .text()
-    ).toMatch(outcomeComposedProps.outcomes[0].outcomeName);
+    expect(wrapper.find('h4.outcome-cards__card__title').at(0).text()).toMatch(
+      outcomeComposedProps.outcomes[0].outcomeName
+    );
     expect(wrapper.find('.outcome--struct')).toHaveLength(4);
     expect(wrapper.find('.outcome-item')).toHaveLength(10);
     expect(wrapper.find('.outcome__title--struct')).toHaveLength(4);
-    expect(
-      wrapper
-        .find('.outcome__title--struct')
-        .at(0)
-        .text()
-    ).toMatch('Client Ratings');
-    expect(
-      wrapper
-        .find('.outcome__title--struct')
-        .at(1)
-        .text()
-    ).toMatch('Rating Type A');
-    expect(
-      wrapper
-        .find('.outcome__title--struct')
-        .at(2)
-        .text()
-    ).toMatch('Rating Type B');
-    expect(
-      wrapper
-        .find('.outcome__title--struct')
-        .at(3)
-        .text()
-    ).toMatch('Sub-Rating Type C');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(0)
-        .text()
-    ).toMatch('Loan Amount');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(0)
-        .text()
-    ).toMatch('540000');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(1)
-        .text()
-    ).toMatch('Repayment Rate');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(1)
-        .text()
-    ).toMatch('900');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(2)
-        .text()
-    ).toMatch('Loan Eligibility');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(2)
-        .text()
-    ).toMatch('true');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(3)
-        .text()
-    ).toMatch('Loan amount');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(3)
-        .text()
-    ).toMatch('340000');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(4)
-        .text()
-    ).toMatch('Repayment rate');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(4)
-        .text()
-    ).toMatch('2000');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(5)
-        .text()
-    ).toMatch('Loan amount');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(5)
-        .text()
-    ).toMatch('390000');
-    expect(
-      wrapper
-        .find('div.outcome__property__name')
-        .at(6)
-        .text()
-    ).toMatch('Repayment rate');
-    expect(
-      wrapper
-        .find('div.outcome__property__value')
-        .at(6)
-        .text()
-    ).toMatch('5000');
+    expect(wrapper.find('.outcome__title--struct').at(0).text()).toMatch(
+      'Client Ratings'
+    );
+    expect(wrapper.find('.outcome__title--struct').at(1).text()).toMatch(
+      'Rating Type A'
+    );
+    expect(wrapper.find('.outcome__title--struct').at(2).text()).toMatch(
+      'Rating Type B'
+    );
+    expect(wrapper.find('.outcome__title--struct').at(3).text()).toMatch(
+      'Sub-Rating Type C'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(0).text()).toMatch(
+      'Loan Amount'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(0).text()).toMatch(
+      '540000'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(1).text()).toMatch(
+      'Repayment Rate'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(1).text()).toMatch(
+      '900'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(2).text()).toMatch(
+      'Loan Eligibility'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(2).text()).toMatch(
+      'true'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(3).text()).toMatch(
+      'Loan amount'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(3).text()).toMatch(
+      '340000'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(4).text()).toMatch(
+      'Repayment rate'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(4).text()).toMatch(
+      '2000'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(5).text()).toMatch(
+      'Loan amount'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(5).text()).toMatch(
+      '390000'
+    );
+    expect(wrapper.find('div.outcome__property__name').at(6).text()).toMatch(
+      'Repayment rate'
+    );
+    expect(wrapper.find('div.outcome__property__value').at(6).text()).toMatch(
+      '5000'
+    );
   });
 
   test('renders a skipped decision with no outcome', () => {

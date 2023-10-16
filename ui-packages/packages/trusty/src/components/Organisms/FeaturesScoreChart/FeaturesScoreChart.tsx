@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React, { useCallback, useMemo } from 'react';
 import {
   Chart,
@@ -25,7 +43,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
   const height = large ? 50 * featuresScore.length : 500;
 
   const maxValue = useMemo(() => {
-    const max = maxBy(featuresScore, item => {
+    const max = maxBy(featuresScore, (item) => {
       return Math.abs(item.featureScore);
     });
     return max ? max.featureScore : 1;
@@ -33,14 +51,14 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
 
   const labels = useMemo(() => {
     const labelList: string[] = [];
-    featuresScore.forEach(item => {
+    featuresScore.forEach((item) => {
       labelList.push(formattedScore(item.featureScore));
     });
     return labelList;
   }, [featuresScore]);
 
   const computeOpacity = useCallback(
-    data => {
+    (data) => {
       const computedOpacity = Math.abs(
         Math.floor((data.datum.featureScore / maxValue) * 100) / 100
       );
@@ -49,7 +67,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
     [maxValue]
   );
 
-  const computeColor = useCallback(data => {
+  const computeColor = useCallback((data) => {
     return data.datum.featureScore >= 0
       ? 'var(--pf-global--info-color--100)'
       : 'var(--pf-global--palette--orange-300)';
@@ -83,7 +101,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
           {
             target: 'data',
             eventHandlers: {
-              onMouseOver: event => {
+              onMouseOver: (event) => {
                 const { x, y } = Selection.getSVGEventCoordinates(event);
                 return [
                   {
@@ -96,7 +114,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
                   }
                 ];
               },
-              onMouseMove: event => {
+              onMouseMove: (event) => {
                 const { x, y } = Selection.getSVGEventCoordinates(event);
                 return [
                   {
@@ -109,7 +127,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
                   }
                 ];
               },
-              onTouchMove: event => {
+              onTouchMove: (event) => {
                 const { x, y } = Selection.getSVGEventCoordinates(event);
                 return [
                   {
@@ -122,7 +140,7 @@ const FeaturesScoreChart = (props: FeaturesScoreChartProps) => {
                   }
                 ];
               },
-              onTouchStart: event => {
+              onTouchStart: (event) => {
                 const { x, y } = Selection.getSVGEventCoordinates(event);
                 return [
                   {
@@ -215,7 +233,7 @@ const CustomLabel = (props: ChartTooltipProps) => {
   return (
     <ChartTooltip
       {...props}
-      text={data => {
+      text={(data) => {
         return data.datum.featureName + '\n' + data.datum.featureScore;
       }}
       pointerWidth={10}

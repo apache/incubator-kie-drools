@@ -1,17 +1,20 @@
 #
-# Copyright 2021 the original author or authors.
-# <p>
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# <p>
-# https://www.apache.org/licenses/LICENSE-2.0
-# <p>
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 #
 
 #####
@@ -30,111 +33,111 @@ name: io.quarkus.updates.core.quarkus30.UpgradeQuarkiverse
 recipeList:
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkus.bot
-      artifactId: 'build-reporter-*'
+      artifactId: "build-reporter-*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.vault
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.amazonservices
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.cxf
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.jsch
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.jberet
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.artemis
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.config
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.freemarker
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 1.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.githubapp
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.mybatis
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.messaginghub
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.prettytime
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.xmlsec
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.jef
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.githubaction
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.hibernatesearchextras
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.jackson-jq
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.jdbc
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.microprofile
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.minio
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.pact
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 1.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.poi
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.primefaces
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.reactivemessaging.http
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.renarde
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 3.x
   - org.openrewrite.maven.UpgradeDependencyVersion:
       groupId: io.quarkiverse.shardingsphere
-      artifactId: '*'
+      artifactId: "*"
       newVersion: 2.x
 
 ---
@@ -1147,13 +1150,13 @@ name: io.quarkus.updates.core.quarkus30.RenameJavaxServiceFiles
 displayName: Rename a file example
 recipeList:
   - org.openrewrite.RenameFile:
-      fileMatcher: '**/META-INF/services/javax.ws.rs.ext.Providers'
+      fileMatcher: "**/META-INF/services/javax.ws.rs.ext.Providers"
       fileName: jakarta.ws.rs.ext.Providers
   - org.openrewrite.RenameFile:
-      fileMatcher: '**/META-INF/services/javax.ws.rs.client.ClientBuilder'
+      fileMatcher: "**/META-INF/services/javax.ws.rs.client.ClientBuilder"
       fileName: jakarta.ws.rs.client.ClientBuilder
   - org.openrewrite.RenameFile:
-      fileMatcher: '**/META-INF/services/javax.ws.rs.sse.SseEventSource$Builder'
+      fileMatcher: "**/META-INF/services/javax.ws.rs.sse.SseEventSource$Builder"
       fileName: jakarta.ws.rs.sse.SseEventSource$Builder
 
 #####
@@ -1193,7 +1196,7 @@ recipeList:
   - org.openrewrite.text.FindAndReplace:
       find: quarkus-bootstrap-maven-plugin
       replace: quarkus-extension-maven-plugin
-      fileMatcher: '**/pom.xml'
+      fileMatcher: "**/pom.xml"
 
 #####
 # Adjust properties in application.properties

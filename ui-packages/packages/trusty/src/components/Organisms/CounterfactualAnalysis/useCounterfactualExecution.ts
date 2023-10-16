@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { EXECUTIONS_PATH, httpClient } from '../../../utils/api/httpClient';
 import {
@@ -32,7 +50,7 @@ const useCounterfactualExecution = (executionId: string) => {
 
       const partialGoals = goals
         .filter(
-          goal =>
+          (goal) =>
             goal.role === CFGoalRole.FIXED || goal.role === CFGoalRole.ORIGINAL
         )
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,7 +67,7 @@ const useCounterfactualExecution = (executionId: string) => {
       };
 
       httpClient(config)
-        .then(response => {
+        .then((response) => {
           if (isMounted) {
             setCFAnalysis({
               status: RemoteDataStatus.SUCCESS,
@@ -58,7 +76,7 @@ const useCounterfactualExecution = (executionId: string) => {
             setCounterfactualId(response.data.counterfactualId);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           setCFAnalysis({ status: RemoteDataStatus.FAILURE, error });
         });
       return () => {
@@ -78,12 +96,12 @@ const useCounterfactualExecution = (executionId: string) => {
     };
 
     httpClient(config)
-      .then(response => {
+      .then((response) => {
         if (isMounted) {
           setCFResults(response.data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         setCFAnalysis({ status: RemoteDataStatus.FAILURE, error });
       });
     return () => {
@@ -104,7 +122,7 @@ const useCounterfactualExecution = (executionId: string) => {
   useEffect(() => {
     if (cfResults) {
       const finalResult = cfResults.solutions.find(
-        solution => solution.stage === 'FINAL'
+        (solution) => solution.stage === 'FINAL'
       );
       if (finalResult) {
         setResultsPolling(null);

@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { orderBy } from 'lodash';
@@ -41,7 +59,7 @@ describe('Explanation', () => {
     if (saliencies.status === RemoteDataStatus.SUCCESS) {
       sortedFeatures = orderBy(
         saliencies.data.saliencies[0].featureImportance,
-        item => Math.abs(item.featureScore),
+        (item) => Math.abs(item.featureScore),
         'asc'
       );
     }
@@ -67,9 +85,11 @@ describe('Explanation', () => {
     );
 
     expect(
-      (wrapper
-        .find('FeaturesScoreChartBySign')
-        .prop('featuresScore') as Saliencies[]).length
+      (
+        wrapper
+          .find('FeaturesScoreChartBySign')
+          .prop('featuresScore') as Saliencies[]
+      ).length
     ).toBe(10);
 
     expect(
@@ -84,9 +104,11 @@ describe('Explanation', () => {
       wrapper.find('Modal FeaturesScoreChartBySign').prop('large')
     ).toBeTruthy();
     expect(
-      (wrapper
-        .find('Modal FeaturesScoreChartBySign')
-        .prop('featuresScore') as Saliencies[]).length
+      (
+        wrapper
+          .find('Modal FeaturesScoreChartBySign')
+          .prop('featuresScore') as Saliencies[]
+      ).length
     ).toBe(
       manySaliencies.status === RemoteDataStatus.SUCCESS &&
         manySaliencies.data.saliencies[0].featureImportance.length

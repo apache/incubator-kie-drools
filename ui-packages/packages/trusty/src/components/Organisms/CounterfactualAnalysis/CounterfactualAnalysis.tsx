@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import {
   Drawer,
@@ -51,13 +69,8 @@ type CounterfactualAnalysisProps = {
 };
 
 const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
-  const {
-    executionId,
-    inputs,
-    outcomes,
-    containerWidth,
-    containerHeight
-  } = props;
+  const { executionId, inputs, outcomes, containerWidth, containerHeight } =
+    props;
   const [state, dispatch] = useReducer(
     cfReducer,
     { inputs, outcomes },
@@ -69,9 +82,8 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
     inputIndex: number;
   }>();
 
-  const { runCFAnalysis, cfAnalysis, cfResults } = useCounterfactualExecution(
-    executionId
-  );
+  const { runCFAnalysis, cfAnalysis, cfResults } =
+    useCounterfactualExecution(executionId);
 
   const handleInputDomainEdit = (input: CFSearchInput, inputIndex: number) => {
     setInputDomainEdit({ input, inputIndex });
@@ -94,7 +106,7 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
   useEffect(() => {
     if (cfResults) {
       const succeededResults = cfResults.solutions.filter(
-        result => result.status !== 'FAILED' && result.isValid
+        (result) => result.status !== 'FAILED' && result.isValid
       );
       if (succeededResults.length) {
         dispatch({
@@ -105,7 +117,7 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
         });
       }
       const finalResult = cfResults.solutions.find(
-        result => result.stage === 'FINAL'
+        (result) => result.stage === 'FINAL'
       );
       if (finalResult !== undefined) {
         let executionStatus;
