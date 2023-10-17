@@ -34,7 +34,6 @@
     "@patternfly/react-table": "^4.113.0",
     "ajv": "^6.12.6",
     "apollo-boost": "^0.4.9",
-    "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

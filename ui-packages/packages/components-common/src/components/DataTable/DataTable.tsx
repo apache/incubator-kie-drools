@@ -32,10 +32,10 @@ import isEmpty from 'lodash/isEmpty';
 import filter from 'lodash/filter';
 import sample from 'lodash/sample';
 import keys from 'lodash/keys';
+import get from 'lodash/get';
 import reduce from 'lodash/reduce';
 import isFunction from 'lodash/isFunction';
 import uuidv4 from 'uuid';
-import jp from 'jsonpath';
 import {
   OUIAProps,
   componentOuiaProps
@@ -66,7 +66,7 @@ interface IOwnProps {
 
 const getCellData = (dataObj: Record<string, unknown>, path: string) => {
   if (dataObj && path) {
-    return !isEmpty(jp.value(dataObj, path)) ? jp.value(dataObj, path) : 'N/A';
+    return get(dataObj, path) ?? 'N/A';
   } else {
     return 'N/A';
   }
@@ -96,7 +96,7 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
           } as ICell;
         })
       : filter(keys(sample(data)), (key) => key !== '__typename').map(
-          (key) => ({ title: key, data: `$.${key}` } as ICell)
+          (key) => ({ title: key, data: key } as ICell)
         );
   } else if (columns) {
     return filter(columns, (column) => !isEmpty(column.path)).map((column) => {

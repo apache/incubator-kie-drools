@@ -102,24 +102,24 @@ const stateColumnTransformer = (value) => {
 const columns: DataTableColumn[] = [
   {
     label: 'ProcessId',
-    path: '$.processId'
+    path: 'processId'
   },
   {
     label: 'Name',
-    path: '$.name',
+    path: 'name',
     isSortable: true
   },
   {
     label: 'Priority',
-    path: '$.priority'
+    path: 'priority'
   },
   {
     label: 'ProcessInstanceId',
-    path: '$.processInstanceId'
+    path: 'processInstanceId'
   },
   {
     label: 'State',
-    path: '$.state',
+    path: 'state',
     bodyCellTransformer: stateColumnTransformer,
     isSortable: true
   }
