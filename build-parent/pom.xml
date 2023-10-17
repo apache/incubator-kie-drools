@@ -137,7 +137,7 @@
     <!-- New and overwritten dependencies -->
     <!-- ################################################################################ -->
 
-    <version.org.antlr4>4.10.1</version.org.antlr4>
+    <version.org.antlr4>4.13.0</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
