@@ -20,8 +20,8 @@ package org.drools.mvel.integrationtests.facts;
 
 public class FactWithLong {
 
-    private final long longValue;
-    private final Long longObjectValue;
+    private long longValue;
+    private Long longObjectValue;
 
     public FactWithLong(final long longValue) {
         this.longValue = longValue;
@@ -34,5 +34,13 @@ public class FactWithLong {
 
     public Long getLongObjectValue() {
         return longObjectValue;
+    }
+
+    public void setLongValue(long longValue) {
+        this.longValue = longValue;
+    }
+
+    public void setLongObjectValue(Long longObjectValue) {
+        this.longObjectValue = longObjectValue;
     }
 }
