@@ -2792,7 +2792,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement type declaration")
     @Test
     public void parse_TypeDeclarationWithFields() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2991,7 +2990,6 @@ class MiscDRLParserTest {
         assertThat(fieldConstraintDescr.getExpression()).isEqualToIgnoringWhitespace("operator == Operator.EQUAL");
     }
 
-    @Disabled("Priority : High | Implement type declaration")
     @Test
     public void parse_TypeWithMetaData() throws Exception {
 
@@ -3255,7 +3253,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement entry-point declaration")
     @Test
     public void parse_EntryPointDeclaration() throws Exception {
         final String text = "package org.drools\n" +
@@ -3277,7 +3274,6 @@ class MiscDRLParserTest {
         assertThat(epd.getAnnotation("foo").getValue()).isEqualTo("true");
     }
 
-    @Disabled("Priority : Mid | Implement sliding window declaration")
     @Test
     public void parse_WindowDeclaration() throws Exception {
         final String text = "package org.drools\n" +
