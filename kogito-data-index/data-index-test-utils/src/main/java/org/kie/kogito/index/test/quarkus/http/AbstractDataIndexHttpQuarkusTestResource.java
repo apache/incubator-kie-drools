@@ -45,11 +45,8 @@ public abstract class AbstractDataIndexHttpQuarkusTestResource<T extends TestRes
         properties.put("mp.messaging.outgoing.kogito-processinstances-events.url", dataIndexUrl + "/processes");
         properties.put("mp.messaging.outgoing.kogito-usertaskinstances-events.connector", "quarkus-http");
         properties.put("mp.messaging.outgoing.kogito-usertaskinstances-events.url", dataIndexUrl + "/tasks");
-        properties.put("mp.messaging.outgoing.kogito-variables-events.connector", "quarkus-http");
-        properties.put("mp.messaging.outgoing.kogito-variables-events.url", dataIndexUrl);
         properties.put("mp.messaging.outgoing.kogito-jobs-events.connector", "quarkus-http");
         properties.put("mp.messaging.outgoing.kogito-jobs-events.url", dataIndexUrl + "/jobs");
-        properties.put("kogito.events.variables.enabled", "false");
         return properties;
     }
 

@@ -18,8 +18,12 @@
  */
 package org.kie.kogito.index.json;
 
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.jackson.JsonFormat;
@@ -39,6 +43,11 @@ public final class JsonUtils {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(JsonFormat.getCloudEventJacksonModule());
         objectMapper.registerModule(new JavaTimeModule());
+
+        SimpleModule module = new SimpleModule("Kogito Cloud Events");
+        module.addDeserializer(ProcessInstanceDataEvent.class, new JsonProcessInstanceDataEventDeserializer());
+        module.addDeserializer(UserTaskInstanceDataEvent.class, new JsonUserTaskInstanceDataEventDeserializer());
+        objectMapper.registerModule(module);
         return objectMapper;
     }
 }

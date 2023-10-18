@@ -18,9 +18,16 @@
  */
 package org.kie.kogito.index.service.json;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.index.service.IndexingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -33,56 +40,80 @@ import static org.kie.kogito.index.storage.Constants.PROCESS_ID;
 import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_NAME;
 
-public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEvent, ObjectNode> {
+public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEvent<?>, ObjectNode> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
 
     @Override
-    public ObjectNode apply(ProcessInstanceDataEvent event) {
+    public ObjectNode apply(ProcessInstanceDataEvent<?> event) {
         if (event == null) {
             return null;
-        } else {
-            ObjectNode json = getObjectMapper().createObjectNode();
-            json.put(ID, isNullOrEmpty(event.getData().getRootInstanceId()) ? event.getData().getId() : event.getData().getRootInstanceId());
-            json.put(PROCESS_ID, isNullOrEmpty(event.getData().getRootProcessId()) ? event.getData().getProcessId() : event.getData().getRootProcessId());
-            ObjectNode kogito = getObjectMapper().createObjectNode();
-            kogito.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
-            kogito.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event));
-            json.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
-            json.setAll((ObjectNode) getObjectMapper().valueToTree(event.getData().getVariables()));
-            return json;
         }
+
+        ObjectNode json = getObjectMapper().createObjectNode();
+        json.put(ID, isNullOrEmpty(event.getKogitoRootProcessInstanceId()) ? event.getKogitoProcessInstanceId() : event.getKogitoRootProcessInstanceId());
+        json.put(PROCESS_ID, isNullOrEmpty(event.getKogitoRootProcessId()) ? event.getKogitoProcessId() : event.getKogitoRootProcessId());
+        ObjectNode kogito = getObjectMapper().createObjectNode();
+        kogito.withArray(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE).add(getProcessJson(event));
+        kogito.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
+        json.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
+
+        if (event instanceof ProcessInstanceVariableDataEvent) {
+            ProcessInstanceVariableDataEvent vars = (ProcessInstanceVariableDataEvent) event;
+            String name = vars.getData().getVariableName();
+            Object value = vars.getData().getVariableValue();
+            Map<String, Object> newVars = Collections.singletonMap(name, value);
+            LOGGER.debug("Setting domain variable name {} with value {}", name, value);
+            json.putAll((ObjectNode) getObjectMapper().valueToTree(newVars));
+
+        }
+        return json;
+
     }
 
-    private ObjectNode getProcessJson(ProcessInstanceDataEvent event) {
+    private ObjectNode getProcessJson(ProcessInstanceDataEvent<?> event) {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, event.getData().getId());
-        json.put(PROCESS_ID, event.getData().getProcessId());
-        json.put(PROCESS_NAME, event.getData().getProcessName());
-        if (!isNullOrEmpty(event.getData().getRootInstanceId())) {
-            json.put("rootProcessInstanceId", event.getData().getRootInstanceId());
+        json.put(ID, event.getKogitoProcessInstanceId());
+        json.put(PROCESS_ID, event.getKogitoProcessId());
+        json.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
+
+        if (!isNullOrEmpty(event.getKogitoRootProcessInstanceId())) {
+            json.put("rootProcessInstanceId", event.getKogitoRootProcessInstanceId());
         }
-        if (!isNullOrEmpty(event.getData().getParentInstanceId())) {
-            json.put("parentProcessInstanceId", event.getData().getParentInstanceId());
+        if (!isNullOrEmpty(event.getKogitoParentProcessInstanceId())) {
+            json.put("parentProcessInstanceId", event.getKogitoParentProcessInstanceId());
         }
-        if (!isNullOrEmpty(event.getData().getRootProcessId())) {
-            json.put("rootProcessId", event.getData().getRootProcessId());
+        if (!isNullOrEmpty(event.getKogitoRootProcessId())) {
+            json.put("rootProcessId", event.getKogitoRootProcessId());
         }
-        json.put("state", event.getData().getState());
+
         if (event.getSource() != null) {
             json.put("endpoint", event.getSource().toString());
         }
-        if (event.getData().getStartDate() != null) {
-            json.put("start", event.getData().getStartDate().toInstant().toEpochMilli());
+
+        if (event instanceof ProcessInstanceStateDataEvent) {
+            ProcessInstanceStateDataEvent state = (ProcessInstanceStateDataEvent) event;
+
+            json.put("state", state.getData().getState());
+            json.put(PROCESS_NAME, state.getData().getProcessName());
+            if (!isNullOrEmpty(state.getData().getBusinessKey())) {
+                json.put("businessKey", state.getData().getBusinessKey());
+            }
+            if (state.getData().getEventType() != null && state.getData().getEventType() == 1) {
+                json.put("start", state.getData().getEventDate().toInstant().toEpochMilli());
+                if (!isNullOrEmpty(state.getData().getEventUser())) {
+                    json.put("createdBy", state.getData().getEventUser());
+                }
+            }
+            if (state.getData().getEventType() != null && state.getData().getEventType() == 2) {
+                json.put("end", state.getData().getEventDate().toInstant().toEpochMilli());
+            }
+
+            if (!isNullOrEmpty(state.getData().getEventUser())) {
+                json.put("updatedBy", state.getData().getEventUser());
+            }
         }
-        if (event.getData().getEndDate() != null) {
-            json.put("end", event.getData().getEndDate().toInstant().toEpochMilli());
-        }
-        json.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
-        if (!isNullOrEmpty(event.getData().getBusinessKey())) {
-            json.put("businessKey", event.getData().getBusinessKey());
-        }
-        if (!isNullOrEmpty(event.getData().getIdentity())) {
-            json.put("updatedBy", event.getData().getIdentity());
-        }
+
         return json;
     }
 }

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.AbstractIndexingIT;
@@ -152,7 +152,8 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null, "currentUser");
+        ProcessInstanceDataEvent<?> event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null, "currentUser");
+
         indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
@@ -160,8 +161,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
         assertThatJson(json.toString()).and(
                 a -> a.node("type").isEqualTo("data"),
                 a -> a.node("payload.data." + subscriptionName + ".id").isEqualTo(processInstanceId),
-                a -> a.node("payload.data." + subscriptionName + ".metadata.processInstances[0].state").isEqualTo(state.name()),
-                a -> a.node("payload.data." + subscriptionName + ".traveller.firstName").isEqualTo("Maciej"));
+                a -> a.node("payload.data." + subscriptionName + ".metadata.processInstances[0].state").isEqualTo(state.name()));
     }
 
     private void assertProcessInstanceSubscription(String processId, String processInstanceId, ProcessInstanceState state, String subscription, String subscriptionName) throws Exception {
@@ -171,7 +171,8 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null, "currentUser");
+        ProcessInstanceDataEvent<?> event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null, "currentUser");
+
         indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
@@ -190,7 +191,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Deals", isA(Collection.class));
 
-        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
+        UserTaskInstanceDataEvent<?> event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         indexUserTaskCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);

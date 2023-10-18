@@ -25,13 +25,14 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.kogito.index.event.mapper.UserTaskInstanceStateEventMerger;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserTaskInstanceEventMapperTest {
 
-    private UserTaskInstanceEventMapper mapper = new UserTaskInstanceEventMapper();
+    private UserTaskInstanceStateEventMerger mapper = new UserTaskInstanceStateEventMerger();
 
     private static Stream<Arguments> provideEndpoint() {
         String pId = UUID.randomUUID().toString();

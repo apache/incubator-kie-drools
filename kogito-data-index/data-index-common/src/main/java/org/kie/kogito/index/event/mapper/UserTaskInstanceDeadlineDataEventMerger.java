@@ -16,36 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.repository.infinispan.marshaller;
-
-import java.io.IOException;
+package org.kie.kogito.index.event.mapper;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 
-import org.infinispan.protostream.FileDescriptorSource;
-import org.infinispan.protostream.MessageMarshaller;
-import org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
+import org.kie.kogito.index.model.UserTaskInstance;
 
 @ApplicationScoped
-public class MarshallersProducer {
+public class UserTaskInstanceDeadlineDataEventMerger implements UserTaskInstanceEventMerger {
 
-    @Produces
-    public MessageMarshaller jobDetailsMarshaller(RecipientMarshaller recipientMarshaller) {
-        return new JobDetailsMarshaller(recipientMarshaller);
+    @Override
+    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+        return event instanceof UserTaskInstanceDeadlineDataEvent;
     }
 
-    @Produces
-    public MessageMarshaller triggerMarshaller() {
-        return new TriggerMarshaller();
+    @Override
+    public void merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
+        // do nothing
     }
 
-    @Produces
-    public FileDescriptorSource bookProtoDefinition() {
-        try {
-            return FileDescriptorSource.fromResources("META-INF/library.proto");
-        } catch (IOException e) {
-            return null;
-        }
-    }
 }

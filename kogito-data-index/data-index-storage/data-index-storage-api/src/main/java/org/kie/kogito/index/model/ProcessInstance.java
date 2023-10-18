@@ -85,13 +85,8 @@ public class ProcessInstance extends ProcessInstanceMeta {
 
     @Override
     public String toString() {
-        return "ProcessInstance{" +
-                "variables=" + variables +
-                ", nodes=" + nodes +
-                ", milestones=" + milestones +
-                ", definition=" + definition +
-                ", addons=" + addons +
-                ", error=" + error +
-                "} " + super.toString();
+        return super.toString() + " -> ProcessInstance [variables=" + variables + ", nodes=" + nodes + ", milestones=" + milestones + ", addons=" + addons + ", error=" + error + ", definition="
+                + definition + "]";
     }
+
 }

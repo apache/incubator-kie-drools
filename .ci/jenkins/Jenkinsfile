@@ -10,6 +10,7 @@ pipeline {
         timestamps()
         timeout(time: 480, unit: 'MINUTES')
         disableConcurrentBuilds(abortPrevious: true)
+        skipDefaultCheckout()
     }
     environment {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-kogito-apps'
@@ -20,6 +21,7 @@ pipeline {
     stages {
         stage('Initialize') {
             steps {
+                cleanWs()
                 script {
                     // load `pr_check.groovy` file from kogito-pipelines:main
                     dir('kogito-pipelines') {

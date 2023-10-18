@@ -18,13 +18,22 @@
  */
 package org.kie.kogito.index.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.index.event.mapper.ProcessInstanceEventMerger;
+import org.kie.kogito.index.event.mapper.UserTaskInstanceEventMerger;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -37,7 +46,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 import static org.kie.kogito.index.storage.Constants.ID;
 import static org.kie.kogito.index.storage.Constants.KOGITO_DOMAIN_ATTRIBUTE;
@@ -54,100 +62,220 @@ public class IndexingService {
     @Inject
     DataIndexStorageService manager;
 
-    public void indexProcessInstance(ProcessInstance pi) {
-        ProcessInstance previousPI = manager.getProcessInstancesCache().get(pi.getId());
-        if (previousPI != null) {
-            List<NodeInstance> nodes = previousPI.getNodes().stream().filter(n -> !pi.getNodes().contains(n)).collect(toList());
-            pi.getNodes().addAll(nodes);
+    @Inject
+    Instance<ProcessInstanceEventMerger> processInstanceMergers;
+
+    @Inject
+    Instance<UserTaskInstanceEventMerger> userTaskInstanceMergers;
+
+    public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
+        Optional<ProcessInstance> found = Optional.ofNullable(manager.getProcessInstancesCache().get(event.getKogitoProcessInstanceId()));
+        ProcessInstance pi;
+        if (found.isEmpty()) {
+            pi = new ProcessInstance();
+            pi.setId(event.getKogitoProcessInstanceId());
+            pi.setProcessId(event.getKogitoProcessId());
+            pi.setMilestones(new ArrayList<>());
+            pi.setNodes(new ArrayList<>());
         } else {
-            pi.setCreatedBy(pi.getUpdatedBy());
+            pi = found.get();
+
         }
-        ProcessDefinition definition = pi.getDefinition();
-        if (!manager.getProcessDefinitionsCache().containsKey(definition.getKey())) {
-            manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
-        }
+
+        processInstanceMergers.stream().filter(e -> e.accept(event)).findAny().ifPresent(e -> e.merge(pi, event));
+
         manager.getProcessInstancesCache().put(pi.getId(), pi);
+        LOGGER.debug("Stored Process Instance: {}", pi);
+
+        ProcessDefinition definition = pi.getDefinition();
+
+        if (definition != null) {
+            manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
+            LOGGER.debug("Stored Process Definitioin: {}", definition);
+        }
+
+    }
+
+    public <T> void indexUserTaskInstanceEvent(UserTaskInstanceDataEvent<T> event) {
+        Optional<UserTaskInstance> found = Optional.ofNullable(manager.getUserTaskInstancesCache().get(event.getKogitoUserTaskInstanceId()));
+        UserTaskInstance ut;
+        if (found.isEmpty()) {
+            ut = new UserTaskInstance();
+            ut.setId(event.getKogitoUserTaskInstanceId());
+            ut.setAttachments(new ArrayList<>());
+            ut.setComments(new ArrayList<>());
+        } else {
+            ut = found.get();
+        }
+
+        userTaskInstanceMergers.stream().filter(e -> e.accept(event)).findAny().ifPresent(e -> e.merge(ut, event));
+        LOGGER.debug("Stored User Task Instance: {}", ut);
+
+        manager.getUserTaskInstancesCache().put(ut.getId(), ut);
+
     }
 
     public void indexJob(Job job) {
         manager.getJobsCache().put(job.getId(), job);
     }
 
-    public void indexUserTaskInstance(UserTaskInstance ut) {
-        manager.getUserTaskInstancesCache().put(ut.getId(), ut);
-    }
-
-    public void indexModel(ObjectNode json) {
-        String processId = json.remove(PROCESS_ID).asText();
+    public void indexModel(ObjectNode updateData) {
+        String processId = updateData.remove(PROCESS_ID).asText();
         Storage<String, ObjectNode> cache = manager.getDomainModelCache(processId);
+
         if (cache == null) {
-            //          Unknown process type, ignore
             LOGGER.debug("Ignoring Kogito cloud event for unknown process: {}", processId);
             return;
         }
 
-        String processInstanceId = json.get(ID).asText();
+        String processInstanceId = updateData.get(ID).asText();
         String type = cache.getRootType();
-        ObjectNode model = cache.get(processInstanceId);
-        ObjectNode builder = getObjectMapper().createObjectNode();
-        builder.put("_type", type);
-        if (model == null) {
-            builder.setAll(json);
-        } else {
-            copyAllEventData(json, processInstanceId, model, builder);
-            ObjectNode kogito = indexKogitoDomain((ObjectNode) json.get(KOGITO_DOMAIN_ATTRIBUTE), (ObjectNode) model.get(KOGITO_DOMAIN_ATTRIBUTE));
-            builder.set(KOGITO_DOMAIN_ATTRIBUTE, kogito);
-        }
-        cache.put(processInstanceId, builder);
+        ObjectNode persistedModel = Optional.ofNullable(cache.get(processInstanceId)).orElse(getObjectMapper().createObjectNode());
+
+        LOGGER.debug("About to update model \n{}\n with data {}", persistedModel, updateData);
+        ObjectNode newModel = merge(processId, type, processInstanceId, persistedModel, updateData);
+
+        LOGGER.debug("Merged model\n{}\n for {} and id {}", newModel, processId, processInstanceId);
+        cache.put(processInstanceId, newModel);
     }
 
-    private void copyAllEventData(ObjectNode json, String processInstanceId, ObjectNode model, ObjectNode builder) {
-        ArrayNode indexPIArray = (ArrayNode) json.get(KOGITO_DOMAIN_ATTRIBUTE).get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
-        if (indexPIArray == null) {
-            builder.setAll(model);
-        } else {
-            JsonNode id = indexPIArray.get(0).get(ID);
-            if (!processInstanceId.equals(id.asText())) {
-                //For sub-process merge with current values
-                builder.setAll(model);
-            }
-            builder.setAll(json);
-        }
+    public ObjectNode merge(String processId, String type, String processInstanceId, ObjectNode persistedModel, ObjectNode updateData) {
+        ObjectNode newModel = getObjectMapper().createObjectNode();
+        newModel.put("_type", type);
+        newModel.setAll(persistedModel);
+        newModel.put(ID, processInstanceId);
+        // copy variables
+        copyFieldsExcept(newModel, updateData, ID, PROCESS_ID, KOGITO_DOMAIN_ATTRIBUTE);
+
+        // now merge metadata
+        mergeMetadata(newModel, updateData);
+
+        return newModel;
     }
 
-    private ObjectNode indexKogitoDomain(ObjectNode kogitoEvent, ObjectNode kogitoCache) {
-        ObjectNode kogitoBuilder = getObjectMapper().createObjectNode();
-        kogitoBuilder.set(LAST_UPDATE, kogitoEvent.get(LAST_UPDATE));
-
-        ArrayNode indexPIArray = (ArrayNode) kogitoEvent.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE);
-        if (indexPIArray != null) {
-            kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray(kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE), indexPIArray));
-            kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE));
+    private void mergeMetadata(ObjectNode newModel, ObjectNode updateData) {
+        if (!updateData.has(KOGITO_DOMAIN_ATTRIBUTE)) {
+            // nothing to merge
+            return;
         }
 
-        ArrayNode indexTIArray = (ArrayNode) kogitoEvent.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
-        if (indexTIArray != null) {
-            kogitoBuilder.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, copyToArray(kogitoCache.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE), indexTIArray));
-            kogitoBuilder.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, kogitoCache.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE));
+        if (!newModel.has(KOGITO_DOMAIN_ATTRIBUTE)) {
+            newModel.set(KOGITO_DOMAIN_ATTRIBUTE, updateData.get(KOGITO_DOMAIN_ATTRIBUTE));
+            return;
         }
 
-        return kogitoBuilder;
+        mergeProcessInstance((ObjectNode) newModel.get(KOGITO_DOMAIN_ATTRIBUTE), (ObjectNode) updateData.get(KOGITO_DOMAIN_ATTRIBUTE));
+        mergeUserTaskInstance((ObjectNode) newModel.get(KOGITO_DOMAIN_ATTRIBUTE), (ObjectNode) updateData.get(KOGITO_DOMAIN_ATTRIBUTE));
+
     }
 
-    private ArrayNode copyToArray(JsonNode arrayCache, ArrayNode arrayEvent) {
-        if (arrayCache == null || arrayCache.isNull()) {
-            return getObjectMapper().createArrayNode().add(arrayEvent.get(0));
-        }
-        ArrayNode arrayNode = (ArrayNode) arrayCache;
-        String indexId = arrayEvent.get(0).get(ID).asText();
-        for (int i = 0; i < arrayCache.size(); i++) {
-            if (indexId.equals(arrayCache.get(i).get(ID).asText())) {
-                arrayNode.set(i, arrayEvent.get(0));
-                return arrayNode;
+    private void copyFieldsExcept(ObjectNode newModel, ObjectNode updateData, String... exceptions) {
+        List<String> nonVars = Arrays.asList(exceptions);
+        Iterator<Map.Entry<String, JsonNode>> iterator = updateData.fields();
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonNode> element = iterator.next();
+            JsonNode node = element.getValue();
+            String key = element.getKey();
+            if (!nonVars.contains(key)) {
+                newModel.set(key, node);
             }
         }
+    }
 
-        arrayNode.add(arrayEvent.get(0));
-        return arrayNode;
+    private void mergeUserTaskInstance(ObjectNode newModel, ObjectNode updateData) {
+        if (!updateData.has(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE)) {
+            return;
+        }
+
+        if (!newModel.has(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE)) {
+            newModel.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, updateData.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE));
+            return;
+        }
+        newModel.set(LAST_UPDATE, updateData.get(LAST_UPDATE));
+
+        ArrayNode currentUserTaskModel = (ArrayNode) newModel.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+        ArrayNode updateUserTasks = (ArrayNode) updateData.get(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE);
+
+        ArrayNode newArrayNode = getObjectMapper().createArrayNode();
+        newArrayNode.addAll(currentUserTaskModel);
+        for (int i = 0; i < updateUserTasks.size(); i++) {
+            String indexId = updateUserTasks.get(i).get(ID).asText();
+            boolean found = false;
+            for (int j = 0; j < currentUserTaskModel.size(); j++) {
+                String currentIndexId = currentUserTaskModel.get(j).get(ID).asText();
+                if (indexId.equals(currentIndexId)) {
+                    ObjectNode currentNode = (ObjectNode) newArrayNode.get(j);
+                    ObjectNode updateNode = ((ObjectNode) updateUserTasks.get(i));
+                    copyFieldsExcept(currentNode, updateNode, "comments", "attachments");
+                    mergeFieldArray("comments", currentNode, updateNode);
+                    mergeFieldArray("attachments", currentNode, updateNode);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newArrayNode.add(updateUserTasks.get(i));
+            }
+        }
+
+        newModel.set(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE, newArrayNode);
+        return;
+    }
+
+    private void mergeFieldArray(String field, ObjectNode newModel, ObjectNode updateData) {
+        if (!updateData.has(field) || (updateData.has(field) && updateData.get(field).isNull())) {
+            return;
+        }
+
+        if (!newModel.has(field) || (newModel.has(field) && newModel.get(field).isNull())) {
+            newModel.set(field, updateData.get(field));
+            return;
+        }
+
+        newModel.set(field, mergeArray((ArrayNode) newModel.get(field), (ArrayNode) updateData.get(field)));
+
+    }
+
+    private ObjectNode mergeProcessInstance(ObjectNode newModel, ObjectNode updateData) {
+        if (!updateData.has(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE)) {
+            return newModel;
+        }
+
+        if (!newModel.has(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE)) {
+            newModel.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, updateData.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE));
+            return newModel;
+        }
+
+        newModel.set(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE, mergeArray((ArrayNode) newModel.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE), (ArrayNode) updateData.get(PROCESS_INSTANCES_DOMAIN_ATTRIBUTE)));
+        return newModel;
+    }
+
+    private ArrayNode mergeArray(ArrayNode newModel, ArrayNode updateData) {
+        ArrayNode newArrayNode = getObjectMapper().createArrayNode();
+        newArrayNode.addAll(newModel);
+        for (int i = 0; i < updateData.size(); i++) {
+            String indexId = updateData.get(i).get(ID).asText();
+            boolean found = false;
+            for (int j = 0; j < newModel.size(); j++) {
+                String currentIndexId = newModel.get(j).get(ID).asText();
+                if (indexId.equals(currentIndexId)) {
+                    ((ObjectNode) newArrayNode.get(j)).setAll((ObjectNode) updateData.get(i));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newArrayNode.add(updateData.get(i));
+            }
+        }
+
+        Iterator<JsonNode> iterator = newArrayNode.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().has("remove")) {
+                iterator.remove();
+            }
+        }
+
+        return newArrayNode;
     }
 }

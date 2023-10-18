@@ -106,9 +106,7 @@ public class UserTaskInstanceMeta {
     }
 
     public void setActualOwner(String actualOwner) {
-        if (actualOwner != null && !actualOwner.trim().isEmpty()) {
-            this.actualOwner = actualOwner;
-        }
+        this.actualOwner = actualOwner;
     }
 
     public Set<String> getAdminGroups() {

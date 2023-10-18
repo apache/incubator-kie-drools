@@ -51,7 +51,6 @@ public class KogitoServiceRandomPortQuarkusKafkaTestResource extends Conditional
         properties.put(KOGITO_SERVICE_URL, "http://host.testcontainers.internal:" + getTestResource().getMappedPort());
         properties.put("mp.messaging.outgoing.kogito-processinstances-events.connector", "smallrye-kafka");
         properties.put("mp.messaging.outgoing.kogito-usertaskinstances-events.connector", "smallrye-kafka");
-        properties.put("mp.messaging.outgoing.kogito-variables-events.connector", "smallrye-kafka");
 
         return properties;
     }

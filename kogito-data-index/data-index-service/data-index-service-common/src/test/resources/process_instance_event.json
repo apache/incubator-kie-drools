@@ -1,105 +1,23 @@
 {
   "id": "867ff7b4-2e49-49b3-882a-76f65a2c4124",
   "source": "http://localhost:8080/travels",
-  "type": "ProcessInstanceEvent",
+  "type": "ProcessInstanceStateDataEvent",
   "time": "2022-03-18T15:33:05.608395+10:00",
   "data": {
-    "id": "2308e23d-9998-47e9-a772-a078cf5b891b",
+    "processInstanceId": "2308e23d-9998-47e9-a772-a078cf5b891b",
     "parentInstanceId": "",
-    "rootInstanceId": "",
+    "rootProcessInstanceId": "",
     "processId": "travels",
-    "version": "1.0",
+    "processVersion": "1.0",
     "rootProcessId": "",
     "processName": "travels",
-    "startDate": "2022-03-18T15:32:21.887+10:00",
-    "endDate": null,
+    "eventDate": "2022-03-18T15:32:21.887+10:00",
     "state": 1,
-    "businessKey": "F7RTPS",
-    "nodeInstances": [
-      {
-        "id": "2b407977-cab4-41ec-b1e6-c34076d9381a",
-        "nodeId": "3",
-        "nodeDefinitionId": "_E611283E-30B0-46B9-8305-768A002C7518",
-        "nodeName": "visasrejected",
-        "nodeType": "EventNode",
-        "triggerTime": "2022-03-18T15:33:05.597+10:00",
-        "leaveTime": null
-      },
-      {
-        "id": "808f4f5e-6473-448e-aac6-ee1017610c1f",
-        "nodeId": "4",
-        "nodeDefinitionId": "_7F75E8BD-3032-47EC-814F-66B197CA99C5",
-        "nodeName": "visasapproved",
-        "nodeType": "EventNode",
-        "triggerTime": "2022-03-18T15:33:05.597+10:00",
-        "leaveTime": null
-      },
-      {
-        "id": "2c644506-a5c6-475e-8098-26980d08f796",
-        "nodeId": "13",
-        "nodeDefinitionId": "_A8C9F331-8433-411D-91DB-B2060D4F8D14",
-        "nodeName": "wait for visa decision",
-        "nodeType": "Split",
-        "triggerTime": "2022-03-18T15:33:05.595+10:00",
-        "leaveTime": null
-      },
-      {
-        "id": "99e2e499-f997-4528-b1fc-2531470a057a",
-        "nodeId": "1",
-        "nodeDefinitionId": "_BDA56801-1155-4AF2-94D4-7DAADED2E3C0",
-        "nodeName": "Send visa application",
-        "nodeType": "ActionNode",
-        "triggerTime": "2022-03-18T15:33:05.588+10:00",
-        "leaveTime": "2022-03-18T15:33:05.595+10:00"
-      },
-      {
-        "id": "18f6b068-b7bf-4307-a3f9-be5606b726ca",
-        "nodeId": "6",
-        "nodeDefinitionId": "_24FBB8D6-EF2D-4DCC-846D-D8C5E21849D2",
-        "nodeName": "Apply for visa",
-        "nodeType": "HumanTaskNode",
-        "triggerTime": "2022-03-18T15:32:22.481+10:00",
-        "leaveTime": "2022-03-18T15:33:05.588+10:00"
-      }
-    ],
-    "variables": {
-      "trip": {
-        "city": "Brisbane",
-        "country": "Australia",
-        "begin": "2022-03-01T08:00:00.000+10:00",
-        "end": "2022-03-31T08:00:00.000+10:00",
-        "visaRequired": true
-      },
-      "visaApplication": {
-        "firstName": "Test",
-        "lastName": "Test",
-        "city": "Brisbane",
-        "country": "Australia",
-        "duration": 150,
-        "passportNumber": "CDDCDCDS",
-        "nationality": "Brazilian",
-        "approved": false
-      },
-      "traveller": {
-        "firstName": "Test",
-        "lastName": "Test",
-        "email": "test@email.com",
-        "nationality": "Brazilian",
-        "address": {
-          "street": "",
-          "city": "",
-          "zipCode": "",
-          "country": "Brazil"
-        }
-      }
-    },
-    "error": null,
-    "roles": null,
-    "milestones": []
+    "businessKey": "F7RTPS"
   },
   "specversion": "1.0",
   "kogitoprocinstanceid": "2308e23d-9998-47e9-a772-a078cf5b891b",
   "kogitoprocid": "travels",
   "kogitoaddons": "cloudevents,process-svg,prometheus-monitoring,monitoring,infinispan-persistence,process-management",
-  "kogitousertaskist": "1"
+  "kogitoProcessInstanceState" : "1"
 }

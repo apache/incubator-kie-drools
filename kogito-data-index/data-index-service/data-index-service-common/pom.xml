@@ -33,6 +33,12 @@
   <name>Kogito Apps :: Data Index Service Common</name>
 
   <dependencies>
+	<dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-storage-api</artifactId>
@@ -107,11 +113,7 @@
       <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-test-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>

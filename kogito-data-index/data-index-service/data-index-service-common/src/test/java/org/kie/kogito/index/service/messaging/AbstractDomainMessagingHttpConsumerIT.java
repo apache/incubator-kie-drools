@@ -22,7 +22,7 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
 import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
@@ -39,13 +39,13 @@ public abstract class AbstractDomainMessagingHttpConsumerIT extends AbstractDoma
     public InMemoryConnector connector;
 
     protected void sendUserTaskInstanceEvent() throws Exception {
-        UserTaskInstanceDataEvent event = getUserTaskCloudEvent("45fae435-b098-4f27-97cf-a0c107072e8b", "travels",
+        UserTaskInstanceDataEvent<?> event = getUserTaskCloudEvent("45fae435-b098-4f27-97cf-a0c107072e8b", "travels",
                 "2308e23d-9998-47e9-a772-a078cf5b891b", null, null, "Completed");
         connector.source(KOGITO_USERTASKINSTANCES_EVENTS).send(event);
     }
 
     protected void sendProcessInstanceEvent() throws Exception {
-        ProcessInstanceDataEvent event = getProcessCloudEvent("travels", "2308e23d-9998-47e9-a772-a078cf5b891b",
+        ProcessInstanceDataEvent<?> event = getProcessCloudEvent("travels", "2308e23d-9998-47e9-a772-a078cf5b891b",
                 ProcessInstanceState.ACTIVE, null,
                 null, null, "currentUser");
         connector.source(KOGITO_PROCESSINSTANCES_EVENTS).send(event);

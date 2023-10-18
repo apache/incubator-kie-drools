@@ -26,9 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.DataEvent;
-import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.service.IndexingService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -72,13 +71,14 @@ public class DataIndexEventPublisherTest {
 
     @Test
     void onProcessInstanceEvent() {
-        ArgumentCaptor<ProcessInstance> eventCaptor = ArgumentCaptor.forClass(ProcessInstance.class);
-        ProcessInstanceDataEvent event = getProcessCloudEvent(PROCESS_ID, PROCESS_INSTANCE_ID, COMPLETED,
+
+        ArgumentCaptor<ProcessInstanceStateDataEvent> eventCaptor = ArgumentCaptor.forClass(ProcessInstanceStateDataEvent.class);
+        ProcessInstanceStateDataEvent event = getProcessCloudEvent(PROCESS_ID, PROCESS_INSTANCE_ID, COMPLETED,
                 ROOT_PROCESS_INSTANCE_ID, ROOT_PROCESS_ID, ROOT_PROCESS_INSTANCE_ID, "currentUser");
 
         dataIndexEventPublisher.publish(event);
 
-        verify(indexingService).indexProcessInstance(eventCaptor.capture());
+        verify(indexingService).indexProcessInstanceEvent(eventCaptor.capture());
     }
 
     @Test

@@ -277,6 +277,7 @@ public abstract class AbstractProcessDataIndexIT {
 
     public void testProcessGatewayAPI() throws IOException {
         String pId2 = createTestProcessInstance();
+
         await()
                 .atMost(TIMEOUT)
                 .untilAsserted(() -> getProcessInstanceById(pId2, "ACTIVE"));
@@ -474,6 +475,18 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("$.size()", is(1))
                         .body("[0].content", is(commentContent)));
 
+        await()
+                .atMost(TIMEOUT)
+                .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                                "id description priority potentialGroups comments {id content updatedBy updatedAt} } }\"}")
+                        .when().post("/graphql")
+                        .then()
+                        .statusCode(200)
+                        .body("data.UserTaskInstances[0].comments", notNullValue())
+                        .body("data.UserTaskInstances[0].comments.size()", is(1))
+                        .extract().jsonPath().getMap("data.UserTaskInstances[0].comments[0]"));
+
         Map<String, String> commentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                 .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
                         "id description priority potentialGroups comments {id content updatedBy updatedAt} } }\"}")
@@ -485,6 +498,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
                 .body("data.UserTaskInstances[0].comments.size()", is(1))
                 .extract().jsonPath().getMap("data.UserTaskInstances[0].comments[0]");
+
         checkExpectedCreatedItemData(commentCreationResult, commentMap);
         String commentNewContent = "commentNewContent";
         String commentUpdateResult = given().spec(dataIndexSpec()).contentType(ContentType.JSON)

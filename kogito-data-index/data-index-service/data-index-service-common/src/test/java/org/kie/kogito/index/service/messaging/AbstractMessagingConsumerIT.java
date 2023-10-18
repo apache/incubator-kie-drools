@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 
 import io.restassured.http.ContentType;
@@ -33,6 +34,7 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 
+@Timeout(10000)
 public abstract class AbstractMessagingConsumerIT {
 
     Duration timeout = Duration.ofSeconds(30);

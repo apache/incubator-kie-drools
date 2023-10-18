@@ -24,7 +24,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.IndexingService;
 import org.mockito.ArgumentCaptor;
@@ -60,7 +62,7 @@ public class DomainEventConsumerTest {
 
     @Test
     public void testOnUserTaskInstanceDomainEventMappingException() {
-        UserTaskInstanceDataEvent event = mock(UserTaskInstanceDataEvent.class);
+        UserTaskInstanceStateDataEvent event = mock(UserTaskInstanceStateDataEvent.class);
 
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> consumer.onDomainEvent(event));
 
@@ -75,7 +77,7 @@ public class DomainEventConsumerTest {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
-        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
+        UserTaskInstanceDataEvent<?> event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> consumer.onDomainEvent(event));
         verify(service).indexModel(any());
@@ -87,7 +89,7 @@ public class DomainEventConsumerTest {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
-        UserTaskInstanceDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
+        UserTaskInstanceDataEvent<?> event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
 
         consumer.onDomainEvent(event);
 
@@ -102,7 +104,7 @@ public class DomainEventConsumerTest {
 
     @Test
     public void testOnProcessInstanceDomainEventMappingException() {
-        ProcessInstanceDataEvent event = mock(ProcessInstanceDataEvent.class);
+        ProcessInstanceStateDataEvent event = mock(ProcessInstanceStateDataEvent.class);
 
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> consumer.onDomainEvent(event));
 
@@ -116,7 +118,7 @@ public class DomainEventConsumerTest {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
-        ProcessInstanceDataEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null,
+        ProcessInstanceDataEvent<?> event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.ACTIVE, null,
                 null, null, "currentUser");
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> consumer.onDomainEvent(event));

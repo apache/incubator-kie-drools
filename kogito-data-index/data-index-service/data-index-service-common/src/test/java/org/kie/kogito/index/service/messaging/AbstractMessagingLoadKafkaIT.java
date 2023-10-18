@@ -32,7 +32,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
@@ -109,17 +109,18 @@ public abstract class AbstractMessagingLoadKafkaIT {
                 String processInstanceId = UUID.randomUUID().toString();
                 String taskId = UUID.randomUUID().toString();
 
-                ProcessInstanceDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
+                ProcessInstanceDataEvent<?> startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, "currentUser");
 
                 sendProcessInstanceEvent(client, startEvent);
 
-                UserTaskInstanceDataEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
+                UserTaskInstanceDataEvent<?> userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "InProgress");
                 sendUserTaskEvent(client, userTaskEvent);
 
                 userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, "Completed");
                 sendUserTaskEvent(client, userTaskEvent);
 
-                ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null, "currentUser");
+                ProcessInstanceDataEvent<?> endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null, "currentUser");
+
                 sendProcessInstanceEvent(client, endEvent);
 
                 return processInstanceId;

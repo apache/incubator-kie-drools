@@ -143,6 +143,9 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     protected String getServiceUrl(String endpoint, String processId) {
         LOGGER.debug("Process endpoint {}", endpoint);
+        if (endpoint == null) {
+            return null;
+        }
         if (endpoint.startsWith("/")) {
             LOGGER.warn("Process '{}' endpoint '{}', does not contain full URL, please review the kogito.service.url system property to point the public URL for this runtime.",
                     processId, endpoint);
@@ -157,7 +160,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     private String getContext(String processId) {
-        return processId.contains(".") ? processId.substring(processId.lastIndexOf('.') + 1) : processId;
+        return processId != null && processId.contains(".") ? processId.substring(processId.lastIndexOf('.') + 1) : processId;
     }
 
     protected Collection<ProcessInstance> getChildProcessInstancesValues(DataFetchingEnvironment env) {

@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.index.json;
+package org.kie.kogito.index.event.mapper;
 
-public class DataIndexParsingException extends RuntimeException {
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.index.model.UserTaskInstance;
 
-    private static final long serialVersionUID = 2205334685545385623L;
+public interface UserTaskInstanceEventMerger {
 
-    public DataIndexParsingException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    boolean accept(UserTaskInstanceDataEvent<?> event);
+
+    void merge(UserTaskInstance processInstance, UserTaskInstanceDataEvent<?> event);
+
 }

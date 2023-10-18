@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.persistence.protobuf;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -77,16 +77,22 @@ public class ProtobufMonitorService {
     public void startMonitoring() {
         if (protoFiles.isPresent()) {
             String folderPath = protoFiles.get();
-            File protoFolder = new File(folderPath);
-            if (!protoFolder.exists()) {
-                throw new ProtobufFileMonitorException(format("Could not find proto files folder at: %s", folderPath));
+            Path protoFolder = Paths.get(folderPath);
+            if (!Files.exists(protoFolder)) {
+                LOGGER.warn("Could not find proto files folder at: {}. Disabling ProtobufMonitorService", folderPath);
+                return;
             }
 
-            registerFilesFromFolder(protoFolder.toPath());
+            if (!Files.isReadable(protoFolder)) {
+                LOGGER.warn("The folder {} does not have read access. Cannot register protofiles from that folder", folderPath);
+                return;
+            }
 
+            LOGGER.info("The folder {} is being used to registering files", folderPath);
+            registerFilesFromFolder(protoFolder);
             if (Boolean.TRUE.equals(monitor)) {
                 executorService = Executors.newSingleThreadExecutor();
-                executorService.submit(new FolderWatcher(registerProtoFile(), protoFolder.toPath()));
+                executorService.submit(new FolderWatcher(registerProtoFile(), protoFolder));
             }
         }
     }

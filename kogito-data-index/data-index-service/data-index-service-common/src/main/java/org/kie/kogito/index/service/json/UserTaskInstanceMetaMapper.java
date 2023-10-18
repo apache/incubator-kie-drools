@@ -18,10 +18,21 @@
  */
 package org.kie.kogito.index.service.json;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,17 +45,17 @@ import static org.kie.kogito.index.storage.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.storage.Constants.PROCESS_ID;
 import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 
-public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceDataEvent, ObjectNode> {
+public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceDataEvent<?>, ObjectNode> {
 
     @Override
-    public ObjectNode apply(UserTaskInstanceDataEvent event) {
+    public ObjectNode apply(UserTaskInstanceDataEvent<?> event) {
         if (event == null) {
             return null;
         }
 
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, isNullOrEmpty(event.getData().getRootProcessInstanceId()) ? event.getData().getProcessInstanceId() : event.getData().getRootProcessInstanceId());
-        json.put(PROCESS_ID, isNullOrEmpty(event.getData().getRootProcessId()) ? event.getData().getProcessId() : event.getData().getRootProcessId());
+        json.put(ID, isNullOrEmpty(event.getKogitoRootProcessInstanceId()) ? event.getKogitoProcessInstanceId() : event.getKogitoRootProcessInstanceId());
+        json.put(PROCESS_ID, isNullOrEmpty(event.getKogitoRootProcessId()) ? event.getKogitoProcessId() : event.getKogitoRootProcessId());
         ObjectNode kogito = getObjectMapper().createObjectNode();
         kogito.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
         kogito.withArray(USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE).add(getUserTaskJson(event));
@@ -52,35 +63,88 @@ public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceData
         return json;
     }
 
-    private ObjectNode getUserTaskJson(UserTaskInstanceDataEvent event) {
+    private ObjectNode getUserTaskJson(UserTaskInstanceDataEvent<?> event) {
         ObjectNode json = getObjectMapper().createObjectNode();
-        json.put(ID, event.getData().getId());
-        json.put("processInstanceId", event.getData().getProcessInstanceId());
-        json.put("state", event.getData().getState());
-        if (!isNullOrEmpty(event.getData().getTaskDescription())) {
-            json.put("description", event.getData().getTaskDescription());
-        }
-        if (!isNullOrEmpty(event.getData().getTaskName())) {
-            json.put("name", event.getData().getTaskName());
-        }
-        if (!isNullOrEmpty(event.getData().getTaskPriority())) {
-            json.put("priority", event.getData().getTaskPriority());
-        }
-        if (!isNullOrEmpty(event.getData().getActualOwner())) {
-            json.put("actualOwner", event.getData().getActualOwner());
-        }
-        mapArray("adminUsers", event.getData().getAdminUsers(), json);
-        mapArray("adminGroups", event.getData().getAdminGroups(), json);
-        mapArray("excludedUsers", event.getData().getExcludedUsers(), json);
-        mapArray("potentialGroups", event.getData().getPotentialGroups(), json);
-        mapArray("potentialUsers", event.getData().getPotentialUsers(), json);
-        if (event.getData().getCompleteDate() != null) {
-            json.put("completed", event.getData().getCompleteDate().toInstant().toEpochMilli());
-        }
-        if (event.getData().getStartDate() != null) {
-            json.put("started", event.getData().getStartDate().toInstant().toEpochMilli());
-        }
+        json.put(ID, event.getKogitoUserTaskInstanceId());
+        json.put("processInstanceId", event.getKogitoProcessInstanceId());
+        json.put("state", event.getKogitoUserTaskInstanceState());
         json.put(LAST_UPDATE, event.getTime() == null ? null : event.getTime().toInstant().toEpochMilli());
+
+        if (event instanceof UserTaskInstanceStateDataEvent) {
+
+            UserTaskInstanceStateDataEvent data = (UserTaskInstanceStateDataEvent) event;
+            json.put("actualOwner", data.getData().getActualOwner());
+
+            if (!isNullOrEmpty(data.getData().getUserTaskDescription())) {
+                json.put("description", data.getData().getUserTaskDescription());
+            }
+            if (!isNullOrEmpty(data.getData().getUserTaskName())) {
+                json.put("name", data.getData().getUserTaskName());
+            }
+            if (!isNullOrEmpty(data.getData().getUserTaskPriority())) {
+                json.put("priority", data.getData().getUserTaskPriority());
+            }
+
+            if (data.getData().getState() != null && data.getData().getState().equals("Completed")) {
+                json.put("completed", data.getData().getEventDate().toInstant().toEpochMilli());
+            }
+            List<String> events = List.of("Ready", "InProgress");
+            if (data.getData().getState() != null && events.contains(data.getData().getState())) {
+                json.put("started", data.getData().getEventDate().toInstant().toEpochMilli());
+            }
+        } else if (event instanceof UserTaskInstanceAssignmentDataEvent) {
+            UserTaskInstanceAssignmentDataEvent data = (UserTaskInstanceAssignmentDataEvent) event;
+            UserTaskInstanceAssignmentEventBody body = data.getData();
+            switch (body.getAssignmentType()) {
+                case "USER_OWNERS":
+                    mapArray("potentialUsers", new HashSet<>(body.getUsers()), json);
+                    break;
+                case "USER_GROUPS":
+                    mapArray("potentialGroups", new HashSet<>(body.getUsers()), json);
+                    break;
+                case "USERS_EXCLUDED":
+                    mapArray("excludedUsers", new HashSet<>(body.getUsers()), json);
+                    break;
+                case "ADMIN_GROUPS":
+                    mapArray("adminUsers", new HashSet<>(body.getUsers()), json);
+                    break;
+                case "ADMIN_USERS":
+                    mapArray("adminGroups", new HashSet<>(body.getUsers()), json);
+                    break;
+            }
+
+        } else if (event instanceof UserTaskInstanceAttachmentDataEvent) {
+            UserTaskInstanceAttachmentDataEvent data = (UserTaskInstanceAttachmentDataEvent) event;
+            UserTaskInstanceAttachmentEventBody body = data.getData();
+            Map<String, Object> attachment = new HashMap<>();
+            attachment.put("id", body.getAttachmentId());
+            attachment.put("name", body.getAttachmentName());
+            attachment.put("content", body.getAttachmentURI() != null ? body.getAttachmentURI().toString() : "");
+            attachment.put("updatedBy", body.getEventUser());
+            attachment.put("updatedAt", body.getEventDate());
+
+            if (body.getEventType() == UserTaskInstanceAttachmentEventBody.EVENT_TYPE_DELETED) {
+                attachment.put("remove", true);
+            }
+
+            ArrayNode arrayNode = json.withArray("attachments");
+            arrayNode.add(getObjectMapper().valueToTree(attachment));
+
+        } else if (event instanceof UserTaskInstanceCommentDataEvent) {
+            UserTaskInstanceCommentDataEvent data = (UserTaskInstanceCommentDataEvent) event;
+            UserTaskInstanceCommentEventBody body = data.getData();
+            Map<String, Object> comment = new HashMap<>();
+            comment.put("id", body.getCommentId());
+            comment.put("content", body.getCommentContent());
+            comment.put("updatedBy", body.getEventUser());
+            comment.put("updatedAt", body.getEventDate());
+            if (body.getEventType() == UserTaskInstanceCommentEventBody.EVENT_TYPE_DELETED) {
+                comment.put("remove", true);
+            }
+            ArrayNode arrayNode = json.withArray("comments");
+            arrayNode.add(getObjectMapper().valueToTree(comment));
+        }
+
         return json;
     }
 
