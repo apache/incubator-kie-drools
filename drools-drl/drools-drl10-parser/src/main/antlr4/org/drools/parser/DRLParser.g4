@@ -19,6 +19,7 @@ compilationUnit : packagedef? unitdef? drlStatementdef* ;
 drlStatementdef
     : importdef
     | globaldef
+    | declaredef
     | ruledef
     | attributes
     | functiondef
@@ -29,19 +30,56 @@ packagedef : PACKAGE name=drlQualifiedName SEMI? ;
 
 unitdef : DRL_UNIT name=drlQualifiedName SEMI? ;
 
-importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)? SEMI? #importStandardDef
-          | IMPORT DRL_ACCUMULATE drlQualifiedName IDENTIFIER SEMI?         #importAccumulateDef
+importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)? SEMI?         #importStandardDef
+          | IMPORT (DRL_ACCUMULATE|DRL_ACC) drlQualifiedName IDENTIFIER SEMI?       #importAccumulateDef
           ;
 
 globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
+/**
+ * declare := DECLARE
+ *               | (ENTRY-POINT) => entryPointDeclaration
+ *               | (WINDOW) => windowDeclaration
+ *               | (TRAIT) => typeDeclaration (trait)
+ *               | (ENUM) => enumDeclaration
+ *               | typeDeclaration (class)
+ *            END
+ */
+
+declaredef : DRL_DECLARE (
+                         | entryPointDeclaration
+                         | windowDeclaration
+                         | typeDeclaration
+                         ) DRL_END ;
+
+/*
+ * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
+ *                         annotation*
+ *                         field*
+ *                     END
+ */
+
+typeDeclaration : name=drlQualifiedName (EXTENDS superType=drlQualifiedName)? drlAnnotation* field* ;
+
+// entryPointDeclaration := ENTRY-POINT stringId annotation* END
+
+entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* ;
+
+// windowDeclaration := WINDOW ID annotation* lhsPatternBind END
+
+windowDeclaration : DRL_WINDOW name=stringId drlAnnotation* lhsPatternBind ;
+
+// field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
+
+field : label type (ASSIGN initExpr=conditionalOrExpression)? drlAnnotation* SEMI? ;
+
 // rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
-ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* attributes? lhs rhs DRL_END ;
+ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* attributes? lhs rhs DRL_RHS_END ;
 
 // query := QUERY stringId parameters? annotation* lhsExpression END
 
-querydef : DRL_QUERY name=stringId formalParameters? drlAnnotation* lhsExpression+ DRL_QUERY_END SEMI?;
+querydef : DRL_QUERY name=stringId formalParameters? drlAnnotation* lhsExpression+ DRL_END SEMI?;
 
 lhs : DRL_WHEN lhsExpression* ;
 
@@ -152,7 +190,7 @@ drlKeywords
     | DRL_QUERY
     | DRL_WHEN
     | DRL_THEN
-    | DRL_QUERY_END
+    | DRL_END
     | DRL_AND
     | DRL_OR
     | DRL_EXISTS
@@ -162,6 +200,7 @@ drlKeywords
     | DRL_MATCHES
     | DRL_MEMBEROF
     | DRL_ACCUMULATE
+    | DRL_ACC
     | DRL_INIT
     | DRL_ACTION
     | DRL_REVERSE
@@ -287,7 +326,7 @@ mapEntry
  patternFilter :=   OVER filterDef
  filterDef := label ID LEFT_PAREN parameters RIGHT_PAREN
 */
-patternFilter : label IDENTIFIER LPAREN expressionList RPAREN ;
+patternFilter : DRL_WINDOW COLON IDENTIFIER LPAREN expressionList RPAREN ;
 
 /*
  patternSource := FROM
@@ -313,7 +352,7 @@ fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
                         | accumulateFunction
                         ) RIGHT_PAREN
 */
-fromAccumulate : DRL_ACCUMULATE LPAREN lhsAndDef (COMMA|SEMI)
+fromAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                    ( DRL_INIT LPAREN initBlockStatements=blockStatements RPAREN COMMA DRL_ACTION LPAREN actionBlockStatements=blockStatements RPAREN COMMA ( DRL_REVERSE LPAREN reverseBlockStatements=blockStatements RPAREN COMMA)? DRL_RESULT LPAREN expression RPAREN
                    | accumulateFunction
                    )
@@ -368,7 +407,7 @@ lhsForall : DRL_FORALL LPAREN lhsPatternBind+ RPAREN ;
  *                  RIGHT_PAREN SEMICOLON?
  */
 
-lhsAccumulate : DRL_ACCUMULATE LPAREN lhsAndDef (COMMA|SEMI)
+lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                    accumulateFunction (COMMA accumulateFunction)*
                    (SEMI constraints)?
                  RPAREN (SEMI)?
@@ -380,7 +419,7 @@ consequence : RHS_CHUNK* ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
-type : IDENTIFIER typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRACK)* ;
+type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRACK)* ;
 
 //typeArguments : LT typeArgument (COMMA typeArgument)* GT ;
 //typeArgument : QUESTION (( EXTENDS | SUPER ) type )? |  type ;
@@ -388,7 +427,15 @@ type : IDENTIFIER typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRA
 drlArguments : LPAREN drlArgument (COMMA drlArgument)* RPAREN ;
 drlArgument : ( stringId | floatLiteral | BOOL_LITERAL | NULL_LITERAL ) ;
 
-drlAnnotation : AT name=drlQualifiedName drlArguments? ;
+drlAnnotation : AT name=drlQualifiedName (LPAREN ( drlElementValuePairs | drlElementValue )? RPAREN)? ;
+
+drlElementValuePairs : drlElementValuePair (COMMA drlElementValuePair)* ;
+drlElementValuePair : key=drlIdentifier ASSIGN value=drlElementValue ;
+
+drlElementValue
+    : drlExpression
+    | drlArrayInitializer
+    ;
 
 attributes : attribute ( COMMA? attribute )* ;
 attribute : ( 'salience' DECIMAL_LITERAL )

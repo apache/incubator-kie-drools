@@ -17,6 +17,7 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
@@ -35,7 +36,10 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.ast.descr.TypeDeclarationDescr;
+import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.UnitDescr;
+import org.drools.drl.ast.descr.WindowDeclarationDescr;
 
 import static org.drools.parser.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.parser.ParserStringUtils.getTextPreservingWhitespace;
@@ -83,6 +87,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                     functionDescr.setDialect(dialect.getValue());
                 }
                 packageDescr.addFunction(functionDescr);
+            } else if (descr instanceof TypeDeclarationDescr) {
+                packageDescr.addTypeDeclaration((TypeDeclarationDescr) descr);
+            } else if (descr instanceof EntryPointDeclarationDescr) {
+                packageDescr.addEntryPointDeclaration((EntryPointDeclarationDescr) descr);
+            } else if (descr instanceof WindowDeclarationDescr) {
+                packageDescr.addWindowDeclaration((WindowDeclarationDescr) descr);
             } else if (descr instanceof AttributeDescr) {
                 packageDescr.addAttribute((AttributeDescr) descr);
             } else if (descr instanceof RuleDescr) {
@@ -153,6 +163,47 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public BaseDescr visitDeclaredef(DRLParser.DeclaredefContext ctx) {
+        return visitDescrChildren(ctx).get(0);
+    }
+
+    @Override
+    public TypeDeclarationDescr visitTypeDeclaration(DRLParser.TypeDeclarationContext ctx) {
+        TypeDeclarationDescr typeDeclarationDescr = new TypeDeclarationDescr(ctx.name.getText());
+        if (ctx.EXTENDS() != null) {
+            typeDeclarationDescr.addSuperType(ctx.superType.getText());
+        }
+        ctx.drlAnnotation().stream()
+                .map(this::visitDrlAnnotation)
+                .forEach(typeDeclarationDescr::addAnnotation);
+        ctx.field().stream()
+                .map(this::visitField)
+                .forEach(typeDeclarationDescr::addField);
+        return typeDeclarationDescr;
+    }
+
+    @Override
+    public EntryPointDeclarationDescr visitEntryPointDeclaration(DRLParser.EntryPointDeclarationContext ctx) {
+        EntryPointDeclarationDescr entryPointDeclarationDescr = new EntryPointDeclarationDescr();
+        entryPointDeclarationDescr.setEntryPointId(ctx.name.getText());
+        ctx.drlAnnotation().stream()
+                .map(this::visitDrlAnnotation)
+                .forEach(entryPointDeclarationDescr::addAnnotation);
+        return entryPointDeclarationDescr;
+    }
+
+    @Override
+    public WindowDeclarationDescr visitWindowDeclaration(DRLParser.WindowDeclarationContext ctx) {
+        WindowDeclarationDescr windowDeclarationDescr = new WindowDeclarationDescr();
+        windowDeclarationDescr.setName(ctx.name.getText());
+        ctx.drlAnnotation().stream()
+                .map(this::visitDrlAnnotation)
+                .forEach(windowDeclarationDescr::addAnnotation);
+        windowDeclarationDescr.setPattern((PatternDescr) visitLhsPatternBind(ctx.lhsPatternBind()));
+        return windowDeclarationDescr;
+    }
+
+    @Override
     public RuleDescr visitRuledef(DRLParser.RuledefContext ctx) {
         RuleDescr ruleDescr = new RuleDescr(safeStripStringDelimiters(ctx.name.getText()));
 
@@ -219,8 +270,34 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public AnnotationDescr visitDrlAnnotation(DRLParser.DrlAnnotationContext ctx) {
         AnnotationDescr annotationDescr = new AnnotationDescr(ctx.name.getText());
-        annotationDescr.setValue(ctx.drlArguments().drlArgument(0).getText());
+        if (ctx.drlElementValue() != null) {
+            annotationDescr.setValue(getTextPreservingWhitespace(ctx.drlElementValue())); // single value
+        } else if (ctx.drlElementValuePairs() != null) {
+            visitDrlElementValuePairs(ctx.drlElementValuePairs(), annotationDescr); // multiple values
+        }
         return annotationDescr;
+    }
+
+    @Override
+    public TypeFieldDescr visitField(DRLParser.FieldContext ctx) {
+        TypeFieldDescr typeFieldDescr = new TypeFieldDescr();
+        typeFieldDescr.setFieldName(ctx.label().IDENTIFIER().getText());
+        typeFieldDescr.setPattern(new PatternDescr(ctx.type().getText()));
+        if (ctx.ASSIGN() != null) {
+            typeFieldDescr.setInitExpr(getTextPreservingWhitespace(ctx.initExpr));
+        }
+        ctx.drlAnnotation().stream()
+                .map(this::visitDrlAnnotation)
+                .forEach(typeFieldDescr::addAnnotation);
+        return typeFieldDescr;
+    }
+
+    private void visitDrlElementValuePairs(DRLParser.DrlElementValuePairsContext ctx, AnnotationDescr annotationDescr) {
+        ctx.drlElementValuePair().forEach(pairCtx -> {
+            String key = pairCtx.key.getText();
+            String value = getTextPreservingWhitespace(pairCtx.value);
+            annotationDescr.setKeyValue(key, value);
+        });
     }
 
     @Override
@@ -332,7 +409,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public BehaviorDescr visitPatternFilter(DRLParser.PatternFilterContext ctx) {
         BehaviorDescr behaviorDescr = new BehaviorDescr();
-        behaviorDescr.setType(ctx.label().IDENTIFIER().getText());
+        behaviorDescr.setType(ctx.DRL_WINDOW().getText());
         behaviorDescr.setSubType(ctx.IDENTIFIER().getText());
         List<DRLParser.DrlExpressionContext> drlExpressionContexts = ctx.expressionList().drlExpression();
         List<String> parameters = drlExpressionContexts.stream().map(ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
