@@ -89,4 +89,6 @@ public interface ProcessInstance
      */
     String getParentProcessInstanceId();
 
+    String getProcessVersion();
+
 }
