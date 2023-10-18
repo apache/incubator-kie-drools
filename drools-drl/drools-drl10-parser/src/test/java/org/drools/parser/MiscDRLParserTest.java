@@ -2047,7 +2047,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
-    @Disabled("Priority : High | Implement from collect")
     @Test
     public void parse_Collect() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2310,7 +2309,6 @@ class MiscDRLParserTest {
         assertThat(fieldConstr.getExpression()).isEqualTo("bar > 1 || == 1");
     }
 
-    @Disabled("Priority : High | Implement semicolon delimiter | Implement from collect")
     @Test
     public void parse_Semicolon() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2390,7 +2388,6 @@ class MiscDRLParserTest {
         assertThat(pattern.getObjectType()).isEqualTo("Person");
     }
 
-    @Disabled("Priority : High | Implement from collect")
     @Test
     public void parse_CollectWithNestedFrom() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -2412,7 +2409,6 @@ class MiscDRLParserTest {
         assertThat(people.getObjectType()).isEqualTo("People");
     }
 
-    @Disabled("Priority : High | Implement accumulate and Implement from collect")
     @Test
     public void parse_AccumulateWithNestedFrom() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
