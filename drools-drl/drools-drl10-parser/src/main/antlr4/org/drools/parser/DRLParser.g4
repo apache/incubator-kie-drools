@@ -53,10 +53,10 @@ lhsExpression : LPAREN lhsExpression RPAREN             #lhsExpressionEnclosed
               | lhsExpression (DRL_OR lhsExpression)+   #lhsOr
               ;
 
-// and is accepted for accumulate
-lhsAndForAccumulate : lhsUnary (DRL_AND lhsUnary)*
-                    | LPAREN DRL_AND lhsUnary+ RPAREN
-                    ;
+// lhsAnd is used as a label in lhsExpression rule. But some other rules also use it.
+lhsAndDef : lhsUnary (DRL_AND lhsUnary)*
+          | LPAREN DRL_AND lhsUnary+ RPAREN
+          ;
 
 /*
 lhsUnary : ( lhsExists namedConsequence?
@@ -298,6 +298,7 @@ patternFilter : label IDENTIFIER LPAREN expressionList RPAREN ;
                 | fromExpression )
 */
 patternSource : fromAccumulate
+              | fromCollect
               | fromEntryPoint
               | fromExpression
               ;
@@ -312,7 +313,7 @@ fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
                         | accumulateFunction
                         ) RIGHT_PAREN
 */
-fromAccumulate : DRL_ACCUMULATE LPAREN lhsAndForAccumulate (COMMA|SEMI)
+fromAccumulate : DRL_ACCUMULATE LPAREN lhsAndDef (COMMA|SEMI)
                    ( DRL_INIT LPAREN initBlockStatements=blockStatements RPAREN COMMA DRL_ACTION LPAREN actionBlockStatements=blockStatements RPAREN COMMA ( DRL_REVERSE LPAREN reverseBlockStatements=blockStatements RPAREN COMMA)? DRL_RESULT LPAREN expression RPAREN
                    | accumulateFunction
                    )
@@ -325,6 +326,10 @@ blockStatements : blockStatement* ;
 accumulateFunction := label? ID parameters
 */
 accumulateFunction : label? IDENTIFIER LPAREN drlExpression RPAREN;
+
+// fromCollect := COLLECT LEFT_PAREN lhsPatternBind RIGHT_PAREN
+
+fromCollect : DRL_COLLECT LPAREN lhsPatternBind RPAREN ;
 
 fromEntryPoint : DRL_ENTRY_POINT stringId ;
 
@@ -363,7 +368,7 @@ lhsForall : DRL_FORALL LPAREN lhsPatternBind+ RPAREN ;
  *                  RIGHT_PAREN SEMICOLON?
  */
 
-lhsAccumulate : DRL_ACCUMULATE LPAREN lhsAndForAccumulate (COMMA|SEMI)
+lhsAccumulate : DRL_ACCUMULATE LPAREN lhsAndDef (COMMA|SEMI)
                    accumulateFunction (COMMA accumulateFunction)*
                    (SEMI constraints)?
                  RPAREN (SEMI)?
