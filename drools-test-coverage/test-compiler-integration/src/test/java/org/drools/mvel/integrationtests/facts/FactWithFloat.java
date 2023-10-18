@@ -20,8 +20,8 @@ package org.drools.mvel.integrationtests.facts;
 
 public class FactWithFloat {
 
-    private final float floatValue;
-    private final Float floatObjectValue;
+    private float floatValue;
+    private Float floatObjectValue;
 
     public FactWithFloat(final float floatValue) {
         this.floatValue = floatValue;
@@ -34,5 +34,13 @@ public class FactWithFloat {
 
     public Float getFloatObjectValue() {
         return floatObjectValue;
+    }
+
+    public void setFloatValue(float floatValue) {
+        this.floatValue = floatValue;
+    }
+
+    public void setFloatObjectValue(Float floatObjectValue) {
+        this.floatObjectValue = floatObjectValue;
     }
 }

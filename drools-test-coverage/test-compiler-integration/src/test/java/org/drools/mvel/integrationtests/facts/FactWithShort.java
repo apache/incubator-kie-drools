@@ -20,8 +20,8 @@ package org.drools.mvel.integrationtests.facts;
 
 public class FactWithShort {
 
-    private final short shortValue;
-    private final Short shortObjectValue;
+    private short shortValue;
+    private Short shortObjectValue;
 
     public FactWithShort(final short shortValue) {
         this.shortValue = shortValue;
@@ -34,5 +34,13 @@ public class FactWithShort {
 
     public Short getShortObjectValue() {
         return shortObjectValue;
+    }
+
+    public void setShortValue(short shortValue) {
+        this.shortValue = shortValue;
+    }
+
+    public void setShortObjectValue(Short shortObjectValue) {
+        this.shortObjectValue = shortObjectValue;
     }
 }
