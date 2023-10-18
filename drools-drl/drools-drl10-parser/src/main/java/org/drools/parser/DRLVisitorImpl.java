@@ -16,6 +16,7 @@ import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
+import org.drools.drl.ast.descr.CollectDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
@@ -314,7 +315,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public PatternDescr visitLhsAccumulate(DRLParser.LhsAccumulateContext ctx) {
         AccumulateDescr accumulateDescr = new AccumulateDescr();
-        accumulateDescr.setInput(visitLhsAndForAccumulate(ctx.lhsAndForAccumulate()));
+        accumulateDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
 
         // accumulate function
         for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
@@ -347,9 +348,16 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public CollectDescr visitFromCollect(DRLParser.FromCollectContext ctx) {
+        CollectDescr collectDescr = new CollectDescr();
+        collectDescr.setInputPattern((PatternDescr) visitLhsPatternBind(ctx.lhsPatternBind()));
+        return collectDescr;
+    }
+
+    @Override
     public AccumulateDescr visitFromAccumulate(DRLParser.FromAccumulateContext ctx) {
         AccumulateDescr accumulateDescr = new AccumulateDescr();
-        accumulateDescr.setInput(visitLhsAndForAccumulate(ctx.lhsAndForAccumulate()));
+        accumulateDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
         if (ctx.DRL_INIT() != null) {
             // inline custom accumulate
             accumulateDescr.setInitCode(getTextPreservingWhitespace(ctx.initBlockStatements));
@@ -469,7 +477,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitLhsAndForAccumulate(DRLParser.LhsAndForAccumulateContext ctx) {
+    public BaseDescr visitLhsAndDef(DRLParser.LhsAndDefContext ctx) {
         return createAndDescr(visitDescrChildren(ctx));
     }
 

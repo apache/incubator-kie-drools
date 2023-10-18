@@ -44,6 +44,7 @@ DRL_EXISTS : 'exists';
 DRL_NOT : 'not';
 DRL_IN : 'in';
 DRL_FROM : 'from';
+DRL_COLLECT : 'collect';
 DRL_MATCHES : 'matches';
 DRL_MEMBEROF : 'memberOf';
 DRL_ACCUMULATE : 'accumulate' | 'acc';
