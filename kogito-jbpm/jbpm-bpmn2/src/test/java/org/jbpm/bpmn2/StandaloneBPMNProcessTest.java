@@ -39,7 +39,7 @@ import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.junit.jupiter.api.Disabled;
@@ -172,7 +172,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
         Map<String, Object> results = new HashMap<>();
-        ((HumanTaskWorkItemImpl) workItem).setActualOwner("mary");
+        ((InternalHumanTaskWorkItem) workItem).setActualOwner("mary");
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), results);
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         workItem = workItemHandler.getWorkItem();

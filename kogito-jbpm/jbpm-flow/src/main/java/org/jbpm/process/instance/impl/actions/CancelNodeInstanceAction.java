@@ -30,6 +30,6 @@ public class CancelNodeInstanceAction extends AbstractNodeInstanceAction {
 
     @Override
     protected void execute(NodeInstance nodeInstance) {
-        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).cancel();
+        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).cancel(org.jbpm.workflow.instance.NodeInstance.CancelType.SKIPPED);
     }
 }

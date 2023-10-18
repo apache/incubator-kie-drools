@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.mail;
 
-import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class SpringBootMailSender {
 
     @KafkaListener(id = "${kogito.addon.mail.group.id:mail}",
             topics = "${kogito.events.deadline.topic:kogito-deadline-events}")
-    public void onMessage(UserTaskDeadlineDataEvent record) {
+    public void onMessage(UserTaskInstanceDeadlineDataEvent record) {
         MailInfo mailInfo = MailInfo.of(record.getData());
         logger.info("Sending e-mail {}", mailInfo);
         SimpleMailMessage message = new SimpleMailMessage();

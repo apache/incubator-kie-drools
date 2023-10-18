@@ -45,10 +45,6 @@ public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {
     boolean quarkusEnableUserTasksEvents;
 
     @Inject
-    @ConfigProperty(name = "kogito.events.variables.enabled", defaultValue = "true")
-    boolean quarkusEnableVariablesEvents;
-
-    @Inject
     @ConfigProperty(name = "kogito.events.database", defaultValue = "kogito-events")
     String quarkusEventsDatabaseName;
 
@@ -59,10 +55,6 @@ public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {
     @Inject
     @ConfigProperty(name = "kogito.events.usertasks.collection", defaultValue = "kogitousertaskinstancesevents")
     String quarkusUserTasksEventsCollectionName;
-
-    @Inject
-    @ConfigProperty(name = "kogito.events.variables.collection", defaultValue = "kogitovariablesevents")
-    String quarkusVariablesEventsCollectionName;
 
     @PostConstruct
     public void setupQuarkusMongoDBEventPublisher() {
@@ -90,11 +82,6 @@ public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {
     }
 
     @Override
-    protected boolean variablesEvents() {
-        return this.quarkusEnableVariablesEvents;
-    }
-
-    @Override
     protected String eventsDatabaseName() {
         return this.quarkusEventsDatabaseName;
     }
@@ -107,10 +94,5 @@ public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {
     @Override
     protected String userTasksEventsCollection() {
         return this.quarkusUserTasksEventsCollectionName;
-    }
-
-    @Override
-    protected String variablesEventsCollection() {
-        return this.quarkusVariablesEventsCollectionName;
     }
 }

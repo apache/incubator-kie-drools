@@ -88,7 +88,7 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
     }
 
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
         getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
         ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
     }

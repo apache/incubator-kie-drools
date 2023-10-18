@@ -100,8 +100,7 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
                 for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                     if (entry.getValue() != null) {
                         variableScope.validateVariable(process.getName(), entry.getKey(), entry.getValue());
-                        //Use internalSetVariable in order to avoid publishing variable change events
-                        variableScopeInstance.internalSetVariable(entry.getKey(), entry.getValue());
+                        variableScopeInstance.setVariable(entry.getKey(), entry.getValue());
                     }
                 }
             } else {

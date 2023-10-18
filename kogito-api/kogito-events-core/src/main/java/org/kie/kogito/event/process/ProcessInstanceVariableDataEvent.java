@@ -22,14 +22,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class VariableInstanceDataEvent extends AbstractDataEvent<VariableInstanceEventBody> {
+public class ProcessInstanceVariableDataEvent extends ProcessInstanceDataEvent<ProcessInstanceVariableEventBody> {
 
     private static final Set<String> INTERNAL_EXTENSION_ATTRIBUTES = Collections.singleton(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME);
 
@@ -37,18 +36,23 @@ public class VariableInstanceDataEvent extends AbstractDataEvent<VariableInstanc
     @JsonProperty(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME)
     private String kogitoVariableName;
 
-    public VariableInstanceDataEvent() {
+    public ProcessInstanceVariableDataEvent() {
     }
 
-    public VariableInstanceDataEvent(String source, String addons, String identity, Map<String, String> metaData, VariableInstanceEventBody body) {
-        super("VariableInstanceEvent",
+    public ProcessInstanceVariableDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceVariableEventBody body) {
+        super("ProcessInstanceVariableDataEvent",
                 source,
                 body,
-                metaData.get(ProcessInstanceEventBody.ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA),
+                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA),
                 addons,
+                (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA),
+                null,
                 identity);
         this.kogitoVariableName = body.getVariableName();
     }

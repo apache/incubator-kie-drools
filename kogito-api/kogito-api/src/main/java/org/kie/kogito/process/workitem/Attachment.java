@@ -22,6 +22,7 @@ import java.net.URI;
 
 public class Attachment extends TaskMetaEntity<String, URI> {
 
+    private static final long serialVersionUID = 1L;
     private String name;
 
     public Attachment(String id, String user) {
@@ -34,5 +35,10 @@ public class Attachment extends TaskMetaEntity<String, URI> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Attachment clone() throws CloneNotSupportedException {
+        return (Attachment) super.clone();
     }
 }

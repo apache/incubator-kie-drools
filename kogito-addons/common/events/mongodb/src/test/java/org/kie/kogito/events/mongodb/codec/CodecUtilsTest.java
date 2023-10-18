@@ -24,9 +24,9 @@ import java.util.Map;
 import org.bson.Document;
 import org.bson.codecs.DocumentCodec;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.process.ProcessInstanceEventBody;
-import org.kie.kogito.event.process.VariableInstanceDataEvent;
-import org.kie.kogito.event.process.VariableInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.events.mongodb.codec.CodecUtils.ID;
@@ -45,14 +45,14 @@ class CodecUtilsTest {
         String kogitoAddons = "testKogitoAddons";
         String identity = "testKogitoIdentity";
 
-        Map<String, String> metaData = new HashMap<>();
-        metaData.put(ProcessInstanceEventBody.ID_META_DATA, kogitoProcessInstanceId);
-        metaData.put(ProcessInstanceEventBody.VERSION_META_DATA, kogitoProcessInstanceVersion);
-        metaData.put(ProcessInstanceEventBody.ROOT_ID_META_DATA, kogitoRootProcessInstanceId);
-        metaData.put(ProcessInstanceEventBody.PROCESS_ID_META_DATA, kogitoProcessId);
-        metaData.put(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA, kogitoRootProcessId);
+        Map<String, Object> metaData = new HashMap<>();
+        metaData.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, kogitoProcessInstanceId);
+        metaData.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, kogitoProcessInstanceVersion);
+        metaData.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, kogitoRootProcessInstanceId);
+        metaData.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, kogitoProcessId);
+        metaData.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, kogitoRootProcessId);
 
-        VariableInstanceDataEvent event = new VariableInstanceDataEvent(source, kogitoAddons, identity, metaData, mock(VariableInstanceEventBody.class));
+        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent(source, kogitoAddons, identity, metaData, mock(ProcessInstanceVariableEventBody.class));
         Document doc = new Document();
 
         CodecUtils.encodeDataEvent(doc, event);

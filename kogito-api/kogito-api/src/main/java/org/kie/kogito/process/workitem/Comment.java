@@ -23,4 +23,9 @@ public class Comment extends TaskMetaEntity<String, String> {
     public Comment(String id, String user) {
         super(id, user);
     }
+
+    @Override
+    public Comment clone() throws CloneNotSupportedException {
+        return (Comment) super.clone();
+    }
 }

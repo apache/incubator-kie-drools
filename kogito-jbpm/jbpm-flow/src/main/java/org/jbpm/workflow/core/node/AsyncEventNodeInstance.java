@@ -149,9 +149,9 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
     }
 
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
         ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getJobsService().cancelJob(getJobId());
-        super.cancel();
+        super.cancel(cancelType);
     }
 
     public String getJobId() {

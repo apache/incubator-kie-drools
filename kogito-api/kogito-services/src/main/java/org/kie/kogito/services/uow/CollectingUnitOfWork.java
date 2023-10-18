@@ -43,6 +43,7 @@ public class CollectingUnitOfWork implements UnitOfWork {
     private boolean done;
 
     private final EventManager eventManager;
+    private EventBatch batch;
 
     public CollectingUnitOfWork(EventManager eventManager) {
         this.eventManager = eventManager;
@@ -54,17 +55,17 @@ public class CollectingUnitOfWork implements UnitOfWork {
         if (collectedWork == null) {
             collectedWork = new LinkedHashSet<>();
         }
+        batch = eventManager.newBatch();
     }
 
     @Override
     public void end() {
         checkStarted();
-        EventBatch batch = eventManager.newBatch();
 
         for (WorkUnit<?> work : sorted()) {
-            batch.append(work.data());
             work.perform();
         }
+
         eventManager.publish(batch);
         done();
     }
@@ -72,9 +73,10 @@ public class CollectingUnitOfWork implements UnitOfWork {
     @Override
     public void abort() {
         checkStarted();
-        for (WorkUnit<?> work : sorted()) {
+        for (WorkUnit<?> work : collectedWork) {
             work.abort();
         }
+        batch = null;
         done();
     }
 
@@ -85,6 +87,7 @@ public class CollectingUnitOfWork implements UnitOfWork {
         if (work == null) {
             throw new NullPointerException("Work must be non null");
         }
+        batch.append(work.data());
         collectedWork.remove(work);
         collectedWork.add(work);
     }

@@ -361,7 +361,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
 
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
         if (this.slaCompliance == KogitoProcessInstance.SLA_PENDING) {
             if (System.currentTimeMillis() > slaDueDate.getTime()) {
                 // completion of the process instance is after expected SLA due date, mark it accordingly
@@ -374,7 +374,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         cancelTimers();
         removeEventListeners();
         removeActivationListener();
-        super.cancel();
+        super.cancel(cancelType);
     }
 
     private void cancelTimers() {

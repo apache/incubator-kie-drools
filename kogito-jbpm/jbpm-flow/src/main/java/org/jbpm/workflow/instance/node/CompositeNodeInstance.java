@@ -172,18 +172,18 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         if (cancelRemainingInstances) {
             while (!nodeInstances.isEmpty()) {
                 NodeInstance nodeInstance = nodeInstances.get(0);
-                nodeInstance.cancel();
+                nodeInstance.cancel(CancelType.OBSOLETE);
             }
         }
     }
 
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
         while (!nodeInstances.isEmpty()) {
             NodeInstance nodeInstance = nodeInstances.get(0);
-            nodeInstance.cancel();
+            nodeInstance.cancel(cancelType);
         }
-        super.cancel();
+        super.cancel(cancelType);
     }
 
     @Override

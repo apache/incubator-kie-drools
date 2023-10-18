@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineEventBody;
 import org.mvel2.templates.TemplateRuntime;
 
 public class MailInfo {
@@ -39,14 +39,14 @@ public class MailInfo {
     private String replyTo;
     private String body;
 
-    public static MailInfo of(UserTaskDeadlineEventBody data) {
+    public static MailInfo of(UserTaskInstanceDeadlineEventBody data) {
         Map<String, Object> info = data.getNotification();
         return new MailInfo(Optional.ofNullable((String) info.get(TO_PROPERTY)).map(s -> s.split(",")).orElse(null),
                 (String) info.get(FROM_PROPERTY), evalTemplate((String) info.get(SUBJECT_PROPERTY), data),
                 (String) info.get(REPLY_TO_PROPERTY), evalTemplate((String) info.get(BODY_PROPERTY), data));
     }
 
-    private static String evalTemplate(String template, UserTaskDeadlineEventBody data) {
+    private static String evalTemplate(String template, UserTaskInstanceDeadlineEventBody data) {
         return template != null ? TemplateRuntime.eval(template, data).toString() : null;
     }
 

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
@@ -104,9 +105,13 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     @Override
     public InternalKogitoWorkItem getWorkItem() {
         if (workItem == null && workItemId != null) {
-            workItem = ((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
+            workItem = decorate(((InternalKogitoWorkItemManager) getProcessInstance().getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId));
         }
         return workItem;
+    }
+
+    protected InternalKogitoWorkItem decorate(InternalKogitoWorkItem kogitoWorkItem) {
+        return kogitoWorkItem;
     }
 
     public String getWorkItemId() {
@@ -118,7 +123,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public void internalSetWorkItem(InternalKogitoWorkItem workItem) {
-        this.workItem = workItem;
+        this.workItem = decorate(workItem);
         this.workItem.setProcessInstance(getProcessInstance());
         this.workItem.setNodeInstance(this);
     }
@@ -157,7 +162,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         workItem.setProcessInstance(getProcessInstance());
 
         if (workItemNode.getWork().getWorkParametersFactory() != null) {
-            workItem.getParameters().putAll(workItemNode.getWork().getWorkParametersFactory().apply(workItem));
+            Map<String, Object> parameters = workItemNode.getWork().getWorkParametersFactory().apply(workItem);
+            parameters.forEach(workItem::setParameter);
         }
 
         processWorkItemHandler(() -> ((InternalKogitoWorkItemManager) InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()).getKogitoWorkItemManager())
@@ -216,8 +222,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     protected InternalKogitoWorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
         workItem = newWorkItem();
+        workItem.setId(UUID.randomUUID().toString());
         workItem.setName(work.getName());
         workItem.setProcessInstanceId(getProcessInstance().getStringId());
+        workItem.setProcessInstance(this.getKogitoProcessInstance());
+        workItem.setNodeInstance(this);
+        workItem.setNodeInstanceId(this.getId());
+        workItem.setStartDate(new Date());
+
         Map<String, Object> resolvedParameters = new HashMap<>();
 
         Collection<String> metaParameters = work.getMetaParameters();
@@ -237,8 +249,6 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             }
         }
 
-        workItem.setStartDate(new Date());
-
         Function<String, Object> varResolver = (varRef) -> {
             if (resolvedParameters.containsKey(varRef)) {
                 return resolvedParameters.get(varRef);
@@ -251,7 +261,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (dynamicParameters != null) {
             inputSet.putAll(dynamicParameters);
         }
-        workItem.getParameters().putAll(inputSet);
+
+        inputSet.forEach(workItem::setParameter);
         return workItem;
     }
 
@@ -277,7 +288,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
         InternalKogitoWorkItem item = getWorkItem();
         if (item != null && item.getState() != COMPLETED && item.getState() != ABORTED) {
             try {
@@ -295,7 +306,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 processInstance.setState(STATE_ABORTED);
             }
         }
-        super.cancel();
+        super.cancel(cancelType);
     }
 
     @Override

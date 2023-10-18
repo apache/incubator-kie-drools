@@ -29,6 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -132,8 +133,9 @@ class PojoServiceIT {
                 .body("workflowdata.enabled", is(enabled))
                 .body("workflowdata.birthDate", is(birthDate.getTime()));
 
-        JsonPath processInstanceEventContent = waitForKogitoProcessInstanceEvent(kafkaClient, true);
-        Map workflowDataMap = processInstanceEventContent.getMap("data.variables.workflowdata");
+        JsonPath processInstanceEventContent = waitForKogitoProcessInstanceEvent(kafkaClient, ProcessInstanceVariableDataEvent.class,
+                e -> "pojoServiceTypes".equals(e.get("kogitoprocid")) && "workflowdata".equals(e.get("data.variableName")), true);
+        Map workflowDataMap = processInstanceEventContent.getMap("data.variableValue");
         assertThat(workflowDataMap)
                 .hasSize(9)
                 .containsEntry("name", "javieritoPerson")
@@ -161,8 +163,9 @@ class PojoServiceIT {
                 .body("id", notNullValue())
                 .body("workflowdata.name", is("javieritoPerson"))
                 .body("workflowdata.age", nullValue());
-        JsonPath processInstanceEventContent = waitForKogitoProcessInstanceEvent(kafkaClient, true);
-        Map workflowDataMap = processInstanceEventContent.getMap("data.variables.workflowdata");
+        JsonPath processInstanceEventContent = waitForKogitoProcessInstanceEvent(kafkaClient, ProcessInstanceVariableDataEvent.class,
+                e -> flowName.equals(e.get("kogitoprocid")) && "workflowdata".equals(e.get("data.variableName")), true);
+        Map workflowDataMap = processInstanceEventContent.getMap("data.variableValue");
         assertThat(workflowDataMap).hasSize(1);
         assertThat(workflowDataMap).containsEntry("name", "javieritoPerson");
     }

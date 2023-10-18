@@ -73,11 +73,6 @@ class QuarkusMongoDBEventPublisherTest {
     }
 
     @Test
-    void variablesEvents() {
-        assertFalse(publisher.variablesEvents());
-    }
-
-    @Test
     void eventsDatabaseName() {
         assertEquals("testDB", publisher.eventsDatabaseName());
     }
@@ -92,8 +87,4 @@ class QuarkusMongoDBEventPublisherTest {
         assertEquals("testUTCollection", publisher.userTasksEventsCollection());
     }
 
-    @Test
-    void variablesEventsCollection() {
-        assertEquals("testVCollection", publisher.variablesEventsCollection());
-    }
 }

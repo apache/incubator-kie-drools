@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.impl.StringEventMarshaller;
-import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ public class MessageProducer extends org.kie.kogito.event.impl.AbstractMessagePr
     }
 
     private String marshall(KogitoProcessInstance pi, $Type$ eventData) throws IOException {
-        return marshaller.marshall(useCloudEvents.orElse(true) ? new ProcessDataEvent<>(
+        return marshaller.marshall(useCloudEvents.orElse(true) ? new ProcessInstanceDataEvent<>(
                 "",
                 "",
                 eventData,

@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
@@ -57,7 +57,7 @@ public class TaskManagementService implements TaskManagementOperations {
         KogitoWorkItem workItem = UnitOfWorkExecutor.executeInUnitOfWork(processConfig.unitOfWorkManager(),
                 () -> pi.updateWorkItem(taskId,
                         wi -> {
-                            HumanTaskWorkItemImpl humanTask = HumanTaskHelper.asHumanTask(wi);
+                            InternalHumanTaskWorkItem humanTask = HumanTaskHelper.asHumanTask(wi);
                             setField(humanTask::setAdminGroups, taskInfo::getAdminGroups, shouldReplace);
                             setField(humanTask::setAdminUsers, taskInfo::getAdminUsers, shouldReplace);
                             setField(humanTask::setExcludedUsers, taskInfo::getExcludedUsers, shouldReplace);

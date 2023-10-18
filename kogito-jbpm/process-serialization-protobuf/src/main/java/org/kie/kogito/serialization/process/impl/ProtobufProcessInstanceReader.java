@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
@@ -61,6 +63,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.Comment;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kie.kogito.serialization.process.MarshallerContextName;
 import org.kie.kogito.serialization.process.MarshallerReaderContext;
@@ -451,7 +454,7 @@ public class ProtobufProcessInstanceReader {
             WorkItemNodeInstance nodeInstance = instanceWorkItem(content);
             if (nodeInstance instanceof HumanTaskNodeInstance) {
                 HumanTaskNodeInstance humanTaskNodeInstance = (HumanTaskNodeInstance) nodeInstance;
-                HumanTaskWorkItemImpl workItem = (HumanTaskWorkItemImpl) nodeInstance.getWorkItem();
+                InternalHumanTaskWorkItem workItem = humanTaskNodeInstance.getWorkItem();
                 Any workItemDataMessage = content.getWorkItemData();
                 if (workItemDataMessage.is(HumanTaskWorkItemData.class)) {
                     HumanTaskWorkItemData workItemData = workItemDataMessage.unpack(HumanTaskWorkItemData.class);
@@ -488,7 +491,7 @@ public class ProtobufProcessInstanceReader {
             }
 
             nodeInstance.internalSetWorkItemId(content.getWorkItemId());
-            KogitoWorkItemImpl workItem = (KogitoWorkItemImpl) nodeInstance.getWorkItem();
+            InternalKogitoWorkItem workItem = (InternalKogitoWorkItem) nodeInstance.getWorkItem();
             workItem.setId(content.getWorkItemId());
             workItem.setProcessInstanceId(ruleFlowProcessInstance.getStringId());
             workItem.setName(content.getName());
@@ -531,6 +534,7 @@ public class ProtobufProcessInstanceReader {
         } else {
             WorkItemNodeInstance nodeInstance = new WorkItemNodeInstance();
             KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
+            workItem.setId(UUID.randomUUID().toString());
             nodeInstance.internalSetWorkItem(workItem);
             return nodeInstance;
         }

@@ -21,7 +21,7 @@ package org.jbpm.bpmn2.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -40,7 +40,7 @@ public class TestWorkItemHandler implements KogitoWorkItemHandler {
         workItems.add(workItem);
 
         if (workItem instanceof HumanTaskWorkItem) {
-            HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
+            InternalHumanTaskWorkItem humanTaskWorkItem = (InternalHumanTaskWorkItem) workItem;
 
             humanTaskWorkItem.setPhaseId(Active.ID);
             humanTaskWorkItem.setPhaseStatus(Active.STATUS);

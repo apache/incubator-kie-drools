@@ -26,7 +26,7 @@ import java.util.Map;
 import org.drools.io.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -170,7 +170,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         assertThat(workItem.getParameter("TaskName")).isEqualTo("Do something");
         assertThat(workItem.getParameter("ActorId")).isEqualTo("John Doe");
         Map<String, Object> results = new HashMap<String, Object>();
-        ((HumanTaskWorkItemImpl) workItem).setActualOwner("Jane Doe");
+        ((InternalHumanTaskWorkItem) workItem).setActualOwner("Jane Doe");
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), results);
         workItem = handler.getWorkItem();
         assertThat(workItem).isNotNull();

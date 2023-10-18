@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.mail;
 
-import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 
-public class DeadlineEventDeserializer extends ObjectMapperDeserializer<UserTaskDeadlineDataEvent> {
+public class DeadlineEventDeserializer extends ObjectMapperDeserializer<UserTaskInstanceDeadlineDataEvent> {
 
     public DeadlineEventDeserializer() {
-        super(UserTaskDeadlineDataEvent.class);
+        super(UserTaskInstanceDeadlineDataEvent.class);
     }
 }

@@ -16,43 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.internal.process.event;
 
-import java.util.Map;
+package org.kie.kogito.event.usertask;
 
-import org.kie.api.event.process.ProcessEvent;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
+public final class UserTaskInstanceEventMetadata {
 
-/**
- * An event when a dealine for task has expired
- */
-public interface HumanTaskDeadlineEvent
-        extends
-        ProcessEvent {
+    public static final String USER_TASK_INSTANCE_ID_META_DATA = "kogito.usertaskinstance.id";
+    public static final String USER_TASK_INSTANCE_STATE_META_DATA = "kogito.usertaskinstance.state";
+    public static final String USER_TASK_INSTANCE_REFERENCE_ID_META_DATA = "kogito.usertaskinstance.referenceId";
 
-    enum DeadlineType {
-        Started,
-        Completed
+    private UserTaskInstanceEventMetadata() {
+        // nothing to comment
     }
-
-    /**
-     * Returns work item which timeout expires
-     * 
-     * @return work item
-     */
-    HumanTaskWorkItem getWorkItem();
-
-    /**
-     * Returns notification data
-     * 
-     * @return key-value pair list
-     */
-    Map<String, Object> getNotification();
-
-    /**
-     * Returns dealine type
-     * 
-     * @return not started or not completed
-     */
-    DeadlineType getType();
 }

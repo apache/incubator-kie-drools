@@ -21,7 +21,7 @@ package org.jbpm.process.instance.impl.humantask.phases;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.LifeCyclePhase;
 import org.kie.kogito.process.workitem.Transition;
@@ -64,7 +64,6 @@ public class Release implements LifeCyclePhase {
 
     @Override
     public void apply(KogitoWorkItem workitem, Transition<?> transition) {
-
-        ((HumanTaskWorkItemImpl) workitem).setActualOwner(null);
+        ((InternalHumanTaskWorkItem) workitem).setActualOwner(null);
     }
 }

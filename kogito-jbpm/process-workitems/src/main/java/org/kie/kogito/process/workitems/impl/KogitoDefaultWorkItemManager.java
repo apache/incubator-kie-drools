@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -40,8 +39,8 @@ import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
 
-import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.ABORTED;
-import static org.kie.kogito.internal.process.runtime.KogitoWorkItem.COMPLETED;
+import static org.kie.api.runtime.process.WorkItem.ABORTED;
+import static org.kie.api.runtime.process.WorkItem.COMPLETED;
 
 public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManager {
 
@@ -61,7 +60,6 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
 
     @Override
     public void internalExecuteWorkItem(InternalKogitoWorkItem workItem) {
-        ((KogitoWorkItemImpl) workItem).setId(UUID.randomUUID().toString());
         internalAddWorkItem(workItem);
         KogitoWorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
@@ -82,7 +80,7 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
 
     @Override
     public void internalAbortWorkItem(String id) {
-        KogitoWorkItemImpl workItem = (KogitoWorkItemImpl) workItems.get(id);
+        InternalKogitoWorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
             KogitoWorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
@@ -144,7 +142,7 @@ public class KogitoDefaultWorkItemManager implements InternalKogitoWorkItemManag
 
     @Override
     public void abortWorkItem(String id, Policy<?>... policies) {
-        KogitoWorkItemImpl workItem = (KogitoWorkItemImpl) workItems.get(id);
+        InternalKogitoWorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
             KogitoProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceStringId());

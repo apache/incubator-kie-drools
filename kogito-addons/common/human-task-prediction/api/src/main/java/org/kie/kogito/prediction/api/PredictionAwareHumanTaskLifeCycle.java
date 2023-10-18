@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.jbpm.process.instance.impl.humantask.BaseHumanTaskLifeCycle;
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.jbpm.process.instance.impl.workitem.Complete;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -52,14 +52,14 @@ public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
             throw new InvalidLifeCyclePhaseException(transition.phase());
         }
 
-        HumanTaskWorkItemImpl humanTaskWorkItem = (HumanTaskWorkItemImpl) workItem;
+        InternalHumanTaskWorkItem humanTaskWorkItem = (InternalHumanTaskWorkItem) workItem;
         if (targetPhase.id().equals(Active.ID)) {
 
             PredictionOutcome outcome = predictionService.predict(workItem, workItem.getParameters());
             logger.debug("Prediction service returned confidence level {} for work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
 
             if (outcome.isCertain()) {
-                humanTaskWorkItem.getResults().putAll(outcome.getData());
+                humanTaskWorkItem.setResults(outcome.getData());
                 logger.debug("Prediction service is certain (confidence level {}) on the outputs, completing work item {}", outcome.getConfidenceLevel(), humanTaskWorkItem.getStringId());
                 ((InternalKogitoWorkItemManager) manager).internalCompleteWorkItem(humanTaskWorkItem);
 
@@ -67,7 +67,7 @@ public class PredictionAwareHumanTaskLifeCycle extends BaseHumanTaskLifeCycle {
             } else if (outcome.isPresent()) {
                 logger.debug("Prediction service is NOT certain (confidence level {}) on the outputs, setting recommended outputs on work item {}", outcome.getConfidenceLevel(),
                         humanTaskWorkItem.getStringId());
-                humanTaskWorkItem.getResults().putAll(outcome.getData());
+                humanTaskWorkItem.setResults(outcome.getData());
 
             }
         }

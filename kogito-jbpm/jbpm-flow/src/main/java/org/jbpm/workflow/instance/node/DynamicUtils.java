@@ -21,6 +21,7 @@ package org.jbpm.workflow.instance.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalWorkingMemory;
@@ -93,6 +94,7 @@ public class DynamicUtils {
             String workItemName,
             Map<String, Object> parameters) {
         final KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
+        workItem.setId(UUID.randomUUID().toString());
         workItem.setState(WorkItem.ACTIVE);
         workItem.setProcessInstanceId(processInstance.getStringId());
         workItem.setDeploymentId((String) ksession.getEnvironment().get(EnvironmentName.DEPLOYMENT_ID));

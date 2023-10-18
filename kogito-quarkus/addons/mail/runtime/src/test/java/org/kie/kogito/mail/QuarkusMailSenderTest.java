@@ -26,8 +26,8 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
-import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineEventBody;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.MockMailbox;
@@ -61,8 +61,8 @@ public class QuarkusMailSenderTest {
         notification.put(MailInfo.FROM_PROPERTY, "realbetisbalompie@gmail.com");
         notification.put(MailInfo.TO_PROPERTY, TO + ",fulanito@doesnotexist.com");
 
-        UserTaskDeadlineEventBody eventData = UserTaskDeadlineEventBody.create("1", notification).build();
-        UserTaskDeadlineDataEvent event = new UserTaskDeadlineDataEvent(null, null, null, null, eventData, null, null, null, null);
+        UserTaskInstanceDeadlineEventBody eventData = UserTaskInstanceDeadlineEventBody.create().userTaskInstanceId("1").notification(notification).build();
+        UserTaskInstanceDeadlineDataEvent event = new UserTaskInstanceDeadlineDataEvent(null, null, null, new HashMap<>(), eventData);
         sender.onDeadline(event);
         List<Mail> messages = mailBox.getMessagesSentTo(TO);
         assertEquals(1, messages.size());

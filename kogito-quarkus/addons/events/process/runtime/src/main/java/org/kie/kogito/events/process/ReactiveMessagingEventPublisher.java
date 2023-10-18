@@ -30,7 +30,6 @@ import javax.inject.Singleton;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 import org.kie.kogito.event.DataEvent;
@@ -40,13 +39,13 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.smallrye.reactive.messaging.MutinyEmitter;
 import io.smallrye.reactive.messaging.providers.locals.ContextAwareMessage;
 
 @Singleton
 public class ReactiveMessagingEventPublisher implements EventPublisher {
     private static final String PI_TOPIC_NAME = "kogito-processinstances-events";
     private static final String UI_TOPIC_NAME = "kogito-usertaskinstances-events";
-    private static final String VI_TOPIC_NAME = "kogito-variables-events";
 
     private static final Logger logger = LoggerFactory.getLogger(ReactiveMessagingEventPublisher.class);
 
@@ -55,15 +54,11 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
 
     @Inject
     @Channel(PI_TOPIC_NAME)
-    Emitter<String> processInstancesEventsEmitter;
+    MutinyEmitter<String> processInstancesEventsEmitter;
 
     @Inject
     @Channel(UI_TOPIC_NAME)
-    Emitter<String> userTasksEventsEmitter;
-
-    @Inject
-    @Channel(VI_TOPIC_NAME)
-    Emitter<String> variablesEventsEmitter;
+    MutinyEmitter<String> userTasksEventsEmitter;
 
     @Inject
     @ConfigProperty(name = "kogito.events.processinstances.enabled")
@@ -72,10 +67,6 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     @Inject
     @ConfigProperty(name = "kogito.events.usertasks.enabled")
     Optional<Boolean> userTasksEvents;
-
-    @Inject
-    @ConfigProperty(name = "kogito.events.variables.enabled")
-    Optional<Boolean> variablesEvents;
 
     @Inject
     Instance<MessageDecoratorProvider> decoratorProviderInstance;
@@ -89,20 +80,25 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
+
         switch (event.getType()) {
-            case "ProcessInstanceEvent":
+            case "ProcessInstanceErrorDataEvent":
+            case "ProcessInstanceNodeDataEvent":
+            case "ProcessInstanceSLADataEvent":
+            case "ProcessInstanceStateDataEvent":
+            case "ProcessInstanceVariableDataEvent":
                 if (processInstancesEvents.orElse(true)) {
                     publishToTopic(event, processInstancesEventsEmitter, PI_TOPIC_NAME);
                 }
                 break;
-            case "UserTaskInstanceEvent":
+            case "UserTaskInstanceAssignmentDataEvent":
+            case "UserTaskInstanceAttachmentDataEvent":
+            case "UserTaskInstanceCommentDataEvent":
+            case "UserTaskInstanceDeadlineDataEvent":
+            case "UserTaskInstanceStateDataEvent":
+            case "UserTaskInstanceVariableDataEvent":
                 if (userTasksEvents.orElse(true)) {
                     publishToTopic(event, userTasksEventsEmitter, UI_TOPIC_NAME);
-                }
-                break;
-            case "VariableInstanceEvent":
-                if (variablesEvents.orElse(true)) {
-                    publishToTopic(event, variablesEventsEmitter, VI_TOPIC_NAME);
                 }
                 break;
             default:
@@ -117,18 +113,14 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
         }
     }
 
-    protected void publishToTopic(DataEvent<?> event, Emitter<String> emitter, String topic) {
-        if (emitter.hasRequests()) {
-            logger.debug("Emitter {} is not ready to send messages", topic);
-        }
-
+    protected void publishToTopic(DataEvent<?> event, MutinyEmitter<String> emitter, String topic) {
         logger.debug("About to publish event {} to topic {}", event, topic);
         try {
             String eventString = json.writeValueAsString(event);
+            Message<String> message = decorateMessage(ContextAwareMessage.of(eventString));
+
             logger.debug("Event payload '{}'", eventString);
-            emitter.send(decorateMessage(ContextAwareMessage.of(eventString)
-                    .withAck(() -> onAck(event, topic))
-                    .withNack(reason -> onNack(reason, event, topic))));
+            emitter.sendMessageAndAwait(message);
 
         } catch (Exception e) {
             logger.error("Error while creating event to topic {} for event {}", topic, event, e);

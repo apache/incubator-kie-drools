@@ -19,6 +19,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.jbpm.process.instance.impl.humantask.DeadlineHelper;
 import org.jbpm.process.instance.impl.humantask.DeadlineInfo;
 import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
 import org.jbpm.process.instance.impl.humantask.ScheduleInfo;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -75,8 +77,18 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     }
 
     @Override
+    public InternalHumanTaskWorkItem getWorkItem() {
+        return (InternalHumanTaskWorkItem) super.getWorkItem();
+    }
+
+    protected InternalKogitoWorkItem decorate(InternalKogitoWorkItem kogitoWorkItem) {
+        this.getKogitoProcessInstance();
+        return HumanTaskHelper.decorate(this, (InternalHumanTaskWorkItem) kogitoWorkItem);
+    }
+
+    @Override
     protected InternalKogitoWorkItem newWorkItem() {
-        return new HumanTaskWorkItemImpl();
+        return HumanTaskHelper.decorate(this, new HumanTaskWorkItemImpl());
     }
 
     /*
@@ -107,7 +119,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
     @Override
     protected InternalKogitoWorkItem createWorkItem(WorkItemNode workItemNode) {
-        HumanTaskWorkItemImpl workItem = (HumanTaskWorkItemImpl) super.createWorkItem(workItemNode);
+        InternalHumanTaskWorkItem workItem = (InternalHumanTaskWorkItem) super.createWorkItem(workItemNode);
         String actorId = assignWorkItem(workItem);
         if (actorId != null) {
             workItem.setParameter(ACTOR_ID, actorId);
@@ -225,18 +237,18 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     }
 
     private void startNotification(Map<String, Object> notification) {
-        getEventSupport().fireOnTaskNotStartedDeadline(getProcessInstance(), (HumanTaskWorkItem) getWorkItem(),
+        getEventSupport().fireOnUserTaskNotStartedDeadline(getProcessInstance(), this, (HumanTaskWorkItem) getWorkItem(),
                 notification, getProcessInstance().getKnowledgeRuntime());
     }
 
     private void endNotification(Map<String, Object> notification) {
-        getEventSupport().fireOnTaskNotCompletedDeadline(getProcessInstance(), (HumanTaskWorkItem) getWorkItem(),
+        getEventSupport().fireOnUserTaskNotCompletedDeadline(getProcessInstance(), this, (HumanTaskWorkItem) getWorkItem(),
                 notification,
                 getProcessInstance().getKnowledgeRuntime());
     }
 
     private void reassign(Reassignment reassignment) {
-        HumanTaskWorkItemImpl humanTask = HumanTaskHelper.asHumanTask(getWorkItem());
+        InternalHumanTaskWorkItem humanTask = HumanTaskHelper.asHumanTask(getWorkItem());
         boolean modified = false;
         if (!reassignment.getPotentialUsers().isEmpty()) {
             humanTask.setPotentialUsers(reassignment.getPotentialUsers());
@@ -271,11 +283,27 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
             }
         }
 
-        processAssigment(ACTOR_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getPotentialUsers());
-        processAssigment(GROUP_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getPotentialGroups());
-        processAssigment(EXCLUDED_OWNER_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getExcludedUsers());
-        processAssigment(BUSINESSADMINISTRATOR_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getAdminUsers());
-        processAssigment(BUSINESSADMINISTRATOR_GROUP_ID, workItem, ((HumanTaskWorkItemImpl) workItem).getAdminGroups());
+        InternalHumanTaskWorkItem hunanWorkItem = (InternalHumanTaskWorkItem) workItem;
+
+        Set<String> newPUValue = new HashSet<>(hunanWorkItem.getPotentialUsers());
+        processAssigment(ACTOR_ID, workItem, newPUValue);
+        hunanWorkItem.setPotentialUsers(newPUValue);
+
+        Set<String> newPGValue = new HashSet<>(hunanWorkItem.getPotentialGroups());
+        processAssigment(GROUP_ID, workItem, newPGValue);
+        hunanWorkItem.setPotentialGroups(newPGValue);
+
+        Set<String> newEUValue = new HashSet<>(hunanWorkItem.getExcludedUsers());
+        processAssigment(EXCLUDED_OWNER_ID, workItem, newEUValue);
+        hunanWorkItem.setExcludedUsers(newEUValue);
+
+        Set<String> newAUValue = new HashSet<>(hunanWorkItem.getAdminUsers());
+        processAssigment(BUSINESSADMINISTRATOR_ID, workItem, newAUValue);
+        hunanWorkItem.setAdminGroups(newAUValue);
+
+        Set<String> newAGValue = new HashSet<>(hunanWorkItem.getAdminGroups());
+        processAssigment(BUSINESSADMINISTRATOR_GROUP_ID, workItem, newAGValue);
+        hunanWorkItem.setAdminGroups(newAGValue);
 
         // always return ActorId from workitem as SwimlaneActorId is kept as separate parameter
         return (String) workItem.getParameter(ACTOR_ID);

@@ -67,7 +67,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
                     getProcessInstance().setState(KogitoProcessInstance.STATE_COMPLETED);
                 } else {
                     while (!getNodeInstanceContainer().getNodeInstances().isEmpty()) {
-                        ((org.jbpm.workflow.instance.NodeInstance) getNodeInstanceContainer().getNodeInstances().iterator().next()).cancel();
+                        ((org.jbpm.workflow.instance.NodeInstance) getNodeInstanceContainer().getNodeInstances().iterator().next()).cancel(CancelType.OBSOLETE);
                     }
                     ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
                 }

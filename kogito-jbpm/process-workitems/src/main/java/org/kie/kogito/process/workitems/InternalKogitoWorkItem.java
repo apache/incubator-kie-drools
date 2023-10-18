@@ -42,4 +42,8 @@ public interface InternalKogitoWorkItem extends org.drools.core.process.WorkItem
     void setNodeInstance(KogitoNodeInstance nodeInstance);
 
     void setProcessInstance(KogitoProcessInstance processInstance);
+
+    void setResult(String name, Object value);
+
+    void setId(String string);
 }

@@ -39,7 +39,7 @@ class KnativeEventingConfigSourceFactoryTest {
     void getConfigSourcesWithProcessEventsAndDefaultIncomeStream() {
         KnativeEventingConfigSource eventingConfigSource = buildKnativeEventingConfigSource("true", null);
 
-        assertThat(eventingConfigSource.getPropertyNames()).hasSize(10);
+        assertThat(eventingConfigSource.getPropertyNames()).hasSize(8);
         assertProcessEvents(eventingConfigSource);
         assertDefaultIncomingConnector(eventingConfigSource);
         assertDefaultOutgoingConnector(eventingConfigSource);
@@ -49,7 +49,7 @@ class KnativeEventingConfigSourceFactoryTest {
     void getConfigSourcesWithProcessEvents() {
         KnativeEventingConfigSource eventingConfigSource = buildKnativeEventingConfigSource("true", "true");
 
-        assertThat(eventingConfigSource.getPropertyNames()).hasSize(8);
+        assertThat(eventingConfigSource.getPropertyNames()).hasSize(6);
         assertProcessEvents(eventingConfigSource);
         assertDefaultOutgoingConnector(eventingConfigSource);
     }
@@ -92,8 +92,6 @@ class KnativeEventingConfigSourceFactoryTest {
         assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-usertaskinstances-events.connector", "quarkus-http");
         assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-usertaskinstances-events.url", DEFAULT_SINK_CONFIG);
 
-        assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-variables-events.connector", "quarkus-http");
-        assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-variables-events.url", DEFAULT_SINK_CONFIG);
     }
 
     private static void assertDefaultIncomingConnector(KnativeEventingConfigSource eventingConfigSource) {

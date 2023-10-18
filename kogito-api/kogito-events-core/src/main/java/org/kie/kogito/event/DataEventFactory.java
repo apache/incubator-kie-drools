@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.event.impl.CloudEventWrapDataEvent;
-import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 import io.cloudevents.CloudEvent;
@@ -36,7 +36,7 @@ import io.cloudevents.SpecVersion;
 public class DataEventFactory {
 
     public static <T> DataEvent<T> from(T event) {
-        return new ProcessDataEvent<>(event);
+        return new ProcessInstanceDataEvent<>(event);
     }
 
     public static <T> DataEvent<T> from(CloudEvent event, Converter<CloudEventData, T> dataUnmarshaller) {
@@ -48,7 +48,7 @@ public class DataEventFactory {
     }
 
     public static <T> DataEvent<T> from(T eventData, String type, URI source, Optional<String> subject, CloudEventExtension... extensions) {
-        ProcessDataEvent<T> ce = new ProcessDataEvent<>(eventData);
+        ProcessInstanceDataEvent<T> ce = new ProcessInstanceDataEvent<>(eventData);
         ce.setSpecVersion(SpecVersion.V1);
         ce.setId(UUID.randomUUID().toString());
         ce.setType(type);

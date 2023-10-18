@@ -456,7 +456,11 @@ class TaskIT {
     }
 
     private static class TravellerInputModel {
-
+        public String TaskName;
+        public String NodeName;
+        public Boolean Skippable;
+        public String ActorId;
+        public String GroupId;
         public Traveller traveller;
     }
 }

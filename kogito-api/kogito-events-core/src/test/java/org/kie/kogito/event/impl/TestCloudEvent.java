@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.event.impl;
 
-import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 
-public class TestCloudEvent<T> extends ProcessDataEvent<T> {
+public class TestCloudEvent<T> extends ProcessInstanceDataEvent<T> {
 
     public TestCloudEvent() {
     }

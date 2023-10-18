@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
@@ -32,16 +33,19 @@ import org.kie.kogito.Model;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
-import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceEventBody;
-import org.kie.kogito.event.process.VariableInstanceDataEvent;
-import org.kie.kogito.event.process.VariableInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
 
@@ -73,23 +77,27 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
         uow.end();
 
-        ProcessInstanceDataEvent processDataEvent = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).map(ProcessInstanceDataEvent.class::cast).findFirst().orElseThrow();
-        assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
+        List<DataEvent<?>> events = publisher.extract();
+        ProcessInstanceStateDataEvent processDataEvent =
+                events.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).map(ProcessInstanceStateDataEvent.class::cast).findFirst().orElseThrow();
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
         assertThat(processDataEvent.getSource()).hasToString("http://myhost/BusinessRuleTask");
 
-        ProcessInstanceEventBody body = assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", 2);
+        assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", 2);
 
-        assertThat(body.getNodeInstances()).hasSize(3).extractingResultOf("getNodeType").contains("StartNode", "RuleSetNode", "EndNode");
+        List<DataEvent<?>> nodeEvents = events.stream().filter(ProcessInstanceNodeDataEvent.class::isInstance).collect(Collectors.toList());
 
-        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
-        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
+        assertThat(nodeEvents).hasSize(6).map(e -> (ProcessInstanceNodeEventBody) e.getData()).extractingResultOf("getNodeType").containsOnly("StartNode", "RuleSetNode", "EndNode");
 
-        assertThat(body.getVariables()).hasSize(1).containsKey("person");
-        assertThat(body.getVariables().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
+        List<ProcessInstanceVariableDataEvent> variableEvents =
+                events.stream().filter(ProcessInstanceVariableDataEvent.class::isInstance).map(ProcessInstanceVariableDataEvent.class::cast).collect(Collectors.toList());
+
+        assertThat(variableEvents)
+                .extracting(e -> e.getData().getVariableName(), e -> ((Person) e.getData().getVariableValue()).isAdult())
+                .containsExactlyInAnyOrder(tuple("person", true), tuple("person", true));
     }
 
     @Test
@@ -153,11 +161,11 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         uow.end();
 
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).isNotNull().hasSize(10);
 
-        DataEvent<?> event = events.get(0);
-        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
-        ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event;
+        DataEvent<?> event = events.get(9);
+        assertThat(event).isInstanceOf(ProcessInstanceStateDataEvent.class);
+        ProcessInstanceStateDataEvent processDataEvent = (ProcessInstanceStateDataEvent) event;
         assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
         assertThat(processDataEvent.getKogitoParentProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
@@ -165,59 +173,44 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
         assertThat(processDataEvent.getSource()).hasToString("http://myhost/BusinessRuleTask");
 
-        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
+        List<DataEvent<?>> nodeEvents = events.stream().filter(ProcessInstanceNodeDataEvent.class::isInstance).map(e -> (ProcessInstanceNodeDataEvent) e).filter(e -> e.getData().getEventType() == 1)
+                .collect(Collectors.toList());
+        assertThat(nodeEvents).hasSize(3).map(e -> (ProcessInstanceNodeEventBody) e.getData()).extractingResultOf("getNodeType").containsOnly("StartNode", "RuleSetNode", "EndNode");
 
-        assertThat(body.getNodeInstances()).hasSize(3).extractingResultOf("getNodeType").contains("StartNode", "RuleSetNode", "EndNode");
+        assertProcessInstanceEvent(event, "BusinessRuleTask", "Default Process", 2);
 
-        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
-        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
+        List<DataEvent<?>> varaibleEvents = events.stream().filter(ProcessInstanceVariableDataEvent.class::isInstance).map(e -> (ProcessInstanceVariableDataEvent) e).collect(Collectors.toList());
+        event = varaibleEvents.get(0);
+        assertThat(event).isInstanceOf(ProcessInstanceVariableDataEvent.class);
 
-        assertThat(body.getVariables()).hasSize(1).containsKey("person");
-        assertThat(body.getVariables().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
-
-        event = events.get(1);
-        assertThat(event).isInstanceOf(VariableInstanceDataEvent.class);
-
-        VariableInstanceDataEvent variableDataEvent = (VariableInstanceDataEvent) event;
+        ProcessInstanceVariableDataEvent variableDataEvent = (ProcessInstanceVariableDataEvent) event;
         assertThat(variableDataEvent.getKogitoProcessInstanceId()).isNotNull();
         assertThat(variableDataEvent.getKogitoRootProcessId()).isNull();
         assertThat(variableDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(variableDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         // first is event created based on process start so no node associated
-        VariableInstanceEventBody variableEventBody = variableDataEvent.getData();
+        ProcessInstanceVariableEventBody variableEventBody = variableDataEvent.getData();
         assertThat(variableEventBody).isNotNull();
-        assertThat(variableEventBody.getChangeDate()).isNotNull();
+        assertThat(variableEventBody.getEventDate()).isNotNull();
         assertThat(variableEventBody.getProcessInstanceId()).isEqualTo(variableDataEvent.getKogitoProcessInstanceId());
         assertThat(variableEventBody.getProcessId()).isEqualTo("BusinessRuleTask");
-        assertThat(variableEventBody.getRootProcessId()).isNull();
-        assertThat(variableEventBody.getRootProcessInstanceId()).isNull();
         assertThat(variableEventBody.getVariableName()).isEqualTo("person");
         assertThat(variableEventBody.getVariableValue()).isNotNull();
-        assertThat(variableEventBody.getVariablePreviousValue()).isNotNull().hasFieldOrPropertyWithValue("adult", true);
-        assertThat(variableEventBody.getChangedByNodeId()).isEqualTo("BusinessRuleTask_2");
-        assertThat(variableEventBody.getChangedByNodeName()).isEqualTo("Business Rule Task");
-        assertThat(variableEventBody.getChangedByNodeType()).isEqualTo("RuleSetNode");
-        assertThat(variableEventBody.getIdentity()).isNull();
     }
 
     /*
      * Helper methods
      */
 
-    protected ProcessInstanceEventBody assertProcessInstanceEvent(DataEvent<?> event, String processId, String processName, Integer state) {
+    protected ProcessInstanceStateEventBody assertProcessInstanceEvent(DataEvent<?> event, String processId, String processName, Integer state) {
 
-        assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
-        ProcessInstanceEventBody body = ((ProcessInstanceDataEvent) event).getData();
+        assertThat(event).isInstanceOf(ProcessInstanceStateDataEvent.class);
+        ProcessInstanceStateEventBody body = ((ProcessInstanceStateDataEvent) event).getData();
         assertThat(body).isNotNull();
-        assertThat(body.getId()).isNotNull();
-        assertThat(body.getStartDate()).isNotNull();
-        if (state == ProcessInstance.STATE_ACTIVE || state == ProcessInstance.STATE_ERROR) {
-            assertThat(body.getEndDate()).isNull();
-        } else {
-            assertThat(body.getEndDate()).isNotNull();
-        }
+        assertThat(body.getProcessInstanceId()).isNotNull();
+        assertThat(body.getEventDate()).isNotNull();
         assertThat(body.getParentInstanceId()).isNull();
-        assertThat(body.getRootInstanceId()).isNull();
+        assertThat(body.getRootProcessInstanceId()).isNull();
         assertThat(body.getProcessId()).isEqualTo(processId);
         assertThat(body.getProcessName()).isEqualTo(processName);
         assertThat(body.getState()).isEqualTo(state);
@@ -225,7 +218,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(event.getSource()).hasToString("http://myhost/" + processId);
         assertThat(event.getTime()).isBeforeOrEqualTo(ZonedDateTime.now().toOffsetDateTime());
 
-        assertThat(((ProcessInstanceDataEvent) event).getKogitoAddons()).isEqualTo("test");
+        assertThat(((ProcessInstanceStateDataEvent) event).getKogitoAddons()).isEqualTo("test");
 
         return body;
     }

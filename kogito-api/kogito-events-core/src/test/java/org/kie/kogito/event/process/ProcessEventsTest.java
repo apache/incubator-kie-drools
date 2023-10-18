@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -94,7 +95,7 @@ class ProcessEventsTest {
 
     @Test
     void processInstanceDataEvent() throws Exception {
-        ProcessInstanceDataEvent event = new ProcessInstanceDataEvent();
+        ProcessInstanceStateDataEvent event = new ProcessInstanceStateDataEvent();
         setBaseEventValues(event, PROCESS_INSTANCE_EVENT_TYPE);
         setAdditionalExtensions(event);
 
@@ -103,7 +104,7 @@ class ProcessEventsTest {
         String json = OBJECT_MAPPER.writeValueAsString(event);
         assertExtensionsNotDuplicated(json, event.getExtensionNames());
 
-        ProcessInstanceDataEvent deserializedEvent = OBJECT_MAPPER.readValue(json, ProcessInstanceDataEvent.class);
+        ProcessInstanceStateDataEvent deserializedEvent = OBJECT_MAPPER.readValue(json, ProcessInstanceStateDataEvent.class);
 
         assertBaseEventValues(deserializedEvent, PROCESS_INSTANCE_EVENT_TYPE);
         assertThat(deserializedEvent.getExtension(EXTENSION_1)).isEqualTo(EXTENSION_1_VALUE);
@@ -113,7 +114,7 @@ class ProcessEventsTest {
 
     @Test
     void userTaskInstanceDataEvent() throws Exception {
-        UserTaskInstanceDataEvent event = new UserTaskInstanceDataEvent();
+        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent();
         setBaseEventValues(event, USER_TASK_INSTANCE_EVENT_TYPE);
         event.addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID, PROCESS_USER_TASK_INSTANCE_ID);
         event.addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE, PROCESS_USER_TASK_INSTANCE_STATE);
@@ -126,7 +127,7 @@ class ProcessEventsTest {
         String json = OBJECT_MAPPER.writeValueAsString(event);
         assertExtensionsNotDuplicated(json, event.getExtensionNames());
 
-        UserTaskInstanceDataEvent deserializedEvent = OBJECT_MAPPER.readValue(json, UserTaskInstanceDataEvent.class);
+        UserTaskInstanceStateDataEvent deserializedEvent = OBJECT_MAPPER.readValue(json, UserTaskInstanceStateDataEvent.class);
         assertBaseEventValues(deserializedEvent, USER_TASK_INSTANCE_EVENT_TYPE);
         assertThat(deserializedEvent.getExtension(EXTENSION_1)).isEqualTo(EXTENSION_1_VALUE);
         assertThat(deserializedEvent.getExtension(EXTENSION_2)).isEqualTo(EXTENSION_2_VALUE);
@@ -140,7 +141,7 @@ class ProcessEventsTest {
 
     @Test
     void variableInstanceDataEvent() throws Exception {
-        VariableInstanceDataEvent event = new VariableInstanceDataEvent();
+        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent();
         setBaseEventValues(event, VARIABLE_INSTANCE_EVENT_TYPE);
         event.addExtensionAttribute(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME, VARIABLE_NAME);
         setAdditionalExtensions(event);
@@ -150,7 +151,7 @@ class ProcessEventsTest {
         String json = OBJECT_MAPPER.writeValueAsString(event);
         assertExtensionsNotDuplicated(json, event.getExtensionNames());
 
-        VariableInstanceDataEvent deserializedEvent = OBJECT_MAPPER.readValue(json, VariableInstanceDataEvent.class);
+        ProcessInstanceVariableDataEvent deserializedEvent = OBJECT_MAPPER.readValue(json, ProcessInstanceVariableDataEvent.class);
         assertBaseEventValues(deserializedEvent, VARIABLE_INSTANCE_EVENT_TYPE);
         assertThat(deserializedEvent.getExtension(EXTENSION_1)).isEqualTo(EXTENSION_1_VALUE);
         assertThat(deserializedEvent.getExtension(EXTENSION_2)).isEqualTo(EXTENSION_2_VALUE);

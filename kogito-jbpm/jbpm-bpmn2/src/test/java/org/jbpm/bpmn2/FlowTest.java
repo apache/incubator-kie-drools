@@ -33,7 +33,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -1352,7 +1352,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertThat(KogitoWorkItem).isNotNull();
         assertThat(KogitoWorkItem.getParameter("ActorId")).isEqualTo("john");
         Map<String, Object> results = new HashMap<>();
-        ((HumanTaskWorkItemImpl) KogitoWorkItem).setActualOwner("mary");
+        ((InternalHumanTaskWorkItem) KogitoWorkItem).setActualOwner("mary");
         kruntime.getKogitoWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(),
                 results);
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",

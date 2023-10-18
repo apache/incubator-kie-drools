@@ -44,8 +44,6 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
 
     private static final String USER_TASK_INSTANCES_EVENTS = "kogito-usertaskinstances-events";
 
-    private static final String VARIABLE_EVENTS = "kogito-variables-events";
-
     private static final String QUARKUS_HTTP_CONNECTOR = "quarkus-http";
 
     private static final String OUTGOING_CONNECTOR_PREFIX = "mp.messaging.outgoing";
@@ -75,7 +73,6 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
         if (includeProcessEvents(context)) {
             addOutgoingConnector(configuration, PROCESS_INSTANCES_EVENTS);
             addOutgoingConnector(configuration, USER_TASK_INSTANCES_EVENTS);
-            addOutgoingConnector(configuration, VARIABLE_EVENTS);
         }
 
         final String sinkUrl = context.getValue(K_SINK).getValue();

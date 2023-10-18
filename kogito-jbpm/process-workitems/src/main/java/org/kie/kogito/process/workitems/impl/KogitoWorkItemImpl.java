@@ -115,6 +115,7 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
         }
     }
 
+    @Override
     public void setResult(String name, Object value) {
         results.put(name, value);
     }

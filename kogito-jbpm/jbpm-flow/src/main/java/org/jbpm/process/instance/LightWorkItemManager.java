@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -71,7 +70,6 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
 
     @Override
     public void internalExecuteWorkItem(InternalKogitoWorkItem workItem) {
-        ((KogitoWorkItemImpl) workItem).setId(UUID.randomUUID().toString());
         internalAddWorkItem(workItem);
         KogitoWorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
@@ -94,7 +92,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
 
     @Override
     public void internalAbortWorkItem(String id) {
-        KogitoWorkItemImpl workItem = (KogitoWorkItemImpl) workItems.get(id);
+        InternalKogitoWorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
             workItem.setCompleteDate(new Date());

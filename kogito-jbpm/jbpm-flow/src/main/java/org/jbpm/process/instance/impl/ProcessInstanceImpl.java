@@ -62,6 +62,8 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
 
     private Map<String, List<String>> headers;
 
+    private String processVersion;
+
     @Override
     public String getId() {
         return this.id;
@@ -112,7 +114,13 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     @Override
     public void setProcess(final Process process) {
         this.processId = process.getId();
+        this.processVersion = process.getVersion();
         this.process = process;
+    }
+
+    @Override
+    public String getProcessVersion() {
+        return processVersion;
     }
 
     @Override

@@ -27,8 +27,12 @@ import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
 import org.kie.kogito.event.EventManager;
 import org.kie.kogito.event.EventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BaseEventManager implements EventManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseEventManager.class);
 
     private String service;
     private Addons addons;
@@ -46,6 +50,10 @@ public class BaseEventManager implements EventManager {
             return;
         }
         Collection<DataEvent<?>> events = batch.events();
+
+        for (DataEvent<?> event : events) {
+            logger.debug("publishing {}", event);
+        }
 
         publishers.forEach(p -> p.publish(events));
     }

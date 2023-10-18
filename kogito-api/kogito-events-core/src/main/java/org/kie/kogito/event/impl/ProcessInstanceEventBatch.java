@@ -20,293 +20,436 @@ package org.kie.kogito.event.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.process.SLAViolatedEvent;
+import org.kie.api.event.usertask.UserTaskAssignmentEvent;
+import org.kie.api.event.usertask.UserTaskAttachmentEvent;
+import org.kie.api.event.usertask.UserTaskCommentEvent;
+import org.kie.api.event.usertask.UserTaskDeadlineEvent;
+import org.kie.api.event.usertask.UserTaskEvent;
+import org.kie.api.event.usertask.UserTaskStateEvent;
+import org.kie.api.event.usertask.UserTaskVariableEvent;
 import org.kie.kogito.Addons;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventBatch;
-import org.kie.kogito.event.process.AttachmentEventBody;
-import org.kie.kogito.event.process.CommentEventBody;
-import org.kie.kogito.event.process.MilestoneEventBody;
-import org.kie.kogito.event.process.NodeInstanceEventBody;
-import org.kie.kogito.event.process.ProcessErrorEventBody;
-import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceEventBody;
-import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
-import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
-import org.kie.kogito.event.process.UserTaskInstanceEventBody;
-import org.kie.kogito.event.process.VariableInstanceDataEvent;
-import org.kie.kogito.event.process.VariableInstanceEventBody;
-import org.kie.kogito.internal.process.event.HumanTaskDeadlineEvent;
-import org.kie.kogito.internal.process.event.KogitoProcessVariableChangedEvent;
-import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
+import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
+import org.kie.kogito.event.process.ProcessInstanceSLADataEvent;
+import org.kie.kogito.event.process.ProcessInstanceSLAEventBody;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceEventMetadata;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceVariableDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceVariableEventBody;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-
-import static java.util.stream.Collectors.toList;
 
 public class ProcessInstanceEventBatch implements EventBatch {
 
-    private final String service;
+    private String service;
     private Addons addons;
-    private List<ProcessEvent> rawEvents = new ArrayList<>();
+    Collection<DataEvent<?>> processedEvents;
 
     public ProcessInstanceEventBatch(String service, Addons addons) {
         this.service = service;
-        this.addons = addons;
+        this.addons = addons != null ? addons : Addons.EMTPY;
+        this.processedEvents = new ArrayList<>();
     }
 
     @Override
     public void append(Object rawEvent) {
         if (rawEvent instanceof ProcessEvent) {
-            rawEvents.add((ProcessEvent) rawEvent);
+            addDataEvent((ProcessEvent) rawEvent);
+        } else if (rawEvent instanceof UserTaskEvent) {
+            addDataEvent((UserTaskEvent) rawEvent);
         }
     }
 
     @Override
     public Collection<DataEvent<?>> events() {
-        Map<String, ProcessInstanceEventBody> processInstances = new LinkedHashMap<>();
-        Map<String, UserTaskInstanceEventBody> userTaskInstances = new LinkedHashMap<>();
-        Set<VariableInstanceEventBody> variables = new LinkedHashSet<>();
-
-        Collection<DataEvent<?>> processedEvents = new ArrayList<>();
-        for (ProcessEvent event : rawEvents) {
-            ProcessInstanceEventBody body = processInstances.computeIfAbsent(((KogitoProcessInstance) event.getProcessInstance()).getStringId(), key -> create(event));
-
-            if (event instanceof ProcessNodeTriggeredEvent) {
-                handleProcessNodeTriggeredEvent((ProcessNodeTriggeredEvent) event, body);
-            } else if (event instanceof ProcessNodeLeftEvent) {
-                handleProcessNodeLeftEvent((ProcessNodeLeftEvent) event, body);
-            } else if (event instanceof ProcessCompletedEvent) {
-                handleProcessCompletedEvent((ProcessCompletedEvent) event, body);
-            } else if (event instanceof ProcessWorkItemTransitionEvent) {
-                handleProcessWorkItemTransitionEvent((ProcessWorkItemTransitionEvent) event, userTaskInstances);
-            } else if (event instanceof ProcessVariableChangedEvent) {
-                handleProcessVariableChangedEvent((KogitoProcessVariableChangedEvent) event, variables);
-            } else if (event instanceof HumanTaskDeadlineEvent) {
-                processedEvents.add(buildUserTaskDeadlineEvent((HumanTaskDeadlineEvent) event));
-            }
-        }
-        processInstances.values().stream().map(pi -> new ProcessInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.getIdentity(), pi.metaData(), pi))
-                .forEach(processedEvents::add);
-        userTaskInstances.values().stream().map(pi -> new UserTaskInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.getIdentity(), pi.metaData(), pi))
-                .forEach(processedEvents::add);
-        variables.stream().map(pi -> new VariableInstanceDataEvent(extractRuntimeSource(pi.metaData()), addons.toString(), pi.getIdentity(), pi.metaData(), pi)).forEach(processedEvents::add);
         return processedEvents;
     }
 
-    private DataEvent<?> buildUserTaskDeadlineEvent(HumanTaskDeadlineEvent event) {
-        HumanTaskWorkItem workItem = event.getWorkItem();
-        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
-        UserTaskDeadlineEventBody body = UserTaskDeadlineEventBody.create(workItem.getStringId(), event
-                .getNotification())
-                .state(workItem.getPhaseStatus())
-                .taskName(workItem.getTaskName())
-                .taskDescription(workItem.getTaskDescription())
-                .taskPriority(workItem.getTaskPriority())
-                .referenceName(workItem.getReferenceName())
-                .actualOwner(workItem.getActualOwner())
-                .startDate(workItem.getStartDate())
-                .processInstanceId(pi.getStringId())
-                .rootProcessInstanceId(pi.getRootProcessInstanceId())
-                .processId(pi.getProcessId())
-                .rootProcessId(pi.getRootProcessId())
-                .inputs(workItem.getParameters())
-                .outputs(workItem.getResults()).build();
-        return new UserTaskDeadlineDataEvent("UserTaskDeadline" + event.getType(), buildSource(pi.getProcessId()),
-                addons.toString(), event.getEventIdentity(), body, pi.getStringId(), pi.getRootProcessInstanceId(), pi.getProcessId(), pi
-                        .getRootProcessId());
-    }
-
-    protected void handleProcessCompletedEvent(ProcessCompletedEvent event, ProcessInstanceEventBody body) {
-        // in case this is a process complete event always updated and date and state 
-        body.update()
-                .endDate(((KogitoWorkflowProcessInstance) event.getProcessInstance()).getEndDate())
-                .state(event.getProcessInstance().getState());
-    }
-
-    protected void handleProcessNodeTriggeredEvent(ProcessNodeTriggeredEvent event, ProcessInstanceEventBody body) {
-        NodeInstanceEventBody nodeInstanceBody = create(event);
-        if (!body.getNodeInstances().contains(nodeInstanceBody)) {
-            // add it only if it does not exist
-            body.update().nodeInstance(nodeInstanceBody);
+    private void addDataEvent(ProcessEvent event) {
+        // process events
+        if (event instanceof ProcessStartedEvent) {
+            handleProcessStateEvent((ProcessStartedEvent) event);
+        } else if (event instanceof ProcessCompletedEvent) {
+            handleProcessStateEvent((ProcessCompletedEvent) event);
+        } else if (event instanceof ProcessNodeTriggeredEvent) {
+            handleProcesssNodeEvent((ProcessNodeTriggeredEvent) event);
+        } else if (event instanceof ProcessNodeLeftEvent) {
+            handleProcesssNodeEvent((ProcessNodeLeftEvent) event);
+        } else if (event instanceof SLAViolatedEvent) {
+            handleProcesssNodeEvent((SLAViolatedEvent) event);
+        } else if (event instanceof ProcessVariableChangedEvent) {
+            handleProcesssVariableEvent((ProcessVariableChangedEvent) event);
         }
     }
 
-    protected void handleProcessNodeLeftEvent(ProcessNodeLeftEvent event, ProcessInstanceEventBody body) {
-        NodeInstanceEventBody nodeInstanceBody = create(event);
-        // if it's already there, remove it
-        body.getNodeInstances().remove(nodeInstanceBody);
-        // and add it back as the node left event has latest information
-        body.update().nodeInstance(nodeInstanceBody);
-    }
+    private void handleProcesssVariableEvent(ProcessVariableChangedEvent event) {
+        // custom data fields for this event that are not there
+        // private String nodeContainerDefinitionId;
+        // private String nodeContainerInstanceId;
 
-    protected void handleProcessWorkItemTransitionEvent(ProcessWorkItemTransitionEvent workItemTransitionEvent, Map<String, UserTaskInstanceEventBody> userTaskInstances) {
-        KogitoWorkItem workItem = workItemTransitionEvent.getWorkItem();
-        if (workItem instanceof HumanTaskWorkItem && workItemTransitionEvent.isTransitioned()) {
-            userTaskInstances.putIfAbsent(workItem.getStringId(), createUserTask(workItemTransitionEvent));
-        }
-    }
+        Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
 
-    protected void handleProcessVariableChangedEvent(KogitoProcessVariableChangedEvent variableChangedEvent, Set<VariableInstanceEventBody> variables) {
-        if (!variableChangedEvent.hasTag("internal")) {
-            variables.add(create(variableChangedEvent));
-        }
-    }
-
-    protected UserTaskInstanceEventBody createUserTask(ProcessWorkItemTransitionEvent workItemTransitionEvent) {
-        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) workItemTransitionEvent.getProcessInstance();
-        HumanTaskWorkItem workItem = (HumanTaskWorkItem) workItemTransitionEvent.getWorkItem();
-        return UserTaskInstanceEventBody.create()
-                .id(workItem.getStringId())
-                .state(workItem.getPhaseStatus())
-                .taskName(workItem.getTaskName())
-                .taskDescription(workItem.getTaskDescription())
-                .taskPriority(workItem.getTaskPriority())
-                .referenceName(workItem.getReferenceName())
-                .actualOwner(workItem.getActualOwner())
-                .startDate(workItem.getStartDate())
-                .completeDate(workItem.getCompleteDate())
-                .adminGroups(workItem.getAdminGroups())
-                .adminUsers(workItem.getAdminUsers())
-                .excludedUsers(workItem.getExcludedUsers())
-                .potentialGroups(workItem.getPotentialGroups())
-                .potentialUsers(workItem.getPotentialUsers())
-                .processInstanceId(pi.getStringId())
-                .processInstanceVersion(pi.getProcess().getVersion())
-                .rootProcessInstanceId(pi.getRootProcessInstanceId())
-                .processId(pi.getProcessId())
-                .rootProcessId(pi.getRootProcessId())
-                .inputs(workItem.getParameters())
-                .outputs(workItem.getResults())
-                .comments(workItem.getComments().values().stream().map(createComment()).collect(toList()))
-                .attachments(workItem.getAttachments().values().stream().map(createAttachment()).collect(toList()))
-                .identity(workItemTransitionEvent.getEventIdentity())
-                .build();
-    }
-
-    protected Function<Comment, CommentEventBody> createComment() {
-        return comment -> CommentEventBody.create()
-                .id(comment.getId())
-                .content(comment.getContent())
-                .updatedAt(comment.getUpdatedAt())
-                .updatedBy(comment.getUpdatedBy())
-                .build();
-    }
-
-    protected Function<Attachment, AttachmentEventBody> createAttachment() {
-        return attachment -> AttachmentEventBody.create()
-                .id(attachment.getId())
-                .name(attachment.getName())
-                .content(attachment.getContent())
-                .updatedAt(attachment.getUpdatedAt())
-                .updatedBy(attachment.getUpdatedBy())
-                .build();
-    }
-
-    protected ProcessInstanceEventBody create(ProcessEvent event) {
-        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
-
-        ProcessInstanceEventBody.Builder eventBuilder = ProcessInstanceEventBody.create()
-                .id(pi.getStringId())
-                .version(pi.getProcess().getVersion())
-                .parentInstanceId(pi.getParentProcessInstanceId())
-                .rootInstanceId(pi.getRootProcessInstanceId())
-                .processId(pi.getProcessId())
-                .rootProcessId(pi.getRootProcessId())
-                .processName(pi.getProcessName())
-                .startDate(pi.getStartDate())
-                .endDate(pi.getEndDate())
-                .state(pi.getState())
-                .businessKey(pi.getCorrelationKey())
-                .variables(pi.getVariables())
-                .milestones(createMilestones(pi))
-                .identity(event.getEventIdentity());
-
-        if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
-            eventBuilder.error(ProcessErrorEventBody.create()
-                    .nodeDefinitionId(pi.getNodeIdInError())
-                    .errorMessage(pi.getErrorMessage())
-                    .build());
-        }
-
-        String securityRoles = (String) pi.getProcess().getMetaData().get("securityRoles");
-        if (securityRoles != null) {
-            eventBuilder.roles(securityRoles.split(","));
-        }
-
-        return eventBuilder.build();
-    }
-
-    protected Set<MilestoneEventBody> createMilestones(KogitoWorkflowProcessInstance pi) {
-        if (pi.milestones() == null) {
-            return Collections.emptySet();
-        }
-
-        return pi.milestones().stream()
-                .map(m -> MilestoneEventBody.create().id(m.getId()).name(m.getName()).status(m.getStatus().name()).build())
-                .collect(Collectors.toSet());
-    }
-
-    protected NodeInstanceEventBody create(ProcessNodeEvent event) {
-        KogitoNodeInstance ni = (KogitoNodeInstance) event.getNodeInstance();
-
-        return NodeInstanceEventBody.create()
-                .id(ni.getStringId())
-                .nodeId(String.valueOf(ni.getNodeId()))
-                .nodeDefinitionId(ni.getNodeDefinitionId())
-                .nodeName(ni.getNodeName())
-                .nodeType(ni.getNode().getClass().getSimpleName())
-                .triggerTime(ni.getTriggerTime())
-                .leaveTime(ni.getLeaveTime())
-                .build();
-    }
-
-    protected VariableInstanceEventBody create(KogitoProcessVariableChangedEvent event) {
-        KogitoProcessInstance pi = (KogitoProcessInstance) event.getProcessInstance();
-
-        VariableInstanceEventBody.Builder eventBuilder = VariableInstanceEventBody.create()
-                .changeDate(event.getEventDate())
-                .processId(pi.getProcessId())
-                .processInstanceId(pi.getStringId())
-                .rootProcessId(pi.getRootProcessId())
-                .rootProcessInstanceId(pi.getRootProcessInstanceId())
+        ProcessInstanceVariableEventBody.Builder builder = ProcessInstanceVariableEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventIdentity())
+                .processId(event.getProcessInstance().getProcessId())
+                .processVersion(event.getProcessInstance().getProcessVersion())
+                .processInstanceId(event.getProcessInstance().getId())
+                .variableId(event.getVariableInstanceId())
                 .variableName(event.getVariableId())
-                .variableValue(event.getNewValue())
-                .variablePreviousValue(event.getOldValue())
-                .identity(event.getEventIdentity());
+                .variableValue(event.getNewValue());
+
+        ProcessInstanceVariableEventBody body = builder.build();
+        processedEvents.add(new ProcessInstanceVariableDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, body));
+    }
+
+    private void handleProcesssNodeEvent(SLAViolatedEvent event) {
+        Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
+
+        ProcessInstanceSLAEventBody.Builder builder = ProcessInstanceSLAEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventIdentity())
+                .processId(event.getProcessInstance().getProcessId())
+                .processVersion(event.getProcessInstance().getProcessVersion())
+                .processInstanceId(event.getProcessInstance().getId());
 
         if (event.getNodeInstance() != null) {
-            eventBuilder
-                    .changedByNodeId(event.getNodeInstance().getNodeDefinitionId())
-                    .changedByNodeName(event.getNodeInstance().getNodeName())
-                    .changedByNodeType(event.getNodeInstance().getNode().getClass().getSimpleName());
+            builder.nodeDefinitionId(event.getNodeInstance().getNode().getNodeUniqueId())
+                    .nodeInstanceId(event.getNodeInstance().getId());
         }
 
-        return eventBuilder.build();
+        ProcessInstanceSLAEventBody body = builder.build();
+        processedEvents.add(new ProcessInstanceSLADataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, body));
+    }
+
+    private void handleProcesssNodeEvent(ProcessNodeLeftEvent event) {
+        processedEvents.add(toProcessInstanceNodeEvent(event, ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT));
+    }
+
+    private void handleProcesssNodeEvent(ProcessNodeTriggeredEvent event) {
+        processedEvents.add(toProcessInstanceNodeEvent(event, ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER));
+
+    }
+
+    private ProcessInstanceNodeDataEvent toProcessInstanceNodeEvent(ProcessNodeEvent event, int eventType) {
+        Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
+
+        ProcessInstanceNodeEventBody.Builder builder = ProcessInstanceNodeEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventIdentity())
+                .eventType(eventType)
+                .processId(event.getProcessInstance().getProcessId())
+                .processVersion(event.getProcessInstance().getProcessVersion())
+                .processInstanceId(event.getProcessInstance().getId())
+                .nodeName(event.getNodeInstance().getNodeName())
+                .nodeType(event.getNodeInstance().getNode().getClass().getSimpleName())
+                .nodeInstanceId(event.getNodeInstance().getId())
+                .nodeDefinitionId(event.getNodeInstance().getNode().getNodeUniqueId());
+
+        ProcessInstanceNodeEventBody body = builder.build();
+        return new ProcessInstanceNodeDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, body);
+    }
+
+    private void handleProcessStateEvent(ProcessCompletedEvent event) {
+
+        processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_ENDED));
+
+        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+        if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
+            ProcessInstanceErrorEventBody errorBody = ProcessInstanceErrorEventBody.create()
+                    .eventDate(new Date())
+                    .eventUser(event.getEventIdentity())
+                    .processInstanceId(pi.getId())
+                    .processId(pi.getProcessId())
+                    .processVersion(pi.getProcessVersion())
+                    .nodeDefinitionId(pi.getNodeIdInError())
+                    .errorMessage(pi.getErrorMessage())
+                    .build();
+            Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
+            processedEvents.add(new ProcessInstanceErrorDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, errorBody));
+        }
+    }
+
+    private void handleProcessStateEvent(ProcessStartedEvent event) {
+        processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_STARTED));
+
+        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+        if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
+            ProcessInstanceErrorEventBody errorBody = ProcessInstanceErrorEventBody.create()
+                    .eventDate(new Date())
+                    .eventUser(event.getEventIdentity())
+                    .processInstanceId(pi.getId())
+                    .processId(pi.getProcessId())
+                    .processVersion(pi.getProcessVersion())
+                    .nodeDefinitionId(pi.getNodeIdInError())
+                    .errorMessage(pi.getErrorMessage())
+                    .build();
+            Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
+            processedEvents.add(new ProcessInstanceErrorDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, errorBody));
+        }
+
+    }
+
+    private ProcessInstanceStateDataEvent toProcessInstanceStateEvent(ProcessEvent event, int eventType) {
+        Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
+
+        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+
+        ProcessInstanceStateEventBody.Builder builder = ProcessInstanceStateEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventIdentity())
+                .eventType(eventType)
+                .processId(event.getProcessInstance().getProcessId())
+                .processVersion(event.getProcessInstance().getProcessVersion())
+                .processInstanceId(event.getProcessInstance().getId())
+                .processName(event.getProcessInstance().getProcessName())
+                .processVersion(event.getProcessInstance().getProcessVersion())
+                .processType(event.getProcessInstance().getProcess().getType())
+                .parentInstanceId(pi.getParentProcessInstanceId())
+                .rootProcessId(pi.getRootProcessId())
+                .rootProcessInstanceId(pi.getRootProcessInstanceId())
+                .state(event.getProcessInstance().getState());
+
+        String securityRoles = (String) event.getProcessInstance().getProcess().getMetaData().get("securityRoles");
+        if (securityRoles != null) {
+            builder.roles(securityRoles.split(","));
+        }
+
+        ProcessInstanceStateEventBody body = builder.build();
+        return new ProcessInstanceStateDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, body);
+    }
+
+    private Map<String, Object> buildProcessMetadata(KogitoWorkflowProcessInstance pi) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, pi.getId());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, pi.getProcessVersion());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA, pi.getProcessId());
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_STATE_META_DATA, String.valueOf(pi.getState()));
+        metadata.put(ProcessInstanceEventMetadata.PROCESS_TYPE_META_DATA, pi.getProcess().getType());
+        metadata.put(ProcessInstanceEventMetadata.PARENT_PROCESS_INSTANCE_ID_META_DATA, pi.getParentProcessInstanceId());
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, pi.getRootProcessId());
+        metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, pi.getRootProcessInstanceId());
+        return metadata;
+    }
+
+    private void addDataEvent(UserTaskEvent event) {
+        // this should go in another event types
+        if (event instanceof UserTaskStateEvent) {
+            handleUserTaskStateEvent((UserTaskStateEvent) event);
+        } else if (event instanceof UserTaskDeadlineEvent) {
+            handleUserTaskDeadlineEvent((UserTaskDeadlineEvent) event);
+        } else if (event instanceof UserTaskAssignmentEvent) {
+            handleUserTaskAssignmentEvent((UserTaskAssignmentEvent) event);
+        } else if (event instanceof UserTaskVariableEvent) {
+            handleUserTaskVariableEvent((UserTaskVariableEvent) event);
+        } else if (event instanceof UserTaskAttachmentEvent) {
+            handleUserTaskAttachmentEvent((UserTaskAttachmentEvent) event);
+        } else if (event instanceof UserTaskCommentEvent) {
+            handleUserTaskCommentEvent((UserTaskCommentEvent) event);
+        }
+    }
+
+    private void handleUserTaskCommentEvent(UserTaskCommentEvent event) {
+        Map<String, Object> metadata = buildUserTaskMetadata((HumanTaskWorkItem) event.getWorkItem());
+        metadata.putAll(buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()));
+
+        int eventType = UserTaskInstanceCommentEventBody.EVENT_TYPE_ADDED;
+        if (event.getOldComment() != null && event.getNewComment() == null) {
+            eventType = UserTaskInstanceCommentEventBody.EVENT_TYPE_DELETED;
+        } else if (event.getOldComment() != null && event.getNewComment() != null) {
+            eventType = UserTaskInstanceCommentEventBody.EVENT_TYPE_CHANGE;
+        }
+
+        UserTaskInstanceCommentEventBody.Builder builder = UserTaskInstanceCommentEventBody.create()
+                .eventType(eventType)
+                .userTaskDefinitionId(event.getUserTaskDefinitionId())
+                .userTaskInstanceId(((HumanTaskWorkItem) event.getWorkItem()).getStringId())
+                .userTaskName(((HumanTaskWorkItem) event.getWorkItem()).getTaskName());
+
+        String updatedBy = null;
+        switch (eventType) {
+            case UserTaskInstanceCommentEventBody.EVENT_TYPE_ADDED:
+            case UserTaskInstanceCommentEventBody.EVENT_TYPE_CHANGE:
+                builder.commentContent(event.getNewComment().getCommentContent())
+                        .commentId(event.getNewComment().getCommentId())
+                        .eventDate(event.getNewComment().getUpdatedAt())
+                        .eventUser(event.getNewComment().getUpdatedBy());
+                updatedBy = event.getNewComment().getUpdatedBy();
+                break;
+            case UserTaskInstanceCommentEventBody.EVENT_TYPE_DELETED:
+                builder.commentId(event.getOldComment().getCommentId())
+                        .eventDate(event.getOldComment().getUpdatedAt())
+                        .eventUser(event.getOldComment().getUpdatedBy());
+
+                updatedBy = event.getOldComment().getUpdatedBy();
+                break;
+        }
+
+        UserTaskInstanceCommentEventBody body = builder.build();
+        processedEvents.add(new UserTaskInstanceCommentDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), updatedBy, metadata, body));
+
+    }
+
+    private void handleUserTaskAttachmentEvent(UserTaskAttachmentEvent event) {
+        Map<String, Object> metadata = buildUserTaskMetadata((HumanTaskWorkItem) event.getWorkItem());
+        metadata.putAll(buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()));
+
+        int eventType = UserTaskInstanceAttachmentEventBody.EVENT_TYPE_ADDED;
+        if (event.getOldAttachment() != null && event.getNewAttachment() == null) {
+            eventType = UserTaskInstanceAttachmentEventBody.EVENT_TYPE_DELETED;
+        } else if (event.getOldAttachment() != null && event.getNewAttachment() != null) {
+            eventType = UserTaskInstanceAttachmentEventBody.EVENT_TYPE_CHANGE;
+        }
+
+        UserTaskInstanceAttachmentEventBody.Builder builder = UserTaskInstanceAttachmentEventBody.create()
+                .eventType(eventType)
+                .userTaskDefinitionId(event.getUserTaskDefinitionId())
+                .userTaskInstanceId(((HumanTaskWorkItem) event.getWorkItem()).getStringId())
+                .userTaskName(((HumanTaskWorkItem) event.getWorkItem()).getTaskName());
+
+        String updatedBy = null;
+        switch (eventType) {
+            case UserTaskInstanceAttachmentEventBody.EVENT_TYPE_ADDED:
+            case UserTaskInstanceAttachmentEventBody.EVENT_TYPE_CHANGE:
+                builder.attachmentName(event.getNewAttachment().getAttachmentName())
+                        .attachmentId(event.getNewAttachment().getAttachmentId())
+                        .attachmentURI(event.getNewAttachment().getAttachmentURI())
+                        .eventDate(event.getNewAttachment().getUpdatedAt())
+                        .eventUser(event.getNewAttachment().getUpdatedBy());
+                updatedBy = event.getNewAttachment().getUpdatedBy();
+
+                break;
+            case UserTaskInstanceAttachmentEventBody.EVENT_TYPE_DELETED:
+                builder.attachmentId(event.getOldAttachment().getAttachmentId())
+                        .eventDate(event.getOldAttachment().getUpdatedAt())
+                        .eventUser(event.getOldAttachment().getUpdatedBy());
+                updatedBy = event.getOldAttachment().getUpdatedBy();
+                break;
+        }
+
+        UserTaskInstanceAttachmentEventBody body = builder.build();
+        processedEvents
+                .add(new UserTaskInstanceAttachmentDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), updatedBy, metadata, body));
+
+    }
+
+    private void handleUserTaskAssignmentEvent(UserTaskAssignmentEvent event) {
+        Map<String, Object> metadata = buildUserTaskMetadata((HumanTaskWorkItem) event.getWorkItem());
+        metadata.putAll(buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()));
+
+        UserTaskInstanceAssignmentEventBody.Builder builder = UserTaskInstanceAssignmentEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventUser())
+                .userTaskDefinitionId(event.getUserTaskDefinitionId())
+                .userTaskInstanceId(((HumanTaskWorkItem) event.getWorkItem()).getStringId())
+                .userTaskName(((HumanTaskWorkItem) event.getWorkItem()).getTaskName())
+                .assignmentType(event.getAssignmentType())
+                .users(event.getNewUsersId());
+
+        UserTaskInstanceAssignmentEventBody body = builder.build();
+        processedEvents.add(new UserTaskInstanceAssignmentDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventUser(), metadata, body));
+    }
+
+    private void handleUserTaskDeadlineEvent(UserTaskDeadlineEvent event) {
+        Map<String, Object> metadata = buildUserTaskMetadata((HumanTaskWorkItem) event.getWorkItem());
+        metadata.putAll(buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()));
+
+        UserTaskInstanceDeadlineEventBody.Builder builder = UserTaskInstanceDeadlineEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventUser())
+                .userTaskDefinitionId(event.getUserTaskDefinitionId())
+                .userTaskInstanceId(((HumanTaskWorkItem) event.getWorkItem()).getStringId())
+                .userTaskName(((HumanTaskWorkItem) event.getWorkItem()).getTaskName())
+                .notification(event.getNotification());
+
+        UserTaskInstanceDeadlineEventBody body = builder.build();
+        processedEvents.add(new UserTaskInstanceDeadlineDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventUser(), metadata, body));
+    }
+
+    private void handleUserTaskStateEvent(UserTaskStateEvent event) {
+        Map<String, Object> metadata = buildUserTaskMetadata((HumanTaskWorkItem) event.getWorkItem());
+        metadata.putAll(buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()));
+
+        UserTaskInstanceStateEventBody.Builder builder = UserTaskInstanceStateEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventUser())
+                .userTaskDefinitionId(event.getUserTaskDefinitionId())
+                .userTaskInstanceId(((HumanTaskWorkItem) event.getWorkItem()).getStringId())
+                .userTaskName(((HumanTaskWorkItem) event.getWorkItem()).getTaskName())
+                .userTaskDescription(((HumanTaskWorkItem) event.getWorkItem()).getTaskDescription())
+                .userTaskPriority(((HumanTaskWorkItem) event.getWorkItem()).getTaskPriority())
+                .userTaskReferenceName(((HumanTaskWorkItem) event.getWorkItem()).getReferenceName())
+                .state(((HumanTaskWorkItem) event.getWorkItem()).getPhaseStatus())
+                .actualOwner(((HumanTaskWorkItem) event.getWorkItem()).getActualOwner())
+                .processInstanceId(event.getProcessInstance().getId());
+
+        UserTaskInstanceStateEventBody body = builder.build();
+        processedEvents.add(new UserTaskInstanceStateDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventUser(), metadata, body));
+    }
+
+    private void handleUserTaskVariableEvent(UserTaskVariableEvent event) {
+        Map<String, Object> metadata = buildUserTaskMetadata((HumanTaskWorkItem) event.getWorkItem());
+        metadata.putAll(buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance()));
+
+        UserTaskInstanceVariableEventBody.Builder builder = UserTaskInstanceVariableEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventUser())
+                .userTaskDefinitionId(event.getUserTaskDefinitionId())
+                .userTaskInstanceId(((HumanTaskWorkItem) event.getWorkItem()).getStringId())
+                .userTaskName(((HumanTaskWorkItem) event.getWorkItem()).getTaskName())
+                .variableId(event.getVariableName())
+                .variableName(event.getVariableName())
+                .variableValue(event.getNewValue())
+                .variableType(event.getVariableType().name());
+
+        UserTaskInstanceVariableEventBody body = builder.build();
+
+        processedEvents.add(new UserTaskInstanceVariableDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventUser(), metadata, body));
+
+    }
+
+    private Map<String, Object> buildUserTaskMetadata(HumanTaskWorkItem pi) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA, pi.getStringId());
+        metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_REFERENCE_ID_META_DATA, pi.getReferenceName());
+        metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_STATE_META_DATA, pi.getPhaseStatus());
+
+        return metadata;
     }
 
     protected String extractRuntimeSource(Map<String, String> metadata) {
-        return buildSource(metadata.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA));
+        return buildSource(metadata.get(ProcessInstanceEventMetadata.PROCESS_ID_META_DATA));
     }
 
     private String buildSource(String processId) {

@@ -28,14 +28,13 @@ import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.workitem.Attachment;
 import org.kie.kogito.process.workitem.Comment;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTaskWorkItem {
+public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements InternalHumanTaskWorkItem {
 
     private static final long serialVersionUID = 6168927742199190604L;
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskWorkItemImpl.class);
@@ -211,5 +210,25 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements HumanTa
     @Override
     public Map<Object, Comment> getComments() {
         return comments;
+    }
+
+    @Override
+    public void setAttachment(String id, Attachment attachment) {
+        attachments.put(id, attachment);
+    }
+
+    @Override
+    public Attachment removeAttachment(String id) {
+        return attachments.remove(id);
+    }
+
+    @Override
+    public void setComment(String id, Comment comment) {
+        comments.put(id, comment);
+    }
+
+    @Override
+    public Comment removeComment(String id) {
+        return comments.remove(1);
     }
 }

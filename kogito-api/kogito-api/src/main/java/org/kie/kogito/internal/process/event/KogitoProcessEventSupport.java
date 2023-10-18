@@ -20,11 +20,14 @@ package org.kie.kogito.internal.process.event;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.workitem.Attachment;
+import org.kie.kogito.process.workitem.Comment;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitem.Transition;
 
@@ -68,19 +71,99 @@ public interface KogitoProcessEventSupport {
 
     void fireOnMessage(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String messageName, Object messageObject);
 
-    void fireOnTaskNotStartedDeadline(KogitoProcessInstance instance,
+    // user tasks events
+
+    void fireOneUserTaskStateChange(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            String oldPhaseStatus, String newPhaseStatus);
+
+    void fireOnUserTaskNotStartedDeadline(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
             HumanTaskWorkItem workItem,
             Map<String, Object> notification,
             KieRuntime kruntime);
 
-    void fireOnTaskNotCompletedDeadline(KogitoProcessInstance instance,
+    void fireOnUserTaskNotCompletedDeadline(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
             HumanTaskWorkItem workItem,
             Map<String, Object> notification,
             KieRuntime kruntime);
+
+    enum AssignmentType {
+        USER_OWNERS,
+        USER_GROUPS,
+        USERS_EXCLUDED,
+        ADMIN_GROUPS,
+        ADMIN_USERS
+    };
+
+    void fireOnUserTaskAssignmentChange(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            AssignmentType assignmentType,
+            Set<String> oldUsersId, Set<String> newUsersId);
+
+    void fireOnUserTaskInputVariableChange(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            String variableName,
+            Object newValue, Object oldValue);
+
+    void fireOnUserTaskOutputVariableChange(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            String variableName,
+            Object newValue, Object oldValue);
+
+    void fireOnUserTaskAttachmentAdded(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            Attachment addedAttachment);
+
+    void fireOnUserTaskAttachmentDeleted(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            Attachment deletedAttachment);
+
+    void fireOnUserTaskAttachmentChange(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            Attachment oldAttachment, Attachment newAttachment);
+
+    void fireOnUserTaskCommentChange(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            Comment oldComment, Comment newComment);
+
+    void fireOnUserTaskCommentDeleted(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            Comment deletedComment);
+
+    void fireOnUserTaskCommentAdded(
+            KogitoProcessInstance instance,
+            KogitoNodeInstance nodeInstance,
+            KieRuntime kruntime,
+            Comment addedComment);
+
+    // 
 
     void reset();
 
     void addEventListener(KogitoProcessEventListener listener);
 
     void removeEventListener(KogitoProcessEventListener listener);
+
 }

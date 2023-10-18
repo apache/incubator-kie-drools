@@ -18,27 +18,45 @@
  */
 package org.kie.kogito.event.process;
 
-import java.util.Map;
+import org.kie.kogito.event.AbstractDataEvent;
 
-public class ProcessInstanceDataEvent extends ProcessDataEvent<ProcessInstanceEventBody> {
+public class ProcessInstanceDataEvent<T> extends AbstractDataEvent<T> {
 
     public ProcessInstanceDataEvent() {
     }
 
-    public ProcessInstanceDataEvent(String source, String addons, String identity, Map<String, String> metaData, ProcessInstanceEventBody body) {
-        super("ProcessInstanceEvent",
+    public ProcessInstanceDataEvent(T body) {
+        setData(body);
+    }
+
+    public ProcessInstanceDataEvent(String type,
+            String source,
+            T body,
+            String kogitoProcessInstanceId,
+            String kogitoProcessInstanceVersion,
+            String kogitoParentProcessInstanceId,
+            String kogitoRootProcessInstanceId,
+            String kogitoProcessId,
+            String kogitoRootProcessId,
+            String kogitoProcessInstanceState,
+            String kogitoAddons,
+            String kogitoProcessType,
+            String kogitoReferenceId,
+            String kogitoIdentity) {
+        super(type,
                 source,
                 body,
-                metaData.get(ProcessInstanceEventBody.ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.VERSION_META_DATA),
-                metaData.get(ProcessInstanceEventBody.PARENT_ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.ROOT_ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
-                metaData.get(ProcessInstanceEventBody.STATE_META_DATA),
-                addons,
-                metaData.get(ProcessInstanceEventBody.PROCESS_TYPE_META_DATA),
-                null,
-                identity);
+                kogitoProcessInstanceId,
+                kogitoRootProcessInstanceId,
+                kogitoProcessId,
+                kogitoRootProcessId,
+                kogitoAddons,
+                kogitoIdentity);
+        setKogitoProcessInstanceVersion(kogitoProcessInstanceVersion);
+        setKogitoParentProcessInstanceId(kogitoParentProcessInstanceId);
+        setKogitoProcessInstanceState(kogitoProcessInstanceState);
+        setKogitoReferenceId(kogitoReferenceId);
+        setKogitoProcessType(kogitoProcessType);
     }
+
 }

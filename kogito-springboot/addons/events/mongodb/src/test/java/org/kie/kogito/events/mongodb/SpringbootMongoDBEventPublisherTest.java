@@ -36,8 +36,8 @@ import com.mongodb.client.MongoDatabase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -101,11 +101,6 @@ class SpringbootMongoDBEventPublisherTest {
     }
 
     @Test
-    void variablesEvents() {
-        assertFalse(publisher.variablesEvents());
-    }
-
-    @Test
     void eventsDatabaseName() {
         assertEquals("testDB", publisher.eventsDatabaseName());
     }
@@ -120,8 +115,4 @@ class SpringbootMongoDBEventPublisherTest {
         assertEquals("testUTCollection", publisher.userTasksEventsCollection());
     }
 
-    @Test
-    void variablesEventsCollection() {
-        assertEquals("testVCollection", publisher.variablesEventsCollection());
-    }
 }

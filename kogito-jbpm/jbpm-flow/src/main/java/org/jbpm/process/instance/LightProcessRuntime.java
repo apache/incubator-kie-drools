@@ -178,8 +178,8 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
             runtimeContext.startOperation();
             org.jbpm.process.instance.ProcessInstance pi = runtimeContext.createProcessInstance(process, correlationKey);
             pi.setKnowledgeRuntime(knowledgeRuntime);
-            runtimeContext.setupParameters(pi, parameters);
             processInstanceManager.addProcessInstance(pi);
+            runtimeContext.setupParameters(pi, parameters);
             return pi;
         } finally {
             runtimeContext.endOperation();

@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class QuarkusMailSender {
     private ReactiveMailer mailer;
 
     @Incoming("kogito-deadline-consumer")
-    public void onDeadline(UserTaskDeadlineDataEvent event) {
+    public void onDeadline(UserTaskInstanceDeadlineDataEvent event) {
         MailInfo mailInfo = MailInfo.of(event.getData());
         logger.info("Sending e-mail {}", mailInfo);
         Mail message = new Mail();

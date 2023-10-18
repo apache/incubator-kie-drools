@@ -90,6 +90,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     protected Date triggerTime;
     protected Date leaveTime;
 
+    protected transient CancelType cancelType;
+
     protected transient Map<String, Object> dynamicParameters;
 
     public void setId(final String id) {
@@ -173,11 +175,22 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return false;
     }
 
+    public CancelType getCancelType() {
+        return cancelType;
+    }
+
+    public final void cancel() {
+        cancel(CancelType.ABORTED);
+    }
+
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
+        this.cancelType = cancelType;
+
         if (triggerTime == null) {
             triggerTime = new Date();
         }
+
         leaveTime = new Date();
         boolean hidden = false;
         org.kie.api.definition.process.Node node = getNode();
@@ -264,7 +277,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             }
             context.getContextData().put("Exception", e);
             exceptionScopeInstance.handleException(e, context);
-            cancel();
+            cancel(CancelType.ERROR);
         }
     }
 
@@ -398,7 +411,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                     if (groupInstance.containsNodeInstance(this)) {
                         for (KogitoNodeInstance nodeInstance : groupInstance.getNodeInstances()) {
                             if (nodeInstance != this) {
-                                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).cancel();
+                                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).cancel(CancelType.OBSOLETE);
                             }
                         }
                         ((ContextInstanceContainer) parent).removeContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, contextInstance);

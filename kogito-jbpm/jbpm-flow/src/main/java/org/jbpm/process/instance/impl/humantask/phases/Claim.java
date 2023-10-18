@@ -21,7 +21,7 @@ package org.jbpm.process.instance.impl.humantask.phases;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.workitem.Active;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -72,12 +72,12 @@ public class Claim implements LifeCyclePhase {
         if (transition.policies() != null) {
             for (Policy<?> policy : transition.policies()) {
                 if (policy instanceof SecurityPolicy) {
-                    ((HumanTaskWorkItemImpl) workitem).setActualOwner(((SecurityPolicy) policy).value().getName());
+                    ((InternalHumanTaskWorkItem) workitem).setActualOwner(((SecurityPolicy) policy).value().getName());
                     break;
                 }
             }
         }
-        workitem.getResults().put("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
+        ((InternalHumanTaskWorkItem) workitem).setResult("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
     }
 
 }

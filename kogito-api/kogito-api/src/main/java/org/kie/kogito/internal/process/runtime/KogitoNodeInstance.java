@@ -24,6 +24,19 @@ import org.kie.api.runtime.process.NodeInstance;
 
 public interface KogitoNodeInstance extends NodeInstance {
 
+    enum CancelType {
+        OBSOLETE,
+        ABORTED,
+        SKIPPED,
+        ERROR
+    }
+
+    default boolean isCancelled() {
+        return getCancelType() != null;
+    }
+
+    CancelType getCancelType();
+
     /**
      * The id of the node instance. This is unique within the
      * node instance container this node instance lives in.

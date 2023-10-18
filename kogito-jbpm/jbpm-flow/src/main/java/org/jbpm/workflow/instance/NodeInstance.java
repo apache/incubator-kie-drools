@@ -39,6 +39,8 @@ public interface NodeInstance extends KogitoNodeInstance {
 
     void cancel();
 
+    void cancel(CancelType type);
+
     Node getNode();
 
     ContextInstance resolveContextInstance(String contextId, Object param);

@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
-import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -122,7 +122,7 @@ class CloudEventConverterTest {
                 .contains("12345");
     }
 
-    public static class PersonDataEvent extends ProcessDataEvent<Person> {
+    public static class PersonDataEvent extends ProcessInstanceDataEvent<Person> {
 
         private String kogitoStartFromNode;
 

@@ -42,7 +42,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -319,7 +319,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list).hasSize(1);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        String processInstanceId = ((KogitoWorkItemImpl) workItem)
+        String processInstanceId = ((InternalKogitoWorkItem) workItem)
                 .getProcessInstanceStringId();
 
         KogitoProcessInstance processInstance = kruntime
@@ -423,7 +423,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list).hasSize(1);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        String processInstanceId = ((KogitoWorkItemImpl) workItem)
+        String processInstanceId = ((InternalKogitoWorkItem) workItem)
                 .getProcessInstanceStringId();
 
         KogitoProcessInstance processInstance = kruntime

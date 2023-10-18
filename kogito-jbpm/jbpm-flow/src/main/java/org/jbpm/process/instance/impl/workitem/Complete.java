@@ -21,7 +21,7 @@ package org.jbpm.process.instance.impl.workitem;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
+import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.humantask.phases.Claim;
 import org.jbpm.process.instance.impl.humantask.phases.Release;
 import org.kie.kogito.auth.SecurityPolicy;
@@ -77,12 +77,12 @@ public class Complete implements LifeCyclePhase {
             if (transition.policies() != null) {
                 for (Policy<?> policy : transition.policies()) {
                     if (policy instanceof SecurityPolicy) {
-                        ((HumanTaskWorkItemImpl) workitem).setActualOwner(((SecurityPolicy) policy).value().getName());
+                        ((InternalHumanTaskWorkItem) workitem).setActualOwner(((SecurityPolicy) policy).value().getName());
                         break;
                     }
                 }
             }
-            workitem.getResults().put("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
+            ((InternalHumanTaskWorkItem) workitem).setResult("ActorId", ((HumanTaskWorkItem) workitem).getActualOwner());
         }
     }
 }

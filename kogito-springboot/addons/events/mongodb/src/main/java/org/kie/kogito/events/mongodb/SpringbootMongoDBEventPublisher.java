@@ -42,9 +42,6 @@ public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {
     @Value("${kogito.events.usertasks.enabled:true}")
     boolean springEnableUserTasksEvents;
 
-    @Value("${kogito.events.variables.enabled:true}")
-    boolean springEnableVariablesEvents;
-
     @Value("${kogito.events.database:kogito-events}")
     String springEventsDatabaseName;
 
@@ -53,9 +50,6 @@ public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {
 
     @Value("${kogito.events.usertasks.collection:kogitousertaskinstancesevents}")
     String springUserTasksEventsCollectionName;
-
-    @Value("${kogito.events.variables.collection:kogitovariablesevents}")
-    String springVariablesEventsCollectionName;
 
     @PostConstruct
     public void setupSpringbootMongoDBEventPublisher() {
@@ -83,11 +77,6 @@ public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {
     }
 
     @Override
-    protected boolean variablesEvents() {
-        return this.springEnableVariablesEvents;
-    }
-
-    @Override
     protected String eventsDatabaseName() {
         return this.springEventsDatabaseName;
     }
@@ -102,8 +91,4 @@ public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {
         return this.springUserTasksEventsCollectionName;
     }
 
-    @Override
-    protected String variablesEventsCollection() {
-        return this.springVariablesEventsCollectionName;
-    }
 }

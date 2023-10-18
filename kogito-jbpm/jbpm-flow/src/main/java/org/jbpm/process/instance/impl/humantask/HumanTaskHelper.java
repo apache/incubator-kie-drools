@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -42,53 +43,73 @@ public class HumanTaskHelper {
     private HumanTaskHelper() {
     }
 
-    public static HumanTaskWorkItemImpl asHumanTask(KogitoWorkItem item) {
-        if (item instanceof HumanTaskWorkItemImpl) {
-            return (HumanTaskWorkItemImpl) item;
+    public static InternalHumanTaskWorkItem decorate(NodeInstance nodeInstance, InternalHumanTaskWorkItem delegate) {
+        return new HumanTaskWorkItemDecoratorImpl(nodeInstance, delegate);
+    }
+
+    public static InternalHumanTaskWorkItem asHumanTask(KogitoWorkItem item) {
+        if (item instanceof InternalHumanTaskWorkItem) {
+            return (InternalHumanTaskWorkItem) item;
         } else {
             throw new IllegalArgumentException("Work item " + item.getStringId() + " is not a human task");
         }
     }
 
     public static Comment addComment(KogitoWorkItem item, String commentInfo, String user) {
-        HumanTaskWorkItemImpl humanTask = asHumanTask(item);
+        InternalHumanTaskWorkItem humanTask = asHumanTask(item);
         String id = getNewId();
         Comment comment = buildComment(id, commentInfo, user);
-        humanTask.getComments().put(id, comment);
+        humanTask.setComment(id, comment);
         return comment;
     }
 
     public static Attachment addAttachment(KogitoWorkItem item, AttachmentInfo attachmentInfo, String user) {
-        HumanTaskWorkItemImpl humanTask = asHumanTask(item);
+        InternalHumanTaskWorkItem humanTask = asHumanTask(item);
         String id = getNewId();
         Attachment attachment = buildAttachment(id, attachmentInfo, user);
-        humanTask.getAttachments().put(id, attachment);
+        humanTask.setAttachment(id, attachment);
         return attachment;
     }
 
     public static Comment updateComment(KogitoWorkItem item, String id, String commentInfo, String user) {
-        Comment comment = asHumanTask(item).getComments().get(id);
-        if (comment == null) {
-            throw new IllegalArgumentException("Comment " + id + " does not exist");
+        try {
+            InternalHumanTaskWorkItem humanTask = asHumanTask(item);
+            Comment comment = humanTask.getComments().get(id);
+            if (comment == null) {
+                throw new IllegalArgumentException("Comment " + id + " does not exist");
+            }
+            if (!comment.getUpdatedBy().equals(user)) {
+                throw new IllegalArgumentException("User " + user + " did not create the comment, cannot modify it");
+            }
+            comment = comment.clone();
+            humanTask.setComment(id, fillTaskMetaEntity(comment, commentInfo));
+            return comment;
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("Attachment could not be modified", e);
         }
-        if (!comment.getUpdatedBy().equals(user)) {
-            throw new IllegalArgumentException("User " + user + " did not create the comment, cannot modify it");
-        }
-        return fillTaskMetaEntity(comment, commentInfo);
     }
 
     public static Attachment updateAttachment(KogitoWorkItem item,
             String id,
             AttachmentInfo attachmentInfo,
             String user) {
-        Attachment attachment = asHumanTask(item).getAttachments().get(id);
-        if (attachment == null) {
-            throw new IllegalArgumentException("Attachment " + id + " does not exist");
+        try {
+            InternalHumanTaskWorkItem humanTask = asHumanTask(item);
+            Attachment attachment = humanTask.getAttachments().get(id);
+            if (attachment == null) {
+                throw new IllegalArgumentException("Attachment " + id + " does not exist");
+            }
+            if (!attachment.getUpdatedBy().equals(user)) {
+                throw new IllegalArgumentException("User " + user + " did not create the attachment, cannot modify it");
+            }
+
+            attachment = attachment.clone();
+            humanTask.setAttachment(id, setAttachmentName(fillTaskMetaEntity(attachment, attachmentInfo.getUri()), attachmentInfo));
+            return attachment;
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("Attachment could not be modified", e);
         }
-        if (!attachment.getUpdatedBy().equals(user)) {
-            throw new IllegalArgumentException("User " + user + " did not create the attachment, cannot modify it");
-        }
-        return setAttachmentName(fillTaskMetaEntity(attachment, attachmentInfo.getUri()), attachmentInfo);
+
     }
 
     public static Map<String, Object> updateContent(KogitoWorkItem item, MapOutput model) {
@@ -96,27 +117,29 @@ public class HumanTaskHelper {
     }
 
     public static Map<String, Object> updateContent(KogitoWorkItem item, Map<String, Object> map) {
-        HumanTaskWorkItemImpl humanTask = asHumanTask(item);
+        InternalHumanTaskWorkItem humanTask = asHumanTask(item);
         humanTask.setResults(map);
         return humanTask.getResults();
     }
 
     public static boolean deleteComment(KogitoWorkItem item, Object id, String user) {
-        Map<Object, Comment> comments = asHumanTask(item).getComments();
+        InternalHumanTaskWorkItem humanTask = asHumanTask(item);
+        Map<Object, Comment> comments = humanTask.getComments();
         Comment comment = comments.get(id);
         if (comment == null || !comment.getUpdatedBy().equals(user)) {
             return false;
         }
-        return comments.remove(id) != null;
+        return humanTask.removeComment((String) id) != null;
     }
 
     public static boolean deleteAttachment(KogitoWorkItem item, Object id, String user) {
-        Map<Object, Attachment> attachments = asHumanTask(item).getAttachments();
+        InternalHumanTaskWorkItem humanTask = asHumanTask(item);
+        Map<Object, Attachment> attachments = humanTask.getAttachments();
         Attachment attachment = attachments.get(id);
         if (attachment == null || !attachment.getUpdatedBy().equals(user)) {
             return false;
         }
-        return attachments.remove(id) != null;
+        return humanTask.removeAttachment((String) id) != null;
     }
 
     public static HumanTaskWorkItem findTask(ProcessInstance<?> pi, String taskId, Policy<?>... policies) {

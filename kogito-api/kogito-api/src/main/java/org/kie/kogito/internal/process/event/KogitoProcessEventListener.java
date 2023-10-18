@@ -19,6 +19,12 @@
 package org.kie.kogito.internal.process.event;
 
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.usertask.UserTaskAssignmentEvent;
+import org.kie.api.event.usertask.UserTaskAttachmentEvent;
+import org.kie.api.event.usertask.UserTaskCommentEvent;
+import org.kie.api.event.usertask.UserTaskDeadlineEvent;
+import org.kie.api.event.usertask.UserTaskStateEvent;
+import org.kie.api.event.usertask.UserTaskVariableEvent;
 
 public interface KogitoProcessEventListener extends ProcessEventListener {
 
@@ -38,6 +44,49 @@ public interface KogitoProcessEventListener extends ProcessEventListener {
     default void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {
     }
 
-    default void onHumanTaskDeadline(HumanTaskDeadlineEvent event) {
+    // for user tasks
+
+    default void onUserTaskDeadline(UserTaskDeadlineEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskState(UserTaskStateEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskAssignment(UserTaskAssignmentEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskInputVariable(UserTaskVariableEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskOutputVariable(UserTaskVariableEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskAttachmentAdded(UserTaskAttachmentEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskAttachmentDeleted(UserTaskAttachmentEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskAttachmentChange(UserTaskAttachmentEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskCommentChange(UserTaskCommentEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskCommentAdded(UserTaskCommentEvent event) {
+        // nothing
+    }
+
+    default void onUserTaskCommentDeleted(UserTaskCommentEvent event) {
+        // nothing
     }
 }

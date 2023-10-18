@@ -156,7 +156,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
     }
 
     @Override
-    public void cancel() {
+    public void cancel(CancelType cancelType) {
         getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
         removeTimerListeners();
         if (this.slaCompliance == KogitoProcessInstance.SLA_PENDING) {
@@ -168,7 +168,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
             }
         }
         removeTimerListeners();
-        super.cancel();
+        super.cancel(cancelType);
     }
 
     private class VariableExternalEventListener implements KogitoEventListener, Serializable {

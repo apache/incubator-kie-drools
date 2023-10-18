@@ -31,13 +31,13 @@ import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
 import org.kie.kogito.codegen.process.ProcessGenerator;
-import org.kie.kogito.event.process.NodeInstanceEventBody;
-import org.kie.kogito.event.process.ProcessDataEvent;
-import org.kie.kogito.event.process.ProcessErrorEventBody;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceEventBody;
-import org.kie.kogito.event.process.VariableInstanceDataEvent;
-import org.kie.kogito.event.process.VariableInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
 import org.kie.kogito.process.expr.ExpressionHandler;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPreGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
@@ -118,13 +118,13 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
     @BuildStep
     public ReflectiveClassBuildItem eventsApiReflection() {
         return new ReflectiveClassBuildItem(true, true,
-                NodeInstanceEventBody.class.getName(),
-                ProcessDataEvent.class.getName(),
-                ProcessErrorEventBody.class.getName(),
+                ProcessInstanceNodeEventBody.class.getName(),
                 ProcessInstanceDataEvent.class.getName(),
-                ProcessInstanceEventBody.class.getName(),
-                VariableInstanceDataEvent.class.getName(),
-                VariableInstanceEventBody.class.getName());
+                ProcessInstanceErrorEventBody.class.getName(),
+                ProcessInstanceStateDataEvent.class.getName(),
+                ProcessInstanceStateEventBody.class.getName(),
+                ProcessInstanceVariableDataEvent.class.getName(),
+                ProcessInstanceVariableEventBody.class.getName());
     }
 
     @BuildStep

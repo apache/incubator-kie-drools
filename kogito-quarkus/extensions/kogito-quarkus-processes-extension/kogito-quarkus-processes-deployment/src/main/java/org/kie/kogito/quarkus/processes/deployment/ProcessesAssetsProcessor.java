@@ -22,20 +22,28 @@ import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusHumanTaskSe
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusProcessIdFactory;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStatefulProcessService;
 import org.kie.kogito.core.process.incubation.quarkus.support.QuarkusStraightThroughProcessService;
-import org.kie.kogito.event.process.AttachmentEventBody;
-import org.kie.kogito.event.process.CommentEventBody;
-import org.kie.kogito.event.process.MilestoneEventBody;
-import org.kie.kogito.event.process.NodeInstanceEventBody;
-import org.kie.kogito.event.process.ProcessDataEvent;
-import org.kie.kogito.event.process.ProcessErrorEventBody;
-import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceEventBody;
-import org.kie.kogito.event.process.UserTaskDeadlineDataEvent;
-import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
-import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
-import org.kie.kogito.event.process.UserTaskInstanceEventBody;
-import org.kie.kogito.event.process.VariableInstanceDataEvent;
-import org.kie.kogito.event.process.VariableInstanceEventBody;
+import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
+import org.kie.kogito.event.process.ProcessInstanceSLADataEvent;
+import org.kie.kogito.event.process.ProcessInstanceSLAEventBody;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceVariableDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceVariableEventBody;
 import org.kie.kogito.quarkus.workflow.KogitoBeanProducer;
 import org.kie.kogito.quarkus.workflow.deployment.WorkflowProcessor;
 
@@ -58,20 +66,29 @@ public class ProcessesAssetsProcessor extends WorkflowProcessor {
     @BuildStep
     public ReflectiveClassBuildItem eventsApiReflection() {
         return new ReflectiveClassBuildItem(true, true,
-                AttachmentEventBody.class.getName(),
-                CommentEventBody.class.getName(),
-                MilestoneEventBody.class.getName(),
-                NodeInstanceEventBody.class.getName(),
-                ProcessDataEvent.class.getName(),
-                ProcessErrorEventBody.class.getName(),
-                ProcessInstanceDataEvent.class.getName(),
-                ProcessInstanceEventBody.class.getName(),
-                UserTaskDeadlineDataEvent.class.getName(),
-                UserTaskDeadlineEventBody.class.getName(),
-                UserTaskInstanceDataEvent.class.getName(),
-                UserTaskInstanceEventBody.class.getName(),
-                VariableInstanceDataEvent.class.getName(),
-                VariableInstanceEventBody.class.getName());
+                ProcessInstanceErrorEventBody.class.getName(),
+                ProcessInstanceErrorDataEvent.class.getName(),
+                ProcessInstanceNodeEventBody.class.getName(),
+                ProcessInstanceNodeDataEvent.class.getName(),
+                ProcessInstanceSLAEventBody.class.getName(),
+                ProcessInstanceSLADataEvent.class.getName(),
+                ProcessInstanceStateEventBody.class.getName(),
+                ProcessInstanceStateDataEvent.class.getName(),
+                ProcessInstanceVariableEventBody.class.getName(),
+                ProcessInstanceVariableDataEvent.class.getName(),
+                UserTaskInstanceAssignmentEventBody.class.getName(),
+                UserTaskInstanceAssignmentDataEvent.class.getName(),
+                UserTaskInstanceAttachmentEventBody.class.getName(),
+                UserTaskInstanceAttachmentDataEvent.class.getName(),
+                UserTaskInstanceCommentEventBody.class.getName(),
+                UserTaskInstanceCommentDataEvent.class.getName(),
+                UserTaskInstanceDeadlineEventBody.class.getName(),
+                UserTaskInstanceDeadlineDataEvent.class.getName(),
+                UserTaskInstanceStateEventBody.class.getName(),
+                UserTaskInstanceStateDataEvent.class.getName(),
+                UserTaskInstanceVariableEventBody.class.getName(),
+                UserTaskInstanceVariableDataEvent.class.getName());
+
     }
 
     @BuildStep

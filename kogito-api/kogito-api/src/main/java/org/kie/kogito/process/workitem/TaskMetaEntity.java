@@ -21,7 +21,7 @@ package org.kie.kogito.process.workitem;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TaskMetaEntity<K extends Serializable, T extends Serializable> implements Serializable {
+public class TaskMetaEntity<K extends Serializable, T extends Serializable> implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
     private K id;

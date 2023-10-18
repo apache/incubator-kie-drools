@@ -116,8 +116,8 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     }
 
     @Override
-    public void cancel() {
-        super.cancel();
+    public void cancel(CancelType cancelType) {
+        super.cancel(cancelType);
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
             ProcessInstance processInstance = null;
             KogitoProcessRuntime kruntime = (KogitoProcessRuntime) ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();

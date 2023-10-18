@@ -30,7 +30,7 @@ import org.acme.travels.Traveller;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -55,7 +55,6 @@ class ProcessEventIT {
 
     public static final String KOGITO_PROCESSINSTANCES_EVENTS = "kogito-processinstances-events";
     public static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
-    public static final String KOGITO_VARIABLE_EVENTS = "kogito-variables-events";
 
     private static Logger LOGGER = LoggerFactory.getLogger(ProcessEventIT.class);
 
@@ -90,14 +89,14 @@ class ProcessEventIT {
         String username = "buddy";
         String password = "buddy";
 
-        kafkaClient.consume(Set.of(KOGITO_PROCESSINSTANCES_EVENTS, KOGITO_USERTASKINSTANCES_EVENTS, KOGITO_VARIABLE_EVENTS), s -> {
+        kafkaClient.consume(Set.of(KOGITO_PROCESSINSTANCES_EVENTS, KOGITO_USERTASKINSTANCES_EVENTS), s -> {
             LOGGER.info("Received from kafka: {}", s);
             try {
-                ProcessDataEvent event = mapper.readValue(s, ProcessDataEvent.class);
+                ProcessInstanceDataEvent<?> event = mapper.readValue(s, ProcessInstanceDataEvent.class);
                 LinkedHashMap data = (LinkedHashMap) event.getData();
                 if ("handleApprovals".equals(data.get("processId"))) {
                     switch (event.getType()) {
-                        case "ProcessInstanceEvent":
+                        case "ProcessInstanceStateEvent":
                             assertEquals("ProcessInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
@@ -106,14 +105,14 @@ class ProcessEventIT {
                             assertEquals("BPMN", event.getKogitoProcessType());
                             assertEquals(username, event.getKogitoIdentity());
                             break;
-                        case "UserTaskInstanceEvent":
+                        case "UserTaskInstanceStateEvent":
                             assertEquals("UserTaskInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
                             assertEquals("1.0", event.getKogitoProcessInstanceVersion());
                             assertEquals(username, event.getKogitoIdentity());
                             break;
-                        case "VariableInstanceEvent":
+                        case "ProcessInstanceVariableEvent":
                             assertEquals("VariableInstanceEvent", event.getType());
                             assertEquals("/handleApprovals", event.getSource().toString());
                             assertEquals("handleApprovals", data.get("processId"));
