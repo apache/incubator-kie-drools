@@ -35,7 +35,7 @@ DRL_RULE : 'rule';
 DRL_QUERY : 'query';
 DRL_WHEN : 'when';
 DRL_THEN : 'then' -> pushMode(RHS);
-DRL_QUERY_END : 'end';
+DRL_END : 'end';
 
 DRL_AND : 'and';
 DRL_OR : 'or';
@@ -47,7 +47,8 @@ DRL_FROM : 'from';
 DRL_COLLECT : 'collect';
 DRL_MATCHES : 'matches';
 DRL_MEMBEROF : 'memberOf';
-DRL_ACCUMULATE : 'accumulate' | 'acc';
+DRL_ACCUMULATE : 'accumulate';
+DRL_ACC : 'acc';
 DRL_INIT : 'init';
 DRL_ACTION : 'action';
 DRL_REVERSE : 'reverse';
@@ -72,6 +73,7 @@ DRL_OVERLAPPED_BY : 'overlappedby';
 DRL_STARTS : 'starts';
 DRL_STARTED_BY : 'startedby';
 
+DRL_WINDOW : 'window';
 
 // attributes
 DRL_SALIENCE : 'salience';
@@ -155,5 +157,5 @@ DrlUnicodeEscape
 
 mode RHS;
 RHS_WS : [ \t\r\n\u000C]+ -> channel(HIDDEN);
-DRL_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) {setText("end");} -> popMode;
+DRL_RHS_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) {setText("end");} -> popMode;
 RHS_CHUNK : ~[ \t\r\n\u000C]+ ;
