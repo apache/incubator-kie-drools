@@ -105,6 +105,8 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
 
     protected static final Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
 
+    private static final KieWeavers WEAVERS = KieService.load( KieWeavers.class );
+
     private Set<EntryPointNode> addedEntryNodeCache;
     private Set<EntryPointNode> removedEntryNodeCache;
 
@@ -445,9 +447,8 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-                KieWeavers weavers = KieService.load( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                    weavers.weave( newPkg, rtkKpg );
+                    WEAVERS.weave( newPkg, rtkKpg );
                 }
             }
 
@@ -817,12 +818,11 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         }
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-            KieWeavers weavers = KieService.load(KieWeavers.class);
-            if (weavers == null) {
+            if (WEAVERS == null) {
                 throw new IllegalStateException("Unable to find KieWeavers implementation");
             }
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                weavers.merge( pkg, rtkKpg );
+                WEAVERS.merge( pkg, rtkKpg );
             }
         }
     }

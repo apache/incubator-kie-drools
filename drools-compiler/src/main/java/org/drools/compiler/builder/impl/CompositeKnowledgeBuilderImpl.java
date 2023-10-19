@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
+    private static final KieAssemblers ASSEMBLERS = KieService.load(KieAssemblers.class);
+
     private final KnowledgeBuilderImpl kBuilder;
 
     private final Map<ResourceType, List<ResourceDescr>> resourcesByType = new HashMap<>();
@@ -176,13 +178,12 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildAssemblerResourcesBeforeRules() {
-        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> resourceTypeListEntry : resourcesByType.entrySet()) {
                 ResourceType type = resourceTypeListEntry.getKey();
                 List<ResourceDescr> descrs = resourceTypeListEntry.getValue();
                 for (ResourceDescr descr : descrs) {
-                    assemblers.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
+                    ASSEMBLERS.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
                 }
             }
         } catch (RuntimeException e) {
@@ -197,11 +198,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildAssemblerResourcesAfterRules() {
-        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
                 List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
-                assemblers.addResourcesAfterRules(kBuilder, rds, entry.getKey());
+                ASSEMBLERS.addResourcesAfterRules(kBuilder, rds, entry.getKey());
             }
         } catch (RuntimeException e) {
             throw e;
