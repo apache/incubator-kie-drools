@@ -18,17 +18,6 @@
  */
 package org.drools.kiesession.session;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.InternalFactHandle;
@@ -57,6 +46,17 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements StatelessKieSession {
 
@@ -217,8 +217,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
     }
     
     @Override
-    public void registerChannel(String name,
-                                Channel channel) {
+    public void registerChannel(String name, Channel channel) {
         this.channels.put(name, channel);
     }
     
