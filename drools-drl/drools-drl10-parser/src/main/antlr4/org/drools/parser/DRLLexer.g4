@@ -124,7 +124,7 @@ DRL_BIG_INTEGER_LITERAL
 /////////////////
 
 HASH : '#';
-UNIFY :	':=' ;
+DRL_UNIFY :	':=' ;
 NULL_SAFE_DOT :	'!.' ;
 QUESTION_DIV :	'?/' ;
 
