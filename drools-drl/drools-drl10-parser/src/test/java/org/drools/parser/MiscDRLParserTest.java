@@ -1651,7 +1651,6 @@ class MiscDRLParserTest {
         assertThat(pkg.getName()).isEqualTo("foo.bar");
     }
 
-    @Disabled("Priority : High | Parse attribute without value => true")
     @Test
     public void parse_Attributes() throws Exception {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
@@ -1731,7 +1730,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Parse attribute without value => true")
     @Test
     public void parse_AttributeRefract() throws Exception {
         final String source = "rule Test refract when Person() then end";
@@ -1751,7 +1749,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Parse attribute with parentheses")
     @Test
     public void parse_EnabledExpression() throws Exception {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
@@ -1775,7 +1772,6 @@ class MiscDRLParserTest {
         assertThat(at.getValue()).isEqualTo("true");
     }
 
-    @Disabled("Priority : High | Parse attribute with parentheses")
     @Test
     public void parse_DurationExpression() throws Exception {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
@@ -1795,7 +1791,6 @@ class MiscDRLParserTest {
         assertThat(at.getValue()).isEqualTo("true");
     }
 
-    @Disabled("Priority : Mid | Parse calendar attribute")
     @Test
     public void parse_Calendars() throws Exception {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
@@ -1815,7 +1810,6 @@ class MiscDRLParserTest {
         assertThat(at.getValue()).isEqualTo("true");
     }
 
-    @Disabled("Priority : Mid | Parse calendar attribute")
     @Test
     public void parse_Calendars2() throws Exception {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
@@ -1905,7 +1899,6 @@ class MiscDRLParserTest {
         pat.getConstraint();
     }
 
-    @Disabled("Priority : High | Parse attribute agenda-group")
     @Test
     public void parse_PackageAttributes() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -3132,7 +3125,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : High | Implement unification")
     @Test
     public void parse_UnificationBinding() throws Exception {
         final String text = "rule X when $p := Person( $name := name, $loc : location ) then end";

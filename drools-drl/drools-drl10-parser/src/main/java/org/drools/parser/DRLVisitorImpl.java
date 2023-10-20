@@ -40,6 +40,7 @@ import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.UnitDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
+import org.drools.util.StringUtils;
 
 import static org.drools.parser.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.parser.ParserStringUtils.getTextPreservingWhitespace;
@@ -95,10 +96,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 packageDescr.addWindowDeclaration((WindowDeclarationDescr) descr);
             } else if (descr instanceof AttributeDescr) {
                 packageDescr.addAttribute((AttributeDescr) descr);
-            } else if (descr instanceof RuleDescr) {
+            } else if (descr instanceof RuleDescr) { // QueryDescr extends RuleDescr
                 packageDescr.addRule((RuleDescr) descr);
-            } else if (descr instanceof QueryDescr) {
-                packageDescr.addRule((QueryDescr) descr);
+                packageDescr.afterRuleAdded((RuleDescr) descr);
             }
         });
     }
@@ -301,12 +301,75 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AttributeDescr visitAttribute(DRLParser.AttributeContext ctx) {
-        AttributeDescr attributeDescr = new AttributeDescr(ctx.getChild(0).getText());
-        if (ctx.getChildCount() > 1) {
-            // TODO : will likely split visitAttribute methods using labels (e.g. #stringAttribute)
-            String value = unescapeJava(safeStripStringDelimiters(ctx.getChild(1).getText()));
-            attributeDescr.setValue(value);
+    public AttributeDescr visitExpressionAttribute(DRLParser.ExpressionAttributeContext ctx) {
+        AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
+        attributeDescr.setValue(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
+        attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
+        return attributeDescr;
+    }
+
+    @Override
+    public AttributeDescr visitBooleanAttribute(DRLParser.BooleanAttributeContext ctx) {
+        AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
+        attributeDescr.setValue(ctx.BOOL_LITERAL() != null ? ctx.BOOL_LITERAL().getText() : "true");
+        attributeDescr.setType(AttributeDescr.Type.BOOLEAN);
+        return attributeDescr;
+    }
+
+    @Override
+    public AttributeDescr visitStringAttribute(DRLParser.StringAttributeContext ctx) {
+        AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
+        attributeDescr.setValue(unescapeJava(safeStripStringDelimiters(ctx.DRL_STRING_LITERAL().getText())));
+        attributeDescr.setType(AttributeDescr.Type.STRING);
+        return attributeDescr;
+    }
+
+    @Override
+    public AttributeDescr visitStringListAttribute(DRLParser.StringListAttributeContext ctx) {
+        AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
+        List<String> valueList = ctx.DRL_STRING_LITERAL().stream()
+                .map(ParseTree::getText)
+                .collect(Collectors.toList());
+        attributeDescr.setValue(createStringList(valueList));
+        attributeDescr.setType(AttributeDescr.Type.LIST);
+        return attributeDescr;
+    }
+
+    private static String createStringList(List<String> valueList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ");
+        for (int i = 0; i < valueList.size(); i++) {
+            sb.append(valueList.get(i));
+            if (i < valueList.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
+
+    @Override
+    public AttributeDescr visitIntOrChunkAttribute(DRLParser.IntOrChunkAttributeContext ctx) {
+        AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
+        if (ctx.DECIMAL_LITERAL() != null) {
+            attributeDescr.setValue(ctx.DECIMAL_LITERAL().getText());
+            attributeDescr.setType(AttributeDescr.Type.NUMBER);
+        } else {
+            attributeDescr.setValue(getTextPreservingWhitespace(ctx.chunk()));
+            attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
+        }
+        return attributeDescr;
+    }
+
+    @Override
+    public AttributeDescr visitDurationAttribute(DRLParser.DurationAttributeContext ctx) {
+        AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
+        if (ctx.DECIMAL_LITERAL() != null) {
+            attributeDescr.setValue(ctx.DECIMAL_LITERAL().getText());
+            attributeDescr.setType(AttributeDescr.Type.NUMBER);
+        } else {
+            attributeDescr.setValue(unescapeJava(safeStripStringDelimiters(ctx.TIME_INTERVAL().getText())));
+            attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
         }
         return attributeDescr;
     }
@@ -338,6 +401,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .orElseThrow(() -> new IllegalStateException("lhsPatternBind must have at least one lhsPattern : " + ctx.getText()));
         if (ctx.label() != null) {
             patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
+        } else if (ctx.unif() != null) {
+            patternDescr.setIdentifier(ctx.unif().IDENTIFIER().getText());
+            patternDescr.setUnification(true);
         }
         return patternDescr;
     }
