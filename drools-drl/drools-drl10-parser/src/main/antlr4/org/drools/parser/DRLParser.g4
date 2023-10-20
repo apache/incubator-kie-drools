@@ -116,7 +116,7 @@ lhsUnary : (
            | lhsPatternBind
            ) SEMI? ;
 
-lhsPatternBind : label? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
+lhsPatternBind : (label|unif)? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
 
 /*
 lhsPattern : xpathPrimary (OVER patternFilter)? |
@@ -253,6 +253,7 @@ drlExpression
     | drlExpression bop=INSTANCEOF (typeType | pattern)
     | drlExpression bop=DRL_MATCHES drlExpression
     | drlExpression DRL_NOT? DRL_MEMBEROF drlExpression
+    | drlExpression bop=DRL_UNIFY drlExpression
     | drlExpression bop=(EQUAL | NOTEQUAL) drlExpression
     | drlExpression bop=BITAND drlExpression
     | drlExpression bop=CARET drlExpression
@@ -438,12 +439,15 @@ drlElementValue
     ;
 
 attributes : attribute ( COMMA? attribute )* ;
-attribute : ( 'salience' DECIMAL_LITERAL )
-          | ( 'enabled' | 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL?
-          | ( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL
-          |   'calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )*
-          |   'timer' ( DECIMAL_LITERAL | TEXT )
-          |   'duration' ( DECIMAL_LITERAL | TEXT ) ;
+attribute : name=( 'salience' | 'enabled' ) conditionalOrExpression #expressionAttribute
+          | name=( 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL? #booleanAttribute
+          | name=( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL #stringAttribute
+          | name='calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
+          | name='timer' ( DECIMAL_LITERAL | chunk ) #intOrChunkAttribute
+          | name='duration' ( DECIMAL_LITERAL | TIME_INTERVAL | LPAREN TIME_INTERVAL RPAREN ) #durationAttribute
+          ;
+
+chunk : LPAREN .+? RPAREN;
 
 assignmentOperator : ASSIGN
                    |   ADD_ASSIGN
@@ -457,7 +461,7 @@ assignmentOperator : ASSIGN
                    |   LT LT ASSIGN ;
 
 label : IDENTIFIER COLON ;
-unif : IDENTIFIER UNIFY ;
+unif : IDENTIFIER DRL_UNIFY ;
 
 /* extending JavaParser variableInitializer */
 drlVariableInitializer
