@@ -22,7 +22,7 @@ environments:
     ids:
     - ecosystem
 disable:
-  triggers: true # TODO to set back
+  deploy: true
 repositories:
 - name: incubator-kie-optaplanner
   job_display_name: optaplanner
