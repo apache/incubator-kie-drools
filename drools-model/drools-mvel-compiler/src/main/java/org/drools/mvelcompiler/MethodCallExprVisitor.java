@@ -57,7 +57,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
         Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
         TypedExpression name = n.getName().accept(this, new RHSPhase.Context(scope.orElse(null)));
         final List<TypedExpression> arguments = new ArrayList<>(n.getArguments().size());
-        for(Expression child : n.getArguments()) {
+        for (Expression child : n.getArguments()) {
             TypedExpression a = child.accept(this, arg);
             arguments.add(a);
         }
@@ -92,7 +92,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
                 .<Class<?>>map(ClassUtils::classFromType)
                 .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
 
-        if(method.isEmpty()) {
+        if (method.isEmpty()) {
             method = mvelCompilerContext.getRootPattern()
                     .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
             if(method.isPresent()) {
@@ -100,7 +100,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
             }
         }
 
-        if(method.isEmpty()) {
+        if (method.isEmpty()) {
             method = mvelCompilerContext.findStaticMethod(n.getNameAsString());
         }
 
