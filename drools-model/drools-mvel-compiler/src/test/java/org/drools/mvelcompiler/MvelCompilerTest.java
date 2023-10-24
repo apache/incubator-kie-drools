@@ -835,6 +835,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalAssignmentToInt() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.age = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setAge($p.getSalary().intValue());\n" +
+                        "}");
+    }
+
+    @Test
     public void testBigDecimalPromotionAllFourOperations() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +

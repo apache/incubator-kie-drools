@@ -90,7 +90,7 @@ import org.drools.mvel.parser.ast.expr.OOPathChunk;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
-import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
+import org.drools.mvelcompiler.util.BigDecimalCoercion;
 import org.drools.util.MethodUtils;
 import org.drools.util.TypeResolver;
 import org.slf4j.Logger;
@@ -908,7 +908,7 @@ public class ExpressionTyper {
                 Expression argumentExpression = methodCallExpr.getArgument(i);
 
                 if (argumentType != actualArgumentType) {
-                    Expression coercedExpression = new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualArgumentType, argumentExpression);
+                    Expression coercedExpression = BigDecimalCoercion.coercedArgument(argumentType, actualArgumentType, argumentExpression);
                     methodCallExpr.setArgument(i, coercedExpression);
                 }
             }

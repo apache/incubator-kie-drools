@@ -77,6 +77,7 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.mvelcompiler.util.BigDecimalCoercion;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils.NullType;
 
@@ -320,7 +321,14 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(AssignExpr n, Context arg) {
-        return n.getValue().accept(this, arg);
+        final TypedExpression lhsExpression = n.getTarget().accept(this, arg);
+        final TypedExpression rhsExpression = n.getValue().accept(this, arg);
+        return lhsExpression.getType().map(type ->
+                rhsExpression.getType()
+                        .filter(valueType -> valueType == BigDecimal.class && valueType != type)
+                        .map(valueType -> BigDecimalCoercion.coerceBigDecimalMethod((Class<?>) type, rhsExpression))
+                        .orElse(rhsExpression))
+                .orElse(rhsExpression);
     }
 
     @Override
