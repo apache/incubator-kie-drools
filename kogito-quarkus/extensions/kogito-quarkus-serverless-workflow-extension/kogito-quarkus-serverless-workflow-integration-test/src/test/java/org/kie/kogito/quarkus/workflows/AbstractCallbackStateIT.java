@@ -73,7 +73,7 @@ abstract class AbstractCallbackStateIT {
         }
     }
 
-    void executeCallbackStateSuccessfulPath(String callbackProcessPostUrl,
+    String executeCallbackStateSuccessfulPath(String callbackProcessPostUrl,
             String callbackProcessGetByIdUrl,
             String answer,
             String callbackEventType,
@@ -104,9 +104,10 @@ abstract class AbstractCallbackStateIT {
 
         // give some time for the event to be processed and the process to finish.
         assertProcessInstanceHasFinished(callbackProcessGetByIdUrl, processInstanceId, 1, 180);
+        return processInstanceId;
     }
 
-    void executeCallbackStateWithErrorPath(String callbackProcessPostUrl, String callbackProcessGetByIdUrl) throws Exception {
+    String executeCallbackStateWithErrorPath(String callbackProcessPostUrl, String callbackProcessGetByIdUrl) throws Exception {
         // start a new process instance and collect the results.
         String processInput = buildProcessInput(GENERATE_ERROR_QUERY);
         JsonPath result = newProcessInstance(callbackProcessPostUrl, processInput);
@@ -125,6 +126,7 @@ abstract class AbstractCallbackStateIT {
 
         // the process instance should not be there since an end state was reached.
         assertProcessInstanceNotExists(callbackProcessGetByIdUrl, processInstanceId);
+        return processInstanceId;
     }
 
     protected static String buildProcessInput(String query) {
