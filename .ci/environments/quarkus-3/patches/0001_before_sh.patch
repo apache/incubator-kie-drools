@@ -1893,10 +1893,10 @@ index e37c37fc31..a9aec456b6 100644
  
  /**
   * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
+diff --git a/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
 index c679cb7bcd..5a19341206 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
+--- a/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
++++ b/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
 @@ -26,7 +26,7 @@ import java.util.Optional;
  import java.util.Set;
  import java.util.stream.Collectors;
@@ -1906,10 +1906,10 @@ index c679cb7bcd..5a19341206 100644
  
  import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
  import io.quarkus.deployment.annotations.BuildProducer;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
 index 532ee58bf1..4122df9325 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
 @@ -19,7 +19,7 @@
  package org.drools.quarkus.ruleunit.examples.multiunit;
  
@@ -1919,10 +1919,10 @@ index 532ee58bf1..4122df9325 100644
  
  import io.quarkus.test.junit.QuarkusTest;
  import org.drools.ruleunits.api.DataHandle;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
 index ff8e3f9091..799f21622a 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
 @@ -18,10 +18,10 @@
   */
  package org.drools.quarkus.ruleunit.examples.reactive;
@@ -1937,10 +1937,10 @@ index ff8e3f9091..799f21622a 100644
  import org.eclipse.microprofile.reactive.messaging.Channel;
  import org.eclipse.microprofile.reactive.messaging.Emitter;
  import org.eclipse.microprofile.reactive.messaging.Incoming;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
 index bbed58452e..da927c5ab0 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
 @@ -22,7 +22,7 @@ import java.util.HashMap;
  import java.util.Map;
  
@@ -1950,10 +1950,10 @@ index bbed58452e..da927c5ab0 100644
  
  public class KafkaTestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
 index 52f998f55f..9771b03d80 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-examples/drools-drl-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
 @@ -18,13 +18,13 @@
   */
  package org.drools.quarkus.ruleunit.examples.reactive;
@@ -1972,10 +1972,10 @@ index 52f998f55f..9771b03d80 100644
  import org.eclipse.microprofile.reactive.messaging.spi.Connector;
  import org.junit.jupiter.api.Test;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
+diff --git a/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java b/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
 index 28cd4eb6d1..8cea5670cf 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
+--- a/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
++++ b/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
 @@ -20,12 +20,12 @@ package org.drools.quarkus.test.hotreload;
  
  import java.util.ArrayList;
@@ -1995,10 +1995,10 @@ index 28cd4eb6d1..8cea5670cf 100644
  
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
+diff --git a/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
 index cc47c1a1e3..cd52e85e0f 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
+--- a/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
++++ b/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
 @@ -25,10 +25,10 @@ import org.kie.api.runtime.KieSession;
  import org.kie.api.runtime.rule.FactHandle;
  import org.kie.api.time.SessionPseudoClock;
@@ -2014,10 +2014,10 @@ index cc47c1a1e3..cd52e85e0f 100644
  import java.util.Collection;
  import java.util.List;
  import java.util.concurrent.TimeUnit;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
+diff --git a/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
 index 76cedc9fb6..203de60e6b 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
+--- a/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
 @@ -24,7 +24,7 @@ import org.kie.api.definition.KiePackage;
  import org.kie.api.runtime.KieRuntimeBuilder;
  import org.kie.api.runtime.KieSession;
@@ -2027,10 +2027,10 @@ index 76cedc9fb6..203de60e6b 100644
  import java.util.List;
  import java.util.stream.Collectors;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
+diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
 index a58bbabd5c..8f8ecf910c 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
+--- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
++++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
 @@ -21,8 +21,8 @@ package org.drools.quarkus.quickstart.test;
  import java.util.Collection;
  import java.util.stream.Collectors;
@@ -2042,10 +2042,10 @@ index a58bbabd5c..8f8ecf910c 100644
  
  import org.drools.quarkus.quickstart.test.model.Alert;
  import org.drools.quarkus.quickstart.test.model.CCTV;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
+diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
 index 4896b42524..0aa6285eb0 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
+--- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
++++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
 @@ -18,7 +18,7 @@
   */
  package org.drools.quarkus.quickstart.test;
@@ -2055,10 +2055,10 @@ index 4896b42524..0aa6285eb0 100644
  
  import io.quarkus.test.junit.QuarkusTest;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
+diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
 index 6bcc7afc17..21ce175faa 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
+--- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
++++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
 @@ -18,7 +18,7 @@
   */
  package org.drools.quarkus.quickstart.test;
@@ -2068,10 +2068,10 @@ index 6bcc7afc17..21ce175faa 100644
  
  import io.quarkus.test.junit.QuarkusTest;
  import org.drools.quarkus.quickstart.test.model.Alert;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
+diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
 index 471c3c33a9..99e2c9da1b 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
+--- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
++++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
 @@ -20,10 +20,10 @@ package org.drools.quarkus.ruleunit.test;
  
  import static org.assertj.core.api.Assertions.assertThat;
@@ -2087,10 +2087,10 @@ index 471c3c33a9..99e2c9da1b 100644
  
  import org.drools.ruleunits.api.RuleUnit;
  import org.drools.ruleunits.api.RuleUnitInstance;
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
+diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
 index e3b9d48e5a..ba13c358f3 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
+--- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
++++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
 @@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnit;
  import org.drools.ruleunits.api.RuleUnitInstance;
  import org.junit.jupiter.api.Test;
@@ -2100,10 +2100,10 @@ index e3b9d48e5a..ba13c358f3 100644
  
  import static org.assertj.core.api.Assertions.assertThat;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
+diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
 index 48aaf17201..873e112e29 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
+--- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
 @@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnit;
  import org.drools.ruleunits.api.RuleUnitInstance;
  import org.junit.jupiter.api.Test;
@@ -2113,10 +2113,10 @@ index 48aaf17201..873e112e29 100644
  
  import static org.junit.jupiter.api.Assertions.assertEquals;
  
-diff --git a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
+diff --git a/drools-quarkus-extension/drools-quarkus/pom.xml b/drools-quarkus-extension/drools-quarkus/pom.xml
 index 8205e8d898..84c941d52b 100644
---- a/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
-+++ b/drools-drl-quarkus-extension/drools-drl-quarkus/pom.xml
+--- a/drools-quarkus-extension/drools-quarkus/pom.xml
++++ b/drools-quarkus-extension/drools-quarkus/pom.xml
 @@ -103,7 +103,7 @@
          <plugins>
              <plugin>

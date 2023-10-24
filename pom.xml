@@ -165,9 +165,7 @@
         <module>drools-commands</module>
         <module>drools-kiesession</module>
         <module>drools-ecj</module>
-        <module>drools-drl-ast</module>
-        <module>drools-drl-parser</module>
-        <module>drools-drl-extensions</module>
+        <module>drools-drl</module>
         <module>drools-compiler</module>
         <module>drools-mvel</module>
         <module>drools-xml-support</module>
@@ -199,7 +197,7 @@
         <module>kie-pmml-trusty</module>
         <module>kie-maven-plugin</module>
         <module>kie-archetypes</module>
-        <module>drools-drl-quarkus-extension</module>
+        <module>drools-quarkus-extension</module>
         <module>jpmml-migration-recipe</module>
         <module>drools-reliability</module>
         <module>drools-drlonyaml-parent</module>
@@ -293,7 +291,7 @@
         <module>kie-pmml-trusty</module>
         <module>kie-internal</module>
         <module>kie-test-util</module>
-        <module>drools-drl-quarkus-extension</module>
+        <module>drools-quarkus-extension</module>
         <module>drools-reliability</module>
       </modules>
     </profile>

@@ -74,7 +74,7 @@ public class KieModuleModelWrapper {
     }
 
     /*
-     * This is really a modified duplicate of org.drools.drl.quarkus.deployment.ResourceCollector#fromJarFile(java.nio.file.Path).
+     * This is really a modified duplicate of org.drools.quarkus.deployment.ResourceCollector#fromJarFile(java.nio.file.Path).
      * TODO: Refactor https://issues.redhat.com/browse/DROOLS-7254
      */
     public static InputStream fromJarFile(Path jarPath) {
