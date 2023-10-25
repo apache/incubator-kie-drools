@@ -34,7 +34,7 @@ import javax.inject.Inject;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.drools.drl.quarkus.util.deployment.DroolsQuarkusResourceUtils;
+import org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.IndexView;

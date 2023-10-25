@@ -34,7 +34,7 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.drools.drl.quarkus.util.deployment.QuarkusAppPaths;
+import org.drools.quarkus.util.deployment.QuarkusAppPaths;
 import org.drools.util.PortablePath;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.CompositeIndex;
