@@ -27,7 +27,7 @@ import java.util.Optional;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.mvelcompiler.util.BigDecimalCoercion;
+import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.mvelcompiler.util.CoercionUtils.PUT_CALL;
@@ -96,7 +96,7 @@ public class MethodCallExprT implements TypedExpression {
                 Class<?> argumentType = (Class<?>) argumentTypeOrig;
                 Class<?> actualType = optionalActualType.get();
                 if(argumentType != actualType) {
-                    return BigDecimalCoercion.coercedArgument(argumentType, actualType, (Expression) a.toJavaExpression());
+                    return BigDecimalArgumentCoercion.coercedArgument(argumentType, actualType, (Expression) a.toJavaExpression());
                 }
             }
         }

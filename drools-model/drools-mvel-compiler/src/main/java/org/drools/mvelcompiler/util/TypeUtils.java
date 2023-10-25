@@ -36,4 +36,24 @@ public class TypeUtils {
     public static com.github.javaparser.ast.type.Type toJPType(Class<?> c) {
         return StaticJavaParser.parseType(c.getCanonicalName());
     }
+
+    public static boolean isInteger(Class<?> actualType) {
+        return actualType == int.class || actualType == Integer.class;
+    }
+
+    public static boolean isLong(Class<?> actualType) {
+        return actualType == long.class || actualType == Long.class;
+    }
+
+    public static boolean isFloat(Class<?> actualType) {
+        return actualType == float.class || actualType == Float.class;
+    }
+
+    public static boolean isDouble(Class<?> actualType) {
+        return actualType == double.class || actualType == Double.class;
+    }
+
+    public static boolean isShort(Class<?> actualType) {
+        return actualType == short.class || actualType == Short.class;
+    }
 }
