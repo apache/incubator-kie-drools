@@ -48,8 +48,8 @@
   <repositories>
     <!-- Included so the examples sources in the distribution zip build out-of-the-box with maven -->
     <repository>
-      <id>jboss-public-repository-group</id>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <id>apache-public-repository-group</id>
+      <url>https://repository.apache.org/content/groups/public/</url>
       <releases>
         <!-- Get releases only from Maven Central which is faster. -->
         <enabled>false</enabled>

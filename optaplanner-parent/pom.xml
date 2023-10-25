@@ -62,21 +62,21 @@
 
   <distributionManagement>
     <repository>
-      <id>jboss-releases-repository</id>
-      <name>JBoss Releases Repository</name>
-      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+      <id>apache-release-staging-repository</id>
+      <name>Apache Release Staging Repository</name>
+      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
     </repository>
     <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshot Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+      <id>apache-snapshots-repository</id>
+      <name>Apache Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
   <repositories>
     <repository>
-      <id>jboss-public-repository-group</id>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <id>apache-public-repository-group</id>
+      <url>https://repository.apache.org/content/groups/public/</url>
       <releases>
         <!-- Get releases only from Maven Central which is faster. -->
         <enabled>false</enabled>
@@ -88,12 +88,12 @@
   </repositories>
   <pluginRepositories>
     <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <id>apache-public-repository-group</id>
+      <name>Apache Public Repository Group</name>
+      <url>https://repository.apache.org/content/groups/public/</url>
       <layout>default</layout>
       <releases>
-        <!-- Only get SNAPSHOTS from JBoss repository,
+        <!-- Only get SNAPSHOTS from Apache repository,
              so it tries to get releases first (and only) from Maven Central. -->
         <enabled>false</enabled>
       </releases>
@@ -105,13 +105,13 @@
   </pluginRepositories>
 
   <scm>
-    <connection>scm:git:git@github.com:kiegroup/optaplanner.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/optaplanner.git</developerConnection>
-    <url>https://github.com/kiegroup/optaplanner</url>
+    <connection>scm:git:git@github.com:apache/incubator-kie-optaplanner.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/incubator-kie-optaplanner.git</developerConnection>
+    <url>https://github.com/apache/incubator-kie-optaplanner</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.redhat.com/browse/PLANNER</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
   <developers>
     <developer>
@@ -126,6 +126,13 @@
     </contributor>
   </contributors>
   <mailingLists>
+    <mailingList>
+      <name>Development mailing list</name>
+      <post>dev@kie.apache.org</post>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
     <mailingList>
       <name>setup</name>
       <subscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</subscribe>

@@ -474,9 +474,6 @@
             <author>false</author>
             <failOnError>true</failOnError>
             <failOnWarnings>true</failOnWarnings>
-            <!-- Override JBoss parent otherwise it fails on JDK 16+ -->
-            <header combine.self="override" />
-            <footer combine.self="override" />
             <quiet>true</quiet>
             <doclint>none</doclint>
             <legacyMode>true</legacyMode>
