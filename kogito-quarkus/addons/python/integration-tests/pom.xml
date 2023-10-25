@@ -145,6 +145,19 @@
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+             <environmentVariables>
+               <LD_LIBRARY_PATH>${env.JAVA_HOME}/lib/server</LD_LIBRARY_PATH>
+             </environmentVariables>
+            </configuration>
+          </plugin>
+         </plugins>
+      </build>
     </profile>
   </profiles> 
 </project>
