@@ -634,60 +634,60 @@
       <!-- Quarkus Extension -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus</artifactId>
+        <artifactId>drools-quarkus</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus</artifactId>
+        <artifactId>drools-quarkus</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus</artifactId>
+        <artifactId>drools-quarkus</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-deployment</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <artifactId>drools-quarkus-deployment</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-util-deployment</artifactId>
+        <artifactId>drools-quarkus-util-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-util-deployment</artifactId>
+        <artifactId>drools-quarkus-util-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-drl-quarkus-util-deployment</artifactId>
+        <artifactId>drools-quarkus-util-deployment</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
