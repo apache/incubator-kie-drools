@@ -69,5 +69,4 @@ rule "Log"
 when
     $o : Object()
 then
-    System.out.println(" Log " + $o );
 end

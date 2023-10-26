@@ -130,7 +130,6 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     public Collection<H> upperAncestors( BitSet key ) {
         List<H> vals = new LinkedList<>();
         int l = key.length();
-        //System.out.println( key );
 
         BitSet start = new BitSet( l );
         BitSet end = new BitSet( l );
@@ -150,13 +149,8 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
             start.set( s, true );
             end.set( s, t, true );
 
-//            System.out.println( "X  >> " + s + " << " + t );
-//            System.out.println( "S  >> " + start );
-//            System.out.println( "E  >> " + end );
-//            System.out.println( "E+1>> " + nextKey( end ) );
             if ( t > 0 ) {
                 for ( J val : line.subMap( start, nextKey( end ) ).values() ) {
-//                    System.out.println( "\t " + val.getValue() );
                     vals.add( val.getValue() );
                 }
             }
@@ -230,11 +224,9 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
                     J ex = border.get( k );
                     if ( ex != null ) {
                         if ( superset( candidate, ex.getBitMask() ) >= 0 ) {
-//                                System.out.println( "Skipping " + val + " due to " + ex );
                             minimal = false;
                             break;
                         } else if ( superset( ex.getBitMask(), candidate ) > 0 ) {
-//                                System.out.println( "Clearing " + ex + " due to " + val );
                             border.set( k, null );
                         }
 
@@ -276,8 +268,6 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     List<J> lcsBorderNodes( BitSet key, boolean includeEquals ) {
         List<J> border = new ArrayList<>();
         if ( key == null ) { return border; }
-//        System.out.println( key );
-
         int l = key.length();
         BitSet start = new BitSet( l + 1 );
         BitSet end = new BitSet( l + 1 );
@@ -308,13 +298,11 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
 
                         if ( ex != null ) {
                             if ( superset( candidate, ex.getBitMask() ) > 0 ) {
-//                            System.out.println( "Clearing " + ex + " due to " + val );
                                 border.set( j, null );
                             }
                         }
                     }
                 }
-//                System.out.println( "\t\t " + border );
             }
 
             index = key.nextSetBit( t );

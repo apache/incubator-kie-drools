@@ -43,6 +43,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -50,6 +52,8 @@ import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createS
 
 @RunWith(Parameterized.class)
 public class LegacyTraitTest extends CommonTraitTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LegacyTraitTest.class);
 
     public VirtualPropertyMode mode;
 
@@ -290,7 +294,7 @@ public class LegacyTraitTest extends CommonTraitTest {
 
         int n = ks.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list).isEqualTo(Arrays.asList(1, 2, 3));
         assertThat(n).isEqualTo(3);
     }
