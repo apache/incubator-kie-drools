@@ -21,6 +21,10 @@ import { defineConfig } from 'cypress';
 export default defineConfig({
   viewportWidth: 1920,
   viewportHeight: 1080,
+  reporter: 'junit',
+  reporterOptions: {
+    mochaFile: 'cypress-results/TEST-it-[hash]/junit.xml'
+  },
 
   e2e: {
     // We've imported your old cypress plugins here.

@@ -31,7 +31,7 @@ export default defineConfig({
     chromeWebSecurity: false,
     reporter: 'junit',
     reporterOptions: {
-      mochaFile: 'target/surefire-reports/TEST-e2e-[hash].xml',
+      mochaFile: 'cypress-results/TEST-e2e-[hash]/junit.xml',
       toConsole: false
     },
     setupNodeEvents(on, config) {
