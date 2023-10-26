@@ -20,15 +20,15 @@ package org.drools.core.common;
 
 import java.util.Collection;
 
-import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.base.beliefsystem.Mode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.TraitableBean;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.base.beliefsystem.Mode;
 
 public interface InternalWorkingMemoryActions
         extends

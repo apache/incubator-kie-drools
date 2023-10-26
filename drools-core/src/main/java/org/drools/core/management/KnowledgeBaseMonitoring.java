@@ -20,6 +20,7 @@ package org.drools.core.management;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;

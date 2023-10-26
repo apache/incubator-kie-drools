@@ -21,8 +21,8 @@ package org.drools.core.rule.accessor;
 import java.util.Collection;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeConf;

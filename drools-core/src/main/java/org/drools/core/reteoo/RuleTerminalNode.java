@@ -18,6 +18,9 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.Map;
+import java.util.Objects;
+
 import org.drools.base.base.SalienceInteger;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -30,9 +33,6 @@ import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
-
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a

@@ -21,17 +21,17 @@ package org.drools.core.reteoo;
 import java.util.Arrays;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.time.impl.Timer;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.Pattern;
-import org.drools.core.common.PropagationContext;
-import org.drools.base.time.impl.Timer;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
 

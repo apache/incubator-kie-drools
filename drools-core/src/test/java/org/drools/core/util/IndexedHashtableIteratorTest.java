@@ -18,6 +18,9 @@
  */
 package org.drools.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -25,9 +28,6 @@ import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

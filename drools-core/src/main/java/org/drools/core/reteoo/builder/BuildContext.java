@@ -18,6 +18,13 @@
  */
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
+
 import org.drools.base.RuleBuildContext;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
@@ -39,13 +46,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.time.TemporalDependencyMatrix;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 

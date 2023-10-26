@@ -18,13 +18,13 @@
  */
 package org.drools.core.time;
 
+import java.util.Date;
+
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.time.TimeUtils;
 import org.drools.util.DateUtils;
-
-import java.util.Date;
 
 public class TimerExpressionUtil {
     public static long evalTimeExpression(TimerExpression expr, BaseTuple leftTuple, Declaration[] declrs, ValueResolver valueResolver) {

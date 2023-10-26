@@ -18,6 +18,10 @@
  */
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Accumulate;
@@ -52,10 +56,6 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.kie.api.conf.EventProcessingOption;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class ReteooRuleBuilder implements RuleBuilder {
 

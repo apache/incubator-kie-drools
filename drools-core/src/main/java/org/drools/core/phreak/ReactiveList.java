@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.base.phreak.ReactiveObject;
-import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 import org.drools.base.reteoo.BaseTuple;
+import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 
 public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements List<T>{
 

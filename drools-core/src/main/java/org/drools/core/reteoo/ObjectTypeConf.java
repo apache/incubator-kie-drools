@@ -18,11 +18,11 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
 public interface ObjectTypeConf {

@@ -26,13 +26,13 @@ import java.util.Date;
 import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.base.time.impl.Timer;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ConditionalElement;
 import org.drools.base.rule.Declaration;
 import org.drools.base.time.JobHandle;
-import org.drools.core.time.TimerExpression;
 import org.drools.base.time.Trigger;
+import org.drools.base.time.impl.Timer;
+import org.drools.core.time.TimerExpression;
 import org.kie.api.runtime.Calendars;
 
 import static org.drools.core.time.TimerExpressionUtil.evalDateExpression;

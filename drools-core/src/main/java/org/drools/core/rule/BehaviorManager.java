@@ -25,8 +25,8 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

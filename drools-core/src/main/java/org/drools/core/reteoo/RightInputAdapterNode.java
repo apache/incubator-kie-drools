@@ -18,6 +18,11 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -34,11 +39,6 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the

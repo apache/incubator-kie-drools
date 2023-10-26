@@ -26,16 +26,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.EvalCondition;
+import org.drools.base.rule.RuleComponent;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.EvalCondition;
-import org.drools.core.common.PropagationContext;
-import org.drools.base.rule.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.definition.rule.Rule;
 

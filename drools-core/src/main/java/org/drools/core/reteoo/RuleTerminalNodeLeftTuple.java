@@ -18,6 +18,11 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.consequence.Consequence;
@@ -30,11 +35,6 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;

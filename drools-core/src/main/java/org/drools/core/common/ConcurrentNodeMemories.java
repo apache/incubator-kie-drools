@@ -18,15 +18,15 @@
  */
 package org.drools.core.common;
 
-import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.SegmentMemory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.reteoo.SegmentMemory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * A concurrent implementation for the node memories interface

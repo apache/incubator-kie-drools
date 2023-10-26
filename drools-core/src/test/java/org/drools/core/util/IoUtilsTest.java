@@ -18,12 +18,12 @@
  */
 package org.drools.core.util;
 
+import java.io.IOException;
+import java.io.StringReader;
+
 import org.drools.io.ReaderInputStream;
 import org.drools.util.IoUtils;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.StringReader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

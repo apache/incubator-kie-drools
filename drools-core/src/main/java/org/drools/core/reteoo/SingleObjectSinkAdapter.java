@@ -25,9 +25,9 @@ import java.io.ObjectOutput;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.common.PropagationContext;
 
 public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
 

@@ -18,15 +18,15 @@
  */
 package org.drools.core.concurrent;
 
-import org.drools.base.common.RuleBasePartitionId;
-import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.phreak.RuleAgendaItem;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.phreak.RuleAgendaItem;
 
 import static org.drools.base.common.PartitionsManager.MIN_PARALLEL_THRESHOLD;
 import static org.drools.base.common.PartitionsManager.doOnForkJoinPool;

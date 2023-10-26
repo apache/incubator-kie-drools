@@ -18,15 +18,15 @@
  */
 package org.drools.core.reteoo;
 
+import java.io.Serializable;
+
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.io.Serializable;
 
 /**
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>

@@ -23,17 +23,17 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.base.base.ObjectType;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.facttemplates.Event;
 import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplate;
 import org.drools.base.facttemplates.FactTemplateObjectType;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.TypeDeclaration;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class FactTemplateTypeConf

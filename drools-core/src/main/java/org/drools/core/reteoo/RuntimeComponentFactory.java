@@ -18,6 +18,9 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.RuleBase;
+import org.drools.base.factmodel.traits.TraitFactory;
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
@@ -25,15 +28,12 @@ import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.factmodel.traits.TraitFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.GenericKieSessionMonitoringImpl;
 import org.drools.core.marshalling.SerializablePlaceholderResolverStrategy;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
-import org.drools.base.RuleBase;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
