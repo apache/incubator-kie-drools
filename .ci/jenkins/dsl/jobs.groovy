@@ -118,8 +118,14 @@ Closure setup4AMCronTriggerJobParamsGetter = { script ->
     return jobParams
 }
 
+Closure setupAdditionalTimeoutForDefaultNightly = { script ->
+    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
+    jobParams.env.put('ADDITIONAL_TIMEOUT', '480')
+    return jobParams
+}
+
 Closure nightlyJobParamsGetter = isMainStream() ? JobParamsUtils.DEFAULT_PARAMS_GETTER : setup4AMCronTriggerJobParamsGetter
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, setupAdditionalTimeoutForDefaultNightly)
 setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
 setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
 setupNightlyQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
