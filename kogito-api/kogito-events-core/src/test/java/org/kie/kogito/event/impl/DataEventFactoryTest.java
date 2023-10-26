@@ -45,7 +45,6 @@ public class DataEventFactoryTest {
                         .withExtension("pepe", "pepa");
         DataEvent<JsonNode> dataEvent = DataEventFactory.from(builder.build(), ced -> objectMapper.readTree(ced.toBytes()));
         JsonNode deserialized = objectMapper.readTree(objectMapper.writeValueAsBytes(dataEvent.asCloudEvent(JsonCloudEventData::wrap)));
-        System.out.println(deserialized);
         JsonNode data = deserialized.get("data");
 
         assertThat(data).isNotNull();

@@ -55,8 +55,6 @@ public class GreetingResource {
     @POST
     public DataContext hello(Map<String, Object> payload) {
         // path: /processes/scripts
-        System.out.println(payload);
-
         var id = appRoot.get(ProcessIds.class).get("scripts");
         return svc.evaluate(id, MapDataContext.from(payload));
     }

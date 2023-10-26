@@ -234,7 +234,6 @@ class CloudEventUtilsTest {
                         .withExtension("pepe", "pepa");
         DataEvent<JsonNode> dataEvent = DataEventFactory.from(builder.build(), ced -> objectMapper.readTree(ced.toBytes()));
         JsonNode deserialized = CloudEventUtils.fromValue(dataEvent);
-        System.out.println(deserialized);
         JsonNode data = deserialized.get("data");
         assertThat(data).isNotNull();
         assertThat(data.get("name").asText()).isEqualTo("Javierito");

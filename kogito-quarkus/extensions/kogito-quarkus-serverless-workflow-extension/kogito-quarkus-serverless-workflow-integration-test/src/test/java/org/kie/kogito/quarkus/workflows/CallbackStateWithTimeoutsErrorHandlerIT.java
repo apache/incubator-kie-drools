@@ -67,8 +67,6 @@ class CallbackStateWithTimeoutsErrorHandlerIT extends AbstractCallbackStateIT {
     void callbackStateTimeoutsExceeded() throws Exception {
         String processInput = buildProcessInput(SUCCESSFUL_QUERY);
         String processInstanceId = newProcessInstanceAndGetId(CALLBACK_STATE_TIMEOUTS_SERVICE_URL, processInput);
-        System.out.println("processInstanceId is " + processInstanceId);
-
         assertProcessInstanceExists(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId);
 
         assertProcessInstanceHasFinished(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId, 1, 10);
