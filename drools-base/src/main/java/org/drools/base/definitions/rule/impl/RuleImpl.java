@@ -18,6 +18,21 @@
  */
 package org.drools.base.definitions.rule.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Type;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.base.base.EnabledBoolean;
 import org.drools.base.base.SalienceInteger;
 import org.drools.base.base.ValueResolver;
@@ -42,21 +57,6 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.kie.internal.definition.rule.InternalRule;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Type;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class RuleImpl implements Externalizable,
         Wireable,
@@ -355,16 +355,16 @@ public class RuleImpl implements Externalizable,
      * @return The salience value.
      */
     public int getSalienceValue() {
-    	return getSalience().getValue();
+        return getSalience().getValue();
     }
 
     /**
-	 * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
-	 *
-	 * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
-	 */
+     * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
+     *
+     * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
+     */
     public boolean isSalienceDynamic() {
-    	return getSalience().isDynamic();
+        return getSalience().isDynamic();
     }
 
     /**
@@ -698,15 +698,25 @@ public class RuleImpl implements Externalizable,
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null || getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null || getClass() != obj.getClass() ) {
+            return false;
+        }
         final RuleImpl other = (RuleImpl) obj;
         if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+            if ( other.name != null ) {
+            return false;
+            }
+        } else if ( !name.equals( other.name ) ) {
+            return false;
+        }
         if ( pkg == null ) {
             return other.pkg == null;
-        } else return pkg.equals(other.pkg);
+        } else{
+            return pkg.equals(other.pkg);
+        }
     }
 
     public void setSemanticallyValid(final boolean valid) {

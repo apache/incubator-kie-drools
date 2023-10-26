@@ -18,8 +18,8 @@
  */
 package org.drools.base.rule.constraint;
 
-import org.drools.base.rule.ContextEntry;
 import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.ContextEntry;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface BetaNodeFieldConstraint

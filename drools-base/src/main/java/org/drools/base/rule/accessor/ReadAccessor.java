@@ -18,10 +18,10 @@
  */
 package org.drools.base.rule.accessor;
 
+import java.lang.reflect.Method;
+
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
-
-import java.lang.reflect.Method;
 
 /**
  * A public interface for Read accessors
