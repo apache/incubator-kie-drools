@@ -20,8 +20,8 @@ package org.drools.mvel.integrationtests.facts;
 
 public class FactWithInteger {
 
-    private int intValue;
-    private Integer integerValue;
+    private final int intValue;
+    private final Integer integerValue;
 
     public FactWithInteger(final int intValue) {
         this.intValue = intValue;
@@ -34,13 +34,5 @@ public class FactWithInteger {
 
     public Integer getIntegerValue() {
         return integerValue;
-    }
-
-    public void setIntValue(int intValue) {
-        this.intValue = intValue;
-    }
-
-    public void setIntegerValue(Integer integerValue) {
-        this.integerValue = integerValue;
     }
 }

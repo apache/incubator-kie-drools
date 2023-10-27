@@ -20,8 +20,8 @@ package org.drools.mvel.integrationtests.facts;
 
 public class FactWithDouble {
 
-    private double doubleValue;
-    private Double doubleObjectValue;
+    private final double doubleValue;
+    private final Double doubleObjectValue;
 
     public FactWithDouble(final double doubleValue) {
         this.doubleValue = doubleValue;
@@ -34,13 +34,5 @@ public class FactWithDouble {
 
     public Double getDoubleObjectValue() {
         return doubleObjectValue;
-    }
-
-    public void setDoubleValue(double doubleValue) {
-        this.doubleValue = doubleValue;
-    }
-
-    public void setDoubleObjectValue(Double doubleObjectValue) {
-        this.doubleObjectValue = doubleObjectValue;
     }
 }
