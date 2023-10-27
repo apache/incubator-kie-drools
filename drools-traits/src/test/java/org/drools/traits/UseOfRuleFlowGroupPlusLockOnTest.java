@@ -26,10 +26,14 @@ import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UseOfRuleFlowGroupPlusLockOnTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UseOfRuleFlowGroupPlusLockOnTest.class);
 
     private static final String drl = "package com.sample\n"
             + "import " + Person.class.getCanonicalName() + " ;\n"
@@ -57,7 +61,9 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
         KieHelper kieHelper = new KieHelper().addContent(drl, ResourceType.DRL);
         KieBase kbase = kieHelper.build();
         KieSession ksession = kbase.newKieSession();
-        ReteDumper.dumpRete(ksession);
+        if (LOGGER.isDebugEnabled()) {
+            ReteDumper.dumpRete(ksession);
+        }
         ksession.addEventListener( new DebugAgendaEventListener() );
         try {
             ksession.insert(new Person());
@@ -65,8 +71,6 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
             ((DefaultAgenda) ksession.getAgenda()).activateRuleFlowGroup("group1");
             int rulesFired = ksession.fireAllRules();
             assertThat(rulesFired).isEqualTo(1);
-
-
         } finally {
             ksession.dispose();
         }

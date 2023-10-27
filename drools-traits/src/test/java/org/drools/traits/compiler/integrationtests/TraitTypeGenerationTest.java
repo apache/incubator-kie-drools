@@ -43,10 +43,14 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TraitTypeGenerationTest extends CommonTraitTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TraitTypeGenerationTest.class);
 
     @PropertyReactive
     @Traitable
@@ -292,7 +296,6 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         "when " +
                         "   $g : Goal( $m : entity, $prop : property, $val : value ) " +
                         "then " +
-                        "   System.out.println( 'Satisfy ' + $g ); \n" +
                         "   modify ( $m ) { getFields().put( $prop, $val ); } \n" +
                         "end " +
 
@@ -303,7 +306,6 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         "rule Main\n" +
                         "when \n" +
                         "then \n" +
-                        "   System.out.println( 'Don MONKEY ' ); " +
                         "   Entity e = new Entity(); \n" +
                         "   Monkey monkey = don( e, Monkey.class );" +
                         "end \n" +
@@ -313,7 +315,6 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         "   $m : Monkey( $pos : position ) " +
                         "   ?check( $m, \"position\", 4 ; ) " +
                         "then " +
-                        "   System.out.println( 'Monkey madness' + $m ); " +
                         "   list.add( $m.getPosition() ); " +
                         "end " +
 
@@ -328,7 +329,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         session.fireAllRules();
 
         for ( Object o : session.getObjects() ) {
-            System.out.println( ">>> " + o );
+            LOGGER.debug( ">>> " + o );
         }
 
         assertThat(list).isEqualTo(List.of(4));
@@ -372,7 +373,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 
@@ -408,7 +409,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 
@@ -444,7 +445,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 
@@ -480,7 +481,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 
@@ -516,7 +517,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 
@@ -558,7 +559,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 
@@ -601,7 +602,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kBuilder.hasErrors()) {
-            System.err.println(kBuilder.getErrors());
+            LOGGER.error(kBuilder.getErrors().toString());
         }
         assertThat(kBuilder.hasErrors()).isFalse();
 

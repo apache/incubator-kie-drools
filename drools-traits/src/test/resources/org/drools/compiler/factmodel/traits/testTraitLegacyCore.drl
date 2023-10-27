@@ -60,16 +60,12 @@ when
     $core: Imp()
     not Person( age == 30 )
 then
-    System.out.println( " Rule trait is firing " );
-
     Person p = don( $core, Person.class );
 
     modify( p ) {
         setName( "john" ),
         setAge( 30 );
     }
-
-    System.out.println( " Done firing Rule trait " );
 end
 
 rule "Cloak"
@@ -77,7 +73,6 @@ no-loop
 when
     $p    : Person( $core : core, name == "john" )
 then
-    System.out.println( "John the Person is here >>> " + $p );
     list.add("OK");
 
     IRole role = don( $core, IRole.class );
@@ -85,8 +80,6 @@ then
     modify( role ) {
         setRoleName("myRole");
     }
-
-    System.out.println( "John the Role is here >>> " + role.getRoleName() );
 end
 
 
@@ -94,6 +87,5 @@ rule "Role"
 when
     $role : IRole( roleName == "myRole" )
 then
-    System.out.println( "John the Role is here >>> " + $role );
     list.add("OK2");
 end

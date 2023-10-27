@@ -75,7 +75,6 @@ then
     Trait t = (Trait) drools.don( $core, Trait.class, true );
  
     Byte b0 = t.getByteh();
-    System.out.println( ">>> " + b0);
     if ( b0 != 0 ) list.add( " hard byte default value != 0 " + b0 );
     t.setByteh( Byte.valueOf("1") );
     if ( $core.getByteh() != 1 ) list.add( " hard byte setter on trait failed, core reports " + $core.getByteh() );

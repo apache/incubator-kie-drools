@@ -88,8 +88,6 @@ when
     $s: Student( name == "alan", fields[ "school" ] == "zkl" )
     $z: Student( name == "alan", fields[ "school" ] == "squola" )
 then
-    System.out.println( "Compare " + $s + " vs " + $z );
-
     $z.setDcode(3.47);
     if ( $s.equals( $z ) ) {
         list.add( "EQUAL" );

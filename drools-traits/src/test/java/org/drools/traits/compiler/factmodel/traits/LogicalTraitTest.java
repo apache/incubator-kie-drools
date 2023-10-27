@@ -52,6 +52,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -59,6 +61,7 @@ import static org.assertj.core.api.Assertions.fail;
 @RunWith(Parameterized.class)
 public class LogicalTraitTest extends CommonTraitTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogicalTraitTest.class);
 
     public VirtualPropertyMode mode;
 
@@ -97,18 +100,16 @@ public class LogicalTraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
-
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list.contains(false)).isFalse();
         assertThat(list.size()).isEqualTo(8);
     }
@@ -169,15 +170,14 @@ public class LogicalTraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
         assertThat(list).isEqualTo(List.of("ok"));
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
@@ -218,7 +218,6 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "when \n" +
                      "  $x : Y( fld isA T ) \n" +
                      "then \n" +
-                     "  System.err.println( $x.getFld() ); \n" +
                      "  list.add( \"ok1\" );" +
                      "end \n" +
                      "" +
@@ -226,7 +225,6 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "when \n" +
                      "  $x : X( fld isA T ) \n" +
                      "then \n" +
-                     "  System.err.println( $x.getFld() ); \n" +
                      "  list.add( \"ok2\" );" +
                      "end \n" +
                      "" +
@@ -248,15 +246,14 @@ public class LogicalTraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
         assertThat(list).isEqualTo(Arrays.asList("ok1", "ok2"));
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
@@ -322,15 +319,14 @@ public class LogicalTraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
         assertThat(list).isEqualTo(List.of("ok"));
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
@@ -403,19 +399,18 @@ public class LogicalTraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         for ( Object o : knowledgeSession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString());
         }
 
-        System.out.println( list );
-        System.out.println( list2 );
+        LOGGER.debug( list.toString() );
+        LOGGER.debug( list2.toString() );
         assertThat(list).isEqualTo(Arrays.asList("1", null, "xyz", "xyz", "7", "aaa"));
         assertThat(list2).isEqualTo(Arrays.asList(18, null, 37, 99, 37));
 
         try {
             knowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSession( knowledgeSession, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
     }
 
@@ -486,19 +481,18 @@ public class LogicalTraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         for ( Object o : knowledgeSession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
-        System.out.println( list );
-        System.out.println( list2 );
+        LOGGER.debug( list.toString() );
+        LOGGER.debug( list2.toString() );
         assertThat(list).isEqualTo(Arrays.asList(1.0, 0.0, 16.3, 16.3, 0.0, -0.72));
         assertThat(list2).isEqualTo(Arrays.asList(18, 0, 37, 99, 0));
 
         try {
             knowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSession( knowledgeSession, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
         knowledgeSession.dispose();
@@ -643,14 +637,13 @@ public class LogicalTraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         for ( Object o : knowledgeSession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         try {
             knowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSession( knowledgeSession, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
 
@@ -726,14 +719,13 @@ public class LogicalTraitTest extends CommonTraitTest {
                         fail( "Unexpected id " );
                 }
             }
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         try {
             knowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSession( knowledgeSession, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
 
@@ -800,8 +792,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
@@ -844,7 +835,6 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "rule Don \n" +
                      "when \n" +
                      "then \n" +
-                     "  System.out.println( \"Create K !\" ); \n" +
                      "  K k = new K(1); " +
                      "  don( k, T.class ); \n" +
                      "  modify ( k ) { \n" +
@@ -857,7 +847,6 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "when \n" +
                      "  $x : K( fld isA S, fld not isA R ) \n" +
                      "then \n" +
-                     "  System.out.println( \"K detected\" + $x );" +
                      "  list.add( \"ok1\" );" +
                      "end \n" +
                      "" +
@@ -867,7 +856,6 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "  String() \n" +
                      "  $x : K( fld isA S ) \n" +
                      "then \n" +
-                     "  System.out.println( \"Add U - R\" );" +
                      "  don( $x, U.class ); \n" +
                      "end \n" +
                      "" +
@@ -889,23 +877,18 @@ public class LogicalTraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
 
         int n = ks.fireAllRules();
-        System.out.println( "Rules fired " + n );
+        LOGGER.debug( "Rules fired " + n );
 
-        System.out.println( "------------- ROUND TRIP -------------" );
+        LOGGER.debug( "------------- ROUND TRIP -------------" );
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
         ks.insert( "go" );
         ks.fireAllRules();
-
-//        for ( Object o : ks.getObjects() ) {
-//            System.out.println( o );
-//        }
 
         assertThat(list).isEqualTo(List.of("ok1"));
     }
@@ -1011,7 +994,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         assertThat(list).isEqualTo(List.of("ok"));
 
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o  + " >> " + ((InternalFactHandle)ks.getFactHandle( o )).getEqualityKey() );
+            LOGGER.debug( o  + " >> " + ((InternalFactHandle)ks.getFactHandle( o )).getEqualityKey() );
         }
 
         ks.retract( handle );
@@ -1033,8 +1016,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
         ks.setGlobal( "list", list );
@@ -1042,7 +1024,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         ks.insert( "go2" );
         ks.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
 
         assertThat(list).isEqualTo(Arrays.asList("ok", "ok2", "ok3"));
 
@@ -1103,11 +1085,6 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "  String( this == \"go\" ) \n" +
                      "  $x : X( $f1 : fld, $f2 : fld2 ) \n" +
                      "then \n" +
-                "  System.out.println(\"inizio check\");" +
-                "  System.out.println(list);" +
-                "  System.out.println($f1);" +
-                "  System.out.println($f1.getId());" +
-                "  System.out.println(\"fine check\");" +
                      "  list.add( $f1.getId() );" +
                      "  list.add( $f2.getId() );" +
                      "end \n" +
@@ -1117,15 +1094,9 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "  not String( this == \"go\" ) \n" +
                      "  $x : Y( $f1 : fld, $f2 : fld2 ) \n" +
                      "then \n" +
-                     "  System.out.println(\"inizio check2\");" +
-                     "  System.out.println(list);" +
-                     "  System.out.println($f1);" +
-                     "  System.out.println($f1.getId());" +
-                "  System.out.println(\"fine check2\");" +
-                "  list.add( $f1.getId() );" +
+                     "  list.add( $f1.getId() );" +
                      "  list.add( $f2.getId() );" +
-                     "end \n" +
-                     "";
+                     "end \n";
 
         KnowledgeBuilder kbuilderImpl = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilderImpl.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
@@ -1156,11 +1127,10 @@ public class LogicalTraitTest extends CommonTraitTest {
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list).isEqualTo(Arrays.asList(1, 2, 1, 2));
 
     }
@@ -1212,23 +1182,19 @@ public class LogicalTraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
-
-
     }
-
 
     @Test
     public void testTraitMismatchTypes()
@@ -1387,7 +1353,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        System.out.println( "list" + list );
+        LOGGER.debug( "list" + list );
 
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0).getClass().getName()).isEqualTo("org.drools.base.factmodel.traits.test.Bar");

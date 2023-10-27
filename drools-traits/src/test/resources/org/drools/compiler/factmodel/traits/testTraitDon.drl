@@ -101,7 +101,6 @@ rule "Check"
 when
     $z: Student( $s : school == "skl", fields[ "name" ] == "xx", $a : age == 88 )
 then
-    System.out.println( "DON" );
     list.add( "DON" );
 end 
  
@@ -112,6 +111,5 @@ salience -100
 when
     not Student( )
 then
-    System.out.println( "SHED" );
     list.add( "SHED" );
 end;

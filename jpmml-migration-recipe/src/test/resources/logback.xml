@@ -27,8 +27,8 @@
     </encoder>
   </appender>
 
-  <logger name="org.openrewrite" level="debug"/>
-  <logger name="org.kie.openrewrite.recipe.jpmml" level="debug"/>
+  <logger name="org.openrewrite" level="info"/>
+  <logger name="org.kie.openrewrite.recipe.jpmml" level="info"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
