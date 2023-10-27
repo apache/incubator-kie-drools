@@ -26,6 +26,16 @@ public class Person {
 
     private String name;
     private int age;
+    private long longValue;
+    private short shortValue;
+    private double doubleValue;
+    private float floatValue;
+
+    private Integer integerBoxed;
+    private Long longBoxed;
+    private Short shortBoxed;
+    private Double doubleBoxed;
+    private Float floatBoxed;
 
     private Person parent;
     private Address address;
@@ -119,5 +129,77 @@ public class Person {
 
     public boolean isEven(int value) {
         return true;
+    }
+
+    public long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(long longValue) {
+        this.longValue = longValue;
+    }
+
+    public short getShortValue() {
+        return shortValue;
+    }
+
+    public void setShortValue(short shortValue) {
+        this.shortValue = shortValue;
+    }
+
+    public double getDoubleValue() {
+        return doubleValue;
+    }
+
+    public void setDoubleValue(double doubleValue) {
+        this.doubleValue = doubleValue;
+    }
+
+    public float getFloatValue() {
+        return floatValue;
+    }
+
+    public void setFloatValue(float floatValue) {
+        this.floatValue = floatValue;
+    }
+
+    public Integer getIntegerBoxed() {
+        return integerBoxed;
+    }
+
+    public void setIntegerBoxed(Integer integerBoxed) {
+        this.integerBoxed = integerBoxed;
+    }
+
+    public Long getLongBoxed() {
+        return longBoxed;
+    }
+
+    public void setLongBoxed(Long longBoxed) {
+        this.longBoxed = longBoxed;
+    }
+
+    public Short getShortBoxed() {
+        return shortBoxed;
+    }
+
+    public void setShortBoxed(Short shortBoxed) {
+        this.shortBoxed = shortBoxed;
+    }
+
+    public Double getDoubleBoxed() {
+        return doubleBoxed;
+    }
+
+    public void setDoubleBoxed(Double doubleBoxed) {
+        this.doubleBoxed = doubleBoxed;
+    }
+
+    public Float getFloatBoxed() {
+        return floatBoxed;
+    }
+
+    public void setFloatBoxed(Float floatBoxed) {
+        this.floatBoxed = floatBoxed;
     }
 }
