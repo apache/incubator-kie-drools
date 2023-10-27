@@ -8,7 +8,9 @@ import org.kie.jenkins.MavenStagingHelper
 deployProperties = [:]
 
 optaplannerRepository = 'incubator-kie-optaplanner'
+optaplannerFolder = 'optaplanner'
 quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
+quickstartsFolder = 'quickstarts'
 
 imageUtils = null
 
@@ -39,7 +41,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
@@ -75,8 +77,8 @@ pipeline {
         stage('Clone repositories') {
             steps {
                 script {
-                    checkoutRepo(optaplannerRepository)
-                    checkoutQuickstarts()
+                    checkoutRepo(optaplannerRepository, optaplannerFolder)
+                    checkoutQuickstarts(quickstartsFolder)
                 }
             }
         }
@@ -87,8 +89,8 @@ pipeline {
             }
             steps {
                 script {
-                    prepareForPR(optaplannerRepository)
-                    prepareForPR(quickstartsRepository)
+                    prepareForPR(optaplannerFolder)
+                    prepareForPR(quickstartsFolder)
                 }
             }
         }
@@ -112,13 +114,16 @@ pipeline {
         stage('Build OptaPlanner') {
             steps {
                 script {
-                    getOptaplannerMavenCommand()
-                            .withProperty('maven.test.failure.ignore', true)
-                            .withProperty('operator.image.build')
-                            .skipTests(params.SKIP_TESTS)
-                            .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getOptaplannerMavenCommand()
+                                .withProperty('maven.test.failure.ignore', true)
+                                .withProperty('operator.image.build')
+                                .skipTests(params.SKIP_TESTS)
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run('clean install')
+                    }
                     if (isRelease()) {
-                        updateAntoraYaml(optaplannerRepository)
+                        updateAntoraYaml(optaplannerFolder)
                     }
                 }
             }
@@ -135,10 +140,13 @@ pipeline {
         stage('Build Quickstarts') {
             steps {
                 script {
-                    getOptaplannerQuickstartsMavenCommand()
-                            .withProperty('maven.test.failure.ignore', true)
-                            .skipTests(params.SKIP_TESTS)
-                            .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getOptaplannerQuickstartsMavenCommand()
+                                .withProperty('maven.test.failure.ignore', true)
+                                .skipTests(params.SKIP_TESTS)
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run('clean install')
+                    }
                 }
             }
             post {
@@ -201,8 +209,8 @@ pipeline {
             }
             steps {
                 script {
-                    commitAndCreatePR(optaplannerRepository, getBuildBranch())
-                    commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
+                    commitAndCreatePR(optaplannerFolder, optaplannerRepository, getBuildBranch())
+                    commitAndCreatePR(quickstartsFolder, quickstartsRepository, getQuickStartsBranch())
                 }
             }
             post {
@@ -246,8 +254,7 @@ pipeline {
         }
         cleanup {
             script {
-                // Clean also docker in case of usage of testcontainers lib
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -269,10 +276,10 @@ List getIntegrationTestProfiles() {
 void updateQuickstartsVersions() {
     maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
     maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), !isRelease())
-    gradleVersionsUpdate(quickstartsRepository, getProjectVersion())
+    gradleVersionsUpdate(quickstartsFolder, getProjectVersion())
 
     if (isRelease()) {
-        dir(quickstartsRepository) {
+        dir(quickstartsFolder) {
             // TODO: Remove the exclusion after the kubernetes demo is migrated to 9.
             assert !sh(script:
                     'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} --exclude-dir=kubernetes | ' +
@@ -281,7 +288,7 @@ void updateQuickstartsVersions() {
         }
     }
     if (isCreatePr()) {
-        dir(quickstartsRepository) {
+        dir(quickstartsFolder) {
             // TODO: Remove the exclusion after the kubernetes demo is migrated to 9.
             assert !sh(script:
                     'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} --exclude-dir=kubernetes | ' +
@@ -291,8 +298,8 @@ void updateQuickstartsVersions() {
     }
 }
 
-void gradleVersionsUpdate(String repo, String newVersion) {
-    dir(repo) {
+void gradleVersionsUpdate(String folder, String newVersion) {
+    dir(folder) {
         sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
     }
 }
@@ -330,14 +337,14 @@ String getFallbackBranch(String repo) {
     return repositoryScm ? params.PR_TARGET_BRANCH : 'main'
 }
 
-void prepareForPR(String repo) {
-    dir(repo) {
+void prepareForPR(String folder) {
+    dir(folder) {
         githubscm.createBranch(getPRBranch())
     }
 }
 
-void commitAndCreatePR(String repo, String buildBranch) {
-    dir(repo) {
+void commitAndCreatePR(String folder, String repo, String buildBranch) {
+    dir(folder) {
         def commitMsg = "[${buildBranch}] Update project version to ${getProjectVersion()}"
         def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}."
         if (isRelease()) {
@@ -358,16 +365,16 @@ void commitAndCreatePR(String repo, String buildBranch) {
     }
 }
 
-void commitAndCreatePRIgnoringNpmRegistry(String repo, String buildBranch) {
-    dir(repo) {
+void commitAndCreatePRIgnoringNpmRegistry(String folder, String repo, String buildBranch) {
+    dir(folder) {
         sh 'sed \'s;repository.engineering.redhat.com/nexus/repository/;;\' -i */package-lock.json'
         sh 'git add */package-lock.json'
     }
-    commitAndCreatePR(repo, buildBranch)
+    commitAndCreatePR(folder, repo, buildBranch)
 }
 
 MavenCommand getMavenDefaultCommand() {
-    MavenCommand mvnCmd = new MavenCommand(this, ['-fae', '-ntp']).withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
+    MavenCommand mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
     if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }
@@ -375,21 +382,24 @@ MavenCommand getMavenDefaultCommand() {
 }
 
 MavenCommand getOptaplannerMavenCommand() {
-    return getMavenDefaultCommand().inDirectory(optaplannerRepository).withProperty('full')
+    return getMavenDefaultCommand().inDirectory(optaplannerFolder).withProperty('full')
 }
 
 MavenCommand getOptaplannerQuickstartsMavenCommand() {
-    return getMavenDefaultCommand().inDirectory(quickstartsRepository).withProperty('full')
+    return getMavenDefaultCommand().inDirectory(quickstartsFolder).withProperty('full')
 }
 
 /**
  * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
  */
 void mavenCleanInstallOptaPlannerParents() {
-    getOptaplannerMavenCommand()
-            .skipTests(true)
-            .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
-            .run('clean install')
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        getOptaplannerMavenCommand()
+                .skipTests(true)
+                .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
+                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                .run('clean install')
+    }
 }
 
 void runMavenDeploy(MavenCommand mvnCmd, String localDeploymentId = '') {
@@ -401,7 +411,12 @@ void runMavenDeploy(MavenCommand mvnCmd, String localDeploymentId = '') {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        mvnCmd
+          .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+          .skipTests(true)
+          .run('clean deploy')
+    }
 }
 
 String getMavenRepoZipUrl() {
@@ -427,15 +442,15 @@ String getLocalDeploymentFolder(String localDeployId) {
 // Getters and Setters of params/properties
 
 boolean isSpecificArtifactsUpload() {
-    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && !isDeployDisabled()
 }
 
 boolean shouldStageArtifacts() {
-    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY && !isDeployDisabled()
 }
 
 boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()
+    return (env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()) && !isDeployDisabled()
 }
 
 boolean isNotTestingBuild() {
@@ -541,4 +556,8 @@ boolean isStream8() {
 
 boolean isStream9() {
     return env.OPTAPLANNER_LATEST_STREAM == '9'
+}
+
+boolean isDeployDisabled() {
+    return env.DISABLE_DEPLOY.toBoolean()
 }

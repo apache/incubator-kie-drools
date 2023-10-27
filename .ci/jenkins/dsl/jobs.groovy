@@ -289,7 +289,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream(),
+        DISABLE_DEPLOY: Utils.isDeployDisabled(this),
     ])
     if (jobType == JobType.PULL_REQUEST) {
         jobParams.env.putAll([
