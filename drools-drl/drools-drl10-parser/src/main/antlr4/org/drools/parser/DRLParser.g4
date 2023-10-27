@@ -91,8 +91,9 @@ lhsExpression : LPAREN lhsExpression RPAREN             #lhsExpressionEnclosed
               | lhsExpression (DRL_OR lhsExpression)+   #lhsOr
               ;
 
-// lhsAnd is used as a label in lhsExpression rule. But some other rules also use it.
-lhsAndDef : lhsUnary (DRL_AND lhsUnary)*
+// lhsAnd is used as a label in lhsExpression rule. But some other rules explicitly use the def, so lhsAndDef is declared.
+lhsAndDef : LPAREN lhsAndDef RPAREN
+          | lhsUnary (DRL_AND lhsUnary)*
           | LPAREN DRL_AND lhsUnary+ RPAREN
           ;
 
@@ -380,7 +381,13 @@ fromEntryPoint : DRL_ENTRY_POINT stringId ;
            | lhsPatternBind
            )
 */
-lhsExists : DRL_EXISTS lhsPatternBind ;
+// Use lhsExpression instead of lhsOr because lhsExpression has good enough structure
+lhsExists : DRL_EXISTS
+          ( LPAREN lhsExpression RPAREN
+          | lhsPatternBind
+          )
+          ;
+
 /*
  lhsNot := NOT
            ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
@@ -388,7 +395,12 @@ lhsExists : DRL_EXISTS lhsPatternBind ;
            | lhsPatternBind
            )
 */
-lhsNot : DRL_NOT lhsPatternBind ;
+// Use lhsExpression instead of lhsOr because lhsExpression has good enough structure
+lhsNot : DRL_NOT
+         ( LPAREN lhsExpression RPAREN
+         | lhsPatternBind
+         )
+         ;
 
 /**
  * lhsEval := EVAL LEFT_PAREN conditionalExpression RIGHT_PAREN
