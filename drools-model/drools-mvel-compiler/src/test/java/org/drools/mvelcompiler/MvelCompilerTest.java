@@ -835,6 +835,116 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimalAssignmentToInt() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.age = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setAge($p.getSalary().intValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToIntegerBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.integerBoxed = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setIntegerBoxed($p.getSalary().intValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToLong() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.longValue = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setLongValue($p.getSalary().longValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToLongBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.longBoxed = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setLongBoxed($p.getSalary().longValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToShort() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.shortValue = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setShortValue($p.getSalary().shortValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToShortBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.shortBoxed = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setShortBoxed($p.getSalary().shortValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToDouble() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.doubleValue = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setDoubleValue($p.getSalary().doubleValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToDoubleBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.doubleBoxed = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setDoubleBoxed($p.getSalary().doubleValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToFloat() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.floatValue = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setFloatValue($p.getSalary().floatValue());\n" +
+                        "}");
+    }
+
+    @Test
+    public void testBigDecimalAssignmentToFloatBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+                "{ " +
+                        "    $p.floatBoxed = $p.salary;\n" +
+                        "}",
+                "{ " +
+                        "    $p.setFloatBoxed($p.getSalary().floatValue());\n" +
+                        "}");
+    }
+
+    @Test
     public void testBigDecimalPromotionAllFourOperations() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +
