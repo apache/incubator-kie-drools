@@ -23,6 +23,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class JeneratorTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JeneratorTest.class);
 
     @Test
     public void testRoundTrip() throws Exception {
@@ -62,24 +65,20 @@ public class JeneratorTest {
         JarEntry je = jis.getNextJarEntry();
 
         assertThat(je).isNotNull();
-        System.err.println(je.getName());
+        LOGGER.debug(je.getName());
         assertThat(je.getName()).isEqualTo("factmodel.xml");
 
-
         je = jis.getNextJarEntry();
 
         assertThat(je).isNotNull();
-        System.err.println(je.getName());
+        LOGGER.debug(je.getName());
         assertThat(je.getName()).isEqualTo("whee/waa/Foobar.class");
 
-
         je = jis.getNextJarEntry();
 
         assertThat(je).isNotNull();
-        System.err.println(je.getName());
+        LOGGER.debug(je.getName());
         assertThat(je.getName()).isEqualTo("whee/waa/Baz.class");
-
-
 
         Fact[] facts = jen.loadMetaModel(new JarInputStream(new ByteArrayInputStream(data)));
         assertThat(facts.length).isEqualTo(2);

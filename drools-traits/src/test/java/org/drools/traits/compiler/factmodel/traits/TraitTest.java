@@ -84,6 +84,8 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,6 +111,8 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
 public class TraitTest extends CommonTraitTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TraitTest.class);
 
     private static long t0;
 
@@ -144,7 +148,6 @@ public class TraitTest extends CommonTraitTest {
         return new KieHelper().addContent( drl, ResourceType.DRL ).build(options);
     }
 
-
     @Test
     public void testRetract( ) {
         String drl = "package org.drools.compiler.trait.test; \n" +
@@ -169,13 +172,12 @@ public class TraitTest extends CommonTraitTest {
 
         assertThat(ks.fireAllRules()).isEqualTo(2);
 
-        for(Object o : ks.getObjects()) {
-            System.out.println(o);
+        for (Object o : ks.getObjects()) {
+            LOGGER.debug(o.toString());
         }
 
         assertThat(ks.getObjects().size()).isEqualTo(0);
     }
-
 
     @Test
     public void testTraitWrapGetAndSet() {
@@ -225,13 +227,10 @@ public class TraitTest extends CommonTraitTest {
                     "name")).isEqualTo("john");
 
         } catch (Exception e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
-
-
 
     @Test
     public void testTraitShed() {
@@ -269,8 +268,6 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-
-
     @Test
     public void testTraitDon() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
@@ -298,15 +295,10 @@ public class TraitTest extends CommonTraitTest {
             x = it.next();
         }
 
-        System.out.println( x.getClass() );
-        System.out.println( x.getClass().getSuperclass() );
-        System.out.println( Arrays.asList( x.getClass().getInterfaces() ));
+        LOGGER.debug(x.getClass().toString());
+        LOGGER.debug(x.getClass().getSuperclass().toString());
+        LOGGER.debug(Arrays.asList(x.getClass().getInterfaces()).toString());
     }
-
-
-
-
-
     @Test
     public void testMixin() {
         String source = "org/drools/compiler/factmodel/traits/testTraitMixin.drl";
@@ -338,7 +330,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         if (!errors.isEmpty()) {
-            System.err.println( errors.toString() );
+            LOGGER.error(errors.toString());
         }
         assertThat(errors.isEmpty()).isTrue();
 
@@ -359,7 +351,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         if (!errors.isEmpty()) {
-            System.err.println( errors );
+            LOGGER.error(errors.toString());
         }
         assertThat(errors.isEmpty()).isTrue();
 
@@ -428,15 +420,8 @@ public class TraitTest extends CommonTraitTest {
 
             assertThat(proxy4).isEqualTo(proxy2);
 
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
-        } catch ( LogicalTypeInconsistencyException e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+        } catch (InstantiationException | IllegalAccessException | LogicalTypeInconsistencyException e) {
+            fail( e.getMessage(), e );
         }
     }
 
@@ -543,13 +528,10 @@ public class TraitTest extends CommonTraitTest {
             assertThat(proxy100.getFields().size()).isEqualTo(4);
 
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
-
-
 
     @Test
     public void testWrapperEmpty() {
@@ -624,13 +606,10 @@ public class TraitTest extends CommonTraitTest {
             assertThat(wrapper2.isEmpty()).isFalse();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
-
-
 
     @Test
     public void testWrapperContainsKey() {
@@ -748,12 +727,10 @@ public class TraitTest extends CommonTraitTest {
             assertThat(wrapper100.containsKey("surname")).isFalse();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
-
 
     @Test
     public void testInternalComponents1(  ) {
@@ -807,11 +784,10 @@ public class TraitTest extends CommonTraitTest {
 
 
             StudentProxyImpl2 sp2 = new StudentProxyImpl2(new Imp2(), null );
-            System.out.println( sp2.toString() );
+            LOGGER.debug(sp2.toString());
 
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
     }
 
@@ -905,13 +881,10 @@ public class TraitTest extends CommonTraitTest {
             assertThat(proxy.getFields().containsValue(-96)).isFalse();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
-
-
 
     @Test
     public void testWrapperClearAndRemove() {
@@ -1010,15 +983,10 @@ public class TraitTest extends CommonTraitTest {
             assertThat(proxy.getFields().containsKey("surname")).isFalse();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
 
     }
-
-
-
-
 
     @Test
     public void testIsAEvaluator( ) {
@@ -1086,8 +1054,7 @@ public class TraitTest extends CommonTraitTest {
                       info );
 
         ks.fireAllRules();
-
-        System.out.println( info );
+        LOGGER.debug(info.toString());
         assertThat(info.contains("ok")).isTrue();
     }
 
@@ -1109,7 +1076,7 @@ public class TraitTest extends CommonTraitTest {
 
         int num = 10;
 
-        System.out.println( info );
+        LOGGER.debug(info.toString());
         assertThat(info.size()).isEqualTo(num);
         for (int j = 0; j < num; j++) {
             assertThat(info.contains("" + j)).isTrue();
@@ -1212,13 +1179,7 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        System.err.println( " -------------- " + ks.getObjects().size() + " ---------------- " );
-        for (Object o : ks.getObjects()) {
-            System.err.println( "\t\t" + o );
-        }
-        System.err.println( " --------------  ---------------- " );
-        System.err.println( info );
-        System.err.println( " --------------  ---------------- " );
+        printDebugInfoSessionObjects(ks.getObjects(), info);
 
         assertThat(info.size()).isEqualTo(5);
         assertThat(info.contains("OK")).isTrue();
@@ -1229,8 +1190,15 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-
-
+    private void printDebugInfoSessionObjects(final Collection<? extends Object> facts, final List globalList) {
+        LOGGER.debug( " -------------- " + facts.size() + " ---------------- " );
+        for (Object o : facts) {
+            LOGGER.debug( "\t\t" + o );
+        }
+        LOGGER.debug( " --------------  ---------------- " );
+        LOGGER.debug( globalList.toString() );
+        LOGGER.debug( " --------------  ---------------- " );
+    }
 
     @Test
     public void testTraitCollections() {
@@ -1246,21 +1214,12 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        System.err.println( " -------------- " + ks.getObjects().size() + " ---------------- " );
-        for (Object o : ks.getObjects()) {
-            System.err.println( "\t\t" + o );
-        }
-        System.err.println( " --------------  ---------------- " );
-        System.err.println( info );
-        System.err.println( " --------------  ---------------- " );
+        printDebugInfoSessionObjects(ks.getObjects(), info);
 
         assertThat(info.size()).isEqualTo(1);
         assertThat(info.contains("OK")).isTrue();
 
     }
-
-
-
 
     @Test
     public void testTraitCore() {
@@ -1275,22 +1234,13 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        System.err.println( " -------------- " + ks.getObjects().size() + " ---------------- " );
-        for (Object o : ks.getObjects()) {
-            System.err.println( "\t\t" + o );
-        }
-        System.err.println( " --------------  ---------------- " );
-        System.err.println( info );
-        System.err.println( " --------------  ---------------- " );
+        printDebugInfoSessionObjects(ks.getObjects(), info);
 
         assertThat(info.contains("OK")).isTrue();
         assertThat(info.contains("OK2")).isTrue();
         assertThat(info.size()).isEqualTo(2);
 
     }
-
-
-
 
     @Test
     public void traitWithEquality() {
@@ -1309,8 +1259,6 @@ public class TraitTest extends CommonTraitTest {
         assertThat(info.contains("EQUAL")).isTrue();
 
     }
-
-
 
     @Test
     public void traitDeclared() {
@@ -1335,8 +1283,6 @@ public class TraitTest extends CommonTraitTest {
         assertThat(untrueTraits.contains(1)).isFalse();
     }
 
-
-
     @Test
     public void traitPojo() {
 
@@ -1359,9 +1305,6 @@ public class TraitTest extends CommonTraitTest {
         assertThat(untrueTraits.contains(2)).isTrue();
         assertThat(untrueTraits.contains(1)).isFalse();
     }
-
-
-
 
     @Test
     public void testIsAOperator() {
@@ -1390,8 +1333,6 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-
-
     @Test
     public void testManyTraits() {
         String source = "" +
@@ -1411,7 +1352,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "  $n : NiceMessage( $m : message )\n" +
                         "then\n" +
-                        "  System.out.println( $m );\n" +
                         "end" +
                         "\n" +
                         "    rule load\n" +
@@ -1452,7 +1392,6 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-
     @Test
     public void traitManyTimes() {
 
@@ -1464,7 +1403,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug(o.toString());
         }
         Collection x = ksession.getObjects();
         assertThat(ksession.getObjects().size()).isEqualTo(2);
@@ -1475,11 +1414,7 @@ public class TraitTest extends CommonTraitTest {
         assertThat(list.contains(2)).isTrue();
         assertThat(list.contains(3)).isTrue();
         assertThat(list.contains(4)).isTrue();
-
-
     }
-
-
 
     // BZ #748752
     @Test
@@ -1511,7 +1446,6 @@ public class TraitTest extends CommonTraitTest {
                      "    student : Person( this isA Student )\n" +
                      "  then" +
                      "    list.add( 1 );\n" +
-                     "    System.out.println(\"Person is a student: \" + student);\n" +
                      "end\n" +
                      "\n" +
                      "rule \"print school\"\n" +
@@ -1519,7 +1453,6 @@ public class TraitTest extends CommonTraitTest {
                      "    Student( $school : school )\n" +
                      "  then\n" +
                      "    list.add( 2 );\n" +
-                     "    System.out.println(\"Student is attending \" + $school);\n" +
                      "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1543,20 +1476,15 @@ public class TraitTest extends CommonTraitTest {
         Person student = new Person("student", 18);
         commands.add( CommandFactory.newInsert( student ));
 
-        System.out.println("Starting execution...");
+        LOGGER.debug("Starting execution...");
         commands.add(CommandFactory.newFireAllRules());
         ksession.execute(CommandFactory.newBatchExecution(commands));
-
-        System.out.println("Finished...");
+        LOGGER.debug("Finished...");
 
         assertThat(list.size()).isEqualTo(2);
         assertThat(list.contains(1)).isTrue();
         assertThat(list.contains(2)).isTrue();
     }
-
-
-
-
 
     @Test(timeout=10000)
     public void testManyTraitsStateless() {
@@ -1577,7 +1505,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "  $n : NiceMessage( $m : message )\n" +
                         "then\n" +
-                        "  System.out.println( $m );\n" +
                         "end" +
                         "\n" +
                         "    rule load\n" +
@@ -1657,7 +1584,6 @@ public class TraitTest extends CommonTraitTest {
                      "    $student : Student( $school : school == \"UniBoh\",  $f : fields, fields[ \"workPlace\" ] == \"UniBoh\" )\n" +
                      "  then \n " +
                      "    $student.setRank( 99 ); \n" +
-                     "    System.out.println( $student ); \n" +
                      "    $f.put( \"school\", \"Skool\" ); \n" +
 
                      "    list.add( $school );\n" +
@@ -1861,10 +1787,7 @@ public class TraitTest extends CommonTraitTest {
                      "  Mask m = don( $b, Mask.class ); \n" +
                      "  modify (m) { setXyz( 10 ); } \n" +
                      "  list.add( m ); \n" +
-                     "  System.out.println( \"Don result : \" + m ); \n " +
-                     "end \n" +
-                     "\n" +
-                     "";
+                     "end \n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -1951,15 +1874,9 @@ public class TraitTest extends CommonTraitTest {
 
 
         } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
+            fail( e.getMessage(), e );
         }
     }
-
-
-
-
-
 
     @Test
     public void testTraitRedundancy() {
@@ -1975,7 +1892,6 @@ public class TraitTest extends CommonTraitTest {
                      "when \n" +
                      "   $s : IStudent() \n" +
                      "then \n" +
-                     "   System.out.println( \"Student in \" + $s ); \n" +
                      "end \n" +
                      "" +
                      "rule \"Don\" \n" +
@@ -1983,7 +1899,6 @@ public class TraitTest extends CommonTraitTest {
                      "when \n" +
                      "  $p : IPerson( age < 30 ) \n" +
                      "then \n" +
-                     "   System.out.println( \"Candidate student \" + $p ); \n" +
                      "   don( $p, IStudent.class );\n" +
                      "end \n" +
                      "" +
@@ -1992,7 +1907,6 @@ public class TraitTest extends CommonTraitTest {
                      "when \n" +
                      "  $p : IPerson( this isA IStudent ) \n" +
                      "then \n" +
-                     "   System.out.println( \"Known student \" + $p ); " +
                      "   modify ($p) { setAge( 37 ); } \n" +
                      "   shed( $p, IStudent.class );\n" +
                      "end \n";
@@ -2021,11 +1935,10 @@ public class TraitTest extends CommonTraitTest {
         assertThat(ksession.fireAllRules()).isEqualTo(3);
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug(o.toString());
         }
 
     }
-
 
     @Test
     public void traitSimpleTypes() {
@@ -2141,8 +2054,7 @@ public class TraitTest extends CommonTraitTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitRegistryImpl tr = (TraitRegistryImpl) ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(kbase);
-        System.out.println( tr.getHierarchy() );
-
+        LOGGER.debug( tr.getHierarchy().toString() );
 
         Entity ent = new Entity( "x" );
         KieSession ksession = kbase.newKieSession();
@@ -2154,7 +2066,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( "y" );
         ksession.fireAllRules();
 
-        System.out.println( ent.getMostSpecificTraits() );
+        LOGGER.debug( ent.getMostSpecificTraits().toString() );
         assertThat(ent.getMostSpecificTraits().size()).isEqualTo(2);
 
     }
@@ -2244,15 +2156,9 @@ public class TraitTest extends CommonTraitTest {
                     "when  " +
                     "  $p : Person( name == \"john\" )  " +
                     "then  " +
-                    "  System.out.println( $p );  " +
-                    "" +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don student\" );  " +
                     "  don( $p, Student.class );  " +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don worker\" );  " +
                     "  don( $p, Worker.class );  " +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don studentworker\" );  " +
                     "  don( $p, StudentWorker.class );  " +
-                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don assistant\" );  " +
                     "  don( $p, Assistant.class );  " +
                     "end  " +
                     "" +
@@ -2260,28 +2166,24 @@ public class TraitTest extends CommonTraitTest {
                     "when  " +
                     "  $t : Student() @Watch( name ) " +
                     "then  " +
-                    "  System.out.println( \"Student >> \" +  $t ); " +
                     "  list.add( $t.getName() );  " +
                     "end  " +
                     "rule \"Log W\"  " +
                     "when  " +
                     "  $t : Worker() @Watch( name ) " +
                     "then  " +
-                    "  System.out.println( \"Worker >> \" + $t );  " +
                     "  list.add( $t.getName() );  " +
                     "end  " +
                     "rule \"Log SW\"  " +
                     "when  " +
                     "  $t : StudentWorker() @Watch( name ) " +
                     "then  " +
-                    "  System.out.println( \"StudentWorker >> \" + $t );  " +
                     "  list.add( $t.getName() );  " +
                     "end  " +
                     "rule \"Log RA\"  " +
                     "when  " +
                     "  $t : Assistant() @Watch( name ) " +
                     "then  " +
-                    "  System.out.println( \"Assistant >> \" + $t );  " +
                     "  list.add( $t.getName() );  " +
                     "end  " +
                     "" +
@@ -2290,7 +2192,6 @@ public class TraitTest extends CommonTraitTest {
                     "when  " +
                     "  $p : Person( name == \"john\" ) " +
                     "then  " +
-                    "   System.out.println( \"-----------------------------\" ); " +
                     "   modify ( $p ) { setName( \"alan\" ); } " +
                     "end  " +
                     "";
@@ -2343,11 +2244,8 @@ public class TraitTest extends CommonTraitTest {
                     "when  " +
                     "  $p : Person( name == \"john\" )  " +
                     "then  " +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  );  " +
                     "  don( $p, Worker.class );  " +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER-2 \" + $p );  " +
                     "  don( $p, StudentWorker2.class );  " +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON ASSISTANT \" + $p );  " +
                     "  don( $p, Assistant.class );  " +
                     "end  " +
                     "" +
@@ -2355,32 +2253,27 @@ public class TraitTest extends CommonTraitTest {
                     "when  " +
                     "  $t : Student() @watch( name )  " +
                     "then  " +
-                    "  System.err.println( \"@@Student >> \" +  $t );  " +
                     "end  " +
                     "rule \"Log W\"  " +
                     "when  " +
                     "  $t : Worker() @watch( name )  " +
                     "then  " +
-                    "  System.err.println( \"@@Worker >> \" + $t );  " +
                     "end  " +
                     "rule \"Log SW\"  " +
                     "when  " +
                     "  $t : StudentWorker() @watch( name )  " +
                     "then  " +
-                    "  System.err.println( \"@@StudentWorker >> \" + $t );  " +
                     "end  " +
                     "rule \"Log RA\"  " +
                     "when  " +
                     "  $t : Assistant() @watch( name )  " +
                     "then  " +
-                    "  System.err.println( \"@@Assistant >> \" + $t );  " +
                     "end  " +
                     "rule \"Log Px\"  " +
                     "salience -1  " +
                     "when  " +
                     "  $p : Person() @watch( name )  " +
                     "then  " +
-                    "  System.err.println( \"Poor Core Person >> \" + $p );  " +
                     "end  " +
                     "" +
                     "rule \"Mod\"  " +
@@ -2389,10 +2282,8 @@ public class TraitTest extends CommonTraitTest {
                     "  String( this == \"go\" )  " +
                     "  $p : Student( name == \"john\" )  " +
                     "then  " +
-                    "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p );  " +
                     "  modify ( $p ) { setName( \"alan\" ); } " +
-                    "end  " +
-                    "";
+                    "end  ";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2440,9 +2331,7 @@ public class TraitTest extends CommonTraitTest {
                     "when \n" +
                     "  $p : Person( name == \"john\" ) \n" +
                     "then \n" +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  ); \n" +
                     "  don( $p, Worker.class ); \n" +
-                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER \" + $p ); \n" +
                     "  don( $p, StudentWorker.class ); \n" +
                     "end \n" +
                     "" +
@@ -2450,16 +2339,14 @@ public class TraitTest extends CommonTraitTest {
                     "when \n" +
                     "  $t : Worker( this isA StudentWorker ) @watch( name ) \n" +
                     "then \n" +
-                    "  System.out.println( \"@@Worker >> \" + $t ); \n" +
                     "  list.add( true ); \n" +
                     "end \n" +
                     "rule \"Log SW\" \n" +
                     "when \n" +
                     "  $t : StudentWorker() @watch( name ) \n" +
                     "then \n" +
-                    "  System.out.println( \"@@StudentWorker >> \" + $t ); \n" +
-                    "end \n" +
-                    "";
+                    "end \n";
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
@@ -2534,22 +2421,22 @@ public class TraitTest extends CommonTraitTest {
                     "\n" +
                     "\n" +
                     "\n" +
-                    "rule \"Log A\" when $x : A( id == 1 ) then System.out.println( \"A >> \" +  $x ); list.add( 1 ); end \n" +
-                    "rule \"Log B\" when $x : B( id == 1 ) then System.out.println( \"B >> \" +  $x ); list.add( 2 ); end \n" +
-                    "rule \"Log C\" when $x : C( id == 1 ) then System.out.println( \"C >> \" +  $x ); list.add( 3 ); end \n" +
-                    "rule \"Log D\" when $x : D( id == 1 ) then System.out.println( \"D >> \" +  $x ); list.add( 4 ); end \n" +
-                    "rule \"Log E\" when $x : E( id == 1 ) then System.out.println( \"E >> \" +  $x ); list.add( 5 ); end \n" +
-                    "rule \"Log F\" when $x : F( id == 1 ) then System.out.println( \"F >> \" +  $x ); list.add( 6 ); end \n" +
-                    "rule \"Log G\" when $x : G( id == 1 ) then System.out.println( \"G >> \" +  $x ); list.add( 7 ); end \n" +
-                    "rule \"Log H\" when $x : H( id == 1 ) then System.out.println( \"H >> \" +  $x ); list.add( 8 ); end \n" +
-                    "rule \"Log I\" when $x : I( id == 1 ) then System.out.println( \"I >> \" +  $x ); list.add( 9 ); end \n" +
-                    "rule \"Log J\" when $x : J( id == 1 ) then System.out.println( \"J >> \" +  $x ); list.add( 10 ); end \n" +
-                    "rule \"Log K\" when $x : K( id == 1 ) then System.out.println( \"K >> \" +  $x ); list.add( 11 ); end \n" +
-                    "rule \"Log L\" when $x : L( id == 1 ) then System.out.println( \"L >> \" +  $x ); list.add( 12 ); end \n" +
-                    "rule \"Log M\" when $x : M( id == 1 ) then System.out.println( \"M >> \" +  $x ); list.add( 13 ); end \n" +
-                    "rule \"Log N\" when $x : N( id == 1 ) then System.out.println( \"N >> \" +  $x ); list.add( 14 ); end \n" +
+                    "rule \"Log A\" when $x : A( id == 1 ) then list.add( 1 ); end \n" +
+                    "rule \"Log B\" when $x : B( id == 1 ) then list.add( 2 ); end \n" +
+                    "rule \"Log C\" when $x : C( id == 1 ) then list.add( 3 ); end \n" +
+                    "rule \"Log D\" when $x : D( id == 1 ) then list.add( 4 ); end \n" +
+                    "rule \"Log E\" when $x : E( id == 1 ) then list.add( 5 ); end \n" +
+                    "rule \"Log F\" when $x : F( id == 1 ) then list.add( 6 ); end \n" +
+                    "rule \"Log G\" when $x : G( id == 1 ) then list.add( 7 ); end \n" +
+                    "rule \"Log H\" when $x : H( id == 1 ) then list.add( 8 ); end \n" +
+                    "rule \"Log I\" when $x : I( id == 1 ) then list.add( 9 ); end \n" +
+                    "rule \"Log J\" when $x : J( id == 1 ) then list.add( 10 ); end \n" +
+                    "rule \"Log K\" when $x : K( id == 1 ) then list.add( 11 ); end \n" +
+                    "rule \"Log L\" when $x : L( id == 1 ) then list.add( 12 ); end \n" +
+                    "rule \"Log M\" when $x : M( id == 1 ) then list.add( 13 ); end \n" +
+                    "rule \"Log N\" when $x : N( id == 1 ) then list.add( 14 ); end \n" +
                     "" +
-                    "rule \"Log Core\" when $x : Core( $id : id ) then System.out.println( \"Core >>>>>> \" +  $x ); end \n" +
+                    "rule \"Log Core\" when $x : Core( $id : id ) then end \n" +
                     "" +
                     "rule \"Mod\" \n" +
                     "salience -10 \n" +
@@ -2557,7 +2444,6 @@ public class TraitTest extends CommonTraitTest {
                     "  String( this == \"go\" ) \n" +
                     "  $x : Core( id == 0 ) \n" +
                     "then \n" +
-                    "  System.out.println( \" ------------------------------------------------------------------------------ \" ); \n" +
                     "  modify ( $x ) { setId( 1 ); }" +
                     "end \n" +
                     "";
@@ -2636,7 +2522,6 @@ public class TraitTest extends CommonTraitTest {
                     "when \n" +
                     "  $p : Person( name == \"john\" ) \n" +
                     "then \n" +
-                    "  System.out.println( $p ); \n" +
                     "  don( $p, StudentWorker.class ); \n" +
                     "  don( $p, Assistant.class ); \n" +
                     "end \n" +
@@ -2646,28 +2531,24 @@ public class TraitTest extends CommonTraitTest {
                     "  $t : Student( age == 44 ) \n" +
                     "then \n" +
                     "  list.add( 1 );\n " +
-                    "  System.out.println( \"Student >> \" +  $t ); \n" +
                     "end \n" +
                     "rule \"Log W\" \n" +
                     "when \n" +
                     "  $t : Worker( name == \"alan\" ) \n" +
                     "then \n" +
                     "  list.add( 2 );\n " +
-                    "  System.out.println( \"Worker >> \" + $t ); \n" +
                     "end \n" +
                     "rule \"Log SW\" \n" +
                     "when \n" +
                     "  $t : StudentWorker( age == 44 ) \n" +
                     "then \n" +
                     "  list.add( 3 );\n " +
-                    "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
                     "end \n" +
                     "rule \"Log Pers\" \n" +
                     "when \n" +
                     "  $t : Person( age == 44 ) \n" +
                     "then \n" +
                     "  list.add( 4 );\n " +
-                    "  System.out.println( \"Person >> \" + $t ); \n" +
                     "end \n" +
                     "" +
                     "rule \"Mod\" \n" +
@@ -2676,10 +2557,8 @@ public class TraitTest extends CommonTraitTest {
                     "  String( this == \"go\" ) \n" +
                     "  $p : Student( name == \"john\" ) \n" +
                     "then \n" +
-                    "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
                     "  modify ( $p ) { setSchool( \"myschool\" ), setAge( 44 ), setName( \"alan\" ); } " +
-                    "end \n" +
-                    "";
+                    "end \n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2867,7 +2746,6 @@ public class TraitTest extends CommonTraitTest {
                         "   $t : org.drools.base.factmodel.traits.Thing( $c : core, _isTop(), this not isA t.x.E.class, this isA t.x.D.class ) " +
                         "then\n" +
                         "   list.add( \"E\" ); \n" +
-                        "   System.out.println( \"E due to \" + $t); \n" +
                         "   don( $t, E.class ); \n" +
                         "end\n" +
                         "" +
@@ -2894,7 +2772,7 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list.size()).isEqualTo(2);
         assertThat(list.contains("E")).isTrue();
         assertThat(list.contains("X")).isTrue();
@@ -2903,7 +2781,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
         assertThat(ks.getObjects().size()).isEqualTo(3);
 
@@ -2955,7 +2833,6 @@ public class TraitTest extends CommonTraitTest {
                         "   list.add( $m ); \n" +
                         "   list.add( $i ); \n" +
                         "   list.add( $d ); \n" +
-                        "   System.out.println( $x ); \n" +
                         "end\n" +
                         ""
                 ;
@@ -3016,12 +2893,10 @@ public class TraitTest extends CommonTraitTest {
                         "rule Check when\n" +
                         "   $x : Bar( this not isA Foo ) \n" +
                         "then \n" +
-                        "   System.out.println( $x ); \n" +
                         "end\n" +
                         "rule Check2 when\n" +
                         "   $x : Bar2( this not isA Foo ) \n" +
                         "then \n" +
-                        "   System.out.println( $x ); \n" +
                         "end\n" +
                         "";
 
@@ -3121,22 +2996,11 @@ public class TraitTest extends CommonTraitTest {
                         "rule Init when\n" +
                         "then\n" +
                         "   Kore k = new Kore();\n" +
-                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, B.class ); \n" +
-
-                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, C.class ); \n" +
-
-                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, D.class ); \n" +
-
-                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, E.class ); \n" +
-
-                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, A.class ); \n" +
-
-                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, F.class ); \n" +
                         "end\n" +
                         "" +
@@ -3144,7 +3008,6 @@ public class TraitTest extends CommonTraitTest {
                         "   $x : A( ) \n" +
                         "then \n" +
                         "   list.add( $x ); \n" +
-                        "   System.out.println( \" A by \" + $x ); \n" +
                         "end\n" +
                         "";
 
@@ -3243,7 +3106,6 @@ public class TraitTest extends CommonTraitTest {
                         "when \n" +
                         "   $x : A(  ) \n" +
                         "then \n" +
-                        "   System.out.println( $x ); \n " +
                         "end\n" +
                         " \n" +
                         "query queryA1\n" +
@@ -3322,7 +3184,7 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z'));
 
 
@@ -3391,7 +3253,7 @@ public class TraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list).isEqualTo(Arrays.asList('A', 'D', 'G', 'Z'));
 
 
@@ -3493,7 +3355,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "   $x : Kore() \n" +
                         "then \n" +
-                        "   System.out.println( \"Donning\" ); \n" +
                         "   don( $x, A.class ); \n" +
                         "end\n" +
                         "rule React \n" +
@@ -3501,7 +3362,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "   $x : Kore( this isA A.class ) \n" +
                         "then \n" +
-                        "   System.out.println( \"XXXXXXXXXXXXXXXXXXXXXX \" + $x ); \n" +
                         "   list.add( $x ); \n" +
                         "end\n" +
                         "";
@@ -3513,7 +3373,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         for ( Object o : ks.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString() );
         }
         assertThat(list.size()).isEqualTo(1);
     }
@@ -3595,9 +3455,9 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString() );
         }
-        System.err.println( "---------------------------------" );
+        LOGGER.debug( "---------------------------------" );
 
         assertThat(ksession.getObjects().size()).isEqualTo(4);
 
@@ -3605,9 +3465,9 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString() );
         }
-        System.err.println( "---------------------------------" );
+        LOGGER.debug( "---------------------------------" );
 
         assertThat(ksession.getObjects().size()).isEqualTo(3);
 
@@ -3615,9 +3475,9 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString() );
         }
-        System.err.println( "---------------------------------" );
+        LOGGER.debug( "---------------------------------" );
 
         assertThat(ksession.getObjects().size()).isEqualTo(1);
 
@@ -3625,9 +3485,9 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString());
         }
-        System.err.println( "---------------------------------" );
+        LOGGER.debug( "---------------------------------" );
 
         assertThat(ksession.getObjects().size()).isEqualTo(1);
 
@@ -3635,9 +3495,9 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString() );
         }
-        System.err.println( "---------------------------------" );
+        LOGGER.debug( "---------------------------------" );
 
         assertThat(ksession.getObjects().size()).isEqualTo(3);
 
@@ -3645,14 +3505,12 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
+            LOGGER.debug( o.toString() );
         }
-        System.err.println( "---------------------------------" );
+        LOGGER.debug( "---------------------------------" );
 
         assertThat(ksession.getObjects().size()).isEqualTo(1);
     }
-
-
 
     @Test
     public void testShedThing() {
@@ -3718,7 +3576,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         assertThat(ksession.getObjects().size()).isEqualTo(1);
@@ -3789,7 +3647,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         assertThat(ksession.getObjects().size()).isEqualTo(0);
@@ -3847,7 +3705,7 @@ public class TraitTest extends CommonTraitTest {
 
         for ( Object o : ksession.getObjects() ) {
             // lose the string and the Student proxy
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
         assertThat(ksession.getObjects().size()).isEqualTo(3);
 
@@ -3911,7 +3769,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         assertThat(ksession.getObjects().size()).isEqualTo(2);
@@ -3952,7 +3810,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "   $x : Kore() \n" +
                         "then \n" +
-                        "   System.out.println( \"Donning\" ); \n" +
                         "   don( $x, A.class ); \n" +
                         "end\n" +
                         "" +
@@ -3962,7 +3819,6 @@ public class TraitTest extends CommonTraitTest {
                         "when \n" +
                         "   $x : String() \n" +
                         "then \n" +
-                        "   System.out.println( \"deleteing\" ); \n" +
                         "   delete( $x ); \n" +
                         "end \n" +
                         "\n";
@@ -3978,7 +3834,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         assertThat(ks.getObjects().size()).isEqualTo(0);
@@ -4007,7 +3863,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "  $p : Person( this not isA Student )\n" +
                         "then\n" +
-                        "  System.out.println( \"Don person\" ); \n" +
                         "  don( $p, Student.class );\n" +
                         "end\n" +
                         "\n" +
@@ -4016,7 +3871,6 @@ public class TraitTest extends CommonTraitTest {
                         "  $s : String( this == \"X\" )\n" +
                         "  $p : Person()\n" +
                         "then\n" +
-                        "  System.out.println( \"Change name\" ); \n" +
                         "  delete( $s ); \n" +
                         "  modify( $p ) { setName( $s ); }\n" +
                         "end\n" +
@@ -4025,7 +3879,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "  Student( name == \"X\" )\n" +
                         "then\n" +
-                        "  System.out.println( \"Update detected\" );\n" +
                         "  list.add( 0 );\n" +
                         "end";
 
@@ -4086,8 +3939,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "   $p : Person() \n" +
                         "then\n" +
-                        "  System.out.println( \"Don person\" ); \n"
-                        +
                         "  Student $s = (Student) don( $p, Student.class );\n" +
                         "  modify ( $s ) { setId( \"xyz\" ); } " +
                         "  " +
@@ -4099,7 +3950,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "  $s : Student( $sid : id == \"xyz\", $f2 : fld2, $f3 : fld3, $f4 : fld4, $f5 : fldZ )\n" +
                         "then\n" +
-                        "  System.out.println( \">>>>>>>>>> Student\" + $s ); \n" +
                         "  list.add( $sid ); \n" +
                         "  list.add( $f2 ); \n" +
                         "  list.add( $f3 ); \n" +
@@ -4111,7 +3961,6 @@ public class TraitTest extends CommonTraitTest {
                         "when\n" +
                         "  $w : Worker( $wid : id == 99, $f2 : fld2, $f3 : fld3, $f4 : fld4, $f5 : fldY )\n" +
                         "then\n" +
-                        "  System.out.println( \">>>>>>>>>> Worker\" + $w );\n" +
                         "  list.add( $wid ); \n" +
                         "  list.add( $f2 ); \n" +
                         "  list.add( $f3 ); \n" +
@@ -4275,11 +4124,11 @@ public class TraitTest extends CommonTraitTest {
 
         for ( int j = 'A'; j <= 'J'; j ++ ) {
             String x = "" + (char) j;
-            drl += "rule \"Log " + x + "\" when " + x + "() then System.out.println( \"@@ " + x + " detected \" ); list.add( \"" + x + "\" ); end \n";
+            drl += "rule \"Log " + x + "\" when " + x + "() then list.add( \"" + x + "\" ); end \n";
 
             drl += "rule \"Log II" + x + "\" salience -1 when " + x + "( ";
             drl += "this isA H";
-            drl += " ) then System.out.println( \"@@ as H >> " + x + " detected \" ); list.add( \"H" + x + "\" ); end \n";
+            drl += " ) then list.add( \"H" + x + "\" ); end \n";
         }
 
         KieSession ks = new KieHelper().addContent( drl, ResourceType.DRL ).build().newKieSession();
@@ -4299,7 +4148,7 @@ public class TraitTest extends CommonTraitTest {
 
         list.clear();
 
-        System.out.println( "---------------------------------------" );
+        LOGGER.debug( "---------------------------------------" );
 
         ks.insert( "go" );
         ks.fireAllRules();
@@ -4313,11 +4162,11 @@ public class TraitTest extends CommonTraitTest {
         assertThat(list.contains("HF")).isTrue();
         assertThat(list.contains("HG")).isTrue();
         assertThat(list.contains("HH")).isTrue();
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list.size()).isEqualTo(9);
         list.clear();
 
-        System.out.println( "---------------------------------------" );
+        LOGGER.debug( "---------------------------------------" );
 
         ks.insert( "go2" );
         ks.fireAllRules();
@@ -4338,8 +4187,6 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-
-
     @Test
     public void testParentBlockers() {
         String drl = "package org.drools.test;\n" +
@@ -4355,9 +4202,7 @@ public class TraitTest extends CommonTraitTest {
                      "" +
                      "rule Init when then X x = new X(); insert( x ); don( x, A.class); don( x, B.class); end \n"+
                      "rule Go when String( this == \"go\" ) $x : X() then don( $x, C.class); end \n" +
-                     "rule Go2 when String( this == \"go2\" ) $x : C() then System.out.println( 1000 ); end \n" +
-                     "";
-
+                     "rule Go2 when String( this == \"go2\" ) $x : C() then end \n";
 
         KieSession ks = getSessionFromString( drl );
         TraitFactoryImpl.setMode(mode, ks.getKieBase() );
@@ -4373,14 +4218,11 @@ public class TraitTest extends CommonTraitTest {
         ks.insert( "go2" );
         ks.fireAllRules();
 
-        System.out.println( "---------------------------------------" );
+        LOGGER.debug( "---------------------------------------" );
 
         ks.dispose();
 
     }
-
-
-
 
     @Test
     public void testTraitLogicalTMS() {
@@ -4417,10 +4259,10 @@ public class TraitTest extends CommonTraitTest {
         ks.delete( handle );
         ks.fireAllRules();
 
-        System.out.println( "---------------------------------------" );
+        LOGGER.debug( "---------------------------------------" );
 
         for ( Object o : ks.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         ks.insert( "go3" );
@@ -4536,7 +4378,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.delete( handle );
         ksession.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list).isEqualTo(Arrays.asList("B", "C", "A"));
     }
 
@@ -4660,7 +4502,6 @@ public class TraitTest extends CommonTraitTest {
                      "  $t : TBean() \n" +
                      "then \n" +
                      "  list.add( 0 ); \n" +
-                     "  System.out.println( \"Call DON MANY \" ); " +
                      "  don( $t, Arrays.asList( C.class, D.class, E.class, F.class ), true ); \n" +
                      "end \n" +
                      "" +
@@ -4678,21 +4519,18 @@ public class TraitTest extends CommonTraitTest {
                      "  B( this isA C ) \n" +
                      "then \n" +
                      "  list.add( 1 ); \n" +
-                     "  System.err.println( \"C is HERE !! \" ); " +
                      "end \n" +
                      "rule D \n" +
                      "when\n" +
                      "  D( this isA A, this isA C ) \n" +
                      "then \n" +
                      "  list.add( 2 ); \n" +
-                     "  System.err.println( \"D is HERE TOO !! \" ); " +
                      "end \n"+
                      "rule E \n" +
                      "when\n" +
                      "  D( this isA A, this isA E ) \n" +
                      "then \n" +
                      "  list.add( 3 ); \n" +
-                     "  System.err.println( \"AND E JOINS THE COMPANY !! \" ); " +
                      "end \n";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
@@ -4733,7 +4571,7 @@ public class TraitTest extends CommonTraitTest {
         cwm.reset();
 
         for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
+            LOGGER.debug( o.toString() );
         }
 
         ksession.insert( "undo" );
@@ -4780,10 +4618,7 @@ public class TraitTest extends CommonTraitTest {
                      "  A(this isA B) \n" +
                      "then \n" +
                      "  list.add( 0 ); \n" +
-                     "  System.out.println( \"Call DON MANY (A isA B) \" ); " +
-                     "end \n" +
-                     "" +
-                     "" ;
+                     "end \n";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
@@ -4923,10 +4758,8 @@ public class TraitTest extends CommonTraitTest {
                           "when \n" +
                           " $t : Thing() \n" +
                           "then \n" +
-                          " System.out.println( \"Thing detected \" + $t ); \n" +
                           " list.add( $t.getClass().getName() ); \n" +
-                          "end \n" +
-                          "";
+                          "end \n";
 
         KieBase kbase = getKieBaseFromString(s1);
         TraitFactoryImpl.setMode(mode, kbase );
@@ -5000,10 +4833,8 @@ public class TraitTest extends CommonTraitTest {
                           "when \n" +
                           " $t : Thing() \n" +
                           "then \n" +
-                          "  System.out.println( \"Thing detected \" + $t ); \n" +
                           "  list.add( $t.getClass().getName() ); \n" +
-                          "end \n" +
-                          "";
+                          "end \n";
 
         KieBase kbase = getKieBaseFromString(s1);
         TraitFactoryImpl.setMode(mode, kbase );
@@ -5027,7 +4858,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.insert( "don2" );
         knowledgeSession.fireAllRules();
 
-        System.out.println( list );
+        LOGGER.debug( list.toString() );
         assertThat(list.size()).isEqualTo(2);
         assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy"));
 
@@ -5297,7 +5128,7 @@ public class TraitTest extends CommonTraitTest {
 
         KnowledgeBuilder kb2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb2.add( new ByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
-        System.out.print( kb2.getErrors() );
+        LOGGER.debug( kb2.getErrors().toString() );
         assertThat(kb2.hasErrors()).isFalse();
 
         knowledgeBase.addPackages( kb2.getKnowledgePackages() );
@@ -5334,7 +5165,6 @@ public class TraitTest extends CommonTraitTest {
                           "	when\n" +
                           "     $e : TBean( ) " +
                           "	then " +
-                          "     System.out.println( 'Don' ); " +
                           "		don( $e, Mask.class );\n" +
                           "end\n" +
                           "" +
@@ -5342,10 +5172,9 @@ public class TraitTest extends CommonTraitTest {
                           "	when \n" +
                           "		$m : Mask() \n" +
                           "then \n" +
-                          "     System.out.println( $m ); \n" +
                           "end\n" +
                           "" +
-                          "rule Zero when not Object() then System.out.println( 'Clean' ); end ";
+                          "rule Zero when not Object() then end ";
 
         KieBase kbase = getKieBaseFromString(s1, EqualityBehaviorOption.IDENTITY);
 
@@ -5458,15 +5287,12 @@ public class TraitTest extends CommonTraitTest {
                 "    IPerson x = don( $core, IPerson.class, true );\n" +
                 "    IStudent s = don( $core, IStudent.class, true );\n" +
                 "    Person p = don( $core, Person.class, true );\n" +
-                "    System.err.println( \"            Done donning              \" );\n " +
                 "end\n" +
 
                 "rule R2 when\n" +
                 "    $p: IPerson( name == null )\n" +
                 "then\n" +
-                "    System.out.println(\"IPerson: \" + $p);\n" +
-                "end\n" +
-                "\n";
+                "end\n";
 
         KieBase kbase = getKieBaseFromString( drl );
         TraitFactoryImpl.setMode(mode, kbase );
@@ -5579,7 +5405,6 @@ public class TraitTest extends CommonTraitTest {
                      "    $core: Entity( ) " +
                      "then " +
                      "    A o = don( $core, A.class ); " +
-                     "    System.out.println( 'Found ! ' + o ); " +
                      "end " +
 
                      "rule Test when " +
@@ -5640,7 +5465,6 @@ public class TraitTest extends CommonTraitTest {
                      "rule Mood when " +
                      "  $x : B() " +
                      "then " +
-                     "  System.out.println( 'Found B' ); " +
                      "end " +
 
                      "rule Shed when " +
@@ -5667,7 +5491,7 @@ public class TraitTest extends CommonTraitTest {
         int n = ksession.fireAllRules();
         assertThat(n).isEqualTo(2);
 
-        System.err.print( "---------------------------------------------------------------\n\n\n " );
+        LOGGER.debug( "---------------------------------------------------------------\n\n\n " );
 
         int counter = 0;
         for ( Object o : ksession.getObjects() ) {
@@ -5683,7 +5507,7 @@ public class TraitTest extends CommonTraitTest {
                 }
             } else if ( o instanceof TraitableBean ) {
                 TraitableBean tb = (TraitableBean) o;
-                System.out.println( tb.getCurrentTypeCode() );
+                LOGGER.debug( tb.getCurrentTypeCode().toString() );
                 counter++;
             }
         }
@@ -5693,7 +5517,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.insert( "go" );
         ksession.fireAllRules();
 
-        System.err.print( "---------------------------------------------------------------\n\n\n " );
+        LOGGER.debug( "---------------------------------------------------------------\n\n\n " );
 
         int counter2 = 0;
         for ( Object o : ksession.getObjects() ) {
@@ -5936,6 +5760,9 @@ public class TraitTest extends CommonTraitTest {
     }
 
     public static class ScholarImpl<K> implements Scholar<K> {
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(ScholarImpl.class);
+
         private Thing<K> core;
 
         public ScholarImpl() { }
@@ -5945,7 +5772,7 @@ public class TraitTest extends CommonTraitTest {
         }
 
         public void learn( String subject ) {
-            System.out.println( "I " + core.getFields().get( "name" ) + ", now know everything about " + subject );
+            LOGGER.debug( "I " + core.getFields().get( "name" ) + ", now know everything about " + subject );
         }
     }
 
@@ -6031,7 +5858,7 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        System.out.println(list);
+        LOGGER.debug(list.toString());
         assertThat(list.get(0)).isEqualTo("Y");
         assertThat(list.get(1)).isEqualTo("Z");
         assertThat(list.get(2)).isEqualTo(first);
@@ -6118,7 +5945,6 @@ public class TraitTest extends CommonTraitTest {
                 " MyThing( $x_0 := core, this isA D.class, $p : this#RootThing.objProp ) " +
                 " exists MyThing( $x_1 := core , core memberOf $p, this isA F.class ) " +
                 "then " +
-                " System.out.println( \"Recognized \" + $x_0 + \" as an instance of E by rule \" + drools.getRule().getName() ); " +
                 " don( $x_0, E.class, true ); " +
                 "end " +
                 "" +
@@ -6128,7 +5954,6 @@ public class TraitTest extends CommonTraitTest {
                 " $y : F( $z : core memberOf $objs ) " +
                 "then " +
                 " retract( $s ); " +
-                " System.out.println( \"SUCCESS : E has been recognized, removing Y \" ); " +
                 " modify ( $x ) { getObjProp().remove( $z ); } " +
                 " modify ( $y ) {} " +
                 "end ";

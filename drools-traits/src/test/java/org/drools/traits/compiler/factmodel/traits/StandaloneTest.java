@@ -27,11 +27,15 @@ import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 
 public class StandaloneTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneTest.class);
 
     private StandaloneTraitFactory factory;
 
@@ -62,8 +66,8 @@ public class StandaloneTest {
         CoreWrapper<Imp> core = factory.makeTraitable(imp, Imp.class );
         IStudent student = (IStudent) factory.don( core, IStudent.class );
 
-        System.out.println( student.getName() );
-        System.out.println( student.getSchool() );
+        LOGGER.debug( student.getName() );
+        LOGGER.debug( student.getSchool() );
         assertThat(student.getName()).isEqualTo("john doe");
         assertThat(student.getSchool()).isNull();
 
@@ -71,7 +75,7 @@ public class StandaloneTest {
 
         student.setName( "alan ford" );
 
-        System.out.println( p.getName() );
+        LOGGER.debug( p.getName() );
         assertThat(p.getName()).isEqualTo("alan ford");
     }
 
@@ -92,8 +96,8 @@ public class StandaloneTest {
         CoreWrapper<Imp> core = factory.makeTraitable( imp, Imp.class );
         IFoo foo = (IFoo) factory.don( core, IFoo.class );
 
-        System.out.println( foo.getName() );
-        System.out.println( foo instanceof Thing );
+        LOGGER.debug( foo.getName() );
+        LOGGER.debug( "Is foo instance of Thing? : " + (foo instanceof Thing) );
 
         assertThat(foo.getName()).isEqualTo("john doe");
         assertThat(foo instanceof Thing).isTrue();

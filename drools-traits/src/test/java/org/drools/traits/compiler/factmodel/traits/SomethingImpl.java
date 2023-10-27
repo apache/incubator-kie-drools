@@ -18,9 +18,12 @@
  */
 package org.drools.traits.compiler.factmodel.traits;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SomethingImpl<K> implements IDoSomething<K> {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(SomethingImpl.class);
 
     private ISomethingWithBehaviour<K> arg;
 
@@ -44,6 +47,6 @@ public class SomethingImpl<K> implements IDoSomething<K> {
     }
 
     public void doAnotherTask() {
-        System.out.println("X");
+        LOGGER.debug("X");
     }
 }

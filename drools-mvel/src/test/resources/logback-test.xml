@@ -30,7 +30,7 @@
   <logger name="org.kie" level="warn"/>
   <logger name="org.drools" level="warn"/>
   
-  <logger name="org.drools.core.management" level="debug"/>
+  <logger name="org.drools.core.management" level="info"/>
   <!--<logger name="org.drools.ancompiler" level="debug"/>-->
 
   <root level="warn">

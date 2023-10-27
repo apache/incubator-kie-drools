@@ -33,9 +33,12 @@ import org.drools.traits.core.factmodel.TripleFactory;
 import org.drools.traits.core.factmodel.TripleFactoryImpl;
 import org.drools.traits.core.factmodel.TripleStore;
 import org.kie.api.runtime.rule.Variable;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentProxyImpl3.class);
 
     private static final String traitType = IStudent.class.getName();
 
@@ -54,7 +57,7 @@ public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
 
     public StudentProxyImpl3(Imp2 obj, final TripleStore m, TripleFactory factory) {
 
-        System.out.println( "ABSCS" );
+        LOGGER.debug( "ABSCS" );
 
         this.object = obj;
 
