@@ -878,7 +878,9 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         }
 
         public boolean equals(Object obj) {
-            if (obj == this) return true;
+            if (obj == this) {
+                return true;
+            }
             else if (obj instanceof AssertBehaviour) {
                 AssertBehaviour that = (AssertBehaviour) obj;
 

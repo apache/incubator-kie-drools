@@ -60,12 +60,20 @@ public class ArrayElements {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         ArrayElements other = (ArrayElements) obj;
         if ( !Arrays.equals( elements,
-                             other.elements ) ) return false;
+                             other.elements ) ) {
+            return false;
+        }
         return true;
     }
 

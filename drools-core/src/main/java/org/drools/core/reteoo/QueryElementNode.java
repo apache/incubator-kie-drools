@@ -474,12 +474,22 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         }
 
         QueryElementNode other = (QueryElementNode) object;
-        if ( this.leftInput.getId() != other.leftInput.getId() ) return false;
-        if ( openQuery != other.openQuery ) return false;
-        if ( !openQuery && dataDriven != other.dataDriven ) return false;
+        if ( this.leftInput.getId() != other.leftInput.getId() ) {
+            return false;
+        }
+        if ( openQuery != other.openQuery ) {
+            return false;
+        }
+        if ( !openQuery && dataDriven != other.dataDriven ) {
+            return false;
+        }
         if ( queryElement == null ) {
-            if ( other.queryElement != null ) return false;
-        } else if ( !queryElement.equals( other.queryElement ) ) return false;
+            if ( other.queryElement != null ) {
+                return false;
+            }
+        } else if ( !queryElement.equals( other.queryElement ) ) {
+            return false;
+        }
         return true;
     }
 

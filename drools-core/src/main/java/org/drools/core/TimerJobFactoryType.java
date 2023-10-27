@@ -60,16 +60,16 @@ public abstract class TimerJobFactoryType implements Serializable {
     private static final Map<String, TimerJobFactoryType> registry = new HashMap<>();
     
     static {
-    	register(DEFAULT);
-    	register(TRACKABLE);
-    	register(THREAD_SAFE_TRACKABLE);
-    	register(JPA);
+        register(DEFAULT);
+        register(TRACKABLE);
+        register(THREAD_SAFE_TRACKABLE);
+        register(JPA);
     }
 
     public static void register(TimerJobFactoryType type) {
-    	if (type != null && type.getId() != null) {
-    		registry.put(type.getId(), type);
-    	}
+        if (type != null && type.getId() != null) {
+            registry.put(type.getId(), type);
+        }
     }
     
     public abstract TimerJobFactoryManager createInstance();
@@ -95,7 +95,7 @@ public abstract class TimerJobFactoryType implements Serializable {
     public static TimerJobFactoryType resolveTimerJobFactoryType( String id ) {
         TimerJobFactoryType type = registry.get(id);
         if (type != null) {
-        	return type;
+            return type;
         }
         throw new IllegalArgumentException( "Illegal enum value '" + id + "' for TimerJobFactoryType" );
     }

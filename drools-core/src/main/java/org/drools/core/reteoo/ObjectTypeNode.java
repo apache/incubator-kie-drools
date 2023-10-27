@@ -161,8 +161,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Id)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Id)) {
+                return false;
+            }
 
             Id otherId = (Id) o;
             return id == otherId.id && otnId == otherId.otnId;

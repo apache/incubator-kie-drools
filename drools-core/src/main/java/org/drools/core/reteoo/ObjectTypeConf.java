@@ -26,7 +26,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
 public interface ObjectTypeConf {
-	String getTypeName();
+    String getTypeName();
 
     ObjectTypeNode[] getObjectTypeNodes();
 

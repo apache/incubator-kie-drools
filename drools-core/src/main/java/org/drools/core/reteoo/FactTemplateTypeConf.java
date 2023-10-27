@@ -145,7 +145,7 @@ public class FactTemplateTypeConf
 
     @Override
     public String getTypeName() {
-    	return factTemplate.getName();
+        return factTemplate.getName();
     }
 
     @Override

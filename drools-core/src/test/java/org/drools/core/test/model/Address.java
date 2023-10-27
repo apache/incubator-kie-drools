@@ -65,19 +65,37 @@ public class Address {
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         Address other = (Address) obj;
         if ( number == null ) {
-            if ( other.number != null ) return false;
-        } else if ( !number.equals( other.number ) ) return false;
+            if ( other.number != null ) {
+                return false;
+            }
+        } else if ( !number.equals( other.number ) ) {
+            return false;
+        }
         if ( phone == null ) {
-            if ( other.phone != null ) return false;
-        } else if ( !phone.equals( other.phone ) ) return false;
+            if ( other.phone != null ) {
+                return false;
+            }
+        } else if ( !phone.equals( other.phone ) ) {
+            return false;
+        }
         if ( street == null ) {
-            if ( other.street != null ) return false;
-        } else if ( !street.equals( other.street ) ) return false;
+            if ( other.street != null ) {
+                return false;
+            }
+        } else if ( !street.equals( other.street ) ) {
+            return false;
+        }
         return true;
     }
 

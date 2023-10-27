@@ -89,18 +89,23 @@ public class RowAdapter implements Row {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         RowAdapter other = (RowAdapter) obj;
         if (this.tuple == null) {
-            if (other.tuple != null)
+            if (other.tuple != null) {
                 return false;
-        } else if (!this.tuple.equals(other.tuple ))
+            }
+        } else if (!this.tuple.equals(other.tuple )) {
             return false;
+        }
         return true;
     }
     

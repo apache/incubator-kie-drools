@@ -326,9 +326,15 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         RuleTerminalNodeLeftTuple that = (RuleTerminalNodeLeftTuple) o;
         return ruleAgendaItem.getRule().getName().equals(that.ruleAgendaItem.getRule().getName());
     }

@@ -103,7 +103,9 @@ public class BinaryHeapQueueTest {
                 for (int i = max - 1; i >= 0; i--) {
                     int sal = group.getNext().getSalience();
                     sb.append(" ").append(sal);
-                    if (sal != i) ok = false;
+                    if (sal != i) {
+                        ok = false;
+                    }
                 }
                 assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
                 //      System.out.println( sb.toString() );
@@ -182,7 +184,7 @@ public class BinaryHeapQueueTest {
             return "AgendaGroup '" + this.name + "'";
         }
 
-        public boolean equal(final Object object) {
+        public boolean equals(final Object object) {
             if (!(object instanceof Group)) {
                 return false;
             }

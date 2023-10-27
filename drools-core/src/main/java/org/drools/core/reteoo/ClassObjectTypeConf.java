@@ -171,8 +171,9 @@ public class ClassObjectTypeConf
         String pkgName = "";
         if ( pkg == null ) {
             int index = clazz.getName().lastIndexOf( '.' );
-            if ( index != -1 ) pkgName = clazz.getName().substring( 0,
-                                                                    index );
+            if ( index != -1 ) {
+                pkgName = clazz.getName().substring( 0, index );
+            }
         } else {
             pkgName = pkg.getName();
         }
@@ -245,11 +246,11 @@ public class ClassObjectTypeConf
     }
 
     public String getClassName() {
-    	return this.cls != null ? this.cls.getName() : "";
+        return this.cls != null ? this.cls.getName() : "";
     }
     
     public String getTypeName() {
-    	return getClassName();
+        return getClassName();
     }
 
     @Override

@@ -40,7 +40,9 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
 
     private static void verifyProperty1(Node< ? > n) {
         assert nodeColor( n ) == Color.RED || nodeColor( n ) == Color.BLACK;
-        if ( n == null ) return;
+        if ( n == null ) {
+            return;
+        }
         verifyProperty1( n.left );
         verifyProperty1( n.right );
     }
@@ -59,7 +61,9 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
             assert nodeColor( n.right ) == Color.BLACK;
             assert nodeColor( n.parent ) == Color.BLACK;
         }
-        if ( n == null ) return;
+        if ( n == null ) {
+            return;
+        }
         verifyProperty4( n.left );
         verifyProperty4( n.right );
     }
@@ -290,8 +294,12 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         if ( oldn.parent == null ) {
             root = newn;
         } else {
-            if ( oldn == oldn.parent.left ) oldn.parent.left = newn;
-            else oldn.parent.right = newn;
+            if ( oldn == oldn.parent.left ) {
+                oldn.parent.left = newn;
+            }
+            else {
+                oldn.parent.right = newn;
+            }
         }
         if ( newn != null ) {
             newn.parent = oldn.parent;
@@ -341,13 +349,21 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     }
 
     private void insertCase1(Node<K> n) {
-        if ( n.parent == null ) n.color = Color.BLACK;
-        else insertCase2( n );
+        if ( n.parent == null ) {
+            n.color = Color.BLACK;
+        }
+        else {
+            insertCase2( n );
+        }
     }
 
     private void insertCase2(Node<K> n) {
-        if ( nodeColor( n.parent ) == Color.BLACK ) return; // Tree is still valid
-        else insertCase3( n );
+        if ( nodeColor( n.parent ) == Color.BLACK ) {
+            return; // Tree is still valid
+        }
+        else {
+            insertCase3( n );
+        }
     }
 
     void insertCase3(Node<K> n) {
@@ -384,7 +400,9 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
 
     public void delete(K key) {
         Node<K> n = lookup(key);
-        if ( n == null ) return; // Key not found, do nothing
+        if ( n == null ) {
+            return; // Key not found, do nothing
+        }
         if ( n.left != null && n.right != null ) {
             // Copy key/value from predecessor and then delete it instead
             Node<K> pred = maximumNode( n.left );
@@ -418,16 +436,24 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     }
 
     private void deleteCase1(Node<K> n) {
-        if ( n.parent == null ) return;
-        else deleteCase2( n );
+        if ( n.parent == null ) {
+            return;
+        }
+        else {
+            deleteCase2( n );
+        }
     }
 
     private void deleteCase2(Node<K> n) {
         if ( nodeColor( n.sibling() ) == Color.RED ) {
             n.parent.color = Color.RED;
             n.sibling().color = Color.BLACK;
-            if ( n == n.parent.left ) rotateLeft( n.parent );
-            else rotateRight( n.parent );
+            if ( n == n.parent.left ) {
+                rotateLeft( n.parent );
+            }
+            else {
+                rotateRight( n.parent );
+            }
         }
         deleteCase3( n );
     }
@@ -436,32 +462,33 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         if ( nodeColor( n.parent ) == Color.BLACK &&
                 nodeColor( n.sibling() ) == Color.BLACK &&
                 nodeColor( n.sibling().left ) == Color.BLACK &&
-                nodeColor( n.sibling().right ) == Color.BLACK )
-        {
+                nodeColor( n.sibling().right ) == Color.BLACK ) {
             n.sibling().color = Color.RED;
             deleteCase1( n.parent );
         }
-        else deleteCase4( n );
+        else {
+            deleteCase4( n );
+        }
     }
 
     private void deleteCase4(Node<K> n) {
         if ( nodeColor( n.parent ) == Color.RED &&
                 nodeColor( n.sibling() ) == Color.BLACK &&
                 nodeColor( n.sibling().left ) == Color.BLACK &&
-                nodeColor( n.sibling().right ) == Color.BLACK )
-        {
+                nodeColor( n.sibling().right ) == Color.BLACK ) {
             n.sibling().color = Color.RED;
             n.parent.color = Color.BLACK;
         }
-        else deleteCase5( n );
+        else {
+            deleteCase5( n );
+        }
     }
 
     private void deleteCase5(Node<K> n) {
         if ( n == n.parent.left &&
                 nodeColor( n.sibling() ) == Color.BLACK &&
                 nodeColor( n.sibling().left ) == Color.RED &&
-                nodeColor( n.sibling().right ) == Color.BLACK )
-        {
+                nodeColor( n.sibling().right ) == Color.BLACK ) {
             n.sibling().color = Color.RED;
             n.sibling().left.color = Color.BLACK;
             rotateRight( n.sibling() );
@@ -469,8 +496,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         else if ( n == n.parent.right &&
                 nodeColor( n.sibling() ) == Color.BLACK &&
                 nodeColor( n.sibling().right ) == Color.RED &&
-                nodeColor( n.sibling().left ) == Color.BLACK )
-        {
+                nodeColor( n.sibling().left ) == Color.BLACK ) {
             n.sibling().color = Color.RED;
             n.sibling().right.color = Color.BLACK;
             rotateLeft( n.sibling() );
@@ -485,8 +511,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
             n.sibling().right.color = Color.BLACK;
             rotateLeft( n.parent );
         }
-        else
-        {
+        else {
             n.sibling().left.color = Color.BLACK;
             rotateRight( n.parent );
         }

@@ -129,11 +129,19 @@ public class DurationTimer extends BaseTimer
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         DurationTimer other = (DurationTimer) obj;
-        if ( duration != other.duration ) return false;
+        if ( duration != other.duration ) {
+            return false;
+        }
         return true;
     }
 

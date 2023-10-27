@@ -284,7 +284,9 @@ public class KnowledgeBaseMonitoring
 
     public AttributeList getAttributes(String[] attributeNames) {
         AttributeList resultList = new AttributeList();
-        if ( attributeNames.length == 0 ) return resultList;
+        if ( attributeNames.length == 0 ) {
+            return resultList;
+        }
         for ( int i = 0; i < attributeNames.length; i++ ) {
             try {
                 Object value = getAttribute( attributeNames[i] );

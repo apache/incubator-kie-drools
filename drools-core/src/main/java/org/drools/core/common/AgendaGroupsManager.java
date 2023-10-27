@@ -472,7 +472,7 @@ public interface AgendaGroupsManager extends Externalizable {
                 return;
             }
             this.workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group, this.workingMemory );
-            while ( removeGroup(group) ); // keep removing while group is on the stack
+            while ( removeGroup(group) ) {}; // keep removing while group is on the stack
             group.setActive( false );
             innerDeactiveRuleFlowGroup( group );
             this.workingMemory.getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );

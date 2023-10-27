@@ -880,7 +880,9 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     }
 
     public void registeRremovedEntryNodeCache(EntryPointNode node) {
-        if (removedEntryNodeCache == null) removedEntryNodeCache = new HashSet<>();
+        if (removedEntryNodeCache == null) {
+            removedEntryNodeCache = new HashSet<>();
+        }
         removedEntryNodeCache.add(node);
     }
 

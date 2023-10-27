@@ -143,20 +143,40 @@ public class CronTimer extends BaseTimer
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         CronTimer other = (CronTimer) obj;
-        if ( repeatLimit != other.repeatLimit ) return false;
+        if ( repeatLimit != other.repeatLimit ) {
+            return false;
+        }
         if ( cronExpression.getCronExpression() == null ) {
-            if ( other.cronExpression.getCronExpression() != null ) return false;
-        } else if ( !cronExpression.getCronExpression().equals( other.cronExpression.getCronExpression() ) ) return false;
+            if ( other.cronExpression.getCronExpression() != null ) {
+                return false;
+            }
+        } else if ( !cronExpression.getCronExpression().equals( other.cronExpression.getCronExpression() ) ) {
+            return false;
+        }
         if ( endTime == null ) {
-            if ( other.endTime != null ) return false;
-        } else if ( !endTime.equals( other.endTime ) ) return false;
+            if ( other.endTime != null ) {
+                return false;
+            }
+        } else if ( !endTime.equals( other.endTime ) ) {
+            return false;
+        }
         if ( startTime == null ) {
-            if ( other.startTime != null ) return false;
-        } else if ( !startTime.equals( other.startTime ) ) return false;
+            if ( other.startTime != null ) {
+                return false;
+            }
+        } else if ( !startTime.equals( other.startTime ) ) {
+            return false;
+        }
         return true;
     }
 

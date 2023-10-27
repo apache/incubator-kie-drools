@@ -72,19 +72,19 @@ public interface InternalKieContainer extends KieContainer {
      * Returns the ID assigned to the container.
      * @return the ID assigned to the container.
      */
-	String getContainerId();
-	
-	/**
-	 * Returns the RelaseId configured while creating the Kiecontainer.
-	 * @return the RelaseId configured while creating the Kiecontainer.
-	 */
-	ReleaseId getConfiguredReleaseId();
-	
-	/**
-	 * Returns the actual resolved ReleaseId. 
-	 * @return the actual resolved ReleaseId. 
-	 */
-	ReleaseId getResolvedReleaseId();
+    String getContainerId();
+    
+    /**
+     * Returns the RelaseId configured while creating the Kiecontainer.
+     * @return the RelaseId configured while creating the Kiecontainer.
+     */
+    ReleaseId getConfiguredReleaseId();
+    
+    /**
+     * Returns the actual resolved ReleaseId. 
+     * @return the actual resolved ReleaseId. 
+     */
+    ReleaseId getResolvedReleaseId();
 
     void disposeSession(KieSession kieSession);
 

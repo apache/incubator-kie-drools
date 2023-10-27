@@ -147,7 +147,7 @@ public class TimerNode extends LeftTupleSource
         }
 
         return Arrays.deepEquals(startEndDeclarations, other.startEndDeclarations) &&
-               this.timer.equals(other.timer);
+                this.timer.equals(other.timer);
     }
 
     public TimerNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
