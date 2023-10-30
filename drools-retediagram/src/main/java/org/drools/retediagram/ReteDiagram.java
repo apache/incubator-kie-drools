@@ -164,9 +164,9 @@ public class ReteDiagram {
         File pngFile = new File(outputPath, pngFileName);
         try (PrintStream out = new PrintStream(new FileOutputStream(gvFile));) {
             out.println("digraph g {\n" +
-                    "graph [fontname = \"Overpass\" fontsize=11];\n" + 
-                    " node [fontname = \"Overpass\" fontsize=11];\n" + 
-                    " edge [fontname = \"Overpass\" fontsize=11];");
+                    "graph [fontname = \"Arial\" fontsize=11];\n" +
+                    " node [fontname = \"Arial\" fontsize=11];\n" +
+                    " edge [fontname = \"Arial\" fontsize=11];");
             HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap = new HashMap<>();
             HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap = new HashMap<>();
             List<Vertex<BaseNode,BaseNode>> vertexes = new ArrayList<>();
