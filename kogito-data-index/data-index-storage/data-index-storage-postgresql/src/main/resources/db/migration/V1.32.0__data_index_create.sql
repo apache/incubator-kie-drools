@@ -1,4 +1,4 @@
-create table attachments
+create table IF NOT EXISTS attachments
 (
     id         varchar(255) not null,
     content    varchar(255),
@@ -9,7 +9,7 @@ create table attachments
     primary key (id)
 );
 
-create table comments
+create table IF NOT EXISTS comments
 (
     id         varchar(255) not null,
     content    varchar(255),
@@ -19,7 +19,7 @@ create table comments
     primary key (id)
 );
 
-create table jobs
+create table IF NOT EXISTS jobs
 (
     id                       varchar(255) not null,
     callback_endpoint        varchar(255),
@@ -41,7 +41,7 @@ create table jobs
     primary key (id)
 );
 
-create table milestones
+create table IF NOT EXISTS milestones
 (
     id                  varchar(255) not null,
     process_instance_id varchar(255) not null,
@@ -50,7 +50,7 @@ create table milestones
     primary key (id, process_instance_id)
 );
 
-create table nodes
+create table IF NOT EXISTS nodes
 (
     id                  varchar(255) not null,
     definition_id       varchar(255),
@@ -63,7 +63,7 @@ create table nodes
     primary key (id)
 );
 
-create table processes
+create table IF NOT EXISTS processes
 (
     id                         varchar(255) not null,
     business_key               varchar(255),
@@ -83,21 +83,21 @@ create table processes
     primary key (id)
 );
 
-create table processes_addons
+create table IF NOT EXISTS processes_addons
 (
     process_id varchar(255) not null,
     addon      varchar(255) not null,
     primary key (process_id, addon)
 );
 
-create table processes_roles
+create table IF NOT EXISTS processes_roles
 (
     process_id varchar(255) not null,
     role       varchar(255) not null,
     primary key (process_id, role)
 );
 
-create table tasks
+create table IF NOT EXISTS tasks
 (
     id                       varchar(255) not null,
     actual_owner             varchar(255),
@@ -119,35 +119,35 @@ create table tasks
     primary key (id)
 );
 
-create table tasks_admin_groups
+create table IF NOT EXISTS tasks_admin_groups
 (
     task_id  varchar(255) not null,
     group_id varchar(255) not null,
     primary key (task_id, group_id)
 );
 
-create table tasks_admin_users
+create table IF NOT EXISTS tasks_admin_users
 (
     task_id varchar(255) not null,
     user_id varchar(255) not null,
     primary key (task_id, user_id)
 );
 
-create table tasks_excluded_users
+create table IF NOT EXISTS tasks_excluded_users
 (
     task_id varchar(255) not null,
     user_id varchar(255) not null,
     primary key (task_id, user_id)
 );
 
-create table tasks_potential_groups
+create table IF NOT EXISTS tasks_potential_groups
 (
     task_id  varchar(255) not null,
     group_id varchar(255) not null,
     primary key (task_id, group_id)
 );
 
-create table tasks_potential_users
+create table IF NOT EXISTS tasks_potential_users
 (
     task_id varchar(255) not null,
     user_id varchar(255) not null,
@@ -155,11 +155,19 @@ create table tasks_potential_users
 );
 
 alter table if exists attachments
+  drop constraint if exists fk_attachments_tasks
+cascade;
+
+alter table if exists attachments
     add constraint fk_attachments_tasks
     foreign key (task_id)
     references tasks
     on
 delete
+cascade;
+
+alter table if exists comments
+  drop constraint if exists fk_comments_tasks
 cascade;
 
 alter table if exists comments
@@ -171,11 +179,19 @@ delete
 cascade;
 
 alter table if exists milestones
+drop constraint if exists fk_milestones_process
+cascade;
+
+alter table if exists milestones
     add constraint fk_milestones_process
     foreign key (process_instance_id)
     references processes
     on
 delete
+cascade;
+
+alter table if exists nodes
+drop constraint if exists fk_nodes_process
 cascade;
 
 alter table if exists nodes
@@ -187,11 +203,19 @@ delete
 cascade;
 
 alter table if exists processes_addons
+drop constraint if exists fk_processes_addons_processes
+cascade;
+
+alter table if exists processes_addons
     add constraint fk_processes_addons_processes
     foreign key (process_id)
     references processes
     on
 delete
+cascade;
+
+alter table if exists processes_roles
+drop constraint if exists fk_processes_roles_processes
 cascade;
 
 alter table if exists processes_roles
@@ -203,11 +227,19 @@ delete
 cascade;
 
 alter table if exists tasks_admin_groups
+drop constraint if exists fk_tasks_admin_groups_tasks
+cascade;
+
+alter table if exists tasks_admin_groups
     add constraint fk_tasks_admin_groups_tasks
     foreign key (task_id)
     references tasks
     on
 delete
+cascade;
+
+alter table if exists tasks_admin_users
+drop constraint if exists fk_tasks_admin_users_tasks
 cascade;
 
 alter table if exists tasks_admin_users
@@ -219,6 +251,10 @@ delete
 cascade;
 
 alter table if exists tasks_excluded_users
+drop constraint if exists fk_tasks_excluded_users_tasks
+cascade;
+
+alter table if exists tasks_excluded_users
     add constraint fk_tasks_excluded_users_tasks
     foreign key (task_id)
     references tasks
@@ -227,11 +263,19 @@ delete
 cascade;
 
 alter table if exists tasks_potential_groups
+drop constraint if exists fk_tasks_potential_groups_tasks
+cascade;
+
+alter table if exists tasks_potential_groups
     add constraint fk_tasks_potential_groups_tasks
     foreign key (task_id)
     references tasks
     on
 delete
+cascade;
+
+alter table if exists tasks_potential_users
+drop constraint if exists fk_tasks_potential_users_tasks
 cascade;
 
 alter table if exists tasks_potential_users
