@@ -19,5 +19,5 @@
   "kogitoprocinstanceid": "2308e23d-9998-47e9-a772-a078cf5b891b",
   "kogitoprocid": "travels",
   "kogitoaddons": "cloudevents,process-svg,prometheus-monitoring,monitoring,infinispan-persistence,process-management",
-  "kogitoProcessInstanceState" : "1"
+  "kogitoprocist" : "1"
 }

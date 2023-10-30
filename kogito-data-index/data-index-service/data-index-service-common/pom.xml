@@ -95,7 +95,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-reactive</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-http-vertx</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.quarkiverse.reactivemessaging.http</groupId>
       <artifactId>quarkus-reactive-messaging-http</artifactId>

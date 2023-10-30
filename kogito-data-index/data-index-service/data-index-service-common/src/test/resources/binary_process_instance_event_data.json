@@ -1,0 +1,16 @@
+{
+  "eventDate" :  1698332756677,
+  "eventUser" : "admin",
+  "eventType" : 1,
+  "processId": "subscription_flow",
+  "processVersion": "1.0",
+  "processType": null,
+  "processInstanceId":  "5f8b1a48-4d37-4bd2-a1a6-9b8f6097cfdd",
+  "businessKey" :  "business_key",
+  "processName": "subscription workflow",
+  "parentInstanceId": "parent_instance_id",
+  "rootProcessId" : "root_process_id",
+  "rootProcessInstanceId" :  "root_process_instance_id",
+  "state" :  1,
+  "roles":  ["admin", "user"]
+}

@@ -1,0 +1,14 @@
+{
+  "eventDate" : 1698332756677,
+  "eventUser" : "admin",
+  "userTaskDefinitionId" : "task_123",
+  "userTaskInstanceId" : "45fae435-b098-4f27-97cf-a0c107072e8b",
+  "userTaskName": "VisaApplication",
+  "eventType": 1,
+  "userTaskDescription" : "This task is for applying to a visa",
+  "userTaskPriority": "1",
+  "userTaskReferenceName": "Apply for visa",
+  "state" : "Completed",
+  "actualOwner" : "admin",
+  "processInstanceId" : "67fb3435-b098-4f27-97cf-a0c107072e8b"
+}

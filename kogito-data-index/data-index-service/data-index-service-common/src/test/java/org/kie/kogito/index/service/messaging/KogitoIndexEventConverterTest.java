@@ -18,6 +18,11 @@
  */
 package org.kie.kogito.index.service.messaging;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+
+import javax.ws.rs.core.HttpHeaders;
+
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Metadata;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,43 +31,65 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.mapper.ProcessInstanceStateDataEventMerger;
+import org.kie.kogito.index.event.mapper.UserTaskInstanceStateEventMerger;
 import org.kie.kogito.index.json.ObjectMapperProducer;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.UserTaskInstance;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.cloudevents.SpecVersion;
 import io.quarkus.reactivemessaging.http.runtime.IncomingHttpMetadata;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static io.cloudevents.core.v1.CloudEventV1.DATACONTENTTYPE;
+import static io.cloudevents.core.v1.CloudEventV1.DATASCHEMA;
+import static io.cloudevents.core.v1.CloudEventV1.ID;
+import static io.cloudevents.core.v1.CloudEventV1.SOURCE;
+import static io.cloudevents.core.v1.CloudEventV1.SPECVERSION;
+import static io.cloudevents.core.v1.CloudEventV1.SUBJECT;
+import static io.cloudevents.core.v1.CloudEventV1.TIME;
+import static io.cloudevents.core.v1.CloudEventV1.TYPE;
+import static org.assertj.core.api.Assertions.*;
 import static org.kie.kogito.index.test.TestUtils.readFileContent;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 class KogitoIndexEventConverterTest {
 
-    private static final String BINARY_PROCESS_INSTANCE_CLOUD_EVENT_DATA = "process_instance_event.json";
+    private static final String PROCESS_INSTANCE_STATE_EVENT_TYPE = "ProcessInstanceStateDataEvent";
+    private static final String USER_TASK_INSTANCE_STATE_EVENT_TYPE = "UserTaskInstanceStateDataEvent";
+    private static final String JOB_EVENT_TYPE = "JobEvent";
+    private static final String EVENT_ID = "ID";
+    private static final URI EVENT_SOURCE = URI.create("http://localhost:8080/travels");
+    private static final OffsetDateTime EVENT_TIME = OffsetDateTime.parse("2022-03-18T15:33:05.608395+10:00");
+    private static final URI EVENT_DATA_SCHEMA = URI.create("http://my_event_data_schema/my_schema.json");
+    private static final String EVENT_DATA_CONTENT_TYPE = "application/json; charset=utf-8";
+    private static final String EVENT_SUBJECT = "SUBJECT";
+
+    private static final String STRUCTURED_PROCESS_INSTANCE_CLOUD_EVENT = "process_instance_event.json";
+    private static final String BINARY_PROCESS_INSTANCE_CLOUD_EVENT_DATA = "binary_process_instance_event_data.json";
+    private static final String BINARY_USER_TASK_INSTANCE_CLOUD_EVENT_DATA = "binary_user_task_instance_state_event_data.json";
+    private static final String BINARY_KOGITO_JOB_CLOUD_EVENT_DATA = "binary_job_event_data.json";
 
     @Mock
-    IncomingHttpMetadata httpMetadata;
-
+    private IncomingHttpMetadata httpMetadata;
     private MultiMap headers;
-
     private KogitoIndexEventConverter converter;
-    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         headers = MultiMap.caseInsensitiveMultiMap();
         lenient().doReturn(headers).when(httpMetadata).getHeaders();
         converter = new KogitoIndexEventConverter();
-        objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         new ObjectMapperProducer().customize(objectMapper);
         converter.setObjectMapper(objectMapper);
     }
@@ -87,27 +114,173 @@ class KogitoIndexEventConverterTest {
     }
 
     @Test
-    void convertBinaryCloudProcessInstanceEvent() throws Exception {
+    void convertBinaryProcessInstanceDataEvent() throws Exception {
         Buffer buffer = Buffer.buffer(readFileContent(BINARY_PROCESS_INSTANCE_CLOUD_EVENT_DATA));
         Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
+
+        // set ce-xxx headers for the binary format.
+        headers.add(ceHeader(SPECVERSION), SpecVersion.V1.toString());
+        headers.add(ceHeader(ID), EVENT_ID);
+        headers.add(ceHeader(SOURCE), EVENT_SOURCE.toString());
+        headers.add(ceHeader(TYPE), PROCESS_INSTANCE_STATE_EVENT_TYPE);
+        headers.add(ceHeader(TIME), EVENT_TIME.toString());
+        headers.add(ceHeader(DATASCHEMA), EVENT_DATA_SCHEMA.toString());
+        headers.add(ceHeader(DATACONTENTTYPE), EVENT_DATA_CONTENT_TYPE);
+        headers.add(ceHeader(SUBJECT), EVENT_SUBJECT);
+
         Message<?> result = converter.convert(message, ProcessInstanceDataEvent.class);
-        assertThat(result.getPayload()).isInstanceOf(ProcessInstanceStateDataEvent.class);
+        assertThat(result.getPayload()).isInstanceOf(ProcessInstanceDataEvent.class);
         ProcessInstanceStateDataEvent cloudEvent = (ProcessInstanceStateDataEvent) result.getPayload();
+
+        assertThat(cloudEvent.getId()).isEqualTo(EVENT_ID);
+        assertThat(cloudEvent.getSpecVersion().toString()).isEqualTo(SpecVersion.V1.toString());
+        assertThat(cloudEvent.getSource().toString()).isEqualTo(EVENT_SOURCE.toString());
+        assertThat(cloudEvent.getType()).isEqualTo(PROCESS_INSTANCE_STATE_EVENT_TYPE);
+        assertThat(cloudEvent.getTime()).isEqualTo(EVENT_TIME);
+        assertThat(cloudEvent.getDataSchema()).isEqualTo(EVENT_DATA_SCHEMA);
+        assertThat(cloudEvent.getDataContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
+        assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
+
+        ProcessInstance pi = new ProcessInstance();
+        new ProcessInstanceStateDataEventMerger().merge(pi, cloudEvent);
+        assertThat(pi.getId()).isEqualTo("5f8b1a48-4d37-4bd2-a1a6-9b8f6097cfdd");
+        assertThat(pi.getVersion()).isEqualTo("1.0");
+        assertThat(pi.getProcessId()).isEqualTo("subscription_flow");
+        assertThat(pi.getProcessName()).isEqualTo("subscription workflow");
+
+        assertThat(pi.getRootProcessInstanceId()).isEqualTo("root_process_instance_id");
+        assertThat(pi.getRootProcessId()).isEqualTo("root_process_id");
+        assertThat(pi.getParentProcessInstanceId()).isEqualTo("parent_instance_id");
+
+        assertThat(pi.getRoles()).containsExactly("admin", "user");
+        assertThat(pi.getState()).isEqualTo(1);
+        assertThat(pi.getEnd()).isNull();
+        assertThat(pi.getBusinessKey()).isEqualTo("business_key");
+    }
+
+    @Test
+    void convertStructuredProcessInstanceDataEvent() throws Exception {
+        Buffer buffer = Buffer.buffer(readFileContent(STRUCTURED_PROCESS_INSTANCE_CLOUD_EVENT));
+        Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
+
+        // set ce header for the structured format.
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/cloudevents+json");
+
+        Message<?> result = converter.convert(message, ProcessInstanceDataEvent.class);
+        assertThat(result.getPayload()).isInstanceOf(ProcessInstanceDataEvent.class);
+        ProcessInstanceDataEvent<?> cloudEvent = (ProcessInstanceDataEvent<?>) result.getPayload();
+
+        assertThat(cloudEvent.getId()).isEqualTo("867ff7b4-2e49-49b3-882a-76f65a2c4124");
+        assertThat(cloudEvent.getSpecVersion().toString()).isEqualTo(SpecVersion.V1.toString());
+        assertThat(cloudEvent.getSource().toString()).isEqualTo(EVENT_SOURCE.toString());
+        assertThat(cloudEvent.getType()).isEqualTo(PROCESS_INSTANCE_STATE_EVENT_TYPE);
+        assertThat(cloudEvent.getTime()).isEqualTo(EVENT_TIME);
 
         ProcessInstance pi = new ProcessInstance();
         new ProcessInstanceStateDataEventMerger().merge(pi, cloudEvent);
         assertThat(pi.getId()).isEqualTo("2308e23d-9998-47e9-a772-a078cf5b891b");
+        assertThat(pi.getVersion()).isEqualTo("1.0");
         assertThat(pi.getProcessId()).isEqualTo("travels");
         assertThat(pi.getProcessName()).isEqualTo("travels");
         assertThat(pi.getState()).isEqualTo(1);
+        assertThat(pi.getBusinessKey()).isEqualTo("F7RTPS");
         assertThat(pi.getStart()).isEqualTo("2022-03-18T05:32:21.887Z");
         assertThat(pi.getEnd()).isNull();
     }
 
     @Test
-    void convertFailureBinaryUnexpectedBufferContent() throws Exception {
+    void convertBinaryKogitoJobCloudEvent() throws Exception {
+        Buffer buffer = Buffer.buffer(readFileContent(BINARY_KOGITO_JOB_CLOUD_EVENT_DATA));
+        Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
+
+        // set ce-xxx headers for the binary format.
+        headers.add(ceHeader(SPECVERSION), SpecVersion.V1.toString());
+        headers.add(ceHeader(ID), EVENT_ID);
+        headers.add(ceHeader(SOURCE), EVENT_SOURCE.toString());
+        headers.add(ceHeader(TYPE), JOB_EVENT_TYPE);
+        headers.add(ceHeader(TIME), EVENT_TIME.toString());
+        headers.add(ceHeader(DATASCHEMA), EVENT_DATA_SCHEMA.toString());
+        headers.add(ceHeader(DATACONTENTTYPE), EVENT_DATA_CONTENT_TYPE);
+        headers.add(ceHeader(SUBJECT), EVENT_SUBJECT);
+
+        Message<?> result = converter.convert(message, KogitoJobCloudEvent.class);
+        assertThat(result.getPayload()).isInstanceOf(KogitoJobCloudEvent.class);
+        KogitoJobCloudEvent cloudEvent = (KogitoJobCloudEvent) result.getPayload();
+
+        assertThat(cloudEvent.getId()).isEqualTo(EVENT_ID);
+        assertThat(cloudEvent.getSpecVersion()).isEqualTo(SpecVersion.V1.toString());
+        assertThat(cloudEvent.getSource().toString()).isEqualTo(EVENT_SOURCE.toString());
+        assertThat(cloudEvent.getType()).isEqualTo(JOB_EVENT_TYPE);
+        assertThat(cloudEvent.getTime()).isEqualTo(EVENT_TIME.toZonedDateTime());
+        assertThat(cloudEvent.getSchemaURL()).isEqualTo(EVENT_DATA_SCHEMA);
+        assertThat(cloudEvent.getContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
+        assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
+
+        Job job = cloudEvent.getData();
+        assertThat(job.getId()).isEqualTo("8350b8b6-c5d9-432d-a339-a9fc85f642d4_0");
+        assertThat(job.getProcessId()).isEqualTo("timerscycle");
+        assertThat(job.getProcessInstanceId()).isEqualTo("7c1d9b38-b462-47c5-8bf2-d9154f54957b");
+        assertThat(job.getRootProcessId()).isEqualTo("root_process_id");
+        assertThat(job.getRootProcessInstanceId()).isEqualTo("root_process_instance_id");
+        assertThat(job.getNodeInstanceId()).isEqualTo("node_instance_id");
+        assertThat(job.getRepeatInterval()).isEqualTo(1000);
+        assertThat(job.getCallbackEndpoint())
+                .isEqualTo("http://localhost:8080/management/jobs/timerscycle/instances/7c1d9b38-b462-47c5-8bf2-d9154f54957b/timers/8350b8b6-c5d9-432d-a339-a9fc85f642d4_0");
+        assertThat(job.getScheduledId()).isEqualTo("1234");
+        assertThat(job.getStatus()).isEqualTo("SCHEDULED");
+        assertThat(job.getRepeatInterval()).isEqualTo(1000);
+        assertThat(job.getRepeatLimit()).isEqualTo(2147483647);
+        assertThat(job.getRetries()).isEqualTo(0);
+        assertThat(job.getExecutionCounter()).isEqualTo(0);
+    }
+
+    @Test
+    void convertBinaryUserTaskInstanceDataEvent() throws Exception {
+        Buffer buffer = Buffer.buffer(readFileContent(BINARY_USER_TASK_INSTANCE_CLOUD_EVENT_DATA));
+        Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
+
+        // set ce-xxx headers for the binary format.
+        headers.add(ceHeader(SPECVERSION), SpecVersion.V1.toString());
+        headers.add(ceHeader(ID), EVENT_ID);
+        headers.add(ceHeader(SOURCE), EVENT_SOURCE.toString());
+        headers.add(ceHeader(TYPE), USER_TASK_INSTANCE_STATE_EVENT_TYPE);
+        headers.add(ceHeader(TIME), EVENT_TIME.toString());
+        headers.add(ceHeader(DATASCHEMA), EVENT_DATA_SCHEMA.toString());
+        headers.add(ceHeader(DATACONTENTTYPE), EVENT_DATA_CONTENT_TYPE);
+        headers.add(ceHeader(SUBJECT), EVENT_SUBJECT);
+
+        Message<?> result = converter.convert(message, UserTaskInstanceDataEvent.class);
+        assertThat(result.getPayload()).isInstanceOf(UserTaskInstanceStateDataEvent.class);
+        UserTaskInstanceStateDataEvent cloudEvent = (UserTaskInstanceStateDataEvent) result.getPayload();
+
+        assertThat(cloudEvent.getId()).isEqualTo(EVENT_ID);
+        assertThat(cloudEvent.getSpecVersion()).isEqualTo(SpecVersion.V1);
+        assertThat(cloudEvent.getSource().toString()).isEqualTo(EVENT_SOURCE.toString());
+        assertThat(cloudEvent.getType()).isEqualTo(USER_TASK_INSTANCE_STATE_EVENT_TYPE);
+        assertThat(cloudEvent.getTime()).isEqualTo(EVENT_TIME);
+        assertThat(cloudEvent.getDataSchema()).isEqualTo(EVENT_DATA_SCHEMA);
+        assertThat(cloudEvent.getDataContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
+        assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
+
+        UserTaskInstance userTaskInstance = new UserTaskInstance();
+        new UserTaskInstanceStateEventMerger().merge(userTaskInstance, cloudEvent);
+        assertThat(userTaskInstance.getId()).isEqualTo("45fae435-b098-4f27-97cf-a0c107072e8b");
+        assertThat(userTaskInstance.getProcessInstanceId()).isEqualTo("67fb3435-b098-4f27-97cf-a0c107072e8b");
+        assertThat(userTaskInstance.getName()).isEqualTo("VisaApplication");
+        assertThat(userTaskInstance.getDescription()).isEqualTo("This task is for applying to a visa");
+        assertThat(userTaskInstance.getReferenceName()).isEqualTo("Apply for visa");
+        assertThat(userTaskInstance.getPriority()).isEqualTo("1");
+        assertThat(userTaskInstance.getState()).isEqualTo("Completed");
+    }
+
+    @Test
+    void convertFailureBinaryUnexpectedBufferContent() {
         Buffer buffer = Buffer.buffer("unexpected Content");
         Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> converter.convert(message, ProcessInstanceDataEvent.class));
+    }
+
+    private static String ceHeader(String name) {
+        return "ce-" + name;
     }
 }
