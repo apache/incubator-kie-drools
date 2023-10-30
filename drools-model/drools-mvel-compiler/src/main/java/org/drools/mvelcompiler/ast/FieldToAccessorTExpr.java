@@ -19,6 +19,7 @@ package org.drools.mvelcompiler.ast;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
 import org.drools.util.MethodUtils;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -70,7 +72,17 @@ public class FieldToAccessorTExpr implements TypedExpression {
                 .map(this::convertToStringIfNeeded)
                 .collect(Collectors.toList());
 
-        return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName(), nodeList(expressionArguments));
+        Optional<Type> rhsType = this.arguments.stream()
+                .findFirst()
+                .flatMap(TypedExpression::getType);
+
+        // Right is BigDecimal, left is other, coerce
+        if(rhsType.isPresent() && rhsType.get().equals(BigDecimal.class) && !type.equals(BigDecimal.class)) {
+            Expression coercedExpression = new BigDecimalArgumentCoercion().coercedArgument(BigDecimal.class, (Class<?>)type, expressionArguments.get(0));
+            return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName(), nodeList(coercedExpression));
+        } else {
+            return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName(), nodeList(expressionArguments));
+        }
     }
 
     private Expression convertToStringIfNeeded(TypedExpression argumentExpression) {
