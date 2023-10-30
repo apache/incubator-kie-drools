@@ -39,7 +39,9 @@ class PostgreSQLQuarkusAddonDataIndexIT {
 
     @Test
     void testDataIndexAddon() {
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions{ id, version, name } }\" }")
+        String processDefId = "greet";
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessDefinitions(where: { id: {equal: \\\"" + processDefId +
+                "\\\"}}){ id, version, name } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessDefinitions.size()", is(1))

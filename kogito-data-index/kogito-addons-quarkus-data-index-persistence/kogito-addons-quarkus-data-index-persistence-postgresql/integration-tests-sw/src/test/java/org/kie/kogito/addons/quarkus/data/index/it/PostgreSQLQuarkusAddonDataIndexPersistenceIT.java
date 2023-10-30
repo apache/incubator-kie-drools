@@ -52,9 +52,11 @@ class PostgreSQLQuarkusAddonDataIndexPersistenceIT {
 
     @Test
     void testDataIndexAddon() {
+        String processDefId = "greet";
         String source = given().contentType(ContentType.JSON)
                 .baseUri(dataIndex)
-                .body("{ \"query\" : \"{ ProcessDefinitions{ id, name, version, endpoint, addons, source, nodes { id, name, type, uniqueId, metadata { UniqueId } } } }\" }")
+                .body("{ \"query\" : \"{ ProcessDefinitions(where: { id: {equal: \\\"" + processDefId
+                        + "\\\"}}){ id, name, version, endpoint, addons, source, nodes { id, name, type, uniqueId, metadata { UniqueId } } } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200)
                 .body("data.ProcessDefinitions[0].id", is("greet"))
