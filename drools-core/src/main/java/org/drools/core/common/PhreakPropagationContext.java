@@ -18,6 +18,12 @@
  */
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.InternalKnowledgePackage;
@@ -29,12 +35,6 @@ import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.List;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;

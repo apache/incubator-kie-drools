@@ -18,6 +18,13 @@
  */
 package org.drools.core;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.base.rule.consequence.ConflictResolver;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.util.StringUtils;
@@ -51,13 +58,6 @@ import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * RuleBaseConfiguration
@@ -878,7 +878,9 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         }
 
         public boolean equals(Object obj) {
-            if (obj == this) return true;
+            if (obj == this) {
+                return true;
+            }
             else if (obj instanceof AssertBehaviour) {
                 AssertBehaviour that = (AssertBehaviour) obj;
 

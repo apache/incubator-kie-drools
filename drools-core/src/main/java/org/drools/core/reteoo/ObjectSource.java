@@ -18,6 +18,8 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.List;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -32,8 +34,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
-
-import java.util.List;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.getAccessibleProperties;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;

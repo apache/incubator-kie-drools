@@ -18,6 +18,11 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
@@ -37,11 +42,6 @@ import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.util.bitmask.BitMask;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used

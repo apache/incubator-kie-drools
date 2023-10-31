@@ -18,16 +18,16 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.common.PropagationContext;
 
 public class AlphaTerminalNode extends LeftInputAdapterNode {
 

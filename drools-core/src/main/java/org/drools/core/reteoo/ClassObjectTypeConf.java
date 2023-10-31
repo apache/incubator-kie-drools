@@ -28,20 +28,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.util.TimeIntervalParser;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.base.rule.EntryPointId;
-import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.base.util.TimeIntervalParser;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Role.Type;
-import org.drools.base.base.ObjectType;
 
 public class ClassObjectTypeConf
     implements
@@ -171,8 +171,9 @@ public class ClassObjectTypeConf
         String pkgName = "";
         if ( pkg == null ) {
             int index = clazz.getName().lastIndexOf( '.' );
-            if ( index != -1 ) pkgName = clazz.getName().substring( 0,
-                                                                    index );
+            if ( index != -1 ) {
+                pkgName = clazz.getName().substring( 0, index );
+            }
         } else {
             pkgName = pkg.getName();
         }
@@ -245,11 +246,11 @@ public class ClassObjectTypeConf
     }
 
     public String getClassName() {
-    	return this.cls != null ? this.cls.getName() : "";
+        return this.cls != null ? this.cls.getName() : "";
     }
     
     public String getTypeName() {
-    	return getClassName();
+        return getClassName();
     }
 
     @Override

@@ -19,6 +19,9 @@
 package org.drools.core.reteoo.builder;
 
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -61,9 +64,6 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.BehaviorRuntime;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class PhreakNodeFactory implements NodeFactory, Serializable {
 

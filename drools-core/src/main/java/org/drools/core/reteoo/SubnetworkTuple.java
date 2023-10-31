@@ -18,12 +18,12 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SubnetworkTuple extends LeftTuple implements RightTuple {
 

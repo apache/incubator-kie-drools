@@ -26,10 +26,10 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.common.PropagationContext;
 
 public class MockLeftTupleSink extends LeftTupleSource
     implements

@@ -18,6 +18,11 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -33,11 +38,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 

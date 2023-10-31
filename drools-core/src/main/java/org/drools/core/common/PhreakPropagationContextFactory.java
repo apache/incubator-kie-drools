@@ -21,10 +21,10 @@ package org.drools.core.common;
 import java.io.Serializable;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.base.rule.EntryPointId;
 import org.drools.util.bitmask.BitMask;
 
 public class PhreakPropagationContextFactory implements PropagationContextFactory, Serializable  {

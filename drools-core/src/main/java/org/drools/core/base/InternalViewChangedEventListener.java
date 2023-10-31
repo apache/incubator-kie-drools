@@ -20,8 +20,8 @@ package org.drools.core.base;
 
 import java.util.List;
 
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 
 public interface InternalViewChangedEventListener {

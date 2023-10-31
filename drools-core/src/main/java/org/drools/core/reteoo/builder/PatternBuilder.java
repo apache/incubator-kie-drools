@@ -18,6 +18,10 @@
  */
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.DroolsQuery;
 import org.drools.base.base.ObjectType;
@@ -47,10 +51,6 @@ import org.drools.core.time.impl.CompositeMaxDurationTimer;
 import org.drools.core.time.impl.DurationTimer;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires.Policy;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;

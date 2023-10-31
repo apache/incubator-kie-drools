@@ -23,19 +23,19 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.AsyncSend;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.AsyncSend;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
 

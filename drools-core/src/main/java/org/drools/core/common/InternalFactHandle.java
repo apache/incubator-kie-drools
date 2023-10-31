@@ -18,6 +18,10 @@
  */
 package org.drools.core.common;
 
+import java.io.Serializable;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
@@ -26,10 +30,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.io.Serializable;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public interface InternalFactHandle
     extends

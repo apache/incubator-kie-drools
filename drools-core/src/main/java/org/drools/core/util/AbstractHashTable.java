@@ -435,8 +435,12 @@ public abstract class AbstractHashTable
 
         @Override
         public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
             SingleHashEntry that = ( SingleHashEntry ) o;
             return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 );
         }
@@ -488,8 +492,12 @@ public abstract class AbstractHashTable
 
         @Override
         public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
             DoubleHashEntry that = ( DoubleHashEntry ) o;
             return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 ) && Objects.equals( obj2, that.obj2 );
         }
@@ -546,8 +554,12 @@ public abstract class AbstractHashTable
 
         @Override
         public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
             TripleHashEntry that = ( TripleHashEntry ) o;
             return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 ) && Objects.equals( obj2, that.obj2 ) && Objects.equals( obj3, that.obj3 );
         }

@@ -18,14 +18,14 @@
  */
 package org.drools.core.reteoo.builder;
 
+import org.drools.base.rule.ConditionalBranch;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.base.rule.ConditionalBranch;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.RuleConditionElement;
 
 public class ConditionalBranchBuilder implements ReteooComponentBuilder {
 

@@ -169,34 +169,72 @@ public class Person {
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         Person other = (Person) obj;
         if ( !Arrays.equals( addressArray,
-                             other.addressArray ) ) return false;
+                             other.addressArray ) ) {
+            return false;
+        }
         if ( addressList == null ) {
-            if ( other.addressList != null ) return false;
-        } else if ( !addressList.equals( other.addressList ) ) return false;
+            if ( other.addressList != null ) {
+                return false;
+            }
+        } else if ( !addressList.equals( other.addressList ) ) {
+            return false;
+        }
         if ( addresses == null ) {
-            if ( other.addresses != null ) return false;
-        } else if ( !addresses.equals( other.addresses ) ) return false;
-        if ( age != other.age ) return false;
+            if ( other.addresses != null ) {
+                return false;
+            }
+        } else if ( !addresses.equals( other.addresses ) ) {
+            return false;
+        }
+        if ( age != other.age ) {
+            return false;
+        }
         if ( city == null ) {
-            if ( other.city != null ) return false;
-        } else if ( !city.equals( other.city ) ) return false;
+            if ( other.city != null ) {
+                return false;
+            }
+        } else if ( !city.equals( other.city ) ) {
+            return false;
+        }
         if ( country == null ) {
-            if ( other.country != null ) return false;
-        } else if ( !country.equals( other.country ) ) return false;
+            if ( other.country != null ) {
+                return false;
+            }
+        } else if ( !country.equals( other.country ) ) {
+            return false;
+        }
         if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+            if ( other.name != null ) {
+                return false;
+            }
+        } else if ( !name.equals( other.name ) ) {
+            return false;
+        }
         if ( state == null ) {
-            if ( other.state != null ) return false;
-        } else if ( !state.equals( other.state ) ) return false;
+            if ( other.state != null ) {
+                return false;
+            }
+        } else if ( !state.equals( other.state ) ) {
+            return false;
+        }
         if ( street == null ) {
-            if ( other.street != null ) return false;
-        } else if ( !street.equals( other.street ) ) return false;
+            if ( other.street != null ) {
+                return false;
+            }
+        } else if ( !street.equals( other.street ) ) {
+            return false;
+        }
         return true;
     }
 

@@ -84,13 +84,23 @@ public class ClassFieldAccessorCache {
         }
 
         public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( !(obj instanceof ClassObjectTypeKey) ) return false;
+            if ( this == obj ) {
+                return true;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            if ( !(obj instanceof ClassObjectTypeKey) ) {
+                return false;
+            }
             ClassObjectTypeKey other = (ClassObjectTypeKey) obj;
             if ( cls == null ) {
-                if ( other.cls != null ) return false;
-            } else if ( !cls.equals( other.cls ) ) return false;
+                if ( other.cls != null ) {
+                    return false;
+                }
+            } else if ( !cls.equals( other.cls ) ) {
+                return false;
+            }
             return event == other.event;
         }
 

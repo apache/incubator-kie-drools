@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
@@ -30,7 +31,6 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;

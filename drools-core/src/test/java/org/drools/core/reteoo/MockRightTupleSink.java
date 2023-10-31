@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.base.common.NetworkNode;
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.common.RuleBasePartitionId;
 import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink

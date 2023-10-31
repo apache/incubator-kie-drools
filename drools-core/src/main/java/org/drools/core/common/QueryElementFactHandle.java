@@ -18,19 +18,20 @@
  */
 package org.drools.core.common;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class QueryElementFactHandle

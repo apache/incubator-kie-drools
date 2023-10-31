@@ -26,13 +26,13 @@ import java.text.ParseException;
 import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.base.time.impl.Timer;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ConditionalElement;
 import org.drools.base.rule.Declaration;
 import org.drools.base.time.JobHandle;
-import org.drools.core.time.TimerExpression;
 import org.drools.base.time.Trigger;
+import org.drools.base.time.impl.Timer;
+import org.drools.core.time.TimerExpression;
 import org.kie.api.runtime.Calendars;
 
 import static org.drools.core.time.TimerExpressionUtil.evalDateExpression;
@@ -143,20 +143,40 @@ public class CronTimer extends BaseTimer
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         CronTimer other = (CronTimer) obj;
-        if ( repeatLimit != other.repeatLimit ) return false;
+        if ( repeatLimit != other.repeatLimit ) {
+            return false;
+        }
         if ( cronExpression.getCronExpression() == null ) {
-            if ( other.cronExpression.getCronExpression() != null ) return false;
-        } else if ( !cronExpression.getCronExpression().equals( other.cronExpression.getCronExpression() ) ) return false;
+            if ( other.cronExpression.getCronExpression() != null ) {
+                return false;
+            }
+        } else if ( !cronExpression.getCronExpression().equals( other.cronExpression.getCronExpression() ) ) {
+            return false;
+        }
         if ( endTime == null ) {
-            if ( other.endTime != null ) return false;
-        } else if ( !endTime.equals( other.endTime ) ) return false;
+            if ( other.endTime != null ) {
+                return false;
+            }
+        } else if ( !endTime.equals( other.endTime ) ) {
+            return false;
+        }
         if ( startTime == null ) {
-            if ( other.startTime != null ) return false;
-        } else if ( !startTime.equals( other.startTime ) ) return false;
+            if ( other.startTime != null ) {
+                return false;
+            }
+        } else if ( !startTime.equals( other.startTime ) ) {
+            return false;
+        }
         return true;
     }
 

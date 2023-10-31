@@ -18,6 +18,11 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
@@ -29,19 +34,14 @@ import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A node that is an entry point into the Rete network.

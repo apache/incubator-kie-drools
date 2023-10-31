@@ -22,19 +22,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.consequence.ConflictResolver;
+import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.base.rule.consequence.ConflictResolver;
-import org.drools.base.rule.consequence.Consequence;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
@@ -103,7 +103,9 @@ public class BinaryHeapQueueTest {
                 for (int i = max - 1; i >= 0; i--) {
                     int sal = group.getNext().getSalience();
                     sb.append(" ").append(sal);
-                    if (sal != i) ok = false;
+                    if (sal != i) {
+                        ok = false;
+                    }
                 }
                 assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
                 //      System.out.println( sb.toString() );
@@ -182,7 +184,7 @@ public class BinaryHeapQueueTest {
             return "AgendaGroup '" + this.name + "'";
         }
 
-        public boolean equal(final Object object) {
+        public boolean equals(final Object object) {
             if (!(object instanceof Group)) {
                 return false;
             }
