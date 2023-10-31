@@ -18,6 +18,12 @@
  */
 package org.drools.core.phreak;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.concurrent.CountDownLatch;
+
 import org.drools.base.facttemplates.Event;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.base.DroolsQueryImpl;
@@ -40,12 +46,6 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.concurrent.CountDownLatch;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;

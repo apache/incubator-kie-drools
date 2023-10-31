@@ -31,8 +31,8 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;

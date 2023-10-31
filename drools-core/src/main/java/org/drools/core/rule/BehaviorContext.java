@@ -18,10 +18,10 @@
  */
 package org.drools.core.rule;
 
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.base.time.JobHandle;
-
 import java.util.Collection;
+
+import org.drools.base.time.JobHandle;
+import org.drools.core.common.DefaultEventHandle;
 
 public interface BehaviorContext {
     Collection<DefaultEventHandle> getFactHandles();

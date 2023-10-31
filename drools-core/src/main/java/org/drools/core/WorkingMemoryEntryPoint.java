@@ -18,17 +18,16 @@
  */
 package org.drools.core;
 
-
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.base.rule.EntryPointId;
-import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;

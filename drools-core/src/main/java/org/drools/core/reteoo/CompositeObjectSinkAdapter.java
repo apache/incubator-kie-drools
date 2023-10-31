@@ -18,6 +18,18 @@
  */
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.drools.base.base.ValueType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -31,18 +43,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.util.index.AlphaRangeIndex;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.drools.base.util.index.IndexUtil.isBigDecimalEqualityConstraint;
 

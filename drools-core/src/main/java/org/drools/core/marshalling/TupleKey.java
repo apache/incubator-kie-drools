@@ -42,11 +42,19 @@ public class TupleKey {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         TupleKey other = (TupleKey) obj;
-        if ( !Arrays.equals( tuple, other.tuple ) ) return false;
+        if ( !Arrays.equals( tuple, other.tuple ) ) {
+            return false;
+        }
         return true;
     }
 

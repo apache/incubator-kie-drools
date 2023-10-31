@@ -18,6 +18,8 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.List;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
@@ -31,8 +33,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
-
-import java.util.List;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used

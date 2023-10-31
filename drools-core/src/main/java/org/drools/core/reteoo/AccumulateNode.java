@@ -23,17 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.base.base.ClassObjectType;
-import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.Memory;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.PhreakAccumulateNode;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
@@ -41,11 +34,18 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.base.ObjectType;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.phreak.PhreakAccumulateNode;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
+import org.drools.util.bitmask.BitMask;
 
 /**
  * AccumulateNode

@@ -26,10 +26,10 @@ import org.drools.base.facttemplates.FactTemplateImpl;
 import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.base.facttemplates.FieldTemplate;
 import org.drools.base.facttemplates.FieldTemplateImpl;
-import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

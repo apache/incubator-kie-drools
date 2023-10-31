@@ -18,15 +18,15 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.util.index.TupleList;
-import org.kie.api.runtime.rule.FactHandle;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
+import org.drools.core.util.index.TupleList;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * A parent class for all specific LeftTuple specializations

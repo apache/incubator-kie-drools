@@ -20,8 +20,8 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.kie.api.internal.utils.KieService;
 
 public interface AgendaComponentFactory extends KieService {

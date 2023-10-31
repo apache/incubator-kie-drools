@@ -18,10 +18,10 @@
  */
 package org.drools.core.common;
 
-import org.drools.core.phreak.RuleAgendaItem;
-
 import java.util.Collection;
 import java.util.Map;
+
+import org.drools.core.phreak.RuleAgendaItem;
 
 public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGroup {
 

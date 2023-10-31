@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.base.rule.accessor.GlobalResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.rule.accessor.GlobalResolver;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;

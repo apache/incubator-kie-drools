@@ -18,10 +18,10 @@
  */
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.RuleConditionElement;
+import org.drools.core.reteoo.CoreComponentFactory;
+import org.drools.core.reteoo.EntryPointNode;
 
 /**
  * This is a builder for the entry point pattern

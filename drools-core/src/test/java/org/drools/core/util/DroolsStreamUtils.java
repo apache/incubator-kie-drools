@@ -202,8 +202,9 @@ public class DroolsStreamUtils {
      */
     public static Object streamIn(InputStream in, ClassLoader classLoader, boolean compressed)
             throws IOException, ClassNotFoundException {
-        if (compressed)
+        if (compressed) {
             in  = new GZIPInputStream(in);
+        }
         return new DroolsObjectInputStream(in, classLoader).readObject();
      }
 }

@@ -18,6 +18,10 @@
  */
 package org.drools.core.common;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Consumer;
+
 import org.drools.base.base.ValueResolver;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.RuleSessionConfiguration;
@@ -40,10 +44,6 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Consumer;
 
 public interface ReteEvaluator extends ValueResolver {
 

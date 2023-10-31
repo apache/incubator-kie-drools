@@ -29,8 +29,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.core.common.BaseNode;
 import org.drools.base.common.NetworkNode;
+import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;

@@ -18,9 +18,9 @@
  */
 package org.drools.core.runtime.rule.impl;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 
 public class LiveQueryImpl

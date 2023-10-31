@@ -293,8 +293,12 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     @Override
     public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         RuleSessionConfiguration that = (RuleSessionConfiguration) o;
 

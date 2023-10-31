@@ -24,6 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.InitialFact;
+import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElement.Type;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
+import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
@@ -31,16 +37,10 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.GroupElement.Type;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.RuleConditionElement;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.kie.api.definition.rule.Propagation;
 
 public class GroupElementBuilder

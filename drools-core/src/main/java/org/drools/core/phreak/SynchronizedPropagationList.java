@@ -18,11 +18,11 @@
  */
 package org.drools.core.phreak;
 
+import java.util.Iterator;
+
 import org.drools.core.common.ReteEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
 
 public class SynchronizedPropagationList implements PropagationList {
 
@@ -48,11 +48,11 @@ public class SynchronizedPropagationList implements PropagationList {
     @Override
     public void addEntry(final PropagationEntry entry) {
         if (entry.requiresImmediateFlushing()) {
-        	if (entry.isCalledFromRHS()) {
-        		entry.execute(reteEvaluator);
-        	} else {
-        		reteEvaluator.getActivationsManager().executeTask( new ExecutableEntry() {
-        			@Override
+            if (entry.isCalledFromRHS()) {
+                entry.execute(reteEvaluator);
+            } else {
+                reteEvaluator.getActivationsManager().executeTask( new ExecutableEntry() {
+                    @Override
                     public void execute() {
                         if (entry instanceof PhreakTimerNode.TimerAction) {
                             ( (PhreakTimerNode.TimerAction) entry ).execute( reteEvaluator, true );
@@ -66,7 +66,7 @@ public class SynchronizedPropagationList implements PropagationList {
                         internalAddEntry( entry );
                     }
                 } );
-        	}
+            }
         } else {
             internalAddEntry( entry );
         }
