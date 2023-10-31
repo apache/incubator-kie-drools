@@ -85,23 +85,30 @@ public class WindowDeclaration
 
     @Override
     public boolean equals( Object obj ) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals( obj ))
+        }
+        if (!super.equals( obj )) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         WindowDeclaration other = (WindowDeclaration) obj;
         if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals( other.name ))
+            if (other.name != null) {
             return false;
+            }
+        } else if (!name.equals( other.name )) {
+            return false;
+        }
         if (pattern == null) {
-            if (other.pattern != null)
-                return false;
-        } else if (!pattern.equals( other.pattern ))
+            if (other.pattern != null) {
             return false;
+            }
+        } else if (!pattern.equals( other.pattern )) {
+            return false;
+        }
         return true;
     }
 

@@ -18,9 +18,6 @@
  */
 package org.drools.base.rule;
 
-import org.drools.base.base.ValueResolver;
-import org.drools.base.base.ClassObjectType;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -32,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ValueResolver;
 
 public class Collect extends ConditionalElement
     implements

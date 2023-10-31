@@ -72,13 +72,23 @@ public class ImportDeclaration implements Externalizable {
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final ImportDeclaration other = (ImportDeclaration) obj;
         if ( target == null ) {
-            if ( other.target != null ) return false;
-        } else if ( !target.equals( other.target ) ) return false;
+            if ( other.target != null ) {
+            return false;
+            }
+        } else if ( !target.equals( other.target ) ) {
+            return false;
+        }
         return true;
     }
 

@@ -133,8 +133,12 @@ public class FactTemplateImpl implements FactTemplate {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FactTemplateImpl that = (FactTemplateImpl) o;
         return pkg.getName().equals(that.pkg.getName()) && name.equals(that.name) && fields.equals(that.fields);
     }

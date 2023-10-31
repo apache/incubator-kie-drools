@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.base.rule.accessor.CompiledInvoker;
-import org.drools.base.rule.accessor.Wireable;
 import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.EvalExpression;
+import org.drools.base.rule.accessor.Wireable;
 
 public class EvalCondition extends ConditionalElement
     implements
