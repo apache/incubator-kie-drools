@@ -25,11 +25,11 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.drools.base.base.ValueResolver;
+import org.drools.base.reteoo.AccumulateContextEntry;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.Wireable;
-import org.drools.base.reteoo.AccumulateContextEntry;
-import org.drools.base.reteoo.BaseTuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class MultiAccumulate extends Accumulate {
@@ -239,12 +239,22 @@ public class MultiAccumulate extends Accumulate {
     }
 
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         MultiAccumulate other = (MultiAccumulate) obj;
-        if ( !Arrays.equals( accumulators, other.accumulators ) ) return false;
-        if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
+        if ( !Arrays.equals( accumulators, other.accumulators ) ) {
+            return false;
+        }
+        if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) {
+            return false;
+        }
         if ( source == null ) {
             return other.source == null;
         } else {

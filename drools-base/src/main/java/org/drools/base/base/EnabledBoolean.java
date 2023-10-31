@@ -25,8 +25,8 @@ import java.io.ObjectOutput;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.accessor.Enabled;
 import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Enabled;
 
 public class EnabledBoolean
     implements

@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.base.rule.accessor.DataProvider;
-import org.drools.base.rule.accessor.DeclarationScopeResolver;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.extractors.ArrayElementReader;
 import org.drools.base.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.rule.accessor.DeclarationScopeResolver;
 import org.drools.base.rule.constraint.Constraint;
 
 /**

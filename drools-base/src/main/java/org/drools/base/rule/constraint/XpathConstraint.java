@@ -33,20 +33,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import org.drools.base.base.AcceptsClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.DroolsQuery;
+import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
+import org.drools.base.phreak.ReactiveObject;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.Declaration;
 import org.drools.base.rule.From;
+import org.drools.base.rule.MutableTypeConstraint;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.accessor.PatternExtractor;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.phreak.ReactiveObject;
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.MutableTypeConstraint;
-import org.drools.base.base.AcceptsClassObjectType;
-import org.drools.base.base.ObjectType;
 import org.drools.util.ClassUtils;
 import org.kie.api.runtime.rule.FactHandle;
 

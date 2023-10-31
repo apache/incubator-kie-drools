@@ -18,16 +18,6 @@
  */
 package org.drools.base.rule;
 
-import org.drools.base.rule.accessor.PatternExtractor;
-import org.drools.base.rule.constraint.Constraint;
-import org.drools.base.base.AcceptsClassObjectType;
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
-import org.drools.base.factmodel.AnnotationDefinition;
-import org.drools.base.reteoo.PropertySpecificUtil;
-import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.util.bitmask.BitMask;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -41,8 +31,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.drools.wiring.api.util.ClassUtils;
+
 import org.drools.base.RuleBase;
+import org.drools.base.base.AcceptsClassObjectType;
+import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
+import org.drools.base.factmodel.AnnotationDefinition;
+import org.drools.base.reteoo.PropertySpecificUtil;
+import org.drools.base.rule.accessor.PatternExtractor;
+import org.drools.base.rule.constraint.Constraint;
+import org.drools.base.rule.constraint.XpathConstraint;
+import org.drools.util.bitmask.BitMask;
+import org.drools.wiring.api.util.ClassUtils;
+
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Externalizable {

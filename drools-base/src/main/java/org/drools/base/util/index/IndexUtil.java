@@ -18,11 +18,11 @@
  */
 package org.drools.base.util.index;
 
-import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.base.ValueType;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.BetaRangeIndexOption;
