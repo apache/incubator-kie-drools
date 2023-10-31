@@ -192,6 +192,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
+        <version>${version.maven-exec-plugin}</version>
         <executions>
           <execution>
             <!-- Make sure the XSD will be merged after the codebase has been successfully compiled. -->
@@ -265,6 +266,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.maven-exec-plugin}</version>
             <executions>
               <execution>
                 <id>check-benchmark-xsd-changes</id>

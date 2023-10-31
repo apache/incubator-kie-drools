@@ -146,7 +146,7 @@ If you choose Maven, your `pom.xml` file has the following content:
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <configuration>
           <mainClass>org.acme.schooltimetabling.TimeTableApp</mainClass>
         </configuration>

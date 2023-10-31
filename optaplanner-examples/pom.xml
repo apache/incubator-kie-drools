@@ -89,6 +89,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
+          <version>${version.maven-exec-plugin}</version>
           <!-- WARNING: This configuration must be run with "mvn exec:java" not "mvn exec:exec". -->
           <!-- It is impossible to write a configuration that is compatible with both exec:java and exec:exec -->
           <configuration>

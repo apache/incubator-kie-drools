@@ -196,6 +196,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
+            <version>${version.maven-exec-plugin}</version>
             <executions>
               <execution>
                 <id>check-solver-xsd-changes</id>
