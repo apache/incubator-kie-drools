@@ -107,7 +107,7 @@ pipeline {
 
 void clean() {
     sh 'rm -rf ~/.rewrite-cache/'
-    util.cleanNode('docker')
+    util.cleanNode()
 }
 
 void sendErrorNotification() {
