@@ -20,7 +20,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     sh 'printenv > env_props'
                     archiveArtifacts artifacts: 'env_props'
@@ -58,10 +58,8 @@ pipeline {
         }
     }
     post {
-        always {
-            script {
-                cleanWs()
-            }
+        cleanup {
+            cleanWs()
         }
         unsuccessful {
             script {
