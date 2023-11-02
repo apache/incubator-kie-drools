@@ -27,7 +27,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
@@ -41,23 +41,47 @@ pipeline {
         stage('Build Drools') {
             steps {
                 script {
-                    getMavenCommand(droolsRepo)
-                        .withProperty('quickly')
-                        .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
-                        .withOptions(env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ? [ env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ] : [])
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(droolsRepo)
+                            .withProperty('quickly')
+                            .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
+                            .withOptions(env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ? [ env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ] : [])
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
         }
         stage('Update project version') {
             steps {
                 script {
-                    maven.mvnVersionsSet(getMavenCommand(getRepoName()).withProperty('full'), getKogitoVersion(), true)
-                    maven.mvnSetVersionProperty(getMavenCommand(getRepoName()), 'version.org.kie', getDroolsVersion())
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        maven.mvnVersionsSet(
+                            getMavenCommand(getRepoName())
+                                .withProperty('full')
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            getKogitoVersion(),
+                            true
+                        )
+                        maven.mvnSetVersionProperty(
+                            getMavenCommand(getRepoName()).withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            'version.org.kie',
+                            getDroolsVersion()
+                        )
 
-                    // Need artifacts available locally
-                    getMavenCommand(getRepoName()).withProperty('quickly').run('clean install')
-                    maven.mvnSetVersionProperty(getMavenCommand(getRepoName()).withOptions(['-pl :kogito-quarkus-workflow-common-deployment']), 'data-index-ephemeral.image', getDataIndexEphemeralImage())
+                        // Need artifacts available locally
+                        getMavenCommand(getRepoName())
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                        maven.mvnSetVersionProperty(
+                            getMavenCommand(getRepoName())
+                                .withOptions(['-pl :kogito-quarkus-workflow-common-deployment'])
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            'data-index-ephemeral.image',
+                            getDataIndexEphemeralImage()
+                        )
+                    }
                 }
             }
         }
@@ -84,7 +108,7 @@ pipeline {
         }
         cleanup {
             script {
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -146,7 +170,6 @@ String getGitAuthorCredsID() {
 
 MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
 }

@@ -36,7 +36,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
@@ -91,12 +91,28 @@ pipeline {
             }
             steps {
                 script {
-                    maven.mvnVersionsSet(getMavenCommand(), getProjectVersion(), !isRelease())
-                    maven.mvnSetVersionProperty(getMavenCommand(), 'version.org.kie', getDroolsVersion())
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        maven.mvnVersionsSet(
+                            getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            getProjectVersion(),
+                            !isRelease()
+                        )
+                        maven.mvnSetVersionProperty(
+                            getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            'version.org.kie', getDroolsVersion()
+                        )
 
                     // Need artifacts available locally
-                    getMavenCommand().withProperty('quickly').run('clean install')
-                    maven.mvnSetVersionProperty(getMavenCommand(getWorkflowCommonDeploymentPath()), 'data-index-ephemeral.image', getDataIndexEphemeralReleaseImage())
+                        getMavenCommand()
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                        maven.mvnSetVersionProperty(
+                            getMavenCommand(getWorkflowCommonDeploymentPath()).withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            'data-index-ephemeral.image',
+                            getDataIndexEphemeralReleaseImage()
+                        )
+                    }
                 }
             }
         }
@@ -112,7 +128,11 @@ pipeline {
                         if (params.SKIP_TESTS) {
                             mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
                         }
-                        mvnCmd.run('clean install')
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                            mvnCmd
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run('clean install')
+                        }
                     }
                 }
             }
@@ -196,7 +216,7 @@ pipeline {
         }
         cleanup {
             script {
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -286,7 +306,6 @@ void setDeployPropertyIfNeeded(String key, def value) {
 MavenCommand getMavenCommand(String directory = '') {
     directory = directory ?: getRepoName()
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
                 .withProperty('full')
@@ -303,7 +322,12 @@ void runMavenDeploy(boolean localDeployment = false) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        mvnCmd
+            .skipTests(true)
+            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+            .run('clean deploy')
+    }
 }
 
 String getMavenRepoZipUrl() {
@@ -311,13 +335,15 @@ String getMavenRepoZipUrl() {
 }
 
 void runMavenStage() {
-    MavenStagingHelper stagingHelper = getStagingHelper()
-    deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
-    stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        MavenStagingHelper stagingHelper = getStagingHelper(getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE))
+        deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
+        stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
+    }
 }
 
-MavenStagingHelper getStagingHelper() {
-    return new MavenStagingHelper(this, getMavenCommand())
+MavenStagingHelper getStagingHelper(MavenCommand mavenCommand) {
+    return new MavenStagingHelper(this, mavenCommand)
         .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
         .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
 }
