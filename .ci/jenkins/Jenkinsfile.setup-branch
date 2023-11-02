@@ -41,7 +41,13 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        maven.mvnVersionsSet(getMavenCommand(), getDroolsVersion(), true)
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                            maven.mvnVersionsSet(
+                                getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                                getDroolsVersion(),
+                                true
+                            )
+                        }
                     }
                 }
             }

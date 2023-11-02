@@ -83,7 +83,13 @@ pipeline {
             }
             steps {
                 script {
-                    maven.mvnVersionsSet(getMavenCommand(), getProjectVersion(), !isRelease())
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        maven.mvnVersionsSet(
+                            getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            getProjectVersion(),
+                            !isRelease()
+                        )
+                    }
                 }
             }
         }
@@ -284,13 +290,15 @@ void runMavenDeploy(boolean localDeployment = false) {
 }
 
 void runMavenStage() {
-    MavenStagingHelper stagingHelper = getStagingHelper()
-    deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
-    stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        MavenStagingHelper stagingHelper = getStagingHelper(getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE))
+        deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
+        stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
+    }
 }
 
-MavenStagingHelper getStagingHelper() {
-    return new MavenStagingHelper(this, getMavenCommand())
+MavenStagingHelper getStagingHelper(MavenCommand mavenCommand) {
+    return new MavenStagingHelper(this, mavenCommand)
         .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
         .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
 }
