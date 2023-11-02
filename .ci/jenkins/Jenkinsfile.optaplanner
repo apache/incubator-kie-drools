@@ -35,18 +35,24 @@ pipeline {
         stage('Build Drools') {
             steps {
                 script {
-                    getMavenCommand(droolsRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(droolsRepo)
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
         }
         stage('Build Optaplanner') {
             steps {
                 script {
-                    getMavenCommand(optaplannerRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(optaplannerRepo)
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
         }
@@ -68,22 +74,28 @@ pipeline {
         stage('Build Runtimes') {
             steps {
                 script {
-                    getMavenCommand(kogitoRuntimesRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(kogitoRuntimesRepo)
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                        }
                 }
             }
         }
         stage('Build Apps') {
             steps {
                 script {
-                    getMavenCommand(kogitoAppsRepo)
-                        .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                        .withProperty('skipUI')
-                        .withProperty('maven.test.failure.ignore', true)
-                        .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
-                        .withProperty('optaplanner') // Use specific profile https://github.com/apache/incubator-kie-kogito-apps/blob/48a5c8f9a905a2c17b9d0e01cee744902a4824f0/pom.xml#L63
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(kogitoAppsRepo)
+                            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                            .withProperty('skipUI')
+                            .withProperty('maven.test.failure.ignore', true)
+                            .withProperty('version.org.optaplanner', env.OPTAPLANNER_VERSION)
+                            .withProperty('optaplanner') // Use specific profile https://github.com/apache/incubator-kie-kogito-apps/blob/48a5c8f9a905a2c17b9d0e01cee744902a4824f0/pom.xml#L63
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
             post {
@@ -92,11 +104,6 @@ pipeline {
                         archiveArtifacts artifacts: '**/target/*-runner.jar,**/target/*-runner', fingerprint: true, allowEmptyArchive: true
                         junit testResults: '**/target/surefire-reports/**/*.xml,**/target/failsafe-reports/**/*.xml', allowEmptyResults: true
                         util.archiveConsoleLog()
-                    }
-                }
-                cleanup {
-                    script {
-                        cleanContainers()
                     }
                 }
             }
@@ -108,7 +115,7 @@ pipeline {
         }
         cleanup {
             script {
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -167,14 +174,9 @@ String getOptaPlannerBranch() {
 
 MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kie-release-settings')
                 .withProperty('java.net.preferIPv4Stack', true)
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
-}
-
-void cleanContainers() {
-    cloud.cleanContainersAndImages('docker')
 }
 
 String getNativeBuilderImage() {

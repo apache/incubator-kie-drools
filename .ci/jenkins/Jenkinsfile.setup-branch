@@ -27,7 +27,7 @@ pipeline {
         stage('Initialize') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
@@ -42,29 +42,41 @@ pipeline {
         stage('Build Drools') {
             steps {
                 script {
-                    getMavenCommand(droolsRepo)
-                        .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
-                        .withOptions(env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ? [ env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ] : [])
-                        .withProperty('quickly')
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(droolsRepo)
+                            .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
+                            .withOptions(env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ? [ env.DROOLS_BUILD_MVN_OPTS_UPSTREAM ] : [])
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
         }
         stage('Build Kogito Runtimes') {
             steps {
                 script {
-                    getMavenCommand(kogitoRuntimesRepo)
-                        .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
-                        .withOptions(env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM ? [ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM ] : [])
-                        .withProperty('quickly')
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(kogitoRuntimesRepo)
+                            .withOptions(env.BUILD_MVN_OPTS_UPSTREAM ? [ env.BUILD_MVN_OPTS_UPSTREAM ] : [])
+                            .withOptions(env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM ? [ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS_UPSTREAM ] : [])
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
         }
         stage('Update project version') {
             steps {
                 script {
-                    maven.mvnVersionsUpdateParentAndChildModules(getMavenCommand(getRepoName()), getKogitoVersion(), true)
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        maven.mvnVersionsUpdateParentAndChildModules(
+                            getMavenCommand(getRepoName()).withSettingsXmlFile(MAVEN_SETTINGS_FILE),
+                            getKogitoVersion(),
+                            true
+                        )
+                    }
                 }
             }
         }
@@ -91,7 +103,7 @@ pipeline {
         }
         cleanup {
             script {
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -149,7 +161,6 @@ String getGitAuthorCredsID() {
 
 MavenCommand getMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
 }

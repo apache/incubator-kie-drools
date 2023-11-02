@@ -21,7 +21,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     sh 'printenv > env_props'
                     archiveArtifacts artifacts: 'env_props'
@@ -41,7 +41,12 @@ pipeline {
                         dir(project) {
                             githubscm.checkoutIfExists(project, changeAuthor, changeBranch, 'apache', changeTarget, true)
                             sh '.ci/environments/update.sh quarkus-3'
-                            getMavenCommand().withProperty('quickly').run('clean install')
+                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                                getMavenCommand()
+                                    .withProperty('quickly')
+                                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                    .run('clean install')
+                            }
                         }
                     }
                 }
@@ -72,10 +77,8 @@ pipeline {
         }
     }
     post {
-        always {
-            script {
-                cleanWs()
-            }
+        cleanup {
+            cleanWs()
         }
         unsuccessful {
             script {
@@ -95,7 +98,6 @@ String getGitAuthorCredsId() {
 
 MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .withProperty('enforcer.skip')
 }

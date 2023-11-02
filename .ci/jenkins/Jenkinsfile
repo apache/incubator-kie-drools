@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('Initialize') {
             steps {
-                cleanWs()
+                cleanWs(disableDeferredWipeout: true)
                 script {
                     // load `pr_check.groovy` file from kogito-pipelines:main
                     dir('kogito-pipelines') {
