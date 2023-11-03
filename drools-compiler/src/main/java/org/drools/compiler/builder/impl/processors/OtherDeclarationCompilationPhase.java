@@ -18,6 +18,8 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.List;
+
 import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
@@ -25,8 +27,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-
-import java.util.List;
 
 import static java.util.Arrays.asList;
 

@@ -18,11 +18,11 @@
  */
 package org.drools.compiler.rule.builder;
 
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
 
 /**
  * A class capable of building entry point instances

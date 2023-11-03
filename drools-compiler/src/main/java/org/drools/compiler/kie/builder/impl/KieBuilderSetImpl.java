@@ -32,10 +32,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.io.BaseResource;
+import org.drools.util.PortablePath;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -48,7 +49,6 @@ import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
-import org.drools.util.PortablePath;
 import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 
 import static java.util.Arrays.asList;

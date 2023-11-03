@@ -18,6 +18,11 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
 import org.drools.compiler.builder.impl.TypeDefinition;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -25,11 +30,6 @@ import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TypeDeclarationCompilationPhase extends AbstractPackageCompilationPhase {
     private final TypeDeclarationBuilder typeBuilder;

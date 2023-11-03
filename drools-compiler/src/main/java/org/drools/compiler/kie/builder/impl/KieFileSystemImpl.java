@@ -31,13 +31,13 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.io.InternalResource;
 import org.drools.util.IoUtils;
+import org.drools.util.PortablePath;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
-import org.drools.util.PortablePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

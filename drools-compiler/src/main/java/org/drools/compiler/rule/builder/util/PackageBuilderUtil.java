@@ -18,16 +18,16 @@
  */
 package org.drools.compiler.rule.builder.util;
 
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.EntryPointDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.WindowReferenceDescr;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.QueryElement;
 import org.drools.base.rule.RuleConditionElement;
+import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.WindowReferenceDescr;
 
 public class PackageBuilderUtil {
 

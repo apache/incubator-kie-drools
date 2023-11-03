@@ -21,11 +21,11 @@ package org.drools.compiler.rule.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.rule.LineMappings;
-import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.util.TypeResolver;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface FunctionBuilder extends EngineElementBuilder {
 

@@ -83,8 +83,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.base.util.Drools.isJndiAvailable;
+import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.util.ClassUtils.convertResourceToClassName;
 
 public class KieContainerImpl

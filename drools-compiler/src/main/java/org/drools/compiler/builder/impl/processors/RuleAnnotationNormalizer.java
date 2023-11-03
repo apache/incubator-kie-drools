@@ -18,6 +18,8 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.Collection;
+
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ConditionalElementDescr;
@@ -26,8 +28,6 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternDestinationDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.Collection;
 
 public class RuleAnnotationNormalizer implements CompilationPhase {
     private final AnnotationNormalizer annotationNormalizer;

@@ -18,6 +18,13 @@
  */
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.BaseConfigurationFactories;
@@ -49,13 +56,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.util.maven.support.ReleaseIdImpl;
-
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
 import static org.drools.util.ClassUtils.findParentClassLoader;

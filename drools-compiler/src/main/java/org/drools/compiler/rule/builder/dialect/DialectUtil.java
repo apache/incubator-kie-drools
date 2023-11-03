@@ -24,14 +24,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
-import org.kie.memorycompiler.resources.ResourceReader;
-import org.drools.drl.ast.descr.ImportDescr;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.memorycompiler.resources.ResourceReader;
 
 import static org.drools.util.ClassUtils.findClass;
 

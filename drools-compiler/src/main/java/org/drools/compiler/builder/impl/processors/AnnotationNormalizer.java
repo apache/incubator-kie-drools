@@ -18,16 +18,16 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.compiler.AnnotationDeclarationError;
-import org.drools.util.TypeResolver;
-import org.drools.drl.ast.descr.AnnotatedBaseDescr;
-import org.drools.drl.ast.descr.AnnotationDescr;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import org.drools.compiler.compiler.AnnotationDeclarationError;
+import org.drools.drl.ast.descr.AnnotatedBaseDescr;
+import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.util.TypeResolver;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import static org.drools.util.StringUtils.ucFirst;
 

@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
@@ -41,13 +42,13 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.ModelLoader;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.Model;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.compiler.builder.conf.JaxbConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.base.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.wiring.api.classloader.ProjectClassLoader;

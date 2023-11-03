@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.FileSystemItem;
+import org.drools.compiler.compiler.io.Folder;
 import org.drools.util.PortablePath;
 
 public class MemoryFolder implements Folder, Serializable {

@@ -18,6 +18,13 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.KieService;
@@ -30,13 +37,6 @@ import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 

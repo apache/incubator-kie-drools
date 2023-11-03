@@ -18,6 +18,22 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Supplier;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -88,22 +104,6 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Type;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
-import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
