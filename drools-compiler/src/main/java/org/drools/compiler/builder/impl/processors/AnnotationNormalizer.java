@@ -40,8 +40,12 @@ public abstract class AnnotationNormalizer {
     }
 
     public static AnnotationNormalizer of(TypeResolver typeResolver, boolean isStrict) {
-        if (isStrict) return new AnnotationNormalizer.Strict(typeResolver);
-        else return new AnnotationNormalizer.NonStrict(typeResolver);
+        if (isStrict) {
+            return new AnnotationNormalizer.Strict(typeResolver);
+        }
+        else {
+            return new AnnotationNormalizer.NonStrict(typeResolver);
+        }
     }
 
     abstract boolean isStrict();

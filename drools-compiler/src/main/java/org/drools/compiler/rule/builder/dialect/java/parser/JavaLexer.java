@@ -2255,7 +2255,9 @@ public class JavaLexer extends Lexer {
                     break;
 
                 default :
-                    if ( cnt1 >= 1 ) break loop1;
+                    if ( cnt1 >= 1 ) {
+                        break loop1;
+                    }
                     EarlyExitException eee = new EarlyExitException(1, input);
                     throw eee;
                 }
@@ -2452,7 +2454,9 @@ public class JavaLexer extends Lexer {
                     break;
 
                 default :
-                    if ( cnt7 >= 1 ) break loop7;
+                    if ( cnt7 >= 1 ) {
+                        break loop7;
+                    }
                     EarlyExitException eee = new EarlyExitException(7, input);
                     throw eee;
                 }
@@ -2894,7 +2898,9 @@ public class JavaLexer extends Lexer {
                     break;
 
                 default :
-                    if ( cnt19 >= 1 ) break loop19;
+                    if ( cnt19 >= 1 ) {
+                        break loop19;
+                    }
                     EarlyExitException eee = new EarlyExitException(19, input);
                     throw eee;
                 }
@@ -2973,7 +2979,9 @@ public class JavaLexer extends Lexer {
                     break;
 
                 default :
-                    if ( cnt21 >= 1 ) break loop21;
+                    if ( cnt21 >= 1 ) {
+                        break loop21;
+                    }
                     EarlyExitException eee = new EarlyExitException(21, input);
                     throw eee;
                 }
@@ -3397,7 +3405,9 @@ public class JavaLexer extends Lexer {
             {
             match("enum"); 
 
-            if ( !enumIsKeyword ) _type=Identifier;
+            if ( !enumIsKeyword ) {
+                _type=Identifier;
+            }
             }
 
             state.type = _type;

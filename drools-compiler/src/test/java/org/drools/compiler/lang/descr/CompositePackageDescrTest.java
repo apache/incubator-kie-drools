@@ -18,8 +18,8 @@
  */
 package org.drools.compiler.lang.descr;
 
-import org.drools.io.ByteArrayResource;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.io.ByteArrayResource;
 import org.junit.Before;
 import org.junit.Test;
 

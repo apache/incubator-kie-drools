@@ -127,13 +127,21 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
 
         @Override
         public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
 
             RuleTemplateInfo that = ( RuleTemplateInfo ) o;
 
-            if ( row != that.row ) return false;
-            if ( col != that.col ) return false;
+            if ( row != that.row ) {
+                return false;
+            }
+            if ( col != that.col ) {
+                return false;
+            }
             return template != null ? template.equals( that.template ) : that.template == null;
         }
 

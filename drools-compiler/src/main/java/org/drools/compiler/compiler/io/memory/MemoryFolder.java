@@ -93,9 +93,15 @@ public class MemoryFolder implements Folder, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         MemoryFolder other = (MemoryFolder) obj;
         return Objects.equals(path, other.path);
     }

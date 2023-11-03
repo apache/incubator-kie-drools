@@ -227,7 +227,9 @@ public class TypeDeclarationBuilder {
     }
 
     private void setResourcesInDescriptors( PackageDescr packageDescr, Resource currentResource ) {
-        if (currentResource == null) return;
+        if (currentResource == null) {
+            return;
+        }
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
             if ( typeDescr.getResource() == null ) {
                 typeDescr.setResource( currentResource );

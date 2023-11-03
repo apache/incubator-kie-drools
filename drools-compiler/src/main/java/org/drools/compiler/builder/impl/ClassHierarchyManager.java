@@ -193,9 +193,9 @@ public class ClassHierarchyManager {
                     inheritedFlDescr.setResource(resource);
                     inheritedFlDescr.setInherited(!Modifier.isAbstract(inspector.getGetterMethods().get(name).getModifiers()));
 
-                    if (!fieldMap.containsKey(inheritedFlDescr.getFieldName()))
-                        fieldMap.put(inheritedFlDescr.getFieldName(),
-                                     inheritedFlDescr);
+                    if (!fieldMap.containsKey(inheritedFlDescr.getFieldName())) {
+                        fieldMap.put(inheritedFlDescr.getFieldName(), inheritedFlDescr);
+                    }
                 }
             }
         }

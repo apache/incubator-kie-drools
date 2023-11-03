@@ -100,7 +100,9 @@ public class EvaluatorRegistry
     }
 
     private static ClassLoader getDefaultClassLoader() {
-        if ( Thread.currentThread().getContextClassLoader() != null ) return Thread.currentThread().getContextClassLoader();
+        if ( Thread.currentThread().getContextClassLoader() != null ) {
+            return Thread.currentThread().getContextClassLoader();
+        }
         return EvaluatorRegistry.class.getClassLoader();
     }
 
