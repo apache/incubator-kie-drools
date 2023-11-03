@@ -35,7 +35,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
 
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
@@ -92,11 +92,14 @@ pipeline {
         stage('Upload OptaPlanner documentation') {
             steps {
                 script {
-                    getMavenCommand()
-                            .inDirectory(optaplannerRepository)
-                            .skipTests(true)
-                            .withProperty('full')
-                            .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand()
+                                .inDirectory(optaplannerRepository)
+                                .skipTests(true)
+                                .withProperty('full')
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run('clean install')
+                    }
                     uploadDistribution(optaplannerRepository)
                 }
             }
@@ -118,7 +121,7 @@ pipeline {
         cleanup {
             script {
                 // Clean also docker in case of usage of testcontainers lib
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -246,7 +249,6 @@ void uploadDistribution(String directory) {
 
 MavenCommand getMavenCommand() {
     mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                    .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
     if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
         mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
     }

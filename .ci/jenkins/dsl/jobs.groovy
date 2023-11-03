@@ -72,6 +72,7 @@ void setupProjectDroolsJob(String droolsBranch) {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         NOTIFICATION_JOB_NAME: 'Drools snapshot check',
         DROOLS_BRANCH: droolsBranch,
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -403,7 +404,8 @@ void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
             CONSTRAINT_STREAM_IMPL_TYPE: "${constraintStreamImplType}",
-            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}"
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+            MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
     ])
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {

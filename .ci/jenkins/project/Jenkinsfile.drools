@@ -34,9 +34,12 @@ pipeline {
         stage('Build drools') {
             steps {
                 script {
-                    getMavenCommand(droolsRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(droolsRepo)
+                            .withProperty('quickly')
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
             post {
@@ -67,10 +70,13 @@ pipeline {
         stage('Build optaplanner') {
             steps {
                 script {
-                    getMavenCommand(optaplannerRepo)
-                        .withProperty('maven.test.failure.ignore', true)
-                        .withProperty('version.org.drools', env.DROOLS_VERSION)
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(optaplannerRepo)
+                            .withProperty('maven.test.failure.ignore', true)
+                            .withProperty('version.org.drools', env.DROOLS_VERSION)
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
             post {
@@ -87,10 +93,13 @@ pipeline {
         stage('Build optaplanner-quickstarts') {
             steps {
                 script {
-                    getMavenCommand(quickstartsRepo)
-                        .withProperty('maven.test.failure.ignore', true)
-                        .withProperty('version.org.drools', env.DROOLS_VERSION)
-                        .run('clean install')
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        getMavenCommand(quickstartsRepo)
+                            .withProperty('maven.test.failure.ignore', true)
+                            .withProperty('version.org.drools', env.DROOLS_VERSION)
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                            .run('clean install')
+                    }
                 }
             }
             post {
@@ -108,7 +117,7 @@ pipeline {
         }
         cleanup {
             script {
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -146,7 +155,6 @@ void checkoutDroolsRepo() {
 
 MavenCommand getMavenCommand(String directory) {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kie-release-settings')
                 .inDirectory(directory)
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])

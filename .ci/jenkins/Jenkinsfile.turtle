@@ -31,16 +31,18 @@ pipeline {
         stage('Build OptaPlanner with turtle tests') {
             steps {
                 script {
-                    new MavenCommand(this)
-                            // Use the same settings.xml as for the nightly builds, including a maven mirror.
-                            .withSettingsXmlId('kie-release-settings')
+                    // Use the same settings.xml as for the nightly builds, including a maven mirror.
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        new MavenCommand(this)
                             .inDirectory(optaplannerRepo)
                             .withOptions(['-U', '-e', '-fae', '-ntp'])
                             .withProperty('full')
                             .withProperty('runTurtleTests', true)
                             .withProperty('maven.test.failure.ignore', true)
                             .withProperty('constraintStreamImplType', getConstraintStreamImplType())
+                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
                             .run('clean install')
+                    }
                 }
             }
         }
