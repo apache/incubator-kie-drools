@@ -85,7 +85,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieContainer getKieClasspathContainer(ClassLoader classLoader) {
-    	return getKieClasspathContainer( null, classLoader );
+        return getKieClasspathContainer( null, classLoader );
     }
     
     public KieContainer getKieClasspathContainer(String containerId) {
@@ -99,9 +99,9 @@ public class KieServicesImpl implements InternalKieServices {
                 if ( classpathKContainer == null ) {
                     classpathClassLoader = classLoader;
                     if (containerId == null) {
-                    	classpathKContainerId = UUID.randomUUID().toString();
+                        classpathKContainerId = UUID.randomUUID().toString();
                     } else {
-                    	classpathKContainerId = containerId;
+                        classpathKContainerId = containerId;
                     }
                     classpathKContainer = newKieClasspathContainer(classpathKContainerId, classLoader);
                 } else if (classLoader != classpathClassLoader) {
@@ -113,7 +113,7 @@ public class KieServicesImpl implements InternalKieServices {
         }
 
         if (containerId != null && !classpathKContainerId.equals(containerId)) {
-        	throw new IllegalStateException("The default global singleton KieClasspathContainer was already created with id "+classpathKContainerId);
+            throw new IllegalStateException("The default global singleton KieClasspathContainer was already created with id "+classpathKContainerId);
         }
         
         return classpathKContainer;
@@ -124,7 +124,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieContainer newKieClasspathContainer(ClassLoader classLoader) {
-    	return newKieClasspathContainer( null, classLoader );
+        return newKieClasspathContainer( null, classLoader );
     }
     
     public KieContainer newKieClasspathContainer(String containerId) {
@@ -137,17 +137,17 @@ public class KieServicesImpl implements InternalKieServices {
 
     @Override
     public KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader, ReleaseId releaseId) {
-    	if (containerId == null) {
+        if (containerId == null) {
             return new KieContainerImpl(UUID.randomUUID().toString(), new ClasspathKieProject(classLoader, listener, releaseId), null);
-    	}
-    	if ( kContainers.get(containerId) == null ) {
+        }
+        if ( kContainers.get(containerId) == null ) {
             KieContainerImpl newContainer = new KieContainerImpl(containerId, new ClasspathKieProject(classLoader, listener, releaseId), null, releaseId);
             KieContainer check = kContainers.putIfAbsent(containerId, newContainer);
             if (check == null) {
-				return newContainer;
+                return newContainer;
             } else {
-            	newContainer.dispose();
-            	throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
+                newContainer.dispose();
+                throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
             }
         } else {
             throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
@@ -167,17 +167,17 @@ public class KieServicesImpl implements InternalKieServices {
      * Voids the internal map of containerId (s) used for handling reference and unique checks. This method is intended for use in unit test only.
      */
     public void nullAllContainerIds() {
-    	synchronized ( lock ) {
-    		kContainers.clear();
-    	}
+        synchronized ( lock ) {
+            kContainers.clear();
+        }
     }
     
     @Override
-	public void clearRefToContainerId(String containerId, KieContainer containerRef) {
-		kContainers.remove(containerId, containerRef);
-	}
+    public void clearRefToContainerId(String containerId, KieContainer containerRef) {
+        kContainers.remove(containerId, containerRef);
+    }
 
-	public KieContainer newKieContainer(ReleaseId releaseId) {
+    public KieContainer newKieContainer(ReleaseId releaseId) {
         return newKieContainer(null, releaseId, null);
     }
     
@@ -186,7 +186,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieContainer newKieContainer(ReleaseId releaseId, ClassLoader classLoader) {
-    	return newKieContainer(null, releaseId, classLoader);
+        return newKieContainer(null, releaseId, classLoader);
     }
 
     public KieContainer newKieContainer(String containerId, ReleaseId releaseId, ClassLoader classLoader) {
@@ -203,18 +203,18 @@ public class KieServicesImpl implements InternalKieServices {
             kProject.init();
         }
 
-    	if (containerId == null) {
+        if (containerId == null) {
             return new KieContainerImpl( UUID.randomUUID().toString(), kProject, getRepository(), releaseId );
-    	}
+        }
 
-    	if ( kContainers.get(containerId) == null ) {
+        if ( kContainers.get(containerId) == null ) {
             KieContainerImpl newContainer = new KieContainerImpl( containerId, kProject, getRepository(), releaseId );
             KieContainer check = kContainers.putIfAbsent(containerId, newContainer);
             if (check == null) {
-            	return newContainer;
+                return newContainer;
             } else {
-            	newContainer.dispose();
-            	throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
+                newContainer.dispose();
+                throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
             }
         } else {
             throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);

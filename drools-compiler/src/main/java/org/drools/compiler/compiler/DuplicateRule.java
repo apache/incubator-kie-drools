@@ -40,16 +40,16 @@ public class DuplicateRule extends ConfigurableSeverityResult {
         line[0] = ruleDescr.getLine();
     }
 
-	@Override
-	public String getMessage() {
-		return "Rule name " + rule 
+    @Override
+    public String getMessage() {
+        return "Rule name " + rule 
         + " already exists in package  " + pkgDescr.getName();
-	}
+    }
 
-	@Override
-	public int[] getLines() {
-		return line;
-	}
+    @Override
+    public int[] getLines() {
+        return line;
+    }
 
     @Override
     protected String getOptionKey() {
