@@ -99,9 +99,17 @@ Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipeli
 createSetupBranchJob()
 
 // Nightly jobs
+Closure setupSonarProjectKeyEnv = { Closure paramsGetter ->
+    return { script ->
+        def jobParams = paramsGetter(script)
+        jobParams.env.put('SONAR_PROJECT_KEY', 'apache_incubator-kie-kogito-runtimes')
+        return jobParams
+    }
+}
+
 Closure nightlyJobParamsGetter = isMainStream() ? JobParamsUtils.DEFAULT_PARAMS_GETTER : setup4AMCronTriggerJobParamsGetter
 KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
-setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
+setupSpecificBuildChainNightlyJob('sonarcloud', setupSonarProjectKeyEnv(nightlyJobParamsGetter))
 setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
 setupNightlyQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
 setupNightlyQuarkusIntegrationJob('quarkus-branch', nightlyJobParamsGetter)

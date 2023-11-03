@@ -15,6 +15,7 @@ pipeline {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-kogito-runtimes'
 
         ENABLE_SONARCLOUD = 'false'
+        SONAR_PROJECT_KEY = 'apache_incubator-kie-kogito-runtimes'
         KOGITO_RUNTIMES_BUILD_MVN_OPTS = '-Dvalidate-formatting -Prun-code-coverage'
     }
     stages {
