@@ -17,6 +17,7 @@ pipeline {
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
         ENABLE_SONARCLOUD = 'false'
+        SONAR_PROJECT_KEY = 'apache_incubator-kie-drools'
         DROOLS_BUILD_MVN_OPTS = '-Prun-code-coverage'
     }
     stages {
