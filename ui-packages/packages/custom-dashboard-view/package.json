@@ -29,8 +29,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@kie-tools-core/envelope": "0.30.0",
-    "@kie-tools-core/envelope-bus": "0.30.0",
+    "@kie-tools-core/envelope": "0.32.0",
+    "@kie-tools-core/envelope-bus": "0.32.0",
     "@kogito-apps/components-common": "workspace:*",
     "@patternfly/patternfly": "^4.224.2",
     "@patternfly/react-core": "^4.276.8",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.8",
-    "@kie-tools/dashbuilder-client": "^0.30.0",
+    "@kie-tools/dashbuilder-client": "^0.32.0",
     "@kogito-apps/ouia-tools": "workspace:*",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.6",

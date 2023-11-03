@@ -40,8 +40,6 @@ export const RuntimeToolsDevUIEnvelopeView =
       React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] =
       React.useState<DiagramPreviewSize>();
-    const [isStunnerEnabled, setIsStunnerEnabled] =
-      React.useState<boolean>(false);
 
     useImperativeHandle(
       forwardingRef,
@@ -82,9 +80,6 @@ export const RuntimeToolsDevUIEnvelopeView =
           },
           setDiagramPreviewSize: (diagramPreviewSize) => {
             setDiagramPreviewSize(diagramPreviewSize);
-          },
-          setIsStunnerEnabled: (isStunnerEnabled) => {
-            setIsStunnerEnabled(isStunnerEnabled);
           }
         };
       },
@@ -106,7 +101,6 @@ export const RuntimeToolsDevUIEnvelopeView =
             customLabels={customLabels}
             omittedProcessTimelineEvents={omittedProcessTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}
-            isStunnerEnabled={isStunnerEnabled}
           />
         )}
       </>

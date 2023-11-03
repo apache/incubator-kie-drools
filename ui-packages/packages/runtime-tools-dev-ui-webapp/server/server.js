@@ -221,7 +221,8 @@ const processSvg = [
   'a1e139d5-4e77-48c9-84ae-34578e904e5a',
   '8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop',
   '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
-  'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e'
+  'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
+  'e4448857-fa0c-403b-ad69-f0a353458b9d'
 ];
 const fs = require('fs');
 
@@ -229,7 +230,6 @@ const fs = require('fs');
 data.ProcessInstanceData.forEach((datum) => {
   if (processSvg.includes(datum.id)) {
     if (datum.processId === 'travels') {
-      console.log('travels');
       datum.diagram = fs.readFileSync(
         __dirname + '/static/travels.svg',
         'utf8'

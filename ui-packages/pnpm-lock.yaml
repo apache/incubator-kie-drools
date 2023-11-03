@@ -17,14 +17,17 @@ overrides:
   '@types/react': 17.0.5
   ua-parser-js: 0.7.35
   yaml: 2.3.1
+  monaco-editor: ^0.39.0
+  react-monaco-editor: ^0.54.0
+  monaco-yaml: ^4.0.4
 
 importers:
 
   .:
     devDependencies:
       '@kie-tools/dashbuilder-client':
-        specifier: ^0.30.0
-        version: 0.30.0
+        specifier: ^0.32.0
+        version: 0.32.0
       '@kie/lock-treatment-tool':
         specifier: ^0.2.4
         version: 0.2.4
@@ -74,11 +77,11 @@ importers:
   packages/cloud-event-form:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -86,8 +89,8 @@ importers:
         specifier: ^4.224.2
         version: 4.224.2
       '@patternfly/react-code-editor':
-        specifier: 4.82.113
-        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2)
+        specifier: ^4.82.113
+        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.54.0)(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.8(react-dom@17.0.2)(react@17.0.2)
@@ -97,18 +100,12 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      monaco-yaml:
-        specifier: ^4.0.4
-        version: 4.0.4(monaco-editor@0.33.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-monaco-editor:
-        specifier: ^0.49.0
-        version: 0.49.0(@types/react@17.0.5)(monaco-editor@0.33.0)(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.22.8
@@ -318,7 +315,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)(typescript@4.9.5)
+        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)(typescript@4.9.5)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(graphql@14.3.1)
@@ -383,11 +380,11 @@ importers:
   packages/custom-dashboard-list:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -468,11 +465,11 @@ importers:
   packages/custom-dashboard-view:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -496,8 +493,8 @@ importers:
         specifier: ^7.22.8
         version: 7.22.8
       '@kie-tools/dashbuilder-client':
-        specifier: ^0.30.0
-        version: 0.30.0
+        specifier: ^0.32.0
+        version: 0.32.0
       '@kogito-apps/ouia-tools':
         specifier: workspace:*
         version: link:../ouia-tools
@@ -559,11 +556,11 @@ importers:
   packages/form-details:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -577,8 +574,8 @@ importers:
         specifier: ^4.224.2
         version: 4.224.2
       '@patternfly/react-code-editor':
-        specifier: 4.82.113
-        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2)
+        specifier: ^4.82.113
+        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.54.0)(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.8(react-dom@17.0.2)(react@17.0.2)
@@ -588,18 +585,12 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      monaco-yaml:
-        specifier: ^4.0.4
-        version: 4.0.4(monaco-editor@0.33.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-monaco-editor:
-        specifier: ^0.49.0
-        version: 0.49.0(@types/react@17.0.5)(monaco-editor@0.33.0)(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.22.8
@@ -668,11 +659,11 @@ importers:
         specifier: ^10.3.1
         version: 10.3.1(react@17.0.2)
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -765,11 +756,11 @@ importers:
   packages/forms-list:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -859,11 +850,11 @@ importers:
   packages/jobs-management:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -959,11 +950,11 @@ importers:
   packages/management-console-shared:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.24.0
-        version: 0.24.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.24.0
-        version: 0.24.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -1124,7 +1115,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)(typescript@4.9.5)
+        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)(typescript@4.9.5)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(graphql@14.3.1)
@@ -1397,11 +1388,11 @@ importers:
   packages/process-definition-list:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -1473,20 +1464,20 @@ importers:
   packages/process-details:
     dependencies:
       '@kie-tools-core/editor':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools/serverless-workflow-combined-editor':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools/serverless-workflow-diagram-editor-assets':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -1585,11 +1576,11 @@ importers:
   packages/process-form:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -1679,11 +1670,11 @@ importers:
   packages/process-list:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -1808,7 +1799,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)(typescript@4.9.5)
+        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)(typescript@4.9.5)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(graphql@14.3.1)
@@ -1867,32 +1858,29 @@ importers:
         specifier: ^7.22.8
         version: 7.22.8
       '@kie-tools-core/editor':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/keyboard-shortcuts':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools/serverless-workflow-combined-editor':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools/serverless-workflow-diagram-editor-assets':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools/serverless-workflow-diagram-editor-envelope':
-        specifier: 0.30.0
-        version: 0.30.0
-      '@kie-tools/serverless-workflow-mermaid-viewer':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools/serverless-workflow-text-editor':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/cloud-event-form':
         specifier: workspace:*
         version: link:../cloud-event-form
@@ -1970,7 +1958,7 @@ importers:
         version: 4.224.2
       '@patternfly/react-code-editor':
         specifier: 4.82.113
-        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2)
+        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.54.0)(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.8(react-dom@17.0.2)(react@17.0.2)
@@ -2002,14 +1990,14 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-editor-webpack-plugin:
         specifier: ^7.1.0
-        version: 7.1.0(monaco-editor@0.33.0)(webpack@5.88.1)
+        version: 7.1.0(monaco-editor@0.39.0)(webpack@5.88.1)
       monaco-yaml:
         specifier: ^4.0.4
-        version: 4.0.4(monaco-editor@0.33.0)
+        version: 4.0.4(monaco-editor@0.39.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2026,8 +2014,8 @@ importers:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
       react-monaco-editor:
-        specifier: ^0.49.0
-        version: 0.49.0(@types/react@17.0.5)(monaco-editor@0.33.0)(react@17.0.2)
+        specifier: ^0.54.0
+        version: 0.54.0(@types/react@17.0.5)(monaco-editor@0.39.0)(react@17.0.2)
       react-router:
         specifier: ^5.3.4
         version: 5.3.4(react@17.0.2)
@@ -2049,7 +2037,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)(typescript@4.9.5)
+        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)(typescript@4.9.5)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(graphql@14.3.1)
@@ -2286,11 +2274,11 @@ importers:
   packages/task-console-webapp:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -2372,7 +2360,7 @@ importers:
         version: 3.2.3(graphql@14.3.1)
       '@graphql-codegen/cli':
         specifier: ^2.16.5
-        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)(typescript@4.9.5)
+        version: 2.16.5(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)(typescript@4.9.5)
       '@graphql-codegen/introspection':
         specifier: ^2.2.3
         version: 2.2.3(graphql@14.3.1)
@@ -2515,11 +2503,11 @@ importers:
   packages/task-details:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -2609,11 +2597,11 @@ importers:
   packages/task-form:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -2715,11 +2703,11 @@ importers:
   packages/task-inbox:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -2818,8 +2806,8 @@ importers:
   packages/trusty:
     dependencies:
       '@kie-tools/kie-editors-standalone':
-        specifier: ^0.30.0
-        version: 0.30.0
+        specifier: ^0.32.0
+        version: 0.32.0
       '@patternfly/react-charts':
         specifier: ^6.94.19
         version: 6.94.19(react-dom@17.0.2)(react@17.0.2)
@@ -3026,11 +3014,11 @@ importers:
   packages/workflow-form:
     dependencies:
       '@kie-tools-core/envelope':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kie-tools-core/envelope-bus':
-        specifier: 0.30.0
-        version: 0.30.0
+        specifier: 0.32.0
+        version: 0.32.0
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
@@ -3038,8 +3026,8 @@ importers:
         specifier: ^4.224.2
         version: 4.224.2
       '@patternfly/react-code-editor':
-        specifier: 4.82.113
-        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2)
+        specifier: ^4.82.113
+        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.54.0)(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.8(react-dom@17.0.2)(react@17.0.2)
@@ -3049,18 +3037,12 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
-      monaco-yaml:
-        specifier: ^4.0.4
-        version: 4.0.4(monaco-editor@0.33.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-monaco-editor:
-        specifier: ^0.49.0
-        version: 0.49.0(@types/react@17.0.5)(monaco-editor@0.33.0)(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.22.8
@@ -4743,10 +4725,6 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@braintree/sanitize-url@6.0.2:
-    resolution: {integrity: sha512-Tbsj02wXCbqGmzdnXNk0SOF19ChhRU70BsroIi4Pm6Ehp56in6vch94mfbdQ17DozxkL3BAVjbZ4Qc1a0HFRAg==}
-    dev: false
-
   /@cnakazawa/watch@1.0.4:
     resolution: {integrity: sha512-v9kIhKwjeZThiWrLmj0y17CWoyddASLj9O2yvbZkbvw/N3rWOYy9zkV66ursAoVr0mV15bL8g0c4QZUE6cdDoQ==}
     engines: {node: '>=0.1.95'}
@@ -4907,7 +4885,7 @@ packages:
       tslib: 2.4.1
     dev: true
 
-  /@graphql-codegen/cli@2.16.5(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)(typescript@4.9.5):
+  /@graphql-codegen/cli@2.16.5(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)(typescript@4.9.5):
     resolution: {integrity: sha512-XYPIp+q7fB0xAGSAoRykiTe4oY80VU+z+dw5nuv4mLY0+pv7+pa2C6Nwhdw7a65lXOhFviBApWCCZeqd54SMnA==}
     hasBin: true
     peerDependencies:
@@ -4921,22 +4899,22 @@ packages:
       '@graphql-tools/apollo-engine-loader': 7.3.26(graphql@14.3.1)
       '@graphql-tools/code-file-loader': 7.3.23(@babel/core@7.22.8)(graphql@14.3.1)
       '@graphql-tools/git-loader': 7.3.0(@babel/core@7.22.8)(graphql@14.3.1)
-      '@graphql-tools/github-loader': 7.3.28(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1)
+      '@graphql-tools/github-loader': 7.3.28(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1)
       '@graphql-tools/graphql-file-loader': 7.5.17(graphql@14.3.1)
       '@graphql-tools/json-file-loader': 7.4.18(graphql@14.3.1)
       '@graphql-tools/load': 7.8.14(graphql@14.3.1)
-      '@graphql-tools/prisma-loader': 7.2.72(@types/node@18.16.19)(graphql@14.3.1)
-      '@graphql-tools/url-loader': 7.17.18(@types/node@18.16.19)(graphql@14.3.1)
+      '@graphql-tools/prisma-loader': 7.2.72(@types/node@18.18.6)(graphql@14.3.1)
+      '@graphql-tools/url-loader': 7.17.18(@types/node@18.18.6)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
-      '@whatwg-node/fetch': 0.6.9(@types/node@18.16.19)
+      '@whatwg-node/fetch': 0.6.9(@types/node@18.18.6)
       chalk: 4.1.2
       chokidar: 3.5.3
       cosmiconfig: 7.1.0
-      cosmiconfig-typescript-loader: 4.3.0(@types/node@18.16.19)(cosmiconfig@7.1.0)(ts-node@10.9.1)(typescript@4.9.5)
+      cosmiconfig-typescript-loader: 4.3.0(@types/node@18.18.6)(cosmiconfig@7.1.0)(ts-node@10.9.1)(typescript@4.9.5)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 14.3.1
-      graphql-config: 4.5.0(@types/node@18.16.19)(graphql@14.3.1)
+      graphql-config: 4.5.0(@types/node@18.18.6)(graphql@14.3.1)
       inquirer: 8.2.5
       is-glob: 4.0.3
       json-to-pretty-yaml: 1.2.2
@@ -4945,7 +4923,7 @@ packages:
       shell-quote: 1.8.1
       string-env-interpolation: 1.0.1
       ts-log: 2.2.5
-      ts-node: 10.9.1(@types/node@18.16.19)(typescript@4.9.5)
+      ts-node: 10.9.1(@types/node@18.18.6)(typescript@4.9.5)
       tslib: 2.6.0
       yaml: 2.3.1
       yargs: 17.7.2
@@ -5195,7 +5173,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@graphql-tools/executor-http@0.1.10(@types/node@18.16.19)(graphql@14.3.1):
+  /@graphql-tools/executor-http@0.1.10(@types/node@18.18.6)(graphql@14.3.1):
     resolution: {integrity: sha512-hnAfbKv0/lb9s31LhWzawQ5hghBfHS+gYWtqxME6Rl0Aufq9GltiiLBcl7OVVOnkLF0KhwgbYP1mB5VKmgTGpg==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -5206,7 +5184,7 @@ packages:
       dset: 3.1.2
       extract-files: 11.0.0
       graphql: 14.3.1
-      meros: 1.3.0(@types/node@18.16.19)
+      meros: 1.3.0(@types/node@18.18.6)
       tslib: 2.6.0
       value-or-promise: 1.0.12
     transitivePeerDependencies:
@@ -5259,13 +5237,13 @@ packages:
       - supports-color
     dev: true
 
-  /@graphql-tools/github-loader@7.3.28(@babel/core@7.22.8)(@types/node@18.16.19)(graphql@14.3.1):
+  /@graphql-tools/github-loader@7.3.28(@babel/core@7.22.8)(@types/node@18.18.6)(graphql@14.3.1):
     resolution: {integrity: sha512-OK92Lf9pmxPQvjUNv05b3tnVhw0JRfPqOf15jZjyQ8BfdEUrJoP32b4dRQQem/wyRL24KY4wOfArJNqzpsbwCA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       '@ardatan/sync-fetch': 0.0.1
-      '@graphql-tools/executor-http': 0.1.10(@types/node@18.16.19)(graphql@14.3.1)
+      '@graphql-tools/executor-http': 0.1.10(@types/node@18.18.6)(graphql@14.3.1)
       '@graphql-tools/graphql-tag-pluck': 7.5.2(@babel/core@7.22.8)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@whatwg-node/fetch': 0.8.8
@@ -5360,15 +5338,15 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 14.3.1
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
-  /@graphql-tools/prisma-loader@7.2.72(@types/node@18.16.19)(graphql@14.3.1):
+  /@graphql-tools/prisma-loader@7.2.72(@types/node@18.18.6)(graphql@14.3.1):
     resolution: {integrity: sha512-0a7uV7Fky6yDqd0tI9+XMuvgIo6GAqiVzzzFV4OSLry4AwiQlI3igYseBV7ZVOGhedOTqj/URxjpiv07hRcwag==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@graphql-tools/url-loader': 7.17.18(@types/node@18.16.19)(graphql@14.3.1)
+      '@graphql-tools/url-loader': 7.17.18(@types/node@18.18.6)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@types/js-yaml': 4.0.5
       '@types/json-stable-stringify': 1.0.34
@@ -5403,7 +5381,7 @@ packages:
       '@ardatan/relay-compiler': 12.0.0(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       graphql: 14.3.1
-      tslib: 2.4.1
+      tslib: 2.6.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -5421,7 +5399,7 @@ packages:
       value-or-promise: 1.0.12
     dev: true
 
-  /@graphql-tools/url-loader@7.17.18(@types/node@18.16.19)(graphql@14.3.1):
+  /@graphql-tools/url-loader@7.17.18(@types/node@18.18.6)(graphql@14.3.1):
     resolution: {integrity: sha512-ear0CiyTj04jCVAxi7TvgbnGDIN2HgqzXzwsfcqiVg9cvjT40NcMlZ2P1lZDgqMkZ9oyLTV8Bw6j+SyG6A+xPw==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -5429,7 +5407,7 @@ packages:
       '@ardatan/sync-fetch': 0.0.1
       '@graphql-tools/delegate': 9.0.35(graphql@14.3.1)
       '@graphql-tools/executor-graphql-ws': 0.0.14(graphql@14.3.1)
-      '@graphql-tools/executor-http': 0.1.10(@types/node@18.16.19)(graphql@14.3.1)
+      '@graphql-tools/executor-http': 0.1.10(@types/node@18.18.6)(graphql@14.3.1)
       '@graphql-tools/executor-legacy-ws': 0.0.11(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       '@graphql-tools/wrap': 9.4.2(graphql@14.3.1)
@@ -5453,7 +5431,7 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       graphql: 14.3.1
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /@graphql-tools/utils@9.2.1(graphql@14.3.1):
@@ -5878,14 +5856,14 @@ packages:
     resolution: {integrity: sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==}
     dev: false
 
-  /@kie-tools-core/backend@0.30.0:
-    resolution: {integrity: sha512-lTtIaW2+6Ckc+woZPiXee7QzeWG71eCHoi8JYGFzo7RacjfW6dBI5j8brv0ceLPGNr9V1OCZEgRJRc5DFs4pag==}
+  /@kie-tools-core/backend@0.32.0:
+    resolution: {integrity: sha512-5S/Uq9eXL2pbR9pW3M/X5XsRS2ij38yclrT3oaKh2t89wtv0kh/B5vSG36dtpoSVKtx1+zcyFnBPps+OudXv9Q==}
     dependencies:
-      '@kie-tools-core/i18n': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
+      '@kie-tools-core/i18n': 0.32.0
+      '@kie-tools-core/notifications': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
       axios: 0.21.2(debug@4.3.4)
-      fast-xml-parser: 4.2.5
+      fast-xml-parser: 4.3.2
       portfinder: 1.0.32
       semver: 7.5.4
       sinon: 11.1.2
@@ -5894,18 +5872,18 @@ packages:
       - supports-color
     dev: false
 
-  /@kie-tools-core/editor@0.30.0:
-    resolution: {integrity: sha512-CW4+ApKo1sH5YANDMtOezU3qdqoZHFoFIZmEZQyq1bVnpQO5nYhQR4+Moe3HSo316k3aWRQ7cvog/9MZZvT3eA==}
+  /@kie-tools-core/editor@0.32.0:
+    resolution: {integrity: sha512-xTWuSln613EtQr4pG20BBFpRDMPzFr9NvG7N0T6qf9lJXr5mGieO+OjIx97oFcgVKxNZlri5FeYvbBDkJcOynA==}
     dependencies:
-      '@kie-tools-core/backend': 0.30.0
-      '@kie-tools-core/envelope': 0.30.0
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/i18n': 0.30.0
-      '@kie-tools-core/keyboard-shortcuts': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
-      '@kie-tools-core/patternfly-base': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
+      '@kie-tools-core/backend': 0.32.0
+      '@kie-tools-core/envelope': 0.32.0
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@kie-tools-core/i18n': 0.32.0
+      '@kie-tools-core/keyboard-shortcuts': 0.32.0
+      '@kie-tools-core/notifications': 0.32.0
+      '@kie-tools-core/operating-system': 0.32.0
+      '@kie-tools-core/patternfly-base': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
       '@patternfly/react-core': 4.276.8(react-dom@17.0.2)(react@17.0.2)
       '@patternfly/react-icons': 4.93.6(react-dom@17.0.2)(react@17.0.2)
       csstype: 3.1.2
@@ -5917,112 +5895,112 @@ packages:
       - supports-color
     dev: false
 
-  /@kie-tools-core/envelope-bus@0.24.0:
-    resolution: {integrity: sha512-22zMDGwbu2ekBiw1WYpU5GxS0GJLwcNy4Q2LxhhZr3pUbRYo0Bl3/eAlWRG1j8c6ZZNZuS5Oxb+EuYdDJRDJew==}
+  /@kie-tools-core/envelope-bus@0.32.0:
+    resolution: {integrity: sha512-vIJrgsy6bWg5266P7hh7KIOE8Ot2rw0LybuKyMPr0w4NTZsdBKrGch0oTQi2rXI0AAnXSyeiQXQeQlTsojPnHQ==}
     dependencies:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     dev: false
 
-  /@kie-tools-core/envelope-bus@0.30.0:
-    resolution: {integrity: sha512-GyrXfByEl3nkDWyy4lb6DfG9ruIStKUm44MLzgniS8jOmykbSHZCPD6Mjl2lV7+xQKY7IrV7umJXUyHfxWVNGw==}
+  /@kie-tools-core/envelope@0.32.0:
+    resolution: {integrity: sha512-cGkNQFVTLCgw0Sz4kG0Z31gavy6oB5KeMEHPqxjy4V4XPZpsgAWaO6gtH0arP2ytKTVYWAArV0bKZBJ3YkuxzA==}
     dependencies:
-      react: 17.0.2
-      react-dom: 17.0.2(react@17.0.2)
-    dev: false
-
-  /@kie-tools-core/envelope@0.24.0:
-    resolution: {integrity: sha512-P+7NwdAiBm+bfnLzZgBFSNds9kj5TWAuTQ1/f+m3rj1o1uWHp6wJQiUb9NRvAUwnNf0+5VhZJ6eLKjOrgmMqCg==}
-    dependencies:
-      '@kie-tools-core/envelope-bus': 0.24.0
+      '@kie-tools-core/envelope-bus': 0.32.0
       csstype: 3.1.2
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     dev: false
 
-  /@kie-tools-core/envelope@0.30.0:
-    resolution: {integrity: sha512-9a0w8YNFPKMEcl7d+z2c0L88auTzcndUCkN1by9uaE8T+tV9QRdO5TAGQJxGzipAKMdzt1mZ2fCVTRxh1PLucQ==}
-    dependencies:
-      '@kie-tools-core/envelope-bus': 0.30.0
-      csstype: 3.1.2
-      react: 17.0.2
-      react-dom: 17.0.2(react@17.0.2)
-    dev: false
-
-  /@kie-tools-core/i18n@0.30.0:
-    resolution: {integrity: sha512-qNUXUNcWXSRABTJQjuw7wudgRG/nzNvTlLR3BMuBrmEcmZPd5PciXPO9/h/dO5lFdQ5x88P3kUqLETkbbzvlUA==}
+  /@kie-tools-core/i18n@0.32.0:
+    resolution: {integrity: sha512-CxqSdbOIUId6x8Zu06F1ptPHbAmF4ruDsJ0ejFkPhZrxmWYcE9u8AcFKO0mzkbnTvGGTSowTqt1L4ElL2q/rPw==}
     dependencies:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     dev: false
 
-  /@kie-tools-core/keyboard-shortcuts@0.30.0:
-    resolution: {integrity: sha512-L3bTNtpbvLzCawz6dFwXBOjgEdGGzvaOZD1EzdV7ScIhyL2r3BS/pvqz670Fh8UNzx/3ai9HhhP6Kjp8fWz1aQ==}
+  /@kie-tools-core/keyboard-shortcuts@0.32.0:
+    resolution: {integrity: sha512-PKk26OAPnmKi5nokbP1rg8YPv9ym7Afgeg/J+xzHFMXWiz4Nj1zlhWFvfYFfQ9bJPOJcnlj5OYkgYtcmv+OXyA==}
     dependencies:
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@kie-tools-core/operating-system': 0.32.0
       react: 17.0.2
     dev: false
 
-  /@kie-tools-core/notifications@0.30.0:
-    resolution: {integrity: sha512-7V77WtUKTg6BQLOJj26CBFpxqQPMeFSdHHjO9LMMzSTM1nXyfg4MAT6WJ23O6hRG4V4lqSXorfNYq15GA9vXuw==}
+  /@kie-tools-core/notifications@0.32.0:
+    resolution: {integrity: sha512-dwUciRAp08Ue8XKwmil87IjC/YcrmlsrebVSN83sRbvl7aXgfFZNgiMl+1uGBzbRovllkzOlKlQYdnBjxlNt0g==}
     dependencies:
-      '@kie-tools-core/i18n': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
+      '@kie-tools-core/i18n': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
     dev: false
 
-  /@kie-tools-core/operating-system@0.30.0:
-    resolution: {integrity: sha512-Q01mUhNhyOuH20LV/coPJicXcd74brvQjwIfMs6gCO/WIbypy22xetUyBxU4xc1IsQSW07wUcsMrlkNTWs6jaw==}
+  /@kie-tools-core/operating-system@0.32.0:
+    resolution: {integrity: sha512-dG7g+KQsQFYvbwBtDU5RsneIf7KgaHin4C6UIgGXxmjvedX5DbunZT3zc5T8/AidNnydNeeY1ahGt0oyySv4cA==}
     dev: false
 
-  /@kie-tools-core/patternfly-base@0.30.0:
-    resolution: {integrity: sha512-ru4f6EEaKiaye9lAhohKwT1VlRxBRy/wwgilNBJM9aZEIRmJ8azCTuAjTw+Ej7e0S+71BwxHATwdQJ0NUczA7A==}
+  /@kie-tools-core/patternfly-base@0.32.0:
+    resolution: {integrity: sha512-tenj2EbcNYxvaJrTfMdZxfgfW3CyCbXQrYKLfxVMgaUD3xihv/Sc4Rl/K8PrY5FBDW7csBXLlI48yzVNX6C3Jw==}
     dev: false
 
-  /@kie-tools-core/vscode-java-code-completion@0.30.0:
-    resolution: {integrity: sha512-IgkBlOY8YeLOrF/Tv0z9HVn6CMe/3xT0u4BeRI64iQ0cZYvaMRj2aNzt7kXH4Uq0vCn71OrlMn0zbPh+pMuw3Q==}
+  /@kie-tools-core/vscode-java-code-completion@0.32.0:
+    resolution: {integrity: sha512-Zk8V4OLinc2jvDexLwUl8+oFPauvouhbJ9FpLlAcLY9ebcqC+ecMAf2v8WdrzG/iHKD9nFMaAZbCJDmEpUZMeQ==}
     dev: false
 
-  /@kie-tools-core/workspace@0.30.0:
-    resolution: {integrity: sha512-Yt6c6mL8OXwiEkyejkDHgPyvtYNEYVcmunnSM+dPLZnaUmUFKrZ66uiAXftx0q5CHYlfJO2W8tq6GYaDiToE+w==}
+  /@kie-tools-core/workspace@0.32.0:
+    resolution: {integrity: sha512-Q4Vo4WVIyxXcpGvxecwYrMgDciucsKFK7+5XYRa3tS4JWLAdwKYcG6FwNWnu+MEkafzqXvQYiS0bHwJFYKYt9A==}
     dependencies:
-      '@kie-tools-core/operating-system': 0.30.0
+      '@kie-tools-core/operating-system': 0.32.0
     dev: false
 
-  /@kie-tools/dashbuilder-client@0.30.0:
-    resolution: {integrity: sha512-1ju8sH0A7f9VdV8v7ffZKzkX3Z7tGMUjmJAVOvTyIyCRQAHNBGiBTGfznfrkjVjny6AFnp+x6SIwrdTlAgw0IA==}
+  /@kie-tools/dashbuilder-client@0.32.0:
+    resolution: {integrity: sha512-7X3ELTifxzP+fTL5ig2F/6X0Hfx+oI/4vrMUA5/vaDXyV1SJ9hwZztxaGThTzMSMDvDXTY5/8b1GoJMS8PYM1w==}
     dev: true
 
-  /@kie-tools/dmn-language-service@0.30.0:
-    resolution: {integrity: sha512-chb3U3/Ipu6F1Ah+iIIgTzCZ8mr1Q9qqjAZvLInxVnla6FaBcGrWGNgHEHJENOa80icsoa7BwBst9G7H1wrxRQ==}
+  /@kie-tools/dmn-feel-antlr4-parser@0.32.0:
+    resolution: {integrity: sha512-eHEtzwXtTGkDpWzHcG8acjZxVfe0OsIo4MdeRESPiT9r/kHPTz6Cn66cQyIqy6Uvxx2uDKr8koXoQW59TFY94Q==}
+    dependencies:
+      '@kie-tools/dmn-marshaller': 0.32.0
+      antlr4: 4.13.1
     dev: false
 
-  /@kie-tools/json-yaml-language-service@0.30.0:
-    resolution: {integrity: sha512-SzExbFZkUEZymvO0N/6jzbyCR1AJTsh/XN582ZNdIIAbMFEx/pJlXy179f7VR4vtFByWE60cfdCqXbizM8dI8Q==}
+  /@kie-tools/dmn-language-service@0.32.0:
+    resolution: {integrity: sha512-pqUgA6k+jvrY5bhPGJBzJUkzGncyBNHbrTUCVZ9efBfwlPhyCEYjUczwkMFvOmTSJl++r7NNlUAcoU12P6Jouw==}
     dependencies:
-      '@kie-tools/yaml-language-server': 0.30.0
-      jsonata: 1.8.6
+      '@kie-tools/dmn-feel-antlr4-parser': 0.32.0
+      '@kie-tools/dmn-marshaller': 0.32.0
+      antlr4: 4.13.1
+    dev: false
+
+  /@kie-tools/dmn-marshaller@0.32.0:
+    resolution: {integrity: sha512-9eZgjxnRL72vicCvUSN+NhHY7RxDSzntwaaDT+4ENnJlRX2ZlFmfLvgJ1wGyf+Rjea2zTd6hhRzG+jyYm0Y2pQ==}
+    dependencies:
+      '@kie-tools/xml-parser-ts': 0.32.0
+    dev: false
+
+  /@kie-tools/json-yaml-language-service@0.32.0:
+    resolution: {integrity: sha512-NCHMpPjo4enLaw8zYUQZi8U08+mZqr3h0HERDAcordnkC8cofKt1/wY7e5rYRQnIxd4BHK5QSTh3PPb98XpCJw==}
+    dependencies:
+      '@kie-tools/yaml-language-server': 0.32.0
       jsonc-parser: 3.2.0
       vscode-json-languageservice: 4.2.1
       vscode-languageserver: 7.0.0
-      vscode-languageserver-textdocument: 1.0.8
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-textdocument: 1.0.11
+      vscode-languageserver-types: 3.17.5
       yaml-language-server-parser: 0.1.3
     dev: false
 
-  /@kie-tools/kie-bc-editors@0.30.0:
-    resolution: {integrity: sha512-+So7zjz+L2iggZO3isCkEmIHYyhjFnMFZb6VxyXqT4/M+rjWyVzxnyOeKf9om2DBVsk68ELqagCxe5q00Iscdg==}
+  /@kie-tools/kie-bc-editors@0.32.0:
+    resolution: {integrity: sha512-ciMrDzBr5Bz37IvUPFQM+1jRIll5H+KMTbv93lp1YoQgb006ojimXRJ7WjC6nZLa/B82uWByvWcUtxM+MEB23w==}
     dependencies:
-      '@kie-tools-core/editor': 0.30.0
-      '@kie-tools-core/envelope': 0.30.0
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/i18n': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
-      '@kie-tools-core/vscode-java-code-completion': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
-      '@kie-tools/dmn-language-service': 0.30.0
-      '@kie-tools/pmml-editor-marshaller': 0.30.0
+      '@kie-tools-core/editor': 0.32.0
+      '@kie-tools-core/envelope': 0.32.0
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@kie-tools-core/i18n': 0.32.0
+      '@kie-tools-core/notifications': 0.32.0
+      '@kie-tools-core/operating-system': 0.32.0
+      '@kie-tools-core/vscode-java-code-completion': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
+      '@kie-tools/dmn-language-service': 0.32.0
+      '@kie-tools/pmml-editor-marshaller': 0.32.0
       '@patternfly/react-core': 4.276.8(react-dom@17.0.2)(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
@@ -6031,164 +6009,153 @@ packages:
       - supports-color
     dev: false
 
-  /@kie-tools/kie-editors-standalone@0.30.0:
-    resolution: {integrity: sha512-qI0TvrsSBmRdux5bSnRGE32qSAbl43CIYuXcIcomR6rMpc89tyZQQtFYmqVSSRqiMEpgzi/1jKB4P4MtOEliZw==}
+  /@kie-tools/kie-editors-standalone@0.32.0:
+    resolution: {integrity: sha512-UrnwKau7KC+Onjj6dMyWwC0pdz7J/scWTA/CBDLT3ZPnMdpg6buZcCWH2TLpv7T7CW/tgwbIVelaeyOnLTUd+A==}
+    dependencies:
+      '@kie-tools/kie-bc-editors': 0.32.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
     dev: false
 
-  /@kie-tools/pmml-editor-marshaller@0.30.0:
-    resolution: {integrity: sha512-uFt+lFn99WEeJi9jVmfJ0yMyVphANCBSFZS32ZKfDdIBME8cnYpAwt0aDjTIm6ytjdCd6oitRNyWvwMlEBgxyw==}
+  /@kie-tools/pmml-editor-marshaller@0.32.0:
+    resolution: {integrity: sha512-/0izm5aUazaM7GNkP0VZooF3pDg3lgOlAaTHx0xjXH1UDq0oFx9JGg7rVvo8j1x2qx2Z0Xm1ohLkZaHYg1obgA==}
     dependencies:
       jsonata: 1.8.6
       xml-js: 1.6.11
     dev: false
 
-  /@kie-tools/serverless-workflow-combined-editor@0.30.0:
-    resolution: {integrity: sha512-AU0RNZ1IhhdT/aDxyXaTLjsE24vrKCchQ6PcbOgNf5nPuMFV7/EM3h5V9JZN12/u8HCxa4Kc1xrgfHyIFgjcjQ==}
+  /@kie-tools/serverless-workflow-combined-editor@0.32.0:
+    resolution: {integrity: sha512-MYXMHqQqZF25b9KCMPZKxKY9tzp1CVQksbwq4lI3V5TqEBMaMHwml/bHzRxnTrZMRMIRLtTAo+XiXk14zwUgnw==}
     dependencies:
-      '@kie-tools-core/editor': 0.30.0
-      '@kie-tools-core/envelope': 0.30.0
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/keyboard-shortcuts': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
-      '@kie-tools-core/patternfly-base': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
-      '@kie-tools/serverless-workflow-diagram-editor-assets': 0.30.0
-      '@kie-tools/serverless-workflow-diagram-editor-envelope': 0.30.0
-      '@kie-tools/serverless-workflow-language-service': 0.30.0
-      '@kie-tools/serverless-workflow-mermaid-viewer': 0.30.0
-      '@kie-tools/serverless-workflow-service-catalog': 0.30.0
-      '@kie-tools/serverless-workflow-text-editor': 0.30.0
+      '@kie-tools-core/editor': 0.32.0
+      '@kie-tools-core/envelope': 0.32.0
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@kie-tools-core/keyboard-shortcuts': 0.32.0
+      '@kie-tools-core/notifications': 0.32.0
+      '@kie-tools-core/operating-system': 0.32.0
+      '@kie-tools-core/patternfly-base': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
+      '@kie-tools/serverless-workflow-diagram-editor-assets': 0.32.0
+      '@kie-tools/serverless-workflow-diagram-editor-envelope': 0.32.0
+      '@kie-tools/serverless-workflow-language-service': 0.32.0
+      '@kie-tools/serverless-workflow-service-catalog': 0.32.0
+      '@kie-tools/serverless-workflow-text-editor': 0.32.0
       '@patternfly/react-core': 4.276.8(react-dom@17.0.2)(react@17.0.2)
       '@patternfly/react-icons': 4.93.6(react-dom@17.0.2)(react@17.0.2)
       json-schema: 0.4.0
-      monaco-editor: 0.33.0
-      monaco-yaml: 4.0.4(monaco-editor@0.33.0)
+      monaco-editor: 0.39.0
+      monaco-yaml: 4.0.4(monaco-editor@0.39.0)
+      path-browserify: 1.0.1
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-types: 3.17.5
     transitivePeerDependencies:
       - debug
       - encoding
       - supports-color
     dev: false
 
-  /@kie-tools/serverless-workflow-diagram-editor-assets@0.30.0:
-    resolution: {integrity: sha512-ck2pN0XC4fyZF4K5uNoLPx6x2niycp3xYS+6P4J5V1XyWQtO9n6Q8GIeOJUcX8IvEfcoz4g3757ls3munla1fw==}
+  /@kie-tools/serverless-workflow-diagram-editor-assets@0.32.0:
+    resolution: {integrity: sha512-iMlsg1Oektc1IRmOglUSQslxVkvUMYIB9qC4HhywffiCaBR8pwTjFWVbMiOxG5fkmcf6JAUcpqUaWJauPIVu2g==}
     dev: false
 
-  /@kie-tools/serverless-workflow-diagram-editor-envelope@0.30.0:
-    resolution: {integrity: sha512-jpfdNKX2x6mQpCBKZvNh2HZppHFbEUsWyLVKjLz0250EmoiZyM07i2svpG0XR4xifD++jnRu6CLy9wF4cnXAqw==}
+  /@kie-tools/serverless-workflow-diagram-editor-envelope@0.32.0:
+    resolution: {integrity: sha512-4KupBZ/UGPFWba61/lVXhdKWTEaFccVrsMhw1c136TPnm9ie7UBBqBV9fmRqjsv5q5t27y6oRHQGy+jXy6Fmyw==}
     dependencies:
-      '@kie-tools-core/editor': 0.30.0
-      '@kie-tools-core/envelope': 0.30.0
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/i18n': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
-      '@kie-tools-core/vscode-java-code-completion': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
-      '@kie-tools/kie-bc-editors': 0.30.0
+      '@kie-tools-core/editor': 0.32.0
+      '@kie-tools-core/envelope': 0.32.0
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@kie-tools-core/i18n': 0.32.0
+      '@kie-tools-core/notifications': 0.32.0
+      '@kie-tools-core/operating-system': 0.32.0
+      '@kie-tools-core/vscode-java-code-completion': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
+      '@kie-tools/kie-bc-editors': 0.32.0
     transitivePeerDependencies:
       - debug
       - supports-color
     dev: false
 
-  /@kie-tools/serverless-workflow-jq-expressions@0.30.0:
-    resolution: {integrity: sha512-DfyygW4IKmooWIWYgZB+CTEY1aV8sytcQFr/vf+uHZN4yVAHv0YiXrdElhdAhwjcGwthLfgfsKA3cJHB3YQi7A==}
+  /@kie-tools/serverless-workflow-jq-expressions@0.32.0:
+    resolution: {integrity: sha512-6tMA8vW0a7FTU4puSobLhyYGMWCNEjdxZQmTVqKYnlvWJA0Xd98ckiQ9XV0wWU5s736tZtFxZU13Za1ukMxVlA==}
     dependencies:
-      '@kie-tools/serverless-workflow-service-catalog': 0.30.0
+      '@kie-tools/serverless-workflow-service-catalog': 0.32.0
       cross-fetch: 3.1.8
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@kie-tools/serverless-workflow-language-service@0.30.0:
-    resolution: {integrity: sha512-pYwT6l4RElGpLe/Efx0GNxiDiukBhL/cwR6M8Kqgsncipcf0RoG5LiPB7ihmnZPUsFR9SoJJe5YuSp8CnT17Aw==}
+  /@kie-tools/serverless-workflow-language-service@0.32.0:
+    resolution: {integrity: sha512-kW0zKJxbxok2WY2qeJpnaSzpkGtleMwgNCirVIMp4GB+ql8hHVXzKGXBImUpFFmwcARml7MlhWjUz7CLnPv8Cg==}
     dependencies:
-      '@kie-tools/json-yaml-language-service': 0.30.0
-      '@kie-tools/serverless-workflow-jq-expressions': 0.30.0
-      '@kie-tools/serverless-workflow-service-catalog': 0.30.0
-      '@kie-tools/yaml-language-server': 0.30.0
+      '@kie-tools/json-yaml-language-service': 0.32.0
+      '@kie-tools/serverless-workflow-jq-expressions': 0.32.0
+      '@kie-tools/serverless-workflow-service-catalog': 0.32.0
+      '@kie-tools/yaml-language-server': 0.32.0
       '@severlessworkflow/sdk-typescript': 3.0.3
       json-to-ast: 2.1.0
       jsonata: 1.8.6
       jsonc-parser: 3.2.0
+      path-browserify: 1.0.1
       vscode-json-languageservice: 4.2.1
       vscode-languageserver: 7.0.0
-      vscode-languageserver-textdocument: 1.0.8
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-textdocument: 1.0.11
+      vscode-languageserver-types: 3.17.5
       yaml-language-server-parser: 0.1.3
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@kie-tools/serverless-workflow-mermaid-viewer@0.30.0:
-    resolution: {integrity: sha512-t8KNJCsVKOzPYi6wQNnHK5QYuxZiK/rjFpI3DmNCCJpVcRft9VCI6mHluPE+Snl82ExPl2dl7R65iZwTn+2DBg==}
+  /@kie-tools/serverless-workflow-service-catalog@0.32.0:
+    resolution: {integrity: sha512-INwL4tjLTs6if34BWHnAwrFYWBMe9jYfki7PIV/JhE6WX1G4h0POrK90KhDwmL1GpyUjqBlQTbzSkk2fxLFEKQ==}
     dependencies:
-      '@kie-tools-core/editor': 0.30.0
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/keyboard-shortcuts': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
-      '@kie-tools-core/patternfly-base': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
-      '@patternfly/react-core': 4.276.8(react-dom@17.0.2)(react@17.0.2)
-      '@patternfly/react-icons': 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      '@severlessworkflow/sdk-typescript': 3.0.3
-      mermaid: 9.4.3
-      react: 17.0.2
-      react-dom: 17.0.2(react@17.0.2)
-      svg-pan-zoom: 3.6.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-    dev: false
-
-  /@kie-tools/serverless-workflow-service-catalog@0.30.0:
-    resolution: {integrity: sha512-JSaxffHFCz5/g2EBDOWfSJFStWp6JslsI8jDijEVOLuqUA4Ma0b7TYNIQ4gSmRuhiYwJdSXyii1OsZa6pwtimw==}
-    dependencies:
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@types/js-yaml': 4.0.5
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@types/js-yaml': 4.0.8
       js-yaml: 4.1.0
       lodash: 4.17.21
       openapi-types: 7.2.3
+      path-browserify: 1.0.1
     dev: false
 
-  /@kie-tools/serverless-workflow-text-editor@0.30.0:
-    resolution: {integrity: sha512-25nbEEDadl1qYUS9zCf86UA5jhjCN5eHxbvSxWUjGtluIlbdhP172GruM4og5TD/LHh9BRgfdJDUcdJLNFeP+Q==}
+  /@kie-tools/serverless-workflow-text-editor@0.32.0:
+    resolution: {integrity: sha512-3//LVxU4nE09MMv+0GitblBf6LIBkVpQ5asYrjZTP5jsUy8BznX+tvGZKlgryByGD2SVI6Yfl/npWyC8n19mSQ==}
     dependencies:
-      '@kie-tools-core/editor': 0.30.0
-      '@kie-tools-core/envelope': 0.30.0
-      '@kie-tools-core/envelope-bus': 0.30.0
-      '@kie-tools-core/notifications': 0.30.0
-      '@kie-tools-core/operating-system': 0.30.0
-      '@kie-tools-core/patternfly-base': 0.30.0
-      '@kie-tools-core/workspace': 0.30.0
-      '@kie-tools/serverless-workflow-language-service': 0.30.0
-      '@kie-tools/serverless-workflow-service-catalog': 0.30.0
+      '@kie-tools-core/editor': 0.32.0
+      '@kie-tools-core/envelope': 0.32.0
+      '@kie-tools-core/envelope-bus': 0.32.0
+      '@kie-tools-core/notifications': 0.32.0
+      '@kie-tools-core/operating-system': 0.32.0
+      '@kie-tools-core/patternfly-base': 0.32.0
+      '@kie-tools-core/workspace': 0.32.0
+      '@kie-tools/serverless-workflow-language-service': 0.32.0
+      '@kie-tools/serverless-workflow-service-catalog': 0.32.0
       '@patternfly/react-core': 4.276.8(react-dom@17.0.2)(react@17.0.2)
       '@patternfly/react-icons': 4.93.6(react-dom@17.0.2)(react@17.0.2)
       json-schema: 0.4.0
-      monaco-editor: 0.33.0
-      monaco-yaml: 4.0.4(monaco-editor@0.33.0)
+      monaco-editor: 0.39.0
+      monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-types: 3.17.5
     transitivePeerDependencies:
       - debug
       - encoding
       - supports-color
     dev: false
 
-  /@kie-tools/yaml-language-server@0.30.0:
-    resolution: {integrity: sha512-zOt02iqxESnv2FU35xU0eRKDfIcRT3ySvRtcCQ+NxL9wSWy+EgYuXaj9IC/lHMpG29aTWt53DxCZ625B1IrA/w==}
+  /@kie-tools/xml-parser-ts@0.32.0:
+    resolution: {integrity: sha512-AfPSvvy3jAdneBJrGAdxU7jp1XAh3vhWmA//5Qc0PPVd509AqCl0vfEHiJVTNAMo1VY2L1FDzdmq7Z+cKMHleA==}
+    dev: false
+
+  /@kie-tools/yaml-language-server@0.32.0:
+    resolution: {integrity: sha512-M9TpJke1M2LLQxQQ0X27XTjwNDgNcIBwcDQKTH2TJFVqOLj5Y82QqqROC9QpunmaKdQ7GN62mWvL4ug31YV6Jw==}
     dependencies:
       path-browserify: 1.0.1
       vscode-json-languageservice: 4.2.1
       vscode-languageserver: 7.0.0
-      vscode-languageserver-textdocument: 1.0.8
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-textdocument: 1.0.11
+      vscode-languageserver-types: 3.17.5
     dev: false
 
   /@kie/lock-treatment-tool@0.2.4:
@@ -6279,12 +6246,12 @@ packages:
       victory-zoom-container: 36.6.11(react@17.0.2)
     dev: false
 
-  /@patternfly/react-code-editor@4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2):
+  /@patternfly/react-code-editor@4.82.113(react-dom@17.0.2)(react-monaco-editor@0.54.0)(react@17.0.2):
     resolution: {integrity: sha512-iBwDTuUifwUwwL4wAzpI4KkB5fkCxiPVGlUypWumtNXweVf3x6PWpLCJM2H1rhNUddBRWIj5JOL3DYqPqYpbZg==}
     peerDependencies:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
-      react-monaco-editor: ^0.51.0
+      react-monaco-editor: ^0.54.0
     dependencies:
       '@patternfly/react-core': 4.276.8(react-dom@17.0.2)(react@17.0.2)
       '@patternfly/react-icons': 4.93.6(react-dom@17.0.2)(react@17.0.2)
@@ -6292,7 +6259,7 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       react-dropzone: 9.0.0(react@17.0.2)
-      react-monaco-editor: 0.49.0(@types/react@17.0.5)(monaco-editor@0.33.0)(react@17.0.2)
+      react-monaco-editor: 0.54.0(@types/react@17.0.5)(monaco-editor@0.39.0)(react@17.0.2)
       tslib: 2.6.0
     dev: false
 
@@ -6827,6 +6794,11 @@ packages:
 
   /@types/js-yaml@4.0.5:
     resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
+    dev: true
+
+  /@types/js-yaml@4.0.8:
+    resolution: {integrity: sha512-m6jnPk1VhlYRiLFm3f8X9Uep761f+CK8mHyS65LutH2OhmBF0BeMEjHgg05usH8PLZMWWc/BUR9RPmkvpWnyRA==}
+    dev: false
 
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
@@ -6895,6 +6867,10 @@ packages:
 
   /@types/node@18.16.19:
     resolution: {integrity: sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==}
+
+  /@types/node@18.18.6:
+    resolution: {integrity: sha512-wf3Vz+jCmOQ2HV1YUJuCWdL64adYxumkrxtc+H1VUQlnQI04+5HtH+qZCOE21lBE7gIrt+CwX2Wv8Acrw5Ak6w==}
+    dev: true
 
   /@types/node@20.4.1:
     resolution: {integrity: sha512-JIzsAvJeA/5iY6Y/OxZbv1lUcc8dNSE77lb2gnBH+/PJ3lFR1Ccvgwl5JWnHAkNHcRsT0TbpVOsiMKZ1F/yyJg==}
@@ -7093,8 +7069,8 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@types/yauzl@2.10.0:
-    resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
+  /@types/yauzl@2.10.2:
+    resolution: {integrity: sha512-Km7XAtUIduROw7QPgvcft0lIupeG8a8rdKL8RiSyKvlE7dYY31fEn41HVuQsRFDuROA8tA4K2UVL+WdfFmErBA==}
     requiresBuild: true
     dependencies:
       '@types/node': 18.16.19
@@ -7338,11 +7314,11 @@ packages:
     resolution: {integrity: sha512-IqnKIDWfXBJkvy/k6tzskWTc2NK3LcqHlb+KHGCrjOCH4jfQckRX0NAiIcC/vIqQkzLYw2r2CTSwAxcrtcD6lA==}
     dev: true
 
-  /@whatwg-node/fetch@0.6.9(@types/node@18.16.19):
+  /@whatwg-node/fetch@0.6.9(@types/node@18.18.6):
     resolution: {integrity: sha512-JfrBCJdMu9n9OARc0e/hPHcD98/8Nz1CKSdGYDg6VbObDkV/Ys30xe5i/wPOatYbxuvatj1kfWeHf7iNX3i17w==}
     dependencies:
       '@peculiar/webcrypto': 1.4.3
-      '@whatwg-node/node-fetch': 0.0.5(@types/node@18.16.19)
+      '@whatwg-node/node-fetch': 0.0.5(@types/node@18.18.6)
       busboy: 1.6.0
       urlpattern-polyfill: 6.0.2
       web-streams-polyfill: 3.2.1
@@ -7360,12 +7336,12 @@ packages:
       web-streams-polyfill: 3.2.1
     dev: true
 
-  /@whatwg-node/node-fetch@0.0.5(@types/node@18.16.19):
+  /@whatwg-node/node-fetch@0.0.5(@types/node@18.18.6):
     resolution: {integrity: sha512-hbccmaSZaItdsRuBKBEEhLoO+5oXJPxiyd0kG2xXd0Dh3Rt+vZn4pADHxuSiSHLd9CM+S2z4+IxlEGbWUgiz9g==}
     peerDependencies:
       '@types/node': ^18.0.6
     dependencies:
-      '@types/node': 18.16.19
+      '@types/node': 18.18.6
       '@whatwg-node/events': 0.0.2
       busboy: 1.6.0
       tslib: 2.6.0
@@ -7637,6 +7613,11 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       color-convert: 2.0.1
+
+  /antlr4@4.13.1:
+    resolution: {integrity: sha512-kiXTspaRYvnIArgE97z5YVVf/cDVQABr3abFRR6mE7yesLMkgu4ujuyV/sgxafQ8wgve0DJQUJ38Z8tkgA2izA==}
+    engines: {node: '>=16'}
+    dev: false
 
   /anymatch@2.0.0:
     resolution: {integrity: sha512-5teOsQWABXHHBFP9y3skS5P3d/WfWXpv3FUpy+LorMrNYaT9pI4oLMQX7jzQ2KklNpGpWHzdCXTDT2Y3XGlZBw==}
@@ -8932,7 +8913,7 @@ packages:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
       upper-case-first: 2.0.2
     dev: true
 
@@ -9023,7 +9004,7 @@ packages:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /char-regex@1.0.2:
@@ -9076,7 +9057,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
 
   /chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
@@ -9413,7 +9394,7 @@ packages:
     resolution: {integrity: sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
       upper-case: 2.0.2
     dev: true
 
@@ -9523,19 +9504,7 @@ packages:
       vary: 1.1.2
     dev: true
 
-  /cose-base@1.0.3:
-    resolution: {integrity: sha512-s9whTXInMSgAp/NVXVNuVxVKzGH2qck3aQlVHxDCdAEPgtMKwc4Wq6/QKhgdEdgbLSi9rBTAcPoRa6JpiG4ksg==}
-    dependencies:
-      layout-base: 1.0.2
-    dev: false
-
-  /cose-base@2.2.0:
-    resolution: {integrity: sha512-AzlgcsCbUMymkADOJtQm3wO9S3ltPfYOFD5033keQn9NJzIbtnZj+UdBJe7DYml/8TdbtHJW3j58SOnKhWY/5g==}
-    dependencies:
-      layout-base: 2.0.1
-    dev: false
-
-  /cosmiconfig-typescript-loader@4.3.0(@types/node@18.16.19)(cosmiconfig@7.1.0)(ts-node@10.9.1)(typescript@4.9.5):
+  /cosmiconfig-typescript-loader@4.3.0(@types/node@18.18.6)(cosmiconfig@7.1.0)(ts-node@10.9.1)(typescript@4.9.5):
     resolution: {integrity: sha512-NTxV1MFfZDLPiBMjxbHRwSh5LaLcPMwNdCutmnHJCKoVnlvldPWlllonKwrsRJ5pYZBIBGRWWU2tfvzxgeSW5Q==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
@@ -9544,9 +9513,9 @@ packages:
       ts-node: '>=10'
       typescript: '>=3'
     dependencies:
-      '@types/node': 18.16.19
+      '@types/node': 18.18.6
       cosmiconfig: 7.1.0
-      ts-node: 10.9.1(@types/node@18.16.19)(typescript@4.9.5)
+      ts-node: 10.9.1(@types/node@18.18.6)(typescript@4.9.5)
       typescript: 4.9.5
     dev: true
 
@@ -9649,7 +9618,7 @@ packages:
     dependencies:
       nice-try: 1.0.5
       path-key: 2.0.1
-      semver: 5.7.1
+      semver: 5.7.2
       shebang-command: 1.2.0
       which: 1.3.1
     dev: true
@@ -9941,32 +9910,6 @@ packages:
       yauzl: 2.10.0
     dev: true
 
-  /cytoscape-cose-bilkent@4.1.0(cytoscape@3.25.0):
-    resolution: {integrity: sha512-wgQlVIUJF13Quxiv5e1gstZ08rnZj2XaLHGoFMYXz7SkNfCDOOteKBE6SYRfA9WxxI/iBc3ajfDoc6hb/MRAHQ==}
-    peerDependencies:
-      cytoscape: ^3.2.0
-    dependencies:
-      cose-base: 1.0.3
-      cytoscape: 3.25.0
-    dev: false
-
-  /cytoscape-fcose@2.2.0(cytoscape@3.25.0):
-    resolution: {integrity: sha512-ki1/VuRIHFCzxWNrsshHYPs6L7TvLu3DL+TyIGEsRcvVERmxokbf5Gdk7mFxZnTdiGtnA4cfSmjZJMviqSuZrQ==}
-    peerDependencies:
-      cytoscape: ^3.2.0
-    dependencies:
-      cose-base: 2.2.0
-      cytoscape: 3.25.0
-    dev: false
-
-  /cytoscape@3.25.0:
-    resolution: {integrity: sha512-7MW3Iz57mCUo6JQCho6CmPBCbTlJr7LzyEtIkutG255HLVd4XuBg2I9BkTZLI/e4HoaOB/BiAzXuQybQ95+r9Q==}
-    engines: {node: '>=0.10'}
-    dependencies:
-      heap: 0.2.7
-      lodash: 4.17.21
-    dev: false
-
   /d3-array@3.2.4:
     resolution: {integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==}
     engines: {node: '>=12'}
@@ -9974,69 +9917,9 @@ packages:
       internmap: 2.0.3
     dev: false
 
-  /d3-axis@3.0.0:
-    resolution: {integrity: sha512-IH5tgjV4jE/GhHkRV0HiVYPDtvfjHQlQfJHs0usq7M30XcSBvOotpmH1IgkcXsO/5gEQZD43B//fc7SRT5S+xw==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /d3-brush@3.0.0:
-    resolution: {integrity: sha512-ALnjWlVYkXsVIGlOsuWH1+3udkYFI48Ljihfnh8FZPF2QS9o+PzGLBslO0PjzVoHLZ2KCVgAM8NVkXPJB2aNnQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-drag: 3.0.0
-      d3-interpolate: 3.0.1
-      d3-selection: 3.0.0
-      d3-transition: 3.0.1(d3-selection@3.0.0)
-    dev: false
-
-  /d3-chord@3.0.1:
-    resolution: {integrity: sha512-VE5S6TNa+j8msksl7HwjxMHDM2yNK3XCkusIlpX5kwauBfXuyLAtNg9jCp/iHH61tgI4sb6R/EIMWCqEIdjT/g==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-path: 3.1.0
-    dev: false
-
   /d3-color@3.1.0:
     resolution: {integrity: sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==}
     engines: {node: '>=12'}
-    dev: false
-
-  /d3-contour@4.0.2:
-    resolution: {integrity: sha512-4EzFTRIikzs47RGmdxbeUvLWtGedDUNkTcmzoeyg4sP/dvCexO47AaQL7VKy/gul85TOxw+IBgA8US2xwbToNA==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-array: 3.2.4
-    dev: false
-
-  /d3-delaunay@6.0.4:
-    resolution: {integrity: sha512-mdjtIZ1XLAM8bm/hx3WwjfHt6Sggek7qH043O8KEjDXN40xi3vx/6pYSVTwLjEgiXQTbvaouWKynLBiUZ6SK6A==}
-    engines: {node: '>=12'}
-    dependencies:
-      delaunator: 5.0.0
-    dev: false
-
-  /d3-dispatch@3.0.1:
-    resolution: {integrity: sha512-rzUyPU/S7rwUflMyLc1ETDeBj0NRuHKKAcvukozwhshr6g6c5d8zh4c2gQjY2bZ0dXeGLWc1PF174P2tVvKhfg==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /d3-drag@3.0.0:
-    resolution: {integrity: sha512-pWbUJLdETVA8lQNJecMxoXfH6x+mO2UQo8rSmZ+QqxcbyA3hfeprFgIT//HW2nlHChWeIIMwS2Fq+gEARkhTkg==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-selection: 3.0.0
-    dev: false
-
-  /d3-dsv@3.0.1:
-    resolution: {integrity: sha512-UG6OvdI5afDIFP9w4G0mNq50dSOsXHJaRE8arAS5o9ApWnIElp8GZw1Dun8vP8OyHOZ/QJUKUJwxiiCCnUwm+Q==}
-    engines: {node: '>=12'}
-    hasBin: true
-    dependencies:
-      commander: 7.2.0
-      iconv-lite: 0.6.3
-      rw: 1.3.3
     dev: false
 
   /d3-ease@3.0.1:
@@ -10044,36 +9927,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /d3-fetch@3.0.1:
-    resolution: {integrity: sha512-kpkQIM20n3oLVBKGg6oHrUchHM3xODkTzjMoj7aWQFq5QEM+R6E4WkzT5+tojDY7yjez8KgCBRoj4aEr99Fdqw==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-dsv: 3.0.1
-    dev: false
-
-  /d3-force@3.0.0:
-    resolution: {integrity: sha512-zxV/SsA+U4yte8051P4ECydjD/S+qeYtnaIyAs9tgHCqfguma/aAQDjo85A9Z6EKhBirHRJHXIgJUlffT4wdLg==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-quadtree: 3.0.1
-      d3-timer: 3.0.1
-    dev: false
-
   /d3-format@3.1.0:
     resolution: {integrity: sha512-YyUI6AEuY/Wpt8KWLgZHsIU86atmikuoOmCfommt0LYHiQSPjvX2AcFc38PX0CBpr2RCyZhjex+NS/LPOv6YqA==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /d3-geo@3.1.0:
-    resolution: {integrity: sha512-JEo5HxXDdDYXCaWdwLRt79y7giK8SbhZJbFWXqbRTolCHFI5jRqteLzCsq51NKbUoX0PjBVSohxrx+NoOUujYA==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-array: 3.2.4
-    dev: false
-
-  /d3-hierarchy@3.1.2:
-    resolution: {integrity: sha512-FX/9frcub54beBdugHjDCdikxThEqjnR93Qt7PvQTOHxyiNCAlvMrHhclk3cD5VeAaq9fxmfRp+CnWw9rEMBuA==}
     engines: {node: '>=12'}
     dev: false
 
@@ -10089,29 +9944,6 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /d3-polygon@3.0.1:
-    resolution: {integrity: sha512-3vbA7vXYwfe1SYhED++fPUQlWSYTTGmFmQiany/gdbiWgU/iEyQzyymwL9SkJjFFuCS4902BSzewVGsHHmHtXg==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /d3-quadtree@3.0.1:
-    resolution: {integrity: sha512-04xDrxQTDTCFwP5H6hRhsRcb9xxv2RzkcsygFzmkSIOJy3PeRJP7sNk3VRIbKXcog561P9oU0/rVH6vDROAgUw==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /d3-random@3.0.1:
-    resolution: {integrity: sha512-FXMe9GfxTxqd5D6jFsQ+DJ8BJS4E/fT5mqqdjovykEB2oFbTMDVdg1MGFxfQW+FBOGoB++k8swBrgwSHT1cUXQ==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /d3-scale-chromatic@3.0.0:
-    resolution: {integrity: sha512-Lx9thtxAKrO2Pq6OO2Ua474opeziKr279P/TKZsMAhYyNDD3EnCffdbgeSYN5O7m2ByQsxtuP2CSDczNUIZ22g==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-color: 3.1.0
-      d3-interpolate: 3.0.1
-    dev: false
-
   /d3-scale@4.0.2:
     resolution: {integrity: sha512-GZW464g1SH7ag3Y7hXjf8RoUuAFIqklOAq3MRl4OaWabTFJY9PN/E1YklhXLh+OQ3fM9yS2nOkCoS+WLZ6kvxQ==}
     engines: {node: '>=12'}
@@ -10121,11 +9953,6 @@ packages:
       d3-interpolate: 3.0.1
       d3-time: 3.1.0
       d3-time-format: 4.1.0
-    dev: false
-
-  /d3-selection@3.0.0:
-    resolution: {integrity: sha512-fmTRWbNMmsmWq6xJV8D19U/gw/bwrHfNXxrIN+HfZgnzqTHp9jOmKMhsTUjXOJnZOdZY9Q28y4yebKzqDKlxlQ==}
-    engines: {node: '>=12'}
     dev: false
 
   /d3-shape@3.2.0:
@@ -10156,74 +9983,6 @@ packages:
   /d3-timer@3.0.1:
     resolution: {integrity: sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==}
     engines: {node: '>=12'}
-    dev: false
-
-  /d3-transition@3.0.1(d3-selection@3.0.0):
-    resolution: {integrity: sha512-ApKvfjsSR6tg06xrL434C0WydLr7JewBB3V+/39RMHsaXTOG0zmt/OAXeng5M5LBm0ojmxJrpomQVZ1aPvBL4w==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      d3-selection: 2 - 3
-    dependencies:
-      d3-color: 3.1.0
-      d3-dispatch: 3.0.1
-      d3-ease: 3.0.1
-      d3-interpolate: 3.0.1
-      d3-selection: 3.0.0
-      d3-timer: 3.0.1
-    dev: false
-
-  /d3-zoom@3.0.0:
-    resolution: {integrity: sha512-b8AmV3kfQaqWAuacbPuNbL6vahnOJflOhexLzMMNLga62+/nh0JzvJ0aO/5a5MVgUFGS7Hu1P9P03o3fJkDCyw==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-drag: 3.0.0
-      d3-interpolate: 3.0.1
-      d3-selection: 3.0.0
-      d3-transition: 3.0.1(d3-selection@3.0.0)
-    dev: false
-
-  /d3@7.8.5:
-    resolution: {integrity: sha512-JgoahDG51ncUfJu6wX/1vWQEqOflgXyl4MaHqlcSruTez7yhaRKR9i8VjjcQGeS2en/jnFivXuaIMnseMMt0XA==}
-    engines: {node: '>=12'}
-    dependencies:
-      d3-array: 3.2.4
-      d3-axis: 3.0.0
-      d3-brush: 3.0.0
-      d3-chord: 3.0.1
-      d3-color: 3.1.0
-      d3-contour: 4.0.2
-      d3-delaunay: 6.0.4
-      d3-dispatch: 3.0.1
-      d3-drag: 3.0.0
-      d3-dsv: 3.0.1
-      d3-ease: 3.0.1
-      d3-fetch: 3.0.1
-      d3-force: 3.0.0
-      d3-format: 3.1.0
-      d3-geo: 3.1.0
-      d3-hierarchy: 3.1.2
-      d3-interpolate: 3.0.1
-      d3-path: 3.1.0
-      d3-polygon: 3.0.1
-      d3-quadtree: 3.0.1
-      d3-random: 3.0.1
-      d3-scale: 4.0.2
-      d3-scale-chromatic: 3.0.0
-      d3-selection: 3.0.0
-      d3-shape: 3.2.0
-      d3-time: 3.1.0
-      d3-time-format: 4.1.0
-      d3-timer: 3.0.1
-      d3-transition: 3.0.1(d3-selection@3.0.0)
-      d3-zoom: 3.0.0
-    dev: false
-
-  /dagre-d3-es@7.0.9:
-    resolution: {integrity: sha512-rYR4QfVmy+sR44IBDvVtcAmOReGBvRCWDpO2QjYwqgh9yijw6eSHBqaPG/LIOEy7aBsniLvtMW6pg19qJhq60w==}
-    dependencies:
-      d3: 7.8.5
-      lodash-es: 4.17.21
     dev: false
 
   /dangerously-set-html-content@1.0.13(react@17.0.2):
@@ -10263,6 +10022,7 @@ packages:
 
   /dayjs@1.11.9:
     resolution: {integrity: sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==}
+    dev: true
 
   /debounce@1.2.1:
     resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
@@ -10429,12 +10189,6 @@ packages:
 
   /delaunator@4.0.1:
     resolution: {integrity: sha512-WNPWi1IRKZfCt/qIDMfERkDp93+iZEmOxN2yy4Jg+Xhv8SLk2UTqqbe1sfiipn0and9QrE914/ihdx82Y/Giag==}
-    dev: false
-
-  /delaunator@5.0.0:
-    resolution: {integrity: sha512-AyLvtyJdbv/U1GkiS6gUUzclRoAY4Gs75qkMygJJhU75LW4DNuSF2RMzpxs9jw9Oz1BobHjTdkG3zdP55VxAqw==}
-    dependencies:
-      robust-predicates: 3.0.2
     dev: false
 
   /delaunay-find@0.0.6:
@@ -10625,10 +10379,6 @@ packages:
       domelementtype: 2.3.0
     dev: true
 
-  /dompurify@2.4.3:
-    resolution: {integrity: sha512-q6QaLcakcRjebxjg8/+NP+h0rPfatOgOzc46Fst9VAA3jF2ApfKBNKMzdP4DYTqtUMXSCd5pRS/8Po/OmoCHZQ==}
-    dev: false
-
   /domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
     dependencies:
@@ -10649,7 +10399,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /dot-prop@5.3.0:
@@ -10689,10 +10439,6 @@ packages:
 
   /electron-to-chromium@1.4.454:
     resolution: {integrity: sha512-pmf1rbAStw8UEQ0sr2cdJtWl48ZMuPD9Sto8HVQOq9vx9j2WgDEN6lYoaqFvqEHYOmGA9oRGn7LqWI9ta0YugQ==}
-
-  /elkjs@0.8.2:
-    resolution: {integrity: sha512-L6uRgvZTH+4OF5NE/MBbzQx/WYpru1xCBE9respNj6qznEewGUIfhzmm7horWWxbNO2M0WckQypGctR8lH79xQ==}
-    dev: false
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -11375,7 +11121,7 @@ packages:
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
-      '@types/yauzl': 2.10.0
+      '@types/yauzl': 2.10.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -11430,8 +11176,8 @@ packages:
       punycode: 1.4.1
     dev: true
 
-  /fast-xml-parser@4.2.5:
-    resolution: {integrity: sha512-B9/wizE4WngqQftFPmdaMYlXoJlJOYxGQOanC77fq9k8+Z0v5dDSVh+3glErdIROP//s/jgb7ZuxKfB8nVyo0g==}
+  /fast-xml-parser@4.3.2:
+    resolution: {integrity: sha512-rmrXUXwbJedoXkStenj1kkljNF7ugn5ZjR9FJcwmCfcCbtOMDghPajbc+Tck6vE6F5XsDmx+Pr2le9fw8+pXBg==}
     hasBin: true
     dependencies:
       strnum: 1.0.5
@@ -11738,8 +11484,8 @@ packages:
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
-  /fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+  /fsevents@2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -11945,7 +11691,7 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: false
 
-  /graphql-config@4.5.0(@types/node@18.16.19)(graphql@14.3.1):
+  /graphql-config@4.5.0(@types/node@18.18.6)(graphql@14.3.1):
     resolution: {integrity: sha512-x6D0/cftpLUJ0Ch1e5sj1TZn6Wcxx4oMfmhaG9shM0DKajA9iR+j1z86GSTQ19fShbGvrSSvbIQsHku6aQ6BBw==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
@@ -11959,7 +11705,7 @@ packages:
       '@graphql-tools/json-file-loader': 7.4.18(graphql@14.3.1)
       '@graphql-tools/load': 7.8.14(graphql@14.3.1)
       '@graphql-tools/merge': 8.4.2(graphql@14.3.1)
-      '@graphql-tools/url-loader': 7.17.18(@types/node@18.16.19)(graphql@14.3.1)
+      '@graphql-tools/url-loader': 7.17.18(@types/node@18.18.6)(graphql@14.3.1)
       '@graphql-tools/utils': 9.2.1(graphql@14.3.1)
       cosmiconfig: 8.0.0
       graphql: 14.3.1
@@ -12168,12 +11914,8 @@ packages:
     resolution: {integrity: sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==}
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
-
-  /heap@0.2.7:
-    resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
-    dev: false
 
   /history@4.10.1:
     resolution: {integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew==}
@@ -12421,13 +12163,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
-
-  /iconv-lite@0.6.3:
-    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      safer-buffer: 2.1.2
-    dev: false
 
   /icss-utils@5.1.0(postcss@8.4.25):
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
@@ -12777,7 +12512,7 @@ packages:
   /is-lower-case@2.0.2:
     resolution: {integrity: sha512-bVcMJy4X5Og6VZfdOZstSexlEy20Sr0k/p/b2IlQJlfdKAQuMpiv5w2Ccxb8sKdRUNAG1PnHVHjFSdRDVS6NlQ==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /is-nan@1.3.2:
@@ -12937,7 +12672,7 @@ packages:
   /is-upper-case@2.0.2:
     resolution: {integrity: sha512-44pxmxAvnnAOwBg4tHPnkfvgjPwbc5QIsSstNU+YcJ1ovxVzCWpSGosPJOZh/a1tdl81fbgnLc9LLv+x2ywbPQ==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /is-weakref@1.0.2:
@@ -13009,7 +12744,7 @@ packages:
       '@babel/core': 7.22.8
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13022,7 +12757,7 @@ packages:
       '@babel/parser': 7.22.7
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.0
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13187,7 +12922,7 @@ packages:
       jest-validate: 26.6.2
       micromatch: 4.0.5
       pretty-format: 26.6.2
-      ts-node: 10.9.1(@types/node@18.16.19)(typescript@4.9.5)
+      ts-node: 10.9.1(@types/node@18.18.6)(typescript@4.9.5)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -13275,7 +13010,7 @@ packages:
       walker: 1.0.8
       which: 2.0.2
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -13298,7 +13033,7 @@ packages:
       sane: 4.1.0
       walker: 1.0.8
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14025,10 +13760,6 @@ packages:
       json-buffer: 3.0.0
     dev: true
 
-  /khroma@2.0.0:
-    resolution: {integrity: sha512-2J8rDNlQWbtiNYThZRvmMv5yt44ZakX+Tz5ZIp/mN1pt4snn+m030Va5Z4v8xA0cQFDXBwO/8i42xL4QPsVk3g==}
-    dev: false
-
   /kind-of@3.2.2:
     resolution: {integrity: sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ==}
     engines: {node: '>=0.10.0'}
@@ -14079,14 +13810,6 @@ packages:
     dependencies:
       picocolors: 1.0.0
       shell-quote: 1.8.1
-
-  /layout-base@1.0.2:
-    resolution: {integrity: sha512-8h2oVEZNktL4BH2JCOI90iD1yXwL6iNW7KcCKT2QZgQJR2vbqDsldCTPRU9NifTCqHZci57XvQQ15YTu+sTYPg==}
-    dev: false
-
-  /layout-base@2.0.1:
-    resolution: {integrity: sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==}
-    dev: false
 
   /lazy-ass@1.6.0:
     resolution: {integrity: sha512-cc8oEVoctTvsFZ/Oje/kGnHbpWHYBe8IAJe4C0QNc3t8uM/0Y8+erSz/7Y1ALuXTEZTMvxXwO6YbX1ey3ujiZw==}
@@ -14212,10 +13935,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       p-locate: 4.1.0
-
-  /lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
-    dev: false
 
   /lodash-id@0.14.1:
     resolution: {integrity: sha512-ikQPBTiq/d5m6dfKQlFdIXFzvThPi2Be9/AHxktOnDSfSxE1j9ICbBT5Elk1ke7HSTgM38LHTpmJovo9/klnLg==}
@@ -14343,13 +14062,13 @@ packages:
   /lower-case-first@2.0.2:
     resolution: {integrity: sha512-EVm/rR94FJTZi3zefZ82fLWab+GX14LJN4HrWBcuo6Evmsl9hEfnqxgcHCKb9q+mNf6EVdsjx/qucYFIIB84pg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /lowercase-keys@1.0.1:
@@ -14389,7 +14108,7 @@ packages:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
     dependencies:
-      semver: 6.3.0
+      semver: 6.3.1
     dev: true
 
   /make-error@1.3.6:
@@ -14469,28 +14188,7 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /mermaid@9.4.3:
-    resolution: {integrity: sha512-TLkQEtqhRSuEHSE34lh5bCa94KATCyluAXmFnNI2PRZwOpXFeqiJWwZl+d2CcemE1RS6QbbueSSq9QIg8Uxcyw==}
-    dependencies:
-      '@braintree/sanitize-url': 6.0.2
-      cytoscape: 3.25.0
-      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.25.0)
-      cytoscape-fcose: 2.2.0(cytoscape@3.25.0)
-      d3: 7.8.5
-      dagre-d3-es: 7.0.9
-      dayjs: 1.11.9
-      dompurify: 2.4.3
-      elkjs: 0.8.2
-      khroma: 2.0.0
-      lodash-es: 4.17.21
-      non-layered-tidy-tree-layout: 2.0.2
-      stylis: 4.3.0
-      ts-dedent: 2.2.0
-      uuid: 9.0.0
-      web-worker: 1.2.0
-    dev: false
-
-  /meros@1.3.0(@types/node@18.16.19):
+  /meros@1.3.0(@types/node@18.18.6):
     resolution: {integrity: sha512-2BNGOimxEz5hmjUG2FwoxCt5HN7BXdaWyFqEwxPTrJzVdABtrL4TiHTcsWSFAxPQ/tOnEaQEJh3qWq71QRMY+w==}
     engines: {node: '>=13'}
     peerDependencies:
@@ -14499,7 +14197,7 @@ packages:
       '@types/node':
         optional: true
     dependencies:
-      '@types/node': 18.16.19
+      '@types/node': 18.18.6
     dev: true
 
   /method-override@3.0.0:
@@ -14690,47 +14388,47 @@ packages:
     resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
     dev: false
 
-  /monaco-editor-webpack-plugin@7.1.0(monaco-editor@0.33.0)(webpack@5.88.1):
+  /monaco-editor-webpack-plugin@7.1.0(monaco-editor@0.39.0)(webpack@5.88.1):
     resolution: {integrity: sha512-ZjnGINHN963JQkFqjjcBtn1XBtUATDZBMgNQhDQwd78w2ukRhFXAPNgWuacaQiDZsUr4h1rWv5Mv6eriKuOSzA==}
     peerDependencies:
-      monaco-editor: '>= 0.31.0'
+      monaco-editor: ^0.39.0
       webpack: ^4.5.0 || 5.x
     dependencies:
       loader-utils: 2.0.4
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
       webpack: 5.88.1(webpack-cli@4.10.0)
     dev: false
 
-  /monaco-editor@0.33.0:
-    resolution: {integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw==}
+  /monaco-editor@0.39.0:
+    resolution: {integrity: sha512-zhbZ2Nx93tLR8aJmL2zI1mhJpsl87HMebNBM6R8z4pLfs8pj604pIVIVwyF1TivcfNtIPpMXL+nb3DsBmE/x6Q==}
     dev: false
 
-  /monaco-marker-data-provider@1.1.1(monaco-editor@0.33.0):
+  /monaco-marker-data-provider@1.1.1(monaco-editor@0.39.0):
     resolution: {integrity: sha512-PGB7TJSZE5tmHzkxv/OEwK2RGNC2A7dcq4JRJnnj31CUAsfmw0Gl+1QTrH0W0deKhcQmQM0YVPaqgQ+0wCt8Mg==}
     peerDependencies:
-      monaco-editor: '>=0.30.0'
+      monaco-editor: ^0.39.0
     dependencies:
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
     dev: false
 
-  /monaco-worker-manager@2.0.1(monaco-editor@0.33.0):
+  /monaco-worker-manager@2.0.1(monaco-editor@0.39.0):
     resolution: {integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg==}
     peerDependencies:
-      monaco-editor: '>=0.30.0'
+      monaco-editor: ^0.39.0
     dependencies:
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
     dev: false
 
-  /monaco-yaml@4.0.4(monaco-editor@0.33.0):
+  /monaco-yaml@4.0.4(monaco-editor@0.39.0):
     resolution: {integrity: sha512-qbM36fY1twpDUs4lhhxoXDQGUPVyYAFCPJi3E0JKgLioD8wzsD/pawgauFFXSzpMa09z8wbt/DTLXjXEehnVFA==}
     peerDependencies:
-      monaco-editor: '>=0.30'
+      monaco-editor: ^0.39.0
     dependencies:
       '@types/json-schema': 7.0.12
       jsonc-parser: 3.2.0
-      monaco-editor: 0.33.0
-      monaco-marker-data-provider: 1.1.1(monaco-editor@0.33.0)
-      monaco-worker-manager: 2.0.1(monaco-editor@0.33.0)
+      monaco-editor: 0.39.0
+      monaco-marker-data-provider: 1.1.1(monaco-editor@0.39.0)
+      monaco-worker-manager: 2.0.1(monaco-editor@0.39.0)
       path-browserify: 1.0.1
       prettier: 2.8.8
       vscode-languageserver-textdocument: 1.0.8
@@ -14848,8 +14546,8 @@ packages:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
     dev: true
 
-  /nise@5.1.4:
-    resolution: {integrity: sha512-8+Ib8rRJ4L0o3kfmyVCL7gzrohyDe0cMFTBa2d364yIrEGMEoetznKJx899YxjybU6bL9SQkYPSBBs1gyYs8Xg==}
+  /nise@5.1.5:
+    resolution: {integrity: sha512-VJuPIfUFaXNRzETTQEEItTOP8Y171ijr+JLq42wHes3DiryR8vT+1TXQW/Rx8JNUhyYYWyIvjXTU6dOhJcs9Nw==}
     dependencies:
       '@sinonjs/commons': 2.0.0
       '@sinonjs/fake-timers': 10.3.0
@@ -14862,7 +14560,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /node-fetch@2.6.12:
@@ -14958,10 +14656,6 @@ packages:
       readable-stream: 1.0.34
     dev: true
 
-  /non-layered-tidy-tree-layout@2.0.2:
-    resolution: {integrity: sha512-gkXMxRzUH+PB0ax9dUN0yYF0S25BqeAYqhgMaLUFmpXLEk7Fcu8f4emJuOAY0V8kjDICxROIKsTAKsV/v355xw==}
-    dev: false
-
   /nopt@1.0.10:
     resolution: {integrity: sha512-NWmpvLSqUrgrAC9HCuxEvb+PSloHpqVu+FqcO4eeF2h5qYRhA7ev6KvelyQAKtegUbC6RypJnlEOhd8vloNKYg==}
     hasBin: true
@@ -14974,7 +14668,7 @@ packages:
     dependencies:
       hosted-git-info: 2.8.9
       resolve: 1.22.2
-      semver: 5.7.1
+      semver: 5.7.2
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -15362,7 +15056,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /pascalcase@0.1.1:
@@ -15377,7 +15071,7 @@ packages:
     resolution: {integrity: sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /path-exists@3.0.0:
@@ -16451,15 +16145,15 @@ packages:
       react: 17.0.2
     dev: false
 
-  /react-monaco-editor@0.49.0(@types/react@17.0.5)(monaco-editor@0.33.0)(react@17.0.2):
-    resolution: {integrity: sha512-KZTNn1vJh1rlzIRPXjr/5HWYMPfbOoDhR+prCR7mIQCssjlkn8+SfpN4lNsiCTECo/UdpnyAdqgaIyY3yYjVeg==}
+  /react-monaco-editor@0.54.0(@types/react@17.0.5)(monaco-editor@0.39.0)(react@17.0.2):
+    resolution: {integrity: sha512-9JwO69851mfpuhYLHlKbae7omQWJ/2ICE2lbL0VHyNyZR8rCOH7440u+zAtDgiOMpLwmYdY1sEZCdRefywX6GQ==}
     peerDependencies:
       '@types/react': 17.0.5
-      monaco-editor: ^0.33.0
-      react: '>=17 <= 18'
+      monaco-editor: ^0.39.0
+      react: '>=16 <= 18'
     dependencies:
       '@types/react': 17.0.5
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
       prop-types: 15.8.1
       react: 17.0.2
     dev: false
@@ -16988,10 +16682,6 @@ packages:
       inherits: 2.0.4
     dev: true
 
-  /robust-predicates@3.0.2:
-    resolution: {integrity: sha512-IXgzBWvWQwE6PrDI05OvmXUIruQTcoMDzRsOd5CDvHCVLcLHMTSYvOK5Cm46kWqlV3yAbuSpBZdJ5oP5OUoStg==}
-    dev: false
-
   /rst-selector-parser@2.2.3:
     resolution: {integrity: sha512-nDG1rZeP6oFTLN6yNDV/uiAvs1+FS/KlrEwh7+y7dpuApDBy6bI2HTBcc0/V8lv9OTqfyD34eF7au2pm8aBbhA==}
     dependencies:
@@ -17014,10 +16704,6 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
     dev: true
-
-  /rw@1.3.3:
-    resolution: {integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==}
-    dev: false
 
   /rxjs@6.6.7:
     resolution: {integrity: sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==}
@@ -17143,8 +16829,8 @@ packages:
       source-map-js: 1.0.2
     dev: false
 
-  /sax@1.2.4:
-    resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
+  /sax@1.3.0:
+    resolution: {integrity: sha512-0s+oAmw9zLl1V1cS9BtZN7JAd0cW5e0QH4W3LWEK6a4LaLEA2OTpGYWDY+6XasBLtz6wkm3u1xRw95mRuJ59WA==}
     dev: false
 
   /saxes@5.0.1:
@@ -17220,8 +16906,18 @@ packages:
     hasBin: true
     dev: true
 
+  /semver@5.7.2:
+    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
+    dev: true
+
   /semver@6.3.0:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
+    hasBin: true
+    dev: true
+
+  /semver@6.3.1:
+    resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
     dev: true
 
@@ -17261,7 +16957,7 @@ packages:
     resolution: {integrity: sha512-8LS0JInaQMCRoQ7YUytAo/xUu5W2XnQxV2HI/6uM6U7CITS1RqPElr30V6uIqyMKM9lJGRVFy5/4CuzcixNYSg==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
       upper-case-first: 2.0.2
     dev: true
 
@@ -17426,12 +17122,13 @@ packages:
 
   /sinon@11.1.2:
     resolution: {integrity: sha512-59237HChms4kg7/sXhiRcUzdSkKuydDeTiamT/jesUVHshBgL8XAmhgFo0GfK6RruMDM/iRSij1EybmMog9cJw==}
+    deprecated: 16.1.1
     dependencies:
       '@sinonjs/commons': 1.8.6
       '@sinonjs/fake-timers': 7.1.2
       '@sinonjs/samsam': 6.1.3
       diff: 5.1.0
-      nise: 5.1.4
+      nise: 5.1.5
       supports-color: 7.2.0
     dev: false
 
@@ -17466,7 +17163,7 @@ packages:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /snapdragon-node@2.1.1:
@@ -17617,7 +17314,7 @@ packages:
   /sponge-case@1.0.1:
     resolution: {integrity: sha512-dblb9Et4DAtiZ5YSUZHLl4XhH4uK80GhAZrVXdN4O2P4gQ40Wa5UIOPUHlA/nFd2PLblBZWUioLMMAVrgpoYcA==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /sprintf-js@1.0.3:
@@ -17916,10 +17613,6 @@ packages:
       postcss-selector-parser: 6.0.13
     dev: true
 
-  /stylis@4.3.0:
-    resolution: {integrity: sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==}
-    dev: false
-
   /subscriptions-transport-ws@0.9.19(graphql@14.3.1):
     resolution: {integrity: sha512-dxdemxFFB0ppCLg10FTtRqH/31FNRL1y1BQv8209MK5I4CwALb7iihQg+7p65lFcIl8MHatINWBLOqpgU4Kyyw==}
     deprecated: The `subscriptions-transport-ws` package is no longer maintained. We recommend you use `graphql-ws` instead. For help migrating Apollo software to `graphql-ws`, see https://www.apollographql.com/docs/apollo-server/data/subscriptions/#switching-from-subscriptions-transport-ws    For general help using `graphql-ws`, see https://github.com/enisdenjo/graphql-ws/blob/master/README.md
@@ -17974,10 +17667,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  /svg-pan-zoom@3.6.1:
-    resolution: {integrity: sha512-JaKkGHHfGvRrcMPdJWkssLBeWqM+Isg/a09H7kgNNajT1cX5AztDTNs+C8UzpCxjCTRrG34WbquwaovZbmSk9g==}
-    dev: false
-
   /svg-url-loader@7.1.1(webpack@5.88.1):
     resolution: {integrity: sha512-NlsMCePODm7FQhU9aEZyGLPx5Xe1QRI1cSEUE6vTq5LJc9l9pStagvXoEIyZ9O3r00w6G3+Wbkimb+SC3DI/Aw==}
     engines: {node: '>=10'}
@@ -18019,7 +17708,7 @@ packages:
   /swap-case@2.0.2:
     resolution: {integrity: sha512-kc6S2YS/2yXbtkSMunBtKdah4VFETZ8Oh6ONSmSd9bRxhqTrtARUCBUiWXH3xVPpvR7tz2CSnkuXVE42EcGnMw==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /symbol-observable@1.2.0:
@@ -18179,7 +17868,7 @@ packages:
   /title-case@3.0.3:
     resolution: {integrity: sha512-e1zGYRvbffpcHIrnuqT0Dh+gEJtDaxDSoG4JAIpq4oDFyooziLBIiYQv0GBT4FUAnUop5uZ1hiIAj7oAF6sOCA==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /tmp@0.0.33:
@@ -18304,11 +17993,6 @@ packages:
     hasBin: true
     dev: true
 
-  /ts-dedent@2.2.0:
-    resolution: {integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==}
-    engines: {node: '>=6.10'}
-    dev: false
-
   /ts-invariant@0.4.4:
     resolution: {integrity: sha512-uEtWkFM/sdZvRNNDL3Ehu4WVpwaulhwQszV8mrtcdeE8nN00BV9mAmQ88RkrBhFgl9gMgvjJLAQcZbnPXI9mlA==}
     dependencies:
@@ -18355,7 +18039,7 @@ packages:
     resolution: {integrity: sha512-PGcnJoTBnVGy6yYNFxWVNkdcAuAMstvutN9MgDJIV6L0oG8fB+ZNNy1T+wJzah8RPGor1mZuPQkVfXNDpy9eHA==}
     dev: true
 
-  /ts-node@10.9.1(@types/node@18.16.19)(typescript@4.9.5):
+  /ts-node@10.9.1(@types/node@18.18.6)(typescript@4.9.5):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -18374,7 +18058,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 18.16.19
+      '@types/node': 18.18.6
       acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.3
@@ -18691,13 +18375,13 @@ packages:
   /upper-case-first@2.0.2:
     resolution: {integrity: sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /upper-case@2.0.2:
     resolution: {integrity: sha512-KgdgDGJt2TpuwBUIjgG6lzw2GWFRCW9Qkfkiv0DxqHHLYJHmtmdUIKcZd8rHgFSjopVTlw6ggzCm1b8MFQwikg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: true
 
   /uri-js@4.4.1:
@@ -18850,11 +18534,6 @@ packages:
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
-
-  /uuid@9.0.0:
-    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
-    hasBin: true
-    dev: false
 
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
@@ -19172,10 +18851,10 @@ packages:
     resolution: {integrity: sha512-xGmv9QIWs2H8obGbWg+sIPI/3/pFgj/5OWBhNzs00BkYQ9UaB2F6JJaGB/2/YOZJ3BvLXQTC4Q7muqU25QgAhA==}
     dependencies:
       jsonc-parser: 3.2.0
-      vscode-languageserver-textdocument: 1.0.8
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-textdocument: 1.0.11
+      vscode-languageserver-types: 3.17.5
       vscode-nls: 5.2.0
-      vscode-uri: 3.0.7
+      vscode-uri: 3.0.8
     dev: false
 
   /vscode-jsonrpc@6.0.0:
@@ -19190,6 +18869,10 @@ packages:
       vscode-languageserver-types: 3.16.0
     dev: false
 
+  /vscode-languageserver-textdocument@1.0.11:
+    resolution: {integrity: sha512-X+8T3GoiwTVlJbicx/sIAF+yuJAqz8VvwJyoMVhwEMoEKE/fkDmrqUgDMyBECcM2A2frVZIUj5HI/ErRXCfOeA==}
+    dev: false
+
   /vscode-languageserver-textdocument@1.0.8:
     resolution: {integrity: sha512-1bonkGqQs5/fxGT5UchTgjGVnfysL0O8v1AYMBjqTbWQTFn721zaPGDYFkOKtfDgFiSgXM3KwaG3FMGfW4Ed9Q==}
     dev: false
@@ -19200,6 +18883,10 @@ packages:
 
   /vscode-languageserver-types@3.17.3:
     resolution: {integrity: sha512-SYU4z1dL0PyIMd4Vj8YOqFvHu7Hz/enbWtpfnVbJHU4Nd1YNYx8u0ennumc6h48GQNeOLxmwySmnADouT/AuZA==}
+    dev: false
+
+  /vscode-languageserver-types@3.17.5:
+    resolution: {integrity: sha512-Ld1VelNuX9pdF39h2Hgaeb5hEZM2Z3jUrrMgWQAu82jMtZp7p3vJT3BzToKtZI7NgQssZje5o0zryOrhQvzQAg==}
     dev: false
 
   /vscode-languageserver@7.0.0:
@@ -19215,6 +18902,10 @@ packages:
 
   /vscode-uri@3.0.7:
     resolution: {integrity: sha512-eOpPHogvorZRobNqJGhapa0JdwaxpjVvyBp0QIUMRMSf8ZAlqOdEquKuRmw9Qwu0qXtJIWqFtMkmvJjUZmMjVA==}
+    dev: false
+
+  /vscode-uri@3.0.8:
+    resolution: {integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==}
     dev: false
 
   /w3c-hr-time@1.0.2:
@@ -19283,10 +18974,6 @@ packages:
     resolution: {integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==}
     engines: {node: '>= 8'}
     dev: true
-
-  /web-worker@1.2.0:
-    resolution: {integrity: sha512-PgF341avzqyx60neE9DD+XS26MMNMoUQRz9NOZwW32nPQrF6p77f1htcnjBSEV8BGMKZ16choqUG4hyI0Hx7mA==}
-    dev: false
 
   /webcrypto-core@1.7.7:
     resolution: {integrity: sha512-7FjigXNsBfopEj+5DV2nhNpfic2vumtjjgPmeDKk45z+MJwXKKfhPB7118Pfzrmh4jqOMST6Ch37iPAHoImg5g==}
@@ -19635,7 +19322,7 @@ packages:
     resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
     hasBin: true
     dependencies:
-      sax: 1.2.4
+      sax: 1.3.0
     dev: false
 
   /xml-name-validator@3.0.0:

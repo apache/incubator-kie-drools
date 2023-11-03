@@ -71,7 +71,6 @@ interface ProcessDetailsProps {
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   showSwfDiagram: boolean;
-  isStunnerEnabled?: boolean;
   singularProcessLabel: string;
   pluralProcessLabel: string;
 }
@@ -86,8 +85,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   diagramPreviewSize,
   showSwfDiagram,
   singularProcessLabel,
-  pluralProcessLabel,
-  isStunnerEnabled
+  pluralProcessLabel
 }) => {
   const [data, setData] = useState<ProcessInstance>({} as ProcessInstance);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -324,7 +322,6 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       <Flex>
         <FlexItem>
           <SwfCombinedEditor
-            isStunnerEnabled={isStunnerEnabled}
             height={diagramPreviewSize?.height}
             width={diagramPreviewSize?.width}
             workflowInstance={data}

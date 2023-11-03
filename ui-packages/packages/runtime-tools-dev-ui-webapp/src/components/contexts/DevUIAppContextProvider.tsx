@@ -34,7 +34,6 @@ interface IOwnProps {
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
 }
 
 const DevUIAppContextProvider: React.FC<IOwnProps> = ({
@@ -47,7 +46,6 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   customLabels,
   omittedProcessTimelineEvents,
   diagramPreviewSize,
-  isStunnerEnabled,
   children
 }) => {
   return (
@@ -62,8 +60,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           availablePages,
           customLabels,
           omittedProcessTimelineEvents,
-          diagramPreviewSize,
-          isStunnerEnabled
+          diagramPreviewSize
         })
       }
     >

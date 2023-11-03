@@ -28,11 +28,11 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.30.0",
-    "@kie-tools-core/envelope": "0.30.0",
-    "@kie-tools-core/envelope-bus": "0.30.0",
-    "@kie-tools/serverless-workflow-combined-editor": "0.30.0",
-    "@kie-tools/serverless-workflow-diagram-editor-assets": "0.30.0",
+    "@kie-tools-core/editor": "0.32.0",
+    "@kie-tools-core/envelope": "0.32.0",
+    "@kie-tools-core/envelope-bus": "0.32.0",
+    "@kie-tools/serverless-workflow-combined-editor": "0.32.0",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "0.32.0",
     "@kogito-apps/components-common": "workspace:*",
     "@kogito-apps/management-console-shared": "workspace:*",
     "@patternfly/patternfly": "^4.224.2",

@@ -28,8 +28,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@kie-tools-core/envelope": "0.30.0",
-    "@kie-tools-core/envelope-bus": "0.30.0",
+    "@kie-tools-core/envelope": "0.32.0",
+    "@kie-tools-core/envelope-bus": "0.32.0",
     "@kogito-apps/components-common": "workspace:*",
     "@kogito-apps/form-displayer": "workspace:*",
     "@kogito-apps/task-console-shared": "workspace:*",

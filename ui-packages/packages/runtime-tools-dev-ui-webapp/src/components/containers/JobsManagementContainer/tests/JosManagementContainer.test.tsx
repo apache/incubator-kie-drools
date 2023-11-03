@@ -32,7 +32,6 @@ const appContextProps = {
   isProcessEnabled: false,
   isTracingEnabled: false,
   omittedProcessTimelineEvents: [],
-  isStunnerEnabled: false,
   availablePages: [],
   customLabels: {
     singularProcessLabel: 'test-singular',

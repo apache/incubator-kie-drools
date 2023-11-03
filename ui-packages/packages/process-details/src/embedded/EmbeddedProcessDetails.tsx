@@ -41,7 +41,6 @@ export interface Props {
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   showSwfDiagram: boolean;
-  isStunnerEnabled?: boolean;
   singularProcessLabel: string;
   pluralProcessLabel: string;
 }
@@ -89,7 +88,6 @@ export const EmbeddedProcessDetails = React.forwardRef(
             omittedProcessTimelineEvents: props.omittedProcessTimelineEvents,
             diagramPreviewSize: props.diagramPreviewSize,
             showSwfDiagram: props.showSwfDiagram,
-            isStunnerEnabled: props.isStunnerEnabled,
             singularProcessLabel: props.singularProcessLabel,
             pluralProcessLabel: props.pluralProcessLabel
           }

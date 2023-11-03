@@ -52,8 +52,7 @@ describe('SwfCombinedEditor component tests', () => {
         ]
       },
       height: 600,
-      width: 600,
-      isStunnerEnabled: true
+      width: 600
     };
     const container = render(<SwfCombinedEditor {...props} />).container;
     expect(container).toMatchSnapshot();
@@ -68,8 +67,7 @@ describe('SwfCombinedEditor component tests', () => {
         nodes: []
       },
       height: 600,
-      width: 600,
-      isStunnerEnabled: true
+      width: 600
     };
     const container = render(<SwfCombinedEditor {...props} />).container;
     expect(container).toMatchSnapshot();

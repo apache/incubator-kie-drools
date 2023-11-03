@@ -45,7 +45,6 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setOpenApiPath('/docs/openapi.json');
         forwardRef.current.setProcessEnabled(true);
         forwardRef.current.setTracingEnabled(true);
-        forwardRef.current.setIsStunnerEnabled(false);
         forwardRef.current.setAvailablePages([
           'Processes',
           'Monitoring',
@@ -91,7 +90,6 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('/CustomDashboard');
-        forwardRef.current.setIsStunnerEnabled(false);
         forwardRef.current.setAvailablePages([
           'Processes',
           'Monitoring',
@@ -136,7 +134,6 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('/CustomDashboard');
-        forwardRef.current.setIsStunnerEnabled(false);
         forwardRef.current.setAvailablePages([
           'Processes',
           'Monitoring',
@@ -182,7 +179,6 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('/CustomDashboard');
-        forwardRef.current.setIsStunnerEnabled(false);
         forwardRef.current.setAvailablePages([
           'Processes',
           'Monitoring',
@@ -228,7 +224,6 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('');
-        forwardRef.current.setIsStunnerEnabled(false);
         forwardRef.current.setAvailablePages([
           'Processes',
           'Monitoring',

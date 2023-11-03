@@ -133,7 +133,11 @@
               <outputDirectory>${basedir}/target/classes/dev-static/webapp</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${path.to.webapp.app}/dist</directory>
+                  <directory>${path.to.webapp.app}/dist/resources/webapp</directory>
+                  <filtering>false</filtering>
+                </resource>
+                <resource>
+                  <directory>${path.to.webapp.app}/dist/webapp</directory>
                   <filtering>false</filtering>
                 </resource>
               </resources>
@@ -155,8 +159,6 @@
                     <include>form-displayer.js</include>
                     <include>serverless-workflow-combined-editor-envelope.html</include>
                     <include>serverless-workflow-combined-editor-envelope.js</include>
-                    <include>serverless-workflow-mermaid-viewer-envelope.html</include>
-                    <include>serverless-workflow-mermaid-viewer-envelope.js</include>
                     <include>serverless-workflow-text-editor-envelope.html</include>
                     <include>serverless-workflow-text-editor-envelope.js</include>
                     <include>serverless-workflow-diagram-editor-envelope.html</include>
@@ -164,8 +166,8 @@
                   </includes>
                 </resource>
                 <!--copy diagram into the dev-static-->
-                 <resource>
-                  <directory>${path.to.webapp.app}/dist</directory>
+                <resource>
+                  <directory>${path.to.webapp.app}/dist/resources</directory>
                   <includes>
                     <include>diagram/</include>
                   </includes>

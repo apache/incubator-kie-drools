@@ -48,7 +48,6 @@ jest.spyOn(DevUIAppContext, 'useDevUIAppContext').mockImplementation(
       devUIUrl: 'http://localhost:9000',
       openApiPath: 'mockedPath',
       isProcessEnabled: false,
-      isStunnerEnabled: false,
       isTracingEnabled: false,
       omittedProcessTimelineEvents: []
     })

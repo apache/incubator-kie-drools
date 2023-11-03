@@ -18,7 +18,7 @@
     "prepare": "cd .. && husky install"
   },
   "devDependencies": {
-    "@kie-tools/dashbuilder-client": "^0.30.0",
+    "@kie-tools/dashbuilder-client": "^0.32.0",
     "@kie/lock-treatment-tool": "^0.2.4",
     "@types/node": "^18.16.19",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -47,7 +47,10 @@
     "minimatch": "^3.0.5",
     "@types/react": "17.0.5",
     "ua-parser-js": "0.7.35",
-    "yaml": "2.3.1"
+    "yaml": "2.3.1",
+    "monaco-editor": "^0.39.0",
+    "react-monaco-editor": "^0.54.0",
+    "monaco-yaml": "^4.0.4"
   },
   "engines": {
     "node": ">=18",

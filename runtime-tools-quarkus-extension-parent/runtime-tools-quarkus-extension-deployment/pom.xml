@@ -136,6 +136,10 @@
                   <directory>${path.to.webapp.app}/dist/resources/webapp</directory>
                   <filtering>false</filtering>
                 </resource>
+                <resource>
+                  <directory>${path.to.webapp.app}/dist/webapp</directory>
+                  <filtering>false</filtering>
+                </resource>
               </resources>
             </configuration>
           </execution>

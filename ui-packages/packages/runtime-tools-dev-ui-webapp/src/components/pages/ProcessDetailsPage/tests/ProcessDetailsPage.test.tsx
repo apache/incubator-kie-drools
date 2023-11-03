@@ -174,7 +174,6 @@ describe('WebApp - ProcessDetailsPage tests', () => {
           width: 600,
           height: 600
         },
-        isStunnerEnabled: false,
         isWorkflow: jest.fn()
       };
     });

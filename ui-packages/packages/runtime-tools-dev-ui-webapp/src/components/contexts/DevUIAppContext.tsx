@@ -35,8 +35,6 @@ export interface DevUIAppContext {
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isWorkflow(): boolean;
-  isStunnerEnabled: boolean;
-  getIsStunnerEnabled(): boolean;
 }
 
 export interface UserChangeListener {
@@ -57,7 +55,6 @@ export type DevUIAppContextArgs = {
   customLabels?: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
 };
 
 export class DevUIAppContextImpl implements DevUIAppContext {
@@ -113,20 +110,12 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.customLabels?.singularProcessLabel == 'Workflow';
   }
 
-  getIsStunnerEnabled(): boolean {
-    return this.args.isStunnerEnabled;
-  }
-
   get isProcessEnabled(): boolean {
     return this.args.isProcessEnabled;
   }
 
   get isTracingEnabled(): boolean {
     return this.args.isTracingEnabled;
-  }
-
-  get isStunnerEnabled(): boolean {
-    return this.args.isStunnerEnabled;
   }
 
   get availablePages(): string[] {

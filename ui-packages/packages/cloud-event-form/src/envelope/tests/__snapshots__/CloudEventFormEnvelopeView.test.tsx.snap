@@ -463,7 +463,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                           aria-hidden="true"
                           class="margin-view-overlays"
                           role="presentation"
-                          style="position: absolute; width: 51px; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; line-height: 19px; letter-spacing: 0px; height: 19px;"
+                          style="position: absolute; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; font-variation-settings: normal; line-height: 19px; letter-spacing: 0px; width: 51px; height: 19px;"
                         >
                           <div
                             style="position:absolute;top:0px;width:100%;height:19px;"
@@ -473,7 +473,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                               style="width:51px; height:19px;"
                             />
                             <div
-                              class="active-line-number line-numbers"
+                              class="line-numbers active-line-number"
                               style="left:0px;width:25px;"
                             >
                               1
@@ -495,14 +495,14 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                             aria-hidden="true"
                             class="view-overlays"
                             role="presentation"
-                            style="position: absolute; height: 0px; width: 26px;"
+                            style="position: absolute; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; font-variation-settings: normal; line-height: 19px; letter-spacing: 0px; height: 0px; width: 35px;"
                           >
                             <div
                               style="position:absolute;top:0px;width:100%;height:19px;"
                             >
                               <div
                                 class="current-line"
-                                style="width:26px; height:19px;"
+                                style="width:35px; height:19px;"
                               />
                             </div>
                           </div>
@@ -522,7 +522,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                             class="view-lines monaco-mouse-cursor-text"
                             data-mprt="7"
                             role="presentation"
-                            style="position: absolute; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; line-height: 19px; letter-spacing: 0px; width: 26px; height: 19px;"
+                            style="position: absolute; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; font-variation-settings: normal; line-height: 19px; letter-spacing: 0px; width: 35px; height: 19px;"
                           >
                             <div
                               class="view-line"
@@ -545,7 +545,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                           >
                             <div
                               class="cursor monaco-mouse-cursor-text "
-                              style="height: 19px; top: 0px; left: 0px; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; line-height: 19px; letter-spacing: 0px; display: block; visibility: hidden; width: 2px;"
+                              style="height: 19px; top: 0px; left: 0px; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; font-variation-settings: normal; line-height: 19px; letter-spacing: 0px; display: block; visibility: hidden; padding-left: 0px; width: 2px;"
                             />
                           </div>
                         </div>
@@ -582,7 +582,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                       <div
                         aria-hidden="true"
                         role="presentation"
-                        style="width: -17px;"
+                        style="width: -9px;"
                       />
                       <textarea
                         aria-autocomplete="both"
@@ -597,7 +597,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                         data-mprt="6"
                         role="textbox"
                         spellcheck="false"
-                        style="font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; line-height: 19px; letter-spacing: 0px; top: 0px; left: 0px; width: 1px; height: 1px;"
+                        style="tab-size: 20px; font-family: Consolas, 'Courier New', monospace; font-weight: normal; font-size: 14px; font-feature-settings: \\"liga\\" off, \\"calt\\" off; font-variation-settings: normal; line-height: 19px; letter-spacing: 0px; top: 0px; left: 0px; width: 1px; height: 1px;"
                         tabindex="-1"
                         wrap="off"
                       />
@@ -609,12 +609,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                         class="overlayWidgets"
                         data-mprt="4"
                         style="width: 5px;"
-                      >
-                        <div
-                          style="position: absolute; top: 0px; right: 50%;"
-                          widgetid="editor.contrib.quickInputWidget"
-                        />
-                      </div>
+                      />
                       <div
                         aria-hidden="true"
                         class="minimap slider-mouseover"
@@ -639,7 +634,7 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                         />
                         <div
                           class="minimap-slider"
-                          style="position: absolute; transform: translate3d(0px, 0px, 0px); contain: strict; width: 8px; display: none; top: 0px; height: 0px;"
+                          style="position: absolute; transform: translate3d(0px, 0px, 0px); contain: strict; width: 8px; display: block; top: 0px; height: 0px;"
                         >
                           <div
                             class="minimap-slider-horizontal"
@@ -647,6 +642,11 @@ exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `
                           />
                         </div>
                       </div>
+                      <div
+                        aria-hidden="true"
+                        class="blockDecorations-container"
+                        role="presentation"
+                      />
                     </div>
                     <div
                       class="overflowingContentWidgets"

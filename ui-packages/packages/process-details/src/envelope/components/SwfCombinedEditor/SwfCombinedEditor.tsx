@@ -44,9 +44,8 @@ import {
 } from '@kie-tools-core/editor/dist/channel';
 import {
   SwfCombinedEditorChannelApiImpl,
-  SwfFeatureToggleChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl
-} from '@kie-tools/serverless-workflow-combined-editor/dist/impl';
+} from '@kie-tools/serverless-workflow-combined-editor/dist/channel';
 import { useController } from '../../../hooks/useController';
 import { ProcessInstance } from '@kogito-apps/management-console-shared/dist/types';
 import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
@@ -54,14 +53,12 @@ import { ServerlessWorkflowCombinedEditorChannelApi } from '@kie-tools/serverles
 import { ServerlessWorkflowCombinedEditorEnvelopeApi } from '@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi';
 interface ISwfCombinedEditorProps {
   workflowInstance: Pick<ProcessInstance, 'source' | 'nodes' | 'error'>;
-  isStunnerEnabled: boolean;
   width?: number;
   height?: number;
 }
 
 const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
   workflowInstance,
-  isStunnerEnabled,
   width,
   height,
   ouiaId,
@@ -131,14 +128,6 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
     [stateControl, embeddedFile]
   );
 
-  const swfFeatureToggleChannelApiImpl = useMemo(
-    () =>
-      new SwfFeatureToggleChannelApiImpl({
-        stunnerEnabled: isStunnerEnabled
-      }),
-    [isStunnerEnabled]
-  );
-
   const swfPreviewOptionsChannelApiImpl = useMemo(
     () =>
       new SwfPreviewOptionsChannelApiImpl({
@@ -149,19 +138,11 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
   const apiImpl = useMemo(
     () =>
-      new SwfCombinedEditorChannelApiImpl(
-        channelApiImpl,
-        swfFeatureToggleChannelApiImpl,
-        null,
-        null,
-        swfPreviewOptionsChannelApiImpl,
-        null
-      ),
-    [
-      channelApiImpl,
-      swfFeatureToggleChannelApiImpl,
-      swfPreviewOptionsChannelApiImpl
-    ]
+      new SwfCombinedEditorChannelApiImpl({
+        defaultApiImpl: channelApiImpl,
+        swfPreviewOptionsChannelApiImpl
+      }),
+    [channelApiImpl, swfPreviewOptionsChannelApiImpl]
   );
 
   useEffect(() => {

@@ -59,7 +59,6 @@ const ProcessDetailsContainer: React.FC<
       omittedProcessTimelineEvents={appContext.omittedProcessTimelineEvents}
       diagramPreviewSize={appContext.diagramPreviewSize}
       showSwfDiagram={appContext.isWorkflow()}
-      isStunnerEnabled={appContext.getIsStunnerEnabled()}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}
       pluralProcessLabel={appContext.customLabels.pluralProcessLabel}
     />

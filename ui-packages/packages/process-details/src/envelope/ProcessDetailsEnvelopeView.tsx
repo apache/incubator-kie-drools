@@ -51,7 +51,6 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<
   const [diagramPreviewSize, setDiagramPreviewSize] =
     useState<DiagramPreviewSize>();
   const [showSwfDiagram, setShowSwfDiagram] = useState<boolean>(false);
-  const [isStunnerEnabled, setIsStunnerEnabled] = useState<boolean>(false);
   const [singularProcessLabel, setSingularProcessLabel] = useState<string>('');
   const [pluralProcessLabel, setPluralProcessLabel] = useState<string>('');
   useImperativeHandle(
@@ -62,7 +61,6 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<
         setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents);
         setDiagramPreviewSize(initArgs.diagramPreviewSize);
         setShowSwfDiagram(initArgs.showSwfDiagram);
-        setIsStunnerEnabled(initArgs.isStunnerEnabled);
         setSingularProcessLabel(initArgs.singularProcessLabel);
         setPluralProcessLabel(initArgs.pluralProcessLabel);
         setEnvelopeConnectedToChannel(true);
@@ -80,7 +78,6 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<
         omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         diagramPreviewSize={diagramPreviewSize}
         showSwfDiagram={showSwfDiagram}
-        isStunnerEnabled={isStunnerEnabled}
         singularProcessLabel={singularProcessLabel}
         pluralProcessLabel={pluralProcessLabel}
       />

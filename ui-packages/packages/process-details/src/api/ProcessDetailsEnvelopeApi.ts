@@ -40,7 +40,6 @@ export interface ProcessDetailsInitArgs {
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   showSwfDiagram: boolean;
-  isStunnerEnabled?: boolean;
   singularProcessLabel: string;
   pluralProcessLabel: string;
 }
