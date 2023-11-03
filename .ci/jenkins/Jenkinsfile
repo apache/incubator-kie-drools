@@ -17,7 +17,7 @@ pipeline {
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
         ENABLE_SONARCLOUD = 'false'
-        SONARCLOUD_ANALYSIS_MVN_OPTS = '-Dsonar.projectKey=org.optaplanner:optaplanner'
+        SONAR_PROJECT_KEY = 'apache_incubator-kie-optaplanner'
         OPTAPLANNER_BUILD_MVN_OPTS = '-Prun-code-coverage'
     }
     stages {
