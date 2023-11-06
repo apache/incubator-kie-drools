@@ -52,7 +52,9 @@ public class WorkflowTestUtils {
 
         kafkaClient.consume(KOGITO_PROCESSINSTANCES_EVENTS, rawCloudEvent -> {
             JsonPath path = new JsonPath(rawCloudEvent);
-            LOGGER.debug("CLOUD EVENT:\n{}" + path.prettyPrint());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("CLOUD EVENT: {}", path.prettyPrint());
+            }
             String type = path.get("type");
             if (eventType.getSimpleName().equals(type) && predicate.test(path)) {
                 cloudEvent.set(path);
