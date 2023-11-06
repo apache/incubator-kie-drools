@@ -21,6 +21,7 @@ package org.kie.kogito.jobs.service.scheduler;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
@@ -41,14 +42,15 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.quarkus.runtime.StartupEvent;
 import io.vertx.mutiny.core.Vertx;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,6 +82,8 @@ class JobSchedulerManagerTest {
 
     @BeforeEach
     void setUp() {
+        reset(tested);
+        reset(scheduler);
         this.scheduledJob = JobDetails
                 .builder()
                 .id(JOB_ID)
@@ -95,24 +99,14 @@ class JobSchedulerManagerTest {
                 .thenReturn(Optional.empty());
         lenient().when(scheduler.schedule(scheduledJob))
                 .thenReturn(ReactiveStreams.of(scheduledJob).buildRs());
-        tested.onMessagingStatusChange(new MessagingChangeEvent(true));
-    }
-
-    @Test
-    void testOnStartup(@Mock StartupEvent event) {
-        tested.onStartup(event);
-        verify(vertx).runOnContext(captorFirstExecution.capture());
-        verify(vertx).setPeriodic(eq(tested.loadJobIntervalInMinutes), captorPeriodic.capture());
-    }
-
-    @Test
-    void testOnStartupInvalidInterval(@Mock StartupEvent event) {
-        tested.schedulerChunkInMinutes = 10;
-        tested.loadJobIntervalInMinutes = 20;
-
-        tested.onStartup(event);
-
-        assertThat(tested.loadJobIntervalInMinutes).isEqualTo(tested.schedulerChunkInMinutes);
+        ArgumentCaptor<Runnable> action = ArgumentCaptor.forClass(Runnable.class);
+        lenient().doAnswer(a -> {
+            ((Runnable) a.getArgument(0)).run();
+            return a;
+        }).when(vertx).runOnContext(action.capture());
+        AtomicLong counter = new AtomicLong(1);
+        lenient().when(vertx.setPeriodic(anyLong(), any(Consumer.class))).thenReturn(counter.incrementAndGet());
+        tested.enabled.set(true);
     }
 
     @Test
@@ -127,5 +121,26 @@ class JobSchedulerManagerTest {
 
         tested.loadJobDetails();
         verify(scheduler, never()).schedule(scheduledJob);
+    }
+
+    @Test
+    void onMessagingStatusChange() {
+        tested.enabled.set(false);
+        MessagingChangeEvent messagingChangeEvent = new MessagingChangeEvent(true);
+        tested.onMessagingStatusChange(messagingChangeEvent);
+        verify(tested).loadJobDetails();//called once
+        assertThat(tested.periodicTimerIdForLoadJobs.get()).isPositive();
+        assertThat(tested.enabled.get()).isTrue();
+
+        MessagingChangeEvent messagingChangeEventToFalse = new MessagingChangeEvent(false);
+        tested.onMessagingStatusChange(messagingChangeEventToFalse);
+        assertThat(tested.periodicTimerIdForLoadJobs.get()).isNegative();
+        assertThat(tested.enabled.get()).isFalse();
+        verify(tested).loadJobDetails();//still called once
+
+        tested.onMessagingStatusChange(messagingChangeEvent);
+        verify(tested, times(2)).loadJobDetails(); //called twice
+        assertThat(tested.periodicTimerIdForLoadJobs.get()).isPositive();
+        assertThat(tested.enabled.get()).isTrue();
     }
 }
