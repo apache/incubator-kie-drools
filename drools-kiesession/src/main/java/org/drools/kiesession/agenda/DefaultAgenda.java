@@ -576,7 +576,7 @@ public class DefaultAgenda implements InternalAgenda {
     private int fireLoop(AgendaFilter agendaFilter, int fireLimit, RestHandler restHandler, boolean isInternalFire) {
         int fireCount = 0;
         try {
-            PropagationEntry head = propagationList.takeAll();
+            PropagationEntry head = takePropagationHead();
             int returnedFireCount;
 
             boolean limitReached = fireLimit == 0; // -1 or > 0 will return false. No reason for user to give 0, just handled for completeness.
@@ -604,17 +604,11 @@ public class DefaultAgenda implements InternalAgenda {
             // Note that if a halt() command is given, the engine is changed to INACTIVE,
             // and isFiring returns false allowing it to exit before all rules are fired.
             //
-            while ( isFiring()  )  {
+            while ( isFiring() || executionStateMachine.getCurrentState().isHalting() )  {
                 if ( head != null ) {
                     // it is possible that there are no action propagations, but there are rules to fire.
                     propagationList.flush(head);
                     head = null;
-                }
-
-                // a halt may have occurred during the flushPropagations,
-                // which changes the isFiring state. So a second isFiring guard is needed
-                if (!isFiring()) {
-                    break;
                 }
 
                 evaluateEagerList();
@@ -627,7 +621,7 @@ public class DefaultAgenda implements InternalAgenda {
                     fireCount += returnedFireCount;
 
                     limitReached = ( fireLimit > 0 && fireCount >= fireLimit );
-                    head = propagationList.takeAll();
+                    head = takePropagationHead();
                 } else {
                     returnedFireCount = 0; // no rules fired this iteration, so we know this is 0
                     group = null; // set the group to null in case the fire limit has been reached
@@ -636,7 +630,7 @@ public class DefaultAgenda implements InternalAgenda {
                 if ( returnedFireCount == 0 && head == null && ( group == null || ( group.isEmpty() && !group.isAutoDeactivate() ) ) && !flushExpirations() ) {
                     // if true, the engine is now considered potentially at rest
                     head = restHandler.handleRest( this, isInternalFire );
-                    if (!isInternalFire && head == null) {
+                    if ( ( !isInternalFire || executionStateMachine.getCurrentState().isHalting() ) && head == null) {
                         break;
                     }
                 }
@@ -651,6 +645,13 @@ public class DefaultAgenda implements InternalAgenda {
             }
         }
         return fireCount;
+    }
+
+    private PropagationEntry takePropagationHead() {
+        if (executionStateMachine.getCurrentState().isHalting()) {
+            return null;
+        }
+        return propagationList.takeAll();
     }
 
     interface RestHandler {
@@ -684,7 +685,7 @@ public class DefaultAgenda implements InternalAgenda {
                 PropagationEntry head;
                 // this must use the same sync target as takeAllPropagations, to ensure this entire block is atomic, up to the point of wait
                 synchronized (agenda.propagationList) {
-                    head = agenda.propagationList.takeAll();
+                    head = agenda.takePropagationHead();
 
                     // if halt() has called, the thread should not be put into a wait state
                     // instead this is just a safe way to make sure the queue is flushed before exiting the loop
@@ -692,7 +693,7 @@ public class DefaultAgenda implements InternalAgenda {
                             agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT ||
                             agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT )) {
                         agenda.propagationList.waitOnRest();
-                        head = agenda.propagationList.takeAll();
+                        head = agenda.takePropagationHead();
                     }
                 }
 
@@ -771,13 +772,38 @@ public class DefaultAgenda implements InternalAgenda {
         }
     }
 
+    static class ImmediateHalt extends PropagationEntry.AbstractPropagationEntry {
+
+        private final ExecutionStateMachine executionStateMachine;
+        private final PropagationList propagationList;
+
+        protected ImmediateHalt( ExecutionStateMachine executionStateMachine, PropagationList propagationList ) {
+            this.executionStateMachine = executionStateMachine;
+            this.propagationList = propagationList;
+        }
+
+        @Override
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
+            executionStateMachine.immediateHalt(propagationList);
+            reteEvaluator.getActivationsManager().haltGroupEvaluation();
+        }
+
+        @Override
+        public String toString() {
+            return "ImmediateHalt";
+        }
+    }
+
     @Override
     public synchronized void halt() {
         // only attempt halt an engine that is currently firing
         // This will place a halt command on the propagation queue
         // that will allow the engine to halt safely
         if ( isFiring() ) {
-            propagationList.addEntry(new Halt(executionStateMachine));
+            PropagationEntry halt = executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.FIRING_ALL_RULES ?
+                    new ImmediateHalt(executionStateMachine, propagationList) :
+                    new Halt(executionStateMachine);
+            propagationList.addEntry(halt);
         }
     }
 
@@ -879,6 +905,10 @@ public class DefaultAgenda implements InternalAgenda {
 
             public boolean isFiring() {
                 return firing;
+            }
+
+            public boolean isHalting() {
+                return this == HALTING;
             }
 
             public boolean isAlive() {

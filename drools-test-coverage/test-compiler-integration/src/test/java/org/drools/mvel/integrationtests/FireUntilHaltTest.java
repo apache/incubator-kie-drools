@@ -18,10 +18,6 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -34,6 +30,13 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -160,5 +163,39 @@ public class FireUntilHaltTest {
         }
         assertThat(alive).as("Thread should have died!").isFalse();
         assertThat(list.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAllFactsProcessedBeforeHalt() throws Exception {
+        String drl = "package org.example.drools;\n" +
+                "\n" +
+                "global java.util.concurrent.CountDownLatch latch;\n" +
+                "\n" +
+                "rule \"R1\" when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    latch.countDown();\n" +
+                "end\n" +
+                "rule \"R2\" when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    latch.countDown();\n" +
+                "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        CountDownLatch latch = new CountDownLatch(4);
+        ksession.setGlobal("latch", latch);
+
+        Executors.newSingleThreadExecutor().execute(ksession::fireUntilHalt);
+
+        ksession.insert("aaa");
+        ksession.insert("bbb");
+
+        ksession.halt();
+
+        // the 2 facts inserted should be processed before halt
+        assertThat(latch.await(100, TimeUnit.MILLISECONDS)).isTrue();
     }
 }
