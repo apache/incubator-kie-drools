@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Set target branches
         id: set-targets
-        uses: kiegroup/kie-ci/.ci/actions/parse-labels@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/parse-labels@main
         with:
           labels: ${LABELS}
   
@@ -34,7 +34,7 @@ jobs:
       REVIEWERS: ${{ toJSON(github.event.pull_request.requested_reviewers) }}
     steps:
       - name: Backporting
-        uses: kiegroup/kie-ci/.ci/actions/backporting@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/backporting@main
         with:
           target-branch: ${{ matrix.target-branch }}
           additional-reviewers: ${REVIEWERS}

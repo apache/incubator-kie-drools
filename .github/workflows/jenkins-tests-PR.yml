@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: DSL tests
-      uses: kiegroup/kie-ci/.ci/actions/dsl-tests@main
+      uses: apache/incubator-kie-kogito-pipelines/.ci/actions/dsl-tests@main
       with:
         project: optaplanner
         main-config-file-repo: apache/incubator-kie-optaplanner
