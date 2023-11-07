@@ -18,6 +18,13 @@
  */
 package org.drools.kiesession.agenda;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -66,13 +73,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Rule-firing Agenda.
