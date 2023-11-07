@@ -184,8 +184,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void cancelActivation(InternalMatch internalMatch) {
-        InternalMatch item = internalMatch;
-
         if ( internalMatch.isQueued() ) {
             if (internalMatch.getActivationGroupNode() != null ) {
                 internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
@@ -194,11 +192,11 @@ public class ActivationsManagerImpl implements ActivationsManager {
             getAgendaEventSupport().fireActivationCancelled(internalMatch, reteEvaluator, MatchCancelledCause.WME_MODIFY);
         }
 
-        if (item.getRuleAgendaItem() != null) {
-            item.getRuleAgendaItem().getRuleExecutor().fireConsequenceEvent( this.reteEvaluator, this, item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
+        if (internalMatch.getRuleAgendaItem() != null) {
+            internalMatch.getRuleAgendaItem().getRuleExecutor().fireConsequenceEvent( this.reteEvaluator, this, internalMatch, ON_DELETE_MATCH_CONSEQUENCE_NAME );
         }
 
-        reteEvaluator.getRuleEventSupport().onDeleteMatch( item );
+        reteEvaluator.getRuleEventSupport().onDeleteMatch(internalMatch);
     }
 
     @Override
@@ -284,10 +282,10 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public int fireAllRules(AgendaFilter agendaFilter, int fireLimit) {
-        return fireLoop( agendaFilter, fireLimit, RestHandler.FIRE_ALL_RULES );
+        return fireLoop( agendaFilter, fireLimit );
     }
 
-    private int fireLoop(AgendaFilter agendaFilter, int fireLimit, RestHandler restHandler) {
+    private int fireLoop(AgendaFilter agendaFilter, int fireLimit) {
         firing = true;
         int fireCount = 0;
         PropagationEntry head = propagationList.takeAll();
@@ -320,7 +318,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
             if ( returnedFireCount == 0 && head == null && ( group == null || ( group.isEmpty() && !group.isAutoDeactivate() ) ) && !flushExpirations() ) {
                 // if true, the engine is now considered potentially at rest
-                head = restHandler.handleRest( this );
+                head = handleRest();
             }
         }
 
@@ -349,44 +347,11 @@ public class ActivationsManagerImpl implements ActivationsManager {
         }
     }
 
-    interface RestHandler {
-        RestHandler FIRE_ALL_RULES = new RestHandler.FireAllRulesRestHandler();
-        RestHandler FIRE_UNTIL_HALT = new RestHandler.FireUntilHaltRestHandler();
-
-        PropagationEntry handleRest(ActivationsManagerImpl agenda);
-
-        class FireAllRulesRestHandler implements RestHandler {
-            @Override
-            public PropagationEntry handleRest(ActivationsManagerImpl agenda) {
-                PropagationEntry head = agenda.propagationList.takeAll();
-                if (head == null) {
-                    agenda.firing = false;
-                }
-                return head;
-            }
+    private PropagationEntry handleRest() {
+        PropagationEntry head = propagationList.takeAll();
+        if (head == null) {
+            firing = false;
         }
-
-        class FireUntilHaltRestHandler implements RestHandler {
-            @Override
-            public PropagationEntry handleRest(ActivationsManagerImpl agenda) {
-                PropagationEntry head;
-                // this must use the same sync target as takeAllPropagations, to ensure this entire block is atomic, up to the point of wait
-                synchronized (agenda.propagationList) {
-                    head = agenda.propagationList.takeAll();
-
-                    // if halt() has called, the thread should not be put into a wait state
-                    // instead this is just a safe way to make sure the queue is flushed before exiting the loop
-                    if (head == null) {
-                        agenda.propagationList.waitOnRest();
-                        head = agenda.propagationList.takeAll();
-                        if (head == null) {
-                            agenda.firing = false;
-                        }
-                    }
-                }
-
-                return head;
-            }
-        }
+        return head;
     }
 }
