@@ -18,6 +18,10 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.drools.core.base.RuleNameStartsWithAgendaFilter;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
@@ -29,8 +33,10 @@ import org.drools.ruleunits.impl.listener.TestRuleEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
 import org.junit.jupiter.api.Test;
 import org.kie.api.builder.CompilationErrorsException;
-
-import java.util.Objects;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -74,6 +80,61 @@ public class RuleUnitProviderImplTest {
             unit.getStrings().remove(dh);
             assertThat(unitInstance.fire()).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("not exists");
+        }
+    }
+
+    @Test
+    public void logicalAddByElement() {
+        // DROOLS-7583
+        LogicalAddByElementTestUnit unit = new LogicalAddByElementTestUnit();
+
+        ArrayList<String> eventsRecorded = new ArrayList<>();
+
+        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
+        ruleConfig.getRuleRuntimeListeners().add(new RuleRuntimeEventListener() {
+            @Override
+            public void objectInserted(ObjectInsertedEvent event) {
+                String byRuleName = Optional.ofNullable(event.getRule())
+                  .map(rule -> " by " + rule.getName())
+                  .orElse("");
+                eventsRecorded.add(event.getObject() + " inserted" + byRuleName);
+            }
+
+            @Override
+            public void objectUpdated(ObjectUpdatedEvent event) {
+            }
+
+            @Override
+            public void objectDeleted(ObjectDeletedEvent event) {
+                String byRuleName = Optional.ofNullable(event.getRule())
+                  .map(rule -> " by " + rule.getName())
+                  .orElse("");
+                eventsRecorded.add(event.getOldObject() + " deleted" + byRuleName);
+            }
+        });
+
+        try ( RuleUnitInstance<LogicalAddByElementTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig) ) {
+
+            DataHandle handleToStringWithLength3 = unit.getStrings().add("abc");
+            unit.getStrings().add("len4");
+
+            assertThat(unitInstance.fire()).isEqualTo(4);
+
+            assertThat(eventsRecorded).containsExactly(
+              "abc inserted",
+              "len4 inserted",
+              "3 inserted by R1",
+              "4 inserted by R1");
+            assertThat(unit.getResults()).containsExactly("3 exists", "4 exists");
+
+            eventsRecorded.clear();
+            unit.getResults().clear();
+
+            unit.getStrings().remove(handleToStringWithLength3);
+            assertThat(unitInstance.fire()).isEqualTo(0);
+
+            assertThat(eventsRecorded).doesNotContain("4 deleted");
+            assertThat(eventsRecorded).containsExactly("abc deleted", "3 deleted");
         }
     }
 
