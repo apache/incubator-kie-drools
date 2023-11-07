@@ -32,10 +32,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.base.base.ClassObjectType;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
-import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.base.base.ObjectType;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.testcoverage.common.model.ChildEventA;
 import org.drools.testcoverage.common.model.ChildEventB;
 import org.drools.testcoverage.common.model.Message;
@@ -52,6 +52,8 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Role;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.marshalling.Marshaller;
@@ -61,6 +63,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -1105,5 +1108,71 @@ public class IncrementalCompilationCepTest {
         assertThat(kieSession2.getFactCount()).isEqualTo(0);
 
         kieSession2.dispose();
+    }
+
+    @Test
+    public void testIncrementalCompilationWithExpiringEvent() {
+        incrementalCompilationWithExpiringEventFromEntryPoint(false);
+    }
+
+    @Test
+    public void testIncrementalCompilationWithExpiringEventFromEntryPoint() {
+        incrementalCompilationWithExpiringEventFromEntryPoint(true);
+    }
+
+    private void incrementalCompilationWithExpiringEventFromEntryPoint(boolean useEntryPoint) {
+        // DROOLS-7582
+        final String drl1 =
+                "import " + ExpiringEvent.class.getCanonicalName() + "\n" +
+                "rule \"Old Rule\" when\n" +
+                "    $e : ExpiringEvent($id : id)\n" + (useEntryPoint ? " from entry-point \"events\"" : "\n") +
+                "then\n" +
+                "    System.out.println(\"received event in old rule: \" + $id);\n" +
+                "end";
+
+        final String drl2 =
+                "import " + ExpiringEvent.class.getCanonicalName() + "\n" +
+                "rule \"New Rule\" when\n" +
+                "    $e : ExpiringEvent($id : id)\n" + (useEntryPoint ? " from entry-point \"events\"" : "\n") +
+                "then\n" +
+                "    System.out.println(\"received event in new rule: \" + $id);\n" +
+                "end";
+
+        final KieServices ks = KieServices.Factory.get();
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
+                                     new HashMap<>(), drl1);
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO,
+                                     new HashMap<>(), drl2);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession ksession = kc.newKieSession();
+        EntryPoint entryPoint = useEntryPoint ? ksession.getEntryPoint("events") : ksession;
+
+        final PseudoClockScheduler clock = ksession.getSessionClock();
+
+        entryPoint.insert(new ExpiringEvent(1));
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        assertThat( ksession.fireAllRules() ).isEqualTo(1);
+
+        kc.updateToVersion(releaseId2);
+
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        assertThat( ksession.fireAllRules() ).isEqualTo(1);
+    }
+
+    @Role(Role.Type.EVENT)
+    @Expires("5s")
+    public static class ExpiringEvent {
+        @Key
+        private int id;
+        public ExpiringEvent(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 }

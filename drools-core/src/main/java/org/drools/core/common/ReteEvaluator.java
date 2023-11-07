@@ -100,10 +100,6 @@ public interface ReteEvaluator extends ValueResolver {
         return true;
     }
 
-    default FactHandleClassStore getStoreForClass(Class<?> clazz) {
-        return getDefaultEntryPoint().getObjectStore().getStoreForClass(clazz);
-    }
-
     SessionConfiguration getSessionConfiguration();
 
     RuleSessionConfiguration getRuleSessionConfiguration();
