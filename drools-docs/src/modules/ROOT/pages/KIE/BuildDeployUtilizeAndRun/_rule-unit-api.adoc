@@ -141,17 +141,13 @@ Finally, you instantiate a `RuleUnitInstance` using `RuleUnitProvider` to execut
     public void test() {
         MeasurementUnit measurementUnit = new MeasurementUnit();
 
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
-        try {
+        try (RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit)) {
             measurementUnit.getMeasurements().add(new Measurement("color", "red"));
             ...
 
             List<Measurement> queryResult = instance.executeQuery("FindColor").stream().map(tuple -> (Measurement) tuple.get("$m")).collect(toList());
             ...
-
-        } finally {
-            instance.dispose();
-        }
+        } // instance.close() is called automatically
     }
 ----
 
