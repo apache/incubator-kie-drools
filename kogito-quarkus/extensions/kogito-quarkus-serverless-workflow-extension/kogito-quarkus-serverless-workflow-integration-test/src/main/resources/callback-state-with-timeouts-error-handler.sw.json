@@ -5,6 +5,7 @@
   "expressionLang": "jsonpath",
   "description": "Callback State With Timeouts Error Handler Test",
   "start": "CallbackState",
+  "constants": {"duration":"PT5S"},
   "events": [
     {
       "name": "callbackEvent",
@@ -70,7 +71,7 @@
         }
       ],
       "timeouts": {
-        "eventTimeout": "PT5S"
+        "eventTimeout": "$CONST.duration"
       }
     },
     {

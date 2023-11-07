@@ -97,6 +97,7 @@ class TimeoutsConfigResolverTest {
 
     private static Workflow mockWorkflow(String name) {
         Workflow workflow = mock(Workflow.class);
+        doReturn("jq").when(workflow).getExpressionLang();
         doReturn(name).when(workflow).getName();
         return workflow;
     }

@@ -21,15 +21,18 @@ package org.kie.kogito.serverless.workflow.utils;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
+
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.timeouts.TimeoutsDefinition;
 
 public class TimeoutsConfigResolver {
 
-    private static final String NON_NEGATIVE_DURATION_MUST_BE_PROVIDED = "When configured, it must be set with a greater than zero ISO 8601 time duration. For example PT30S.";
+    private static final String NON_NEGATIVE_DURATION_MUST_BE_PROVIDED =
+            "When configured, it must be set with a greater than zero ISO 8601 time duration. For example PT30S. Or a valid expression, for example $CONST.myDuration, where 'myDuration' is defined in the constant section of the workflow";
 
-    private static final String INVALID_EVENT_TIMEOUT_FOR_STATE_ERROR = "An invalid \"eventTimeout\": \"%s\" configuration was provided for the state \"%s\" in the serverless workflow: \"%s\". " +
+    private static final String INVALID_EVENT_TIMEOUT_FOR_STATE_ERROR = "An invalid \"eventTimeout\": \"%s\" configuration was provided for the state \"%s\" in the serverless workflow: \"%s\"." +
             NON_NEGATIVE_DURATION_MUST_BE_PROVIDED;
 
     private static final String INVALID_EVENT_TIMEOUT_FOR_WORKFLOW_ERROR = "An invalid \"eventTimeout\": \"%s\" configuration was provided for the serverless workflow: \"%s\". " +
@@ -45,7 +48,8 @@ public class TimeoutsConfigResolver {
                     String.format(INVALID_EVENT_TIMEOUT_FOR_STATE_ERROR,
                             timeouts.getEventTimeout(),
                             state.getName(),
-                            workflow.getName()));
+                            workflow.getName()),
+                    workflow.getExpressionLang());
             return timeouts.getEventTimeout();
         } else {
             timeouts = workflow.getTimeouts();
@@ -53,18 +57,21 @@ public class TimeoutsConfigResolver {
                 validateDuration(timeouts.getEventTimeout(),
                         String.format(INVALID_EVENT_TIMEOUT_FOR_WORKFLOW_ERROR,
                                 timeouts.getEventTimeout(),
-                                workflow.getName()));
+                                workflow.getName()),
+                        workflow.getExpressionLang());
                 return timeouts.getEventTimeout();
             }
         }
         return null;
     }
 
-    private static void validateDuration(String value, String message) {
-        try {
-            Duration.parse(value);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(message, e);
+    private static void validateDuration(String value, String message, String exprLanguage) {
+        if (!ExpressionHandlerFactory.get(exprLanguage, value).isValid()) {
+            try {
+                Duration.parse(value);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException(message, e);
+            }
         }
     }
 }

@@ -73,11 +73,6 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
         return this;
     }
 
-    public ForEachNodeFactory<T> expressionLanguage(String exprLanguage) {
-        getForEachNode().setExpressionLanguage(exprLanguage);
-        return this;
-    }
-
     public ForEachNodeFactory<T> completionAction(Action completionAction) {
         getForEachNode().setCompletionAction(completionAction);
         return this;

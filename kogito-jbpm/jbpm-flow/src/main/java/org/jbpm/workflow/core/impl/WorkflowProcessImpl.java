@@ -55,6 +55,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     private WorkflowModelValidator inputValidator;
     private WorkflowModelValidator outputValidator;
     private org.jbpm.workflow.core.NodeContainer nodeContainer;
+    private String exprLanguage;
 
     private transient BiFunction<String, ProcessInstance, String> expressionEvaluator = (expression, p) -> {
 
@@ -238,5 +239,13 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     @Override
     public void setOutputValidator(WorkflowModelValidator outputValidator) {
         this.outputValidator = outputValidator;
+    }
+
+    public void setExpressionLanguage(String exprLanguage) {
+        this.exprLanguage = exprLanguage;
+    }
+
+    public String getExpressionLanguage() {
+        return exprLanguage;
     }
 }

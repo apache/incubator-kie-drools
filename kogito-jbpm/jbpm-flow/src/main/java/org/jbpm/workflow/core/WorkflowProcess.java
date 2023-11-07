@@ -58,4 +58,7 @@ public interface WorkflowProcess extends KogitoWorkflowProcess, Process, NodeCon
 
     void setOutputValidator(WorkflowModelValidator validator);
 
+    void setExpressionLanguage(String exprLanguage);
+
+    String getExpressionLanguage();
 }

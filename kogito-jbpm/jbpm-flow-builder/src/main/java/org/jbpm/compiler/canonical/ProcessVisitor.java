@@ -149,6 +149,13 @@ public class ProcessVisitor extends AbstractVisitor {
         visitVariableScope(FACTORY_FIELD_NAME, variableScope, body, visitedVariables, metadata.getProcessClassName());
         visitSubVariableScopes(process.getNodes(), body, visitedVariables);
 
+        if (process instanceof org.jbpm.workflow.core.WorkflowProcess) {
+            org.jbpm.workflow.core.WorkflowProcess processImpl = (org.jbpm.workflow.core.WorkflowProcess) process;
+            if (processImpl.getExpressionLanguage() != null) {
+                body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "expressionLanguage", new StringLiteralExpr(processImpl.getExpressionLanguage())));
+            }
+        }
+
         visitInterfaces(process.getNodes());
 
         metadata.setDynamic(((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic());

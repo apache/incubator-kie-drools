@@ -81,6 +81,7 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 import static java.lang.String.format;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
@@ -855,6 +856,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 (nodeContainer instanceof WorkflowProcess && ((WorkflowProcess) nodeContainer).isDynamic());
     }
 
+    private boolean isExpression(RuleFlowProcess process, String expression) {
+        String lang = process.getExpressionLanguage();
+        return lang != null && ExpressionHandlerFactory.get(lang, expression).isValid();
+    }
+
     private void validateTimer(final Timer timer,
             final org.kie.api.definition.process.Node node,
             final RuleFlowProcess process,
@@ -884,10 +890,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                             break;
                     }
                 } catch (RuntimeException e) {
-                    addErrorMessage(process,
-                            node,
-                            errors,
-                            "Could not parse delay '" + timer.getDelay() + "': " + e.getMessage());
+                    if (!isExpression(process, timer.getDelay())) {
+                        addErrorMessage(process,
+                                node,
+                                errors,
+                                "Could not parse delay '" + timer.getDelay() + "': " + e.getMessage());
+                    }
                 }
             }
         }
@@ -898,10 +906,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     DateTimeUtils.parseRepeatableDateTime(timer.getPeriod());
                 }
             } catch (RuntimeException e) {
-                addErrorMessage(process,
-                        node,
-                        errors,
-                        "Could not parse period '" + timer.getPeriod() + "': " + e.getMessage());
+                if (!isExpression(process, timer.getPeriod())) {
+                    addErrorMessage(process,
+                            node,
+                            errors,
+                            "Could not parse period '" + timer.getPeriod() + "': " + e.getMessage());
+                }
             }
         }
 
@@ -909,10 +919,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             try {
                 DateTimeUtils.parseDateAsDuration(timer.getDate());
             } catch (RuntimeException e) {
-                addErrorMessage(process,
-                        node,
-                        errors,
-                        "Could not parse date '" + timer.getDate() + "': " + e.getMessage());
+                if (!isExpression(process, timer.getDate())) {
+                    addErrorMessage(process,
+                            node,
+                            errors,
+                            "Could not parse date '" + timer.getDate() + "': " + e.getMessage());
+                }
             }
         }
     }

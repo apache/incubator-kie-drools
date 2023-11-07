@@ -105,6 +105,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         getRuleFlowProcess().setId((String) id);
     }
 
+    public RuleFlowProcessFactory expressionLanguage(String exprLanguage) {
+        getRuleFlowProcess().setExpressionLanguage(exprLanguage);
+        return this;
+    }
+
     protected RuleFlowProcess getRuleFlowProcess() {
         return (RuleFlowProcess) node;
     }

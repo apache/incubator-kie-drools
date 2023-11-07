@@ -50,7 +50,7 @@ public class ForEachNode extends CompositeContextNode {
     private String collectionExpression;
     private String outputCollectionExpression;
     private String completionConditionExpression;
-    private String exprLanguage;
+
     private Action finishAction;
     private boolean waitForCompletion = true;
     private Expression evaluateExpression;
@@ -108,14 +108,6 @@ public class ForEachNode extends CompositeContextNode {
         return null;
     }
 
-    public void setExpressionLanguage(String exprLanguage) {
-        this.exprLanguage = exprLanguage;
-    }
-
-    public String getExpressionLanguage() {
-        return exprLanguage;
-    }
-
     public Action getCompletionAction() {
         return finishAction;
     }
@@ -125,6 +117,7 @@ public class ForEachNode extends CompositeContextNode {
     }
 
     public Expression getEvaluateExpression() {
+        String exprLanguage = getProcess().getExpressionLanguage();
         if (evaluateExpression == null && ExpressionHandlerFactory.isSupported(exprLanguage)) {
             evaluateExpression = ExpressionHandlerFactory.get(exprLanguage, collectionExpression);
         }

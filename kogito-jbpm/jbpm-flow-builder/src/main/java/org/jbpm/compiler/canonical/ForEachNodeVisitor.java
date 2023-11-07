@@ -96,10 +96,6 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
                     buildDataResolver(node.getOutputVariableType().getStringType())));
         }
 
-        if (node.getExpressionLanguage() != null) {
-            body.addStatement(getFactoryMethod(getNodeId(node), "expressionLanguage", new StringLiteralExpr(node.getExpressionLanguage())));
-        }
-
         if (node.getCompletionAction() instanceof ExpressionSupplier) {
             body.addStatement(getFactoryMethod(getNodeId(node), "completionAction", ((ExpressionSupplier) node.getCompletionAction()).get(node, metadata)));
         }

@@ -43,7 +43,7 @@ public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachStat
     @Override
     protected MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
         ForEachNodeFactory<?> result =
-                factory.forEachNode(parserContext.newId()).sequential(false).waitForCompletion(true).expressionLanguage(workflow.getExpressionLang()).collectionExpression(state.getInputCollection())
+                factory.forEachNode(parserContext.newId()).sequential(false).waitForCompletion(true).collectionExpression(state.getInputCollection())
                         .outputVariable(FOR_EACH_OUTPUT_VARIABLE, new ObjectDataType(JsonNode.class))
                         .metaData(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR)
                         .tempVariable(TEMP_OUTPUT_VAR, new ObjectDataType(JsonNode.class));
