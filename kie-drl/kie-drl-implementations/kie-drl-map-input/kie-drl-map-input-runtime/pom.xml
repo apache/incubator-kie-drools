@@ -6,7 +6,7 @@
     <parent>
         <artifactId>kie-drl-map-input</artifactId>
         <groupId>org.kie</groupId>
-        <version>8.40.1-SNAPSHOT</version>
+        <version>8.40.1.Final</version>
     </parent>
 
     <artifactId>kie-drl-map-input-runtime</artifactId>

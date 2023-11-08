@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-archetypes</artifactId>
-    <version>8.40.1-SNAPSHOT</version>
+    <version>8.40.1.Final</version>
   </parent>
 
   <artifactId>kie-drools-exec-model-ruleunit-archetype</artifactId>
