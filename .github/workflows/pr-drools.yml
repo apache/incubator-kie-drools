@@ -42,7 +42,7 @@ jobs:
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
-          BUILD_MVN_OPTS_CURRENT: -Dfull -X
+          BUILD_MVN_OPTS_CURRENT: -X
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
