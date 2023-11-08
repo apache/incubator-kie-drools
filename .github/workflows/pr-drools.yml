@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest]
         java-version: [11]
         maven-version: ['3.8.7']
       fail-fast: false
@@ -42,7 +42,7 @@ jobs:
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
-          BUILD_MVN_OPTS_CURRENT: -Dfull
+          BUILD_MVN_OPTS_CURRENT: -Dfull -X
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}

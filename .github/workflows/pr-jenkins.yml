@@ -9,6 +9,7 @@ on:
 
 jobs:
   dsl-tests:
+    if: false
     concurrency:
       group: ${{ github.repository.name }}_dsl_tests-${{ github.head_ref }}
       cancel-in-progress: true

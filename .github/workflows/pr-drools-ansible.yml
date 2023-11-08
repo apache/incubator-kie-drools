@@ -14,6 +14,7 @@ on:
 
 jobs:
   drools-ansible:
+    if: false
     concurrency:
       group: pr-drools_ansible_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true

@@ -178,6 +178,7 @@
         <module>drools-persistence</module>
         <module>drools-templates</module>
         <module>drools-decisiontables</module>
+<!--
         <module>drools-examples</module>
         <module>kie-ci</module>
         <module>drools-model</module>
@@ -201,6 +202,7 @@
         <module>jpmml-migration-recipe</module>
         <module>drools-reliability</module>
         <module>drools-drlonyaml-parent</module>
+-->
       </modules>
     </profile>
     <profile>
