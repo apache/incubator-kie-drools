@@ -22,9 +22,8 @@ import java.net.URI;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogKey;
 
@@ -33,13 +32,9 @@ public class MicroProfileConfigServiceCatalog implements KubernetesServiceCatalo
 
     private static final String CONFIG_PREFIX = "org.kie.kogito.addons.discovery.";
 
-    @Inject
-    Config config;
-
     @Override
     public Optional<URI> getServiceAddress(KubernetesServiceCatalogKey key) {
-
-        return config.getOptionalValue(CONFIG_PREFIX + key.getProtocol().getValue() + ":" + key.getCoordinates(), String.class)
-                .map(URI::create);
+        return ConfigProvider.getConfig()
+                .getOptionalValue(CONFIG_PREFIX + key.getProtocol().getValue() + ":" + key.getCoordinates(), String.class).map(URI::create);
     }
 }

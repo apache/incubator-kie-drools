@@ -108,7 +108,7 @@ public class ExpressionUtils {
         } else if (object instanceof Character) {
             return new CharLiteralExpr(((Character) object));
         } else if (object instanceof Long) {
-            return new LongLiteralExpr(object.toString());
+            return new LongLiteralExpr(object + "L");
         } else if (object instanceof Integer || object instanceof Short) {
             return new IntegerLiteralExpr(object.toString());
         } else if (object instanceof BigInteger) {
