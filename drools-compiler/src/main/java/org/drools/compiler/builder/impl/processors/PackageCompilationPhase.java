@@ -18,6 +18,8 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.List;
+
 import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -27,8 +29,6 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import java.util.List;
 
 import static java.util.Arrays.asList;
 

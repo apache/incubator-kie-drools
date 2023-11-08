@@ -18,9 +18,9 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.base.rule.Function;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.base.rule.Function;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;

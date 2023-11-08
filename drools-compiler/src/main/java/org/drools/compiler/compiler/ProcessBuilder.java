@@ -18,12 +18,12 @@
  */
 package org.drools.compiler.compiler;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.io.IOException;
-import java.util.List;
 
 public interface ProcessBuilder {
 

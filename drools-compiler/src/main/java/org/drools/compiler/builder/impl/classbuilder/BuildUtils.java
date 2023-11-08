@@ -152,7 +152,7 @@ public final class BuildUtils {
 
     // Can only be used with internal names, i.e. after [ has been prefix
     public static String arrayType( String type ) {
-        if ( isArray( type ) )
+        if ( isArray( type ) ) {
             if ( type.length() == arrayDimSize(type) +1  ) {
                 return type;
             } else {
@@ -162,6 +162,7 @@ public final class BuildUtils {
                 }
                 return ans.toString();
             }
+        }
         return null;
     }
 
@@ -258,7 +259,9 @@ public final class BuildUtils {
     }
 
     public static boolean isBoxed(String type) {
-        if (type == null) return false;
+        if (type == null) {
+            return false;
+        }
         return "java.lang.Short".equals(type)
                 || "java.lang.Byte".equals(type)
                 || "java.lang.Character".equals(type)

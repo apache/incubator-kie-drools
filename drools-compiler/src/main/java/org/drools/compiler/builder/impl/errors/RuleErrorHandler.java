@@ -18,10 +18,10 @@
  */
 package org.drools.compiler.builder.impl.errors;
 
-import org.drools.drl.parser.DroolsError;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.drl.parser.DroolsError;
 
 public class RuleErrorHandler extends ErrorHandler {
 

@@ -18,10 +18,10 @@
  */
 package org.drools.compiler.builder.impl;
 
-import org.drools.drl.ast.descr.PackageDescr;
-
 import java.util.Collection;
 import java.util.List;
+
+import org.drools.drl.ast.descr.PackageDescr;
 
 /**
  * Manages handling of {@link PackageDescr} instances.

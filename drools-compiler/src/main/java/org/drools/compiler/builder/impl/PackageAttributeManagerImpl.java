@@ -18,10 +18,10 @@
  */
 package org.drools.compiler.builder.impl;
 
-import org.drools.drl.ast.descr.AttributeDescr;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.drl.ast.descr.AttributeDescr;
 
 public class PackageAttributeManagerImpl {
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.

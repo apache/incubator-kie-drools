@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
@@ -30,7 +31,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.core.BaseConfiguration;
-import org.drools.base.definitions.InternalKnowledgePackage;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;

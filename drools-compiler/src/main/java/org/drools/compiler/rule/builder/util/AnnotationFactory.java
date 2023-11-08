@@ -22,10 +22,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.drools.util.TypeResolver;
 import org.drools.base.rule.Annotated;
 import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
+import org.drools.util.TypeResolver;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.drools.util.StringUtils.ucFirst;

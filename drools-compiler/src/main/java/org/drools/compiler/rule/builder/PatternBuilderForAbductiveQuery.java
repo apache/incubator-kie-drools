@@ -20,12 +20,12 @@ package org.drools.compiler.rule.builder;
 
 import java.util.Arrays;
 
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.rule.Declaration;
-import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.base.AcceptsClassObjectType;
+import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.rule.Declaration;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 

@@ -18,8 +18,8 @@
  */
 package org.drools.compiler.compiler;
 
-import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.base.rule.TypeDeclaration;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.parser.DroolsError;
 
 public class TypeDeclarationError extends DroolsError {

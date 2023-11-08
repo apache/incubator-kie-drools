@@ -44,6 +44,7 @@
 
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
+    <drools.exclude.checkstyle></drools.exclude.checkstyle>
 
     <victims.updates>weekly</victims.updates>
     <illegaltransitivereportonly>false</illegaltransitivereportonly>
@@ -1581,6 +1582,9 @@
               <configuration>
                 <checkstyleRules>
                   <module name="Checker">
+ <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value="${drools.exclude.checkstyle}"/>
+  </module>                  
                     <!-- Checks for whitespace. -->
                     <module name="FileTabCharacter">
                       <property name="severity" value="error"/>

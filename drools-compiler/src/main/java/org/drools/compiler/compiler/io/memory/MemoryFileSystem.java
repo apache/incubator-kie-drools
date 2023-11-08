@@ -50,9 +50,9 @@ import org.drools.compiler.compiler.io.Folder;
 import org.drools.io.ByteArrayResource;
 import org.drools.io.InternalResource;
 import org.drools.util.IoUtils;
+import org.drools.util.PortablePath;
 import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
-import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 import org.slf4j.Logger;
@@ -295,14 +295,24 @@ public class MemoryFileSystem
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         MemoryFileSystem other = (MemoryFileSystem) obj;
 
         if ( folder == null ) {
-            if ( other.folder != null ) return false;
-        } else if ( !folder.equals( other.folder ) ) return false;
+            if ( other.folder != null ) {
+                return false;
+            }
+        } else if ( !folder.equals( other.folder ) ) {
+            return false;
+        }
 
         return fileContents.equals( other.fileContents ) && folders.equals( other.folders );
     }

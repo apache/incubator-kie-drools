@@ -18,6 +18,9 @@
  */
 package org.drools.compiler.compiler;
 
+import java.util.List;
+import java.util.Map;
+
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
@@ -50,9 +53,6 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.util.TypeResolver;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.base.base.CoreComponentsBuilder.throwExceptionForMissingMvel;
 

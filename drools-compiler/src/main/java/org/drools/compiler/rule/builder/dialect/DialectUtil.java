@@ -24,14 +24,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
-import org.kie.memorycompiler.resources.ResourceReader;
-import org.drools.drl.ast.descr.ImportDescr;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.memorycompiler.resources.ResourceReader;
 
 import static org.drools.util.ClassUtils.findClass;
 
@@ -56,7 +56,9 @@ public final class DialectUtil {
 
         final String fileName = packageName.replace('.', '/') + "/" + newName;
 
-        if (src == null || !src.isAvailable(fileName + "." + ext)) return newName;
+        if (src == null || !src.isAvailable(fileName + "." + ext)) {
+            return newName;
+        }
 
         // make sure the class name does not exist, if it does increase the counter
         int counter = -1;
@@ -66,7 +68,9 @@ public final class DialectUtil {
             final String actualName = fileName + "_" + counter + "." + ext;
 
             //MVEL:test null to Fix failing test on MVELConsequenceBuilderTest.testImperativeCodeError()
-            if (!src.isAvailable(actualName)) break;
+            if (!src.isAvailable(actualName)) {
+                break;
+            }
         }
         // we have duplicate file names so append counter
         return newName + "_" + counter;

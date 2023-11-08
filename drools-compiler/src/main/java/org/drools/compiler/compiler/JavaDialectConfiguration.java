@@ -18,9 +18,9 @@
  */
 package org.drools.compiler.compiler;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
-import org.drools.base.definitions.InternalKnowledgePackage;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
