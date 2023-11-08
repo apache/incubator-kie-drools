@@ -85,7 +85,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        githubscm.pushObject('origin', isPRSourceBranch() ? getBuildBranch() : getPRBranch(), getGitAuthorCredsId())
+                        githubscm.pushObject('origin', isPRSourceBranch() ? getBuildBranch() : getPRBranch(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -167,7 +167,11 @@ boolean isPRSourceBranch() {
 }
 
 String getGitAuthorCredsId() {
-    return env.AUTHOR_CREDS_ID
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 String getPRBranch() {

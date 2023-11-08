@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        githubscm.pushObject('origin', changeBranch, getGitAuthorCredsId())
+                        githubscm.pushObject('origin', changeBranch, getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -91,7 +91,11 @@ String getRepoName() {
 }
 
 String getGitAuthorCredsId() {
-    return env.AUTHOR_CREDS_ID
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 MavenCommand getMavenCommand() {
