@@ -355,7 +355,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         if (InitialFact.class.isAssignableFrom(classType)) {
             sink.assertObject(workingMemory.getInitialFactHandle(), context, workingMemory);
         } else {
-            Iterator<InternalFactHandle> it = workingMemory.getStoreForClass(classType).iterator();
+            Iterator<InternalFactHandle> it = getFactHandlesIterator(workingMemory);
             while (it.hasNext()) {
                 sink.assertObject(it.next(), context, workingMemory);
             }
@@ -366,7 +366,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
         return InitialFact.class.isAssignableFrom(classType) ?
                 Collections.singleton(workingMemory.getInitialFactHandle()).iterator() :
-                workingMemory.getStoreForClass(classType).iterator();
+                workingMemory.getEntryPoint(((EntryPointNode)source).getEntryPoint().getEntryPointId()).getObjectStore().getStoreForClass(classType).iterator();
     }
 
     /**
