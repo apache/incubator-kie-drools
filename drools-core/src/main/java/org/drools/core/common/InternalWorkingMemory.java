@@ -49,10 +49,6 @@ public interface InternalWorkingMemory
     
     NodeMemories getNodeMemories();
 
-    default FactHandleClassStore getStoreForClass(Class<?> clazz) {
-        return getObjectStore().getStoreForClass(clazz);
-    }
-
     Lock getLock();
 
     InternalFactHandle getInitialFactHandle();
