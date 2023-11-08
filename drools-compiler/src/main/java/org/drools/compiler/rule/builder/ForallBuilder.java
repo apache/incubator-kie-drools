@@ -18,15 +18,15 @@
  */
 package org.drools.compiler.rule.builder;
 
+import org.drools.base.rule.Forall;
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.base.rule.Forall;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.RuleConditionElement;
 
 public class ForallBuilder
     implements

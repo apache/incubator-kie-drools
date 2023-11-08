@@ -18,20 +18,6 @@
  */
 package org.drools.compiler.builder.impl;
 
-import org.drools.compiler.builder.PackageRegistryManager;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.drl.ast.descr.AttributeDescr;
-import org.drools.drl.ast.descr.ImportDescr;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.conf.DefaultDialectOption;
-import org.kie.internal.builder.conf.DefaultPackageNameOption;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +27,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.compiler.builder.PackageRegistryManager;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.reteoo.CoreComponentFactory;
+import org.drools.drl.ast.descr.AttributeDescr;
+import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.conf.DefaultDialectOption;
+import org.kie.internal.builder.conf.DefaultPackageNameOption;
 
 import static org.drools.util.StringUtils.isEmpty;
 

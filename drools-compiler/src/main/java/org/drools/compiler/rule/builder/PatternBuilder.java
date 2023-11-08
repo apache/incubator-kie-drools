@@ -18,6 +18,20 @@
  */
 package org.drools.compiler.rule.builder;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+
 import org.drools.base.base.AcceptsClassObjectType;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
@@ -96,20 +110,6 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
 
 import static org.drools.compiler.lang.DescrDumper.normalizeEval;
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAnnotation;

@@ -18,14 +18,14 @@
  */
 package org.drools.compiler.kie.builder.impl;
 
+import java.util.List;
+import java.util.Properties;
+
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.RuleTemplateConfiguration;
-
-import java.util.List;
-import java.util.Properties;
 
 public class DecisionTableConfigurationDelegate implements DecisionTableConfiguration {
 

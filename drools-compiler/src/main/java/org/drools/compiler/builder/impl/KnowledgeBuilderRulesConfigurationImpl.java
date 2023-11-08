@@ -139,8 +139,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                                                        DrlParser.DEFAULT_LANGUAGE_LEVEL.toString()));
 
         setProperty(ParallelRulesBuildThresholdOption.PROPERTY_NAME,
-        			getPropertyValue(ParallelRulesBuildThresholdOption.PROPERTY_NAME, 
-        												String.valueOf(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD)));
+                    getPropertyValue(ParallelRulesBuildThresholdOption.PROPERTY_NAME, 
+                                                        String.valueOf(DEFAULT_PARALLEL_RULES_BUILD_THRESHOLD)));
 
         this.accumulateFunctions = AccumulateUtil.buildAccumulateFunctionsMap(getProperties(), getFunctionFactoryClassLoader() );
 
@@ -359,11 +359,11 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     }
 
     public int getParallelRulesBuildThreshold() {
-    	return parallelRulesBuildThreshold.getParallelRulesBuildThreshold();
+        return parallelRulesBuildThreshold.getParallelRulesBuildThreshold();
     }
     
     public void setParallelRulesBuildThreshold(int parallelRulesBuildThreshold) {
-    	this.parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(parallelRulesBuildThreshold);
+        this.parallelRulesBuildThreshold = ParallelRulesBuildThresholdOption.get(parallelRulesBuildThreshold);
     }
 
     public LanguageLevelOption getLanguageLevel() {

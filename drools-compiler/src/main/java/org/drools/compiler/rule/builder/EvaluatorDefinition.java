@@ -21,8 +21,8 @@ package org.drools.compiler.rule.builder;
 import java.io.Externalizable;
 
 import org.drools.base.base.ValueType;
-import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.accessor.Evaluator;
+import org.drools.drl.parser.impl.Operator;
 
 /**
  * An evaluator definition interface that allows for pluggable

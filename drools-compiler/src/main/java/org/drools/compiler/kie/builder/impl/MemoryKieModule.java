@@ -39,6 +39,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.io.InternalResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.util.PortablePath;
 import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
@@ -46,7 +47,6 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.internal.utils.KieService;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
-import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -240,8 +240,12 @@ public class MemoryKieModule extends AbstractKieModule
         }
 
         @Override public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof MemoryKieModuleResourceProvider)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof MemoryKieModuleResourceProvider)) {
+                return false;
+            }
 
             MemoryKieModuleResourceProvider that =
                     (MemoryKieModuleResourceProvider) o;

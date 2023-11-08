@@ -447,9 +447,13 @@ public class KieBuilderImpl
         int pkgPos = content.indexOf( "RuleSet" );
         if (pkgPos >= 0) {
             pkgPos += "RuleSet ".length();
-            for (; !Character.isJavaIdentifierStart( content.charAt( pkgPos ) ); pkgPos++);
+            for (; !Character.isJavaIdentifierStart( content.charAt( pkgPos ) ); pkgPos++) {
+                
+            };
             int end = pkgPos+1;
-            for (; Character.isLetterOrDigit( content.charAt( end ) ) || content.charAt( end ) == '.'; end++);
+            for (; Character.isLetterOrDigit( content.charAt( end ) ) || content.charAt( end ) == '.'; end++) {
+                
+            };
             return content.substring( pkgPos, end ).trim();
         }
         return null;

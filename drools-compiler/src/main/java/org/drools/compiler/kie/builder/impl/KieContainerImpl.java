@@ -83,8 +83,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.base.util.Drools.isJndiAvailable;
+import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.util.ClassUtils.convertResourceToClassName;
 
 public class KieContainerImpl
@@ -608,7 +608,9 @@ public class KieContainerImpl
         }
 
         KieBase kBase = getKieBaseFromKieSessionModel( kSessionModel );
-        if ( kBase == null ) return null;
+        if ( kBase == null ) {
+            return null;
+        }
 
         KieSession kSession = kBase.newKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ), environment );
         registerNewKieSession(kSessionModel, (InternalKnowledgeBase) kBase, kSession);

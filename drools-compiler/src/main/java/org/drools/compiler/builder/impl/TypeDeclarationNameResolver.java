@@ -21,18 +21,18 @@ package org.drools.compiler.builder.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.util.TypeResolver;
-import org.kie.internal.definition.GenericTypeDefinition;
-import org.drools.base.rule.TypeDeclaration;
-import org.drools.util.ClassUtils;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.QualifiedName;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
+import org.drools.util.ClassUtils;
+import org.drools.util.TypeResolver;
+import org.kie.internal.definition.GenericTypeDefinition;
 
 public class TypeDeclarationNameResolver {
 

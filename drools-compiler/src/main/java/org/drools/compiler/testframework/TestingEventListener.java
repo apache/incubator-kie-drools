@@ -63,7 +63,9 @@ public class TestingEventListener implements AgendaEventListener {
     public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames, final boolean inclusive) {
         return new AgendaFilter() {
             public boolean accept(Match match) {
-                if (ruleNames.size() ==0) return true;
+                if (ruleNames.size() ==0) {
+                    return true;
+                }
                 String ruleName = match.getRule().getName();
 
                 //jdelong: please don't want to see records of cancelled activations

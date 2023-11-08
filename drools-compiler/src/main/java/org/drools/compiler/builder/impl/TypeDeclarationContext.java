@@ -18,11 +18,11 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.util.List;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.internal.builder.ResourceChange;
-
-import java.util.List;
 
 /**
  * The build context for {@link TypeDeclarationBuilder}, {@link ClassDefinitionFactory} and

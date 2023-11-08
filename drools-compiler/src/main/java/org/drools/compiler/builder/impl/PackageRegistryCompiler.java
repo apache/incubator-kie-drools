@@ -18,9 +18,9 @@
  */
 package org.drools.compiler.builder.impl;
 
-import org.kie.internal.builder.KnowledgeBuilderResult;
-
 import java.util.Collection;
+
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 /**
  * Builds the consequence in all of the {@link org.drools.compiler.compiler.PackageRegistry}

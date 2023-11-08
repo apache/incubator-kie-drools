@@ -18,16 +18,16 @@
  */
 package org.drools.compiler.rule.builder;
 
+import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.GroupElementFactory;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ConditionalElementDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
-import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.GroupElementFactory;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.RuleConditionElement;
 
 public class GroupElementBuilder
     implements

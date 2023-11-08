@@ -18,6 +18,8 @@
  */
 package org.drools.compiler.builder.impl.resources;
 
+import java.util.List;
+
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -30,8 +32,6 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.conf.TrimCellsInDTableOption;
-
-import java.util.List;
 
 public class DecisionTableResourceHandler extends ResourceHandler {
 

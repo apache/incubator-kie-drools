@@ -35,10 +35,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.drools.io.InternalResource;
+import org.drools.util.PortablePath;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.internal.io.ResourceFactory;
-import org.drools.util.PortablePath;
 
 import static org.drools.util.IoUtils.readBytesFromInputStream;
 

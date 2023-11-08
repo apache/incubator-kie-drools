@@ -18,15 +18,15 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.WindowDeclaration;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.WindowDeclaration;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;

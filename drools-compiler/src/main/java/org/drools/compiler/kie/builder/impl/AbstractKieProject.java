@@ -345,8 +345,12 @@ public abstract class AbstractKieProject implements KieProject {
 
         @Override
         public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
             Asset asset = (Asset) o;
             return kmodule.equals( asset.kmodule ) && name.equals( asset.name );
         }

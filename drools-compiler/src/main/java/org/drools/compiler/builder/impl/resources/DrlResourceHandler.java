@@ -18,6 +18,8 @@
  */
 package org.drools.compiler.builder.impl.resources;
 
+import java.io.IOException;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
@@ -28,8 +30,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import java.io.IOException;
 
 public class DrlResourceHandler extends ResourceHandler {
     public DrlResourceHandler(KnowledgeBuilderConfigurationImpl configuration) {

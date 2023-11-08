@@ -18,8 +18,8 @@
  */
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 
 /**
  * Each Dialect can have its own configuration. Implementations of this class are typically
