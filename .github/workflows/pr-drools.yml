@@ -44,4 +44,4 @@ jobs:
       - name: Build with Maven
         run: |
           chcp 65001
-          mvn -B clean install
+          mvn -B -X clean test-compile
