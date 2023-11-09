@@ -33,6 +33,9 @@ jobs:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
+      - name: Set UTF-8
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: echo "LANG=en_US.UTF-8" >> "$GITHUB_ENV"
       - name: Java and Maven Setup
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
         with:
