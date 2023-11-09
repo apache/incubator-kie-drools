@@ -18,11 +18,14 @@
  */
 package org.drools.serialization.protobuf.marshalling;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 
+import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
+import static org.drools.base.reteoo.NodeTypeEnums.FromNode;
+import static org.drools.base.reteoo.NodeTypeEnums.ReactiveFromNode;
 import static org.drools.core.marshalling.TupleKey.createTupleArray;
 
 public class MarshallingHelper {
@@ -51,6 +54,10 @@ public class MarshallingHelper {
         if (leftTupleSource == null) {
             return false;
         }
-        return NodeTypeEnums.hasNodeMemory( leftTupleSource ) ? true : hasNodeMemory(leftTupleSource.getLeftTupleSource());
+        return nodeWithMemory( leftTupleSource ) || hasNodeMemory(leftTupleSource.getLeftTupleSource());
+    }
+
+    private static boolean nodeWithMemory(NetworkNode node) {
+        return node.getType() == FromNode || node.getType() == ReactiveFromNode || node.getType() == AccumulateNode;
     }
 }

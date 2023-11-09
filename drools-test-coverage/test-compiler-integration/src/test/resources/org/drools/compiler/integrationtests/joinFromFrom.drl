@@ -1,0 +1,35 @@
+package org.drools.compiler.integrationtests;
+
+import org.drools.compiler.integrationtests.model.CalcFact;
+import org.drools.compiler.integrationtests.model.Item;
+import org.drools.compiler.integrationtests.model.RecordFact;
+
+dialect "mvel"
+
+rule R1
+	when
+        String()
+        CalcFact( $lineNumber : lineNumber, $itemList : itemList )
+        Integer()
+	then
+end
+
+rule R2
+	when
+        String()
+        $fact : CalcFact( $itemList : itemList )
+        $item : Item( decomposedPointFlag == null ) from $itemList
+        $record : RecordFact( decomposedPoint == null )
+        not RecordFact( lineNumber == $fact.lineNumber )
+	then
+        modify($record){
+          decomposedPoint = null
+        }
+        modify($item){
+          decomposedPointFlag = "1"
+        }
+        modify($fact){
+          itemList = $itemList
+        }
+        System.out.println("[DEBUG] after  $item=" + $item);
+end
