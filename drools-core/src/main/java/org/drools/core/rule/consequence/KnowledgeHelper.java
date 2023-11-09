@@ -37,6 +37,8 @@ public interface KnowledgeHelper extends ConsequenceContext, Serializable {
     
     void setActivation(InternalMatch internalMatch);
 
+    InternalMatch getActivation();
+
     default void restoreActivationOnConsequenceFailure(InternalMatch internalMatch) { }
 
 
