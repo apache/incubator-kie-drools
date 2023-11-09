@@ -1,0 +1,79 @@
+package org.drools.compiler.integrationtests;
+
+import org.drools.compiler.integrationtests.model.AnotherFact;
+import org.drools.compiler.integrationtests.model.CalcFact;
+import org.drools.compiler.integrationtests.model.FileFact;
+import org.drools.compiler.integrationtests.model.Item;
+import org.drools.compiler.integrationtests.model.RecordFact;
+
+dialect "mvel"
+
+rule R1
+	when
+        FileFact()
+        $fact : CalcFact(
+         $pointKey : pointKey,
+         $itemList : itemList
+        )
+        RecordFact(
+         receiptKey == $fact.receiptKey,
+         pointKey == $pointKey
+        )
+        $anotherFact : AnotherFact()
+	then
+end
+
+rule R2
+	when
+        FileFact()
+        $fact : CalcFact(
+         $itemList : itemList
+        )
+        $item : Item(
+         decomposedPointFlag == null,
+         $segmentPoint : segmentPoint
+        ) from $itemList
+        $record : RecordFact(
+         receiptKey == $fact.receiptKey,
+         recordKey.lineNumber == $fact.pointKey.lastLineNumber,
+         decomposedPoint == null,
+         segment == $item.segment
+        )
+        not RecordFact(
+         this != $record,
+         receiptKey == $fact.receiptKey,
+         recordKey.lineNumber == $fact.pointKey.lastLineNumber,
+         decomposedPoint == null,
+         segment == $item.segment
+        )
+	then
+        modify($record){
+         recordPoint = $segmentPoint, decomposedPoint = $segmentPoint
+        }
+        modify($item){
+         decomposedPointFlag = "1"
+        }
+        modify($fact){
+         itemList = $itemList
+        }
+        System.out.println("[DEBUG] after  $item=" + $item);
+end
+
+rule R3
+	when
+        FileFact()
+        $fact : CalcFact(
+         $itemList : itemList
+        )
+        $item : Item(
+         decomposedPointFlag != null,
+         $segmentPoint : segmentPoint
+        ) from $itemList
+        $record : RecordFact(
+         receiptKey == $fact.receiptKey,
+         recordKey.lineNumber == $fact.pointKey.lastLineNumber,
+         decomposedPoint == null,
+         segment == $item.segment
+        )
+	then
+end
