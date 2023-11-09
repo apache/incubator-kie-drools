@@ -35,7 +35,7 @@ jobs:
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
       - name: Set UTF-8
         if: ${{ matrix.os == 'windows-latest' }}
-        run: echo "LANG=en_US.UTF-8" >> "$GITHUB_ENV"
+        run: chcp 65001
       - name: Java and Maven Setup
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
         with:
