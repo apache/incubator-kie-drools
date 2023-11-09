@@ -68,9 +68,9 @@ public class UnicodeInCSVTest {
         ksession = kbase.newKieSession();
         
         List<Command<?>> commands = new ArrayList<>();
-        List<Člověk> dospělí = new ArrayList<>();
+        List<Clovek> dospělí = new ArrayList<>();
         commands.add(CommandFactory.newSetGlobal("dospělí", dospělí));
-        Člověk Řehoř = new Člověk();
+        Clovek Řehoř = new Clovek();
         Řehoř.setVěk(30);
         Řehoř.setJméno("Řehoř");
         commands.add(CommandFactory.newInsert(Řehoř));
@@ -89,7 +89,7 @@ public class UnicodeInCSVTest {
         assertThat(kbase.getRule("org.drools.decisiontable", "مرحبا العالم")).isNotNull();
     }
     
-    public static class Člověk {
+    public static class Clovek {
 
         private int věk;
         private String jméno;
