@@ -37,7 +37,6 @@
 
   <properties>
     <java.module.name>org.drools.decisiontables</java.module.name>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
