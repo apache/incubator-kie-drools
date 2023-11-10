@@ -41,6 +41,11 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
           allow-snapshots: true
+      - name: Set environment variable
+        run: |
+          [System.Text.Encoding]::Default
+          [Environment]::SetEnvironmentVariable("JAVA_TOOL_OPTIONS", "-Dfile.encoding=UTF8")
+        shell: powershell
       - name: Build with Maven
         run: |
           chcp 65001
