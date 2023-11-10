@@ -42,6 +42,8 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
           allow-snapshots: true
       - name: Build with Maven
+        env:
+          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
         run: |
           chcp 65001
           mvn -B -X clean test-compile
