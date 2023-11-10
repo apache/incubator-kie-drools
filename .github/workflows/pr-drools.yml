@@ -33,16 +33,22 @@ jobs:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
-      - uses: actions/checkout@v3
       - name: Java and Maven Setup
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-          allow-snapshots: true
-      - name: Build with Maven
+      - name: Build Chain
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
-          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-        run: |
-          mvn -B -X clean test-compile
+          BUILD_MVN_OPTS_CURRENT: -Dfull -Dfile.encoding=UTF-8
+        with:
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Surefire Report
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
+        if: ${{ always() }}
+        with:
+          report_paths: '**/*-reports/TEST-*.xml'
