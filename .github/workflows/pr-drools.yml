@@ -42,7 +42,8 @@ jobs:
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         env:
-          BUILD_MVN_OPTS_CURRENT: -Dfull -Dfile.encoding=UTF-8
+          BUILD_MVN_OPTS_CURRENT: -Dfull
+          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
