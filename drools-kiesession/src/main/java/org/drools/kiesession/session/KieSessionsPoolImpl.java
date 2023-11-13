@@ -64,7 +64,7 @@ public class KieSessionsPoolImpl extends AbstractKieSessionsPool {
     protected StatefulSessionPool createStatefulSessionPool( String kSessionName, KieSessionConfiguration conf, boolean stateless ) {
         return new StatefulSessionPool(kBase, initialSize, () ->
                 stateless ?
-                    ((StatefulKnowledgeSessionImpl ) RuntimeComponentFactory.get().createStatefulSession(kBase, environment, ( SessionConfiguration ) conf, true )).setStateless( true ) :
+                    ((StatefulKnowledgeSessionImpl ) RuntimeComponentFactory.get().createStatefulSession(kBase, environment, conf.as(SessionConfiguration.KEY), true )).setStateless( true ) :
                     (StatefulKnowledgeSessionImpl ) kBase.newKieSession(conf, environment, true));
     }
 
