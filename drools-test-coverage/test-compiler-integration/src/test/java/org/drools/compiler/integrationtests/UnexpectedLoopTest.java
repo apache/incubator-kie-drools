@@ -67,7 +67,7 @@ public class UnexpectedLoopTest {
 
             int fired = ksession.fireAllRules(10);
 
-            assertThat(fired).as("Unexpected loop detected. Expects firing R2 twice").isEqualTo(1);
+            assertThat(fired).as("Unexpected loop detected. Expects firing R2 once").isEqualTo(1);
         } finally {
             ksession.dispose();
         }
