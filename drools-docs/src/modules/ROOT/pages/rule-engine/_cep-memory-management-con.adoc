@@ -18,7 +18,17 @@ end
 ----
 
 This example rule sets any `StockPoint` events to expire after 30 minutes and to be removed from the KIE session if no other rules use the events.
+
 --
+
+By default the expiration defined in this way is a hard expiration, which means that the {RULE_ENGINE} removes the event from the session immediately after this expiration time, regardless if there are rules that could still match the event. You can also define a soft expiration, which means that the {RULE_ENGINE} removes the event from the session only if no other rules use the event. It is possible to define a soft expiration policy for an event as it follows.
+
+[source]
+----
+declare StockPoint
+  @expires( 30m, policy = TIME_SOFT )
+end
+----
 
 * *Inferred expiration:* The {RULE_ENGINE} can calculate the expiration offset for a given event implicitly by analyzing the temporal constraints in the rules:
 +
@@ -39,5 +49,5 @@ For this example rule, the {RULE_ENGINE} automatically calculates that whenever 
 
 The same is applied to a sliding window of time `window:time()`, but a sliding window of length `window:length()` doesn't calculate its expiration.
 
-The {RULE_ENGINE} analyzes the entire KIE base to find the offset for every event type and to ensure that no other rules use the events that are pending removal. Whenever an implicit expiration clashes with an explicit expiration value, the {RULE_ENGINE} uses the greater time frame of the two to store the event longer.
+The {RULE_ENGINE} analyzes the entire KIE base to find the offset for every event type and to ensure that no other rules use the events that are pending removal. Whenever an implicit expiration clashes with an explicit expiration value, the explict one takes precedence if is hard (the default) while the implicit expiration is taken into account if the explicit one is defined as soft.
 --
