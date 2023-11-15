@@ -67,7 +67,9 @@ public class DataIndexEventPublisher implements EventPublisher {
                 break;
             case "JobEvent":
                 try {
-                    indexingService.indexJob(getObjectMapper().readValue(new String((byte[]) event.getData()), Job.class));
+                    Job job = getObjectMapper().readValue(new String((byte[]) event.getData()), Job.class);
+                    job.setEndpoint(event.getSource() == null ? null : event.getSource().toString());
+                    indexingService.indexJob(job);
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
                 }

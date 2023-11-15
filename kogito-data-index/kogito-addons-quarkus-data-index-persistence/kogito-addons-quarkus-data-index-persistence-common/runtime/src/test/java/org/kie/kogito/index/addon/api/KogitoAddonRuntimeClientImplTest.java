@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.addon.api;
 
+import java.nio.Buffer;
 import java.util.Optional;
 
 import javax.enterprise.inject.Instance;
@@ -27,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.Application;
 import org.kie.kogito.addon.source.files.SourceFilesProvider;
+import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.process.ProcessError;
@@ -37,10 +40,24 @@ import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.svg.ProcessSvgService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import io.quarkus.security.credential.TokenCredential;
+import io.quarkus.security.identity.SecurityIdentity;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.HttpRequest;
+import io.vertx.ext.web.client.HttpResponse;
+import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
+
+import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +70,21 @@ public class KogitoAddonRuntimeClientImplTest {
     private static final String NODE_ID = "nodeId";
     private static String TASK_ID = "taskId";
     private static String JOB_ID = "jobId";
+    private static String AUTHORIZED_TOKEN = "authToken";
+
+    @Mock
+    public Vertx vertx;
+
+    @Mock
+    private SecurityIdentity identityMock;
+
+    private TokenCredential tokenCredential;
+
+    @Mock
+    private WebClient webClientMock;
+
+    @Mock
+    private HttpRequest httpRequestMock;
 
     public static final String NODE_ID_ERROR = "processInstanceIdError";
 
@@ -114,6 +146,10 @@ public class KogitoAddonRuntimeClientImplTest {
         lenient().when(applicationInstance.get()).thenReturn(application);
 
         client = spy(new KogitoAddonRuntimeClientImpl(processSvgServiceInstance, sourceFilesProvider, processesInstance, applicationInstance));
+        client.setGatewayTargetUrl(Optional.empty());
+        client.addServiceWebClient(SERVICE_URL, webClientMock);
+        client.setVertx(vertx);
+        client.setIdentity(identityMock);
     }
 
     private org.kie.kogito.process.ProcessInstance mockProcessInstanceStatusActive() {
@@ -203,8 +239,137 @@ public class KogitoAddonRuntimeClientImplTest {
         verify(processInstance, times(1)).cancelNodeInstance(NODE_ID);
     }
 
+    @Test
+    protected void testCancelJobRest() {
+        setupIdentityMock();
+        when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
+        Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
+        client.cancelJob(SERVICE_URL, job);
+
+        verify(client).sendDeleteClientRequest(webClientMock,
+                format(KogitoRuntimeCommonClient.CANCEL_JOB_PATH, job.getId()),
+                "CANCEL Job with id: " + JOB_ID);
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        verify(httpRequestMock).send(handlerCaptor.capture());
+        checkResponseHandling(handlerCaptor.getValue());
+    }
+
+    @Test
+    protected void testRescheduleWithoutJobServiceInstance() {
+        String newJobData = "{\"expirationTime\": \"2023-08-27T04:35:54.631Z\",\"retries\": 2}";
+        setupIdentityMock();
+        when(webClientMock.patch(anyString())).thenReturn(httpRequestMock);
+
+        Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
+
+        client.rescheduleJob(SERVICE_URL, job, newJobData);
+        ArgumentCaptor<JsonObject> jsonCaptor = ArgumentCaptor.forClass(JsonObject.class);
+
+        verify(client).sendPatchClientRequest(eq(webClientMock),
+                eq(format(KogitoRuntimeCommonClient.RESCHEDULE_JOB_PATH, JOB_ID)),
+                eq("RESCHEDULED JOB with id: " + job.getId()),
+                jsonCaptor.capture());
+
+        assertThat(jsonCaptor.getValue().getString("expirationTime")).isEqualTo("2023-08-27T04:35:54.631Z");
+        assertThat(jsonCaptor.getValue().getString("retries")).isEqualTo("2");
+
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        JsonObject jsonOject = new JsonObject(newJobData);
+        verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
+        verify(httpRequestMock).putHeader("Authorization", "Bearer " + AUTHORIZED_TOKEN);
+        checkResponseHandling(handlerCaptor.getValue());
+    }
+
+    @Test
+    public void testWebClientToURLOptions() {
+        String defaultHost = "localhost";
+        int defaultPort = 8180;
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions("http://" + defaultHost + ":" + defaultPort);
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo(defaultHost);
+        assertThat(webClientOptions.getDefaultPort()).isEqualTo(defaultPort);
+    }
+
+    @Test
+    public void testWebClientToURLOptionsWithoutPort() {
+        String dataIndexUrl = "http://service.com";
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions(dataIndexUrl);
+        assertThat(webClientOptions.getDefaultPort()).isEqualTo(80);
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo("service.com");
+        assertFalse(webClientOptions.isSsl());
+    }
+
+    @Test
+    public void testWebClientToURLOptionsWithoutPortSSL() {
+        String dataIndexurl = "https://service.com";
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions(dataIndexurl);
+        assertThat(webClientOptions.getDefaultPort()).isEqualTo(443);
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo("service.com");
+        assertTrue(webClientOptions.isSsl());
+    }
+
+    @Test
+    public void testMalformedURL() {
+        assertThat(client.getWebClientToURLOptions("malformedURL")).isNull();
+    }
+
+    @Test
+    void testOverrideURL() {
+        String host = "host.testcontainers.internal";
+        client.setGatewayTargetUrl(Optional.of(host));
+        WebClientOptions webClientOptions = client.getWebClientToURLOptions("http://service.com");
+        assertThat(webClientOptions.getDefaultHost()).isEqualTo(host);
+    }
+
+    @Test
+    public void testGetAuthHeader() {
+        tokenCredential = mock(TokenCredential.class);
+        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
+        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+
+        String token = client.getAuthHeader();
+        verify(identityMock, times(2)).getCredential(TokenCredential.class);
+        assertThat(token).isEqualTo("Bearer " + AUTHORIZED_TOKEN);
+
+        when(identityMock.getCredential(TokenCredential.class)).thenReturn(null);
+        token = client.getAuthHeader();
+        assertThat(token).isEqualTo("");
+    }
+
     private ProcessInstance createProcessInstance(String processInstanceId, int status) {
         return TestUtils.getProcessInstance("travels", processInstanceId, status, null, null);
     }
 
+    private Job createJob(String jobId, String processInstanceId, String status) {
+        return TestUtils.getJob(jobId, "travels", processInstanceId, null, null, status);
+    }
+
+    private AsyncResult createResponseMocks(HttpResponse response, boolean succeed, int statusCode) {
+        AsyncResult asyncResultMock = mock(AsyncResult.class);
+        when(asyncResultMock.succeeded()).thenReturn(succeed);
+        when(asyncResultMock.result()).thenReturn(response);
+        when(response.statusCode()).thenReturn(statusCode);
+        return asyncResultMock;
+    }
+
+    protected void checkResponseHandling(Handler<AsyncResult<HttpResponse<Buffer>>> handler) {
+        HttpResponse response = mock(HttpResponse.class);
+        HttpResponse responseWithoutError = mock(HttpResponse.class);
+
+        handler.handle(createResponseMocks(response, false, 404));
+        verify(response).statusMessage();
+        verify(response).body();
+        verify(response, never()).bodyAsString();
+
+        handler.handle(createResponseMocks(responseWithoutError, true, 200));
+        verify(responseWithoutError, never()).statusMessage();
+        verify(responseWithoutError, never()).body();
+        verify(responseWithoutError).bodyAsString();
+    }
+
+    protected void setupIdentityMock() {
+        tokenCredential = mock(TokenCredential.class);
+        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
+        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+        when(httpRequestMock.putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
+    }
 }

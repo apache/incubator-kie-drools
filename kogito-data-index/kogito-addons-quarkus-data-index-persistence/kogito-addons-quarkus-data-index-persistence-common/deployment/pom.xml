@@ -50,5 +50,9 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-source-files-deployment</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc-deployment</artifactId>
+    </dependency>
   </dependencies>
 </project>

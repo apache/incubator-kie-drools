@@ -48,6 +48,10 @@
             <artifactId>kogito-addons-quarkus-source-files</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jbpm-flow</artifactId>
         </dependency>

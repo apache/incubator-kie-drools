@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -108,9 +109,11 @@ public class KogitoRuntimeClientTest {
 
     @BeforeEach
     public void setup() {
-        client = spy(new KogitoRuntimeClientImpl(vertx, identityMock));
-        client.gatewayTargetUrl = Optional.empty();
-        client.serviceWebClientMap.put(SERVICE_URL, webClientMock);
+        client = spy(new KogitoRuntimeClientImpl());
+        client.setGatewayTargetUrl(Optional.empty());
+        client.addServiceWebClient(SERVICE_URL, webClientMock);
+        client.setVertx(vertx);
+        client.setIdentity(identityMock);
     }
 
     @Test
@@ -235,15 +238,14 @@ public class KogitoRuntimeClientTest {
     }
 
     @Test
-    public void testCancelJob() {
+    protected void testCancelJobRest() {
         setupIdentityMock();
         when(webClientMock.delete(anyString())).thenReturn(httpRequestMock);
-
         Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
         client.cancelJob(SERVICE_URL, job);
 
         verify(client).sendDeleteClientRequest(webClientMock,
-                format(CANCEL_JOB_PATH, job.getId()),
+                format(KogitoRuntimeCommonClient.CANCEL_JOB_PATH, job.getId()),
                 "CANCEL Job with id: " + JOB_ID);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
@@ -251,21 +253,28 @@ public class KogitoRuntimeClientTest {
     }
 
     @Test
-    public void testRescheduleJob() {
-        String newJobData = "{ }";
+    protected void testRescheduleWithoutJobServiceInstance() {
+        String newJobData = "{\"expirationTime\": \"2023-08-27T04:35:54.631Z\",\"retries\": 2}";
         setupIdentityMock();
-        when(webClientMock.put(anyString())).thenReturn(httpRequestMock);
-        when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
+        when(webClientMock.patch(anyString())).thenReturn(httpRequestMock);
 
         Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
 
         client.rescheduleJob(SERVICE_URL, job, newJobData);
-        verify(client).sendJSONPutClientRequest(webClientMock,
-                format(RESCHEDULE_JOB_PATH, JOB_ID),
-                "RESCHEDULED JOB with id: " + job.getId(), newJobData);
+        ArgumentCaptor<JsonObject> jsonCaptor = ArgumentCaptor.forClass(JsonObject.class);
+
+        verify(client).sendPatchClientRequest(eq(webClientMock),
+                eq(format(KogitoRuntimeCommonClient.RESCHEDULE_JOB_PATH, JOB_ID)),
+                eq("RESCHEDULED JOB with id: " + job.getId()),
+                jsonCaptor.capture());
+
+        assertThat(jsonCaptor.getValue().getString("expirationTime")).isEqualTo("2023-08-27T04:35:54.631Z");
+        assertThat(jsonCaptor.getValue().getString("retries")).isEqualTo("2");
+
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(newJobData);
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
+        verify(httpRequestMock).putHeader("Authorization", "Bearer " + AUTHORIZED_TOKEN);
         checkResponseHandling(handlerCaptor.getValue());
     }
 
@@ -579,7 +588,7 @@ public class KogitoRuntimeClientTest {
     @Test
     void testOverrideURL() {
         String host = "host.testcontainers.internal";
-        client.gatewayTargetUrl = Optional.of(host);
+        client.setGatewayTargetUrl(Optional.of(host));
         WebClientOptions webClientOptions = client.getWebClientToURLOptions("http://service.com");
         assertThat(webClientOptions.getDefaultHost()).isEqualTo(host);
     }

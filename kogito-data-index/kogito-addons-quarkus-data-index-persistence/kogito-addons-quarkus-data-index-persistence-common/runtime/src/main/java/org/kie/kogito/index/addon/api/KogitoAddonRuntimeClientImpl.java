@@ -35,7 +35,7 @@ import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.Application;
 import org.kie.kogito.addon.source.files.SourceFilesProvider;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
-import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -51,7 +51,7 @@ import org.kie.kogito.svg.ProcessSvgService;
 import static java.util.stream.Collectors.toMap;
 
 @ApplicationScoped
-public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
+public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient implements KogitoRuntimeClient {
 
     private static String SUCCESSFULLY_OPERATION_MESSAGE = "Successfully performed: %s";
 
@@ -212,14 +212,6 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
                         "CANCEL Node instance " + nodeInstanceId + "from ProcessInstance with id: " + processInstance.getId());
             }
         }));
-    }
-
-    public CompletableFuture<String> cancelJob(String serviceURL, Job job) {
-        return throwUnsupportedException();
-    }
-
-    public CompletableFuture<String> rescheduleJob(String serviceURL, Job job, String newJobData) throws UncheckedIOException {
-        return throwUnsupportedException();
     }
 
     @Override
