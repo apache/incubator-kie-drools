@@ -5,13 +5,17 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 
 /**
- * will be merged in drools-util
+ * Collection of String utilities used by DRLParser.
+ * This may be merged in drools-util
  */
 public class ParserStringUtils {
 
     private ParserStringUtils() {
     }
 
+    /**
+     * Strip string delimiters (e.g. "foo" -> foo)
+     */
     public static String safeStripStringDelimiters(String value) {
         if (value != null) {
             value = value.trim();
@@ -22,6 +26,9 @@ public class ParserStringUtils {
         return value;
     }
 
+    /**
+     * Get text from ParserRuleContext's CharStream without trimming whitespace
+     */
     public static String getTextPreservingWhitespace(ParserRuleContext ctx) {
         // Using raw CharStream
         int startIndex = ctx.start.getStartIndex();
@@ -34,11 +41,18 @@ public class ParserStringUtils {
         return ctx.start.getTokenSource().getInputStream().getText(interval);
     }
 
+    /**
+     * Get text from ParserRuleContext's CharStream without trimming whitespace
+     * tokenStream is required to get hidden channel token (e.g. whitespace).
+     * Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
+     */
     public static String getTokenTextPreservingWhitespace(ParserRuleContext ctx, TokenStream tokenStream) {
-        // tokenStream is required to get hidden channel token (e.g. whitespace). Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
         return tokenStream.getText(ctx.start, ctx.stop);
     }
 
+    /**
+     * Just remove leading "then"
+     */
     public static String trimThen(String rhs) {
         if (rhs.startsWith("then")) {
             return rhs.substring("then".length());

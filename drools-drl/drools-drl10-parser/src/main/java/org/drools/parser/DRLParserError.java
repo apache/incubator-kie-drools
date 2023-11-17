@@ -1,5 +1,8 @@
 package org.drools.parser;
 
+/**
+ * Error information while parsing DRL
+ */
 public class DRLParserError {
 
     private int lineNumber;

@@ -10,12 +10,18 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.parser.DRLParserHelper.compilationUnitContext2PackageDescr;
 
+/**
+ * Wrapper for DRLParser. Somewhat duplicated from DRLParserHelper, but this class is instantiated and holds errors.
+ */
 public class DRLParserWrapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DRLParserWrapper.class);
 
     private final List<DRLParserError> errors = new ArrayList<>();
 
+    /**
+     * Main entry point for parsing DRL
+     */
     public PackageDescr parse(String drl) {
         DRLParser drlParser = DRLParserHelper.createDrlParser(drl);
         DRLErrorListener errorListener = new DRLErrorListener();
