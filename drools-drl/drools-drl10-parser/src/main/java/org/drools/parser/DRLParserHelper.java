@@ -10,11 +10,18 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.PackageDescr;
 
+/**
+ * Collection of static helper methods for DRLParser
+ */
 public class DRLParserHelper {
 
     private DRLParserHelper() {
     }
 
+    /**
+     * Entry point for parsing DRL.
+     * Unlike DRLParserWrapper.parse(), this method does not collect errors.
+     */
     public static PackageDescr parse(String drl) {
         DRLParser drlParser = createDrlParser(drl);
         return compilationUnitContext2PackageDescr(drlParser.compilationUnit(), drlParser.getTokenStream());
@@ -27,6 +34,9 @@ public class DRLParserHelper {
         return new DRLParser(commonTokenStream);
     }
 
+    /**
+     * DRLVisitorImpl visits a parse tree and creates a PackageDescr
+     */
     public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx, TokenStream tokenStream) {
         DRLVisitorImpl visitor = new DRLVisitorImpl(tokenStream);
         Object descr = visitor.visit(ctx);
@@ -37,6 +47,9 @@ public class DRLParserHelper {
         }
     }
 
+    /**
+     * Given a row and column of the input DRL, return the index of the matched token
+     */
     public static Integer computeTokenIndex(DRLParser parser, int row, int col) {
         for (int i = 0; i < parser.getInputStream().size(); i++) {
             Token token = parser.getInputStream().get(i);
