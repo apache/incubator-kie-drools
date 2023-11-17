@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
+/**
+ * Collect errors while parsing DRL
+ */
 public class DRLErrorListener extends BaseErrorListener {
 
     private final List<DRLParserError> errors = new ArrayList<>();
