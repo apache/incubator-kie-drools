@@ -36,6 +36,8 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.mvel.compiler.PersonHolder;
+import org.drools.mvel.integrationtests.facts.FactWithList;
 import org.drools.util.DateUtils;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.compiler.Address;
@@ -77,7 +79,7 @@ public class MVELTest {
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
      // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -1124,5 +1126,25 @@ public class MVELTest {
         f.setField3(new Float(15.1f));
         ksession.insert(f);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testEmptyListConstructor() {
+        final String drl =
+                "import " + FactWithList.class.getCanonicalName() + "; \n" +
+                "rule \"test\"\n" +
+                "dialect \"mvel\" \n" +
+                "when\n" +
+                "    $p: FactWithList()\n" +
+                "then\n" +
+                "    $p.setItems([]); \n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        final FactWithList f = new FactWithList("someString");
+        ksession.insert(f);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(f.getItems()).hasSize(0);
     }
 }
