@@ -29,8 +29,8 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.XADataSource;
-import javax.transaction.TransactionManager;
-import javax.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 
 import com.arjuna.ats.jta.common.jtaPropertyManager;
 import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;

@@ -73,7 +73,7 @@ public class KiePMMLParameterFieldFactory {
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, PARAMETER_FIELD, toReturn)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
-        builder.setArgument(0, new StringLiteralExpr(parameterField.getName().getValue()));
+        builder.setArgument(0, new StringLiteralExpr(parameterField.getName()));
         final Expression dataTypeExpression = getExpressionForDataType(parameterField.getDataType());
         final Expression opTypeExpression = getExpressionForOpType(parameterField.getOpType());
         getChainedMethodCallExprFrom("withDataType", initializer).setArgument(0, dataTypeExpression);

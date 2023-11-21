@@ -47,7 +47,7 @@ public class KieServiceLoader {
     }
 
     <T extends KieService> T load(Class<T> serviceClass, String tag) {
-        ServiceLoader<T> loader = ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
+        ServiceLoader<T> loader = ServiceLoader.load(serviceClass);
         T service = null;
         for (T impl : loader) {
             if ( tag.equals(impl.serviceTag()) ) { // accept only services with the specified tag

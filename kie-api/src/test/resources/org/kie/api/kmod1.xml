@@ -29,7 +29,7 @@
     </kbase>
 
 
-    <kbase name="org.kie.example3" includes="org.kie.example1, org.kie.example1" equalsBehavior="identity" scope="javax.enterprise.context.ApplicationScoped">
+    <kbase name="org.kie.example3" includes="org.kie.example1, org.kie.example1" equalsBehavior="identity" scope="jakarta.enterprise.context.ApplicationScoped">
         <ksession name="ksession1"/>
     </kbase>
 
@@ -47,7 +47,7 @@
     </kbase>
 
     <kbase name="org.kie.example6" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud" packages="org.kie.pkg1, org.kie.pkg2">
-        <ksession name="ksession6" type="stateless"  clockType="pseudo" scope="javax.enterprise.context.ApplicationScoped">
+        <ksession name="ksession6" type="stateless"  clockType="pseudo" scope="jakarta.enterprise.context.ApplicationScoped">
             <consoleLogger />
         </ksession>
 
@@ -105,5 +105,3 @@
         </ksession>
     </kbase>
 </kmodule>
-
-

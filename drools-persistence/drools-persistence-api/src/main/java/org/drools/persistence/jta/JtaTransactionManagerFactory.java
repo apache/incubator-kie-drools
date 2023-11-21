@@ -36,8 +36,8 @@ public class JtaTransactionManagerFactory extends TransactionManagerFactory {
     }
 
     /**
-     * Creates a {@link JtaTransactionManager} instance using any of the {@link javax.transaction.UserTransaction},
-     * {@link javax.transaction.TransactionSynchronizationRegistry}, and {@link javax.transaction.TransactionManager}
+     * Creates a {@link JtaTransactionManager} instance using any of the {@link jakarta.transaction.UserTransaction},
+     * {@link jakarta.transaction.TransactionSynchronizationRegistry}, and {@link jakarta.transaction.TransactionManager}
      * present in {@code env}.
      * 
      * @param env

@@ -112,7 +112,7 @@ public class InstanceFactoriesTestCommon {
         assertThat(toVerifyList).hasSameSizeAs(sourcesParameterFields);
         sourcesParameterFields.forEach(paramSource -> {
             Optional<KiePMMLParameterField> parameterToVerify =
-                    toVerifyList.stream().filter(param -> param.getName().equals(paramSource.getName().getValue()))
+                    toVerifyList.stream().filter(param -> param.getName().equals(paramSource.getName()))
                             .findFirst();
             assertThat(parameterToVerify).isPresent();
             commonVerifyKiePMMLParameterField(parameterToVerify.get(), paramSource);
@@ -122,24 +122,24 @@ public class InstanceFactoriesTestCommon {
     static void commonVerifyKiePMMLDerivedField(KiePMMLDerivedField toVerify,
                                                 DerivedField source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getName().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getName());
         DATA_TYPE expectedDataType = DATA_TYPE.byName(source.getDataType().value());
         assertThat(toVerify.getDataType()).isEqualTo(expectedDataType);
         OP_TYPE expectedOpType = OP_TYPE.byName(source.getOpType().value());
         assertThat(toVerify.getOpType()).isEqualTo(expectedOpType);
-        String expectedDisplayName = "Display-" + source.getName().getValue();
+        String expectedDisplayName = "Display-" +source.getName();
         assertThat(toVerify.getDisplayName()).isEqualTo(expectedDisplayName);
         commonVerifyKiePMMLExpression(toVerify.getKiePMMLExpression(), source.getExpression());
     }
 
     static void commonVerifyKiePMMLParameterField(KiePMMLParameterField toVerify, ParameterField source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getName().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getName());
         DATA_TYPE expectedDataType = DATA_TYPE.byName(source.getDataType().value());
         assertThat(toVerify.getDataType()).isEqualTo(expectedDataType);
         OP_TYPE expectedOpType = OP_TYPE.byName(source.getOpType().value());
         assertThat(toVerify.getOpType()).isEqualTo(expectedOpType);
-        String expectedDisplayName = "Display-" + source.getName().getValue();
+        String expectedDisplayName = "Display-" +source.getName();
         assertThat(toVerify.getDisplayName()).isEqualTo(expectedDisplayName);
     }
 
@@ -184,20 +184,20 @@ public class InstanceFactoriesTestCommon {
                                                    DataField dataField) {
         assertThat(toVerify).isNotNull();
         Object value = DATA_TYPE.byName(dataField.getDataType().value()).getActualValue(source.getValue());
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         assertThat(toVerify.getValue()).isEqualTo(value);
         assertThat(toVerify.getOperator().getName()).isEqualTo(source.getOperator().value());
     }
 
     static void commonVerifyKiePMMLSimplePredicate(KiePMMLSimplePredicate toVerify, SimplePredicate source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         assertThat(toVerify.getOperator().getName()).isEqualTo(source.getOperator().value());
     }
 
     static void commonVerifyKiePMMLSimpleSetPredicate(KiePMMLSimpleSetPredicate toVerify, SimpleSetPredicate source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         Array array = source.getArray();
         assertThat(toVerify.getArrayType().getName()).isEqualTo(array.getType().value());
         assertThat(toVerify.getInNotIn().getName()).isEqualTo(source.getBooleanOperator().value());
@@ -276,7 +276,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLDiscretize(KiePMMLDiscretize toVerify, Discretize source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         assertThat(toVerify.getMapMissingTo()).isEqualTo(source.getMapMissingTo());
         assertThat(toVerify.getDefaultValue()).isEqualTo(source.getDefaultValue());
         assertThat(toVerify.getDataType().getName()).isEqualTo(source.getDataType().value());
@@ -286,7 +286,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLFieldRef(KiePMMLFieldRef toVerify, FieldRef source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         assertThat(toVerify.getMapMissingTo()).isEqualTo(source.getMapMissingTo());
     }
 
@@ -314,7 +314,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLNormDiscrete(KiePMMLNormDiscrete toVerify, NormDiscrete source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         assertThat(toVerify.getMapMissingTo()).isEqualTo(source.getMapMissingTo());
         assertThat(toVerify.getValue()).isEqualTo(source.getValue().toString());
     }
@@ -350,7 +350,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLFieldColumnPair(KiePMMLFieldColumnPair toVerify, FieldColumnPair source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getField());
         assertThat(toVerify.getColumn()).isEqualTo(source.getColumn());
     }
 
@@ -369,7 +369,7 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLMiningField(KiePMMLMiningField toVerify, MiningField source, DataField dataField) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getName().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getName());
         assertThat(toVerify.getOpType().getName()).isEqualTo(source.getOpType().value());
         assertThat(toVerify.getFieldUsageType().getName()).isEqualTo(source.getUsageType().value());
         assertThat(toVerify.getInvalidValueTreatmentMethod().getName()).isEqualTo(source.getInvalidValueTreatment().value());
@@ -383,10 +383,10 @@ public class InstanceFactoriesTestCommon {
 
     static void commonVerifyKiePMMLOutputField(KiePMMLOutputField toVerify, OutputField source) {
         assertThat(toVerify).isNotNull();
-        assertThat(toVerify.getName()).isEqualTo(source.getName().getValue());
+        assertThat(toVerify.getName()).isEqualTo(source.getName());
         assertThat(toVerify.getValue()).isEqualTo(source.getValue());
         assertThat(toVerify.getDataType().getName()).isEqualTo(source.getDataType().value());
-        assertThat(toVerify.getTargetField().get()).isEqualTo(source.getTargetField().getValue());
+        assertThat(toVerify.getTargetField().get()).isEqualTo(source.getTargetField());
         assertThat(toVerify.getResultFeature().getName()).isEqualTo(source.getResultFeature().value());
         assertThat(toVerify.getRank()).isEqualTo(source.getRank());
         assertThat(toVerify.getValue()).isEqualTo(source.getValue());
@@ -398,7 +398,7 @@ public class InstanceFactoriesTestCommon {
         assertThat(source.getTargetValues()).hasSameSizeAs(toVerify.getTargetValues());
         OP_TYPE expectedOpType = OP_TYPE.byName(source.getOpType().value());
         assertThat(toVerify.getOpType()).isEqualTo(expectedOpType);
-        assertThat(toVerify.getField()).isEqualTo(source.getField().getValue());
+        assertThat(toVerify.getField()).isEqualTo(source.getField());
         CAST_INTEGER expectedCastInteger = CAST_INTEGER.byName(source.getCastInteger().value());
         assertThat(toVerify.getCastInteger()).isEqualTo(expectedCastInteger);
         assertThat(toVerify.getMin()).isCloseTo(source.getMin().doubleValue(), Offset.offset(0.0));

@@ -38,20 +38,19 @@ index ef384a6d20..ac6e1c76b0 100644
      </kbase>
  
 diff --git a/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java b/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java
-index 45f736f73a..7c1d82f696 100644
---- a/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java
-+++ b/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java
-@@ -18,8 +18,8 @@ package org.drools.codegen.common.context;
+--- a/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java	(revision 0c82d00654f33847bd2f1f4723933142a45e311a)
++++ b/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java	(date 1700572026783)
+@@ -24,8 +24,8 @@
  public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
- 
+
      public static final String CONTEXT_NAME = "Quarkus";
 -    public static final String QUARKUS_REST = "javax.ws.rs.Path";
 -    public static final String QUARKUS_DI = "javax.inject.Inject";
 +    public static final String QUARKUS_REST = "jakarta.ws.rs.Path";
 +    public static final String QUARKUS_DI = "jakarta.inject.Inject";
- 
-     protected QuarkusDroolsModelBuildContext(QuarkusKogitoBuildContextBuilder builder) {
-         super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);
+
+     public final boolean hasRest;
+     public final boolean hasDI;
 diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java
 index 0cfb0ca4b6..e9f4d6bbad 100644
 --- a/drools-model/drools-model-codegen/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java

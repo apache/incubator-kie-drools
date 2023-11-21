@@ -100,7 +100,7 @@ public class KiePMMLTreeModelFactoryTest {
         assertThat(retrieved).isNotNull();
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertThat(fieldTypeMap).hasSameSizeAs(dataFields);
-        dataFields.forEach(dataField -> assertThat(fieldTypeMap).containsKey(dataField.getName().getValue()));
+        dataFields.forEach(dataField -> assertThat(fieldTypeMap).containsKey(dataField.getName()));
     }
 
     @Test

@@ -21,7 +21,7 @@ package org.kie.dmn.model.v1_3.dmndi;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 

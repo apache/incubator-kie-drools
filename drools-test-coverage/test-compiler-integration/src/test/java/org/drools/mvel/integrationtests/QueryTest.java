@@ -58,7 +58,7 @@ import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;

@@ -80,7 +80,7 @@ public class KiePMMLNormContinuousFactory {
                                                                       NORM_CONTINUOUS, toReturn)))
                 .asObjectCreationExpr();
 
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(normContinuous.getField().getValue());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(normContinuous.getField());
         final OUTLIER_TREATMENT_METHOD outlierTreatmentMethod =
                 OUTLIER_TREATMENT_METHOD.byName(normContinuous.getOutliers().value());
         final NameExpr outlierTreatmentMethodExpr =

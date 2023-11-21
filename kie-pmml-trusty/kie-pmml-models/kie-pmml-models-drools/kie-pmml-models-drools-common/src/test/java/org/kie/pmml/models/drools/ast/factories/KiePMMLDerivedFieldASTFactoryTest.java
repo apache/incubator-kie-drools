@@ -27,7 +27,6 @@ import java.util.stream.IntStream;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.FieldName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -69,7 +68,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
     }
 
     private void commonValidateKiePMMLDroolsType(KiePMMLDroolsType toValidate, DerivedField derivedField) {
-        String derivedFieldName = derivedField.getName().getValue();
+        String derivedFieldName =derivedField.getName();
         String expectedName = getSanitizedClassName(derivedFieldName.toUpperCase());
         assertThat(toValidate.getName()).isEqualTo(expectedName);
         String expectedType = DATA_TYPE.byName(derivedField.getDataType().value()).getMappedClass().getSimpleName();
@@ -82,7 +81,7 @@ public class KiePMMLDerivedFieldASTFactoryTest {
 
     private DerivedField getDerivedField(String fieldName) {
         DerivedField toReturn = new DerivedField();
-        toReturn.setName(FieldName.create(fieldName));
+        toReturn.setName(fieldName);
         final DATA_TYPE[] values = DATA_TYPE.values();
         int rndInt = new Random().nextInt(values.length - 1);
         DATA_TYPE dataType = values[rndInt];

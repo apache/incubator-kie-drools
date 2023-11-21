@@ -25,7 +25,6 @@ import java.util.Map;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
@@ -70,7 +69,7 @@ public class KiePMMLASTTestUtils {
         DataField toReturn = new DataField();
         toReturn.setOpType(OpType.CONTINUOUS);
         toReturn.setDataType(DataType.DATE);
-        toReturn.setName(FieldName.create("dataField"));
+        toReturn.setName("dataField");
         return toReturn;
     }
 
@@ -78,7 +77,7 @@ public class KiePMMLASTTestUtils {
         DataField toReturn = new DataField();
         toReturn.setOpType(OpType.CONTINUOUS);
         toReturn.setDataType(DataType.BOOLEAN);
-        toReturn.setName(FieldName.create("dotted.field"));
+        toReturn.setName("dotted.field");
         return toReturn;
     }
 
