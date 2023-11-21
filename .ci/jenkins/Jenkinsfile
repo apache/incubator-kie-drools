@@ -14,9 +14,10 @@ pipeline {
     environment {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-drools'
         BUILDCHAIN_CONFIG_REPO = 'incubator-kie-drools'
-        BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
+        BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
-        ENABLE_SONARCLOUD = 'true'
+        ENABLE_SONARCLOUD = 'false'
+        SONAR_PROJECT_KEY = 'apache_incubator-kie-drools'
         DROOLS_BUILD_MVN_OPTS = '-Prun-code-coverage'
     }
     stages {
@@ -39,6 +40,11 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        cleanup {
+            cleanWs()
         }
     }
 }

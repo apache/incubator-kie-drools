@@ -19,11 +19,11 @@
 package org.drools.core.event;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.event.rule.impl.ObjectDeletedEventImpl;
 import org.drools.core.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.core.event.rule.impl.ObjectUpdatedEventImpl;
-import org.drools.core.common.PropagationContext;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;

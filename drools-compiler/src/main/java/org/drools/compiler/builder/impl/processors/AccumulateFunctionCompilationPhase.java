@@ -18,13 +18,13 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.util.TypeResolver;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.util.TypeResolver;
 import org.kie.api.runtime.rule.AccumulateFunction;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class AccumulateFunctionCompilationPhase extends AbstractPackageCompilationPhase {
     private final TypeResolver typeResolver;

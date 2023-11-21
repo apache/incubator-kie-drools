@@ -35,7 +35,6 @@
 
 
   <properties>
-    <javadoc.additional.params>-Xdoclint:none</javadoc.additional.params>
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
@@ -45,6 +44,7 @@
 
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
+    <drools.exclude.checkstyle></drools.exclude.checkstyle>
 
     <victims.updates>weekly</victims.updates>
     <illegaltransitivereportonly>false</illegaltransitivereportonly>
@@ -74,7 +74,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.1</version.info.picocli>
     <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.10.Final</version.io.quarkus>
+    <version.io.quarkus>2.16.12.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -138,7 +138,7 @@
     <!-- New and overwritten dependencies -->
     <!-- ################################################################################ -->
 
-    <version.org.antlr4>4.10.1</version.org.antlr4>
+    <version.org.antlr4>4.13.0</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
@@ -174,7 +174,7 @@
     <version.plugin.annotations>3.6.0</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.3.4</version.shared.utils>
-    <version.common.compress>1.22</version.common.compress>
+    <version.common.compress>1.24.0</version.common.compress>
     <version.common.exec>1.3</version.common.exec>
     <!-- -->
     <!-- Jacoco plugin configurations -->
@@ -232,19 +232,11 @@
     <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
-    
+    <version.maven-javadoc-plugin.override>3.6.0</version.maven-javadoc-plugin.override>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- dependencies from jboss-ip-bom -->
-      <!--
-  CONVENTIONS:
-  - Dependencies must be SORTED ALPHABETICALLY on groupId (other forms of sorting were found to be unclear and ambiguous).
-  - Do not declare <scope> (exception: import) or <optional>: a child module will declare scope/optional itself.
-  - Always extract the version as a property.
-  - A element's inner order is <groupId>, <artifactId>, [<type>,] [<classifier>,] <version> (following Aether proper)
--->
       <!-- Keep in sync with groupId org.slf4j -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -922,8 +914,6 @@
         <version>${version.xmlunit}</version>
       </dependency>
 
-      <!-- END of jboss-ip-bom -->
-
       <!--JMH (Benchmarks)-->
       <dependency>
         <groupId>org.openjdk.jmh</groupId>
@@ -1592,6 +1582,9 @@
               <configuration>
                 <checkstyleRules>
                   <module name="Checker">
+ <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value="${drools.exclude.checkstyle}"/>
+  </module>                  
                     <!-- Checks for whitespace. -->
                     <module name="FileTabCharacter">
                       <property name="severity" value="error"/>
@@ -1759,7 +1752,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>${version.source.plugin}</version>
+          <version>${version.maven-source-plugin}</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1895,6 +1888,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
           <version>3.2.1</version>
+          <configuration>
+            <writeJunitReport>true</writeJunitReport>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1962,22 +1958,6 @@
             <srcDir>src/main/resources/</srcDir>
             <transDir>src/main/resources/</transDir>
             <includes>**/*Constants.properties,**/*Constants_en.properties</includes>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <source>${maven.compiler.source}</source>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
-            <author>false</author>
-            <breakiterator>true</breakiterator>
-            <quiet>true</quiet>
-            <additionalparam>${javadoc.additional.params}</additionalparam>
           </configuration>
         </plugin>
 
@@ -2056,14 +2036,16 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.maven-javadoc-plugin}</version>
+          <version>${version.maven-javadoc-plugin.override}</version>
           <configuration>
             <header><![CDATA[<b>${project.name} ${project.version}</b>]]></header>
             <footer><![CDATA[<b>${project.name} ${project.version}</b>]]></footer>
             <archive>
               <index>true</index>
             </archive>
-            <additionalOptions>${javadoc.additional.params}</additionalOptions>
+            <quiet>true</quiet>
+            <doclint>none</doclint>
+            <legacyMode>true</legacyMode>
           </configuration>
         </plugin>
       </plugins>
@@ -2094,6 +2076,18 @@
                 <source>target/generated-sources/annotations/</source>
               </sources>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

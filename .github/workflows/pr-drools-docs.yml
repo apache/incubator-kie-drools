@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Java and Maven Setup
-        uses: kiegroup/kie-ci/.ci/actions/maven@main
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}

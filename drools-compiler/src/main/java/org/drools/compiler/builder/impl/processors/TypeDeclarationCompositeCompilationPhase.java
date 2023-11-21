@@ -18,18 +18,18 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
-import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
-import org.drools.compiler.builder.impl.TypeDefinition;
-import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
+import org.drools.compiler.builder.impl.TypeDefinition;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public class TypeDeclarationCompositeCompilationPhase implements CompilationPhase {
     private Collection<CompositePackageDescr> packages;

@@ -22,10 +22,10 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

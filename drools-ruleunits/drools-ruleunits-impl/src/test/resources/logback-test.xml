@@ -31,7 +31,7 @@
   <logger name="org.drools.compiler.kie.builder.impl" level="ERROR" />
 <!--  <logger name="org.drools.ruleunits.impl" level="debug"/>-->
   <!--  <logger name="org.drools.model.codegen.execmodel.generator.expressiontyper" level="debug"/>-->
-  <!--  <logger name="org.drools.model.codegen.execmodel" level="debug"/>-->
+    <logger name="org.drools.model.codegen.execmodel" level="info"/>
 
   <logger name="org.drools" level="warn"/>
 

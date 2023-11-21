@@ -18,15 +18,15 @@
  */
 package org.drools.core.util.index;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.RuleBaseConfiguration;
 import org.kie.internal.conf.IndexPrecedenceOption;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.drools.base.util.index.IndexUtil.isEqualIndexable;
 

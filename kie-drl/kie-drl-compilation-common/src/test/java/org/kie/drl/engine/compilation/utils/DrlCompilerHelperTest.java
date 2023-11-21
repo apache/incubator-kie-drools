@@ -90,7 +90,7 @@ class DrlCompilerHelperTest {
         assertThat(retrieved.getModelLocalUriId().model()).isEqualTo("drl");
         assertThat(retrieved.getModelLocalUriId().basePath()).isEqualTo(SLASH + baseBath);
         assertThat(retrieved.getFullClassNames()).hasSize(3); // magic number due to compiled resources
-        assertThat(retrieved.getCompiledClassesMap()).hasSize(45); // magic number due to compiled resources
+        assertThat(retrieved.getCompiledClassesMap()).hasSize(49); // magic number due to compiled resources
     }
 
 }

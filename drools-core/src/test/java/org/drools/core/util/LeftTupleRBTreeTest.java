@@ -18,10 +18,10 @@
  */
 package org.drools.core.util;
 
+import java.util.Random;
+
 import org.drools.core.util.TupleRBTree.Node;
 import org.junit.Test;
-
-import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

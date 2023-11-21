@@ -18,18 +18,36 @@
  */
 package org.drools.codegen.common.context;
 
+import org.drools.codegen.common.di.impl.CDIDependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.impl.CDIRestAnnotator;
+
 public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
     public static final String CONTEXT_NAME = "Quarkus";
     public static final String QUARKUS_REST = "javax.ws.rs.Path";
     public static final String QUARKUS_DI = "javax.inject.Inject";
 
+    public final boolean hasRest;
+    public final boolean hasDI;
+
     protected QuarkusDroolsModelBuildContext(QuarkusKogitoBuildContextBuilder builder) {
-        super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);
+        super(builder, new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(), CONTEXT_NAME);
+        this.hasRest = hasClassAvailable(QUARKUS_REST);
+        this.hasDI = hasClassAvailable(QUARKUS_DI);
     }
 
     public static Builder builder() {
         return new QuarkusKogitoBuildContextBuilder();
+    }
+
+    @Override
+    public boolean hasRest() {
+        return hasRest;
+    }
+
+    @Override
+    public boolean hasDI() {
+        return hasDI;
     }
 
     protected static class QuarkusKogitoBuildContextBuilder extends AbstractBuilder {

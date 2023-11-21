@@ -77,8 +77,9 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
             handler.executeWorkItem(workItem, this);
-        } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                    workItem.getName() );
+        } else {
+            throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(), workItem.getName() );
+        }
     }
 
     public void internalAddWorkItem(WorkItem workItem) {
@@ -106,12 +107,12 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     }
 
     public WorkItemHandler getWorkItemHandler(String name) {
-    	return this.workItemHandlers.get(name);
+        return this.workItemHandlers.get(name);
     }
 
     public void retryWorkItem(long workItemId) {
-    	WorkItem workItem = workItems.get(workItemId);
-    	retryWorkItem(workItem);
+        WorkItem workItem = workItems.get(workItemId);
+        retryWorkItem(workItem);
     }
 
     public void retryWorkItemWithParams(long workItemId,Map<String,Object> map) {
@@ -129,8 +130,10 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                        workItem.getName() );
+            } else {
+                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(), 
+                        workItem.getName() );
+            }
         }
     }
     

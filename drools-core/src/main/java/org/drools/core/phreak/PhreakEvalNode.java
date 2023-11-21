@@ -18,13 +18,13 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.base.rule.EvalCondition;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.base.rule.EvalCondition;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 

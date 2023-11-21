@@ -26,11 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.rule.builder.ConstraintBuilder;
-import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.base.base.ValueType;
 import org.drools.base.common.DroolsObjectInput;
 import org.drools.base.rule.accessor.Evaluator;
+import org.drools.compiler.rule.builder.ConstraintBuilder;
+import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.drl.parser.impl.Operator;
 
 /**
@@ -100,7 +100,9 @@ public class EvaluatorRegistry
     }
 
     private static ClassLoader getDefaultClassLoader() {
-        if ( Thread.currentThread().getContextClassLoader() != null ) return Thread.currentThread().getContextClassLoader();
+        if ( Thread.currentThread().getContextClassLoader() != null ) {
+            return Thread.currentThread().getContextClassLoader();
+        }
         return EvaluatorRegistry.class.getClassLoader();
     }
 

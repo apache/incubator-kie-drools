@@ -110,8 +110,4 @@ public class NodeTypeEnums {
     public static boolean isLeftTupleNode(NetworkNode node) {
         return isLeftTupleSource(node) || isLeftTupleSink(node);
     }
-
-    public static boolean hasNodeMemory(NetworkNode node) {
-        return node.getType() == FromNode || node.getType() == ReactiveFromNode || node.getType() == AccumulateNode;
-    }
 }

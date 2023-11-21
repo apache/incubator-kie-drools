@@ -18,15 +18,15 @@
  */
 package org.drools.core.time.impl;
 
-import org.drools.base.reteoo.SortDeclarations;
-import org.drools.base.rule.ConditionalElement;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.RuleConditionElement;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.base.reteoo.SortDeclarations;
+import org.drools.base.rule.ConditionalElement;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.RuleConditionElement;
 
 
 public abstract class BaseTimer extends ConditionalElement{

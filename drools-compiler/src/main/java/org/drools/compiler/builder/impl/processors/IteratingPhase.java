@@ -18,13 +18,13 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.Collection;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.Collection;
 
 /**
  * Decorates a {@link CompilationPhase} via its {@link SinglePackagePhaseFactory}.

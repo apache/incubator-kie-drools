@@ -18,8 +18,6 @@
  */
 package org.drools.ruleunits.dsl;
 
-import java.util.Map;
-
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ReteDumper;
@@ -36,6 +34,8 @@ import org.drools.ruleunits.impl.RuleUnitProviderImpl;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import java.util.Map;
 
 public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
 

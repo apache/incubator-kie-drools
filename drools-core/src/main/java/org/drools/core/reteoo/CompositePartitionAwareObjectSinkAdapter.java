@@ -18,6 +18,14 @@
  */
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
@@ -29,14 +37,6 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
 

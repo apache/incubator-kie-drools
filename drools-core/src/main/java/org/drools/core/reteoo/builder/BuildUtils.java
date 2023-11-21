@@ -23,16 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.IntervalProviderConstraint;
@@ -40,10 +34,16 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.base.base.ObjectType;
 import org.drools.base.time.Interval;
-import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.base.time.TimeUtils;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.time.TemporalDependencyMatrix;
 import org.kie.api.definition.rule.Rule;
 
 /**

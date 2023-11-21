@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.base.base.DroolsQuery;
+import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.StackEntry;
@@ -29,7 +30,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.Variable;
 

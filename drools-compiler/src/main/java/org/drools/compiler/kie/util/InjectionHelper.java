@@ -88,7 +88,7 @@ public class InjectionHelper {
     }
       
     private static void wireWIHs(BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, List<WorkItemHandlerModel> wihModels, KieSession kSession) { 
-     	 for (WorkItemHandlerModel wihModel : wihModels) {
+          for (WorkItemHandlerModel wihModel : wihModels) {
              WorkItemHandler wih;
              try {
                  wih = beanCreator.createBean(cl, wihModel.getType(), wihModel.getQualifierModel());
@@ -104,7 +104,7 @@ public class InjectionHelper {
      }
     
     private static void wireListeners(BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, List<ListenerModel> listenerModels, KieRuntimeEventManager kRuntimeEventManager) {
-    	for (ListenerModel listenerModel : listenerModels) {
+        for (ListenerModel listenerModel : listenerModels) {
             Object listener = createListener( beanCreator, fallbackBeanCreator, cl, listenerModel );
             switch(listenerModel.getKind()) {
                 case AGENDA_EVENT_LISTENER:
@@ -135,15 +135,15 @@ public class InjectionHelper {
     }
     
     private static void wireChannels(BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, List<ChannelModel> channelModels, KieSession kSession) {
-    	wireSessionChannels(beanCreator, fallbackBeanCreator, cl, channelModels, kSession);
+        wireSessionChannels(beanCreator, fallbackBeanCreator, cl, channelModels, kSession);
     }
     
     private static void wireChannels(BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, List<ChannelModel> channelModels, StatelessKieSession kSession) {
-    	wireSessionChannels(beanCreator, fallbackBeanCreator, cl, channelModels, kSession);
+        wireSessionChannels(beanCreator, fallbackBeanCreator, cl, channelModels, kSession);
     }
     
     private static void wireSessionChannels(BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, List<ChannelModel> channelModels, Object kSession) {
-    	for (ChannelModel channelModel : channelModels) {
+        for (ChannelModel channelModel : channelModels) {
             Channel channel;
             try {
                 channel = beanCreator.createBean(cl, channelModel.getType(), channelModel.getQualifierModel());
@@ -155,11 +155,11 @@ public class InjectionHelper {
                 }
             }
             if (kSession instanceof KieSession) {
-            	((KieSession) kSession).registerChannel(channelModel.getName(), channel);
+                ((KieSession) kSession).registerChannel(channelModel.getName(), channel);
             } else if (kSession instanceof StatelessKieSession) {
-            	((StatelessKieSession) kSession).registerChannel(channelModel.getName(), channel);
+                ((StatelessKieSession) kSession).registerChannel(channelModel.getName(), channel);
             } else {
-            	throw new IllegalArgumentException("kSession not of correct type. Expected KieSession or StatelessKieSession but was: " + kSession.getClass().getCanonicalName());
+                throw new IllegalArgumentException("kSession not of correct type. Expected KieSession or StatelessKieSession but was: " + kSession.getClass().getCanonicalName());
             }
         }
     }

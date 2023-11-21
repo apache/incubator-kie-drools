@@ -18,10 +18,10 @@
  */
 package org.drools.core.common;
 
+import java.util.Iterator;
+
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.runtime.ObjectFilter;
-
-import java.util.Iterator;
 
 public interface ObjectStore extends KieService {
 

@@ -18,6 +18,9 @@
  */
 package org.drools.core.phreak;
 
+import java.util.Date;
+import java.util.List;
+
 import org.drools.base.common.NetworkNode;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
@@ -48,9 +51,6 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;

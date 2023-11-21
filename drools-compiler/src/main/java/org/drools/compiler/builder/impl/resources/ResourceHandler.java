@@ -18,23 +18,6 @@
  */
 package org.drools.compiler.builder.impl.resources;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.drl.parser.DrlParser;
-import org.drools.drl.parser.DroolsParserException;
-import org.drools.drl.parser.ParserError;
-import org.drools.drl.parser.lang.ExpanderException;
-import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.drools.util.IoUtils;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -44,6 +27,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
+
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.ParserError;
+import org.drools.drl.parser.lang.ExpanderException;
+import org.drools.drl.parser.lang.dsl.DefaultExpander;
+import org.drools.util.IoUtils;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ResourceHandler {
     protected KnowledgeBuilderConfigurationImpl configuration;

@@ -41,12 +41,15 @@ import org.drools.traits.core.metadata.Lit;
 import org.drools.traits.core.metadata.MetadataContainer;
 import org.drools.traits.core.metadata.With;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MetadataTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetadataTest.class);
 
     @Test
     public void testKlassAndSubKlassWithImpl() {
@@ -99,7 +102,7 @@ public class MetadataTest {
         assertThat((int) sk.subProp.get(ski)).isEqualTo(-99);
         assertThat(sk.prop.get(ski)).isEqualTo("bye");
 
-        System.out.println( ski.map);
+        LOGGER.debug( ski.map.toString());
         Map tgt = new HashMap();
         tgt.put( "prop", "bye" );
         tgt.put( "subProp", -99 );

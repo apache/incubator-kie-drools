@@ -18,8 +18,9 @@
  */
 package org.drools.model.codegen.project;
 
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.drools.model.codegen.execmodel.DeclaredTypeWriter;
-import org.drools.model.codegen.execmodel.GeneratedFile;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.execmodel.PackageSources;
@@ -91,7 +92,7 @@ public class CodegenPackageSources extends PackageSources {
 
         List<String> pojoClasses = new ArrayList<>();
         for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
-            sources.pojoSources.add(new GeneratedFile(declaredType.getName(),
+            sources.pojoSources.add(new GeneratedFile(GeneratedFileType.DECLARED_TYPE, declaredType.getName(),
                     PackageSources.logSource(declaredType.getSource())));
             pojoClasses.add(declaredType.getClassName());
         }
@@ -104,7 +105,7 @@ public class CodegenPackageSources extends PackageSources {
     }
 
     public static GeneratedFile getReflectConfigFile(String pathName, List<String> pojoClasses) {
-        return new GeneratedFile("META-INF/native-image/" + pathName + "/reflect-config.json",
+        return new GeneratedFile(GeneratedFileType.CONFIG, "META-INF/native-image/" + pathName + "/reflect-config.json",
                 reflectConfigSource(pojoClasses));
     }
 

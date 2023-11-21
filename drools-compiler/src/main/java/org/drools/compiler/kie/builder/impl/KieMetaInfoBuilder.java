@@ -25,21 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.kie.memorycompiler.resources.ResourceStore;
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.base.factmodel.ClassDefinition;
-import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.base.rule.KieModuleMetaInfo;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.TypeMetaInfo;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.util.IoUtils;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.memorycompiler.resources.ResourceStore;
 
 import static org.drools.base.util.Drools.hasMvel;
 

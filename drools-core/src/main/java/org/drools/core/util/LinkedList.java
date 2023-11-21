@@ -18,16 +18,13 @@
  */
 package org.drools.core.util;
 
-import org.drools.core.reteoo.AbstractTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
-import org.drools.core.reteoo.Tuple;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.NoSuchElementException;
+
+import org.drools.core.reteoo.AbstractTuple;
 
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references

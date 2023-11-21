@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.BaseNode;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
 
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected LeftTupleSink sink;

@@ -18,10 +18,10 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.core.common.DefaultFactHandle;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.drools.core.common.DefaultFactHandle;
 
 public class DefaultFactHandleFactoryTest {
 

@@ -18,13 +18,13 @@
  */
 package org.drools.compiler.compiler;
 
-import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
-import org.drools.drl.parser.DroolsError;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
+import org.drools.drl.parser.DroolsError;
 
 public class SerializableDroolsError extends DroolsError implements Externalizable {
     private String message;

@@ -18,6 +18,8 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.List;
+
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -42,8 +44,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.List;
 
 public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
 
@@ -474,12 +474,22 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         }
 
         QueryElementNode other = (QueryElementNode) object;
-        if ( this.leftInput.getId() != other.leftInput.getId() ) return false;
-        if ( openQuery != other.openQuery ) return false;
-        if ( !openQuery && dataDriven != other.dataDriven ) return false;
+        if ( this.leftInput.getId() != other.leftInput.getId() ) {
+            return false;
+        }
+        if ( openQuery != other.openQuery ) {
+            return false;
+        }
+        if ( !openQuery && dataDriven != other.dataDriven ) {
+            return false;
+        }
         if ( queryElement == null ) {
-            if ( other.queryElement != null ) return false;
-        } else if ( !queryElement.equals( other.queryElement ) ) return false;
+            if ( other.queryElement != null ) {
+                return false;
+            }
+        } else if ( !queryElement.equals( other.queryElement ) ) {
+            return false;
+        }
         return true;
     }
 

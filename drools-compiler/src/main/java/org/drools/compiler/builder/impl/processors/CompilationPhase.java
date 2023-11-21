@@ -18,9 +18,9 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
-import org.kie.internal.builder.KnowledgeBuilderResult;
-
 import java.util.Collection;
+
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 /**
  * Processes a PackageDescr and produces {@link KnowledgeBuilderResult}s.

@@ -32,7 +32,7 @@
 
   <name>KIE :: Drools Maven Archetype with Executable Model and traditional rule style</name>
   <description>
-      Drools rule example with executable model and traditional (Drools 7) API and rule style.
+      Drools rule example with executable model and traditional API and rule style.
       Use property droolsVersion to specify which version of Drools to use in a generated project.
   </description>
   <url>http://drools.org</url>

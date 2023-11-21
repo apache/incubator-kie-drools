@@ -18,7 +18,12 @@
  */
 package org.drools.compiler.builder.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HierarchySorter<K> {
 
@@ -83,7 +88,9 @@ public class HierarchySorter<K> {
         java.util.Iterator<Node<K, K>> iter = map.values().iterator();
         while ( iter.hasNext() ) {
             Node<K,K> n = iter.next();
-            if ( n.getData() == null ) root.addChild( n );
+            if ( n.getData() == null ) {
+                root.addChild( n );
+            }
 
         }
 
@@ -154,12 +161,18 @@ public class HierarchySorter<K> {
 
         @Override
         public boolean equals( Object o ) {
-            if ( this == o ) return true;
-            if ( o == null || getClass() != o.getClass() ) return false;
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
 
             Node node = (Node) o;
 
-            if ( !key.equals( node.key ) ) return false;
+            if ( !key.equals( node.key ) ) {
+                return false;
+            }
 
             return true;
         }

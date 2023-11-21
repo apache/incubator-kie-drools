@@ -32,13 +32,13 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.io.ResourceConfigurationImpl;

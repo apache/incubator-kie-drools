@@ -18,6 +18,10 @@
  */
 package org.drools.compiler.builder.impl.resources;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.function.Supplier;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -30,10 +34,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.function.Supplier;
 
 public class TemplateResourceHandler extends ResourceHandler {
 

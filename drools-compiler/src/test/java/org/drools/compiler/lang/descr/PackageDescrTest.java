@@ -24,9 +24,9 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
 import org.drools.drl.ast.dsl.impl.PackageDescrBuilderImpl;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

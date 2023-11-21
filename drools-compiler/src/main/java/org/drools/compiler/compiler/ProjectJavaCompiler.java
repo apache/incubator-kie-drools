@@ -27,6 +27,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.ErrorHandler;
 import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
+import org.drools.util.PortablePath;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
@@ -34,7 +35,6 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 

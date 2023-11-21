@@ -21,16 +21,16 @@ package org.drools.core.reteoo.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.BetaConstraints;
-import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.CoreComponentFactory;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.RightInputAdapterNode;
 
 public class AccumulateBuilder
         implements

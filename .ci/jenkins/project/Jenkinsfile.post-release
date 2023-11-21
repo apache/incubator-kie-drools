@@ -29,7 +29,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
         }
     }
     post {
-        always {
+        cleanup {
             cleanWs()
         }
         unsuccessful {

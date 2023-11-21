@@ -20,9 +20,9 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.Memory;
 import org.drools.core.common.PhreakPropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.common.PropagationContext;
 
 public class LeftTupleEntry implements TupleEntry {
     private final LeftTuple lt;

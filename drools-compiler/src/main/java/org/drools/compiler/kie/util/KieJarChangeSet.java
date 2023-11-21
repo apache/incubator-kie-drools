@@ -64,9 +64,15 @@ public class KieJarChangeSet {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         KieJarChangeSet other = (KieJarChangeSet) obj;
         return changes.equals(other.changes);
     }

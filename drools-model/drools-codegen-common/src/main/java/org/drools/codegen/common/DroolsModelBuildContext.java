@@ -18,6 +18,9 @@
  */
 package org.drools.codegen.common;
 
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
@@ -44,6 +47,31 @@ public interface DroolsModelBuildContext {
     AppPaths getAppPaths();
 
     String name();
+
+    DependencyInjectionAnnotator getDependencyInjectionAnnotator();
+
+    RestAnnotator getRestAnnotator();
+
+    boolean hasRest();
+
+    boolean hasDI();
+
+    default boolean hasJackson() {
+        return hasClassAvailable("com.fasterxml.jackson.core.JsonParser");
+    }
+
+    default boolean hasJacksonDatabind() {
+        return hasClassAvailable("com.fasterxml.jackson.databind.ObjectMapper");
+    }
+
+    default boolean hasClassAvailable(String fqcn) {
+        try {
+            getClassLoader().loadClass(fqcn);
+            return true;
+        } catch (ClassNotFoundException ex) {
+            return false;
+        }
+    }
 
     interface Builder {
 

@@ -20,11 +20,11 @@ package org.drools.core.base;
 
 import java.util.HashSet;
 
-import org.drools.util.ClassTypeResolver;
-import org.drools.util.TypeResolver;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.FirstClass;
 import org.drools.core.test.model.SecondClass;
+import org.drools.util.ClassTypeResolver;
+import org.drools.util.TypeResolver;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

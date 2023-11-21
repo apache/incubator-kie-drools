@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
+import org.drools.base.time.JobHandle;
+import org.drools.base.time.Trigger;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
@@ -37,9 +39,7 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
-import org.drools.base.time.Trigger;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

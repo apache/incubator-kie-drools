@@ -28,16 +28,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.base.ValueResolver;
-import org.drools.base.time.impl.Timer;
-import org.drools.core.common.DefaultEventHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ConditionalElement;
 import org.drools.base.rule.Declaration;
-import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.reteoo.Tuple;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
+import org.drools.base.time.impl.Timer;
+import org.drools.core.common.DefaultEventHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.util.MathUtils;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.time.Calendar;
@@ -129,11 +129,19 @@ public class DurationTimer extends BaseTimer
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         DurationTimer other = (DurationTimer) obj;
-        if ( duration != other.duration ) return false;
+        if ( duration != other.duration ) {
+            return false;
+        }
         return true;
     }
 

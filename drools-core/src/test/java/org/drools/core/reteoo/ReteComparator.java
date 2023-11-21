@@ -21,8 +21,8 @@ package org.drools.core.reteoo;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.drools.core.common.BaseNode;
 import org.drools.base.common.NetworkNode;
+import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;

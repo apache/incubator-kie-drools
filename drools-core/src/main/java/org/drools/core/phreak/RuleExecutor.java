@@ -110,11 +110,7 @@ public class RuleExecutor {
         return fire(activationsManager.getReteEvaluator(), activationsManager, filter, fireCount, fireLimit);
     }
 
-    private int fire( ReteEvaluator reteEvaluator,
-                      ActivationsManager activationsManager,
-                      AgendaFilter filter,
-                      int fireCount,
-                      int fireLimit) {
+    private int fire( ReteEvaluator reteEvaluator, ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit) {
         int localFireCount = 0;
 
         if (!tupleList.isEmpty()) {
@@ -167,8 +163,10 @@ public class RuleExecutor {
                 }
 
                 if (!ruleIsAllMatches) { // if firing rule is @All don't give way to other rules
-                    if ( haltRuleFiring( fireCount, fireLimit, localFireCount, activationsManager ) ) {
-                        break; // another rule has high priority and is on the agenda, so evaluate it first
+                    if ( firingHalted(activationsManager) ||
+                         fireLimitReached(fireCount, fireLimit, localFireCount) ||
+                         ruleWithHigherSalienceActivated(activationsManager) ) {
+                        break;
                     }
                     if (!reteEvaluator.isSequential()) {
                         evaluateNetworkIfDirty( activationsManager );
@@ -261,22 +259,22 @@ public class RuleExecutor {
         return filter != null && !filter.accept((InternalMatch) leftTuple);
     }
 
-    private boolean haltRuleFiring(int fireCount,
-                                   int fireLimit,
-                                   int localFireCount,
-                                   ActivationsManager activationsManager) {
-        if (!activationsManager.isFiring() || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit))) {
-            return true;
-        }
+    private static boolean firingHalted(ActivationsManager activationsManager) {
+        return !activationsManager.isFiring();
+    }
 
+    private boolean ruleWithHigherSalienceActivated(ActivationsManager activationsManager) {
         // The eager list must be evaluated first, as dynamic salience rules will impact the results of peekNextRule
         activationsManager.evaluateEagerList();
-
         RuleAgendaItem nextRule = activationsManager.peekNextRule();
         if (nextRule == ruleAgendaItem || nextRule == null) {
             return false;
         }
-        return !ruleAgendaItem.getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHigherSalience(nextRule);
+        return !ruleAgendaItem.getAgendaGroup().equals(nextRule.getAgendaGroup()) || !isHigherSalience(nextRule);
+    }
+
+    private static boolean fireLimitReached(int fireCount, int fireLimit, int localFireCount) {
+        return fireLimit >= 0 && (localFireCount + fireCount >= fireLimit);
     }
 
     private boolean isHigherSalience(RuleAgendaItem nextRule) {

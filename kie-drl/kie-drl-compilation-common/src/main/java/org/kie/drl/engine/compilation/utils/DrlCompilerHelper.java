@@ -18,17 +18,7 @@
  */
 package org.kie.drl.engine.compilation.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import org.drools.codegen.common.GeneratedFile;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
@@ -36,7 +26,6 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.io.FileSystemResource;
-import org.drools.model.codegen.execmodel.GeneratedFile;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.project.CodegenPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
@@ -57,6 +46,17 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DrlCompilerHelper {
 
@@ -111,10 +111,10 @@ public class DrlCompilerHelper {
         }
         Map<String, String> sourceCode = new HashMap<>();
         for (GeneratedFile generatedFile : modelFiles) {
-            String key = generatedFile.getPath()
+            String key = generatedFile.relativePath()
                     .replace(".java", "")
                     .replace(File.separatorChar, '.');
-            String value = new String(generatedFile.getData(),
+            String value = new String(generatedFile.contents(),
                                       StandardCharsets.UTF_8);
             sourceCode.put(key, value);
         }

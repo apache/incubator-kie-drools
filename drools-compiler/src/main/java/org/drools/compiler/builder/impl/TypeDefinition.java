@@ -18,8 +18,8 @@
  */
 package org.drools.compiler.builder.impl;
 
-import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.base.rule.TypeDeclaration;
+import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 
 public class TypeDefinition {
 

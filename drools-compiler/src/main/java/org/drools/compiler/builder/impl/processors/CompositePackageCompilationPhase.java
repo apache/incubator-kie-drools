@@ -18,6 +18,11 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
@@ -27,16 +32,11 @@ import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.util.TypeResolver;
 import org.drools.util.StringUtils;
+import org.drools.util.TypeResolver;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 

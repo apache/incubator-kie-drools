@@ -18,6 +18,9 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.builder.impl.resources.DslrResourceHandler;
@@ -26,9 +29,6 @@ import org.drools.compiler.builder.impl.resources.TemplateResourceHandler;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 

@@ -18,12 +18,12 @@
  */
 package org.drools.core.phreak;
 
-import org.drools.base.phreak.ReactiveObject;
-import org.drools.base.reteoo.BaseTuple;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import org.drools.base.phreak.ReactiveObject;
+import org.drools.base.reteoo.BaseTuple;
 
 public class AbstractReactiveObject implements ReactiveObject {
 

@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.base.base.XMLSupport;
+import org.drools.util.PortablePath;
 import org.drools.util.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.drools.util.PortablePath;
 
 public class KieModuleModelImpl implements KieModuleModel {
 

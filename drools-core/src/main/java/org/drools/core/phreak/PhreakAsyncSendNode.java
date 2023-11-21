@@ -21,8 +21,12 @@ package org.drools.core.phreak;
 import java.util.LinkedHashMap;
 import java.util.concurrent.Executor;
 
+import org.drools.base.rule.ContextEntry;
+import org.drools.base.rule.accessor.DataProvider;
+import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AsyncMessage;
@@ -31,10 +35,6 @@ import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.base.rule.ContextEntry;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
 public class PhreakAsyncSendNode {

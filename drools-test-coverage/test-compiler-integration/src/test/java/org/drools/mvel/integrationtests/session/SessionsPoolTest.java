@@ -195,6 +195,23 @@ public class SessionsPoolTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
+    @Test
+    public void testStatelessKieSessionsPoolWithConf() {
+        KieServices kieServices = KieServices.get();
+
+        KieSessionsPool pool = getKieContainer().getKieBase().newKieSessionsPool( 1 );
+        StatelessKieSession session = pool.newStatelessKieSession(kieServices.newKieSessionConfiguration());
+
+        List<String> list = new ArrayList<>();
+        session.setGlobal( "list", list );
+        session.execute( "test" );
+        assertThat(list.size()).isEqualTo(1);
+
+        list.clear();
+        session.execute( "test" );
+        assertThat(list.size()).isEqualTo(1);
+    }
+
     private KieContainer getKieContainer() {
         String drl =
                 "global java.util.List list\n" +

@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.index.IndexFactory;
 import org.kie.internal.conf.IndexPrecedenceOption;
 

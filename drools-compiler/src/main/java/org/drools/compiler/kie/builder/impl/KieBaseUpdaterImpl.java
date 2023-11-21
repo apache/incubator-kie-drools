@@ -20,17 +20,17 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.util.List;
 
-import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.drools.core.impl.KieBaseUpdate;
 import org.drools.base.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.base.rule.DialectRuntimeData;
+import org.drools.compiler.builder.InternalKnowledgeBuilder;
+import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.impl.KieBaseUpdate;
+import org.drools.core.reteoo.EntryPointNode;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.EntryPoint;

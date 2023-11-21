@@ -22,6 +22,8 @@ import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.TraitFieldTMS;
 import org.drools.traits.core.factmodel.TraitFieldTMSImpl;
 import org.drools.base.factmodel.traits.TraitableBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.BitSet;
 import java.util.Collection;
@@ -32,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class Imp2 implements TraitableBean<Imp2,Imp2> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Imp2.class);
 
     private String name;
     private String school;
@@ -137,8 +141,7 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
 
     public void foo() {
         Object f = __$$dynamic_properties_map$$.get( "goo" );
-        System.out.println( f );
-
+        LOGGER.debug( f.toString() );
     }
 
     private TraitFieldTMS tms;

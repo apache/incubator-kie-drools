@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.base.rule.Declaration;
-import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;

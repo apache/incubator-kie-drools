@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.drools.base.rule.Declaration;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.rule.Declaration;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 

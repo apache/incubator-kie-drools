@@ -18,6 +18,16 @@
  */
 package org.drools.core.phreak;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.WorkingMemory;
@@ -62,16 +72,6 @@ import org.drools.core.reteoo.WindowNode;
 import org.drools.core.util.FastIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.isAssociatedWith;
 

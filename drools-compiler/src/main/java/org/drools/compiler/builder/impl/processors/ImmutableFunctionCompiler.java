@@ -18,14 +18,14 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.List;
+
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-
-import java.util.List;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.util.StringUtils.isEmpty;

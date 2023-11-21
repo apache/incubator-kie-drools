@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.runners.Parameterized;
@@ -50,6 +51,7 @@ public class FEEL12ExtendedForLoopTest extends BaseFEELTest {
             {"{ a: 1, b : 3, c : for x in a+2..b-2 return x+1}", mapOf(entry("a", BigDecimal.valueOf(1)), entry("b", BigDecimal.valueOf(3)),  entry("c", Stream.of(3, 2, 1 ).map(x -> BigDecimal.valueOf(x + 1 ) ).collect(Collectors.toList() )) ), null},
             {"{ a: \"ciao\", b : 3, c : for x in a..b return x+1}", mapOf(entry("a", "ciao"), entry("b", BigDecimal.valueOf(3)),  entry("c", null)), FEELEvent.Severity.ERROR},
             {"for i in 0..10 return if i = 0 then 1 else i * partial[-1]", Stream.of(1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 ).map(BigDecimal::valueOf).collect(Collectors.toList() ), null},
+            {"{xs: for i in 1..10 return function() i, ys: for f in xs return f()}.ys", IntStream.range(1, 11).boxed().map(BigDecimal::valueOf).collect(Collectors.toList()), null},
 
         };
         return addAdditionalParameters(cases, false);
