@@ -21,16 +21,12 @@ package org.kie.kogito.index.oracle.model;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Entity(name = "comments")
 @Table(name = "comments")
@@ -41,8 +37,7 @@ public class CommentEntity extends AbstractEntity {
     private String content;
     private String updatedBy;
     private ZonedDateTime updatedAt;
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "taskId", foreignKey = @ForeignKey(name = "fk_comments_tasks"))
     private UserTaskInstanceEntity userTask;
 

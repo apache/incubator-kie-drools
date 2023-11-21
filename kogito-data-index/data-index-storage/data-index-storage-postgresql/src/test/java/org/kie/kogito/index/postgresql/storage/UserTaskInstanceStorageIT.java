@@ -21,7 +21,6 @@ package org.kie.kogito.index.postgresql.storage;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -60,7 +59,6 @@ public class UserTaskInstanceStorageIT extends AbstractStorageIT<UserTaskInstanc
     }
 
     @Test
-    @Transactional
     public void testUserTaskInstanceEntity() {
         String taskId = UUID.randomUUID().toString();
         String processInstanceId = UUID.randomUUID().toString();

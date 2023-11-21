@@ -43,6 +43,10 @@
       <artifactId>kogito-addons-quarkus-data-index-persistence-common-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-fault-tolerance-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-data-index-common-runtime</artifactId>
     </dependency>

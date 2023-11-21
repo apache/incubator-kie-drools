@@ -28,6 +28,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -99,9 +100,9 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     @Column(columnDefinition = "jsonb")
     private ObjectNode outputs;
     private String endpoint;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> comments;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttachmentEntity> attachments;
 
     @Override

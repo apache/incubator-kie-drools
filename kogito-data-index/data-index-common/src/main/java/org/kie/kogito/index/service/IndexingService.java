@@ -20,6 +20,7 @@ package org.kie.kogito.index.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.mapper.ProcessInstanceEventMerger;
@@ -68,7 +70,25 @@ public class IndexingService {
     @Inject
     Instance<UserTaskInstanceEventMerger> userTaskInstanceMergers;
 
+    //retry in case of rare but possible race condition during the insert for the first registry
+    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
+        ProcessInstance pi = handleProcessInstanceEvent(event);
+
+        ProcessDefinition definition = pi.getDefinition();
+
+        handleProcessDefinition(definition);
+    }
+
+    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
+    public void handleProcessDefinition(ProcessDefinition definition) {
+        if (definition != null && !manager.getProcessDefinitionsCache().containsKey(definition.getKey())) {
+            manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
+            LOGGER.debug("Stored Process Definition: {}", definition);
+        }
+    }
+
+    private ProcessInstance handleProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
         Optional<ProcessInstance> found = Optional.ofNullable(manager.getProcessInstancesCache().get(event.getKogitoProcessInstanceId()));
         ProcessInstance pi;
         if (found.isEmpty()) {
@@ -81,21 +101,16 @@ public class IndexingService {
             pi = found.get();
 
         }
-
         processInstanceMergers.stream().filter(e -> e.accept(event)).findAny().ifPresent(e -> e.merge(pi, event));
 
         manager.getProcessInstancesCache().put(pi.getId(), pi);
+
         LOGGER.debug("Stored Process Instance: {}", pi);
-
-        ProcessDefinition definition = pi.getDefinition();
-
-        if (definition != null) {
-            manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
-            LOGGER.debug("Stored Process Definitioin: {}", definition);
-        }
-
+        return pi;
     }
 
+    //retry in case of rare but possible race condition during the insert for the first registry
+    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public <T> void indexUserTaskInstanceEvent(UserTaskInstanceDataEvent<T> event) {
         Optional<UserTaskInstance> found = Optional.ofNullable(manager.getUserTaskInstancesCache().get(event.getKogitoUserTaskInstanceId()));
         UserTaskInstance ut;
@@ -112,7 +127,6 @@ public class IndexingService {
         LOGGER.debug("Stored User Task Instance: {}", ut);
 
         manager.getUserTaskInstancesCache().put(ut.getId(), ut);
-
     }
 
     public void indexJob(Job job) {
@@ -139,7 +153,7 @@ public class IndexingService {
         cache.put(processInstanceId, newModel);
     }
 
-    public ObjectNode merge(String processId, String type, String processInstanceId, ObjectNode persistedModel, ObjectNode updateData) {
+    private ObjectNode merge(String processId, String type, String processInstanceId, ObjectNode persistedModel, ObjectNode updateData) {
         ObjectNode newModel = getObjectMapper().createObjectNode();
         newModel.put("_type", type);
         newModel.setAll(persistedModel);

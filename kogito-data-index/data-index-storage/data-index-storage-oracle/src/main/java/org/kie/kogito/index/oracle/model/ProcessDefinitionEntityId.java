@@ -21,6 +21,9 @@ package org.kie.kogito.index.oracle.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static org.kie.kogito.index.model.ProcessDefinition.fromKey;
+import static org.kie.kogito.index.model.ProcessDefinition.toKey;
+
 public class ProcessDefinitionEntityId implements Serializable {
 
     private String id;
@@ -31,9 +34,9 @@ public class ProcessDefinitionEntityId implements Serializable {
     }
 
     public ProcessDefinitionEntityId(String key) {
-        String[] split = key.split("-");
-        this.id = split[0];
-        this.version = split[1];
+        String[] fromKey = fromKey(key);
+        this.id = fromKey[0];
+        this.version = fromKey[1];
     }
 
     public ProcessDefinitionEntityId(String id, String version) {
@@ -42,7 +45,7 @@ public class ProcessDefinitionEntityId implements Serializable {
     }
 
     public String getKey() {
-        return String.format("%s-%s", id, version);
+        return toKey(id, version);
     }
 
     public String getId() {

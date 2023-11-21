@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.oracle.mapper.ProcessDefinitionEntityMapper;
@@ -66,6 +67,11 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
         @Override
         public Optional<ProcessDefinitionEntity> findByIdOptional(String key) {
             return repository.findByIdOptional(new ProcessDefinitionEntityId(key));
+        }
+
+        @Override
+        public ProcessDefinitionEntity findById(String s, LockModeType lockModeType) {
+            return repository.findById(new ProcessDefinitionEntityId(s), lockModeType);
         }
 
         @Override

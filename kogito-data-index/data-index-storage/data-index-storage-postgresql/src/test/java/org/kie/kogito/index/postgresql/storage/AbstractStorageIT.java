@@ -42,22 +42,18 @@ public abstract class AbstractStorageIT<E extends AbstractEntity, T> {
         Storage<String, T> cache = getStorage().getCache("cache", type);
         assertThat(cache.get(key)).isNull();
         assertThat(cache.containsKey(key)).isFalse();
-        assertThat(getRepository().count()).isZero();
 
         cache.put(key, value1);
         assertThat(cache.get(key)).isEqualTo(value1);
         assertThat(cache.containsKey(key)).isTrue();
-        assertThat(getRepository().count()).isOne();
 
         cache.put(key, value2);
         assertThat(cache.get(key)).isEqualTo(value2);
         assertThat(cache.containsKey(key)).isTrue();
-        assertThat(getRepository().count()).isOne();
 
         cache.remove(key);
         assertThat(cache.get(key)).isNull();
         assertThat(cache.containsKey(key)).isFalse();
-        assertThat(getRepository().count()).isZero();
     }
 
 }

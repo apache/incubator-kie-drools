@@ -18,9 +18,12 @@
  */
 package org.kie.kogito.index.postgresql.storage;
 
+import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import org.kie.kogito.index.postgresql.model.AbstractEntity;
@@ -85,8 +88,19 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> implements St
     @Override
     @Transactional
     public V put(String key, V value) {
-        repository.deleteById(key);
-        repository.persist(mapToEntity.apply(value));
+        //Pessimistic lock is used to lock the row to handle concurrency with an exiting registry
+        E persistedEntity = repository.findById(key, LockModeType.PESSIMISTIC_WRITE);
+        E newEntity = mapToEntity.apply(value);
+        if (persistedEntity != null) {
+            repository.getEntityManager().merge(newEntity);
+        } else {
+            try {
+                //to handle concurrency in case of a new registry persist flush and throw an exception to allow retry on the caller side
+                repository.persistAndFlush(newEntity);
+            } catch (PersistenceException e) {
+                throw new ConcurrentModificationException(e);
+            }
+        }
         return value;
     }
 
@@ -100,6 +114,7 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> implements St
         return value;
     }
 
+    @Transactional
     @Override
     public boolean containsKey(String key) {
         return repository.count("id = ?1", key) == 1;

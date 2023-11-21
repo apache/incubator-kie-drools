@@ -28,6 +28,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
@@ -586,18 +587,23 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("$.size()", is(1))
                         .body("[0].name", is(attachmentName)));
 
-        Map<String, String> attachmentMap = given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
-                        "id description priority potentialGroups attachments {id name content updatedBy updatedAt} } }\"}")
-                .when().post("/graphql")
-                .then()
-                .statusCode(200)
-                .body("data.UserTaskInstances[0].description", equalTo("NewDescription"))
-                .body("data.UserTaskInstances[0].priority", equalTo("low"))
-                .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
-                .body("data.UserTaskInstances[0].attachments.size()", is(1))
-                .body("data.UserTaskInstances[0].attachments[0].name", equalTo(attachmentName))
-                .extract().jsonPath().getMap("data.UserTaskInstances[0].attachments[0]");
+        AtomicReference<Map<String, String>> attachmentMapRef = new AtomicReference<>();
+        await()
+                .atMost(TIMEOUT)
+                .untilAsserted(() -> attachmentMapRef.set(given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ UserTaskInstances (where: { processInstanceId: {equal: \\\"" + processInstanceId + "\\\"}}) { " +
+                                "id description priority potentialGroups attachments {id name content updatedBy updatedAt} } }\"}")
+                        .when().post("/graphql")
+                        .then()
+                        .statusCode(200)
+                        .body("data.UserTaskInstances[0].description", equalTo("NewDescription"))
+                        .body("data.UserTaskInstances[0].priority", equalTo("low"))
+                        .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
+                        .body("data.UserTaskInstances[0].attachments.size()", is(1))
+                        .body("data.UserTaskInstances[0].attachments[0].name", equalTo(attachmentName))
+                        .extract().jsonPath().getMap("data.UserTaskInstances[0].attachments[0]")));
+
+        Map<String, String> attachmentMap = attachmentMapRef.get();
 
         checkExpectedCreatedItemData(attachmentCreationResult, attachmentMap);
 

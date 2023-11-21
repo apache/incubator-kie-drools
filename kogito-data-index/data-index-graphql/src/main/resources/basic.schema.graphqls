@@ -44,7 +44,7 @@ type ProcessDefinition {
     addons: [String!]
     roles: [String!]
     type: String
-    endpoint: String!
+    endpoint: String
     serviceUrl: String
 }
 
@@ -72,13 +72,13 @@ type ProcessInstance {
     rootProcessInstanceId: String
     rootProcessId: String
     roles: [String!]
-    state: ProcessInstanceState!
+    state: ProcessInstanceState
     endpoint: String!
     serviceUrl: String
-    nodes: [NodeInstance!]!
+    nodes: [NodeInstance!]
     milestones: [Milestone!]
     variables: JSON
-    start: DateTime!
+    start: DateTime
     end: DateTime
     parentProcessInstance: ProcessInstance
     childProcessInstances: [ProcessInstance!]
@@ -345,15 +345,15 @@ type UserTaskInstance {
     name: String
     priority: String
     processInstanceId: String!
-    processId: String!
+    processId: String
     rootProcessInstanceId: String
     rootProcessId: String
-    state: String!
+    state: String
     actualOwner: String
     adminGroups: [String!]
     adminUsers: [String!]
     completed: DateTime
-    started: DateTime!
+    started: DateTime
     excludedUsers: [String!]
     potentialGroups: [String!]
     potentialUsers: [String!]

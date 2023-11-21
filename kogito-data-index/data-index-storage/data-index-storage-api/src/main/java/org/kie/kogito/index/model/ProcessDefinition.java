@@ -20,7 +20,9 @@ package org.kie.kogito.index.model;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class ProcessDefinition {
 
@@ -112,7 +114,11 @@ public class ProcessDefinition {
     }
 
     public static String toKey(String processId, String version) {
-        return String.format("%s-%s", processId, version);
+        return processId + "$v:" + version;
+    }
+
+    public static String[] fromKey(String key) {
+        return Optional.ofNullable(key).map(k -> k.split(Pattern.quote("$v:"))).orElse(new String[0]);
     }
 
     @Override

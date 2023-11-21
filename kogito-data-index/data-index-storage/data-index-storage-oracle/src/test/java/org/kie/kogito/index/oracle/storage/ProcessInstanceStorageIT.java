@@ -21,7 +21,6 @@ package org.kie.kogito.index.oracle.storage;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,6 @@ public class ProcessInstanceStorageIT extends AbstractStorageIT<ProcessInstanceE
     }
 
     @Test
-    @Transactional
     public void testProcessInstanceEntity() {
         String processInstanceId = UUID.randomUUID().toString();
         ProcessInstance processInstance1 = TestUtils

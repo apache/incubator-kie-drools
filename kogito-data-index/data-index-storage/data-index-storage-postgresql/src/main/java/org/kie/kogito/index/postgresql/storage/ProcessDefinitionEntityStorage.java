@@ -23,6 +23,8 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.transaction.Transactional;
 
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.postgresql.mapper.ProcessDefinitionEntityMapper;
@@ -44,6 +46,7 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
                 e.getVersion()).getKey());
     }
 
+    @Transactional
     @Override
     public boolean containsKey(String key) {
         ProcessDefinitionEntityId id = new ProcessDefinitionEntityId(key);
@@ -66,6 +69,11 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
         @Override
         public Optional<ProcessDefinitionEntity> findByIdOptional(String key) {
             return repository.findByIdOptional(new ProcessDefinitionEntityId(key));
+        }
+
+        @Override
+        public ProcessDefinitionEntity findById(String s, LockModeType lockModeType) {
+            return repository.findById(new ProcessDefinitionEntityId(s), lockModeType);
         }
 
         @Override

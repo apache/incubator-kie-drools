@@ -19,7 +19,6 @@
 package org.kie.kogito.persistence.mongodb.storage;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.bson.Document;
@@ -29,7 +28,7 @@ import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
 import org.kie.kogito.persistence.mongodb.query.MongoQuery;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
 
 import io.smallrye.mutiny.Multi;
 
@@ -93,15 +92,11 @@ public class MongoStorage<V, E> implements Storage<String, V> {
 
     @Override
     public V put(String s, V v) {
-        V oldValue = this.get(s);
-        Optional.ofNullable(oldValue).ifPresentOrElse(
-                o -> Optional.ofNullable(v).map(n -> mapper.mapToEntity(s, n)).ifPresent(
-                        e -> this.mongoCollection.replaceOne(
-                                new Document(MONGO_ID, s),
-                                e, new ReplaceOptions().upsert(true))),
-                () -> Optional.ofNullable(v).map(n -> mapper.mapToEntity(s, n)).ifPresent(
-                        e -> this.mongoCollection.insertOne(e)));
-        return Objects.nonNull(v) ? oldValue : null;
+        this.mongoCollection.findOneAndReplace(
+                new Document(MONGO_ID, s),
+                mapper.mapToEntity(s, v),
+                new FindOneAndReplaceOptions().upsert(true));
+        return v;
     }
 
     @Override

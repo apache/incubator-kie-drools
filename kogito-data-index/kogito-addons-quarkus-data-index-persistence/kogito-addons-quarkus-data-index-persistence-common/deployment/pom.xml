@@ -54,5 +54,9 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc-deployment</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-fault-tolerance-deployment</artifactId>
+    </dependency>
   </dependencies>
 </project>

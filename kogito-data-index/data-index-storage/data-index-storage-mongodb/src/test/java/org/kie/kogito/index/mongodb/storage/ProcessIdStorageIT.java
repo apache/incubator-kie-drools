@@ -20,6 +20,7 @@ package org.kie.kogito.index.mongodb.storage;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class ProcessIdStorageIT extends StorageTestBase<String, String> {
 
     @Test
     void testCache() {
-        String processId = "travels";
+        String processId = RandomStringUtils.randomAlphabetic(10);
         String type1 = "org.acme.travels.travels";
         String type2 = "org.acme.travels";
         testStorage(storage, processId, type1, type2);

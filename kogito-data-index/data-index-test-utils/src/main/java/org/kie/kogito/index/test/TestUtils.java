@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
@@ -69,6 +68,7 @@ import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 public final class TestUtils {
 
     private static final String MILESTONE_ID = UUID.randomUUID().toString();
+    public static final String PROCESS_VERSION = "1.0";
 
     private TestUtils() {
     }
@@ -109,11 +109,11 @@ public final class TestUtils {
                 .rootProcessInstanceId(rootProcessInstanceId)
                 .rootProcessId(rootProcessId)
                 .processId(processId)
-                .processVersion("1.0")
-                .processName(RandomStringUtils.randomAlphabetic(10))
+                .processVersion(PROCESS_VERSION)
+                .processName(getProcessName(processId))
                 .eventDate(new Date())
                 .state(status.ordinal())
-                .businessKey(RandomStringUtils.randomAlphabetic(10))
+                .businessKey(processInstanceId)
                 .roles("admin")
                 .eventUser(identity)
                 .eventType(eventType)
@@ -122,6 +122,10 @@ public final class TestUtils {
         return new ProcessInstanceStateDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", (String) identity,
                 body.metaData(), body);
 
+    }
+
+    private static String getProcessName(String id) {
+        return "processName " + id;
     }
 
     public static ProcessInstanceErrorDataEvent deriveErrorProcessCloudEvent(ProcessInstanceStateDataEvent event, String errorMessage, String nodeDefinition, String nodeInstanceId) {
@@ -182,7 +186,7 @@ public final class TestUtils {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
-        pi.setVersion("1.0");
+        pi.setVersion(PROCESS_VERSION);
         pi.setProcessName(String.format("%s-name", processId));
         pi.setRootProcessInstanceId(rootProcessInstanceId);
         pi.setParentProcessInstanceId(rootProcessInstanceId);
