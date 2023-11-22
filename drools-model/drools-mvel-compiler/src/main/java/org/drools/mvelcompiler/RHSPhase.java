@@ -55,6 +55,8 @@ import com.github.javaparser.ast.stmt.YieldStmt;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
@@ -69,6 +71,7 @@ import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
+import org.drools.mvelcompiler.ast.ListExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
@@ -416,6 +419,16 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         } else {
             return defaultMethod(n, arg);
         }
+    }
+
+    @Override
+    public TypedExpression visit(ListCreationLiteralExpression n, Context arg) {
+        return new ListExprT(n);
+    }
+
+    @Override
+    public TypedExpression visit(ListCreationLiteralExpressionElement n, Context arg) {
+        return n.getValue().accept(this, arg);
     }
 
     private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {

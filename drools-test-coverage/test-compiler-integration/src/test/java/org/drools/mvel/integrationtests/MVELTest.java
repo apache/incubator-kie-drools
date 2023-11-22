@@ -1142,9 +1142,9 @@ public class MVELTest {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
-        final FactWithList f = new FactWithList("someString");
+        final FactWithList f = new FactWithList();
         ksession.insert(f);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
-        assertThat(f.getItems()).hasSize(0);
+        assertThat(f.getItems()).hasSize(1);
     }
 }
