@@ -32,13 +32,7 @@ public class ListExprT implements TypedExpression {
     @Override
     public Node toJavaExpression() {
         if (listExpression.getExpressions() == null || listExpression.getExpressions().isEmpty()) {
-            final MethodCallExprT emptyListMethod = new MethodCallExprT(
-                    "emptyList",
-                    Optional.of(new SimpleNameTExpr(Collections.class.getCanonicalName(), Collections.class)),
-                    null,
-                    null,
-                    Optional.of(List.class));
-            return emptyListMethod.toJavaExpression();
+            return new MethodCallExpr(new NameExpr(Collections.class.getCanonicalName()), "emptyList");
         } else {
             return new MethodCallExpr(new NameExpr(List.class.getCanonicalName()), "of", getValueExpressionsFromListElements(listExpression.getExpressions()));
         }
