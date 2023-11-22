@@ -35,15 +35,11 @@ public class AppPaths {
         GRADLE;
 
         public static AppPaths.BuildTool findBuildTool() {
-            String cmd = System.getProperty("sun.java.command");
-            return cmd != null && cmd.contains(GRADLE_CMD)
-                   ? GRADLE
-                   : MAVEN;
+            return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
         }
     }
 
     public static final String TARGET_DIR = "target";
-    public static final String GRADLE_CMD = "GradleDaemon";
 
     private final Set<Path> projectPaths = new LinkedHashSet<>();
     private final Collection<Path> classesPaths = new ArrayList<>();
