@@ -18,6 +18,8 @@
  */
 package org.kie.dmn.kogito.quarkus.example;
 
+import java.io.InputStream;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -29,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
@@ -70,10 +73,9 @@ public class DMNRestResourceTemplate {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String dmn() throws java.io.IOException {
-        return new String(org.drools.util.IoUtils.
-                          readBytesFromInputStream(this.getClass()
-                                                   .getResourceAsStream(org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.escapeIdentifier("$modelName$") + 
-                                                                        ".dmn_nologic")));
+        try (InputStream is = this.getClass().getResourceAsStream(CodegenStringUtil.escapeIdentifier("$modelName$") + ".dmn_nologic")) {
+            return new String(org.drools.util.IoUtils.readBytesFromInputStream(Objects.requireNonNull(is)));
+        }
     }
 
     private ResponseBuilder extractContextIfSucceded(KogitoDMNResult result){

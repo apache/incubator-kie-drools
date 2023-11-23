@@ -18,10 +18,13 @@
  */
 package org.kie.dmn.kogito.quarkus.example;
 
+import java.io.InputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
@@ -73,10 +76,9 @@ public class DMNRestResourceTemplate {
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public String dmn() throws java.io.IOException {
-        return new String(org.drools.util.IoUtils.
-                          readBytesFromInputStream(this.getClass()
-                                                   .getResourceAsStream(org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.escapeIdentifier("$modelName$") + 
-                                                                        ".dmn_nologic")));
+        try (InputStream is = this.getClass().getResourceAsStream(CodegenStringUtil.escapeIdentifier("$modelName$") + ".dmn_nologic")) {
+            return new String(org.drools.util.IoUtils.readBytesFromInputStream(Objects.requireNonNull(is)));
+        }
     }
 
     private Entry<HttpStatus, ?> buildFailedEvaluationResponse(KogitoDMNResult result){
