@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.utils.ConversionUtils.concatPaths;
 import static org.kie.kogito.internal.utils.ConversionUtils.convert;
 import static org.kie.kogito.internal.utils.ConversionUtils.convertToCollection;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeToSimpleName;
 import static org.kie.kogito.internal.utils.ConversionUtils.toCamelCase;
 
 class ConversionUtilsTest {
@@ -137,5 +138,16 @@ class ConversionUtilsTest {
     @Test
     public void testConvertToCollection() {
         assertThat(convertToCollection("1,2,3", Integer.class)).isEqualTo(Arrays.asList(1, 2, 3));
+    }
+
+    @Test
+    public void testSanitizeToSimpleName() {
+        String nameFull = "org.acme.ProcessTest1";
+        String nameSimple = "ProcessTest2";
+        String nameEmpty = "";
+        assertThat(sanitizeToSimpleName(nameFull)).isEqualTo("ProcessTest1");
+        assertThat(sanitizeToSimpleName(nameSimple)).isEqualTo("ProcessTest2");
+        assertThat(sanitizeToSimpleName(nameEmpty)).isEqualTo("");
+        assertThat(sanitizeToSimpleName(null)).isNull();
     }
 }

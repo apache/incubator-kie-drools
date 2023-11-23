@@ -42,6 +42,8 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
 
     private static final String PROCESS_INSTANCES_EVENTS = "kogito-processinstances-events";
 
+    private static final String PROCESS_DEFINITIONS_EVENTS = "kogito-processdefinitions-events";
+
     private static final String USER_TASK_INSTANCES_EVENTS = "kogito-usertaskinstances-events";
 
     private static final String QUARKUS_HTTP_CONNECTOR = "quarkus-http";
@@ -72,6 +74,7 @@ public final class KnativeEventingConfigSourceFactory implements ConfigSourceFac
 
         if (includeProcessEvents(context)) {
             addOutgoingConnector(configuration, PROCESS_INSTANCES_EVENTS);
+            addOutgoingConnector(configuration, PROCESS_DEFINITIONS_EVENTS);
             addOutgoingConnector(configuration, USER_TASK_INSTANCES_EVENTS);
         }
 

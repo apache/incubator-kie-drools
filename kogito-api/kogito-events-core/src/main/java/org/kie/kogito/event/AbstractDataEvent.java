@@ -54,6 +54,8 @@ import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.v03.CloudEventV03;
 import io.cloudevents.core.v1.CloudEventV1;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 /**
  * This is an implementation of the {@link DataEvent} that contains basic common attributes referring to
  * kogito processes metadata.
@@ -61,6 +63,7 @@ import io.cloudevents.core.v1.CloudEventV1;
  * @param <T> the payload class type
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 public abstract class AbstractDataEvent<T> implements DataEvent<T> {
 
     /**

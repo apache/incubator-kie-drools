@@ -39,7 +39,7 @@ class KnativeEventingConfigSourceFactoryTest {
     void getConfigSourcesWithProcessEventsAndDefaultIncomeStream() {
         KnativeEventingConfigSource eventingConfigSource = buildKnativeEventingConfigSource("true", null);
 
-        assertThat(eventingConfigSource.getPropertyNames()).hasSize(8);
+        assertThat(eventingConfigSource.getPropertyNames()).hasSize(10);
         assertProcessEvents(eventingConfigSource);
         assertDefaultIncomingConnector(eventingConfigSource);
         assertDefaultOutgoingConnector(eventingConfigSource);
@@ -49,7 +49,7 @@ class KnativeEventingConfigSourceFactoryTest {
     void getConfigSourcesWithProcessEvents() {
         KnativeEventingConfigSource eventingConfigSource = buildKnativeEventingConfigSource("true", "true");
 
-        assertThat(eventingConfigSource.getPropertyNames()).hasSize(6);
+        assertThat(eventingConfigSource.getPropertyNames()).hasSize(8);
         assertProcessEvents(eventingConfigSource);
         assertDefaultOutgoingConnector(eventingConfigSource);
     }
@@ -88,6 +88,9 @@ class KnativeEventingConfigSourceFactoryTest {
     private static void assertProcessEvents(KnativeEventingConfigSource eventingConfigSource) {
         assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-processinstances-events.connector", "quarkus-http");
         assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-processinstances-events.url", DEFAULT_SINK_CONFIG);
+
+        assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-processdefinitions-events.connector", "quarkus-http");
+        assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-processdefinitions-events.url", DEFAULT_SINK_CONFIG);
 
         assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-usertaskinstances-events.connector", "quarkus-http");
         assertContainsProperty(eventingConfigSource, "mp.messaging.outgoing.kogito-usertaskinstances-events.url", DEFAULT_SINK_CONFIG);

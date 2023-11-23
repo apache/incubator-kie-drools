@@ -35,9 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class KafkaEventPublisher implements EventPublisher {
 
-    private static final String PI_TOPIC_NAME = "kogito-processinstances-events";
-    private static final String UI_TOPIC_NAME = "kogito-usertaskinstances-events";
-
     private static final Logger logger = LoggerFactory.getLogger(KafkaEventPublisher.class);
 
     @Autowired
@@ -52,6 +49,9 @@ public class KafkaEventPublisher implements EventPublisher {
     @Value("${kogito.events.processinstances.enabled:true}")
     private boolean processInstancesEvents;
 
+    @Value("${kogito.events.processdefinitions.enabled:true}")
+    private boolean processDefinitionEvents;
+
     @Value("${kogito.events.usertasks.enabled:true}")
     private boolean userTasksEvents;
 
@@ -64,7 +64,7 @@ public class KafkaEventPublisher implements EventPublisher {
             case "ProcessInstanceSLADataEvent":
             case "ProcessInstanceStateDataEvent":
             case "ProcessInstanceVariableDataEvent":
-                publishToTopic(event, PI_TOPIC_NAME);
+                publishToTopic(event, PROCESS_INSTANCES_TOPIC_NAME);
                 break;
             case "UserTaskInstanceAssignmentDataEvent":
             case "UserTaskInstanceAttachmentDataEvent":
@@ -72,7 +72,12 @@ public class KafkaEventPublisher implements EventPublisher {
             case "UserTaskInstanceDeadlineDataEvent":
             case "UserTaskInstanceStateDataEvent":
             case "UserTaskInstanceVariableDataEvent":
-                publishToTopic(event, UI_TOPIC_NAME);
+                publishToTopic(event, USER_TASK_INSTANCES_TOPIC_NAME);
+                break;
+            case "ProcessDefinitionEvent":
+                if (processDefinitionEvents) {
+                    publishToTopic(event, PROCESS_DEFINITIONS_TOPIC_NAME);
+                }
                 break;
             default:
                 logger.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());

@@ -43,6 +43,7 @@ import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.codegen.core.CodegenUtils;
 import org.kie.kogito.codegen.core.GeneratorConfig;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -108,7 +109,7 @@ public class ProcessResourceGenerator {
         this.context = context;
         this.process = process;
         this.processId = process.getId();
-        this.processName = processId.substring(processId.lastIndexOf('.') + 1);
+        this.processName = ConversionUtils.sanitizeToSimpleName(processId);
         this.resourceClazzName = sanitizeClassName(processName + "Resource");
         this.relativePath = process.getPackageName().replace(".", "/") + "/" + resourceClazzName + ".java";
         this.modelfqcn = modelfqcn;

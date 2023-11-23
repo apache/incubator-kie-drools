@@ -16,26 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addons.quarkus.kubernetes;
+package org.kie.kogito.event.process;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import org.kie.kogito.event.AbstractDataEvent;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+public class ProcessDefinitionDataEvent extends AbstractDataEvent<ProcessDefinitionEventBody> {
 
-@Path("/foo")
-@Produces(MediaType.TEXT_PLAIN)
-public class Foo {
+    public static final String PROCESS_DEFINITION_EVENT = "ProcessDefinitionEvent";
 
-    @Inject
-    @ConfigProperty(name = "my_service")
-    String service;
+    public ProcessDefinitionDataEvent() {
 
-    @GET
-    public String getWorkflowType() {
-        return service;
+    }
+
+    public ProcessDefinitionDataEvent(ProcessDefinitionEventBody body) {
+        super(PROCESS_DEFINITION_EVENT,
+                body.getEndpoint(),
+                body,
+                null,
+                null,
+                body.getId(),
+                null,
+                null,
+                null,
+                null,
+                DATA_CONTENT_TYPE,
+                null);
     }
 }
