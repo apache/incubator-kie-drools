@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
@@ -41,6 +42,7 @@ public class ReactiveMessagingEventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveMessagingEventConsumer.class);
 
     public static final String KOGITO_PROCESSINSTANCES_EVENTS = "kogito-processinstances-events";
+    public static final String KOGITO_PROCESSDEFINITIONS_EVENTS = "kogito-processdefinitions-events";
     public static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
     public static final String KOGITO_JOBS_EVENTS = "kogito-jobs-events";
 
@@ -79,6 +81,12 @@ public class ReactiveMessagingEventConsumer {
                 .onItem().invoke(e -> indexingService.indexJob(e.getData()))
                 .onFailure().invoke(t -> LOGGER.error("Error processing job KogitoJobCloudEvent: {}", t.getMessage(), t))
                 .onItem().ignore().andContinueWithNull();
+    }
+
+    @Incoming(KOGITO_PROCESSDEFINITIONS_EVENTS)
+    public Uni<Void> onProcessDefinitionsEvent(ProcessDefinitionDataEvent event) {
+        //to nothing from now
+        return Uni.createFrom().nullItem();
     }
 
 }
