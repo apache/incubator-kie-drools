@@ -1407,6 +1407,9 @@
                     <ignoreClasses>
                       <!-- Duplication of javax.inject classes is necessary to also support migration to jakarta namespace. -->
                       <ignoreClass>javax.inject.*</ignoreClass>
+                      <!-- Contained in both com.google.inject:guice:jar and com.google.inject:guice:jar:no_aop -->
+                      <!-- and it is impossible to exclude only one of them -->
+                      <ignoreClass>com.google.inject.*</ignoreClass>
                       <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
                       <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
