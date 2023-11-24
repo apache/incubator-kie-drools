@@ -26,6 +26,7 @@ public class ListExprT implements TypedExpression {
 
     @Override
     public Optional<Type> getType() {
+        // TODO - switch to List if possible
         return Optional.of(ArrayList.class);
     }
 
