@@ -45,11 +45,12 @@ public class AppPaths {
     private final Collection<Path> classesPaths = new ArrayList<>();
 
     private final boolean isJar;
+    private final BuildTool bt;
     private final Path resourcesPath;
     private final Path outputTarget;
 
     public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main", outputTarget);
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), "main", outputTarget);
     }
 
     /**
@@ -59,7 +60,7 @@ public class AppPaths {
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "test", Paths.get(projectDir.toString(), TARGET_DIR));
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), "test", Paths.get(projectDir.toString(), TARGET_DIR));
     }
 
     /**
@@ -72,6 +73,7 @@ public class AppPaths {
     protected AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
             String resourcesBasePath, Path outputTarget) {
         this.isJar = isJar;
+        this.bt = bt;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
         this.outputTarget = outputTarget;
@@ -91,7 +93,9 @@ public class AppPaths {
     }
 
     public Path getFirstProjectPath() {
-        return projectPaths.iterator().next();
+        return bt == BuildTool.MAVEN
+               ? projectPaths.iterator().next()
+               : outputTarget;
     }
 
     private Path[] getJarPaths() {
