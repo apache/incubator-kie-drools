@@ -258,6 +258,11 @@ public class ResourceType implements Serializable {
                                                                       "src/main/resources",
                                                                       "no_op");
 
+    public static final ResourceType YAML = addResourceTypeToRegistry("YAML",
+                                                                      "YAML format DRL",
+                                                                      "src/main/resources",
+                                                                      "drl.yaml", "drl.yml");
+
     public static ResourceType determineResourceType(final String resourceName) {
         for ( Map.Entry<String, ResourceType> entry : CACHE.entrySet() ) {
             if (resourceName.endsWith(entry.getKey())) {

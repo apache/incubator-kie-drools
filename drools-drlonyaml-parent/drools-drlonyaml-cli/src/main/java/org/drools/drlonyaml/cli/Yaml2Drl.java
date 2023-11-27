@@ -18,9 +18,6 @@
  */
 package org.drools.drlonyaml.cli;
 
-import static org.drools.drlonyaml.cli.utils.Utils.conventionInputStream;
-import static org.drools.drlonyaml.cli.utils.Utils.conventionOutputConsumer;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -28,14 +25,13 @@ import java.util.concurrent.Callable;
 import org.drools.drlonyaml.model.DrlPackage;
 import org.drools.drlonyaml.todrl.YAMLtoDrlDumper;
 import org.drools.util.IoUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
-
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+
+import static org.drools.drlonyaml.cli.utils.Utils.conventionInputStream;
+import static org.drools.drlonyaml.cli.utils.Utils.conventionOutputConsumer;
+import static org.drools.drlonyaml.model.Utils.getYamlMapper;
 
 /**
  * Note: beyond different annotations, Parameters and Options are managed per subcommand,
@@ -51,14 +47,6 @@ public class Yaml2Drl implements Callable<Integer> {
     private File inputFile;
     private InputStream inputStream;
     
-    private static final ObjectMapper mapper;
-    static {
-        YAMLFactory yamlFactory = YAMLFactory.builder()
-                .enable(Feature.MINIMIZE_QUOTES)
-                .build();
-        mapper = new ObjectMapper(yamlFactory);
-    }
-    
     @Override
     public Integer call() throws Exception {
         inputStream = conventionInputStream(inputFile);
@@ -69,7 +57,7 @@ public class Yaml2Drl implements Callable<Integer> {
     }
     
     public static String yaml2drl(String yaml) throws Exception {
-        DrlPackage readValue = mapper.readValue(yaml, DrlPackage.class);
+        DrlPackage readValue = getYamlMapper().readValue(yaml, DrlPackage.class);
         final String drlText = YAMLtoDrlDumper.dumpDRL(readValue);
         return drlText;
     }
