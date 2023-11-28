@@ -97,8 +97,8 @@ jenkins:
   agent:
     docker:
       builder:
-        image: quay.io/kiegroup/kogito-ci-build:19a0b303bc64f473a01f5fa5bacde822f10b4946 # last main-latest based on ubi
-        args: -v /var/run/docker.sock:/var/run/docker.sock --network host --group-add docker --group-add input --group-add render
+        image: quay.io/kiegroup/kogito-ci-build:main-latest
+        args: --privileged --group-add docker
   default_tools:
     jdk: jdk_11_latest
     maven: maven_3.8.6
