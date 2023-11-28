@@ -26,21 +26,17 @@ import com.github.javaparser.utils.Pair;
 import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvelcompiler.ast.ListExprT;
-import org.drools.mvelcompiler.ast.MapExprT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.DeclaredFunction;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.util.ClassUtils;
-import org.drools.util.MethodUtils;
+import org.drools.mvelcompiler.util.MethodResolutionUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -66,9 +62,8 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
         final Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
         final TypedExpression name = n.getName().accept(this, new RHSPhase.Context(scope.orElse(null)));
         final Pair<List<TypedExpression>, List<Integer>> typedArgumentsResult = getTypedArguments(n.getArguments(), arg);
-        final Class<?>[] argumentsTypes = parametersType(typedArgumentsResult.a);
         return parseMethodFromDeclaredFunction(n, typedArgumentsResult.a)
-                .orElseGet(() -> parseMethod(n, scope, name, typedArgumentsResult.a, argumentsTypes, typedArgumentsResult.b));
+                .orElseGet(() -> parseMethod(n, scope, name, typedArgumentsResult.a, typedArgumentsResult.b));
     }
 
     private Pair<List<TypedExpression>, List<Integer>> getTypedArguments(final NodeList<Expression> arguments, RHSPhase.Context arg) {
@@ -118,12 +113,12 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
                                         Optional<TypedExpression> scope,
                                         TypedExpression name,
                                         List<TypedExpression> arguments,
-                                        Class<?>[] argumentsType,
                                         List<Integer> emptyCollectionArgumentIndexes) {
-        Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult = resolveMethod(n, scope, argumentsType);
+        Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult =
+                MethodResolutionUtils.resolveMethod(n, mvelCompilerContext, scope, arguments);
         // This is a workaround for mvel empty list and map ambiguity, please see the description in getTypedArguments() method.
         if (resolveMethodResult.a.isEmpty() && !emptyCollectionArgumentIndexes.isEmpty()) {
-            resolveMethodResult = resolveMethodWithEmptyCollectionArguments(n, resolveMethodResult.b, arguments, argumentsType, emptyCollectionArgumentIndexes);
+            resolveMethodResult = MethodResolutionUtils.resolveMethodWithEmptyCollectionArguments(n, mvelCompilerContext, resolveMethodResult.b, arguments, emptyCollectionArgumentIndexes);
         }
         final Optional<Method> finalMethod = resolveMethodResult.a;
         final Optional<TypedExpression> finalScope = resolveMethodResult.b;
@@ -134,86 +129,5 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
 
         return new MethodCallExprT(n.getName().asString(), finalScope, arguments,
                                    actualArgumentType, methodReturnType);
-    }
-
-    private Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodWithEmptyCollectionArguments(final MethodCallExpr n,
-            final Optional<TypedExpression> scope,
-            List<TypedExpression> arguments,
-            final Class<?>[] argumentsType,
-            List<Integer> emptyListArgumentIndexes) {
-        // Rather work only with the argumentsType and when a method is resolved, flip the arguments list based on it.
-        final List<Class<?>> coercedArgumentsTypesList = new ArrayList<>(Arrays.asList(argumentsType));
-        // This needs to go through all possible combinations.
-        final int indexesListSize = emptyListArgumentIndexes.size();
-        for (int numberOfProcessedIndexes = 0; numberOfProcessedIndexes < indexesListSize; numberOfProcessedIndexes++) {
-            for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
-                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
-                Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult = resolveMethod(n, scope, coercedArgumentsTypesList.toArray(new Class[0]));
-                if (resolveMethodResult.a.isPresent()) {
-                    modifyArgumentsBasedOnCoercedCollectionArguments(arguments, argumentsType, coercedArgumentsTypesList);
-                    return resolveMethodResult;
-                }
-                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
-            }
-            switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(numberOfProcessedIndexes));
-        }
-        // No method found, return empty.
-        return new Pair<>(Optional.empty(), scope);
-    }
-
-    private void switchCollectionClassInArgumentsByIndex(final List<Class<?>> argumentsTypesList, final int index) {
-        if (argumentsTypesList.get(index).equals(List.class)) {
-             argumentsTypesList.set(index, Map.class);
-        } else {
-            argumentsTypesList.set(index, List.class);
-        }
-    }
-
-    private void modifyArgumentsBasedOnCoercedCollectionArguments(final List<TypedExpression> arguments, final Class<?>[] argumentsType, final List<Class<?>> coercedCollectionArguments) {
-        int index = 0;
-        for (Class<?> coercedClass : coercedCollectionArguments) {
-            if (!coercedClass.equals(argumentsType[index])) {
-                // Originally the resolved type was a List, so if it is different, it is a Map.
-                argumentsType[index] = coercedClass;
-                if (coercedClass.equals(List.class)) {
-                    arguments.set(index, new ListExprT(new ListCreationLiteralExpression(null, NodeList.nodeList())));
-                } else {
-                    arguments.set(index, new MapExprT(new MapCreationLiteralExpression(null, NodeList.nodeList())));
-                }
-            }
-            index++;
-        }
-    }
-
-    private Pair<Optional<Method>, Optional<TypedExpression>> resolveMethod(final MethodCallExpr n,
-            final Optional<TypedExpression> scope,
-            final Class<?>[] argumentsType) {
-        Optional<TypedExpression> finalScope = scope;
-        Optional<Method> resolvedMethod;
-        resolvedMethod = finalScope.flatMap(TypedExpression::getType)
-                .<Class<?>>map(ClassUtils::classFromType)
-                .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
-
-        if (resolvedMethod.isEmpty()) {
-            resolvedMethod = mvelCompilerContext.getRootPattern()
-                    .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
-            if (resolvedMethod.isPresent()) {
-                finalScope = mvelCompilerContext.createRootTypePrefix();
-            }
-        }
-
-        if (resolvedMethod.isEmpty()) {
-            resolvedMethod = mvelCompilerContext.findStaticMethod(n.getNameAsString());
-        }
-        return new Pair<>(resolvedMethod, finalScope);
-    }
-
-    private Class<?>[] parametersType(List<TypedExpression> arguments) {
-        return arguments.stream()
-                .map(TypedExpression::getType)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(ClassUtils::classFromType)
-                .toArray(Class[]::new);
     }
 }
