@@ -38,6 +38,7 @@ import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
@@ -76,6 +77,7 @@ public class ProcessesAssetsProcessor extends WorkflowProcessor {
                 ProcessInstanceStateDataEvent.class.getName(),
                 ProcessInstanceVariableEventBody.class.getName(),
                 ProcessInstanceVariableDataEvent.class.getName(),
+                UserTaskInstanceDataEvent.class.getName(),
                 UserTaskInstanceAssignmentEventBody.class.getName(),
                 UserTaskInstanceAssignmentDataEvent.class.getName(),
                 UserTaskInstanceAttachmentEventBody.class.getName(),
