@@ -60,9 +60,14 @@ git:
     # Need to be verified
     credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
     token_credentials_id: ci-builds
+    push:
+      credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2 # CI Push Access for KIE
+      token_credentials_id: 41128c14-bb63-4708-9074-d20a318ee630 # GitHub Personal Access Token for KIE
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
+    push:
+      credentials_id: kie-ci
   quarkus:
     author:
       name: quarkusio
