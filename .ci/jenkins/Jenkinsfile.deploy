@@ -70,7 +70,7 @@ pipeline {
                 script {
                     dir(getRepoName()) {
                         if (githubscm.isBranchExist('origin',getPRBranch())) {
-                            githubscm.removeRemoteBranch('origin', getPRBranch())
+                            githubscm.removeRemoteBranch('origin', getPRBranch(), getGitAuthorPushCredsId())
                         }
                         githubscm.createBranch(getPRBranch())
                     }
@@ -186,7 +186,7 @@ void saveReports() {
 
 void checkoutRepo() {
     deleteDir()
-    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${getBuildBranch()}"
 }
@@ -199,8 +199,8 @@ void commitAndCreatePR() {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('antora.yml')
     })
-    githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
-    deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsID())
+    githubscm.pushObject('origin', getPRBranch(), getGitAuthorPushCredsId())
+    deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsId())
 }
 
 void sendNotification() {
@@ -248,8 +248,12 @@ String getPRBranch() {
     return params.DROOLS_PR_BRANCH
 }
 
-String getGitAuthorCredsID() {
-    return env.AUTHOR_CREDS_ID
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {

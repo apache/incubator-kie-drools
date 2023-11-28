@@ -57,11 +57,11 @@ pipeline {
                 script {
                     dir(getRepoName()) {
                         checkoutRepo()
-                        if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
-                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsID())
+                        if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsId())) {
+                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsId())
                         }
-                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorCredsID())
-                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorCredsId())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsId())
                     }
                 }
             }
@@ -167,8 +167,12 @@ String getGitAuthor() {
     return env.GIT_AUTHOR
 }
 
-String getGitAuthorCredsID() {
-    return env.AUTHOR_CREDS_ID
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 String getDeployPrLink() {
@@ -181,21 +185,21 @@ String getDeployPrLink() {
 
 void checkoutRepo() {
     deleteDir()
-    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${getBuildBranch()}"
 }
 
 void mergeAndPush(String prLink) {
     if (prLink) {
-        githubscm.mergePR(prLink, getGitAuthorCredsID())
-        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+        githubscm.mergePR(prLink, getGitAuthorCredsId())
+        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorPushCredsId())
     }
 }
 
 void tagLatest() {
     if (getGitTag()) {
-        githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorCredsID(), env.BUILD_TAG, true)
+        githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorPushCredsId(), env.BUILD_TAG, true)
     }
 }
 
