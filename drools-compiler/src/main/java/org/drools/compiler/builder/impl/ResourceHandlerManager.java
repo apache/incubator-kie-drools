@@ -26,6 +26,7 @@ import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.builder.impl.resources.DslrResourceHandler;
 import org.drools.compiler.builder.impl.resources.ResourceHandler;
 import org.drools.compiler.builder.impl.resources.TemplateResourceHandler;
+import org.drools.compiler.builder.impl.resources.YamlResourceHandler;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
@@ -39,12 +40,14 @@ public class ResourceHandlerManager {
     public ResourceHandlerManager(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, Supplier<DefaultExpander> dslExpander){
         this.mappers = asList(
                 new DrlResourceHandler(configuration),
+                new YamlResourceHandler(configuration),
                 new TemplateResourceHandler(configuration, releaseId, dslExpander),
                 new DslrResourceHandler(configuration, dslExpander) ,
                 new DecisionTableResourceHandler(configuration, releaseId));
 
         this.orderedResourceTypes = asList(
                 ResourceType.DRL,
+                ResourceType.YAML,
                 ResourceType.GDRL,
                 ResourceType.RDRL,
                 ResourceType.DESCR,
@@ -57,10 +60,6 @@ public class ResourceHandlerManager {
 
     public List<ResourceType> getOrderedResourceTypes(){
         return this.orderedResourceTypes;
-    }
-
-    public List<ResourceHandler> getMappers(){
-        return this.mappers;
     }
 
     public ResourceHandler handlerForType(ResourceType type) {
