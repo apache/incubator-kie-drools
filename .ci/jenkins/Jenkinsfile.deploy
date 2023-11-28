@@ -316,7 +316,7 @@ void checkoutRepo(String repo, String dirName = repo) {
         if (params.PR_TARGET_BRANCH) {
             githubscm.checkoutIfExists(repo, getGitAuthor(), getBuildBranch(), 'apache', getFallbackBranch(repo), true)
         } else {
-            checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
+            checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
         }
     }
 }
@@ -327,7 +327,7 @@ void checkoutQuickstarts(String dirName = quickstartsRepository) {
         if (params.PR_TARGET_BRANCH) {
             githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getBuildBranch(), 'apache', getQuickStartsBranch(), true)
         } else {
-            checkout(githubscm.resolveRepository(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), false))
+            checkout(githubscm.resolveRepository(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), false, getGitAuthorCredsId()))
         }
     }
 }
@@ -358,10 +358,10 @@ void commitAndCreatePR(String folder, String repo, String buildBranch) {
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
             githubscm.findAndStageNotIgnoredFiles('antora.yml')
         })
-        githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
+        githubscm.pushObject('origin', getPRBranch(), getGitAuthorPushCredsId())
         deployProperties["${repo}.pr.link"] = isRelease() ?
-                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getGitAuthorCredsID()) :
-                githubscm.createPR(commitMsg, prBody, buildBranch, getGitAuthorCredsID())
+                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getGitAuthorCredsId()) :
+                githubscm.createPR(commitMsg, prBody, buildBranch, getGitAuthorCredsId())
     }
 }
 
@@ -478,8 +478,12 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
-String getGitAuthorCredsID() {
-    return env.AUTHOR_CREDS_ID
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 String getBuildBranch() {

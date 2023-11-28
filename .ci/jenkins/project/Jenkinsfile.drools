@@ -133,7 +133,7 @@ void sendErrorNotification() {
 
 void checkoutOptaplannerRepo() {
     dir(optaplannerRepo) {
-        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getBuildBranch(), false))
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getBuildBranch(), false, getGitAuthorCredsId()))
     }
 }
 
@@ -143,13 +143,13 @@ void checkoutOptaplannerQuickstartsRepo() {
             ? 'development' : getBuildBranch()
 
     dir(quickstartsRepo) {
-        checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
+        checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false, getGitAuthorCredsId()))
     }
 }
 
 void checkoutDroolsRepo() {
     dir(droolsRepo) {
-        checkout(githubscm.resolveRepository(droolsRepo, 'apache', getDroolsBranch(), false))
+        checkout(githubscm.resolveRepository(droolsRepo, 'apache', getDroolsBranch(), false, getGitAuthorCredsId()))
     }
 }
 
@@ -168,6 +168,10 @@ String getBuildBranch() {
 
 String getDroolsBranch() {
     return env['DROOLS_BRANCH'] ?: 'main'
+}
+
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
 }
 
 void cleanContainers() {

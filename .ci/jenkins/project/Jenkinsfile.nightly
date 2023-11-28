@@ -190,21 +190,21 @@ String getGitAuthor() {
     return env.GIT_AUTHOR
 }
 
-String getGitAuthorCredsID() {
-    return env.AUTHOR_CREDS_ID
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
 }
 
 void checkoutNewBranch(String repo, String originBranch, String newBranch, String dirName = repo) {
     dir(dirName) {
         deleteDir()
-        checkout(githubscm.resolveRepository(repo, getGitAuthor(), originBranch, false))
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), originBranch, false, getGitAuthorCredsId()))
         sh "git checkout -b ${newBranch}"
     }
 }
 
 void forcePushBranch(String dirName, String branch) {
     dir(dirName) {
-        withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+        withCredentials([usernamePassword(credentialsId: getGitAuthorCredsId(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
             // Please leave the double-quote here. They are mandatory for the shell command to work correctly.
             sh """
             git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
