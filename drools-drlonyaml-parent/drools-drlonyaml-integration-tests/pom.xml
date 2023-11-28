@@ -21,21 +21,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>drools-build-parent</artifactId>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-drlonyaml-parent</artifactId>
     <version>8.45.0-SNAPSHOT</version>
-    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
-  <groupId>org.drools</groupId>
-  <artifactId>drools-drlonyaml-parent</artifactId>
-  <name>Drools :: DRL on YAML</name>
-  <packaging>pom</packaging>
-  <modules>
-    <module>drools-drlonyaml-schemagen</module>
-    <module>drools-drlonyaml-model</module>
-    <module>drools-drlonyaml-todrl</module>
-    <module>drools-drlonyaml-cli</module>
-    <module>drools-drlonyaml-cli-tests</module>
-    <module>drools-drlonyaml-integration-tests</module>
-  </modules>
+  <artifactId>drools-drlonyaml-integration-tests</artifactId>
+  <name>Drools :: DRL on YAML :: Integration Tests</name>
+
+  <properties>
+    <java.module.name>org.drools.drlonyaml.integration.tests</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drlonyaml-todrl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
