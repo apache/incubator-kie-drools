@@ -18,20 +18,30 @@
  */
 package org.drools.drl.extensions;
 
+import org.drools.base.common.MissingDependencyException;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
 
 public class YamlFactory {
+
+    private static final String NO_YAML = "You're trying to parse a rule file in YAML format without having drools yaml support. Please add the module org.drools:drools-drlonyaml-todrl to your classpath.";
 
     private static class YamlProviderHolder {
         private static final YamlProvider provider = KieService.load(YamlProvider.class);
     }
 
     public static YamlProvider getYamlProvider() {
+        if (YamlProviderHolder.provider == null) {
+            throwExceptionForMissingYaml();
+        }
         return YamlProviderHolder.provider;
     }
 
     public static String loadFromResource(Resource resource) {
         return getYamlProvider().loadFromResource(resource);
+    }
+
+    private static void throwExceptionForMissingYaml() {
+        throw new MissingDependencyException(NO_YAML);
     }
 }

@@ -1,0 +1,14 @@
+
+name: it.pkg
+globals:
+- type: java.util.Set
+  id: controlSet
+rules:
+- name: will execute per each Measurement having ID color
+  when:
+  - given: Measurement
+    having:
+    - id == "color"
+    - "$colorVal : val"
+  then: |
+    controlSet.add($colorVal);
