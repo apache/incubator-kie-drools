@@ -18,6 +18,9 @@
  */
 package org.drools.codegen.common.di;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -28,9 +31,6 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Generic abstraction for dependency injection annotations that allow to
@@ -183,7 +183,7 @@ public interface DependencyInjectionAnnotator {
                 rolesExpr.add(new StringLiteralExpr(role.trim()));
             }
 
-            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
+            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("jakarta.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
         }
         return node;
     }

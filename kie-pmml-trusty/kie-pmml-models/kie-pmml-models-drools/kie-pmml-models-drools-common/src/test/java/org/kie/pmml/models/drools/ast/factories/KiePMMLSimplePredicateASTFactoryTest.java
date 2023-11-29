@@ -67,7 +67,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
                 currentRule,
-                fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+                fieldTypeMap.get(simplePredicate.getField()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertThat(retrieved.getName()).isEqualTo(expectedRule);
         assertThat(retrieved.getStatusToSet()).isEqualTo(DONE);
@@ -135,7 +135,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertThat(retrieved).isNotNull();
         String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN,
                 currentRule,
-                fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+                fieldTypeMap.get(simplePredicate.getField()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertThat(retrieved.getName()).isEqualTo(expectedRule);
         assertThat(retrieved.getStatusToSet()).isEqualTo(currentRule);

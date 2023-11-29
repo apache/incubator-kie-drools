@@ -614,7 +614,7 @@ public class KiePMMLModelFactoryUtils {
         BlockStmt body = new BlockStmt();
         NodeList<Expression> arguments = new NodeList<>();
         for (org.dmg.pmml.MiningField miningField : miningFields) {
-            String miningFieldVariableName = getSanitizedVariableName(miningField.getName().getValue()).toLowerCase();
+            String miningFieldVariableName = getSanitizedVariableName(miningField.getName()).toLowerCase();
             BlockStmt toAdd = getMiningFieldVariableDeclaration(miningFieldVariableName, miningField, fields);
             toAdd.getStatements().forEach(body::addStatement);
             arguments.add(new NameExpr(miningFieldVariableName));
@@ -634,7 +634,7 @@ public class KiePMMLModelFactoryUtils {
         BlockStmt body = new BlockStmt();
         NodeList<Expression> arguments = new NodeList<>();
         for (org.dmg.pmml.OutputField outputField : outputFields) {
-            String outputFieldVariableName = getSanitizedVariableName(outputField.getName().getValue()).toLowerCase();
+            String outputFieldVariableName = getSanitizedVariableName(outputField.getName()).toLowerCase();
             BlockStmt toAdd = getOutputFieldVariableDeclaration(outputFieldVariableName, outputField);
             toAdd.getStatements().forEach(body::addStatement);
             arguments.add(new NameExpr(outputFieldVariableName));

@@ -18,7 +18,7 @@
  */
 package org.drools.commands.runtime;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.drools.core.QueryResultsImpl;
 

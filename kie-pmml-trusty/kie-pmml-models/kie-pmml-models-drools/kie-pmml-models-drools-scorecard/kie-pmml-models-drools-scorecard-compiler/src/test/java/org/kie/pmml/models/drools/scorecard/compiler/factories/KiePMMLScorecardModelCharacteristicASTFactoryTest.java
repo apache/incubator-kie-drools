@@ -370,7 +370,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         DATA_TYPE dataType = dataDictionary.getDataFields().stream().filter(dataField -> dataField.getName().equals(simplePredicate.getField()))
                 .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Failed to find DataField for " + simplePredicate.getField().getValue()));
+                .orElseThrow(() -> new RuntimeException("Failed to find DataField for " +simplePredicate.getField()));
         return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
     }
 

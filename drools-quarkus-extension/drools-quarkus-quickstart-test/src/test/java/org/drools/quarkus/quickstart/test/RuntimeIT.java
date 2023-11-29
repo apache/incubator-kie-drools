@@ -18,7 +18,7 @@
  */
 package org.drools.quarkus.quickstart.test;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.drools.quarkus.quickstart.test.model.Alert;

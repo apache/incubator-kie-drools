@@ -28,8 +28,8 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.DataSource;
 import javax.sql.XAConnection;
 import javax.sql.XADataSource;
-import javax.transaction.TransactionManager;
-import javax.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.xa.XAResource;
 
 import com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule;

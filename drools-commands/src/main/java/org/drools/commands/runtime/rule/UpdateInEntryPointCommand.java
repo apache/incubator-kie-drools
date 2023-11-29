@@ -20,8 +20,8 @@ package org.drools.commands.runtime.rule;
 
 import java.util.Arrays;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.command.ExecutableCommand;

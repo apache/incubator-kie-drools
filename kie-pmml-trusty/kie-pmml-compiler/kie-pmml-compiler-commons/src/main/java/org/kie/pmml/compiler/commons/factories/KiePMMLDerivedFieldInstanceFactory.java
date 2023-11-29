@@ -52,10 +52,9 @@ public class KiePMMLDerivedFieldInstanceFactory {
 
     static KiePMMLDerivedField getKiePMMLDerivedField(final DerivedField derivedField,
                                                       final List<Field<?>> fields) {
-        DataType dataType = derivedField.getDataType() != null ? derivedField.getDataType() : getDataType(fields,
-                                                                                                          derivedField.getName().getValue());
+        DataType dataType = derivedField.getDataType() != null ? derivedField.getDataType() : getDataType(fields,derivedField.getName());
         OP_TYPE opType = derivedField.getOpType() != null ? OP_TYPE.byName(derivedField.getOpType().value()) : null;
-        return KiePMMLDerivedField.builder(derivedField.getName().getValue(),
+        return KiePMMLDerivedField.builder(derivedField.getName(),
                                            getKiePMMLExtensions(derivedField.getExtensions()),
                                            DATA_TYPE.byName(dataType.value()),
                                            opType,

@@ -31,6 +31,7 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompareFunction;
 import org.dmg.pmml.ComparisonMeasure;
+import org.dmg.pmml.ComplexScoreDistribution;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
@@ -43,7 +44,6 @@ import org.dmg.pmml.DiscretizeBin;
 import org.dmg.pmml.Euclidean;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldColumnPair;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.Interval;
@@ -89,8 +89,8 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
-import org.jpmml.model.inlinetable.InputCell;
-import org.jpmml.model.inlinetable.OutputCell;
+import org.jpmml.model.cells.InputCell;
+import org.jpmml.model.cells.OutputCell;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
@@ -194,7 +194,7 @@ public class PMMLModelTestUtils {
         miningSchema.addMiningFields(predictedMiningField);
         Output output = new Output();
         OutputField outputField = new OutputField();
-        outputField.setName(FieldName.create("OUTPUT_" + lastDataField.getName().getValue()));
+        outputField.setName("OUTPUT_" +lastDataField.getName());
         outputField.setDataType(lastDataField.getDataType());
         outputField.setOpType(getRandomOpType());
         toReturn.setModelName(RandomStringUtils.random(6, true, false));
@@ -222,7 +222,7 @@ public class PMMLModelTestUtils {
         miningSchema.addMiningFields(predictedMiningField);
         Output output = new Output();
         OutputField outputField = new OutputField();
-        outputField.setName(FieldName.create("OUTPUT_" + lastDataField.getName().getValue()));
+        outputField.setName("OUTPUT_" +lastDataField.getName());
         outputField.setDataType(lastDataField.getDataType());
         outputField.setOpType(getRandomOpType());
         toReturn.setModelName(RandomStringUtils.random(6, true, false));
@@ -282,7 +282,7 @@ public class PMMLModelTestUtils {
 
     public static CategoricalPredictor getCategoricalPredictor(String name, double value, double coefficient) {
         CategoricalPredictor toReturn = new CategoricalPredictor();
-        toReturn.setField(FieldName.create(name));
+        toReturn.setField(name);
         toReturn.setValue(value);
         toReturn.setCoefficient(coefficient);
         return toReturn;
@@ -290,7 +290,7 @@ public class PMMLModelTestUtils {
 
     public static NumericPredictor getNumericPredictor(String name, int exponent, double coefficient) {
         NumericPredictor toReturn = new NumericPredictor();
-        toReturn.setField(FieldName.create(name));
+        toReturn.setField(name);
         toReturn.setExponent(exponent);
         toReturn.setCoefficient(coefficient);
         return toReturn;
@@ -298,7 +298,7 @@ public class PMMLModelTestUtils {
 
     public static PredictorTerm getPredictorTerm(String name, double coefficient, List<String> fieldRefNames) {
         PredictorTerm toReturn = new PredictorTerm();
-        toReturn.setName(FieldName.create(name));
+        toReturn.setName(name);
         toReturn.setCoefficient(coefficient);
         toReturn.addFieldRefs(fieldRefNames.stream().map(PMMLModelTestUtils::getFieldRef).toArray(FieldRef[]::new));
         return toReturn;
@@ -323,7 +323,7 @@ public class PMMLModelTestUtils {
 
     public static DataField getDataField(String fieldName, OpType opType) {
         DataField toReturn = new DataField();
-        toReturn.setName(FieldName.create(fieldName));
+        toReturn.setName(fieldName);
         toReturn.setOpType(opType);
         return toReturn;
     }
@@ -336,14 +336,14 @@ public class PMMLModelTestUtils {
 
     public static MiningField getMiningField(String fieldName, MiningField.UsageType usageType) {
         MiningField toReturn = getRandomMiningField();
-        toReturn.setName(FieldName.create(fieldName));
+        toReturn.setName(fieldName);
         toReturn.setUsageType(usageType);
         return toReturn;
     }
 
     public static Target getTarget(String fieldTarget, OpType opType) {
         Target toReturn = new Target();
-        toReturn.setField(FieldName.create(fieldTarget));
+        toReturn.setField(fieldTarget);
         toReturn.setOpType(opType);
         return toReturn;
     }
@@ -362,7 +362,7 @@ public class PMMLModelTestUtils {
 
     public static DerivedField getDerivedField(String fieldName) {
         DerivedField toReturn = new DerivedField();
-        toReturn.setName(FieldName.create(fieldName));
+        toReturn.setName(fieldName);
         toReturn.setDataType(getRandomDataType());
         toReturn.setOpType(getRandomOpType());
         Constant expression = new Constant(5);
@@ -386,7 +386,7 @@ public class PMMLModelTestUtils {
 
     public static DataField getRandomDataField() {
         DataField toReturn = new DataField();
-        toReturn.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setName(RandomStringUtils.random(6, true, false));
         toReturn.setDataType(getRandomDataType());
         toReturn.setOpType(getRandomOpType());
         IntStream.range(0, 3).forEach(i -> {
@@ -413,7 +413,7 @@ public class PMMLModelTestUtils {
 
     public static MiningField getRandomMiningField() {
         Random random = new Random();
-        MiningField toReturn = new MiningField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        MiningField toReturn = new MiningField(RandomStringUtils.random(6, true, false));
         toReturn.setInvalidValueTreatment(getRandomInvalidValueTreatmentMethod());
         toReturn.setMissingValueTreatment(getRandomMissingValueTreatmentMethod());
         toReturn.setOutlierTreatment(getRandomOutlierTreatmentMethod());
@@ -436,13 +436,13 @@ public class PMMLModelTestUtils {
     }
 
     public static OutputField getRandomOutputField() {
-        FieldName fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
+         String fieldName =RandomStringUtils.random(6, true, false);
         OutputField toReturn = new OutputField();
         toReturn.setName(fieldName);
         toReturn.setOpType(getRandomOpType());
         toReturn.setDataType(getRandomDataType());
         toReturn.setValue(getRandomValue(toReturn.getDataType()));
-        fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
+        fieldName =RandomStringUtils.random(6, true, false);
         toReturn.setTargetField(fieldName);
         toReturn.setResultFeature(getRandomResultFeature());
         toReturn.setExpression(getRandomConstant());
@@ -452,7 +452,7 @@ public class PMMLModelTestUtils {
     public static Target getRandomTarget() {
         Random random = new Random();
         Target toReturn = new Target();
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setOpType(getRandomOpType());
         toReturn.setMax(random.nextInt(234));
         toReturn.setMin(random.nextInt(23));
@@ -476,7 +476,7 @@ public class PMMLModelTestUtils {
 
     public static FieldColumnPair getRandomFieldColumnPair() {
         FieldColumnPair toReturn = new FieldColumnPair();
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setColumn(RandomStringUtils.random(6, true, false));
         return toReturn;
     }
@@ -493,7 +493,7 @@ public class PMMLModelTestUtils {
         Random random = new Random();
         ClusteringField toReturn = new ClusteringField();
         toReturn.setCenterField(getRandomClusteringFieldCenterField());
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setCompareFunction(getRandomCompareFunction());
         toReturn.setFieldWeight(random.nextDouble());
         toReturn.setComparisons(getRandomComparisons());
@@ -531,7 +531,7 @@ public class PMMLModelTestUtils {
         Discretize toReturn = new Discretize();
         toReturn.setDataType(getRandomDataType());
         toReturn.setDefaultValue(RandomStringUtils.random(6, true, false));
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setMapMissingTo(RandomStringUtils.random(6, true, false));
         IntStream.range(0, 3).forEach(i -> toReturn.addDiscretizeBins(getRandomDiscretizeBin()));
         return toReturn;
@@ -539,7 +539,7 @@ public class PMMLModelTestUtils {
 
     public static FieldRef getRandomFieldRef() {
         FieldRef toReturn = new FieldRef();
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setMapMissingTo(RandomStringUtils.random(6, true, false));
         return toReturn;
     }
@@ -565,7 +565,7 @@ public class PMMLModelTestUtils {
         double mapMissingTo = random.nextInt(100) / 10;
         NormContinuous toReturn = new NormContinuous();
         IntStream.range(0, 3).forEach(i -> toReturn.addLinearNorms(getRandomLinearNorm()));
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setOutliers(getRandomOutlierTreatmentMethod());
         toReturn.setMapMissingTo(mapMissingTo);
         return toReturn;
@@ -573,7 +573,7 @@ public class PMMLModelTestUtils {
 
     public static NormDiscrete getRandomNormDiscrete() {
         NormDiscrete toReturn = new NormDiscrete();
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setValue(getRandomObject(DataType.INTEGER));
         toReturn.setMapMissingTo((Number) getRandomObject(DataType.INTEGER));
         toReturn.setMethod(getRandomMethod());
@@ -583,14 +583,14 @@ public class PMMLModelTestUtils {
     public static TextIndex getRandomTextIndex() {
         Random random = new Random();
         TextIndex toReturn = new TextIndex();
-        toReturn.setField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setField(RandomStringUtils.random(6, true, false));
         toReturn.setExpression(getRandomFieldRef());
         toReturn.setLocalTermWeights(getRandomLocalTermWeights());
         toReturn.setWordSeparatorCharacterRE(RandomStringUtils.random(1, true, false));
         toReturn.setTokenize(true);
         toReturn.setCaseSensitive(false);
         toReturn.setMaxLevenshteinDistance(random.nextInt(10));
-        toReturn.setTextField(FieldName.create(RandomStringUtils.random(6, true, false)));
+        toReturn.setTextField(RandomStringUtils.random(6, true, false));
         IntStream.range(0, 3).forEach(i -> toReturn.addTextIndexNormalizations(getRandomTextIndexNormalization()));
         return toReturn;
     }
@@ -603,7 +603,7 @@ public class PMMLModelTestUtils {
     }
 
     public static ParameterField getParameterField(String fieldName) {
-        ParameterField toReturn = new ParameterField(FieldName.create(fieldName));
+        ParameterField toReturn = new ParameterField(fieldName);
         toReturn.setDataType(getRandomDataType());
         toReturn.setOpType(getRandomOpType());
         toReturn.setDisplayName("Display-" + fieldName);
@@ -611,7 +611,7 @@ public class PMMLModelTestUtils {
     }
 
     public static ParameterField getParameterField(String fieldName, DataType dataType) {
-        ParameterField toReturn = new ParameterField(FieldName.create(fieldName));
+        ParameterField toReturn = new ParameterField(fieldName);
         toReturn.setDataType(dataType);
         return toReturn;
     }
@@ -638,7 +638,7 @@ public class PMMLModelTestUtils {
     public static SimplePredicate getSimplePredicate(final String predicateName,
                                                      final Object value,
                                                      final SimplePredicate.Operator operator) {
-        FieldName fieldName = FieldName.create(predicateName);
+         String fieldName =predicateName;
         SimplePredicate toReturn = new SimplePredicate();
         toReturn.setField(fieldName);
         toReturn.setOperator(operator);
@@ -657,7 +657,7 @@ public class PMMLModelTestUtils {
                                                            final Array.Type arrayType,
                                                            final List<String> values,
                                                            final SimpleSetPredicate.BooleanOperator booleanOperator) {
-        FieldName fieldName = FieldName.create(predicateName);
+         String fieldName =predicateName;
         SimpleSetPredicate toReturn = new SimpleSetPredicate();
         toReturn.setField(fieldName);
         toReturn.setBooleanOperator(booleanOperator);
@@ -674,7 +674,7 @@ public class PMMLModelTestUtils {
     }
 
     public static FieldRef getFieldRef(final String fieldName) {
-        return new FieldRef(FieldName.create(fieldName));
+        return new FieldRef(fieldName);
     }
 
     public static Object getRandomObject(DataType dataType) {
@@ -876,7 +876,7 @@ public class PMMLModelTestUtils {
 
     public static ScoreDistribution getRandomPMMLScoreDistribution(Double probability) {
         Random random = new Random();
-        ScoreDistribution toReturn = new ScoreDistribution();
+        ScoreDistribution toReturn = new ComplexScoreDistribution();
         toReturn.setValue(RandomStringUtils.random(6, true, false));
         toReturn.setRecordCount(random.nextInt(100));
         toReturn.setConfidence((double) random.nextInt(1) / 100);
@@ -928,7 +928,7 @@ public class PMMLModelTestUtils {
     }
 
     public static SimplePredicate getRandomSimplePredicate() {
-        FieldName fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
+         String fieldName =RandomStringUtils.random(6, true, false);
         SimplePredicate toReturn = new SimplePredicate();
         toReturn.setField(fieldName);
         toReturn.setOperator(getRandomSimplePredicateOperator());
@@ -948,7 +948,7 @@ public class PMMLModelTestUtils {
     }
 
     public static SimpleSetPredicate getRandomSimpleSetPredicate() {
-        FieldName fieldName = FieldName.create(RandomStringUtils.random(6, true, false));
+         String fieldName =RandomStringUtils.random(6, true, false);
         SimpleSetPredicate toReturn = new SimpleSetPredicate();
         toReturn.setField(fieldName);
         toReturn.setBooleanOperator(getRandomSimpleSetPredicateOperator());

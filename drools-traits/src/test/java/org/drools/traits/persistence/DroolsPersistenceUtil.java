@@ -20,7 +20,7 @@ package org.drools.traits.persistence;
 
 import java.util.Map;
 
-import javax.transaction.UserTransaction;
+import jakarta.transaction.UserTransaction;
 
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;

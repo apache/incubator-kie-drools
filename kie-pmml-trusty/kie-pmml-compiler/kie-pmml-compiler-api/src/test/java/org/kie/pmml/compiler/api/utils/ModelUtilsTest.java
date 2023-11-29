@@ -36,7 +36,6 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -47,8 +46,8 @@ import org.dmg.pmml.Row;
 import org.dmg.pmml.Target;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.regression.RegressionModel;
-import org.jpmml.model.inlinetable.InputCell;
-import org.jpmml.model.inlinetable.OutputCell;
+import org.jpmml.model.cells.InputCell;
+import org.jpmml.model.cells.OutputCell;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
@@ -198,10 +197,10 @@ public class ModelUtilsTest {
         retrieved.forEach(kiePMMLNameOpType -> {
             assertThat(miningSchema.getMiningFields()
                                .stream()
-                               .anyMatch(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))).isTrue();
+                               .anyMatch(fld -> kiePMMLNameOpType.getName().equals(fld.getName()))).isTrue();
             Optional<DataField> optionalDataField = dataDictionary.getDataFields()
                     .stream()
-                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
+                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName()))
                     .findFirst();
             assertThat(optionalDataField).isPresent();
             DataField dataField = optionalDataField.get();
@@ -230,7 +229,7 @@ public class ModelUtilsTest {
         retrieved.forEach(kiePMMLNameOpType -> {
             Optional<MiningField> optionalMiningField = miningSchema.getMiningFields()
                     .stream()
-                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
+                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName()))
                     .findFirst();
             assertThat(optionalMiningField).isPresent();
             MiningField miningField = optionalMiningField.get();
@@ -263,7 +262,7 @@ public class ModelUtilsTest {
         retrieved.forEach(kiePMMLNameOpType -> {
             Optional<MiningField> optionalMiningField = miningSchema.getMiningFields()
                     .stream()
-                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName().getValue()))
+                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getName()))
                     .findFirst();
             assertThat(optionalMiningField).isPresent();
             MiningField miningField = optionalMiningField.get();
@@ -296,7 +295,7 @@ public class ModelUtilsTest {
         retrieved.forEach(kiePMMLNameOpType -> {
             Optional<Target> optionalTarget = targets.getTargets()
                     .stream()
-                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getField().getValue()))
+                    .filter(fld -> kiePMMLNameOpType.getName().equals(fld.getField()))
                     .findFirst();
             assertThat(optionalTarget).isPresent();
             Target target = optionalTarget.get();
@@ -313,7 +312,7 @@ public class ModelUtilsTest {
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
-            final MiningField miningField = getMiningField(dataField.getName().getValue(),
+            final MiningField miningField = getMiningField(dataField.getName(),
                                                            MiningField.UsageType.PREDICTED);
             miningSchema.addMiningFields(miningField);
         });
@@ -343,7 +342,7 @@ public class ModelUtilsTest {
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
-            final MiningField miningField = getMiningField(dataField.getName().getValue(),
+            final MiningField miningField = getMiningField(dataField.getName(),
                                                            MiningField.UsageType.ACTIVE);
             miningSchema.addMiningFields(miningField);
         });
@@ -362,10 +361,10 @@ public class ModelUtilsTest {
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
-            final MiningField miningField = getMiningField(dataField.getName().getValue(),
+            final MiningField miningField = getMiningField(dataField.getName(),
                                                            MiningField.UsageType.ACTIVE);
             miningSchema.addMiningFields(miningField);
-            final Target targetField = getTarget(dataField.getName().getValue(), null);
+            final Target targetField = getTarget(dataField.getName(), null);
             targets.addTargets(targetField);
         });
         model.setMiningSchema(miningSchema);
@@ -388,8 +387,7 @@ public class ModelUtilsTest {
         dataDictionary.getDataFields().forEach(dataField -> {
             OP_TYPE retrieved =
                     org.kie.pmml.compiler.api.utils.ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary),
-                                                                         model,
-                                                                                     dataField.getName().getValue());
+                                                                         model,dataField.getName());
             assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
             assertThat(retrieved).isEqualTo(expected);
@@ -404,7 +402,7 @@ public class ModelUtilsTest {
             IntStream.range(0, 3).forEach(i -> {
                 String fieldName = "field" + i;
                 final DataField dataField = getRandomDataField();
-                dataField.setName(FieldName.create(fieldName));
+                dataField.setName(fieldName);
                 dataDictionary.addDataFields(dataField);
             });
             org.kie.pmml.compiler.api.utils.ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
@@ -428,8 +426,7 @@ public class ModelUtilsTest {
         miningSchema.getMiningFields().forEach(miningField -> {
             OP_TYPE retrieved =
                     org.kie.pmml.compiler.api.utils.ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary),
-                                                                         model,
-                                                                                     miningField.getName().getValue());
+                                                                         model,miningField.getName());
             assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
             assertThat(retrieved).isEqualTo(expected);
@@ -445,7 +442,7 @@ public class ModelUtilsTest {
             IntStream.range(0, 3).forEach(i -> {
                 String fieldName = "field" + i;
                 final DataField dataField = getRandomDataField();
-                dataField.setName(FieldName.create(fieldName));
+                dataField.setName(fieldName);
                 dataDictionary.addDataFields(dataField);
                 final MiningField miningField = getRandomMiningField();
                 miningField.setName(dataField.getName());
@@ -479,8 +476,7 @@ public class ModelUtilsTest {
         targets.getTargets().forEach(target -> {
             OP_TYPE retrieved =
                     org.kie.pmml.compiler.api.utils.ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary),
-                                                                         model,
-                                                                                     target.getField().getValue());
+                                                                         model,target.getField());
             assertThat(retrieved).isNotNull();
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
             assertThat(retrieved).isEqualTo(expected);
@@ -497,7 +493,7 @@ public class ModelUtilsTest {
             IntStream.range(0, 3).forEach(i -> {
                 String fieldName = "field" + i;
                 final DataField dataField = getRandomDataField();
-                dataField.setName(FieldName.create(fieldName));
+                dataField.setName(fieldName);
                 dataDictionary.addDataFields(dataField);
                 final MiningField miningField = getRandomMiningField();
                 miningField.setName(dataField.getName());
@@ -530,8 +526,7 @@ public class ModelUtilsTest {
         fields.clear();
         fields.addAll(getFieldsFromDataDictionary(dataDictionary));
         dataDictionary.getDataFields().forEach(dataField -> {
-            Optional<OP_TYPE> retrieved = org.kie.pmml.compiler.api.utils.ModelUtils.getOpTypeFromFields(fields,
-                                                                                                         dataField.getName().getValue());
+            Optional<OP_TYPE> retrieved = org.kie.pmml.compiler.api.utils.ModelUtils.getOpTypeFromFields(fields,dataField.getName());
             assertThat(retrieved).isNotNull();
             assertThat(retrieved).isPresent();
             OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
@@ -554,8 +549,7 @@ public class ModelUtilsTest {
         });
         miningSchema.getMiningFields().forEach(miningField -> {
             Optional<OP_TYPE> retrieved =
-                    org.kie.pmml.compiler.api.utils.ModelUtils.getOpTypeFromMiningFields(miningSchema,
-                                                                                         miningField.getName().getValue());
+                    org.kie.pmml.compiler.api.utils.ModelUtils.getOpTypeFromMiningFields(miningSchema,miningField.getName());
             assertThat(retrieved).isNotNull();
             assertThat(retrieved).isPresent();
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
@@ -577,8 +571,7 @@ public class ModelUtilsTest {
             targets.addTargets(target);
         });
         targets.getTargets().forEach(target -> {
-            Optional<OP_TYPE> retrieved = org.kie.pmml.compiler.api.utils.ModelUtils.getOpTypeFromTargets(targets,
-                                                                                                          target.getField().getValue());
+            Optional<OP_TYPE> retrieved = org.kie.pmml.compiler.api.utils.ModelUtils.getOpTypeFromTargets(targets,target.getField());
             assertThat(retrieved).isNotNull();
             assertThat(retrieved).isPresent();
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
@@ -597,7 +590,7 @@ public class ModelUtilsTest {
                 .stream()
                 .map(dataField -> {
                     DerivedField toReturn = new DerivedField();
-                    toReturn.setName(FieldName.create("DER_" + dataField.getName().getValue()));
+                    toReturn.setName("DER_" +dataField.getName());
                     DataType dataType = getRandomDataType();
                     while (dataType.equals(dataField.getDataType())) {
                         dataType = getRandomDataType();
@@ -614,14 +607,14 @@ public class ModelUtilsTest {
                 .map(Field.class::cast)
                 .forEach(fields::add);
         dataDictionary.getDataFields().forEach(dataField -> {
-            String fieldName = dataField.getName().getValue();
+            String fieldName =dataField.getName();
             DataType retrieved = org.kie.pmml.compiler.api.utils.ModelUtils.getDataType(fields, fieldName);
             assertThat(retrieved).isNotNull();
             DataType expected = dataField.getDataType();
             assertThat(retrieved).isEqualTo(expected);
         });
         derivedFields.forEach(derivedField -> {
-            String fieldName = derivedField.getName().getValue();
+            String fieldName =derivedField.getName();
             DataType retrieved = org.kie.pmml.compiler.api.utils.ModelUtils.getDataType(fields, fieldName);
             assertThat(retrieved).isNotNull();
             DataType expected = derivedField.getDataType();
@@ -638,7 +631,7 @@ public class ModelUtilsTest {
         });
         dataDictionary.getDataFields().forEach(dataField -> {
             DATA_TYPE retrieved =
-                    org.kie.pmml.compiler.api.utils.ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary), dataField.getName().getValue());
+                    org.kie.pmml.compiler.api.utils.ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary),dataField.getName());
             assertThat(retrieved).isNotNull();
             DATA_TYPE expected = DATA_TYPE.byName(dataField.getDataType().value());
             assertThat(retrieved).isEqualTo(expected);
@@ -652,7 +645,7 @@ public class ModelUtilsTest {
             IntStream.range(0, 3).forEach(i -> {
                 String fieldName = "field" + i;
                 final DataField dataField = getRandomDataField();
-                dataField.setName(FieldName.create(fieldName));
+                dataField.setName(fieldName);
                 dataDictionary.addDataFields(dataField);
             });
             org.kie.pmml.compiler.api.utils.ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary),
@@ -718,12 +711,12 @@ public class ModelUtilsTest {
         org.kie.pmml.api.models.OutputField retrieved =
                 org.kie.pmml.compiler.api.utils.ModelUtils.convertToKieOutputField(toConvert, null);
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved.getName()).isEqualTo(toConvert.getName().getValue());
+        assertThat(retrieved.getName()).isEqualTo(toConvert.getName());
         OP_TYPE expectedOpType = OP_TYPE.byName(toConvert.getOpType().value());
         assertThat(retrieved.getOpType()).isEqualTo(expectedOpType);
         DATA_TYPE expectedDataType = DATA_TYPE.byName(toConvert.getDataType().value());
         assertThat(retrieved.getDataType()).isEqualTo(expectedDataType);
-        assertThat(retrieved.getTargetField()).isEqualTo(toConvert.getTargetField().getValue());
+        assertThat(retrieved.getTargetField()).isEqualTo(toConvert.getTargetField());
         RESULT_FEATURE expectedResultFeature = RESULT_FEATURE.byName(toConvert.getResultFeature().value());
         assertThat(retrieved.getResultFeature()).isEqualTo(expectedResultFeature);
         toConvert.setOpType(null);

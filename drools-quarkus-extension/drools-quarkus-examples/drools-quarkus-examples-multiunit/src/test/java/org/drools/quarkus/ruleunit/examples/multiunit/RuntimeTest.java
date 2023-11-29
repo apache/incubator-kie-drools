@@ -19,7 +19,7 @@
 package org.drools.quarkus.ruleunit.examples.multiunit;
 
 import java.util.concurrent.atomic.AtomicReference;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.drools.ruleunits.api.DataHandle;

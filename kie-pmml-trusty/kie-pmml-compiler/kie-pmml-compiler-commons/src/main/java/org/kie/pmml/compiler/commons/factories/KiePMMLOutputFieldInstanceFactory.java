@@ -38,8 +38,8 @@ public class KiePMMLOutputFieldInstanceFactory {
     }
 
     public static KiePMMLOutputField getKiePMMLOutputField(final OutputField outputField) {
-        String name = outputField.getName() != null ? outputField.getName().getValue() : "" + outputField.hashCode();
-        final String targetField = outputField.getTargetField() != null ? outputField.getTargetField().getValue() :
+        String name = outputField.getName() != null ?outputField.getName() : "" + outputField.hashCode();
+        final String targetField = outputField.getTargetField() != null ?outputField.getTargetField() :
                 null;
         final RESULT_FEATURE resultFeature = outputField.getResultFeature() != null ?
                 RESULT_FEATURE.byName(outputField.getResultFeature().value()) : null;

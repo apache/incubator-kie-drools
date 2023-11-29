@@ -26,7 +26,6 @@ import java.util.List;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.FieldColumnPair;
-import org.dmg.pmml.FieldName;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldColumnPair;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -45,7 +44,7 @@ public class KiePMMLFieldColumnPairFactoryTest {
         String fieldName = "fieldName";
         String column = "column";
         FieldColumnPair fieldColumnPair = new FieldColumnPair();
-        fieldColumnPair.setField(FieldName.create(fieldName));
+        fieldColumnPair.setField(fieldName);
         fieldColumnPair.setColumn(column);
 
         BlockStmt retrieved = KiePMMLFieldColumnPairFactory.getFieldColumnPairVariableDeclaration(variableName,
