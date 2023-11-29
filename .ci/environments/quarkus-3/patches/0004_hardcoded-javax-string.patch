@@ -6,8 +6,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
 diff --git a/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java b/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java
---- a/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(revision 4eb6d59aefa1df16a286666f75ead10d8b77746f)
-+++ b/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(date 1677837541284)
+--- a/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(revision 4eb6d59aefa1df16a286666f75ead10d8b77746f)
++++ b/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(date 1677837541284)
 @@ -222,8 +222,8 @@
      }
 

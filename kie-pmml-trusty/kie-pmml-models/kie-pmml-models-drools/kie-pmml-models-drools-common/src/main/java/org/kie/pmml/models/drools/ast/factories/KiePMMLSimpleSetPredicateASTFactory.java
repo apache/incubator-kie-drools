@@ -75,11 +75,11 @@ public class KiePMMLSimpleSetPredicateASTFactory extends KiePMMLAbstractPredicat
         logger.trace("declareRuleFromSimpleSetPredicate {}", statusToSet);
         String statusConstraint = StringUtils.isEmpty(predicateASTFactoryData.getParentPath()) ? STATUS_NULL : String.format(STATUS_PATTERN, predicateASTFactoryData.getParentPath());
         SimpleSetPredicate simpleSetPredicate = (SimpleSetPredicate) predicateASTFactoryData.getPredicate();
-        String key = predicateASTFactoryData.getFieldTypeMap().get(simpleSetPredicate.getField().getValue()).getGeneratedType();
+        String key = predicateASTFactoryData.getFieldTypeMap().get(simpleSetPredicate.getField()).getGeneratedType();
         String stringValue = (String) simpleSetPredicate.getArray().getValue();
         String[] valuesArray = stringValue.split(" ");
         List<Object> value = Arrays.stream(valuesArray).map(rawValue -> {
-            String originalType = predicateASTFactoryData.getFieldTypeMap().get(simpleSetPredicate.getField().getValue()).getOriginalType();
+            String originalType = predicateASTFactoryData.getFieldTypeMap().get(simpleSetPredicate.getField()).getOriginalType();
             switch (originalType) {
                 case "string":
                     return "\"" + rawValue + "\"";

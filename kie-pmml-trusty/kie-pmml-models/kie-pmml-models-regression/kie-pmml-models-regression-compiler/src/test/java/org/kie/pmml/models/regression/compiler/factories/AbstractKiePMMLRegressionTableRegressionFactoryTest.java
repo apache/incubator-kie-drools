@@ -66,8 +66,7 @@ public abstract class AbstractKiePMMLRegressionTableRegressionFactoryTest {
             IntStream.range(0, 2).forEach(j -> categoricalPredictors.add(getCategoricalPredictor("CatPred-" + i, 27.12, 3.46)));
             numericPredictors.add(getNumericPredictor("NumPred-" + i, 2, 13.11));
             predictorTerms.add(getPredictorTerm("PredTerm-" + i, 32.29,
-                                                Arrays.asList(categoricalPredictors.get(0).getName().getValue(),
-                                                              numericPredictors.get(0).getName().getValue())));
+                                                Arrays.asList(categoricalPredictors.get(0).getField(),numericPredictors.get(0).getField())));
         });
         return PMMLModelTestUtils.getRegressionTable(categoricalPredictors, numericPredictors, predictorTerms, intercept, targetCategory);
     }

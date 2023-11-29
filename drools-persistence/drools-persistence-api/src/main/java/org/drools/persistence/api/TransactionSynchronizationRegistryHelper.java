@@ -18,7 +18,7 @@
  */
 package org.drools.persistence.api;
 
-import javax.transaction.TransactionSynchronizationRegistry;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 
 import org.drools.persistence.jta.JtaTransactionSynchronizationAdapter;
 import org.slf4j.Logger;

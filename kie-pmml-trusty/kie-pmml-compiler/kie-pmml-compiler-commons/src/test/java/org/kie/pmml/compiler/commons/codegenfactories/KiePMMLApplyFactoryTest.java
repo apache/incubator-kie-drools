@@ -27,7 +27,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.junit.jupiter.api.Test;
@@ -91,9 +90,9 @@ public class KiePMMLApplyFactoryTest {
         InvalidValueTreatmentMethod invalidValueTreatmentMethod = InvalidValueTreatmentMethod.AS_MISSING;
         apply.setInvalidValueTreatment(invalidValueTreatmentMethod);
         FieldRef fieldRef1 = new FieldRef();
-        fieldRef1.setField(FieldName.create(PARAM_1));
+        fieldRef1.setField(PARAM_1);
         FieldRef fieldRef2 = new FieldRef();
-        fieldRef2.setField(FieldName.create(PARAM_2));
+        fieldRef2.setField(PARAM_2);
         apply.addExpressions(fieldRef1, fieldRef2);
         BlockStmt retrieved =
                 org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
@@ -119,9 +118,9 @@ public class KiePMMLApplyFactoryTest {
         InvalidValueTreatmentMethod nestedInvalidValueTreatmentMethod = InvalidValueTreatmentMethod.AS_MISSING;
         nestedApply.setInvalidValueTreatment(nestedInvalidValueTreatmentMethod);
         FieldRef fieldRef1 = new FieldRef();
-        fieldRef1.setField(FieldName.create(PARAM_1));
+        fieldRef1.setField(PARAM_1);
         FieldRef fieldRef2 = new FieldRef();
-        fieldRef2.setField(FieldName.create(PARAM_2));
+        fieldRef2.setField(PARAM_2);
         nestedApply.addExpressions(fieldRef1, fieldRef2);
         Apply apply = new Apply();
         apply.setFunction(function);

@@ -42,7 +42,7 @@ public class KiePMMLDataDictionaryASTFactoryTest {
     @Test
     void declareTypes() {
         List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(), getDottedTypeDataField());
-        DataDictionary dataDictionary = new DataDictionary(dataFields);
+        DataDictionary dataDictionary = new DataDictionary().addDataFields(dataFields.toArray(new org.dmg.pmml.DataField[0]));
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         List<KiePMMLDroolsType> retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(getFieldsFromDataDictionary(dataDictionary));
         assertThat(retrieved).isNotNull();
@@ -60,12 +60,12 @@ public class KiePMMLDataDictionaryASTFactoryTest {
     }
 
     private void commonVerifyTypeDeclarationDescr(DataField dataField, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final KiePMMLDroolsType kiePMMLDroolsType) {
-        String expectedGeneratedType = getSanitizedClassName(dataField.getName().getValue());
+        String expectedGeneratedType = getSanitizedClassName(dataField.getName());
         String expectedMappedOriginalType = DATA_TYPE.byName(dataField.getDataType().value()).getMappedClass().getSimpleName();
         assertThat(kiePMMLDroolsType.getName()).startsWith(expectedGeneratedType);
         assertThat(kiePMMLDroolsType.getType()).isEqualTo(expectedMappedOriginalType);
-        assertThat(fieldTypeMap).containsKey(dataField.getName().getValue());
-        KiePMMLOriginalTypeGeneratedType kiePMMLOriginalTypeGeneratedType = fieldTypeMap.get(dataField.getName().getValue());
+        assertThat(fieldTypeMap).containsKey(dataField.getName());
+        KiePMMLOriginalTypeGeneratedType kiePMMLOriginalTypeGeneratedType = fieldTypeMap.get(dataField.getName());
         assertThat(kiePMMLOriginalTypeGeneratedType.getOriginalType()).isEqualTo(dataField.getDataType().value());
         assertThat(kiePMMLOriginalTypeGeneratedType.getGeneratedType()).startsWith(expectedGeneratedType);
     }

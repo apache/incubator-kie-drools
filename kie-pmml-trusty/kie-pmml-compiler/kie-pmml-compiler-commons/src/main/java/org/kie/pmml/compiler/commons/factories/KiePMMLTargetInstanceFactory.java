@@ -45,7 +45,7 @@ public class KiePMMLTargetInstanceFactory {
                 .map(KiePMMLTargetInstanceFactory::getKieTargetValue)
                 .collect(Collectors.toList()) : Collections.emptyList();
         final OP_TYPE opType = target.getOpType() != null ? OP_TYPE.byName(target.getOpType().value()) : null;
-        final String field = target.getField() != null ? target.getField().getValue() : null;
+        final String field = target.getField() != null ?target.getField() : null;
         final CAST_INTEGER castInteger = target.getCastInteger() != null ?
                 CAST_INTEGER.byName(target.getCastInteger().value()) : null;
         TargetField targetField = new TargetField(targetValues,

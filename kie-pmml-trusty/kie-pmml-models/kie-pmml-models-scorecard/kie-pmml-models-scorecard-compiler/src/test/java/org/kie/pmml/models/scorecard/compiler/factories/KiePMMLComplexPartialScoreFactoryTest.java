@@ -27,7 +27,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.scorecard.ComplexPartialScore;
 import org.junit.jupiter.api.Test;
@@ -72,14 +71,14 @@ public class KiePMMLComplexPartialScoreFactoryTest {
     void getComplexPartialScoreVariableDeclarationWithFieldRef() throws IOException {
         final String variableName = "variableName";
         FieldRef fieldRef = new FieldRef();
-        fieldRef.setField(FieldName.create("FIELD_REF"));
+        fieldRef.setField("FIELD_REF");
         ComplexPartialScore complexPartialScore = new ComplexPartialScore();
         complexPartialScore.setExpression(fieldRef);
         BlockStmt retrieved =
                 KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
                         complexPartialScore);
         String text = getFileContent(TEST_02_SOURCE);
-        Statement expected = JavaParserUtils.parseBlock(String.format(text, fieldRef.getField().getValue(),
+        Statement expected = JavaParserUtils.parseBlock(String.format(text,fieldRef.getField(),
                 variableName));
         assertThat(retrieved).isEqualTo(expected);
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
@@ -94,7 +93,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         Constant constant = new Constant();
         constant.setValue(value1);
         FieldRef fieldRef = new FieldRef();
-        fieldRef.setField(FieldName.create("FIELD_REF"));
+        fieldRef.setField("FIELD_REF");
         Apply apply = new Apply();
         apply.setFunction("/");
         apply.addExpressions(constant, fieldRef);
@@ -105,8 +104,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
                         complexPartialScore);
         String text = getFileContent(TEST_03_SOURCE);
         Statement expected = JavaParserUtils.parseBlock(String.format(text,
-                constant.getValue(),
-                fieldRef.getField().getValue(),
+                constant.getValue(),fieldRef.getField(),
                 apply.getFunction(),
                 apply.getInvalidValueTreatment().value(),
                 variableName));

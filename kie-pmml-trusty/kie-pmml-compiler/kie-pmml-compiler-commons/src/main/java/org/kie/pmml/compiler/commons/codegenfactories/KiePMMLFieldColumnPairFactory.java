@@ -70,7 +70,7 @@ public class KiePMMLFieldColumnPairFactory {
         final ObjectCreationExpr objectCreationExpr = variableDeclarator.getInitializer()
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, FIELDCOLUMNPAIR, toReturn)))
         .asObjectCreationExpr();
-        objectCreationExpr.getArguments().set(0, new StringLiteralExpr(fieldColumnPair.getField().getValue()));
+        objectCreationExpr.getArguments().set(0, new StringLiteralExpr(fieldColumnPair.getField()));
         objectCreationExpr.getArguments().set(2, new StringLiteralExpr(fieldColumnPair.getColumn()));
         return toReturn;
     }

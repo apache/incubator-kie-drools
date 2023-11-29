@@ -25,7 +25,6 @@ import java.util.List;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -45,7 +44,7 @@ public class KiePMMLFieldRefFactoryTest {
         String fieldName = "fieldName";
         String mapMissingTo = "mapMissingTo";
         FieldRef fieldRef = new FieldRef();
-        fieldRef.setField(FieldName.create(fieldName));
+        fieldRef.setField(fieldName);
         fieldRef.setMapMissingTo(mapMissingTo);
         BlockStmt retrieved = KiePMMLFieldRefFactory.getFieldRefVariableDeclaration(variableName, fieldRef);
         String text = getFileContent(TEST_01_SOURCE);

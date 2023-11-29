@@ -25,7 +25,6 @@ import java.util.List;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLNormDiscrete;
@@ -47,7 +46,7 @@ public class KiePMMLNormDiscreteFactoryTest {
         double mapMissingTo = 45.32;
 
         NormDiscrete normDiscrete = new NormDiscrete();
-        normDiscrete.setField(FieldName.create(fieldName));
+        normDiscrete.setField(fieldName);
         normDiscrete.setValue(fieldValue);
         normDiscrete.setMapMissingTo(mapMissingTo);
 

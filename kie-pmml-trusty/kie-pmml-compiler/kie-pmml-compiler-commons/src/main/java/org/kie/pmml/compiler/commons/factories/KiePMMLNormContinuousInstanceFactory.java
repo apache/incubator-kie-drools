@@ -43,7 +43,7 @@ public class KiePMMLNormContinuousInstanceFactory {
         final List<KiePMMLLinearNorm> linearNorms = normContinuous.hasLinearNorms() ?
                 getKiePMMLLinearNorms(normContinuous.getLinearNorms()) : Collections.emptyList();
         final OUTLIER_TREATMENT_METHOD outlierTreatmentMethod = normContinuous.getOutliers() != null ? OUTLIER_TREATMENT_METHOD.byName(normContinuous.getOutliers().value()) : null;
-        return new KiePMMLNormContinuous(normContinuous.getField().getValue(), getKiePMMLExtensions(normContinuous.getExtensions()), linearNorms, outlierTreatmentMethod, normContinuous.getMapMissingTo());
+        return new KiePMMLNormContinuous(normContinuous.getField(), getKiePMMLExtensions(normContinuous.getExtensions()), linearNorms, outlierTreatmentMethod, normContinuous.getMapMissingTo());
     }
 
 }

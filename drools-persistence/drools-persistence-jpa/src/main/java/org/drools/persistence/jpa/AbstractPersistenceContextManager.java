@@ -18,8 +18,8 @@
  */
  package org.drools.persistence.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 import org.drools.persistence.api.TransactionManager;
 import org.kie.api.runtime.Environment;

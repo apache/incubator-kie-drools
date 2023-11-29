@@ -183,7 +183,7 @@ public class DroolsModelProviderTest {
     private void commonVerifyTypesList(Field<?> toVerify, final List<KiePMMLDroolsType> types) {
         assertThat(types.stream()
                            .anyMatch(type -> {
-                               String expectedName = getSanitizedClassName(toVerify.getName().getValue());
+                               String expectedName = getSanitizedClassName(toVerify.getName());
                                if (!type.getName().startsWith(expectedName)) {
                                    return false;
                                }
@@ -208,13 +208,13 @@ public class DroolsModelProviderTest {
                                           final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         assertThat(fieldTypeMap.entrySet().stream()
                            .anyMatch(entry -> {
-                               if (!entry.getKey().equals(toVerify.getName().getValue())) {
+                               if (!entry.getKey().equals(toVerify.getName())) {
                                    return false;
                                }
                                KiePMMLOriginalTypeGeneratedType value = entry.getValue();
                                assertThat(value.getOriginalType()).isEqualTo(toVerify.getDataType().value());
                                String expectedGeneratedType =
-                                       getSanitizedClassName(toVerify.getName().getValue());
+                                       getSanitizedClassName(toVerify.getName());
                                assertThat(value.getGeneratedType()).startsWith(expectedGeneratedType);
                                return true;
                            })).isTrue();

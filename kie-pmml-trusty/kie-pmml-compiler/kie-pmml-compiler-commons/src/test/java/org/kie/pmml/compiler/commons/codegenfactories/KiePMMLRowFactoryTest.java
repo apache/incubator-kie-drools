@@ -58,14 +58,14 @@ public class KiePMMLRowFactoryTest {
         DerivedField mapValued = pmmlModel.getTransformationDictionary()
                 .getDerivedFields()
                 .stream()
-                .filter(derivedField -> MAPVALUED.equals(derivedField.getName().getValue()))
+                .filter(derivedField -> MAPVALUED.equals(derivedField.getName()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Missing derived field " + MAPVALUED));
         MAPVALUED_ROW = ((MapValues) mapValued.getExpression()).getInlineTable().getRows().get(0);
         DerivedField dataEncoded = pmmlModel.getTransformationDictionary()
                 .getDerivedFields()
                 .stream()
-                .filter(derivedField -> DATAENCODED.equals(derivedField.getName().getValue()))
+                .filter(derivedField -> DATAENCODED.equals(derivedField.getName()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Missing derived field " + MAPVALUED));
         DATAENCODED_ROW = ((MapValues) dataEncoded.getExpression()).getInlineTable().getRows().get(0);
