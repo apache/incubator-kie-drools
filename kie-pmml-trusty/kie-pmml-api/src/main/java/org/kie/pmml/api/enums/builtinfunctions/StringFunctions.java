@@ -34,9 +34,6 @@ import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkNumber;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkString;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkStrings;
 
-/**
- * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
- */
 public enum StringFunctions {
 
     UPPERCASE("uppercase"),

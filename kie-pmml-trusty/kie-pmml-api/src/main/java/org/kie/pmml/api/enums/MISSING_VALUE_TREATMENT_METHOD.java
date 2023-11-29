@@ -23,10 +23,6 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see
- * <a href=http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD>MISSING-VALUE_TREATMENT-METHOD</a>
- */
 public enum MISSING_VALUE_TREATMENT_METHOD implements Named {
 
     AS_IS("asIs"),

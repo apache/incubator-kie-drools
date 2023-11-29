@@ -26,9 +26,6 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_TextIndexNormalization>TextIndexNormalization</a>
- */
 public class KiePMMLTextIndexNormalization extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -1816258381871863674L;

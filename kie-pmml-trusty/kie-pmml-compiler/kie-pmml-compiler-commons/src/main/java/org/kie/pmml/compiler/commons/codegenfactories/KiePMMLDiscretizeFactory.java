@@ -88,7 +88,7 @@ public class KiePMMLDiscretizeFactory {
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE,
                                                                       DISCRETIZE, toReturn)))
                 .asObjectCreationExpr();
-        final Expression nameExpr = new StringLiteralExpr(discretize.getField().getValue());
+        final Expression nameExpr = new StringLiteralExpr(discretize.getField());
         final Expression mapMissingToExpr = getExpressionForObject(discretize.getMapMissingTo());
         final Expression defaultValueExpr = getExpressionForObject(discretize.getDefaultValue());
 

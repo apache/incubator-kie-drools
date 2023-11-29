@@ -30,9 +30,6 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.models.TargetField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Targets.html#xsdElement_Target>Target</a>
- */
 public class KiePMMLTarget extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -6336733489238275499L;

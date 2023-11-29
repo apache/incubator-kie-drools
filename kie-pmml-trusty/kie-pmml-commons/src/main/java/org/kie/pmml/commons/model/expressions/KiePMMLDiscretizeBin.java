@@ -24,9 +24,6 @@ import java.util.Optional;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_DiscretizeBin>DiscretizeBin</a>
- */
 public class KiePMMLDiscretizeBin extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -6437255657731885594L;

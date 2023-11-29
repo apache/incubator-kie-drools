@@ -34,7 +34,7 @@ import static java.lang.annotation.ElementType.TYPE;
 /**
  * For internal use for the scope of https://github.com/jacoco/jacoco/issues/731
  * and coverage analysis.
- * Similar to {@link javax.annotation.Generated}, but with RetentionPolicy.CLASS
+ * Similar to {@link jakarta.annotation.Generated}, but with RetentionPolicy.CLASS
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({PACKAGE, TYPE, ANNOTATION_TYPE, METHOD, CONSTRUCTOR, FIELD,

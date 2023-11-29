@@ -20,8 +20,8 @@ package org.drools.persistence.jpa;
 
 import java.lang.reflect.Field;
 
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 
 import org.drools.persistence.api.PersistenceContext;
 import org.drools.persistence.api.PersistentSession;

@@ -24,9 +24,6 @@ import java.util.Map;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
- */
 public abstract class KiePMMLPredicate extends AbstractKiePMMLComponent {
 
     protected KiePMMLPredicate(String name, List<KiePMMLExtension> extensions) {

@@ -19,7 +19,7 @@
 package org.drools.commands.runtime.rule;
 
 import java.util.Collection;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.event.rule.AgendaEventListener;

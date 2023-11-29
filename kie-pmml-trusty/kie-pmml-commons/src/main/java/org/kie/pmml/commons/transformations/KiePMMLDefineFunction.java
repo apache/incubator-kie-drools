@@ -33,9 +33,6 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Functions.html#xsdElement_DefineFunction>DefineFunction</a>
- */
 public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements Serializable {
 
     private static final long serialVersionUID = 9187889880911645935L;
