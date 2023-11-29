@@ -67,8 +67,15 @@ pipeline {
                     def buildParams = getDefaultBuildParams(getBuildBranch())
                     addSkipTestsParam(buildParams)
                     addSkipIntegrationTestsParam(buildParams)
-                    def quickstartsBranch = getBuildBranch() == 'main' || getBuildBranch() == '9.x'
-                            ? 'development' : getBuildBranch()
+                    String quickstartsBranch
+                    switch (getBuildBranch()) {
+                        case 'main': quickstartsBranch = '8.x'
+                            break
+                        case '9.x': quickstartsBranch = 'development'
+                            break
+                        default : quickstartsBranch = getBuildBranch()
+                    }
+
                     addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', quickstartsBranch)
 
                     buildJob(OPTAPLANNER_DEPLOY, buildParams)
