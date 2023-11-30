@@ -21,8 +21,6 @@ environments:
     auto_generation: false
     ids:
     - ecosystem
-disable:
-  deploy: true
 repositories:
 - name: incubator-kie-optaplanner
   job_display_name: optaplanner
