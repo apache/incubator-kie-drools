@@ -62,6 +62,9 @@ maven:
     staging_profile_id: TO_DEFINE
     build_promotion_profile_id: TO_DEFINE
   artifacts_repository: ''
+  artifacts_upload_repository:
+    url: https://repository.apache.org/content/repositories/snapshots
+    creds_id: apache-nexus-kie-deploy-credentials
 cloud:
   image:
     registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
