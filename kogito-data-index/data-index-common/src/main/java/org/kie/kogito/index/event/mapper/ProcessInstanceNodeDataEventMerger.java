@@ -36,6 +36,8 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
@@ -65,11 +67,16 @@ public class ProcessInstanceNodeDataEventMerger implements ProcessInstanceEventM
         nodeInstance.setName(body.getNodeName());
         nodeInstance.setType(body.getNodeType());
         switch (body.getEventType()) {
-            case 1:
+            case EVENT_TYPE_ENTER:
                 nodeInstance.setEnter(toZonedDateTime(body.getEventDate()));
                 break;
-            case 2:
+            case EVENT_TYPE_EXIT:
                 nodeInstance.setExit(toZonedDateTime(body.getEventDate()));
+
+                if (nodeInstance.getEnter() == null) {
+                    // Adding a default enter time for exit events triggered by EventNodeInstances
+                    nodeInstance.setEnter(nodeInstance.getExit());
+                }
                 break;
         }
         nodeInstances.add(nodeInstance);

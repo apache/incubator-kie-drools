@@ -25,7 +25,6 @@ import java.util.function.Function;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
-import org.kie.kogito.index.service.IndexingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ import static org.kie.kogito.index.storage.Constants.PROCESS_NAME;
 
 public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEvent<?>, ObjectNode> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexingService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceMetaMapper.class);
 
     @Override
     public ObjectNode apply(ProcessInstanceDataEvent<?> event) {
