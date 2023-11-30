@@ -1,3 +1,20 @@
+generation_config:
+  missing_environment: ignore
+
+job_types:
+  setup-branch:
+    disabled: true
+  nightly:
+    disabled: false
+  other:
+    disabled: true
+  pullrequest:
+    disabled: true
+  release:
+    disabled: true
+  tools:
+    disabled: true
+
 environments:
   default:
     env_vars:
