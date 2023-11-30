@@ -17,6 +17,7 @@ git:
   branches:
   - name: main
     main_branch: true
+  - name: quarkus-3.2LTS
 seed:
   config_file:
     git:
