@@ -18,6 +18,16 @@
  */
 package org.drools.model.codegen.project;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
@@ -26,6 +36,8 @@ import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
+import org.drools.compiler.builder.impl.resources.ResourceHandler;
+import org.drools.compiler.builder.impl.resources.YamlResourceHandler;
 import org.drools.compiler.kie.builder.impl.DecisionTableConfigurationDelegate;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -41,16 +53,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
@@ -68,7 +70,9 @@ public class DroolsModelBuilder {
     private final boolean decisionTableSupported;
     private final KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration;
     private final DroolsModelBuildContext context;
-    private Function<PackageModel, PackageModelWriter> packageModelWriterProvider;
+    private final Function<PackageModel, PackageModelWriter> packageModelWriterProvider;
+
+    private final Map<ResourceType, ResourceHandler> handlersMap = new HashMap<>();
 
     public DroolsModelBuilder(
             DroolsModelBuildContext context,
@@ -95,20 +99,14 @@ public class DroolsModelBuilder {
     }
 
     public void build() {
-
-        DrlResourceHandler drlResourceHandler =
-                new DrlResourceHandler(knowledgeBuilderConfiguration);
-        DecisionTableResourceHandler decisionTableHandler =
-                new DecisionTableResourceHandler(knowledgeBuilderConfiguration, DUMMY_RELEASE_ID);
-
         Map<String, CompositePackageDescr> packages = new HashMap<>();
-
         for (Resource resource : resources) {
             try {
-                if (resource.getResourceType() == ResourceType.DRL) {
-                    handleDrl(drlResourceHandler, packages, resource);
+                ResourceType resourceType = resource.getResourceType();
+                if (resourceType == ResourceType.DRL || resourceType == ResourceType.YAML) {
+                    handleResource(getHandlerForType(resourceType), packages, resource, null);
                 } else if (resource.getResourceType() == ResourceType.DTABLE) {
-                    handleDtable(decisionTableHandler, packages, resource);
+                    handleDtable(getHandlerForType(resourceType), packages, resource);
                 }
             } catch (DroolsParserException | IOException e) {
                 throw new RuntimeException(e);
@@ -136,23 +134,31 @@ public class DroolsModelBuilder {
         this.packageModels = compiler.getPackageModels();
     }
 
-    public boolean hasRuleUnits() {
-        return codegenPackageSources.stream().anyMatch(pkg -> !pkg.getRuleUnits().isEmpty());
+    private ResourceHandler getHandlerForType(ResourceType type) {
+        return handlersMap.computeIfAbsent(type, this::createHandlerForType);
     }
 
-    private void handleDtable(DecisionTableResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
+    private ResourceHandler createHandlerForType(ResourceType type) {
+        if (type == ResourceType.DRL) {
+            return new DrlResourceHandler(knowledgeBuilderConfiguration);
+        } else if (type == ResourceType.YAML) {
+            return new YamlResourceHandler(knowledgeBuilderConfiguration);
+        } else if (type == ResourceType.DTABLE) {
+            return new DecisionTableResourceHandler(knowledgeBuilderConfiguration, DUMMY_RELEASE_ID);
+        }
+        throw new IllegalArgumentException("No registered ResourceHandler for type " + type);
+    }
+
+    private void handleDtable(ResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException, IOException {
         Collection<ResourceConfiguration> resourceConfigurations = loadDtableResourceConfiguration(resource);
         for (ResourceConfiguration cfg : resourceConfigurations) {
-            PackageDescr packageDescr = decisionTableHandler.process(resource, cfg);
-            CompositePackageDescr compositePackageDescr =
-                    packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
-            compositePackageDescr.addPackageDescr(resource, packageDescr);
+            handleResource(decisionTableHandler, packages, resource, cfg);
         }
     }
 
-    private void handleDrl(DrlResourceHandler drlResourceHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException, IOException {
-        PackageDescr packageDescr = drlResourceHandler.process(resource);
-        Collection<KnowledgeBuilderResult> results = drlResourceHandler.getResults();
+    private void handleResource(ResourceHandler resourceHandler, Map<String, CompositePackageDescr> packages, Resource resource, ResourceConfiguration cfg) throws DroolsParserException, IOException {
+        PackageDescr packageDescr = resourceHandler.process(resource, cfg);
+        Collection<KnowledgeBuilderResult> results = resourceHandler.getResults();
         if (!results.isEmpty()) {
             throw new DroolsParserException(
                     results.stream()
@@ -162,6 +168,10 @@ public class DroolsModelBuilder {
         CompositePackageDescr compositePackageDescr =
                 packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
         compositePackageDescr.addPackageDescr(resource, packageDescr);
+    }
+
+    public boolean hasRuleUnits() {
+        return codegenPackageSources.stream().anyMatch(pkg -> !pkg.getRuleUnits().isEmpty());
     }
 
     public Collection<GeneratedFile> generateCanonicalModelSources() {

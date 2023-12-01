@@ -1,0 +1,25 @@
+name: org.drools.yaml
+imports:
+    - org.drools.quarkus.test.Person
+    - org.drools.quarkus.test.Result
+rules:
+    - name: R1
+      when:
+          - given: Result
+            as: $r
+          - given: Person
+            as: $p
+            having:
+                - age >= 18
+      then: |
+          $r.setValue( $p.getName() + " can drink");
+    - name: R2
+      when:
+          - given: Result
+            as: $r
+          - given: Person
+            as: $p
+            having:
+                - age < 18
+      then: |
+          $r.setValue( $p.getName() + " can NOT drink");
