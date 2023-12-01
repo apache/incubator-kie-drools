@@ -26,6 +26,9 @@
   <kbase name="canDrinkKBDTable" packages="org.drools.dtable">
     <ksession name="canDrinkKSDTable" />
   </kbase>
+  <kbase name="canDrinkKBDYaml" packages="org.drools.yaml">
+    <ksession name="canDrinkKSDYaml" />
+  </kbase>
   <kbase name="cepKB" packages="org.drools.cep" eventProcessingMode="stream">
     <ksession name="cepKS" clockType="pseudo"/>
   </kbase>
