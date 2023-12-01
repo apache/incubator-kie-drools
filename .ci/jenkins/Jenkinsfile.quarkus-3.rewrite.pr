@@ -27,7 +27,7 @@ pipeline {
                     archiveArtifacts artifacts: 'env_props'
 
                     dir(getRepoName()) {
-                        checkout(githubscm.resolveRepository(getRepoName(), changeAuthor, changeBranch, false))
+                        checkout(githubscm.resolveRepository(getRepoName(), changeAuthor, changeBranch, false, getGitAuthorCredsId()))
                         // need to manually checkout branch since on a detached branch after checkout command
                         sh "git checkout ${changeBranch}"
                     }
@@ -70,7 +70,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        githubscm.pushObject('origin', changeBranch, getGitAuthorCredsId())
+                        githubscm.pushObject('origin', changeBranch, getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -93,7 +93,11 @@ String getRepoName() {
 }
 
 String getGitAuthorCredsId() {
-    return env.AUTHOR_CREDS_ID
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 MavenCommand getMavenCommand() {

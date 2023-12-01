@@ -76,7 +76,7 @@ pipeline {
                 script {
                     dir(getRepoName()) {
                         if (githubscm.isBranchExist('origin',getPRBranch())) {
-                            githubscm.removeRemoteBranch('origin', getPRBranch())
+                            githubscm.removeRemoteBranch('origin', getPRBranch(), getGitAuthorPushCredsId())
                         }
                         githubscm.createBranch(getPRBranch())
                     }
@@ -206,7 +206,7 @@ void saveReports() {
 
 void checkoutRepo() {
     deleteDir()
-    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false))
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
 }
 
 void commitAndCreatePR() {
@@ -218,8 +218,8 @@ void commitAndCreatePR() {
         prBody += '\nPlease review and merge.'
     }
     githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
-    githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
-    deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsID()) 
+    githubscm.pushObject('origin', getPRBranch(), getGitAuthorPushCredsId())
+    deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsId()) 
 }
 
 boolean isSpecificArtifactsUpload() {
@@ -251,8 +251,8 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
-String getGitAuthorCredsID() {
-    return env.AUTHOR_CREDS_ID
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
 }
 
 String getBuildBranch() {

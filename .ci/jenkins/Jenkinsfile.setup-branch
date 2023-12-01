@@ -88,7 +88,7 @@ pipeline {
                             def commitMsg = "Update version to ${getKogitoVersion()}"
 
                             githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
-                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorPushCredsId())
                         } else {
                             println '[WARN] no changes to commit'
                         }
@@ -120,7 +120,7 @@ void sendNotification() {
 void checkoutRepo(String repository, String branch) {
     dir(repository) {
         deleteDir()
-        checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
+        checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false, getGitAuthorCredsId()))
         // need to manually checkout branch since on a detached branch after checkout command
         sh "git checkout ${branch}"
     }
@@ -155,8 +155,12 @@ String getKogitoVersion() {
     return params.KOGITO_VERSION
 }
 
-String getGitAuthorCredsID() {
-    return env.AUTHOR_CREDS_ID
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 MavenCommand getMavenCommand(String directory) {
