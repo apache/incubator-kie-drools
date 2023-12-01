@@ -18,15 +18,16 @@
  */
 package org.drools.quarkus.test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,6 +47,11 @@ public class RuntimeTest {
     @Test
     public void testDTableEvaluation() {
         testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDTable"), "org.drools.dtable");
+    }
+
+    @Test
+    public void testYamlEvaluation() {
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDYaml"), "org.drools.yaml");
     }
 
     private void testSimpleDrl(KieSession ksession, String assetPackage) {
