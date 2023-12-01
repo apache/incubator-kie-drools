@@ -32,6 +32,7 @@ public class DroolsCompilationProvider extends AbstractCompilationProvider {
         Set<String> extensions = new HashSet<>();
         extensions.addAll(ResourceType.DRL.getAllExtensions());
         extensions.addAll(ResourceType.DTABLE.getAllExtensions());
+        extensions.addAll(ResourceType.YAML.getAllExtensions());
         return Collections.unmodifiableSet(extensions);
     }
 

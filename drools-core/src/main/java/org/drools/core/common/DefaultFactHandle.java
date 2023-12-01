@@ -98,7 +98,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                              final Object object,
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint) {
-        this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint );
+        this( id, 0, object, recency, wmEntryPoint );
     }
 
     public DefaultFactHandle(final long id,
@@ -183,14 +183,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public int getObjectHashCode() {
-        if (this.objectHashCode == 0 && this.object != null) {
+        if (this.objectHashCode == 0) {
             this.objectHashCode = object.hashCode();
         }
         return objectHashCode;
     }
 
     public int getIdentityHashCode() {
-        if (this.identityHashCode == 0 && this.object != null) {
+        if (this.identityHashCode == 0) {
             this.identityHashCode = determineIdentityHashCode( object );
         }
         return this.identityHashCode;

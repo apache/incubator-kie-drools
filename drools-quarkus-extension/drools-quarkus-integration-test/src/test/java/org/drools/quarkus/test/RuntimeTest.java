@@ -18,6 +18,9 @@
  */
 package org.drools.quarkus.test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
@@ -46,6 +49,11 @@ public class RuntimeTest {
     @Test
     public void testDTableEvaluation() {
         testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDTable"), "org.drools.dtable");
+    }
+
+    @Test
+    public void testYamlEvaluation() {
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDYaml"), "org.drools.yaml");
     }
 
     private void testSimpleDrl(KieSession ksession, String assetPackage) {

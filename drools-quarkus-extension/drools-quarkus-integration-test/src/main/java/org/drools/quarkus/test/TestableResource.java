@@ -18,6 +18,11 @@
  */
 package org.drools.quarkus.test;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieRuntimeBuilder;
@@ -100,7 +105,7 @@ public class TestableResource {
 
         List<String> pkgNames = kBase.getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
         assertThat(pkgNames)
-            .containsExactlyInAnyOrder("org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.tms","org.drools.probe");
+            .containsExactlyInAnyOrder("org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.tms","org.drools.probe","org.drools.yaml");
         
         return Response.ok().build();
     }

@@ -70,7 +70,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        githubscm.pushObject('origin', isPRSourceBranch() ? getBuildBranch() : getPRBranch(), getGitAuthorCredsId())
+                        githubscm.pushObject('origin', isPRSourceBranch() ? getBuildBranch() : getPRBranch(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -121,7 +121,7 @@ void sendNotification(String body) {
 }
 
 void checkoutRepo(String repository, String branch) {
-    checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
+    checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false, getGitAuthorCredsId()))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${branch}"
 }
@@ -144,7 +144,11 @@ boolean isPRSourceBranch() {
 }
 
 String getGitAuthorCredsId() {
-    return env.AUTHOR_CREDS_ID
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
 }
 
 String getPRBranch() {
