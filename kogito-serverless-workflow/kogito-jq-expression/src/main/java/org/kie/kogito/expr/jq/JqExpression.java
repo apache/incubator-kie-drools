@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -46,6 +47,7 @@ import net.thisptr.jackson.jq.Version;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import net.thisptr.jackson.jq.internal.javacc.ExpressionParser;
 import net.thisptr.jackson.jq.internal.tree.FunctionCall;
+import net.thisptr.jackson.jq.internal.tree.StringInterpolation;
 import net.thisptr.jackson.jq.internal.tree.binaryop.BinaryOperatorExpression;
 
 public class JqExpression implements Expression {
@@ -76,11 +78,36 @@ public class JqExpression implements Expression {
         this.expr = expr;
         this.scope = scope;
         try {
-            this.internalExpr = ExpressionParser.compile(expr, version);
+            this.internalExpr = compile(version);
             checkFunctionCall(internalExpr);
         } catch (JsonQueryException ex) {
             validationError = ex;
         }
+    }
+
+    private net.thisptr.jackson.jq.Expression compile(Version version) throws JsonQueryException {
+        net.thisptr.jackson.jq.Expression expression;
+        try {
+            expression = ExpressionParser.compile(expr, version);
+        } catch (JsonQueryException ex) {
+            expression = handleStringInterpolation(version).orElseThrow(() -> ex);
+        }
+        checkFunctionCall(expression);
+        return expression;
+    }
+
+    private Optional<net.thisptr.jackson.jq.Expression> handleStringInterpolation(Version version) {
+        if (!expr.startsWith("\"")) {
+            try {
+                net.thisptr.jackson.jq.Expression expression = ExpressionParser.compile("\"" + expr + "\"", version);
+                if (expression instanceof StringInterpolation) {
+                    return Optional.of(expression);
+                }
+            } catch (JsonQueryException ex) {
+                // ignoring it
+            }
+        }
+        return Optional.empty();
     }
 
     private interface TypedOutput extends Output {

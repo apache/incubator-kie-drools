@@ -189,11 +189,21 @@ public class StaticFluentWorkflowApplicationTest {
 
     @Test
     void testInterpolation() {
+        interpolation("\"My name is \\(.name) and my surname is \\(.surname)\"");
+    }
+
+    @Test
+    void testAbreviatedInterpolation() {
+        interpolation("My name is \\(.name) and my surname is \\(.surname)");
+    }
+
+    private void interpolation(String text) {
         final String INTERPOLATION = "interpolation";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow workflow = workflow("PlayingWithExpression").function(expr(INTERPOLATION, "\"My name is \\(.name)\""))
+            Workflow workflow = workflow("PlayingWithExpression").function(expr(INTERPOLATION, text))
                     .start(operation().action(call(INTERPOLATION))).end().build();
-            assertThat(application.execute(workflow, Collections.singletonMap("name", "Javierito")).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
+            assertThat(application.execute(workflow, Map.of("name", "Javierito", "surname", "unknown")).getWorkflowdata().get("response").asText())
+                    .isEqualTo("My name is Javierito and my surname is unknown");
         }
     }
 
