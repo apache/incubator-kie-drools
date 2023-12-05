@@ -26,9 +26,6 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Functions.html#xsdElement_ParameterField>ParameterField</a>
- */
 public class KiePMMLParameterField extends AbstractKiePMMLComponent implements Serializable {
 
     private static final long serialVersionUID = 9187889880911645935L;

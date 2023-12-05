@@ -28,9 +28,6 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate>CompoundPredicate</a>
- */
 public class KiePMMLCompoundPredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicate.class);

@@ -22,9 +22,6 @@ import java.util.Arrays;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_TextIndex>countHits</a>
- */
 public enum COUNT_HITS implements Named {
 
     ALL_HITS("allHits"),

@@ -23,9 +23,6 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_INVALID-VALUE-TREATMENT-METHOD>INVALID-VALUE-TREATMENT-METHOD</a>
- */
 public enum INVALID_VALUE_TREATMENT_METHOD implements Named {
 
     RETURN_INVALID("returnInvalid"),
