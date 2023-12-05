@@ -158,39 +158,46 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy to repository') {
-            when {
-                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(getOptaplannerMavenCommand())
-                    runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
-                }
-            }
-        }
         stage('Deploy locally') {
-            when {
-                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
-            }
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
                 }
             }
         }
-        stage('Upload artifacts to given repository') {
+        stage('Deploy to repository') {
             when {
-                expression { return isSpecificArtifactsUpload() }
+                expression { return  shouldDeployToRepository() }
             }
             steps {
                 script {
-                    // Deploy to specific repository with credentials
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            new MavenCommand(this)
+                                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                    .withProperty('wagon.source', "file://${getLocalDeploymentFolder(optaplannerRepository)}")
+                                    .withProperty('wagon.target', MAVEN_DEPLOY_REPOSITORY)
+                                    .withProperty('wagon.targetId', 'apache-snapshots-repository')
+                                    .withProperty('apache.snapshot.repository.username', REPOSITORY_USER)
+                                    .withProperty('apache.snapshot.repository.password', REPOSITORY_TOKEN)
+                                    .run("org.codehaus.mojo:wagon-maven-plugin:2.0.2:merge-maven-repos")
+                        }
+                    }
                 }
             }
         }
+
+//        stage('Upload artifacts to given repository') {
+//            when {
+//                expression { return isSpecificArtifactsUpload() }
+//            }
+//            steps {
+//                script {
+//                    // Deploy to specific repository with credentials
+//                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
+//                }
+//            }
+//        }
         stage('Stage artifacts') {
             when {
                 expression { return shouldStageArtifacts() }
