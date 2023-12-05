@@ -1,5 +1,6 @@
 package org.drools.parser;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,18 @@ public class DRLParserWrapper {
      */
     public PackageDescr parse(String drl) {
         DRLParser drlParser = DRLParserHelper.createDrlParser(drl);
+        return parse(drlParser);
+    }
+
+    /**
+     * Main entry point for parsing DRL
+     */
+    public PackageDescr parse(InputStream is) {
+        DRLParser drlParser = DRLParserHelper.createDrlParser(is);
+        return parse(drlParser);
+    }
+
+    private PackageDescr parse(DRLParser drlParser) {
         DRLErrorListener errorListener = new DRLErrorListener();
         drlParser.addErrorListener(errorListener);
 
