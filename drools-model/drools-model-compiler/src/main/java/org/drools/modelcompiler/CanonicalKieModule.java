@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -532,7 +533,7 @@ public class CanonicalKieModule implements InternalKieModule {
         String modelFiles;
         try {
             Resource modelFile = kieModule.getResource(fileName);
-            modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
+            modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -633,7 +634,7 @@ public class CanonicalKieModule implements InternalKieModule {
     private static final String GENERATED_FACT_MARKER = GeneratedFact.class.getCanonicalName().replace( '.', '/' );
     private boolean isClassChanged( InternalKieModule newKieModule, String file ) {
         byte[] oldBytes = getBytes( file );
-        return new String(oldBytes).contains(GENERATED_FACT_MARKER) || !Arrays.equals(oldBytes, newKieModule.getBytes( file ));
+        return new String(oldBytes, StandardCharsets.UTF_8).contains(GENERATED_FACT_MARKER) || !Arrays.equals(oldBytes, newKieModule.getBytes( file ));
     }
 
     private Collection<ResourceChangeSet> calculateResourceChangeSet(Model oldModel, Model newModel) {

@@ -18,6 +18,7 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.nio.charset.StandardCharsets;
 import org.drools.base.util.Drools;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -77,17 +78,17 @@ public class ModelWriter {
         if (!modelSources.isEmpty()) {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
         }
-        trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes());
+        trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes(StandardCharsets.UTF_8));
     }
 
     public void writeRuleUnitServiceFile(Collection<String> ruleUnitClassNames, MemoryFileSystem trgMfs) {
         if (!ruleUnitClassNames.isEmpty()) {
-            trgMfs.write(RULE_UNIT_SERVICES_FILE, ruleUnitClassNames.stream().collect(Collectors.joining("\n")).getBytes());
+            trgMfs.write(RULE_UNIT_SERVICES_FILE, ruleUnitClassNames.stream().collect(Collectors.joining("\n")).getBytes(StandardCharsets.UTF_8));
         }
     }
 
     public void writeGeneratedClassNamesFile(Set<String> generatedClassNames, MemoryFileSystem trgMfs, ReleaseId releaseId) {
-        trgMfs.write(getGeneratedClassNamesFile(releaseId), generatedClassNamesFileContent(generatedClassNames).getBytes());
+        trgMfs.write(getGeneratedClassNamesFile(releaseId), generatedClassNamesFileContent(generatedClassNames).getBytes(StandardCharsets.UTF_8));
     }
 
     public static String generatedClassNamesFileContent(Set<String> generatedClassNames) {

@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -163,7 +164,7 @@ public class DrlParser {
                               final Resource resource,
                               final InputStream is) throws DroolsParserException, IOException {
         this.resource = resource;
-        String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : null;
+        String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : StandardCharsets.UTF_8.name();
 
         lexer = DRLFactory.buildLexer(is, encoding, languageLevel);
         DRLParser parser = DRLFactory.buildParser(lexer, languageLevel);

@@ -18,6 +18,7 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.UUID;
 
@@ -287,7 +288,7 @@ public class GeneratedClassNamesTest extends BaseModelTest {
 
         final InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
         byte[] kjar = kieModule.getBytes();
-        Resource kjarResource = ks.getResources().newByteArrayResource(kjar);
+        Resource kjarResource = ks.getResources().newByteArrayResource(kjar, StandardCharsets.UTF_8.name());
 
         // cleanup
         ks.getRepository().removeKieModule(releaseId);

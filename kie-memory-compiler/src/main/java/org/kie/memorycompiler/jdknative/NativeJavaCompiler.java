@@ -87,7 +87,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler compiler = getJavaCompiler();
 
-        try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
+        try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, Charset.forName(pSettings.getSourceEncoding()))) {
             try {
                 jFileManager.setLocation( StandardLocation.CLASS_PATH, pSettings.getClasspathLocations() );
                 jFileManager.setLocation( StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File("target/classes")) );

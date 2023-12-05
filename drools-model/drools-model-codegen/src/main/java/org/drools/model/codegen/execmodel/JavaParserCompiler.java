@@ -18,6 +18,7 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -130,7 +131,7 @@ public class JavaParserCompiler {
             final String folderName = pkgName.replace( '.', '/' );
             final TypeDeclaration generatedClass = generatedPojo.getGeneratedClass();
             final String varsSourceName = String.format("src/main/java/%s/%s.java", folderName, generatedClass.getName());
-            srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedPojo.getStaticImports(), generatedClass).getBytes());
+            srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedPojo.getStaticImports(), generatedClass).getBytes(StandardCharsets.UTF_8));
             sources.add( varsSourceName );
         }
 

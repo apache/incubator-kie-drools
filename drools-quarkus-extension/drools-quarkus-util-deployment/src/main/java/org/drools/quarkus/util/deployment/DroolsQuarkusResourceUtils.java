@@ -18,6 +18,7 @@
  */
 package org.drools.quarkus.util.deployment;
 
+import java.nio.charset.StandardCharsets;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.bootstrap.classloading.QuarkusClassLoader;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -174,7 +175,7 @@ public class DroolsQuarkusResourceUtils {
         Map<String, String> sourcesMap = new HashMap<>();
         for (GeneratedFile javaFile : generatedFiles) {
             if (javaFile.category() == GeneratedFileType.Category.SOURCE) {
-                sourcesMap.put(toClassName(javaFile.relativePath()), new String(javaFile.contents()));
+                sourcesMap.put(toClassName(javaFile.relativePath()), new String(javaFile.contents(), StandardCharsets.UTF_8));
             }
         }
         return sourcesMap;
