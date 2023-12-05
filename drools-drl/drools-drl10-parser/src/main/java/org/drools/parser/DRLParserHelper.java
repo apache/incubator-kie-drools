@@ -1,5 +1,9 @@
 package org.drools.parser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -28,8 +32,21 @@ public class DRLParserHelper {
     }
 
     public static DRLParser createDrlParser(String drl) {
-        CharStream inputStream = CharStreams.fromString(drl);
-        DRLLexer drlLexer = new DRLLexer(inputStream);
+        CharStream charStream = CharStreams.fromString(drl);
+        return createDrlParser(charStream);
+    }
+
+    public static DRLParser createDrlParser(InputStream is) {
+        try {
+            CharStream charStream = CharStreams.fromStream(is);
+            return createDrlParser(charStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static DRLParser createDrlParser(CharStream charStream) {
+        DRLLexer drlLexer = new DRLLexer(charStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(drlLexer);
         return new DRLParser(commonTokenStream);
     }
