@@ -31,6 +31,7 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.DeclaredFunction;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.MethodResolutionUtils;
+import org.drools.mvelcompiler.util.VisitorContext;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
 
 import static org.drools.util.StreamUtils.optionalToStream;
 
-public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
+public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression, VisitorContext> {
 
     final RHSPhase parentVisitor;
     final MvelCompilerContext mvelCompilerContext;
@@ -53,45 +54,18 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
     }
 
     @Override
-    public TypedExpression defaultMethod(Node n, RHSPhase.Context context) {
+    public TypedExpression defaultMethod(Node n, VisitorContext context) {
         return n.accept(parentVisitor, context);
     }
 
     @Override
-    public TypedExpression visit(final MethodCallExpr n, final RHSPhase.Context arg) {
+    public TypedExpression visit(final MethodCallExpr n, final VisitorContext arg) {
         final Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
-        final TypedExpression name = n.getName().accept(this, new RHSPhase.Context(scope.orElse(null)));
-        final Pair<List<TypedExpression>, List<Integer>> typedArgumentsResult = getTypedArguments(n.getArguments(), arg);
+        final TypedExpression name = n.getName().accept(this, new VisitorContext(scope.orElse(null)));
+        final Pair<List<TypedExpression>, List<Integer>> typedArgumentsResult =
+                MethodResolutionUtils.getTypedArgumentsWithEmptyCollectionArgumentDetection(n.getArguments(), this, arg);
         return parseMethodFromDeclaredFunction(n, typedArgumentsResult.a)
                 .orElseGet(() -> parseMethod(n, scope, name, typedArgumentsResult.a, typedArgumentsResult.b));
-    }
-
-    private Pair<List<TypedExpression>, List<Integer>> getTypedArguments(final NodeList<Expression> arguments, RHSPhase.Context arg) {
-        final List<TypedExpression> typedArguments = new ArrayList<>();
-        final List<Integer> emptyCollectionArgumentIndexes = new ArrayList<>();
-        int argumentIndex = 0;
-        for (Expression child : arguments) {
-            TypedExpression a = child.accept(this, arg);
-            typedArguments.add(a);
-            // [] is ambiguous in mvel - it can represent an empty list or an empty map.
-            // It cannot be distinguished on a language level, so this is a workaround:
-            // - When there [] written in a rule, mvel parser always parses it as an empty list.
-            // - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
-            // - This finds all indexes of empty lists or empty maps in the method parameters.
-            // - Later when not possible to resolve the method with a list or map parameter, it will try to resolve a method with the other collection parameter.
-            // - This happens for all empty list and map parameters resolved by the parser, until a proper method is not found.
-            if (child instanceof ListCreationLiteralExpression
-                    && (((ListCreationLiteralExpression) child).getExpressions() == null
-                        || ((ListCreationLiteralExpression) child).getExpressions().isEmpty())) {
-                emptyCollectionArgumentIndexes.add(argumentIndex);
-            } else if (child instanceof MapCreationLiteralExpression
-                    && (((MapCreationLiteralExpression) child).getExpressions() == null
-                    || ((MapCreationLiteralExpression) child).getExpressions().isEmpty())) {
-                emptyCollectionArgumentIndexes.add(argumentIndex);
-            }
-            argumentIndex++;
-        }
-        return new Pair<>(typedArguments, emptyCollectionArgumentIndexes);
     }
 
     private Optional<TypedExpression> parseMethodFromDeclaredFunction(MethodCallExpr n, List<TypedExpression> arguments) {

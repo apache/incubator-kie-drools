@@ -6,6 +6,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.utils.Pair;
 import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.ListExprT;
 import org.drools.mvelcompiler.ast.MapExprT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -13,6 +14,7 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,36 @@ public final class MethodResolutionUtils {
         // It is forbidden to create instances of util classes.
     }
 
+    public static List<TypedExpression> coerceCorrectConstructorArguments(
+            final Class<?> type,
+            List<TypedExpression> arguments,
+            List<Integer> emptyListArgumentIndexes) {
+        // Rather work only with the argumentsType and when a method is resolved, flip the arguments list based on it.
+        final List<TypedExpression> coercedArgumentsTypesList = new ArrayList<>(arguments);
+        // This needs to go through all possible combinations.
+        final int indexesListSize = emptyListArgumentIndexes.size();
+        for (int numberOfProcessedIndexes = 0; numberOfProcessedIndexes < indexesListSize; numberOfProcessedIndexes++) {
+            for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
+                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
+                Constructor<?> constructor;
+                try {
+                    constructor = type.getConstructor(parametersType(coercedArgumentsTypesList));
+                } catch (NoSuchMethodException ex) {
+                    constructor = null;
+                }
+                if (constructor != null) {
+                    return coercedArgumentsTypesList;
+                }
+                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
+            }
+            switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(numberOfProcessedIndexes));
+        }
+        // No method found, return the original one.
+        return arguments;
+    }
+
     public static Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodWithEmptyCollectionArguments(
-            final Expression methodOrConstructorExpression,
+            final MethodCallExpr methodExpression,
             final MvelCompilerContext mvelCompilerContext,
             final Optional<TypedExpression> scope,
             List<TypedExpression> arguments,
@@ -38,7 +68,7 @@ public final class MethodResolutionUtils {
             for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
                 switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
                 Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult =
-                        MethodResolutionUtils.resolveMethod((MethodCallExpr) methodOrConstructorExpression, mvelCompilerContext, scope, coercedArgumentsTypesList);
+                        MethodResolutionUtils.resolveMethod(methodExpression, mvelCompilerContext, scope, coercedArgumentsTypesList);
                 if (resolveMethodResult.a.isPresent()) {
                     modifyArgumentsBasedOnCoercedCollectionArguments(arguments, coercedArgumentsTypesList);
                     return resolveMethodResult;
@@ -75,6 +105,37 @@ public final class MethodResolutionUtils {
             resolvedMethod = mvelCompilerContext.findStaticMethod(n.getNameAsString());
         }
         return new Pair<>(resolvedMethod, finalScope);
+    }
+
+    public static Pair<List<TypedExpression>, List<Integer>> getTypedArgumentsWithEmptyCollectionArgumentDetection(
+            final NodeList<Expression> arguments,
+            final DrlGenericVisitor<TypedExpression, VisitorContext> drlGenericVisitor,
+            final VisitorContext arg) {
+        final List<TypedExpression> typedArguments = new ArrayList<>();
+        final List<Integer> emptyCollectionArgumentIndexes = new ArrayList<>();
+        int argumentIndex = 0;
+        for (Expression child : arguments) {
+            TypedExpression a = child.accept(drlGenericVisitor, arg);
+            typedArguments.add(a);
+            // [] is ambiguous in mvel - it can represent an empty list or an empty map.
+            // It cannot be distinguished on a language level, so this is a workaround:
+            // - When there [] written in a rule, mvel parser always parses it as an empty list.
+            // - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
+            // - This finds all indexes of empty lists or empty maps in the method parameters.
+            // - Later when not possible to resolve the method with a list or map parameter, it will try to resolve a method with the other collection parameter.
+            // - This happens for all empty list and map parameters resolved by the parser, until a proper method is not found.
+            if (child instanceof ListCreationLiteralExpression
+                    && (((ListCreationLiteralExpression) child).getExpressions() == null
+                    || ((ListCreationLiteralExpression) child).getExpressions().isEmpty())) {
+                emptyCollectionArgumentIndexes.add(argumentIndex);
+            } else if (child instanceof MapCreationLiteralExpression
+                    && (((MapCreationLiteralExpression) child).getExpressions() == null
+                    || ((MapCreationLiteralExpression) child).getExpressions().isEmpty())) {
+                emptyCollectionArgumentIndexes.add(argumentIndex);
+            }
+            argumentIndex++;
+        }
+        return new Pair<>(typedArguments, emptyCollectionArgumentIndexes);
     }
 
     private static Class<?>[] parametersType(List<TypedExpression> arguments) {
