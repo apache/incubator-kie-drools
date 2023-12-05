@@ -30,7 +30,7 @@ public final class MethodResolutionUtils {
      *  [] is ambiguous in mvel - it can represent an empty list or an empty map.
      *    It cannot be distinguished on a language level, so this is a workaround:
      *    - When there [] written in a rule, mvel parser parses it as an empty list.
-     *    - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
+     *    - The only possible way with constructors, when there is such parameter, is try to guess the correct parameter type when trying to read the constructor from a class.
      *    - This uses all indexes of empty lists or empty maps in the constructor parameters.
      *    - When not possible to resolve the constructor with a list or map parameter, it will try to resolve a constructor with the other collection parameter.
      *    - This happens for all empty list and map parameters resolved by the parser, until a proper constructor is found.
@@ -68,9 +68,9 @@ public final class MethodResolutionUtils {
      *    It cannot be distinguished on a language level, so this is a workaround:
      *    - When there [] written in a rule, mvel parser parses it as an empty list.
      *    - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
-     *    - This uses all indexes of empty lists or empty maps in the constructor parameters.
-     *    - When not possible to resolve the constructor with a list or map parameter, it will try to resolve a constructor with the other collection parameter.
-     *    - This happens for all empty list and map parameters resolved by the parser, until a proper constructor is found.
+     *    - This uses all indexes of empty lists or empty maps in the method parameters.
+     *    - When not possible to resolve the method with a list or map parameter, it will try to resolve a method with the other collection parameter.
+     *    - This happens for all empty list and map parameters resolved by the parser, until a proper method is found.
      */
     public static Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodWithEmptyCollectionArguments(
             final MethodCallExpr methodExpression,
