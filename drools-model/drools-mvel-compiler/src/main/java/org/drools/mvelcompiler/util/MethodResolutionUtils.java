@@ -50,7 +50,7 @@ public final class MethodResolutionUtils {
             }
             switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(numberOfProcessedIndexes));
         }
-        // No method found, return the original one.
+        // No constructor found, return the original arguments.
         return arguments;
     }
 
