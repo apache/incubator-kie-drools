@@ -22,9 +22,6 @@ import java.util.Arrays;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_TextIndex>localTermWeights</a>
- */
 public enum LOCAL_TERM_WEIGHTS implements Named {
 
     TERM_FREQUENCY("termFrequency"),

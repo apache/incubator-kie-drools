@@ -37,9 +37,6 @@ import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkDates;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkInteger;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkLength;
 
-/**
- * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
- */
 public enum DateFunctions {
 
     DATE_DAYS_SINCE_YEAR("dateDaysSinceYear"),

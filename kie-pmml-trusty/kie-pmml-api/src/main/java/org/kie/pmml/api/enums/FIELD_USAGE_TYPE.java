@@ -23,9 +23,6 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_FIELD-USAGE-TYPE>FIELD-USAGE-TYPE</a>
- */
 public enum FIELD_USAGE_TYPE implements Named {
 
     ACTIVE("active"),

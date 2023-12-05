@@ -26,9 +26,6 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_True>True</a>
- */
 public class KiePMMLTruePredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTruePredicate.class);

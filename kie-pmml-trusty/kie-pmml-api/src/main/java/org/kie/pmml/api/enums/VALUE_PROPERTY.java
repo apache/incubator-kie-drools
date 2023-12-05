@@ -23,9 +23,6 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/DataDictionary.html#xsdElement_Value>Value</a>
- */
 public enum VALUE_PROPERTY implements Named {
 
     VALID("valid"),

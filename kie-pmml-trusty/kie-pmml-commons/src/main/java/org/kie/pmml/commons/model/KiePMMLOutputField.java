@@ -35,9 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
- */
 public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLOutputField.class);
