@@ -26,6 +26,15 @@ public final class MethodResolutionUtils {
         // It is forbidden to create instances of util classes.
     }
 
+    /**
+     *  [] is ambiguous in mvel - it can represent an empty list or an empty map.
+     *    It cannot be distinguished on a language level, so this is a workaround:
+     *    - When there [] written in a rule, mvel parser parses it as an empty list.
+     *    - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
+     *    - This uses all indexes of empty lists or empty maps in the constructor parameters.
+     *    - When not possible to resolve the constructor with a list or map parameter, it will try to resolve a constructor with the other collection parameter.
+     *    - This happens for all empty list and map parameters resolved by the parser, until a proper constructor is found.
+     */
     public static List<TypedExpression> coerceCorrectConstructorArguments(
             final Class<?> type,
             List<TypedExpression> arguments,
@@ -54,6 +63,15 @@ public final class MethodResolutionUtils {
         return arguments;
     }
 
+    /**
+     *  [] is ambiguous in mvel - it can represent an empty list or an empty map.
+     *    It cannot be distinguished on a language level, so this is a workaround:
+     *    - When there [] written in a rule, mvel parser parses it as an empty list.
+     *    - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
+     *    - This uses all indexes of empty lists or empty maps in the constructor parameters.
+     *    - When not possible to resolve the constructor with a list or map parameter, it will try to resolve a constructor with the other collection parameter.
+     *    - This happens for all empty list and map parameters resolved by the parser, until a proper constructor is found.
+     */
     public static Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodWithEmptyCollectionArguments(
             final MethodCallExpr methodExpression,
             final MvelCompilerContext mvelCompilerContext,
@@ -117,13 +135,6 @@ public final class MethodResolutionUtils {
         for (Expression child : arguments) {
             TypedExpression a = child.accept(drlGenericVisitor, arg);
             typedArguments.add(a);
-            // [] is ambiguous in mvel - it can represent an empty list or an empty map.
-            // It cannot be distinguished on a language level, so this is a workaround:
-            // - When there [] written in a rule, mvel parser always parses it as an empty list.
-            // - The only possible way with methods, when there is such parameter, is try to guess the correct parameter type when trying to read the method from a class.
-            // - This finds all indexes of empty lists or empty maps in the method parameters.
-            // - Later when not possible to resolve the method with a list or map parameter, it will try to resolve a method with the other collection parameter.
-            // - This happens for all empty list and map parameters resolved by the parser, until a proper method is not found.
             if (child instanceof ListCreationLiteralExpression
                     && (((ListCreationLiteralExpression) child).getExpressions() == null
                     || ((ListCreationLiteralExpression) child).getExpressions().isEmpty())) {
