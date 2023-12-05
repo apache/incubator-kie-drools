@@ -23,9 +23,6 @@ import java.util.Arrays;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
- */
 public enum ARRAY_TYPE implements Named {
 
     INT("int"),

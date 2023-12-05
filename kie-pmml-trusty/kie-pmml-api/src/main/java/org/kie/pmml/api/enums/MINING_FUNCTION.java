@@ -23,9 +23,6 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/GeneralStructure.html#xsdType_MINING-FUNCTION>MINING-FUNCTION</a>
- */
 public enum MINING_FUNCTION implements Named {
 
     ASSOCIATION_RULES("associationRules"),

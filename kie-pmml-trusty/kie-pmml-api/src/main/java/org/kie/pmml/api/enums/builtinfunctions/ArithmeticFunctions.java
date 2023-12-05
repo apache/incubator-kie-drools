@@ -27,9 +27,6 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkNumbers;
 
-/**
- * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
- */
 public enum ArithmeticFunctions {
 
     PLUS("+"),

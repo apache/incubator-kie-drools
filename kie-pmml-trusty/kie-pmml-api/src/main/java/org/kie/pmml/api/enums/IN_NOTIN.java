@@ -22,9 +22,6 @@ import java.util.Arrays;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate>SimpleSetPredicate</a>
- */
 public enum IN_NOTIN implements Named {
 
     IN("isIn"),

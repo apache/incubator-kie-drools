@@ -34,9 +34,6 @@ import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkMinimumLength;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkNumbers;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkRangeLength;
 
-/**
- * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
- */
 public enum BooleanFunctions {
 
     IS_MISSING("isMissing"),
