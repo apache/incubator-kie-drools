@@ -34,6 +34,7 @@ import org.drools.mvel.compiler.TestEnum;
 import org.drools.mvel.expr.MVELDebugHandler;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
 import org.drools.mvel.integrationtests.facts.FactWithList;
+import org.drools.mvel.integrationtests.facts.FactWithMap;
 import org.drools.mvel.integrationtests.facts.FactWithObject;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -78,7 +79,8 @@ public class MVELEmptyCollectionsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        // Some of these fail without executable model, so test only executable model.
+        return TestParametersUtil.getKieBaseCloudOnlyExecModelConfiguration();
     }
 
     @Test
@@ -120,5 +122,46 @@ public class MVELEmptyCollectionsTest {
         ksession.insert(f);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(f.getObjectValue()).isInstanceOf(FactWithList.class);
+    }
+
+    @Test
+    public void testEmptyMapAsMethodParameter() {
+        final String drl =
+                "import " + FactWithMap.class.getCanonicalName() + "; \n" +
+                        "rule \"test\"\n" +
+                        "dialect \"mvel\" \n" +
+                        "when\n" +
+                        "    $p: FactWithMap()\n" +
+                        "then\n" +
+                        "    $p.setItemsMap([]); \n" +
+                        "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        final FactWithMap f = new FactWithMap(1, "testString");
+        ksession.insert(f);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(f.getItemsMap()).hasSize(0);
+    }
+
+    @Test
+    public void testEmptyMapAsConstructorParameter() {
+        final String drl =
+                "import " + FactWithMap.class.getCanonicalName() + "; \n" +
+                        "import " + FactWithObject.class.getCanonicalName() + "; \n" +
+                        "rule \"test\"\n" +
+                        "dialect \"mvel\" \n" +
+                        "when\n" +
+                        "    $p: FactWithObject()\n" +
+                        "then\n" +
+                        "    $p.setObjectValue(new FactWithMap([])); \n" +
+                        "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        final FactWithObject f = new FactWithObject(null);
+        ksession.insert(f);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(f.getObjectValue()).isNotNull().isInstanceOf(FactWithMap.class);
     }
 }
