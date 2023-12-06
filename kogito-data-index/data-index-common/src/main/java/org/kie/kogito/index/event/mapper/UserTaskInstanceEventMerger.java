@@ -21,10 +21,6 @@ package org.kie.kogito.index.event.mapper;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
 
-public interface UserTaskInstanceEventMerger {
-
-    boolean accept(UserTaskInstanceDataEvent<?> event);
-
-    void merge(UserTaskInstance processInstance, UserTaskInstanceDataEvent<?> event);
+public interface UserTaskInstanceEventMerger extends Merger<UserTaskInstanceDataEvent<?>, UserTaskInstance> {
 
 }

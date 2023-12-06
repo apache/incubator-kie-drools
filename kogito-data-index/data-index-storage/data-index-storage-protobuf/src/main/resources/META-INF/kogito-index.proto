@@ -62,6 +62,17 @@ message ProcessDefinition {
     optional string endpoint = 7;
     optional bytes source = 8;
     repeated Node nodes = 9;
+    optional string description = 10;
+    repeated string annotations = 11;
+    repeated Entry metadata = 12;
+
+}
+
+message Entry {
+    /* @Field(store = Store.YES) */
+    optional string key = 1;
+    /* @Field(store = Store.YES) */
+    optional string value = 2;
 }
 
 /* @Indexed */

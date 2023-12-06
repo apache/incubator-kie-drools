@@ -31,9 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.event.process.NodeDefinition;
+import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
+import org.kie.kogito.event.process.ProcessDefinitionEventBody;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
 import org.kie.kogito.event.process.ProcessInstanceEventMetadata;
@@ -68,6 +72,7 @@ import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 public final class TestUtils {
 
     private static final String MILESTONE_ID = UUID.randomUUID().toString();
+    public static final String ADDONS = "jobs-management,prometheus-monitoring,process-management";
     public static final String PROCESS_VERSION = "1.0";
 
     private TestUtils() {
@@ -99,6 +104,23 @@ public final class TestUtils {
         }
     }
 
+    public static ProcessDefinitionDataEvent getProcessDefinitionDataEvent(String processId) {
+        ProcessDefinitionEventBody body = ProcessDefinitionEventBody.builder()
+                .setVersion(PROCESS_VERSION)
+                .setId(processId)
+                .setName(getProcessName(processId))
+                .setDescription("new definition for testing")
+                .setAddons(Set.of(ADDONS.split(",")))
+                .setAnnotations(Set.of("annotation1", "annotation2"))
+                .setMetadata(Map.of("meta1", "value1", "meta2", "value2"))
+                .setRoles(Set.of("admin"))
+                .setNodes(List.of(NodeDefinition.builder().setName("node1").setId("id1").build()))
+                .setEndpoint(getEndpoint(processId))
+                .build();
+
+        return new ProcessDefinitionDataEvent(body);
+    }
+
     public static ProcessInstanceStateDataEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId,
             String parentProcessInstanceId, String identity) {
 
@@ -122,10 +144,6 @@ public final class TestUtils {
         return new ProcessInstanceStateDataEvent(URI.create("http://localhost:8080/" + processId).toString(), "jobs-management,prometheus-monitoring,process-management", (String) identity,
                 body.metaData(), body);
 
-    }
-
-    private static String getProcessName(String id) {
-        return "processName " + id;
     }
 
     public static ProcessInstanceErrorDataEvent deriveErrorProcessCloudEvent(ProcessInstanceStateDataEvent event, String errorMessage, String nodeDefinition, String nodeInstanceId) {
@@ -167,7 +185,6 @@ public final class TestUtils {
                 .processInstanceId(event.getData().getProcessInstanceId())
                 .processVersion(event.getData().getProcessVersion())
                 .build();
-
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA, event.getKogitoProcessInstanceId());
         metadata.put(ProcessInstanceEventMetadata.PROCESS_VERSION_META_DATA, event.getKogitoProcessInstanceVersion());
@@ -182,12 +199,16 @@ public final class TestUtils {
 
     }
 
+    private static String getProcessName(String processId) {
+        return String.format("%s-name", processId);
+    }
+
     public static ProcessInstance getProcessInstance(String processId, String processInstanceId, Integer status, String rootProcessInstanceId, String rootProcessId) {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
         pi.setVersion(PROCESS_VERSION);
-        pi.setProcessName(String.format("%s-name", processId));
+        pi.setProcessName(getProcessName(processId));
         pi.setRootProcessInstanceId(rootProcessInstanceId);
         pi.setParentProcessInstanceId(rootProcessInstanceId);
         pi.setRootProcessId(rootProcessId);
@@ -325,6 +346,10 @@ public final class TestUtils {
         attachmentEvent.setKogitoRootProcessId(rootProcessId);
         attachmentEvent.setKogitoRootProcessInstanceId(rootProcessInstanceId);
         return attachmentEvent;
+    }
+
+    private static String getEndpoint(String processId) {
+        return URI.create("http://localhost:8080/" + processId).toString();
     }
 
     public static UserTaskInstanceAttachmentEventBody getTaskAttachment(String id, String user, String name, String content) {

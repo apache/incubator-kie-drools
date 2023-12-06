@@ -24,6 +24,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
+import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_JOBS_EVENTS;
+import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
+import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESS_DEFINITIONS_EVENTS;
+import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
 import static org.kie.kogito.index.test.TestUtils.readFileContent;
 
 public abstract class AbstractMessagingKafkaConsumerIT extends AbstractMessagingConsumerIT {
@@ -48,15 +52,19 @@ public abstract class AbstractMessagingKafkaConsumerIT extends AbstractMessaging
     }
 
     protected void sendUserTaskInstanceEvent() throws Exception {
-        send("user_task_instance_event.json", "kogito-usertaskinstances-events");
+        send("user_task_instance_event.json", KOGITO_USERTASKINSTANCES_EVENTS);
     }
 
     protected void sendProcessInstanceEvent() throws Exception {
-        send("process_instance_event.json", "kogito-processinstances-events");
+        send("process_instance_event.json", KOGITO_PROCESSINSTANCES_EVENTS);
+    }
+
+    protected void sendProcessDefinitionEvent() throws Exception {
+        send("process_definition_event.json", KOGITO_PROCESS_DEFINITIONS_EVENTS);
     }
 
     protected void sendJobEvent() throws Exception {
-        send("job_event.json", "kogito-jobs-events");
+        send("job_event.json", KOGITO_JOBS_EVENTS);
     }
 
     private void send(String file, String topic) throws Exception {

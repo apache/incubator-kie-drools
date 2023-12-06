@@ -45,12 +45,13 @@ public class ProcessInstanceNodeDataEventMerger implements ProcessInstanceEventM
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceNodeDataEventMerger.class);
 
     @Override
-    public boolean accept(ProcessInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof ProcessInstanceNodeDataEvent;
     }
 
     @Override
-    public void merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+        pi = getOrNew(pi, data);
         ProcessInstanceNodeDataEvent event = (ProcessInstanceNodeDataEvent) data;
 
         List<NodeInstance> nodeInstances = Optional.ofNullable(pi.getNodes()).orElse(new ArrayList<>());
@@ -116,6 +117,7 @@ public class ProcessInstanceNodeDataEventMerger implements ProcessInstanceEventM
         }
         LOGGER.debug("after merging: {}", nodeInstance);
         pi.setNodes(nodeInstances);
+        return pi;
     }
 
 }

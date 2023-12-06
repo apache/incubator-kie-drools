@@ -35,12 +35,12 @@ import org.kie.kogito.index.model.UserTaskInstance;
 public class UserTaskInstanceAttachmentDataEventMerger implements UserTaskInstanceEventMerger {
 
     @Override
-    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof UserTaskInstanceAttachmentDataEvent;
     }
 
     @Override
-    public void merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
+    public UserTaskInstance merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
         UserTaskInstanceAttachmentDataEvent event = (UserTaskInstanceAttachmentDataEvent) data;
         UserTaskInstanceAttachmentEventBody body = event.getData();
 
@@ -69,7 +69,7 @@ public class UserTaskInstanceAttachmentDataEventMerger implements UserTaskInstan
                 attachments.removeIf(e -> e.getId().equals(body.getAttachmentId()));
                 break;
         }
-
+        return userTaskInstance;
     }
 
 }

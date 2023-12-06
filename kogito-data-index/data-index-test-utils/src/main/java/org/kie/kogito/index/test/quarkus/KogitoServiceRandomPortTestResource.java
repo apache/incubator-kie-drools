@@ -37,7 +37,9 @@ public class KogitoServiceRandomPortTestResource implements TestResource {
 
     @Override
     public void start() {
-        httpPort = SocketUtils.findAvailablePort();
+        if (httpPort == 0) {
+            httpPort = SocketUtils.findAvailablePort();
+        }
         Testcontainers.exposeHostPorts(httpPort);
         //the hostname for the container to access the host is "host.testcontainers.internal"
         //https://www.testcontainers.org/features/networking/#exposing-host-ports-to-the-container

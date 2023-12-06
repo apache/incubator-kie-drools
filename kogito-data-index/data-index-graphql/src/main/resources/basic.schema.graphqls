@@ -46,6 +46,9 @@ type ProcessDefinition {
     type: String
     endpoint: String
     serviceUrl: String
+    description: String
+    annotations: [String]
+    metadata: JSON
 }
 
 input ProcessDefinitionOrderBy {

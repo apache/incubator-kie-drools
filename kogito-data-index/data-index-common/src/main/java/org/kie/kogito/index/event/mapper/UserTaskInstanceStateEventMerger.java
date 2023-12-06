@@ -38,12 +38,12 @@ public class UserTaskInstanceStateEventMerger implements UserTaskInstanceEventMe
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskInstanceStateEventMerger.class);
 
     @Override
-    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof UserTaskInstanceStateDataEvent;
     }
 
     @Override
-    public void merge(UserTaskInstance task, UserTaskInstanceDataEvent<?> data) {
+    public UserTaskInstance merge(UserTaskInstance task, UserTaskInstanceDataEvent<?> data) {
         UserTaskInstanceStateDataEvent event = (UserTaskInstanceStateDataEvent) data;
         LOGGER.debug("value before merging: {}", task);
         task.setId(event.getData().getUserTaskInstanceId());
@@ -67,6 +67,7 @@ public class UserTaskInstanceStateEventMerger implements UserTaskInstanceEventMe
         task.setLastUpdate(toZonedDateTime(event.getData().getEventDate()));
         task.setReferenceName(event.getData().getUserTaskReferenceName());
         LOGGER.debug("value after merging: {}", task);
+        return task;
     }
 
     public String getEndpoint(URI source, String pId, String taskName, String taskId) {

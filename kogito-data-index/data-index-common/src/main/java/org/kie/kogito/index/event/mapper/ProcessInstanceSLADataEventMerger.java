@@ -25,13 +25,14 @@ import org.kie.kogito.index.model.ProcessInstance;
 public class ProcessInstanceSLADataEventMerger implements ProcessInstanceEventMerger {
 
     @Override
-    public boolean accept(ProcessInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof ProcessInstanceSLADataEvent;
     }
 
     @Override
-    public void merge(ProcessInstance pi, ProcessInstanceDataEvent<?> event) {
+    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> event) {
         // do nothing
+        return pi;
     }
 
 }

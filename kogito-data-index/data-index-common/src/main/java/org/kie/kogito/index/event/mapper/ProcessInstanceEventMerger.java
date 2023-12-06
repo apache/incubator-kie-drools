@@ -18,13 +18,21 @@
  */
 package org.kie.kogito.index.event.mapper;
 
+import java.util.ArrayList;
+
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.index.model.ProcessInstance;
 
-public interface ProcessInstanceEventMerger {
+public interface ProcessInstanceEventMerger extends Merger<ProcessInstanceDataEvent<?>, ProcessInstance> {
 
-    boolean accept(ProcessInstanceDataEvent<?> event);
-
-    void merge(ProcessInstance pi, ProcessInstanceDataEvent<?> event);
-
+    default ProcessInstance getOrNew(ProcessInstance pi, ProcessInstanceDataEvent<?> event) {
+        if (pi == null) {
+            pi = new ProcessInstance();
+            pi.setId(event.getKogitoProcessInstanceId());
+            pi.setProcessId(event.getKogitoProcessId());
+            pi.setMilestones(new ArrayList<>());
+            pi.setNodes(new ArrayList<>());
+        }
+        return pi;
+    }
 }

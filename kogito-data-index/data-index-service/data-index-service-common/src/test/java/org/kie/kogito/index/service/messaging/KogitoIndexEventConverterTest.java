@@ -18,8 +18,12 @@
  */
 package org.kie.kogito.index.service.messaging;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
 
@@ -28,17 +32,24 @@ import org.eclipse.microprofile.reactive.messaging.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.event.process.NodeDefinition;
+import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
+import org.kie.kogito.index.event.mapper.ProcessDefinitionDataEventMerger;
 import org.kie.kogito.index.event.mapper.ProcessInstanceStateDataEventMerger;
 import org.kie.kogito.index.event.mapper.UserTaskInstanceStateEventMerger;
+import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.json.ObjectMapperProducer;
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -57,7 +68,8 @@ import static io.cloudevents.core.v1.CloudEventV1.SPECVERSION;
 import static io.cloudevents.core.v1.CloudEventV1.SUBJECT;
 import static io.cloudevents.core.v1.CloudEventV1.TIME;
 import static io.cloudevents.core.v1.CloudEventV1.TYPE;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.index.test.TestUtils.readFileContent;
 import static org.mockito.Mockito.lenient;
 
@@ -73,11 +85,12 @@ class KogitoIndexEventConverterTest {
     private static final URI EVENT_DATA_SCHEMA = URI.create("http://my_event_data_schema/my_schema.json");
     private static final String EVENT_DATA_CONTENT_TYPE = "application/json; charset=utf-8";
     private static final String EVENT_SUBJECT = "SUBJECT";
-
     private static final String STRUCTURED_PROCESS_INSTANCE_CLOUD_EVENT = "process_instance_event.json";
     private static final String BINARY_PROCESS_INSTANCE_CLOUD_EVENT_DATA = "binary_process_instance_event_data.json";
     private static final String BINARY_USER_TASK_INSTANCE_CLOUD_EVENT_DATA = "binary_user_task_instance_state_event_data.json";
     private static final String BINARY_KOGITO_JOB_CLOUD_EVENT_DATA = "binary_job_event_data.json";
+    private static final String STRUCTURED_PROCESS_DEFINITION_CLOUD_EVENT = "process_definition_event.json";
+    private static final String BINARY_PROCESS_DEFINITION_CLOUD_EVENT = "binary_process_definition_event.json";
 
     @Mock
     private IncomingHttpMetadata httpMetadata;
@@ -89,7 +102,7 @@ class KogitoIndexEventConverterTest {
         headers = MultiMap.caseInsensitiveMultiMap();
         lenient().doReturn(headers).when(httpMetadata).getHeaders();
         converter = new KogitoIndexEventConverter();
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = JsonUtils.getObjectMapper();
         new ObjectMapperProducer().customize(objectMapper);
         converter.setObjectMapper(objectMapper);
     }
@@ -111,6 +124,101 @@ class KogitoIndexEventConverterTest {
                 UserTaskInstanceDataEvent.class)).isFalse();
         assertThat(converter.canConvert(Message.of(KogitoJobCloudEvent.builder().build(), Metadata.of(httpMetadata)),
                 KogitoJobCloudEvent.class)).isFalse();
+    }
+
+    @Test
+    void convertBinaryProcessDefinitionDataEvent() throws Exception {
+        Buffer buffer = Buffer.buffer(readFileContent(BINARY_PROCESS_DEFINITION_CLOUD_EVENT));
+        Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
+        // set ce-xxx headers for the binary format.
+        headers.add(ceHeader(SPECVERSION), SpecVersion.V1.toString());
+        headers.add(ceHeader(ID), EVENT_ID);
+        headers.add(ceHeader(SOURCE), EVENT_SOURCE.toString());
+        headers.add(ceHeader(TYPE), ProcessDefinitionDataEvent.PROCESS_DEFINITION_EVENT);
+        headers.add(ceHeader(TIME), EVENT_TIME.toString());
+        headers.add(ceHeader(DATASCHEMA), EVENT_DATA_SCHEMA.toString());
+        headers.add(ceHeader(DATACONTENTTYPE), EVENT_DATA_CONTENT_TYPE);
+        headers.add(ceHeader(SUBJECT), EVENT_SUBJECT);
+
+        Message<?> result = converter.convert(message, ProcessDefinitionDataEvent.class);
+        assertThat(result.getPayload()).isInstanceOf(ProcessDefinitionDataEvent.class);
+        ProcessDefinitionDataEvent cloudEvent = (ProcessDefinitionDataEvent) result.getPayload();
+
+        assertThat(cloudEvent.getId()).isEqualTo(EVENT_ID);
+        assertThat(cloudEvent.getSpecVersion().toString()).isEqualTo(SpecVersion.V1.toString());
+        assertThat(cloudEvent.getSource().toString()).isEqualTo(EVENT_SOURCE.toString());
+        assertThat(cloudEvent.getType()).isEqualTo(ProcessDefinitionDataEvent.PROCESS_DEFINITION_EVENT);
+        assertThat(cloudEvent.getTime()).isEqualTo(EVENT_TIME);
+        assertThat(cloudEvent.getDataSchema()).isEqualTo(EVENT_DATA_SCHEMA);
+        assertThat(cloudEvent.getDataContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
+        assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
+
+        assertProcessDefinitionWithEvent(cloudEvent);
+    }
+
+    private static Map<String, String> getMetadata() {
+        return ProcessDefinitionDataEventMerger.toStringMap(
+                Map.of("Description", "JSON based greeting workflow",
+                        "annotations", getAnnotations(),
+                        "Tags", getAnnotations()));
+    }
+
+    private List<Node> getNodes() {
+        try {
+            List<NodeDefinition> nodes = ObjectMapperFactory.get()
+                    .readerForListOf(NodeDefinition.class)
+                    .readValue(readFileContent("nodes_definitions.json"));
+            return nodes.stream().map(definition -> {
+                Node node = new Node();
+                node.setId(definition.getId());
+                node.setName(definition.getName());
+                node.setUniqueId(definition.getUniqueId());
+                node.setType(definition.getType());
+                node.setMetadata(ProcessDefinitionDataEventMerger.toStringMap(definition.getMetadata()));
+                return node;
+            }).collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static List<String> getAnnotations() {
+        return List.of("test1", "test2", "test3");
+    }
+
+    @Test
+    void convertStructuredProcessDefinitionDataEvent() throws Exception {
+        Buffer buffer = Buffer.buffer(readFileContent(STRUCTURED_PROCESS_DEFINITION_CLOUD_EVENT));
+        Message<?> message = Message.of(buffer, Metadata.of(httpMetadata));
+
+        // set ce header for the structured format.
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/cloudevents+json");
+
+        Message<?> result = converter.convert(message, ProcessDefinitionDataEvent.class);
+        assertThat(result.getPayload()).isInstanceOf(ProcessDefinitionDataEvent.class);
+        ProcessDefinitionDataEvent cloudEvent = (ProcessDefinitionDataEvent) result.getPayload();
+
+        assertThat(cloudEvent.getId()).isEqualTo("717af02d-645a-4b27-8058-b67ff1fa8edb");
+        assertThat(cloudEvent.getSpecVersion().toString()).isEqualTo(SpecVersion.V1.toString());
+        assertThat(cloudEvent.getSource().toString()).isEqualTo("http://localhost:8080/jsongreet");
+        assertThat(cloudEvent.getType()).isEqualTo(ProcessDefinitionDataEvent.PROCESS_DEFINITION_EVENT);
+        assertThat(cloudEvent.getTime()).isEqualTo("2023-10-19T10:18:01.540311-03:00");
+
+        assertProcessDefinitionWithEvent(cloudEvent);
+    }
+
+    private void assertProcessDefinitionWithEvent(ProcessDefinitionDataEvent cloudEvent) {
+        ProcessDefinition definition = new ProcessDefinitionDataEventMerger().merge(null, cloudEvent);
+        assertThat(definition.getId()).isEqualTo("jsongreet");
+        assertThat(definition.getVersion()).isEqualTo("1.0");
+        assertThat(definition.getName()).isEqualTo("Greeting workflow");
+        assertThat(definition.getDescription()).isEqualTo("JSON based greeting workflow");
+        assertThat(definition.getEndpoint()).isEqualTo("http://localhost:8080/jsongreet");
+        assertThat(definition.getAnnotations()).containsAll(getAnnotations());
+        assertThat(definition.getNodes()).containsAll(getNodes());
+        assertThat(definition.getMetadata().entrySet()).containsAll(getMetadata().entrySet());
+        assertThat(definition.getType()).isEqualTo("ProcessDefinitionEvent");
+        assertThat(definition.getSource()).isNull();
     }
 
     @Test

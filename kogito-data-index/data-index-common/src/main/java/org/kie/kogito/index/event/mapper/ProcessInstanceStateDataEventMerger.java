@@ -38,12 +38,13 @@ public class ProcessInstanceStateDataEventMerger implements ProcessInstanceEvent
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceStateDataEventMerger.class);
 
     @Override
-    public boolean accept(ProcessInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof ProcessInstanceStateDataEvent;
     }
 
     @Override
-    public void merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+        pi = getOrNew(pi, data);
         ProcessInstanceStateDataEvent event = (ProcessInstanceStateDataEvent) data;
         LOGGER.debug("Value before merging: {}", pi);
         pi.setId(event.getData().getProcessInstanceId());
@@ -68,6 +69,7 @@ public class ProcessInstanceStateDataEventMerger implements ProcessInstanceEvent
         pi.setDefinition(definitions(event));
         pi.setUpdatedBy(event.getData().getEventUser());
         LOGGER.debug("Value after merging: {}", pi);
+        return pi;
     }
 
     private ProcessDefinition definitions(ProcessInstanceStateDataEvent event) {

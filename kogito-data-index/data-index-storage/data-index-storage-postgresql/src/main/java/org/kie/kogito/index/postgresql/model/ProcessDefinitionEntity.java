@@ -19,6 +19,7 @@
 package org.kie.kogito.index.postgresql.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -48,6 +50,7 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     @Id
     private String version;
     private String name;
+    private String description;
     private String type;
     private byte[] source;
 
@@ -71,6 +74,22 @@ public class ProcessDefinitionEntity extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processDefinition")
     private List<NodeEntity> nodes;
+    @ElementCollection
+    @JoinColumn(name = "id")
+    @CollectionTable(name = "definitions_annotations", joinColumns = { @JoinColumn(name = "process_id", referencedColumnName = "id"),
+            @JoinColumn(name = "process_version", referencedColumnName = "version") }, foreignKey = @ForeignKey(name = "fk_definitions_annotations"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "value")
+    private Set<String> annotations;
+    @ElementCollection
+    @JoinColumn(name = "id")
+    @CollectionTable(name = "definitions_metadata", joinColumns = {
+            @JoinColumn(name = "process_id", referencedColumnName = "id"), @JoinColumn(name = "process_version", referencedColumnName = "version") },
+            foreignKey = @ForeignKey(name = "fk_definitions_metadata"))
+    @MapKeyColumn(name = "key")
+    @Column(name = "value")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Map<String, String> metadata;
 
     @Override
     public String getId() {
@@ -143,6 +162,30 @@ public class ProcessDefinitionEntity extends AbstractEntity {
 
     public void setNodes(List<NodeEntity> nodes) {
         this.nodes = nodes;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<String> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(Set<String> annotations) {
+        this.annotations = annotations;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 
     @Override

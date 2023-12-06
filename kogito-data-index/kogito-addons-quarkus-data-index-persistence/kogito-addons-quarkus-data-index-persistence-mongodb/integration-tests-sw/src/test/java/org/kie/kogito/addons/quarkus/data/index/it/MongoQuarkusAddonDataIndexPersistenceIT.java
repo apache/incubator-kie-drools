@@ -20,6 +20,7 @@ package org.kie.kogito.addons.quarkus.data.index.it;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.test.quarkus.http.DataIndexMongoDBHttpQuarkusTestResource;
+import org.kie.kogito.index.test.quarkus.http.KogitoServiceRandomPortQuarkusHttpTestResource;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -39,6 +40,7 @@ import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
 @QuarkusIntegrationTest
 @QuarkusTestResource(DataIndexMongoDBHttpQuarkusTestResource.class)
+@QuarkusTestResource(value = KogitoServiceRandomPortQuarkusHttpTestResource.class)
 class MongoQuarkusAddonDataIndexPersistenceIT {
 
     static {
@@ -58,7 +60,7 @@ class MongoQuarkusAddonDataIndexPersistenceIT {
                 .body("data.ProcessDefinitions[0].id", is("greet"))
                 .body("data.ProcessDefinitions[0].name", is("Greeting workflow"))
                 .body("data.ProcessDefinitions[0].version", is("1.0"))
-                .body("data.ProcessDefinitions[0].endpoint", is("http://localhost:8080/greet"))
+                .body("data.ProcessDefinitions[0].endpoint", is(not(emptyOrNullString())))
                 .body("data.ProcessDefinitions[0].addons", hasItem("mongodb-persistence"))
                 .body("data.ProcessDefinitions[0].source", is(not(emptyOrNullString())))
                 .body("data.ProcessDefinitions[0].nodes.size()", is(12))

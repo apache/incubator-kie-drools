@@ -28,13 +28,14 @@ import org.kie.kogito.index.model.UserTaskInstance;
 public class UserTaskInstanceDeadlineDataEventMerger implements UserTaskInstanceEventMerger {
 
     @Override
-    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof UserTaskInstanceDeadlineDataEvent;
     }
 
     @Override
-    public void merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
+    public UserTaskInstance merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
         // do nothing
+        return userTaskInstance;
     }
 
 }

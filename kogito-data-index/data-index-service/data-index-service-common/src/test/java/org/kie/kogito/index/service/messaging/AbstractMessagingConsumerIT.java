@@ -75,6 +75,22 @@ public abstract class AbstractMessagingConsumerIT {
     }
 
     @Test
+    void testProcessDefinitionEvent() throws Exception {
+        sendProcessDefinitionEvent();
+
+        String id = "jsongreet";
+
+        await()
+                .atMost(timeout)
+                .untilAsserted(
+                        () -> given().contentType(ContentType.JSON).body("{ \"query\" : \"{ ProcessDefinitions { id } }\" }")
+                                .when().post("/graphql")
+                                .then().log().ifValidationFails().statusCode(200)
+                                .body("data.ProcessDefinitions.size()", is(1))
+                                .body("data.ProcessDefinitions[0].id", is(id)));
+    }
+
+    @Test
     void testUserTaskInstanceEvent() throws Exception {
         sendUserTaskInstanceEvent();
 
@@ -108,6 +124,8 @@ public abstract class AbstractMessagingConsumerIT {
     protected abstract void sendUserTaskInstanceEvent() throws Exception;
 
     protected abstract void sendProcessInstanceEvent() throws Exception;
+
+    protected abstract void sendProcessDefinitionEvent() throws Exception;
 
     protected abstract void sendJobEvent() throws Exception;
 

@@ -27,6 +27,7 @@ import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
 
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_JOBS_EVENTS;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
+import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESS_DEFINITIONS_EVENTS;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
 
 public class InMemoryMessagingTestResource implements QuarkusTestResourceLifecycleManager {
@@ -34,7 +35,7 @@ public class InMemoryMessagingTestResource implements QuarkusTestResourceLifecyc
     @Override
     public Map<String, String> start() {
         Map<String, String> env = new HashMap<>();
-        Stream.of(KOGITO_PROCESSINSTANCES_EVENTS, KOGITO_USERTASKINSTANCES_EVENTS, KOGITO_JOBS_EVENTS)
+        Stream.of(KOGITO_PROCESSINSTANCES_EVENTS, KOGITO_PROCESS_DEFINITIONS_EVENTS, KOGITO_USERTASKINSTANCES_EVENTS, KOGITO_JOBS_EVENTS)
                 .forEach(s -> env.putAll(switchIncomingChannel(s)));
         return env;
     }

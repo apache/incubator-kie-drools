@@ -42,7 +42,7 @@ public class ReactiveMessagingEventConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveMessagingEventConsumer.class);
 
     public static final String KOGITO_PROCESSINSTANCES_EVENTS = "kogito-processinstances-events";
-    public static final String KOGITO_PROCESSDEFINITIONS_EVENTS = "kogito-processdefinitions-events";
+    public static final String KOGITO_PROCESS_DEFINITIONS_EVENTS = "kogito-processdefinitions-events";
     public static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";
     public static final String KOGITO_JOBS_EVENTS = "kogito-jobs-events";
 
@@ -83,10 +83,12 @@ public class ReactiveMessagingEventConsumer {
                 .onItem().ignore().andContinueWithNull();
     }
 
-    @Incoming(KOGITO_PROCESSDEFINITIONS_EVENTS)
-    public Uni<Void> onProcessDefinitionsEvent(ProcessDefinitionDataEvent event) {
-        //to nothing from now
-        return Uni.createFrom().nullItem();
+    @Incoming(KOGITO_PROCESS_DEFINITIONS_EVENTS)
+    public Uni<Void> onProcessDefinitionDataEvent(ProcessDefinitionDataEvent event) {
+        LOGGER.debug("Process Definition received ProcessDefinitionDataEvent \n{}", event);
+        return Uni.createFrom().item(event)
+                .onItem().invoke(indexingService::indexProcessDefinition)
+                .onFailure().invoke(t -> LOGGER.error("Error processing ProcessDefinitionDataEvent: {}", t.getMessage(), t))
+                .onItem().ignore().andContinueWithNull();
     }
-
 }

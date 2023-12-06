@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.index.quarkus.http;
+package org.kie.kogito.index.test.quarkus.http;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +29,7 @@ import static org.kie.kogito.index.test.quarkus.KogitoServiceRandomPortTestResou
 public class KogitoServiceRandomPortQuarkusHttpTestResource extends ConditionalQuarkusTestResource {
 
     public static final String QUARKUS_SERVICE_HTTP_PORT = "quarkus.http.port";
+    public static final String QUARKUS_SERVICE_HTTP_TEST_PORT = "quarkus.http.test-port";
 
     public KogitoServiceRandomPortQuarkusHttpTestResource() {
         super(new KogitoServiceRandomPortTestResource());
@@ -46,8 +47,10 @@ public class KogitoServiceRandomPortQuarkusHttpTestResource extends ConditionalQ
     protected Map<String, String> getProperties() {
         Map<String, String> properties = new HashMap<>();
         System.setProperty(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
+        System.setProperty(QUARKUS_SERVICE_HTTP_TEST_PORT, String.valueOf(getTestResource().getMappedPort()));
 
         properties.put(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
+        properties.put(QUARKUS_SERVICE_HTTP_TEST_PORT, String.valueOf(getTestResource().getMappedPort()));
         properties.put(KOGITO_SERVICE_URL, "http://host.testcontainers.internal:" + getTestResource().getMappedPort());
         return properties;
     }

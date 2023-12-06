@@ -34,7 +34,13 @@ public class ProcessDefinitionEntity {
 
     private String version;
     private String name;
+
+    private String description;
     private String type;
+
+    private Set<String> annotations;
+
+    private Map<String, String> metadata;
 
     private Set<String> roles;
 
@@ -124,6 +130,30 @@ public class ProcessDefinitionEntity {
 
     public void setNodes(List<NodeEntity> nodes) {
         this.nodes = nodes;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<String> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(Set<String> annotations) {
+        this.annotations = annotations;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 
     @Override

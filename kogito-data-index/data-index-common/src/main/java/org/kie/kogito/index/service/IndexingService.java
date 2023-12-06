@@ -31,8 +31,10 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
+import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
+import org.kie.kogito.index.event.mapper.ProcessDefinitionEventMerger;
 import org.kie.kogito.index.event.mapper.ProcessInstanceEventMerger;
 import org.kie.kogito.index.event.mapper.UserTaskInstanceEventMerger;
 import org.kie.kogito.index.model.Job;
@@ -70,22 +72,13 @@ public class IndexingService {
     @Inject
     Instance<UserTaskInstanceEventMerger> userTaskInstanceMergers;
 
+    @Inject
+    ProcessDefinitionEventMerger processDefinitionEventMerger;
+
     //retry in case of rare but possible race condition during the insert for the first registry
     @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
-        ProcessInstance pi = handleProcessInstanceEvent(event);
-
-        ProcessDefinition definition = pi.getDefinition();
-
-        handleProcessDefinition(definition);
-    }
-
-    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
-    public void handleProcessDefinition(ProcessDefinition definition) {
-        if (definition != null && !manager.getProcessDefinitionsCache().containsKey(definition.getKey())) {
-            manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
-            LOGGER.debug("Stored Process Definition: {}", definition);
-        }
+        handleProcessInstanceEvent(event);
     }
 
     private ProcessInstance handleProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
@@ -106,7 +99,19 @@ public class IndexingService {
         manager.getProcessInstancesCache().put(pi.getId(), pi);
 
         LOGGER.debug("Stored Process Instance: {}", pi);
+
         return pi;
+    }
+
+    //retry in case of rare but possible race condition during the insert for the first registry
+    @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
+    public void indexProcessDefinition(ProcessDefinitionDataEvent definitionDataEvent) {
+        if (!processDefinitionEventMerger.accept(definitionDataEvent)) {
+            return;
+        }
+        ProcessDefinition current = manager.getProcessDefinitionsCache().get(ProcessDefinition.toKey(definitionDataEvent.getKogitoProcessId(), definitionDataEvent.getData().getVersion()));
+        ProcessDefinition definition = processDefinitionEventMerger.merge(current, definitionDataEvent);
+        manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
     }
 
     //retry in case of rare but possible race condition during the insert for the first registry

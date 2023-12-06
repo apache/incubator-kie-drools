@@ -28,6 +28,7 @@ import javax.transaction.Transactional;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.model.Job;
@@ -35,6 +36,7 @@ import org.kie.kogito.index.service.IndexingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.kogito.event.process.ProcessDefinitionDataEvent.PROCESS_DEFINITION_EVENT;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
@@ -50,6 +52,9 @@ public class DataIndexEventPublisher implements EventPublisher {
     public void publish(DataEvent<?> event) {
         LOGGER.debug("Sending event to embedded data index: {}", event);
         switch (event.getType()) {
+            case PROCESS_DEFINITION_EVENT:
+                indexingService.indexProcessDefinition((ProcessDefinitionDataEvent) event);
+                break;
             case "ProcessInstanceErrorDataEvent":
             case "ProcessInstanceNodeDataEvent":
             case "ProcessInstanceSLADataEvent":

@@ -29,17 +29,19 @@ import org.kie.kogito.index.model.ProcessInstanceError;
 public class ProcessInstanceErrorDataEventMerger implements ProcessInstanceEventMerger {
 
     @Override
-    public boolean accept(ProcessInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof ProcessInstanceErrorDataEvent;
     }
 
     @Override
-    public void merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+        pi = getOrNew(pi, data);
         ProcessInstanceErrorDataEvent event = (ProcessInstanceErrorDataEvent) data;
         ProcessInstanceError error = new ProcessInstanceError();
         error.setMessage(event.getData().getErrorMessage());
         error.setNodeDefinitionId(event.getData().getNodeDefinitionId());
         pi.setError(error);
+        return pi;
     }
 
 }

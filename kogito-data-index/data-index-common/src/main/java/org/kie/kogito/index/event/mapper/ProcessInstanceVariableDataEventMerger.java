@@ -40,13 +40,14 @@ public class ProcessInstanceVariableDataEventMerger implements ProcessInstanceEv
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceVariableDataEventMerger.class);
 
     @Override
-    public boolean accept(ProcessInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof ProcessInstanceVariableDataEvent;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
+        pi = getOrNew(pi, data);
         ProcessInstanceVariableDataEvent event = (ProcessInstanceVariableDataEvent) data;
         try {
             ProcessInstanceVariableEventBody body = event.getData();
@@ -65,6 +66,6 @@ public class ProcessInstanceVariableDataEventMerger implements ProcessInstanceEv
         } catch (IllegalArgumentException e) {
             LOGGER.error("error during merging variable instance event", e);
         }
+        return pi;
     }
-
 }

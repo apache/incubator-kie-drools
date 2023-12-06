@@ -52,6 +52,10 @@
       <artifactId>kogito-addons-quarkus-persistence-jdbc</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-source-files</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-agroal</artifactId>
     </dependency>
@@ -63,6 +67,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-test-utils</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-test-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>

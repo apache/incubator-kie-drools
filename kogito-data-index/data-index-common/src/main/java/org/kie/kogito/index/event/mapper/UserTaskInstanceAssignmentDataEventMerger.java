@@ -31,12 +31,12 @@ import org.kie.kogito.index.model.UserTaskInstance;
 public class UserTaskInstanceAssignmentDataEventMerger implements UserTaskInstanceEventMerger {
 
     @Override
-    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof UserTaskInstanceAssignmentDataEvent;
     }
 
     @Override
-    public void merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
+    public UserTaskInstance merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
         UserTaskInstanceAssignmentDataEvent event = (UserTaskInstanceAssignmentDataEvent) data;
         UserTaskInstanceAssignmentEventBody body = event.getData();
 
@@ -57,6 +57,7 @@ public class UserTaskInstanceAssignmentDataEventMerger implements UserTaskInstan
                 userTaskInstance.setAdminUsers(new HashSet<>(body.getUsers()));
                 break;
         }
+        return userTaskInstance;
     }
 
 }

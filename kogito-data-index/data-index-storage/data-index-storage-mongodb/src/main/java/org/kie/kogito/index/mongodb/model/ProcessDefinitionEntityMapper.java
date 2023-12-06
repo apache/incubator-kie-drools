@@ -44,6 +44,9 @@ public class ProcessDefinitionEntityMapper implements MongoEntityMapper<ProcessD
         entity.setId(pd.getId());
         entity.setVersion(pd.getVersion());
         entity.setName(pd.getName());
+        entity.setDescription(pd.getDescription());
+        entity.setAnnotations(pd.getAnnotations());
+        entity.setMetadata(pd.getMetadata());
         entity.setRoles(pd.getRoles());
         entity.setAddons(pd.getAddons());
         entity.setType(pd.getType());
@@ -63,6 +66,9 @@ public class ProcessDefinitionEntityMapper implements MongoEntityMapper<ProcessD
         pd.setId(entity.getId());
         pd.setVersion(entity.getVersion());
         pd.setName(entity.getName());
+        pd.setDescription(entity.getDescription());
+        pd.setAnnotations(entity.getAnnotations());
+        pd.setMetadata(entity.getMetadata());
         pd.setRoles(entity.getRoles());
         pd.setAddons(entity.getAddons());
         pd.setType(entity.getType());

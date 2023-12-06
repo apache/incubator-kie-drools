@@ -19,6 +19,7 @@
 package org.kie.kogito.index.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -34,7 +35,9 @@ public class ProcessDefinition {
     private Set<String> addons;
     private String endpoint;
     private String source;
-
+    private String description;
+    private Set<String> annotations;
+    private Map<String, String> metadata;
     private List<Node> nodes;
 
     public String getId() {
@@ -119,6 +122,30 @@ public class ProcessDefinition {
 
     public static String[] fromKey(String key) {
         return Optional.ofNullable(key).map(k -> k.split(Pattern.quote("$v:"))).orElse(new String[0]);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<String> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(Set<String> annotations) {
+        this.annotations = annotations;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 
     @Override

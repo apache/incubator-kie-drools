@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.kogito.index.test.quarkus.http.DataIndexPostgreSqlHttpQuarkusTestResource;
+import org.kie.kogito.index.test.quarkus.http.KogitoServiceRandomPortQuarkusHttpTestResource;
 
 import io.quarkus.test.junit.QuarkusTestProfile;
 

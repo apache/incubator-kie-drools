@@ -35,12 +35,12 @@ import org.kie.kogito.index.model.UserTaskInstance;
 public class UserTaskInstanceCommentDataEventMerger implements UserTaskInstanceEventMerger {
 
     @Override
-    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof UserTaskInstanceCommentDataEvent;
     }
 
     @Override
-    public void merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
+    public UserTaskInstance merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
         UserTaskInstanceCommentDataEvent event = (UserTaskInstanceCommentDataEvent) data;
         UserTaskInstanceCommentEventBody body = event.getData();
         List<Comment> comments = Optional.ofNullable(userTaskInstance.getComments()).orElse(new ArrayList<>());
@@ -67,7 +67,7 @@ public class UserTaskInstanceCommentDataEventMerger implements UserTaskInstanceE
                 comments.removeIf(e -> e.getId().equals(body.getCommentId()));
                 break;
         }
-
+        return userTaskInstance;
     }
 
 }

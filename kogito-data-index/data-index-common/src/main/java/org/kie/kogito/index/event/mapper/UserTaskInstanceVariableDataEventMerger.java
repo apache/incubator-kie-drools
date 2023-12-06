@@ -41,12 +41,12 @@ public class UserTaskInstanceVariableDataEventMerger implements UserTaskInstance
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceVariableDataEventMerger.class);
 
     @Override
-    public boolean accept(UserTaskInstanceDataEvent<?> event) {
+    public boolean accept(Object event) {
         return event instanceof UserTaskInstanceVariableDataEvent;
     }
 
     @Override
-    public void merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
+    public UserTaskInstance merge(UserTaskInstance userTaskInstance, UserTaskInstanceDataEvent<?> data) {
         UserTaskInstanceVariableDataEvent event = (UserTaskInstanceVariableDataEvent) data;
         try {
             UserTaskInstanceVariableEventBody body = event.getData();
@@ -68,7 +68,7 @@ public class UserTaskInstanceVariableDataEventMerger implements UserTaskInstance
         } catch (IllegalArgumentException e) {
             LOGGER.error("error during merging variable instance event", e);
         }
-
+        return userTaskInstance;
     }
 
     @SuppressWarnings("unchecked")
