@@ -20,6 +20,7 @@ package org.drools.decisiontable.parser.xls;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class PropertiesSheetListener implements DataListener {
 
     private static final String EMPTY_STRING   = "";
 
-    private final Map<Integer, String[]> _rowProperties = new HashMap<>();
+    private final Map<Integer, String[]> _rowProperties = new LinkedHashMap<>();
 
     private final CaseInsensitiveMap _properties = new CaseInsensitiveMap();
 
