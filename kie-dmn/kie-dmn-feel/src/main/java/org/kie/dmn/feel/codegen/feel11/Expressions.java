@@ -39,10 +39,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
-import org.kie.dmn.feel.lang.ast.RangeNode;
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.GenFnType;
@@ -110,7 +107,7 @@ public class Expressions {
     }
 
     public static MethodCallExpr binary(
-            InfixOpNode.InfixOperator operator,
+            InfixOperator operator,
             Expression l,
             Expression r) {
         switch (operator) {
