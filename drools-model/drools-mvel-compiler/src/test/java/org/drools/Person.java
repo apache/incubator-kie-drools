@@ -67,6 +67,19 @@ public class Person {
         this.gender = gender;
     }
 
+    public Person(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public Person(Map<String, String> items) {
+        this.items = items;
+    }
+
+    public Person(List<Address> addresses, Map<String, String> items) {
+        this.addresses = addresses;
+        this.items = items;
+    }
+
     public String getName() {
         return name;
     }

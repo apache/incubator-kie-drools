@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class MethodResolutionUtils {
@@ -38,29 +39,46 @@ public final class MethodResolutionUtils {
     public static List<TypedExpression> coerceCorrectConstructorArguments(
             final Class<?> type,
             List<TypedExpression> arguments,
-            List<Integer> emptyListArgumentIndexes) {
+            List<Integer> emptyCollectionArgumentsIndexes) {
+        Objects.requireNonNull(type, "Type parameter cannot be null as the method searches constructors from that class!");
+        Objects.requireNonNull(arguments, "Arguments parameter cannot be null! Use an empty list instance if needed instead.");
+        Objects.requireNonNull(emptyCollectionArgumentsIndexes, "EmptyListArgumentIndexes parameter cannot be null! Use an empty list instance if needed instead.");
+        if (emptyCollectionArgumentsIndexes.size() > arguments.size()) {
+            throw new IllegalArgumentException("There cannot be more empty collection arguments than all arguments! emptyCollectionArgumentsIndexes parameter has more items than arguments parameter. "
+                    + "(" + emptyCollectionArgumentsIndexes.size() + " > " + arguments.size() + ")");
+        }
         // Rather work only with the argumentsType and when a method is resolved, flip the arguments list based on it.
         final List<TypedExpression> coercedArgumentsTypesList = new ArrayList<>(arguments);
-        // This needs to go through all possible combinations.
-        final int indexesListSize = emptyListArgumentIndexes.size();
-        for (int numberOfProcessedIndexes = 0; numberOfProcessedIndexes < indexesListSize; numberOfProcessedIndexes++) {
-            for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
-                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
-                Constructor<?> constructor;
-                try {
-                    constructor = type.getConstructor(parametersType(coercedArgumentsTypesList));
-                } catch (NoSuchMethodException ex) {
-                    constructor = null;
+        Constructor<?> constructor = resolveConstructor(type, coercedArgumentsTypesList);
+        if (constructor != null) {
+            return coercedArgumentsTypesList;
+        } else {
+            // This needs to go through all possible combinations.
+            final int indexesListSize = emptyCollectionArgumentsIndexes.size();
+            for (int numberOfProcessedIndexes = 0; numberOfProcessedIndexes < indexesListSize; numberOfProcessedIndexes++) {
+                for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
+                    switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyCollectionArgumentsIndexes.get(indexOfEmptyListIndex));
+                    constructor = resolveConstructor(type, coercedArgumentsTypesList);
+                    if (constructor != null) {
+                        return coercedArgumentsTypesList;
+                    }
+                    switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyCollectionArgumentsIndexes.get(indexOfEmptyListIndex));
                 }
-                if (constructor != null) {
-                    return coercedArgumentsTypesList;
-                }
-                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
+                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyCollectionArgumentsIndexes.get(numberOfProcessedIndexes));
             }
-            switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(numberOfProcessedIndexes));
+            // No constructor found, return the original arguments.
+            return arguments;
         }
-        // No constructor found, return the original arguments.
-        return arguments;
+    }
+
+    private static Constructor<?> resolveConstructor(final Class<?> type, List<TypedExpression> arguments) {
+        Constructor<?> constructor;
+        try {
+            constructor = type.getConstructor(parametersType(arguments));
+        } catch (NoSuchMethodException ex) {
+            constructor = null;
+        }
+        return constructor;
     }
 
     /**
@@ -159,10 +177,15 @@ public final class MethodResolutionUtils {
     }
 
     private static void switchCollectionClassInArgumentsByIndex(final List<TypedExpression> argumentsTypesList, final int index) {
-        if (argumentsTypesList.get(index).getClass().equals(ListExprT.class)) {
-            argumentsTypesList.set(index, new MapExprT(new MapCreationLiteralExpression(null, NodeList.nodeList())));
+        final Class<?> argumentTypeClass = argumentsTypesList.get(index).getClass();
+        if (argumentTypeClass.equals(ListExprT.class) || argumentTypeClass.equals(MapExprT.class)) {
+            if (argumentTypeClass.equals(ListExprT.class)) {
+                argumentsTypesList.set(index, new MapExprT(new MapCreationLiteralExpression(null, NodeList.nodeList())));
+            } else {
+                argumentsTypesList.set(index, new ListExprT(new ListCreationLiteralExpression(null, NodeList.nodeList())));
+            }
         } else {
-            argumentsTypesList.set(index, new ListExprT(new ListCreationLiteralExpression(null, NodeList.nodeList())));
+            throw new IllegalArgumentException("Argument at index " + index + " from the list of arguments (argumentsTypesList) is not a collection type, but " + argumentTypeClass.getCanonicalName() + " type!");
         }
     }
 
