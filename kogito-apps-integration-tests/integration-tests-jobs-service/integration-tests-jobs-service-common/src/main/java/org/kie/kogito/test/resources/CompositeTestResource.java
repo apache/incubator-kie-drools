@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoGenericContainer;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
@@ -94,7 +95,7 @@ public class CompositeTestResource implements TestResource {
         final Network network = Network.newNetwork();
         sharedDependencyContainers.values().stream()
                 .map(c -> c.withNetwork(network))
-                .map(c -> c.waitingFor(Wait.forListeningPort()))
+                .map(c -> c.waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT))
                 .forEach(GenericContainer::start);
         configureKafkaToService(sharedDependencyContainers.values(), serviceContainers.values().toArray(GenericContainer[]::new));
         startServices(network);

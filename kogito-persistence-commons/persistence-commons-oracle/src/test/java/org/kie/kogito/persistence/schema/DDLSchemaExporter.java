@@ -30,6 +30,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 import org.kie.kogito.persistence.oracle.model.CacheEntity;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoOracleSqlContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -37,7 +38,7 @@ public class DDLSchemaExporter {
 
     public static void main(String[] args) {
         try (KogitoOracleSqlContainer oracle = new KogitoOracleSqlContainer()) {
-            oracle.waitingFor(Wait.forListeningPort());
+            oracle.waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
             oracle.start();
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.URL, oracle.getJdbcUrl());

@@ -20,6 +20,7 @@ package org.kie.kogito.index.test.quarkus.http;
 
 import org.kie.kogito.index.test.containers.DataIndexPostgreSqlContainer;
 import org.kie.kogito.test.resources.TestResource;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class DataIndexPostgreSqlHttpResource implements TestResource {
         Network network = Network.newNetwork();
         postgresql.withNetwork(network);
         postgresql.withNetworkAliases("postgresql");
-        postgresql.waitingFor(Wait.forListeningPort());
+        postgresql.waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
         postgresql.start();
 
         dataIndex.addProtoFileFolder();

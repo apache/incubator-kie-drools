@@ -24,6 +24,7 @@ import java.util.Map;
 import org.kie.kogito.index.test.containers.DataIndexOracleContainer;
 import org.kie.kogito.index.test.containers.KogitoKafkaContainerWithoutBridge;
 import org.kie.kogito.test.resources.TestResource;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoOracleSqlContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class DataIndexOracleKafkaResource implements TestResource {
         oracle.start();
         kafka.withNetwork(network);
         kafka.withNetworkAliases("kafka");
-        kafka.waitingFor(Wait.forListeningPort());
+        kafka.waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
         kafka.start();
         String kafkaURL = kafka.getBootstrapServers();
         properties.put("kafka.bootstrap.servers", kafkaURL);

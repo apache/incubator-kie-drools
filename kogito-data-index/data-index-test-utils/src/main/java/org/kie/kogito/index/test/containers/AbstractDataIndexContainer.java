@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.kie.kogito.test.resources.TestResource;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoGenericContainer;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -41,7 +42,7 @@ public abstract class AbstractDataIndexContainer extends KogitoGenericContainer<
     public AbstractDataIndexContainer(String containerName) {
         super(containerName);
         addExposedPort(PORT);
-        waitingFor(Wait.forListeningPort());
+        waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
         addEnv("KOGITO_PROTOBUF_FOLDER", "/home/kogito/data/protobufs/");
         withAccessToHost(true);
     }

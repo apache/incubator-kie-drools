@@ -25,6 +25,6 @@ public class QuarkusKogitoServiceContainer extends KogitoServiceContainer {
     public QuarkusKogitoServiceContainer(String kafkaBootstrapServer, String kogitoServiceUrl) {
         super(kogitoServiceUrl);
         addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaBootstrapServer);
-        waitingFor(Wait.forListeningPort());
+        waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
     }
 }

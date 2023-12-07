@@ -30,6 +30,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 import org.kie.kogito.persistence.postgresql.model.CacheEntity;
+import org.kie.kogito.testcontainers.Constants;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -37,7 +38,7 @@ public class DDLSchemaExporter {
 
     public static void main(String[] args) {
         try (KogitoPostgreSqlContainer postgresql = new KogitoPostgreSqlContainer()) {
-            postgresql.waitingFor(Wait.forListeningPort());
+            postgresql.waitingFor(Wait.forListeningPort()).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
             postgresql.start();
             Map<String, String> settings = new HashMap<>();
             settings.put(Environment.URL, postgresql.getJdbcUrl());
