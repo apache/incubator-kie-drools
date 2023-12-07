@@ -53,6 +53,9 @@ public class Person {
 
     private Integer ageAsInteger;
 
+    public Person() {
+    }
+
     public Person(String name) {
         this(name, null);
     }
@@ -216,5 +219,10 @@ public class Person {
 
     public void setFloatBoxed(Float floatBoxed) {
         this.floatBoxed = floatBoxed;
+    }
+
+    public void setAddressesAndItems(List<Address> addresses, Map<String, String> items) {
+        this.addresses = addresses;
+        this.items = items;
     }
 }

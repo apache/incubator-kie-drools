@@ -95,50 +95,68 @@ public final class MethodResolutionUtils {
             final MvelCompilerContext mvelCompilerContext,
             final Optional<TypedExpression> scope,
             List<TypedExpression> arguments,
-            List<Integer> emptyListArgumentIndexes) {
-        // Rather work only with the argumentsType and when a method is resolved, flip the arguments list based on it.
-        final List<TypedExpression> coercedArgumentsTypesList = new ArrayList<>(arguments);
-        // This needs to go through all possible combinations.
-        final int indexesListSize = emptyListArgumentIndexes.size();
-        for (int numberOfProcessedIndexes = 0; numberOfProcessedIndexes < indexesListSize; numberOfProcessedIndexes++) {
-            for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
-                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
-                Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult =
-                        MethodResolutionUtils.resolveMethod(methodExpression, mvelCompilerContext, scope, coercedArgumentsTypesList);
-                if (resolveMethodResult.a.isPresent()) {
-                    modifyArgumentsBasedOnCoercedCollectionArguments(arguments, coercedArgumentsTypesList);
-                    return resolveMethodResult;
+            List<Integer> emptyCollectionArgumentsIndexes) {
+        Objects.requireNonNull(methodExpression, "MethodExpression parameter cannot be null as the method searches methods based on this expression!");
+        Objects.requireNonNull(mvelCompilerContext, "MvelCompilerContext parameter cannot be null!");
+        Objects.requireNonNull(arguments, "Arguments parameter cannot be null! Use an empty list instance if needed instead.");
+        Objects.requireNonNull(emptyCollectionArgumentsIndexes, "EmptyListArgumentIndexes parameter cannot be null! Use an empty list instance if needed instead.");
+        if (emptyCollectionArgumentsIndexes.size() > arguments.size()) {
+            throw new IllegalArgumentException("There cannot be more empty collection arguments than all arguments! emptyCollectionArgumentsIndexes parameter has more items than arguments parameter. "
+                    + "(" + emptyCollectionArgumentsIndexes.size() + " > " + arguments.size() + ")");
+        } else {
+            final List<TypedExpression> coercedArgumentsTypesList = new ArrayList<>(arguments);
+            Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult =
+                    MethodResolutionUtils.resolveMethod(methodExpression, mvelCompilerContext, scope, coercedArgumentsTypesList);
+            if (resolveMethodResult.a.isPresent()) {
+                return resolveMethodResult;
+            } else {
+                // Rather work only with the argumentsType and when a method is resolved, flip the arguments list based on it.
+                // This needs to go through all possible combinations.
+                final int indexesListSize = emptyCollectionArgumentsIndexes.size();
+                for (int numberOfProcessedIndexes = 0; numberOfProcessedIndexes < indexesListSize; numberOfProcessedIndexes++) {
+                    for (int indexOfEmptyListIndex = numberOfProcessedIndexes; indexOfEmptyListIndex < indexesListSize; indexOfEmptyListIndex++) {
+                        switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyCollectionArgumentsIndexes.get(indexOfEmptyListIndex));
+                        resolveMethodResult =
+                                MethodResolutionUtils.resolveMethod(methodExpression, mvelCompilerContext, scope, coercedArgumentsTypesList);
+                        if (resolveMethodResult.a.isPresent()) {
+                            modifyArgumentsBasedOnCoercedCollectionArguments(arguments, coercedArgumentsTypesList);
+                            return resolveMethodResult;
+                        }
+                        switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyCollectionArgumentsIndexes.get(indexOfEmptyListIndex));
+                    }
+                    switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyCollectionArgumentsIndexes.get(numberOfProcessedIndexes));
                 }
-                switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(indexOfEmptyListIndex));
+                // No method found, return empty.
+                return new Pair<>(Optional.empty(), scope);
             }
-            switchCollectionClassInArgumentsByIndex(coercedArgumentsTypesList, emptyListArgumentIndexes.get(numberOfProcessedIndexes));
         }
-        // No method found, return empty.
-        return new Pair<>(Optional.empty(), scope);
     }
 
     public static Pair<Optional<Method>, Optional<TypedExpression>> resolveMethod(
-            final MethodCallExpr n,
+            final MethodCallExpr methodExpression,
             final MvelCompilerContext mvelCompilerContext,
             final Optional<TypedExpression> scope,
-            final List<TypedExpression> argumentsTypes) {
-        final Class<?>[] argumentsTypesClasses = parametersType(argumentsTypes);
+            final List<TypedExpression> arguments) {
+        Objects.requireNonNull(methodExpression, "MethodExpression parameter cannot be null as the method searches methods based on this expression!");
+        Objects.requireNonNull(mvelCompilerContext, "MvelCompilerContext parameter cannot be null!");
+        Objects.requireNonNull(arguments, "Arguments parameter cannot be null! Use an empty list instance if needed instead.");
+        final Class<?>[] argumentsTypesClasses = parametersType(arguments);
         Optional<TypedExpression> finalScope = scope;
         Optional<Method> resolvedMethod;
         resolvedMethod = finalScope.flatMap(TypedExpression::getType)
                 .<Class<?>>map(ClassUtils::classFromType)
-                .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsTypesClasses));
+                .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, methodExpression.getNameAsString(), argumentsTypesClasses));
 
         if (resolvedMethod.isEmpty()) {
             resolvedMethod = mvelCompilerContext.getRootPattern()
-                    .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsTypesClasses));
+                    .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, methodExpression.getNameAsString(), argumentsTypesClasses));
             if (resolvedMethod.isPresent()) {
                 finalScope = mvelCompilerContext.createRootTypePrefix();
             }
         }
 
         if (resolvedMethod.isEmpty()) {
-            resolvedMethod = mvelCompilerContext.findStaticMethod(n.getNameAsString());
+            resolvedMethod = mvelCompilerContext.findStaticMethod(methodExpression.getNameAsString());
         }
         return new Pair<>(resolvedMethod, finalScope);
     }
