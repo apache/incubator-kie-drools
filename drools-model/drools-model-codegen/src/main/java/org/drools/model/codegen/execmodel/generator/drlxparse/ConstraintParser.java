@@ -657,7 +657,7 @@ public class ConstraintParser {
 
         Expression combo;
 
-        boolean arithmeticExpr = ARITHMETIC_OPERATORS.contains(operator);
+        boolean arithmeticExpr = isArithmeticOperator(operator);
         boolean isBetaConstraint = right.getExpression() != null && hasDeclarationFromOtherPattern( expressionTyperContext );
         boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
 
@@ -981,7 +981,7 @@ public class ConstraintParser {
         List<BinaryExpr> binaryExprList = methodCallExpr.findAll(BinaryExpr.class);
         for (BinaryExpr binaryExpr : binaryExprList) {
             Operator operator = binaryExpr.getOperator();
-            boolean arithmeticExpr = ARITHMETIC_OPERATORS.contains(operator);
+            boolean arithmeticExpr = isArithmeticOperator(operator);
             if (arithmeticExpr) {
                 final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
                 final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
@@ -1007,5 +1007,9 @@ public class ConstraintParser {
             }
         }
         return Optional.empty();
+    }
+
+    public static boolean isArithmeticOperator(BinaryExpr.Operator operator) {
+        return ARITHMETIC_OPERATORS.contains(operator);
     }
 }
