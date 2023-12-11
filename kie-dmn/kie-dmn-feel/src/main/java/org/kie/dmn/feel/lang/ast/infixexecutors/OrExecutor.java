@@ -35,17 +35,15 @@ public class OrExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        Boolean leftOR = EvalHelper.getBooleanOrNull(left);
-        if (leftOR != null) {
-            if (!leftOR.booleanValue()) {
-                return EvalHelper.getBooleanOrNull(right);
-            } else {
-                return Boolean.TRUE; //left hand operand is true, we do not need to evaluate right side
-            }
-        } else {
-            Boolean rightOR = EvalHelper.getBooleanOrNull(right);
-            return Boolean.TRUE.equals(rightOR) ? Boolean.TRUE : null;
+        Boolean l = EvalHelper.getBooleanOrNull( left );
+        Boolean r = EvalHelper.getBooleanOrNull( right );
+        // have to check for all nulls first to avoid NPE
+        if ( (l == null && r == null) || (l == null && r == false) || (r == null && l == false) ) {
+            return null;
+        } else if ( l == null || r == null ) {
+            return true;
         }
+        return l || r;
     }
 
     @Override

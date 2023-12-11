@@ -39,11 +39,11 @@ import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 public class AddExecutor implements InfixExecutor {
 
     private static final AddExecutor INSTANCE = new AddExecutor();
-    private final Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> functionMap;
-
-    private AddExecutor() {
-        functionMap = getFunctionMap();
-    }
+//    private final Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> functionMap;
+//
+//    private AddExecutor() {
+//        functionMap = getFunctionMap();
+//    }
 
     public static AddExecutor instance() {
         return INSTANCE;
@@ -51,77 +51,136 @@ public class AddExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(left, right), ctx);
+        return add(left, right, ctx);
+        //return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
+        //return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
 
-    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-        if ( params.getLeft() == null || params.getRight() == null ) {
+    private Object add(Object left, Object right, EvaluationContext ctx) {
+        if ( left == null || right == null ) {
             return null;
-        }
-        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
-        if (functionMap.containsKey(identifierTupla)) {
-            return functionMap.get(identifierTupla).apply(params, ctx);
-        } else {
-            return math( params.getLeft(), params.getRight(), ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
-        }
-    }
-
-    private Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getFunctionMap() {
-        Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
-        toReturn.put(new ClassIdentifierTupla(String.class, String.class), (parameters, ctx) -> parameters.getLeft() + (String) parameters.getRight());
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
-                new ComparablePeriod(((ChronoPeriod) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight())));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, Duration.class), (parameters, ctx) ->
-                ((Duration) parameters.getLeft()).plus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(ZonedDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((ZonedDateTime) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(OffsetDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((OffsetDateTime) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(LocalDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((LocalDateTime) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(LocalDate.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((LocalDate) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(ZonedDateTime.class, Duration.class), (parameters, ctx) ->
-                ((ZonedDateTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(OffsetDateTime.class, Duration.class), (parameters, ctx) ->
-                ((OffsetDateTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(LocalDateTime.class, Duration.class), (parameters, ctx) ->
-                ((LocalDateTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(LocalDate.class, Duration.class), (parameters, ctx) ->
-                addLocalDateAndDuration((LocalDate) parameters.getLeft(), (Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ZonedDateTime.class), (parameters, ctx) ->
-                ((ZonedDateTime) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, OffsetDateTime.class), (parameters, ctx) ->
-                ((OffsetDateTime) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, LocalDateTime.class), (parameters, ctx) ->
-                ((LocalDateTime) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, LocalDate.class), (parameters, ctx) ->
-                ((LocalDate) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, ZonedDateTime.class), (parameters, ctx) ->
-                ((ZonedDateTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, OffsetDateTime.class), (parameters, ctx) ->
-                ((OffsetDateTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, LocalDateTime.class), (parameters, ctx) ->
-                ((LocalDateTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, LocalDate.class), (parameters, ctx) ->
-                addLocalDateAndDuration((LocalDate) parameters.getRight(), (Duration) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(LocalTime.class, Duration.class), (parameters, ctx) ->
-                ((LocalTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, LocalTime.class), (parameters, ctx) ->
-                ((LocalTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(OffsetTime.class, Duration.class), (parameters, ctx) ->
-                ((OffsetTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTupla(Duration.class, OffsetTime.class), (parameters, ctx) ->
-                ((OffsetTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
-        toReturn.put(new ClassIdentifierTupla(Temporal.class, Temporal.class), (parameters, ctx) -> {
+        } else if ( left instanceof String && right instanceof String ) {
+            return left + ((String) right);
+        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+            return new ComparablePeriod(((ChronoPeriod) left).plus((ChronoPeriod) right));
+        } else if ( left instanceof Duration && right instanceof Duration ) {
+            return ((Duration) left).plus( (Duration) right);
+        } else if (left instanceof ZonedDateTime && right instanceof ChronoPeriod) {
+            return ((ZonedDateTime) left).plus((ChronoPeriod) right);
+        } else if (left instanceof OffsetDateTime && right instanceof ChronoPeriod) {
+            return ((OffsetDateTime) left).plus((ChronoPeriod) right);
+        } else if (left instanceof LocalDateTime && right instanceof ChronoPeriod) {
+            return ((LocalDateTime) left).plus((ChronoPeriod) right);
+        } else if (left instanceof LocalDate && right instanceof ChronoPeriod) {
+            return ((LocalDate) left).plus((ChronoPeriod) right);
+        } else if ( left instanceof ZonedDateTime && right instanceof Duration ) {
+            return ((ZonedDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof OffsetDateTime && right instanceof Duration ) {
+            return ((OffsetDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
+            return ((LocalDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof LocalDate && right instanceof Duration ) {
+            return addLocalDateAndDuration((LocalDate) left, (Duration) right);
+        } else if (left instanceof ChronoPeriod && right instanceof ZonedDateTime) {
+            return ((ZonedDateTime) right).plus((ChronoPeriod) left);
+        } else if (left instanceof ChronoPeriod && right instanceof OffsetDateTime) {
+            return ((OffsetDateTime) right).plus((ChronoPeriod) left);
+        } else if (left instanceof ChronoPeriod && right instanceof LocalDateTime) {
+            return ((LocalDateTime) right).plus((ChronoPeriod) left);
+        } else if (left instanceof ChronoPeriod && right instanceof LocalDate) {
+            return ((LocalDate) right).plus((ChronoPeriod) left);
+        } else if ( left instanceof Duration && right instanceof ZonedDateTime ) {
+            return ((ZonedDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof OffsetDateTime ) {
+            return ((OffsetDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof LocalDateTime ) {
+            return ((LocalDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof LocalDate ) {
+            return addLocalDateAndDuration((LocalDate) right, (Duration) left);
+        } else if ( left instanceof LocalTime && right instanceof Duration ) {
+            return ((LocalTime) left).plus( (Duration) right);
+        } else if ( left instanceof Duration && right instanceof LocalTime ) {
+            return ((LocalTime) right).plus( (Duration) left);
+        } else if ( left instanceof OffsetTime && right instanceof Duration ) {
+            return ((OffsetTime) left).plus( (Duration) right);
+        } else if ( left instanceof Duration && right instanceof OffsetTime ) {
+            return ((OffsetTime) right).plus( (Duration) left);
+        } else if ( left instanceof Temporal && right instanceof Temporal ) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
             return null;
-        });
-        return toReturn;
+        } else {
+            return math( left, right, ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
+        }
     }
+
+//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
+//        if ( params.getLeft() == null || params.getRight() == null ) {
+//            return null;
+//        }
+//        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
+//        if (functionMap.containsKey(identifierTupla)) {
+//            return functionMap.get(identifierTupla).apply(params, ctx);
+//        } else {
+//            return math( params.getLeft(), params.getRight(), ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
+//        }
+//    }
+//
+//    private Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getFunctionMap() {
+//        Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
+//        toReturn.put(new ClassIdentifierTupla(String.class, String.class), (parameters, ctx) -> parameters.getLeft() + (String) parameters.getRight());
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
+//                new ComparablePeriod(((ChronoPeriod) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight())));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, Duration.class), (parameters, ctx) ->
+//                ((Duration) parameters.getLeft()).plus((Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(ZonedDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
+//                ((ZonedDateTime) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(OffsetDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
+//                ((OffsetDateTime) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(LocalDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
+//                ((LocalDateTime) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(LocalDate.class, ChronoPeriod.class), (parameters, ctx) ->
+//                ((LocalDate) parameters.getLeft()).plus((ChronoPeriod) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(ZonedDateTime.class, Duration.class), (parameters, ctx) ->
+//                ((ZonedDateTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(OffsetDateTime.class, Duration.class), (parameters, ctx) ->
+//                ((OffsetDateTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(LocalDateTime.class, Duration.class), (parameters, ctx) ->
+//                ((LocalDateTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(LocalDate.class, Duration.class), (parameters, ctx) ->
+//                addLocalDateAndDuration((LocalDate) parameters.getLeft(), (Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ZonedDateTime.class), (parameters, ctx) ->
+//                ((ZonedDateTime) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, OffsetDateTime.class), (parameters, ctx) ->
+//                ((OffsetDateTime) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, LocalDateTime.class), (parameters, ctx) ->
+//                ((LocalDateTime) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, LocalDate.class), (parameters, ctx) ->
+//                ((LocalDate) parameters.getRight()).plus((ChronoPeriod) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, ZonedDateTime.class), (parameters, ctx) ->
+//                ((ZonedDateTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, OffsetDateTime.class), (parameters, ctx) ->
+//                ((OffsetDateTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, LocalDateTime.class), (parameters, ctx) ->
+//                ((LocalDateTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, LocalDate.class), (parameters, ctx) ->
+//                addLocalDateAndDuration((LocalDate) parameters.getRight(), (Duration) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(LocalTime.class, Duration.class), (parameters, ctx) ->
+//                ((LocalTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, LocalTime.class), (parameters, ctx) ->
+//                ((LocalTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(OffsetTime.class, Duration.class), (parameters, ctx) ->
+//                ((OffsetTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, OffsetTime.class), (parameters, ctx) ->
+//                ((OffsetTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
+//        toReturn.put(new ClassIdentifierTupla(Temporal.class, Temporal.class), (parameters, ctx) -> {
+//            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+//            return null;
+//        });
+//        return toReturn;
+//    }
 }

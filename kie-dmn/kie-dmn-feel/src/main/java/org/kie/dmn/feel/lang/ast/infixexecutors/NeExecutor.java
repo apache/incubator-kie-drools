@@ -35,17 +35,20 @@ public class NeExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(left, right), ctx);
+        Boolean result = EvalHelper.isEqual(left, right, ctx);
+        return result != null ? !result : null;
+//        return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
+//        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
 
-    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-        Boolean result = EvalHelper.isEqual(params.getLeft(), params.getRight(), ctx);
-        return result != null ? !result : null;
-    }
+//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
+//        Boolean result = EvalHelper.isEqual(params.getLeft(), params.getRight(), ctx);
+//        return result != null ? !result : null;
+//    }
 
 }

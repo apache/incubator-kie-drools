@@ -39,7 +39,7 @@ public enum InfixOperator {
     GTE(">=", GteExecutor.instance()),
     EQ("=", EqExecutor.instance()),
     NE("!=", NeExecutor.instance()),
-    AND("and", AddExecutor.instance()),
+    AND("and", AndExecutor.instance()),
     OR("or", OrExecutor.instance());
 
     public final String symbol;

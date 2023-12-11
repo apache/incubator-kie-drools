@@ -41,11 +41,11 @@ import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 public class DivExecutor implements InfixExecutor {
 
     private static final DivExecutor INSTANCE = new DivExecutor();
-    private final Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> functionMap;
-
-    private DivExecutor() {
-        functionMap = getFunctionMap();
-    }
+//    private final Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> functionMap;
+//
+//    private DivExecutor() {
+//        functionMap = getFunctionMap();
+//    }
 
     public static DivExecutor instance() {
         return INSTANCE;
@@ -53,50 +53,79 @@ public class DivExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(left, right), ctx);
+        return div(left, right, ctx);
+//        return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
+//        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
 
-    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-        if (params.getLeft() == null || params.getRight() == null) {
+    private Object div(Object left, Object right, EvaluationContext ctx) {
+        if (left == null || right == null) {
             return null;
-        }
-        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
-        if (functionMap.containsKey(identifierTupla)) {
-            return functionMap.get(identifierTupla).apply(params, ctx);
-        } else {
-            return math(params.getLeft(), params.getRight(), ctx, (l, r) -> l.add(r, MathContext.DECIMAL128));
-        }
-    }
-
-    private Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getFunctionMap() {
-        Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
-        toReturn.put(new ClassIdentifierTupla(Duration.class, Number.class), (parameters, ctx) -> {
-            final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) parameters.getLeft()).toNanos());
-            final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) parameters.getRight()).doubleValue());
+        } else if (left instanceof Duration && right instanceof Number) {
+            final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
+            final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
             return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
-        });
-        toReturn.put(new ClassIdentifierTupla(Number.class, TemporalAmount.class), (parameters, ctx) -> {
+        } else if (left instanceof Number && right instanceof TemporalAmount) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
             return null;
-        });
-        toReturn.put(new ClassIdentifierTupla(Duration.class, Duration.class), (parameters, ctx) ->
-                EvalHelper.getBigDecimalOrNull(((Duration) parameters.getLeft()).getSeconds()).divide(EvalHelper.getBigDecimalOrNull(((Duration) parameters.getRight()).getSeconds()), MathContext.DECIMAL128));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, Number.class), (parameters, ctx) -> {
-            final BigDecimal rightDecimal = EvalHelper.getBigDecimalOrNull(parameters.getRight());
+        } else if (left instanceof Duration && right instanceof Duration) {
+            return EvalHelper.getBigDecimalOrNull(((Duration) left).getSeconds()).divide(EvalHelper.getBigDecimalOrNull(((Duration) right).getSeconds()), MathContext.DECIMAL128);
+        } else if (left instanceof ChronoPeriod && right instanceof Number) {
+            final BigDecimal rightDecimal = EvalHelper.getBigDecimalOrNull(right);
             if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
                 ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
                 return null;
             } else {
-                return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).divide(rightDecimal, MathContext.DECIMAL128).intValue());
+                return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
             }
-        });
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
-                EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getRight())), MathContext.DECIMAL128));
-        return toReturn;
+        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+            return EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128);
+        } else {
+            return math(left, right, ctx, (l, r) -> l.divide(r, MathContext.DECIMAL128));
+        }
     }
+
+//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
+//        if (params.getLeft() == null || params.getRight() == null) {
+//            return null;
+//        }
+//        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
+//        if (functionMap.containsKey(identifierTupla)) {
+//            return functionMap.get(identifierTupla).apply(params, ctx);
+//        } else {
+//            return math(params.getLeft(), params.getRight(), ctx, (l, r) -> l.add(r, MathContext.DECIMAL128));
+//        }
+//    }
+//
+//    private Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getFunctionMap() {
+//        Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, Number.class), (parameters, ctx) -> {
+//            final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) parameters.getLeft()).toNanos());
+//            final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) parameters.getRight()).doubleValue());
+//            return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
+//        });
+//        toReturn.put(new ClassIdentifierTupla(Number.class, TemporalAmount.class), (parameters, ctx) -> {
+//            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+//            return null;
+//        });
+//        toReturn.put(new ClassIdentifierTupla(Duration.class, Duration.class), (parameters, ctx) ->
+//                EvalHelper.getBigDecimalOrNull(((Duration) parameters.getLeft()).getSeconds()).divide(EvalHelper.getBigDecimalOrNull(((Duration) parameters.getRight()).getSeconds()), MathContext.DECIMAL128));
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, Number.class), (parameters, ctx) -> {
+//            final BigDecimal rightDecimal = EvalHelper.getBigDecimalOrNull(parameters.getRight());
+//            if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
+//                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
+//                return null;
+//            } else {
+//                return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).divide(rightDecimal, MathContext.DECIMAL128).intValue());
+//            }
+//        });
+//        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
+//                EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getRight())), MathContext.DECIMAL128));
+//        return toReturn;
+//    }
 }

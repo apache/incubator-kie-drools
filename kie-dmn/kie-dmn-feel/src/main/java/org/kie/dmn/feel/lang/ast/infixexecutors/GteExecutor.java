@@ -37,20 +37,26 @@ public class GteExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(left, right), ctx);
+        Object leftGTE = left;
+        Object rightGTE = right;
+        return or(EvalHelper.compare(leftGTE, rightGTE, ctx, (l, r) -> l.compareTo(r) > 0),
+                EvalHelper.isEqual(leftGTE, rightGTE, ctx),
+                ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+//        return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
+//        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
 
-    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-        Object leftLTE = params.getLeft();
-        Object rightLTE = params.getRight();
-        return or(EvalHelper.compare(leftLTE, rightLTE, ctx, (l, r) -> l.compareTo(r) > 0),
-                EvalHelper.isEqual(leftLTE, rightLTE, ctx),
-                ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
-    }
+//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
+//        Object leftLTE = params.getLeft();
+//        Object rightLTE = params.getRight();
+//        return or(EvalHelper.compare(leftLTE, rightLTE, ctx, (l, r) -> l.compareTo(r) > 0),
+//                EvalHelper.isEqual(leftLTE, rightLTE, ctx),
+//                ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+//    }
 
 }

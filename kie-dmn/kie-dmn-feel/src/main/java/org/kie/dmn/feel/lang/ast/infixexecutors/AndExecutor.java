@@ -35,17 +35,15 @@ public class AndExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        Boolean leftAND = EvalHelper.getBooleanOrNull(left);
-        if (leftAND != null) {
-            if (leftAND.booleanValue()) {
-                return EvalHelper.getBooleanOrNull(right);
-            } else {
-                return Boolean.FALSE; //left hand operand is false, we do not need to evaluate right side
-            }
-        } else {
-            Boolean rightAND = EvalHelper.getBooleanOrNull(right);
-            return Boolean.FALSE.equals(rightAND) ? Boolean.FALSE : null;
+        Boolean l = EvalHelper.getBooleanOrNull( left );
+        Boolean r = EvalHelper.getBooleanOrNull( right );
+        // have to check for all nulls first to avoid NPE
+        if ( (l == null && r == null) || (l == null && r == true) || (r == null && l == true) ) {
+            return null;
+        } else if ( l == null || r == null ) {
+            return false;
         }
+        return l && r;
     }
 
     @Override
