@@ -807,14 +807,29 @@ public class ExpressionTyper {
                                                     .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
         binaryExpr.setRight(rightTypedExpression.getExpression());
         java.lang.reflect.Type binaryType = getBinaryType(leftTypedExpression, rightTypedExpression, binaryExpr.getOperator());
-        if (isArithmeticOperator(binaryExpr.getOperator()) && binaryType.equals(BigDecimal.class)) {
-            ConstraintCompiler constraintCompiler = createConstraintCompiler(ruleContext, leftTypedExpression.getOriginalPatternType());
-            CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(printNode(binaryExpr));
-            Expression compiledExpression = compiledExpressionResult.getExpression();
+        if (shouldConvertArithmeticBinaryToMethodCall(binaryExpr.getOperator(), binaryType)) {
+            Expression compiledExpression = convertArithmeticBinaryToMethodCall(binaryExpr, leftTypedExpression.getOriginalPatternType(), ruleContext);
             return new TypedExpressionCursor(compiledExpression, binaryType);
         } else {
             return new TypedExpressionCursor(binaryExpr, binaryType);
         }
+    }
+
+    /*
+     * Converts arithmetic binary expression (including coercion) to method call using ConstraintCompiler.
+     * This method can be generic, so we may centralize the calls in drools-model
+     */
+    private static Expression convertArithmeticBinaryToMethodCall(BinaryExpr binaryExpr,  Optional<Class<?>> originalPatternType, RuleContext ruleContext) {
+        ConstraintCompiler constraintCompiler = createConstraintCompiler(ruleContext, originalPatternType);
+        CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(printNode(binaryExpr));
+        return compiledExpressionResult.getExpression();
+    }
+
+    /*
+     * BigDecimal arithmetic operations should be converted to method calls. We may also apply this to BigInteger.
+     */
+    private static boolean shouldConvertArithmeticBinaryToMethodCall(BinaryExpr.Operator operator, java.lang.reflect.Type type) {
+        return isArithmeticOperator(operator) && type.equals(BigDecimal.class);
     }
 
     private java.lang.reflect.Type getBinaryType(TypedExpression leftTypedExpression, TypedExpression rightTypedExpression, Operator operator) {
