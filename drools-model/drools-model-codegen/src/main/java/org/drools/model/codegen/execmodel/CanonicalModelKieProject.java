@@ -18,7 +18,6 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -103,7 +102,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         InternalKieModule kieModule = getInternalKieModule();
         ModelSourceClass modelSourceClass = new ModelSourceClass( kieModule.getReleaseId(), kieModule.getKieModuleModel().getKieBaseModels(), modelsByKBase, hasDynamicClassLoader() );
         String projectSourcePath = modelWriter.getBasePath().asString() + "/" + modelSourceClass.getName();
-        srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes(StandardCharsets.UTF_8));
+        srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes());
         sourceFiles.add( projectSourcePath );
 
         Set<PortablePath> origFileNames = new HashSet<>(trgMfs.getFilePaths());

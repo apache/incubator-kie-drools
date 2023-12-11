@@ -19,7 +19,6 @@
 package org.drools.model.codegen.execmodel.generator.consequence;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,7 +91,7 @@ class BlockGenerator {
         } catch (FileAlreadyExistsException e) {
 
         }
-        Files.write(newFilePath, cloneCU.toString().getBytes(StandardCharsets.UTF_8),
+        Files.write(newFilePath, cloneCU.toString().getBytes(),
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
     }
