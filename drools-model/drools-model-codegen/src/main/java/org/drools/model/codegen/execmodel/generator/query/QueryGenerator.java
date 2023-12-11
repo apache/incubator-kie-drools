@@ -61,7 +61,7 @@ public class QueryGenerator {
         try {
             Path queryimpl = Paths.get("/tmp/", "queryimpl", queryDefImplGenerator.getClassName() + ".java");
             Files.createDirectories(queryimpl.getParent());
-            Files.write(queryimpl, generatedClass.getBytes());
+            Files.write(queryimpl, generatedClass.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -74,7 +74,7 @@ public class QueryGenerator {
         try {
             Path querydef = Paths.get("/tmp/", "querydef", queryDefGenerator.getClassName() + ".java");
             Files.createDirectories(querydef.getParent());
-            Files.write(querydef, generatedClass.getBytes());
+            Files.write(querydef, generatedClass.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
