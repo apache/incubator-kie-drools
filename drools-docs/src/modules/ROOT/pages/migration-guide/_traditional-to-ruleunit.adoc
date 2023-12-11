@@ -79,15 +79,12 @@ Using Rule Unit APIs, the resulting Java snippet would be like this:
 [source,java]
 ----
         MeasurementUnit measurementUnit = new MeasurementUnit();
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
-        try {
+        try (RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit)) {
             measurementUnit.getMeasurements().add(new Measurement("color", "red"));
             measurementUnit.getMeasurements().add(new Measurement("color", "green"));
 
             instance.fire();
-        } finally {
-            instance.dispose();
-        }
+        } // instance.close() is called automatically
 ----
 
 In Rule Unit, instantiate `RuleUnitInstance` instead of `KieSession`. Add facts to `DataSource` property instead of `insert`. Generic KIE API calls (e.g. `KieServices`, `KieContainer`, `KieBase` ... ) are no longer needed. Instead, one more class `Unit` has to be defined.
