@@ -54,13 +54,11 @@ public class DivExecutor implements InfixExecutor {
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
         return div(left, right, ctx);
-//        return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
-//        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
 
     private Object div(Object left, Object right, EvaluationContext ctx) {

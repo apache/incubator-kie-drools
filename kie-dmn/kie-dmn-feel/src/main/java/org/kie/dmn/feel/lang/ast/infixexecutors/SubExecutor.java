@@ -55,20 +55,7 @@ public class SubExecutor implements InfixExecutor {
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return sub(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
-        //return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
-
-//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-//        if ( params.getLeft() == null || params.getRight() == null ) {
-//            return null;
-//        }
-//        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
-//        if (functionMap.containsKey(identifierTupla)) {
-//            return functionMap.get(identifierTupla).apply(params, ctx);
-//        } else {
-//            return math( params.getLeft(), params.getRight(), ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
-//        }
-//    }
 
     private Object sub(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {

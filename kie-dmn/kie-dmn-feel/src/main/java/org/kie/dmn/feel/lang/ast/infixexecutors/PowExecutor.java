@@ -40,17 +40,11 @@ public class PowExecutor implements InfixExecutor {
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
         return math(left, right, ctx, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
-//        return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
-//        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
-
-//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-//        return math(params.getLeft(), params.getRight(), ctx, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
-//    }
 
 }

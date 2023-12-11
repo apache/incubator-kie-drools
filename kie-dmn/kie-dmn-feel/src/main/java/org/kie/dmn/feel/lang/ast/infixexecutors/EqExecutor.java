@@ -36,17 +36,11 @@ public class EqExecutor implements InfixExecutor {
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
         return EvalHelper.isEqual(left, right, ctx);
-//        return evaluate(new EvaluatedParameters(left, right), ctx);
     }
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
-//        return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
-
-//    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-//        return EvalHelper.isEqual(params.getLeft(), params.getRight(), ctx);
-//    }
 
 }

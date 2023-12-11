@@ -58,7 +58,6 @@ public class AddExecutor implements InfixExecutor {
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
-        //return evaluate(new EvaluatedParameters(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx)), ctx);
     }
 
     private Object add(Object left, Object right, EvaluationContext ctx) {
