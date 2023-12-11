@@ -30,12 +30,14 @@ import org.drools.impact.analysis.model.left.LeftHandSide;
 import org.drools.impact.analysis.model.left.MapConstraint;
 import org.drools.impact.analysis.model.left.Pattern;
 import org.drools.impact.analysis.model.right.ConsequenceAction;
+import org.drools.impact.analysis.model.right.DeleteSpecificFactAction;
 import org.drools.impact.analysis.model.right.InsertAction;
 import org.drools.impact.analysis.model.right.InsertedProperty;
 import org.drools.impact.analysis.model.right.ModifiedMapProperty;
 import org.drools.impact.analysis.model.right.ModifiedProperty;
 import org.drools.impact.analysis.model.right.ModifyAction;
 import org.drools.impact.analysis.model.right.RightHandSide;
+import org.drools.impact.analysis.model.right.SpecificProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,12 +191,40 @@ public class ModelToGraphConverter {
     }
 
     private void processDelete(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
+        if (action instanceof DeleteSpecificFactAction) {
+            processDeleteSpecificFact(graphAnalysis, pkgName, ruleName, (DeleteSpecificFactAction) action);
+        } else {
+            processDeleteAnyFact(graphAnalysis, pkgName, ruleName, action);
+        }
+    }
+
+    private void processDeleteAnyFact(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
         Class<?> deletedClass = action.getActionClass();
         // all rules which react to the fact
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
         for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(deletedClass)) {
             Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
             linkNodesIfExpected(source, target, reactedRule.getReactivityType().negate());
+        }
+    }
+
+    private void processDeleteSpecificFact(GraphAnalysis graphAnalysis, String pkgName, String ruleName, DeleteSpecificFactAction action) {
+        Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
+
+        Class<?> deletedClass = action.getActionClass();
+        if (!graphAnalysis.isRegisteredClass(deletedClass)) {
+            // Not likely happen but not invalid
+            logger.warn("Not found {} in reactiveMap", deletedClass);
+            return;
+        }
+        List<SpecificProperty> specificProperties = action.getSpecificProperties();
+        for (SpecificProperty specificProperty : specificProperties) {
+            String property = specificProperty.getProperty();
+            for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(deletedClass, property)) {
+                // Reactive to this class+property. Deleting this fact means NEGATIVE impact.
+                Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
+                linkNodesIfExpected(source, target, ReactivityType.NEGATIVE);
+            }
         }
     }
 
