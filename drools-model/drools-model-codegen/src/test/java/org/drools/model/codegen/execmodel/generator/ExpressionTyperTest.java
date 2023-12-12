@@ -266,6 +266,14 @@ public class ExpressionTyperTest {
         assertThat(typedExpression.getExpression().toString()).isEqualTo(expected);
     }
 
+    @Test
+    public void coercionInMethodArgument() {
+        TypedExpression typedExpression = toTypedExpression("identityBigDecimal(money - 1)", Person.class);
+        assertThat(ruleContext.hasCompilationError()).isFalse();
+        String expected = "_this.identityBigDecimal(_this.getMoney().subtract(new java.math.BigDecimal(1), java.math.MathContext.DECIMAL128))";
+        assertThat(typedExpression.getExpression().toString()).isEqualTo(expected);
+    }
+
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {
 
         for(DeclarationSpec d : declarations) {
