@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -71,24 +71,24 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testBasicListenerFromKModule() throws Exception {
         final String javaSource = "package com.acme;" +
-                "" +
-                "public class TestListener implements org.kie.dmn.api.core.event.DMNRuntimeEventListener {\n" +
-                "\n" +
-                "    private static final java.util.List<Object> decisionResults = new java.util.concurrent.CopyOnWriteArrayList<>();\n" +
-                "\n" +
-                "    @Override\n" +
-                "    public void afterEvaluateDecision(org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent event) {\n" +
-                "        org.kie.dmn.api.core.DMNDecisionResult decisionResult = event.getResult().getDecisionResultByName(event.getDecision().getName());\n" +
-                "        if (decisionResult.getEvaluationStatus() == org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED) {\n" +
-                "            System.out.println(decisionResult.getResult());\n" +
-                "            decisionResults.add(decisionResult.getResult());\n" +
-                "        }\n" +
-                "    }\n" +
-                "\n" +
-                "    public java.util.List<Object> getResults() {\n" +
-                "        return java.util.Collections.unmodifiableList(decisionResults);\n" +
-                "    }\n" +
-                "}";
+                                  "" +
+                                  "public class TestListener implements org.kie.dmn.api.core.event.DMNRuntimeEventListener {\n" +
+                                  "\n" +
+                                  "    private static final java.util.List<Object> decisionResults = new java.util.concurrent.CopyOnWriteArrayList<>();\n" +
+                                  "\n" +
+                                  "    @Override\n" +
+                                  "    public void afterEvaluateDecision(org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent event) {\n" +
+                                  "        org.kie.dmn.api.core.DMNDecisionResult decisionResult = event.getResult().getDecisionResultByName(event.getDecision().getName());\n" +
+                                  "        if (decisionResult.getEvaluationStatus() == org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED) {\n" +
+                                  "            System.out.println(decisionResult.getResult());\n" +
+                                  "            decisionResults.add(decisionResult.getResult());\n" +
+                                  "        }\n" +
+                                  "    }\n" +
+                                  "\n" +
+                                  "    public java.util.List<Object> getResults() {\n" +
+                                  "        return java.util.Collections.unmodifiableList(decisionResults);\n" +
+                                  "    }\n" +
+                                  "}";
         LOG.debug("javaSource:\n{}", javaSource);
         final KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
@@ -97,21 +97,18 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         kfs.write("src/main/java/com/acme/TestListener.java", javaSource);
         kfs.write(ks.getResources().newClassPathResource("Greetings.dmn", this.getClass()));
         kfs.writeKModuleXML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
-                "  <configuration>\n" +
-                "    <property key=\"org.kie.dmn.runtime.listeners.X\" value=\"com.acme.TestListener\"/>\n" +
-                "  </configuration>\n" +
-                "</kmodule>");
+                            "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                            "  <configuration>\n" +
+                            "    <property key=\"org.kie.dmn.runtime.listeners.X\" value=\"com.acme.TestListener\"/>\n" +
+                            "  </configuration>\n" +
+                            "</kmodule>");
         kfs.writePomXML(DMNClassloaderTest.getPom(releaseId,
-                        ks.newReleaseId("org.kie", "kie-dmn-api", Drools.getFullVersion()),
-                        ks.newReleaseId("org.kie", "kie-dmn-model", Drools.getFullVersion()),
-                        ks.newReleaseId("org.kie", "kie-api", Drools.getFullVersion()),
-                        ks.newReleaseId("org.kie", "kie-internal", Drools.getFullVersion()),
-                        ks.newReleaseId("org.kie", "efesto-common-api", Drools.getFullVersion()),
-                        ks.newReleaseId("org.kie", "kie-memory-compiler", Drools.getFullVersion()),
-                        ks.newReleaseId("org.drools", "drools-util", Drools.getFullVersion())
-                )
-        );
+                                                  ks.newReleaseId("org.kie", "kie-dmn-api", Drools.getFullVersion()),
+                                                  ks.newReleaseId("org.kie", "kie-dmn-model", Drools.getFullVersion()),
+                                                  ks.newReleaseId("org.kie", "kie-api", Drools.getFullVersion()),
+                                                  ks.newReleaseId("org.kie", "kie-internal", Drools.getFullVersion())
+                                                  )
+                        );
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
