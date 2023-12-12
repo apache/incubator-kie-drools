@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -21,6 +21,8 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.util.EvalHelper;
+
+import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.and;
 
 public class AndExecutor implements InfixExecutor {
 
@@ -35,15 +37,7 @@ public class AndExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        Boolean l = EvalHelper.getBooleanOrNull(left);
-        Boolean r = EvalHelper.getBooleanOrNull(right);
-        // have to check for all nulls first to avoid NPE
-        if ((l == null && r == null) || (l == null && r == true) || (r == null && l == true)) {
-            return null;
-        } else if (l == null || r == null) {
-            return false;
-        }
-        return l && r;
+        return and(left, right, ctx);
     }
 
     @Override
