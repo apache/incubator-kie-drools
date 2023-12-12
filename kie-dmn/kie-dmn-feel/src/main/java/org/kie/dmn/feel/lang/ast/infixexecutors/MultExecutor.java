@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.*;
 import java.time.chrono.ChronoPeriod;
-import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -38,10 +37,10 @@ import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 public class MultExecutor implements InfixExecutor {
 
     private static final MultExecutor INSTANCE = new MultExecutor();
-    private final Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> functionMap;
+    private final Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> multFunctionsByClassesTuple;
 
     private MultExecutor() {
-        functionMap = getFunctionMap();
+        multFunctionsByClassesTuple = getMultFunctionsByClassesTuple();
     }
 
     public static MultExecutor instance() {
@@ -64,28 +63,28 @@ public class MultExecutor implements InfixExecutor {
         } else if (!isAllowedMultiplicationBasedOnSpec(params.getLeft(), params.getRight(), ctx)) {
             return null;
         }
-        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
-        if (functionMap.containsKey(identifierTupla)) {
-            return functionMap.get(identifierTupla).apply(params, ctx);
+        ClassIdentifierTuple identifierTuple = new ClassIdentifierTuple(params.getLeft(), params.getRight());
+        if (multFunctionsByClassesTuple.containsKey(identifierTuple)) {
+            return multFunctionsByClassesTuple.get(identifierTuple).apply(params, ctx);
         } else {
             return math( params.getLeft(), params.getRight(), ctx, (l, r) -> l.multiply( r, MathContext.DECIMAL128 ) );
         }
     }
 
-    private Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getFunctionMap() {
-        Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
-        toReturn.put(new ClassIdentifierTupla(Duration.class, Number.class), (parameters, ctx) -> {
+    private Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getMultFunctionsByClassesTuple() {
+        Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
+        toReturn.put(new ClassIdentifierTuple(Duration.class, Number.class), (parameters, ctx) -> {
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) parameters.getLeft()).toNanos());
             final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) parameters.getRight()).doubleValue());
             return Duration.ofNanos(durationNumericValue.multiply(rightDecimal).longValue());
         });
-        toReturn.put(new ClassIdentifierTupla(Number.class, Duration.class), (parameters, ctx) ->
+        toReturn.put(new ClassIdentifierTuple(Number.class, Duration.class), (parameters, ctx) ->
                 Duration.ofSeconds(EvalHelper.getBigDecimalOrNull(parameters.getLeft()).multiply(EvalHelper.getBigDecimalOrNull(((Duration) parameters.getRight()).getSeconds()), MathContext.DECIMAL128).longValue()));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, Number.class), (parameters, ctx) ->
+        toReturn.put(new ClassIdentifierTuple(ChronoPeriod.class, Number.class), (parameters, ctx) ->
                 ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).multiply(EvalHelper.getBigDecimalOrNull(parameters.getRight()), MathContext.DECIMAL128).intValue()));
-        toReturn.put(new ClassIdentifierTupla(Number.class, ChronoPeriod.class), (parameters, ctx) ->
+        toReturn.put(new ClassIdentifierTuple(Number.class, ChronoPeriod.class), (parameters, ctx) ->
                 ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(parameters.getLeft()).multiply(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getRight())), MathContext.DECIMAL128).intValue()));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
+        toReturn.put(new ClassIdentifierTuple(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
                 EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).multiply(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getRight())), MathContext.DECIMAL128));
         return toReturn;
     }

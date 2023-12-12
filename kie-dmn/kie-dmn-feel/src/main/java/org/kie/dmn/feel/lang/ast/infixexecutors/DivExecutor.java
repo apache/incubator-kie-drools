@@ -41,10 +41,10 @@ import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 public class DivExecutor implements InfixExecutor {
 
     private static final DivExecutor INSTANCE = new DivExecutor();
-    private final Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> functionMap;
+    private final Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> sumFunctionsByClassesTuple;
 
     private DivExecutor() {
-        functionMap = getFunctionMap();
+        sumFunctionsByClassesTuple = getSumFunctionsByClassesTuple();
     }
 
     public static DivExecutor instance() {
@@ -65,28 +65,28 @@ public class DivExecutor implements InfixExecutor {
         if (params.getLeft() == null || params.getRight() == null) {
             return null;
         }
-        ClassIdentifierTupla identifierTupla = new ClassIdentifierTupla(params.getLeft(), params.getRight());
-        if (functionMap.containsKey(identifierTupla)) {
-            return functionMap.get(identifierTupla).apply(params, ctx);
+        ClassIdentifierTuple identifierTuple = new ClassIdentifierTuple(params.getLeft(), params.getRight());
+        if (sumFunctionsByClassesTuple.containsKey(identifierTuple)) {
+            return sumFunctionsByClassesTuple.get(identifierTuple).apply(params, ctx);
         } else {
             return math(params.getLeft(), params.getRight(), ctx, (l, r) -> l.divide(r, MathContext.DECIMAL128));
         }
     }
 
-    private Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getFunctionMap() {
-        Map<ClassIdentifierTupla, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
-        toReturn.put(new ClassIdentifierTupla(Duration.class, Number.class), (parameters, ctx) -> {
+    private Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getSumFunctionsByClassesTuple() {
+        Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
+        toReturn.put(new ClassIdentifierTuple(Duration.class, Number.class), (parameters, ctx) -> {
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) parameters.getLeft()).toNanos());
             final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) parameters.getRight()).doubleValue());
             return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
         });
-        toReturn.put(new ClassIdentifierTupla(Number.class, TemporalAmount.class), (parameters, ctx) -> {
+        toReturn.put(new ClassIdentifierTuple(Number.class, TemporalAmount.class), (parameters, ctx) -> {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
             return null;
         });
-        toReturn.put(new ClassIdentifierTupla(Duration.class, Duration.class), (parameters, ctx) ->
+        toReturn.put(new ClassIdentifierTuple(Duration.class, Duration.class), (parameters, ctx) ->
                 EvalHelper.getBigDecimalOrNull(((Duration) parameters.getLeft()).getSeconds()).divide(EvalHelper.getBigDecimalOrNull(((Duration) parameters.getRight()).getSeconds()), MathContext.DECIMAL128));
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, Number.class), (parameters, ctx) -> {
+        toReturn.put(new ClassIdentifierTuple(ChronoPeriod.class, Number.class), (parameters, ctx) -> {
             final BigDecimal rightDecimal = EvalHelper.getBigDecimalOrNull(parameters.getRight());
             if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
                 ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
@@ -95,7 +95,7 @@ public class DivExecutor implements InfixExecutor {
                 return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).divide(rightDecimal, MathContext.DECIMAL128).intValue());
             }
         });
-        toReturn.put(new ClassIdentifierTupla(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
+        toReturn.put(new ClassIdentifierTuple(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
                 EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getLeft())).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) parameters.getRight())), MathContext.DECIMAL128));
         return toReturn;
     }

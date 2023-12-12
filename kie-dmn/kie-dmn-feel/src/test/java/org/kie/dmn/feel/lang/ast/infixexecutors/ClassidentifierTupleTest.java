@@ -18,13 +18,18 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.junit.Test;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
-public interface InfixExecutor {
+import java.time.chrono.ChronoPeriod;
 
-    Object evaluate(final Object left, final Object right, EvaluationContext ctx);
+import static org.junit.Assert.assertTrue;
 
-    Object evaluate(InfixOpNode infixNode, EvaluationContext ctx);
 
+public class ClassidentifierTupleTest {
+
+    @Test
+    public void testClassidentifierTuple_isEquals() {
+        assertTrue(ClassIdentifierTuple.isEquals(ComparablePeriod.class, ChronoPeriod.class));
+    }
 }
