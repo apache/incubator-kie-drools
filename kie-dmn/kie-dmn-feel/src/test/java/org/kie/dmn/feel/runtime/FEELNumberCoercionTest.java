@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
+import org.kie.dmn.feel.lang.ast.InfixOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
