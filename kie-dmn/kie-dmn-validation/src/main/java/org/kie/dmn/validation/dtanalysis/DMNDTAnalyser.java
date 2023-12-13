@@ -47,7 +47,7 @@ import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
+import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
