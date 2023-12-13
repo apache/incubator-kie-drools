@@ -19,6 +19,7 @@
 package org.kie.memorycompiler;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,7 +125,7 @@ public class KieMemoryCompiler {
         int i = 0;
         for (Map.Entry<String, String> entry : classNameSourceMap.entrySet()) {
             classNames[i] = toJavaSource( entry.getKey() );
-            reader.add( classNames[i], entry.getValue().getBytes());
+            reader.add( classNames[i], entry.getValue().getBytes(StandardCharsets.UTF_8));
             i++;
         }
         JavaConfiguration javaConfiguration = new JavaConfiguration();

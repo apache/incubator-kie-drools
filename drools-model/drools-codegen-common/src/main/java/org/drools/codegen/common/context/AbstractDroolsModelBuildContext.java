@@ -30,6 +30,7 @@ import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -75,7 +76,7 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
         Properties applicationProperties = new Properties();
 
         for (File resourcePath : resourcePaths) {
-            try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
+            try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME), StandardCharsets.UTF_8)) {
                 applicationProperties.load(fileReader);
             } catch (IOException ioe) {
                 LOGGER.debug("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
