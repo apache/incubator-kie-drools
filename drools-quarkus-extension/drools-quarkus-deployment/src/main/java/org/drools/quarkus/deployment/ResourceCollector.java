@@ -21,6 +21,7 @@ package org.drools.quarkus.deployment;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class ResourceCollector {
                 if (resourceType == null) {
                     continue;
                 }
-                InternalResource resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)));
+                InternalResource resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)), StandardCharsets.UTF_8.name());
                 resource.setSourcePath(entry.getName());
                 resource.setResourceType(resourceType);
                 resources.add(resource);
@@ -119,7 +120,7 @@ public class ResourceCollector {
         if (resourceType == null) {
             return null;
         }
-        Resource resource = new FileSystemResource(file);
+        Resource resource = new FileSystemResource(file, StandardCharsets.UTF_8.name());
         resource.setResourceType(resourceType);
         return resource;
     }
