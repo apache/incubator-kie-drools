@@ -1775,4 +1775,123 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.get("knowledgeRuntime")).isInstanceOf(KieRuntime.class);
         assertThat(results.get("kieRuntime")).isInstanceOf(KieRuntime.class);
     }
+
+    @Test
+    public void integerToBigDecimalBindVariableCoercion_shouldNotCoerceToInteger() {
+        // DROOLS-7540
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "    Person($money : money)\n" +
+                     "  then\n" +
+                     "    $money = 5;\n" +
+                     "    results.add($money);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person person = new Person("John");
+        person.setMoney(new BigDecimal("0"));
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertThat(results.get(0)).isInstanceOf(BigDecimal.class);
+        assertThat(results).contains(new BigDecimal("5"));
+    }
+
+    @Test
+    public void integerToBigDecimalVariableCoercionTwice_shouldNotCoerceToInteger() {
+        // DROOLS-7540
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "    Person()\n" +
+                     "  then\n" +
+                     "    BigDecimal $var1 = 5;\n" +
+                     "    $var1 = 5;\n" + // This causes the issue
+                     "    results.add($var1);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person person = new Person("John");
+        person.setMoney(new BigDecimal("0"));
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertThat(results.get(0)).isInstanceOf(BigDecimal.class);
+        assertThat(results).contains(new BigDecimal("5"));
+    }
+
+    @Test
+    public void integerToBigDecimalBindVariableCoercionAndAddition_shouldNotThrowClassCastException() {
+        // DROOLS-7540
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "    Person($money : money, $otherBigDecimalField : otherBigDecimalField)\n" +
+                     "  then\n" +
+                     "    $money = 5;\n" +
+                     "    $total = $money + $otherBigDecimalField;\n" +
+                     "    results.add($total);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person person = new Person("John");
+        person.setMoney(new BigDecimal("0"));
+        person.setOtherBigDecimalField(new BigDecimal("10"));
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertThat(results).contains(new BigDecimal("15"));
+    }
+
+    @Test
+    public void integerToBigDecimalVaribleSetFromBindVariableCoercionAndAddition_shouldNotThrowClassCastException() {
+        // DROOLS-7540
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "    Person($money : money, $otherBigDecimalField : otherBigDecimalField)\n" +
+                     "  then\n" +
+                     "    BigDecimal $var1 = $money;\n" +
+                     "    BigDecimal $var2 = $otherBigDecimalField;\n" +
+                     "    $var1 = 5;\n" +
+                     "    BigDecimal $total = $var1 + $var2;\n" +
+                     "    results.add($total);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person person = new Person("John");
+        person.setMoney(new BigDecimal("0"));
+        person.setOtherBigDecimalField(new BigDecimal("10"));
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertThat(results).contains(new BigDecimal("15"));
+    }
 }
