@@ -90,7 +90,7 @@ public class KiePMMLSimpleSetPredicateFactory {
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, SIMPLESET_PREDICATE, simpleSetPredicateBody)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
-        builder.setArgument(0, new StringLiteralExpr(simpleSetPredicate.getField().getValue()));
+        builder.setArgument(0, new StringLiteralExpr(simpleSetPredicate.getField()));
         builder.setArgument(2, arrayTypeExpr);
         builder.setArgument(3, inNotInExpr);
         getChainedMethodCallExprFrom("asList", initializer).setArguments(arguments);

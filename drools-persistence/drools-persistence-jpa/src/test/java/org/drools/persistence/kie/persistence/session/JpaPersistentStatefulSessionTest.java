@@ -29,7 +29,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
+import jakarta.transaction.UserTransaction;
 
 import org.drools.core.FlowSessionConfiguration;
 import org.drools.core.SessionConfiguration;

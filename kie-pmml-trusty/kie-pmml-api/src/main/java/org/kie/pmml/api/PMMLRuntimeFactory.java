@@ -26,7 +26,7 @@ public interface PMMLRuntimeFactory {
 
     /**
      * Retrieve a <code>PMMLRuntime</code> bound to the given <code><File</code>
-     * with an <i>on-the-fly</i> compilation.
+     * with an on-the-fly compilation.
      * @param pmmlFile
      * @return
      */

@@ -28,7 +28,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OPERATOR;
@@ -48,7 +47,7 @@ public class KiePMMLSimplePredicateFactoryTest {
     void getSimplePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
         final SimplePredicate simplePredicate = new SimplePredicate();
-        simplePredicate.setField(FieldName.create("CUSTOM_FIELD"));
+        simplePredicate.setField("CUSTOM_FIELD");
         simplePredicate.setValue("235.435");
         simplePredicate.setOperator(SimplePredicate.Operator.EQUAL);
         String operatorString = OPERATOR.class.getName() + "." + OPERATOR.byName(simplePredicate.getOperator().value());
@@ -60,8 +59,7 @@ public class KiePMMLSimplePredicateFactoryTest {
 
         BlockStmt retrieved = KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration(variableName, simplePredicate, getFieldsFromDataDictionary(dataDictionary));
         String text = getFileContent(TEST_01_SOURCE);
-        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                                                                      simplePredicate.getField().getValue(),
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,simplePredicate.getField(),
                                                                       operatorString,
                                                                       simplePredicate.getValue()));
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();

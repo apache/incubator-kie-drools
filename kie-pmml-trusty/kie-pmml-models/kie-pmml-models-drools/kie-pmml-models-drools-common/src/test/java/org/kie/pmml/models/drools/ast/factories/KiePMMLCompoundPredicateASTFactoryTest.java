@@ -172,7 +172,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                         .findFirst();
                 if (fieldName.isPresent()) {
                     SimplePredicate mappedPredicate = predicates.stream()
-                            .filter(pred -> fieldName.get().equals(pred.getField().getValue()))
+                            .filter(pred -> fieldName.get().equals(pred.getField()))
                             .findFirst()
                             .orElse(null);
                     assertThat(mappedPredicate).isNotNull();
@@ -237,7 +237,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
                         .findFirst();
                 if (fieldName.isPresent()) {
                     SimplePredicate mappedPredicate = predicates.stream()
-                            .filter(pred -> fieldName.get().equals(pred.getField().getValue())).findFirst().orElse(null);
+                            .filter(pred -> fieldName.get().equals(pred.getField())).findFirst().orElse(null);
                     assertThat(mappedPredicate).isNotNull();
                     assertThat(retrieved.getStatusConstraint()).isNull();
                     assertThat(retrieved.getActivationGroup()).isEqualTo(agendaActivationGroup);

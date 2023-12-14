@@ -1,38 +1,138 @@
+diff --git a/.ci/environments/quarkus-3/before.sh b/.ci/environments/quarkus-3/before.sh
+index 14e515aa97..96d4ddadd4 100755
+--- a/.ci/environments/quarkus-3/before.sh
++++ b/.ci/environments/quarkus-3/before.sh
+@@ -6,7 +6,7 @@ mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
+ ci="${CI:-false}"
+ 
+ rewrite_plugin_version=4.43.0
+-quarkus_version=${QUARKUS_VERSION:-3.0.0.Final}
++quarkus_version=${QUARKUS_VERSION:-3.2.9.Final}
+ 
+ quarkus_recipe_file="${script_dir_path}/quarkus3.yml"
+ patch_file="${script_dir_path}"/patches/0001_before_sh.patch
+diff --git a/.ci/environments/quarkus-3/jbang/CreateKieQuarkusProjectMigrationRecipe.java b/.ci/environments/quarkus-3/jbang/CreateKieQuarkusProjectMigrationRecipe.java
+index ef4a67020b..9f4f3842ec 100755
+--- a/.ci/environments/quarkus-3/jbang/CreateKieQuarkusProjectMigrationRecipe.java
++++ b/.ci/environments/quarkus-3/jbang/CreateKieQuarkusProjectMigrationRecipe.java
+@@ -12,16 +12,16 @@ import java.util.concurrent.Callable;
+ import org.apache.commons.io.IOUtils;
+ 
+ import io.quarkus.devtools.project.BuildTool;
+-import io.quarkus.devtools.project.update.QuarkusUpdateRecipe;
+-import io.quarkus.devtools.project.update.QuarkusUpdateRecipeIO;
+-import io.quarkus.devtools.project.update.operations.UpdatePropertyOperation;
++import io.quarkus.devtools.project.update.rewrite.QuarkusUpdateRecipe;
++import io.quarkus.devtools.project.update.rewrite.QuarkusUpdateRecipeIO;
++import io.quarkus.devtools.project.update.rewrite.operations.UpdatePropertyOperation;
+ import picocli.CommandLine;
+ import picocli.CommandLine.Command;
+ import picocli.CommandLine.Option;
+ 
+ ///usr/bin/env jbang "$0" "$@" ; exit $?
+ // Version to be changed when needed
+-//DEPS io.quarkus:quarkus-devtools-common:3.0.0.Final
++//DEPS io.quarkus:quarkus-devtools-common:3.2.9.Final
+ //DEPS info.picocli:picocli:4.5.0
+ 
+ /*
+@@ -45,7 +45,7 @@ import picocli.CommandLine.Option;
+     @Option(names={ "-v", "--property-version"}, description = "(multi). Add a dynamic property version to the final recipe")
+     private Map<String, String> versionProperties = new HashMap<>();
+ 
+-    static final String QUARKUS_UPDATES_BASE_URL = "https://raw.githubusercontent.com/quarkusio/quarkus-updates/1.0.0/recipes/src/main/resources/quarkus-updates/core/3alpha.yaml";
++    static final String QUARKUS_UPDATES_BASE_URL = "https://github.com/quarkusio/quarkus-updates/blob/main/recipes/src/main/resources/quarkus-updates/core/3.2.yaml";
+ 
+     static final Path quarkus3DownloadedRecipePath = Paths.get("quarkus3-base-recipe.yml");
+     static final Path quarkus3GeneratedRecipePath = Paths.get("quarkus3.yml");
+diff --git a/.ci/environments/quarkus-3/patches/0004_hardcoded-javax-string.patch b/.ci/environments/quarkus-3/patches/0004_hardcoded-javax-string.patch
+index aef3a0cfa4..2dbb0f0ec8 100644
+--- a/.ci/environments/quarkus-3/patches/0004_hardcoded-javax-string.patch
++++ b/.ci/environments/quarkus-3/patches/0004_hardcoded-javax-string.patch
+@@ -6,8 +6,8 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+ <+>UTF-8
+ ===================================================================
+ diff --git a/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java b/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java
+---- a/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(revision 4eb6d59aefa1df16a286666f75ead10d8b77746f)
+-+++ b/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/drl/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(date 1677837541284)
++--- a/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(revision 4eb6d59aefa1df16a286666f75ead10d8b77746f)
+++++ b/drools-quarkus-extension/drools-quarkus-util-deployment/src/main/java/org/drools/quarkus/util/deployment/DroolsQuarkusResourceUtils.java	(date 1677837541284)
+ @@ -222,8 +222,8 @@
+      }
+ 
+diff --git a/.ci/environments/quarkus-3/patches/0006_package-info.patch b/.ci/environments/quarkus-3/patches/0006_package-info.patch
+index a021d15ee5..82e33a08b8 100644
+--- a/.ci/environments/quarkus-3/patches/0006_package-info.patch
++++ b/.ci/environments/quarkus-3/patches/0006_package-info.patch
+@@ -8,7 +8,7 @@ diff --git a/kie-dmn/kie-dmn-validation/src/main/java/org/kie/dmn/validation/dta
+ index 9b27fa3be2..9fb6a6eafb 100644
+ --- a/kie-dmn/kie-dmn-validation/src/main/java/org/kie/dmn/validation/dtanalysis/mcdc/dmntck/package-info.java
+ +++ b/kie-dmn/kie-dmn-validation/src/main/java/org/kie/dmn/validation/dtanalysis/mcdc/dmntck/package-info.java
+-@@ -1,6 +1,6 @@
++@@ -19,6 +19,6 @@
+  // Copied under Apache License from https://github.com/dmn-tck/tck/blob/8c23dc13caa508a33d11b47cca318d7c3a3ca2fc/LICENSE-ASL-2.0.txt
+ -@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.omg.org/spec/DMN/20160719/testcase",
+ -                                     elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
+diff --git a/.ci/environments/quarkus-3/patches/0010_remaining_javax_jakarta.patch b/.ci/environments/quarkus-3/patches/0010_remaining_javax_jakarta.patch
+index 1ee291c717..50d9a5a8e7 100644
+--- a/.ci/environments/quarkus-3/patches/0010_remaining_javax_jakarta.patch
++++ b/.ci/environments/quarkus-3/patches/0010_remaining_javax_jakarta.patch
+@@ -41,17 +41,17 @@ diff --git a/drools-model/drools-codegen-common/src/main/java/org/drools/codegen
+ index 45f736f73a..7c1d82f696 100644
+ --- a/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java
+ +++ b/drools-model/drools-codegen-common/src/main/java/org/drools/codegen/common/context/QuarkusDroolsModelBuildContext.java
+-@@ -18,8 +18,8 @@ package org.drools.codegen.common.context;
++@@ -24,8 +24,8 @@ package org.drools.codegen.common.context;
+  public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
+- 
++
+      public static final String CONTEXT_NAME = "Quarkus";
+ -    public static final String QUARKUS_REST = "javax.ws.rs.Path";
+ -    public static final String QUARKUS_DI = "javax.inject.Inject";
+ +    public static final String QUARKUS_REST = "jakarta.ws.rs.Path";
+ +    public static final String QUARKUS_DI = "jakarta.inject.Inject";
+- 
+-     protected QuarkusDroolsModelBuildContext(QuarkusKogitoBuildContextBuilder builder) {
+-         super(builder, /*new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(),  */ CONTEXT_NAME);
++
++     public final boolean hasRest;
++     public final boolean hasDI;
+ diff --git a/drools-model/drools-model-codegen/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java b/drools-model/drools-model-codegen/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java
+ index 0cfb0ca4b6..e9f4d6bbad 100644
+ --- a/drools-model/drools-model-codegen/src/main/resources/class-templates/config/RuleConfigQuarkusTemplate.java
 diff --git a/build-parent/pom.xml b/build-parent/pom.xml
-index 0758c53eef..312d76a4f5 100644
+index 445879b659..d2a5d988f7 100644
 --- a/build-parent/pom.xml
 +++ b/build-parent/pom.xml
-@@ -60,22 +60,22 @@
+@@ -55,10 +55,10 @@
+       - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
+     -->
+     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
+-    <version.commons-codec>1.15</version.commons-codec>
++    <version.commons-codec>1.16.0</version.commons-codec>
+     <version.commons-collections>3.2.2</version.commons-collections>
      <version.commons-logging>1.1.1</version.commons-logging>
-     <version.commons-io>2.11.0</version.commons-io>
+-    <version.commons-io>2.11.0</version.commons-io>
++    <version.commons-io>2.13.0</version.commons-io>
      <version.common-text>1.10.0</version.common-text>
--    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
--    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
--    <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
-+    <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
-+    <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
-+    <version.com.fasterxml.jackson.annotations>2.14.2</version.com.fasterxml.jackson.annotations>
-     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
-     <version.com.miglayout>3.7.4</version.com.miglayout>
-     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-     <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
--    <version.com.h2database>2.2.220</version.com.h2database>
-+    <version.com.h2database>2.1.214</version.com.h2database>
-     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
+     <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
+     <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
+@@ -72,10 +72,10 @@
      <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
      <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
      <version.guru.nidi>0.18.0</version.guru.nidi>
-     <version.info.picocli>4.7.1</version.info.picocli>
+-    <version.info.picocli>4.7.1</version.info.picocli>
 -    <version.io.micrometer>1.10.2</version.io.micrometer>
--    <version.io.quarkus>2.16.10.Final</version.io.quarkus>
+-    <version.io.quarkus>2.16.12.Final</version.io.quarkus>
 -    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
-+    <version.io.micrometer>1.10.5</version.io.micrometer>
-+    <version.io.quarkus>3.0.0.Final</version.io.quarkus>
-+    <version.io.smallrye.openapi.core>3.3.2</version.io.smallrye.openapi.core>
++    <version.info.picocli>4.7.4</version.info.picocli>
++    <version.io.micrometer>1.11.1</version.io.micrometer>
++    <version.io.quarkus>3.2.9.Final</version.io.quarkus>
++    <version.io.smallrye.openapi.core>3.4.0</version.io.smallrye.openapi.core>
      <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
      <version.junit>4.13.1</version.junit>
      <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
-@@ -88,42 +88,42 @@
+@@ -88,43 +88,43 @@
      <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
      <version.org.apache.maven>3.8.6</version.org.apache.maven>
      <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
@@ -46,16 +146,16 @@ index 0758c53eef..312d76a4f5 100644
      <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
      <version.org.freemarker>2.3.32</version.org.freemarker>
 -    <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
-+    <version.org.glassfish.jaxb>4.0.3</version.org.glassfish.jaxb>
++    <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
      <!--This needs to be in sync with JUnit-->
      <version.org.hamcrest>1.3</version.org.hamcrest>
 -    <version.org.hibernate>5.6.12.Final</version.org.hibernate>
-+    <version.org.hibernate>6.2.0.Final</version.org.hibernate>
++    <version.org.hibernate>6.2.13.Final</version.org.hibernate>
      <version.org.hsqldb>2.3.0</version.org.hsqldb>
      <version.org.infinispan>14.0.13.Final</version.org.infinispan>
      <version.org.javassist>3.26.0-GA</version.org.javassist>
 -    <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
-+    <version.org.jboss.narayana.tomcat>6.0.0.Final</version.org.jboss.narayana.tomcat>
++    <version.org.jboss.narayana.tomcat>6.0.1.Final</version.org.jboss.narayana.tomcat>
      <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
      <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
 -    <version.org.eclipse.microprofile.config>2.0.1</version.org.eclipse.microprofile.config>
@@ -64,10 +164,10 @@ index 0758c53eef..312d76a4f5 100644
 -    <version.jakarta.activation-api>1.2.1</version.jakarta.activation-api>
 -    <version.jakarta.inject-api>1.0</version.jakarta.inject-api>
 -    <version.jakarta.annotation-api>1.3.5</version.jakarta.annotation-api>
-+    <version.org.eclipse.microprofile.config>3.0.2</version.org.eclipse.microprofile.config>
++    <version.org.eclipse.microprofile.config>3.0.3</version.org.eclipse.microprofile.config>
 +    <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
-+    <version.jakarta.activation>2.0.0</version.jakarta.activation>
-+    <version.jakarta.activation-api>2.1.1</version.jakarta.activation-api>
++    <version.jakarta.activation>2.0.1</version.jakarta.activation>
++    <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
 +    <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
 +    <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
      <version.jakarta.ejb-api>3.2.6</version.jakarta.ejb-api>
@@ -83,29 +183,31 @@ index 0758c53eef..312d76a4f5 100644
 -    <version.jakarta.json>1.1.6</version.jakarta.json>
 -    <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
 -    <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
+-    <version.org.junit>5.9.2</version.org.junit>
 +    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
 +    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
-+    <version.jakarta.xml.ws-api>4.0.0</version.jakarta.xml.ws-api>
++    <version.jakarta.xml.ws-api>4.0.1</version.jakarta.xml.ws-api>
 +    <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
 +    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
 +    <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
 +    <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
-+    <version.jakarta.json>1.1.1</version.jakarta.json>
-+    <version.jakarta.json-api>2.1.1</version.jakarta.json-api>
++    <version.jakarta.json>1.1.2</version.jakarta.json>
++    <version.jakarta.json-api>2.1.2</version.jakarta.json-api>
 +    <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-     <version.org.junit>5.9.2</version.org.junit>
++    <version.org.junit>5.9.3</version.org.junit>
      <version.org.mvel>2.5.0.Final</version.org.mvel>
      <version.org.powermock>2.0.7</version.org.powermock>
-@@ -152,7 +152,7 @@
-     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
-     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
-     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
--    <version.org.mockito>4.11.0</version.org.mockito>
-+    <version.org.mockito>5.2.0</version.org.mockito>
-     <!-- Version of JMH -->
-     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
+     <version.org.slf4j>1.7.30</version.org.slf4j>
+@@ -138,7 +138,7 @@
+     <!-- New and overwritten dependencies -->
+     <!-- ################################################################################ -->
  
-@@ -171,10 +171,10 @@
+-    <version.org.antlr4>4.13.0</version.org.antlr4>
++    <version.org.antlr4>4.10.1</version.org.antlr4>
+     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
+     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
+     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
+@@ -171,7 +171,7 @@
      <version.surefire.plugin>2.22.1</version.surefire.plugin>
      <!-- Add for kie-maven-plugin -->
      <version.plugin.plugin>3.6.4</version.plugin.plugin>
@@ -113,33 +215,33 @@ index 0758c53eef..312d76a4f5 100644
 +    <version.plugin.annotations>3.7.1</version.plugin.annotations>
      <version.artifact.transfer>0.9.1</version.artifact.transfer>
      <version.shared.utils>3.3.4</version.shared.utils>
--    <version.common.compress>1.22</version.common.compress>
-+    <version.common.compress>1.23.0</version.common.compress>
-     <version.common.exec>1.3</version.common.exec>
-     <!-- -->
-     <!-- Jacoco plugin configurations -->
-@@ -202,16 +202,16 @@
+     <version.common.compress>1.24.0</version.common.compress>
+@@ -200,18 +200,18 @@
+     <version.compiler.plugin>3.8.1</version.compiler.plugin>
+     <version.shade.plugin>3.3.0</version.shade.plugin>
  
-     <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
+-    <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
++    <version.net.byte-buddy>1.14.7</version.net.byte-buddy>
  
 -    <version.org.postgresql>42.5.4</version.org.postgresql>
 +    <version.org.postgresql>42.6.0</version.org.postgresql>
  
      <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-     <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
+-    <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
++    <version.io.smallrye.jandex>3.1.2</version.io.smallrye.jandex>
      <version.io.smallrye.jandex-maven-plugin>${version.io.smallrye.jandex}</version.io.smallrye.jandex-maven-plugin>
 -    <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
-+    <version.org.eclipse.yasson>3.0.2</version.org.eclipse.yasson>
++    <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
  
 -    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
-+    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
++    <version.com.github.javaparser>3.25.3</version.com.github.javaparser>
  
 -    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
-+    <version.com.google.guava>31.1-jre</version.com.google.guava>
++    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
  
      <!-- JaCoCo coverage data file location -->
      <!--suppress UnresolvedMavenProperty -->
-@@ -287,7 +287,7 @@
+@@ -283,7 +283,7 @@
        </dependency>
        <dependency>
          <groupId>com.fasterxml.jackson.module</groupId>
@@ -148,7 +250,7 @@ index 0758c53eef..312d76a4f5 100644
          <version>${version.com.fasterxml.jackson.annotations}</version>
        </dependency>
        <dependency>
-@@ -296,8 +296,8 @@
+@@ -292,8 +292,8 @@
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
@@ -159,7 +261,7 @@ index 0758c53eef..312d76a4f5 100644
          <version>${version.com.fasterxml.jackson}</version>
        </dependency>
        <dependency>
-@@ -371,9 +371,9 @@
+@@ -367,9 +367,9 @@
          <version>${version.com.sun.xml.bind}</version>
        </dependency>
        <dependency>
@@ -168,11 +270,11 @@ index 0758c53eef..312d76a4f5 100644
 -        <version>${version.com.sun.xml.bind}</version>
 +        <groupId>org.glassfish.jaxb</groupId>
 +        <artifactId>jaxb-runtime</artifactId>
-+        <version>4.0.2</version>
++        <version>4.0.3</version>
        </dependency>
        <dependency>
          <groupId>com.sun.xml.bind</groupId>
-@@ -423,8 +423,8 @@
+@@ -419,8 +419,8 @@
        </dependency>
  
        <dependency>
@@ -183,7 +285,7 @@ index 0758c53eef..312d76a4f5 100644
          <version>${version.jakarta.json}</version>
        </dependency>
        <dependency>
-@@ -459,8 +459,8 @@
+@@ -455,8 +455,8 @@
        </dependency>
  
        <dependency>
@@ -194,7 +296,7 @@ index 0758c53eef..312d76a4f5 100644
          <version>${version.jakarta.activation}</version>
        </dependency>
        <dependency>
-@@ -795,12 +795,12 @@
+@@ -791,12 +791,12 @@
        </dependency>
  
        <dependency>
@@ -209,7 +311,7 @@ index 0758c53eef..312d76a4f5 100644
          <artifactId>hibernate-jpamodelgen</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1119,7 +1119,7 @@
+@@ -1113,7 +1113,7 @@
        </dependency>
  
        <dependency>
@@ -218,7 +320,7 @@ index 0758c53eef..312d76a4f5 100644
          <artifactId>hibernate-core</artifactId>
          <version>${version.org.hibernate}</version>
          <exclusions>
-@@ -1141,31 +1141,16 @@
+@@ -1135,31 +1135,16 @@
            </exclusion>
          </exclusions>
        </dependency>
@@ -257,7 +359,7 @@ index 0758c53eef..312d76a4f5 100644
        </dependency>
  
 diff --git a/drools-base/pom.xml b/drools-base/pom.xml
-index 68468e2a45..8773e29d79 100644
+index 68468e2a45..a6dd884113 100644
 --- a/drools-base/pom.xml
 +++ b/drools-base/pom.xml
 @@ -83,9 +83,10 @@
@@ -269,7 +371,7 @@ index 68468e2a45..8773e29d79 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -1640,10 +1742,10 @@ index 752e90bb27..ab29649f32 100644
  import org.drools.core.common.DisconnectedFactHandle;
  import org.kie.api.command.ExecutableCommand;
 diff --git a/drools-compiler/pom.xml b/drools-compiler/pom.xml
-index 5e08c4dbc8..8c58653b77 100644
+index 2e6f8099db..b875115625 100644
 --- a/drools-compiler/pom.xml
 +++ b/drools-compiler/pom.xml
-@@ -128,9 +128,10 @@
+@@ -129,9 +129,10 @@
        <scope>provided</scope>
      </dependency>
      <dependency>
@@ -1652,18 +1754,18 @@ index 5e08c4dbc8..8c58653b77 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
 diff --git a/drools-compiler/src/main/java/org/drools/compiler/runtime/pipeline/impl/DroolsJaxbHelperProviderImpl.java b/drools-compiler/src/main/java/org/drools/compiler/runtime/pipeline/impl/DroolsJaxbHelperProviderImpl.java
-index e6f93ed5ec..f7a32d89de 100644
+index 6b8db5a093..60be4ac0b6 100644
 --- a/drools-compiler/src/main/java/org/drools/compiler/runtime/pipeline/impl/DroolsJaxbHelperProviderImpl.java
 +++ b/drools-compiler/src/main/java/org/drools/compiler/runtime/pipeline/impl/DroolsJaxbHelperProviderImpl.java
-@@ -30,8 +30,8 @@ import java.util.LinkedHashMap;
- import java.util.List;
+@@ -31,8 +31,8 @@ import java.util.List;
  import java.util.Map;
  import java.util.Map.Entry;
+ 
 -import javax.xml.bind.JAXBContext;
 -import javax.xml.bind.JAXBException;
 +import jakarta.xml.bind.JAXBContext;
@@ -1672,7 +1774,7 @@ index e6f93ed5ec..f7a32d89de 100644
  import com.sun.codemodel.CodeWriter;
  import com.sun.codemodel.JCodeModel;
 diff --git a/drools-core/pom.xml b/drools-core/pom.xml
-index 42092de797..08beb7b1f4 100644
+index 42092de797..59973acc7d 100644
 --- a/drools-core/pom.xml
 +++ b/drools-core/pom.xml
 @@ -96,9 +96,10 @@
@@ -1684,7 +1786,7 @@ index 42092de797..08beb7b1f4 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -1708,13 +1810,13 @@ index 1dbb032c7e..8330b82548 100644
  import org.kie.api.runtime.ClassObjectFilter;
  import org.kie.api.runtime.ObjectFilter;
 diff --git a/drools-core/src/main/java/org/drools/core/base/ArrayElements.java b/drools-core/src/main/java/org/drools/core/base/ArrayElements.java
-index 6c17e910f7..99d3531bc2 100644
+index 9301d93da1..09535a5ce9 100644
 --- a/drools-core/src/main/java/org/drools/core/base/ArrayElements.java
 +++ b/drools-core/src/main/java/org/drools/core/base/ArrayElements.java
-@@ -19,10 +19,10 @@
- package org.drools.core.base;
+@@ -20,10 +20,10 @@ package org.drools.core.base;
  
  import java.util.Arrays;
+ 
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
 -import javax.xml.bind.annotation.XmlElement;
@@ -1727,7 +1829,7 @@ index 6c17e910f7..99d3531bc2 100644
  @XmlType(name="array-elements")
  @XmlAccessorType(XmlAccessType.NONE)
 diff --git a/drools-core/src/main/java/org/drools/core/base/RuleNameEndsWithAgendaFilter.java b/drools-core/src/main/java/org/drools/core/base/RuleNameEndsWithAgendaFilter.java
-index 6b5556a52c..09590dd508 100644
+index 50ea110d72..3f838d1258 100644
 --- a/drools-core/src/main/java/org/drools/core/base/RuleNameEndsWithAgendaFilter.java
 +++ b/drools-core/src/main/java/org/drools/core/base/RuleNameEndsWithAgendaFilter.java
 @@ -20,10 +20,10 @@ package org.drools.core.base;
@@ -1742,11 +1844,11 @@ index 6b5556a52c..09590dd508 100644
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
 +import jakarta.xml.bind.annotation.XmlRootElement;
+ 
  import org.kie.api.runtime.rule.AgendaFilter;
  import org.kie.api.runtime.rule.Match;
- 
 diff --git a/drools-core/src/main/java/org/drools/core/base/RuleNameEqualsAgendaFilter.java b/drools-core/src/main/java/org/drools/core/base/RuleNameEqualsAgendaFilter.java
-index 3401e22816..d8baa266dc 100644
+index 398651d824..aa7388b8e7 100644
 --- a/drools-core/src/main/java/org/drools/core/base/RuleNameEqualsAgendaFilter.java
 +++ b/drools-core/src/main/java/org/drools/core/base/RuleNameEqualsAgendaFilter.java
 @@ -20,10 +20,10 @@ package org.drools.core.base;
@@ -1761,11 +1863,11 @@ index 3401e22816..d8baa266dc 100644
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
 +import jakarta.xml.bind.annotation.XmlRootElement;
+ 
  import org.kie.api.runtime.rule.AgendaFilter;
  import org.kie.api.runtime.rule.Match;
- 
 diff --git a/drools-core/src/main/java/org/drools/core/base/RuleNameMatchesAgendaFilter.java b/drools-core/src/main/java/org/drools/core/base/RuleNameMatchesAgendaFilter.java
-index d535a3be94..c3c0a75b42 100644
+index 55a226bd99..8512f85eac 100644
 --- a/drools-core/src/main/java/org/drools/core/base/RuleNameMatchesAgendaFilter.java
 +++ b/drools-core/src/main/java/org/drools/core/base/RuleNameMatchesAgendaFilter.java
 @@ -22,10 +22,10 @@ import java.io.Serializable;
@@ -1780,11 +1882,11 @@ index d535a3be94..c3c0a75b42 100644
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
 +import jakarta.xml.bind.annotation.XmlRootElement;
+ 
  import org.kie.api.runtime.rule.AgendaFilter;
  import org.kie.api.runtime.rule.Match;
- 
 diff --git a/drools-core/src/main/java/org/drools/core/base/RuleNameStartsWithAgendaFilter.java b/drools-core/src/main/java/org/drools/core/base/RuleNameStartsWithAgendaFilter.java
-index 53047b62f3..ad510a5643 100644
+index 285b260267..8b9c211c9e 100644
 --- a/drools-core/src/main/java/org/drools/core/base/RuleNameStartsWithAgendaFilter.java
 +++ b/drools-core/src/main/java/org/drools/core/base/RuleNameStartsWithAgendaFilter.java
 @@ -20,10 +20,10 @@ package org.drools.core.base;
@@ -1799,16 +1901,16 @@ index 53047b62f3..ad510a5643 100644
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
 +import jakarta.xml.bind.annotation.XmlRootElement;
+ 
  import org.kie.api.runtime.rule.AgendaFilter;
  import org.kie.api.runtime.rule.Match;
- 
 diff --git a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-index c3a8820eec..7be2b8f319 100644
+index f78edfeecd..609fd60b9e 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DefaultFactHandle.java
-@@ -31,10 +31,10 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
- import org.drools.util.StringUtils;
- import org.kie.api.runtime.rule.FactHandle;
+@@ -23,10 +23,10 @@ import java.util.function.Consumer;
+ import java.util.function.Predicate;
+ import java.util.stream.Stream;
  
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
@@ -1818,16 +1920,16 @@ index c3a8820eec..7be2b8f319 100644
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
 +import jakarta.xml.bind.annotation.XmlRootElement;
- import java.util.Objects;
- import java.util.function.Consumer;
- import java.util.function.Predicate;
+ 
+ import org.drools.base.factmodel.traits.TraitTypeEnum;
+ import org.drools.base.rule.EntryPointId;
 diff --git a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-index 2710924f63..2b0cb81678 100644
+index f3b76bf144..4eae2aafa3 100644
 --- a/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/DisconnectedFactHandle.java
-@@ -28,13 +28,13 @@ import org.drools.core.reteoo.RightTuple;
- import org.drools.core.reteoo.Tuple;
- import org.kie.api.runtime.rule.FactHandle;
+@@ -25,13 +25,13 @@ import java.io.ObjectOutput;
+ import java.util.function.Consumer;
+ import java.util.function.Predicate;
  
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
@@ -1843,9 +1945,9 @@ index 2710924f63..2b0cb81678 100644
 +import jakarta.xml.bind.annotation.XmlRootElement;
 +import jakarta.xml.bind.annotation.XmlSchemaType;
 +import jakarta.xml.bind.annotation.XmlSeeAlso;
- import java.io.Externalizable;
- import java.io.IOException;
- import java.io.ObjectInput;
+ 
+ import org.drools.base.factmodel.traits.TraitTypeEnum;
+ import org.drools.base.rule.EntryPointId;
 diff --git a/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java b/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
 index d3c1b5d3e7..52799274d7 100644
 --- a/drools-core/src/main/java/org/drools/core/common/ObjectFactory.java
@@ -1860,12 +1962,12 @@ index d3c1b5d3e7..52799274d7 100644
  @XmlRegistry
  public class ObjectFactory {
 diff --git a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-index 7bbb6e16bc..dd47f2a724 100644
+index 97be135e6f..04f6eef60d 100644
 --- a/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
 +++ b/drools-core/src/main/java/org/drools/core/common/QueryElementFactHandle.java
-@@ -25,9 +25,9 @@ import org.drools.core.reteoo.LeftTuple;
- import org.drools.core.reteoo.RightTuple;
- import org.drools.core.reteoo.Tuple;
+@@ -22,9 +22,9 @@ import java.util.Arrays;
+ import java.util.function.Consumer;
+ import java.util.function.Predicate;
  
 -import javax.xml.bind.annotation.XmlAccessType;
 -import javax.xml.bind.annotation.XmlAccessorType;
@@ -1873,9 +1975,9 @@ index 7bbb6e16bc..dd47f2a724 100644
 +import jakarta.xml.bind.annotation.XmlAccessType;
 +import jakarta.xml.bind.annotation.XmlAccessorType;
 +import jakarta.xml.bind.annotation.XmlAttribute;
- import java.util.Arrays;
- import java.util.function.Consumer;
- import java.util.function.Predicate;
+ 
+ import org.drools.base.factmodel.traits.TraitTypeEnum;
+ import org.drools.base.rule.EntryPointId;
 diff --git a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java b/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
 index e37c37fc31..a9aec456b6 100644
 --- a/drools-core/src/main/java/org/drools/core/util/AbstractBaseLinkedListNode.java
@@ -1893,239 +1995,6 @@ index e37c37fc31..a9aec456b6 100644
  
  /**
   * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
-diff --git a/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java b/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-index c679cb7bcd..5a19341206 100644
---- a/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-+++ b/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/drl/quarkus/deployment/DroolsAssetsProcessor.java
-@@ -26,7 +26,7 @@ import java.util.Optional;
- import java.util.Set;
- import java.util.stream.Collectors;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
- import io.quarkus.deployment.annotations.BuildProducer;
-diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
-index 532ee58bf1..4122df9325 100644
---- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
-+++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
-@@ -19,7 +19,7 @@
- package org.drools.quarkus.ruleunit.examples.multiunit;
- 
- import java.util.concurrent.atomic.AtomicReference;
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import io.quarkus.test.junit.QuarkusTest;
- import org.drools.ruleunits.api.DataHandle;
-diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
-index ff8e3f9091..799f21622a 100644
---- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
-+++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
-@@ -18,10 +18,10 @@
-  */
- package org.drools.quarkus.ruleunit.examples.reactive;
- 
--import javax.annotation.PostConstruct;
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
-+import jakarta.annotation.PostConstruct;
- import org.eclipse.microprofile.reactive.messaging.Channel;
- import org.eclipse.microprofile.reactive.messaging.Emitter;
- import org.eclipse.microprofile.reactive.messaging.Incoming;
-diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
-index bbed58452e..da927c5ab0 100644
---- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
-+++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
-@@ -22,7 +22,7 @@ import java.util.HashMap;
- import java.util.Map;
- 
- import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
--import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
-+import io.smallrye.reactive.messaging.memory.InMemoryConnector;
- 
- public class KafkaTestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
- 
-diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
-index 52f998f55f..9771b03d80 100644
---- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
-+++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
-@@ -18,13 +18,13 @@
-  */
- package org.drools.quarkus.ruleunit.examples.reactive;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import io.quarkus.test.common.QuarkusTestResource;
- import io.quarkus.test.junit.QuarkusTest;
--import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
--import io.smallrye.reactive.messaging.providers.connectors.InMemorySink;
--import io.smallrye.reactive.messaging.providers.connectors.InMemorySource;
-+import io.smallrye.reactive.messaging.memory.InMemoryConnector;
-+import io.smallrye.reactive.messaging.memory.InMemorySink;
-+import io.smallrye.reactive.messaging.memory.InMemorySource;
- import org.eclipse.microprofile.reactive.messaging.spi.Connector;
- import org.junit.jupiter.api.Test;
- 
-diff --git a/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java b/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
-index 28cd4eb6d1..8cea5670cf 100644
---- a/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
-+++ b/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
-@@ -20,12 +20,12 @@ package org.drools.quarkus.test.hotreload;
- 
- import java.util.ArrayList;
- import java.util.List;
--import javax.inject.Inject;
--import javax.ws.rs.Consumes;
--import javax.ws.rs.POST;
--import javax.ws.rs.Path;
--import javax.ws.rs.Produces;
--import javax.ws.rs.core.MediaType;
-+import jakarta.inject.Inject;
-+import jakarta.ws.rs.Consumes;
-+import jakarta.ws.rs.POST;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.Produces;
-+import jakarta.ws.rs.core.MediaType;
- 
- import org.kie.api.runtime.KieRuntimeBuilder;
- import org.kie.api.runtime.KieSession;
-diff --git a/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
-index cc47c1a1e3..cd52e85e0f 100644
---- a/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
-+++ b/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
-@@ -25,10 +25,10 @@ import org.kie.api.runtime.KieSession;
- import org.kie.api.runtime.rule.FactHandle;
- import org.kie.api.time.SessionPseudoClock;
- 
--import javax.inject.Inject;
--import javax.ws.rs.GET;
--import javax.ws.rs.Path;
--import javax.ws.rs.core.Response;
-+import jakarta.inject.Inject;
-+import jakarta.ws.rs.GET;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.core.Response;
- import java.util.Collection;
- import java.util.List;
- import java.util.concurrent.TimeUnit;
-diff --git a/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
-index 76cedc9fb6..203de60e6b 100644
---- a/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
-+++ b/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
-@@ -24,7 +24,7 @@ import org.kie.api.definition.KiePackage;
- import org.kie.api.runtime.KieRuntimeBuilder;
- import org.kie.api.runtime.KieSession;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- import java.util.List;
- import java.util.stream.Collectors;
- 
-diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
-index a58bbabd5c..8f8ecf910c 100644
---- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
-+++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
-@@ -21,8 +21,8 @@ package org.drools.quarkus.quickstart.test;
- import java.util.Collection;
- import java.util.stream.Collectors;
- 
--import javax.enterprise.context.ApplicationScoped;
--import javax.inject.Inject;
-+import jakarta.enterprise.context.ApplicationScoped;
-+import jakarta.inject.Inject;
- 
- import org.drools.quarkus.quickstart.test.model.Alert;
- import org.drools.quarkus.quickstart.test.model.CCTV;
-diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
-index 4896b42524..0aa6285eb0 100644
---- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
-+++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
-@@ -18,7 +18,7 @@
-  */
- package org.drools.quarkus.quickstart.test;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import io.quarkus.test.junit.QuarkusTest;
- 
-diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
-index 6bcc7afc17..21ce175faa 100644
---- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
-+++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
-@@ -18,7 +18,7 @@
-  */
- package org.drools.quarkus.quickstart.test;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import io.quarkus.test.junit.QuarkusTest;
- import org.drools.quarkus.quickstart.test.model.Alert;
-diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
-index 471c3c33a9..99e2c9da1b 100644
---- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
-+++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
-@@ -20,10 +20,10 @@ package org.drools.quarkus.ruleunit.test;
- 
- import static org.assertj.core.api.Assertions.assertThat;
- 
--import javax.inject.Inject;
--import javax.ws.rs.GET;
--import javax.ws.rs.Path;
--import javax.ws.rs.core.Response;
-+import jakarta.inject.Inject;
-+import jakarta.ws.rs.GET;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.core.Response;
- 
- import org.drools.ruleunits.api.RuleUnit;
- import org.drools.ruleunits.api.RuleUnitInstance;
-diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
-index e3b9d48e5a..ba13c358f3 100644
---- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
-+++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
-@@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnit;
- import org.drools.ruleunits.api.RuleUnitInstance;
- import org.junit.jupiter.api.Test;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import static org.assertj.core.api.Assertions.assertThat;
- 
-diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
-index 48aaf17201..873e112e29 100644
---- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
-+++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
-@@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnit;
- import org.drools.ruleunits.api.RuleUnitInstance;
- import org.junit.jupiter.api.Test;
- 
--import javax.inject.Inject;
-+import jakarta.inject.Inject;
- 
- import static org.junit.jupiter.api.Assertions.assertEquals;
- 
-diff --git a/drools-quarkus-extension/drools-quarkus/pom.xml b/drools-quarkus-extension/drools-quarkus/pom.xml
-index 8205e8d898..84c941d52b 100644
---- a/drools-quarkus-extension/drools-quarkus/pom.xml
-+++ b/drools-quarkus-extension/drools-quarkus/pom.xml
-@@ -103,7 +103,7 @@
-         <plugins>
-             <plugin>
-                 <groupId>io.quarkus</groupId>
--                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
-+                <artifactId>quarkus-extension-maven-plugin</artifactId>
-                 <version>${version.io.quarkus}</version>
-                 <executions>
-                     <execution>
 diff --git a/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java b/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
 index 64eb8809ad..dc8e7e8d69 100644
 --- a/drools-legacy-test-util/src/test/java/org/drools/mvel/compiler/Person.java
@@ -2142,7 +2011,7 @@ index 64eb8809ad..dc8e7e8d69 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-mvel/pom.xml b/drools-mvel/pom.xml
-index 32920b00fc..755633ec43 100644
+index 32920b00fc..e91bd9e3d5 100644
 --- a/drools-mvel/pom.xml
 +++ b/drools-mvel/pom.xml
 @@ -90,9 +90,10 @@
@@ -2154,7 +2023,7 @@ index 32920b00fc..755633ec43 100644
 +            <groupId>org.glassfish.jaxb</groupId>
 +            <artifactId>jaxb-runtime</artifactId>
              <scope>provided</scope>
-+            <version>4.0.3</version>
++            <version>4.0.4</version>
          </dependency>
          <dependency>
              <groupId>jakarta.xml.bind</groupId>
@@ -2174,7 +2043,7 @@ index 13641acfe0..a1b4bda3fb 100644
  import java.math.BigDecimal;
  import java.math.BigInteger;
 diff --git a/drools-persistence/drools-persistence-api/pom.xml b/drools-persistence/drools-persistence-api/pom.xml
-index c5b6465541..6387089e97 100644
+index c5b6465541..2dbe9a78a9 100644
 --- a/drools-persistence/drools-persistence-api/pom.xml
 +++ b/drools-persistence/drools-persistence-api/pom.xml
 @@ -61,9 +61,10 @@
@@ -2186,7 +2055,7 @@ index c5b6465541..6387089e97 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>com.sun.xml.bind</groupId>
@@ -2333,7 +2202,7 @@ index 7673604692..e1dc0b573f 100644
  import org.drools.commands.impl.AbstractInterceptor;
  import org.drools.persistence.api.OrderedTransactionSynchronization;
 diff --git a/drools-persistence/drools-persistence-jpa/pom.xml b/drools-persistence/drools-persistence-jpa/pom.xml
-index 7706d4c655..1cfd38fa65 100644
+index 7706d4c655..2137f38925 100644
 --- a/drools-persistence/drools-persistence-jpa/pom.xml
 +++ b/drools-persistence/drools-persistence-jpa/pom.xml
 @@ -123,9 +123,10 @@
@@ -2345,7 +2214,7 @@ index 7706d4c655..1cfd38fa65 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>com.sun.xml.bind</groupId>
@@ -2741,6 +2610,239 @@ index 563b210269..a61ec15cbe 100644
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
  import org.kie.api.runtime.Environment;
+diff --git a/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/quarkus/deployment/DroolsAssetsProcessor.java b/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/quarkus/deployment/DroolsAssetsProcessor.java
+index 1ac349f63e..51aa2e792b 100644
+--- a/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/quarkus/deployment/DroolsAssetsProcessor.java
++++ b/drools-quarkus-extension/drools-quarkus-deployment/src/main/java/org/drools/quarkus/deployment/DroolsAssetsProcessor.java
+@@ -44,7 +44,7 @@ import org.kie.api.io.Resource;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ import java.util.Collection;
+ import java.util.Set;
+ import java.util.stream.Collectors;
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
+index 532ee58bf1..4122df9325 100644
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-multiunit/src/test/java/org/drools/quarkus/ruleunit/examples/multiunit/RuntimeTest.java
+@@ -19,7 +19,7 @@
+ package org.drools.quarkus.ruleunit.examples.multiunit;
+ 
+ import java.util.concurrent.atomic.AtomicReference;
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import io.quarkus.test.junit.QuarkusTest;
+ import org.drools.ruleunits.api.DataHandle;
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
+index ff8e3f9091..799f21622a 100644
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/main/java/org/drools/quarkus/ruleunit/examples/reactive/Adaptor.java
+@@ -18,10 +18,10 @@
+  */
+ package org.drools.quarkus.ruleunit.examples.reactive;
+ 
+-import javax.annotation.PostConstruct;
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
++import jakarta.annotation.PostConstruct;
+ import org.eclipse.microprofile.reactive.messaging.Channel;
+ import org.eclipse.microprofile.reactive.messaging.Emitter;
+ import org.eclipse.microprofile.reactive.messaging.Incoming;
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
+index bbed58452e..da927c5ab0 100644
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/KafkaTestResourceLifecycleManager.java
+@@ -22,7 +22,7 @@ import java.util.HashMap;
+ import java.util.Map;
+ 
+ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+-import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
++import io.smallrye.reactive.messaging.memory.InMemoryConnector;
+ 
+ public class KafkaTestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
+ 
+diff --git a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
+index 52f998f55f..9771b03d80 100644
+--- a/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-examples/drools-quarkus-examples-reactive/src/test/java/org/drools/quarkus/ruleunit/examples/reactive/RuntimeTest.java
+@@ -18,13 +18,13 @@
+  */
+ package org.drools.quarkus.ruleunit.examples.reactive;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import io.quarkus.test.common.QuarkusTestResource;
+ import io.quarkus.test.junit.QuarkusTest;
+-import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
+-import io.smallrye.reactive.messaging.providers.connectors.InMemorySink;
+-import io.smallrye.reactive.messaging.providers.connectors.InMemorySource;
++import io.smallrye.reactive.messaging.memory.InMemoryConnector;
++import io.smallrye.reactive.messaging.memory.InMemorySink;
++import io.smallrye.reactive.messaging.memory.InMemorySource;
+ import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+ import org.junit.jupiter.api.Test;
+ 
+diff --git a/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java b/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
+index 28cd4eb6d1..8cea5670cf 100644
+--- a/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
++++ b/drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/java/org/drools/quarkus/test/hotreload/FindAdultEndpoint.java
+@@ -20,12 +20,12 @@ package org.drools.quarkus.test.hotreload;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+-import javax.inject.Inject;
+-import javax.ws.rs.Consumes;
+-import javax.ws.rs.POST;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.Produces;
+-import javax.ws.rs.core.MediaType;
++import jakarta.inject.Inject;
++import jakarta.ws.rs.Consumes;
++import jakarta.ws.rs.POST;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.Produces;
++import jakarta.ws.rs.core.MediaType;
+ 
+ import org.kie.api.runtime.KieRuntimeBuilder;
+ import org.kie.api.runtime.KieSession;
+diff --git a/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java b/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
+index cc47c1a1e3..cd52e85e0f 100644
+--- a/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
++++ b/drools-quarkus-extension/drools-quarkus-integration-test/src/main/java/org/drools/quarkus/test/TestableResource.java
+@@ -25,10 +25,10 @@ import org.kie.api.runtime.KieSession;
+ import org.kie.api.runtime.rule.FactHandle;
+ import org.kie.api.time.SessionPseudoClock;
+ 
+-import javax.inject.Inject;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.core.Response;
++import jakarta.inject.Inject;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.core.Response;
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.concurrent.TimeUnit;
+diff --git a/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
+index 76cedc9fb6..203de60e6b 100644
+--- a/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-integration-test/src/test/java/org/drools/quarkus/test/RuntimeTest.java
+@@ -24,7 +24,7 @@ import org.kie.api.definition.KiePackage;
+ import org.kie.api.runtime.KieRuntimeBuilder;
+ import org.kie.api.runtime.KieSession;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ import java.util.List;
+ import java.util.stream.Collectors;
+ 
+diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
+index a58bbabd5c..8f8ecf910c 100644
+--- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
++++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/main/java/org/drools/quarkus/quickstart/test/HomeAlertsBean.java
+@@ -21,8 +21,8 @@ package org.drools.quarkus.quickstart.test;
+ import java.util.Collection;
+ import java.util.stream.Collectors;
+ 
+-import javax.enterprise.context.ApplicationScoped;
+-import javax.inject.Inject;
++import jakarta.enterprise.context.ApplicationScoped;
++import jakarta.inject.Inject;
+ 
+ import org.drools.quarkus.quickstart.test.model.Alert;
+ import org.drools.quarkus.quickstart.test.model.CCTV;
+diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
+index 4896b42524..0aa6285eb0 100644
+--- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
++++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/BeanTest.java
+@@ -18,7 +18,7 @@
+  */
+ package org.drools.quarkus.quickstart.test;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import io.quarkus.test.junit.QuarkusTest;
+ 
+diff --git a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
+index 6bcc7afc17..21ce175faa 100644
+--- a/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
++++ b/drools-quarkus-extension/drools-quarkus-quickstart-test/src/test/java/org/drools/quarkus/quickstart/test/RuntimeIT.java
+@@ -18,7 +18,7 @@
+  */
+ package org.drools.quarkus.quickstart.test;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import io.quarkus.test.junit.QuarkusTest;
+ import org.drools.quarkus.quickstart.test.model.Alert;
+diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
+index 471c3c33a9..99e2c9da1b 100644
+--- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
++++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/main/java/org/drools/quarkus/ruleunit/test/TestableResource.java
+@@ -20,10 +20,10 @@ package org.drools.quarkus.ruleunit.test;
+ 
+ import static org.assertj.core.api.Assertions.assertThat;
+ 
+-import javax.inject.Inject;
+-import javax.ws.rs.GET;
+-import javax.ws.rs.Path;
+-import javax.ws.rs.core.Response;
++import jakarta.inject.Inject;
++import jakarta.ws.rs.GET;
++import jakarta.ws.rs.Path;
++import jakarta.ws.rs.core.Response;
+ 
+ import org.drools.ruleunits.api.RuleUnit;
+ import org.drools.ruleunits.api.RuleUnitInstance;
+diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
+index e3b9d48e5a..ba13c358f3 100644
+--- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
++++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeDslRuleUnitTest.java
+@@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnit;
+ import org.drools.ruleunits.api.RuleUnitInstance;
+ import org.junit.jupiter.api.Test;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import static org.assertj.core.api.Assertions.assertThat;
+ 
+diff --git a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
+index 48aaf17201..873e112e29 100644
+--- a/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
++++ b/drools-quarkus-extension/drools-quarkus-ruleunit-integration-test/src/test/java/org/drools/quarkus/ruleunit/test/RuntimeTest.java
+@@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnit;
+ import org.drools.ruleunits.api.RuleUnitInstance;
+ import org.junit.jupiter.api.Test;
+ 
+-import javax.inject.Inject;
++import jakarta.inject.Inject;
+ 
+ import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
+diff --git a/drools-quarkus-extension/drools-quarkus/pom.xml b/drools-quarkus-extension/drools-quarkus/pom.xml
+index a7691b98b5..43896cb6db 100644
+--- a/drools-quarkus-extension/drools-quarkus/pom.xml
++++ b/drools-quarkus-extension/drools-quarkus/pom.xml
+@@ -103,7 +103,7 @@
+         <plugins>
+             <plugin>
+                 <groupId>io.quarkus</groupId>
+-                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
++                <artifactId>quarkus-extension-maven-plugin</artifactId>
+                 <version>${version.io.quarkus}</version>
+                 <executions>
+                     <execution>
 diff --git a/drools-reliability/drools-reliability-infinispan/pom.xml b/drools-reliability/drools-reliability-infinispan/pom.xml
 index 1e735e0b82..e3703b0a77 100644
 --- a/drools-reliability/drools-reliability-infinispan/pom.xml
@@ -2792,7 +2894,7 @@ index fa47533cfe..008f664410 100644
  import java.io.IOException;
  import java.io.StringWriter;
 diff --git a/drools-test-coverage/test-integration-nomvel/pom.xml b/drools-test-coverage/test-integration-nomvel/pom.xml
-index 5ff7b47f21..e7dc861938 100644
+index 5ff7b47f21..3032adafbd 100644
 --- a/drools-test-coverage/test-integration-nomvel/pom.xml
 +++ b/drools-test-coverage/test-integration-nomvel/pom.xml
 @@ -107,9 +107,10 @@
@@ -2804,12 +2906,12 @@ index 5ff7b47f21..e7dc861938 100644
 +            <groupId>org.glassfish.jaxb</groupId>
 +            <artifactId>jaxb-runtime</artifactId>
              <scope>test</scope>
-+            <version>4.0.3</version>
++            <version>4.0.4</version>
          </dependency>
          <dependency>
              <groupId>jakarta.xml.bind</groupId>
 diff --git a/drools-traits/pom.xml b/drools-traits/pom.xml
-index 4f4a128fc4..e64e44949b 100644
+index b717b85385..45ee0b7038 100644
 --- a/drools-traits/pom.xml
 +++ b/drools-traits/pom.xml
 @@ -158,8 +158,8 @@
@@ -2867,7 +2969,7 @@ index 2adf906eee..126aa6a7bf 100644
  import org.drools.core.base.MapGlobalResolver;
  import org.drools.core.impl.EnvironmentFactory;
 diff --git a/drools-wiring/drools-wiring-dynamic/pom.xml b/drools-wiring/drools-wiring-dynamic/pom.xml
-index b207771d95..e654092670 100755
+index b207771d95..1472be38f5 100755
 --- a/drools-wiring/drools-wiring-dynamic/pom.xml
 +++ b/drools-wiring/drools-wiring-dynamic/pom.xml
 @@ -54,9 +54,10 @@
@@ -2879,7 +2981,7 @@ index b207771d95..e654092670 100755
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -3189,10 +3291,10 @@ index d5bc785f51..046555611e 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-legacy-tests/pom.xml b/kie-dmn/kie-dmn-legacy-tests/pom.xml
-index d8fd3fb209..3494e8924e 100644
+index 9b630cd5d8..5cc9d73009 100644
 --- a/kie-dmn/kie-dmn-legacy-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-legacy-tests/pom.xml
-@@ -120,9 +120,10 @@
+@@ -124,9 +124,10 @@
        <scope>provided</scope>
      </dependency>
      <dependency>
@@ -3201,7 +3303,7 @@ index d8fd3fb209..3494e8924e 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -3275,7 +3377,7 @@ index fec094247e..44999d32c3 100644
  import org.jboss.jandex.ClassInfo;
  import org.jboss.jandex.DotName;
 diff --git a/kie-dmn/kie-dmn-openapi/pom.xml b/kie-dmn/kie-dmn-openapi/pom.xml
-index 9f0f46d211..d282dc46c3 100644
+index 9f0f46d211..0ae7cc4b56 100644
 --- a/kie-dmn/kie-dmn-openapi/pom.xml
 +++ b/kie-dmn/kie-dmn-openapi/pom.xml
 @@ -82,9 +82,10 @@
@@ -3287,15 +3389,15 @@ index 9f0f46d211..d282dc46c3 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
 diff --git a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
-index 5c3b3ebe87..2c5331a1f4 100644
+index 6751b8fa07..aaa6d2d031 100644
 --- a/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
 +++ b/kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/pom.xml
-@@ -82,9 +82,10 @@
+@@ -86,9 +86,10 @@
        <scope>provided</scope>
      </dependency>
      <dependency>
@@ -3304,7 +3406,7 @@ index 5c3b3ebe87..2c5331a1f4 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
      <dependency>
        <groupId>jakarta.xml.bind</groupId>
@@ -3500,7 +3602,7 @@ index feed0d6196..8c9014422e 100644
 -import javax.xml.bind.annotation.XmlNs;
 +import jakarta.xml.bind.annotation.XmlNs;
 diff --git a/kie-internal/pom.xml b/kie-internal/pom.xml
-index b73b247766..2c20438303 100644
+index b73b247766..5ca4c195b6 100644
 --- a/kie-internal/pom.xml
 +++ b/kie-internal/pom.xml
 @@ -96,9 +96,10 @@
@@ -3512,7 +3614,7 @@ index b73b247766..2c20438303 100644
 +      <groupId>org.glassfish.jaxb</groupId>
 +      <artifactId>jaxb-runtime</artifactId>
        <scope>provided</scope>
-+      <version>4.0.3</version>
++      <version>4.0.4</version>
      </dependency>
  
      <dependency>

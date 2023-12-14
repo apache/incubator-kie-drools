@@ -45,7 +45,7 @@ public class KiePMMLMiningFieldInstanceFactory {
     }
 
     public static KiePMMLMiningField getKiePMMLMiningField(final MiningField toConvert, final Field<?> field) {
-        String name = toConvert.getName() != null ? toConvert.getName().getValue() : "" + toConvert.hashCode();
+        String name = toConvert.getName() != null ?toConvert.getName() : "" + toConvert.hashCode();
         final FIELD_USAGE_TYPE fieldUsageType = toConvert.getUsageType() != null ?
                 FIELD_USAGE_TYPE.byName(toConvert.getUsageType().value()) : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;

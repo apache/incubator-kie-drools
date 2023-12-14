@@ -29,7 +29,6 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DefineFunction;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
@@ -57,18 +56,18 @@ public class KiePMMLDefineFunctionFactoryTest {
 
     @Test
     void getDefineFunctionVariableDeclaration() throws IOException {
-        ParameterField parameterField1 = new ParameterField(FieldName.create(PARAM_1));
+        ParameterField parameterField1 = new ParameterField(PARAM_1);
         parameterField1.setDataType(DataType.DOUBLE);
         parameterField1.setOpType(OpType.CONTINUOUS);
         parameterField1.setDisplayName("displayName1");
-        ParameterField parameterField2 = new ParameterField(FieldName.create(PARAM_2));
+        ParameterField parameterField2 = new ParameterField(PARAM_2);
         parameterField2.setDataType(DataType.DOUBLE);
         parameterField2.setOpType(OpType.CONTINUOUS);
         parameterField2.setDisplayName("displayName2");
         Constant constant = new Constant();
         constant.setValue(value1);
         FieldRef fieldRef = new FieldRef();
-        fieldRef.setField(FieldName.create("FIELD_REF"));
+        fieldRef.setField("FIELD_REF");
         Apply apply = new Apply();
         apply.setFunction("/");
         apply.addExpressions(constant, fieldRef);
@@ -87,17 +86,14 @@ public class KiePMMLDefineFunctionFactoryTest {
         BlockStmt retrieved = KiePMMLDefineFunctionFactory.getDefineFunctionVariableDeclaration(defineFunction);
         String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
-                .parseBlock(String.format(text,
-                                          parameterField1.getName().getValue(),
+                .parseBlock(String.format(text,parameterField1.getName(),
                                           dataType1,
                                           opType1,
-                                          parameterField1.getDisplayName(),
-                                          parameterField2.getName().getValue(),
+                                          parameterField1.getDisplayName(),parameterField2.getName(),
                                           dataType2,
                                           opType2,
                                           parameterField2.getDisplayName(),
-                                          constant.getValue(),
-                                          fieldRef.getField().getValue(),
+                                          constant.getValue(),fieldRef.getField(),
                                           apply.getFunction(),
                                           apply.getInvalidValueTreatment().value(),
                                           dataType3,
