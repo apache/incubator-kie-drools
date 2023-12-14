@@ -87,6 +87,7 @@ pipeline {
                         if (githubscm.isThereAnyChanges()) {
                             def commitMsg = "Update version to ${getKogitoVersion()}"
 
+                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                             githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
                             githubscm.pushObject('origin', getBuildBranch(), getGitAuthorPushCredsId())
                         } else {

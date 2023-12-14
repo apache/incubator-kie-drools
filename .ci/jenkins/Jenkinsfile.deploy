@@ -217,6 +217,7 @@ void commitAndCreatePR() {
     } else {
         prBody += '\nPlease review and merge.'
     }
+    githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
     githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
     githubscm.pushObject('origin', getPRBranch(), getGitAuthorPushCredsId())
     deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsId()) 
