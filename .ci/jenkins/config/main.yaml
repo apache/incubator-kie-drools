@@ -13,6 +13,9 @@ git:
   branches:
   - name: main
     main_branch: true
+  - name: 8.45.x
+    seed:
+      branch: seed-optaplanner-8.45.x
 seed:
   config_file:
     git:
@@ -21,7 +24,7 @@ seed:
         name: apache
         credentials_id: ASF_Cloudbees_Jenkins_ci-builds
         push:
-          credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2 # CI Push Access for KIE
+          credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2
       branch: main
     path: .ci/jenkins/config/branch.yaml
 jenkins:
