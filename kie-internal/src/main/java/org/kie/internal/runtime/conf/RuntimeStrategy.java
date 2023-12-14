@@ -18,7 +18,7 @@
  */
 package org.kie.internal.runtime.conf;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 @XmlType
 public enum RuntimeStrategy {

@@ -39,7 +39,7 @@ public class SimpleRuleRow {
         Predicate rootPredicate = r.getPredicate();
         if (rootPredicate instanceof SimplePredicate) {
             SimplePredicate sp = (SimplePredicate) rootPredicate;
-            map.computeIfAbsent(sp.getField().getValue(), k -> new ArrayList<SimplePredicate>()).add(sp);
+            map.computeIfAbsent(sp.getField(), k -> new ArrayList<SimplePredicate>()).add(sp);
         } else {
             if (!(rootPredicate instanceof CompoundPredicate)) {
                 throw new UnsupportedOperationException("Was expecting a CompoundPredicate, found: "+rootPredicate.getClass());
@@ -50,7 +50,7 @@ public class SimpleRuleRow {
             }
             for (Predicate c : cPredicate.getPredicates()) {
                 SimplePredicate sp = (SimplePredicate) c;
-                map.computeIfAbsent(sp.getField().getValue(), k -> new ArrayList<SimplePredicate>()).add(sp);
+                map.computeIfAbsent(sp.getField(), k -> new ArrayList<SimplePredicate>()).add(sp);
             }
         }
     }

@@ -24,6 +24,7 @@ import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import org.junit.jupiter.api.Test;
+import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,7 +52,7 @@ public class JavaParserUtilsTest {
 
     @Test
     void getFromFileNameNotExisting() {
-        assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ExternalException.class).isThrownBy(() -> {
             JavaParserUtils.getFromFileName("not_existing");
         });
     }

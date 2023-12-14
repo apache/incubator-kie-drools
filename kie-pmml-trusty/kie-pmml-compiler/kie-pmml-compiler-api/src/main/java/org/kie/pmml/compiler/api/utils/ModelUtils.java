@@ -51,8 +51,8 @@ import org.dmg.pmml.TargetValue;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Value;
-import org.jpmml.model.inlinetable.InputCell;
-import org.jpmml.model.inlinetable.OutputCell;
+import org.jpmml.model.cells.InputCell;
+import org.jpmml.model.cells.OutputCell;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
@@ -123,8 +123,8 @@ public class ModelUtils {
         if (model.getMiningSchema() != null && model.getMiningSchema().getMiningFields() != null) {
             for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
                 if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                    OP_TYPE opType = getOpType(fields, model, miningField.getName().getValue());
-                    toReturn.add(new KiePMMLNameOpType(miningField.getName().getValue(), opType));
+                    OP_TYPE opType = getOpType(fields, model,miningField.getName());
+                    toReturn.add(new KiePMMLNameOpType(miningField.getName(), opType));
                 }
             }
         }
@@ -145,8 +145,7 @@ public class ModelUtils {
         if (model.getMiningSchema() != null && model.getMiningSchema().getMiningFields() != null) {
             for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
                 if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                    toReturn.put(miningField.getName().getValue(), getDATA_TYPE(fields,
-                                                                                miningField.getName().getValue()));
+                    toReturn.put(miningField.getName(), getDATA_TYPE(fields,miningField.getName()));
                 }
             }
         }
@@ -182,7 +181,7 @@ public class ModelUtils {
                                                         final String fieldName) {
         return fields == null ? Optional.empty() :
                 fields.stream()
-                        .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()) && dataField.getOpType() != null)
+                        .filter(dataField -> Objects.equals(fieldName,dataField.getName()) && dataField.getOpType() != null)
                         .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()))
                         .findFirst();
     }
@@ -196,7 +195,7 @@ public class ModelUtils {
     public static Optional<OP_TYPE> getOpTypeFromMiningFields(MiningSchema miningSchema, String fieldName) {
         if (miningSchema != null && miningSchema.getMiningFields() != null) {
             return miningSchema.getMiningFields().stream()
-                    .filter(miningField -> Objects.equals(fieldName, miningField.getName().getValue()) && miningField.getOpType() != null)
+                    .filter(miningField -> Objects.equals(fieldName,miningField.getName()) && miningField.getOpType() != null)
                     .findFirst()
                     .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
         } else {
@@ -213,7 +212,7 @@ public class ModelUtils {
     public static Optional<OP_TYPE> getOpTypeFromTargets(Targets targets, String fieldName) {
         if (targets != null && targets.getTargets() != null) {
             return targets.getTargets().stream()
-                    .filter(target -> Objects.equals(fieldName, target.getField().getValue()) && target.getOpType() != null)
+                    .filter(target -> Objects.equals(fieldName,target.getField()) && target.getOpType() != null)
                     .findFirst()
                     .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
         } else {
@@ -231,7 +230,7 @@ public class ModelUtils {
     public static DataType getDataType(final List<Field<?>> fields,
                                        final String fieldName) {
         return fields.stream()
-                .filter(fld -> Objects.equals(fieldName, fld.getName().getValue()))
+                .filter(fld -> Objects.equals(fieldName,fld.getName()))
                 .map(Field::getDataType)
                 .findFirst()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
@@ -247,7 +246,7 @@ public class ModelUtils {
      */
     public static DATA_TYPE getDATA_TYPE(final List<Field<?>> fields, String fieldName) {
         Optional<DATA_TYPE> toReturn = fields.stream()
-                .filter(fld -> Objects.equals(fieldName, fld.getName().getValue()))
+                .filter(fld -> Objects.equals(fieldName,fld.getName()))
                 .findFirst()
                 .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()));
         return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DATA_TYPE for " +
@@ -331,7 +330,7 @@ public class ModelUtils {
      */
     public static org.kie.pmml.api.models.MiningField convertToKieMiningField(final MiningField toConvert,
                                                                               final Field<?> field) {
-        final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
+        final String name = toConvert.getName() != null ?toConvert.getName() : null;
         final FIELD_USAGE_TYPE fieldUsageType = toConvert.getUsageType() != null ?
                 FIELD_USAGE_TYPE.byName(toConvert.getUsageType().value()) : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
@@ -408,13 +407,13 @@ public class ModelUtils {
      */
     public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert,
                                                                               final Field<?> field) {
-        final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
+        final String name = toConvert.getName() != null ?toConvert.getName() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
         final DATA_TYPE dataFieldDataType = field != null ? DATA_TYPE.byName(field.getDataType().value()) :
                 null;
         final DATA_TYPE dataType = toConvert.getDataType() != null ?
                 DATA_TYPE.byName(toConvert.getDataType().value()) : dataFieldDataType;
-        final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
+        final String targetField = toConvert.getTargetField() != null ?toConvert.getTargetField() : null;
         final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
                 RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
         final List<String> allowedValues = field instanceof DataField ?
@@ -459,8 +458,7 @@ public class ModelUtils {
                 toConvert.getRescaleConstant().doubleValue() : null;
         final Double rescaleFactor = toConvert.getRescaleFactor() != null ? toConvert.getRescaleFactor().doubleValue() : null;
         return new TargetField(targetValues,
-                               opType,
-                               toConvert.getField().getValue(),
+                               opType,toConvert.getField(),
                                castInteger,
                                min,
                                max,

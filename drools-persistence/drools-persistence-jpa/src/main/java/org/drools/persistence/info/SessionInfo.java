@@ -20,15 +20,15 @@ package org.drools.persistence.info;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
 
 import org.drools.persistence.api.PersistentSession;
 import org.drools.persistence.SessionMarshallingHelper;

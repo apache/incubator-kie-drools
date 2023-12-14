@@ -32,7 +32,7 @@
     </kbase>    
 
     <kbase name="org.kie.kbase3" scope="SessionScoped" equalsBehavior="equality" eventProcessingMode="stream">
-        <ksession name="org.kie.kbase3.ksession1" scope="javax.enterprise.context.ApplicationScoped" type="stateful" clockType="pseudo"/>
+        <ksession name="org.kie.kbase3.ksession1" scope="jakarta.enterprise.context.ApplicationScoped" type="stateful" clockType="pseudo"/>
         <ksession name="org.kie.kbase3.ksession2" scope="SessionScoped" type="stateful" clockType="realtime"/>
     </kbase>
 

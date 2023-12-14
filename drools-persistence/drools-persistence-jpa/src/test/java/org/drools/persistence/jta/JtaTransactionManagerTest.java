@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.RollbackException;
-import javax.transaction.UserTransaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.UserTransaction;
 
 import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

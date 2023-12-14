@@ -183,7 +183,7 @@ public interface KieBaseModel {
 
     /**
      * Returns the CDI scope of this KieBaseModel
-     * Default is javax.enterprise.context.ApplicationScoped
+     * Default is jakarta.enterprise.context.ApplicationScoped
      */
     String getScope();
 

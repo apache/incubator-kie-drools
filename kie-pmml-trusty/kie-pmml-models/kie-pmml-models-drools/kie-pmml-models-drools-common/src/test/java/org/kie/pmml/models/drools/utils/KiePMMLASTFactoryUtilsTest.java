@@ -197,7 +197,7 @@ public class KiePMMLASTFactoryUtilsTest {
                             kiePMMLFieldOperatorValue.getKiePMMLOperatorValues().get(0);
                     SimplePredicate simplePredicate = nestedPredicates.stream()
                             .map(predicate -> (SimplePredicate) predicate)
-                            .filter(predicate -> predicate.getField().getValue().equals(getOriginalPredicateName(kiePMMLFieldOperatorValue.getName())))
+                            .filter(predicate -> predicate.getField().equals(getOriginalPredicateName(kiePMMLFieldOperatorValue.getName())))
                             .findFirst()
                             .orElseThrow(() -> new RuntimeException("Failed to find SimplePredicate for " + kiePMMLFieldOperatorValue.getName()));
                     commonVerifyKiePMMLOperatorValue(kiePMMLOperatorValue, simplePredicate);
@@ -210,7 +210,7 @@ public class KiePMMLASTFactoryUtilsTest {
 
     private void commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator compoundBooleanOperator, BOOLEAN_OPERATOR booleanOperator) {
         final Map<String, List<SimplePredicate>> predicatesByField = simplePredicates.stream()
-                .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue()).getGeneratedType()));
+                .collect(groupingBy(child -> fieldTypeMap.get(child.getField()).getGeneratedType()));
         final List<KiePMMLFieldOperatorValue> toPopulate = new ArrayList<>();
         KiePMMLASTFactoryUtils.populateKiePMMLFieldOperatorValueListWithSimplePredicates(toPopulate,
                                                                                          compoundBooleanOperator,
@@ -260,7 +260,7 @@ public class KiePMMLASTFactoryUtilsTest {
     private SimplePredicate getSimplePredicate(String generatedType) {
         String predicateName = getOriginalPredicateName(generatedType);
         return simplePredicates.stream()
-                .filter(simplePredicate -> simplePredicate.getField().getValue().equals(predicateName))
+                .filter(simplePredicate -> simplePredicate.getField().equals(predicateName))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Failed to find SimplePredicate for " + predicateName));
     }

@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
 import org.drools.drl.ast.dsl.DescrFactory;
@@ -166,7 +165,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String outputFieldName = "OUTPUTFIELDNAME";
         Object result = "RESULT";
         OutputField outputField = new OutputField();
-        outputField.setName(FieldName.create(outputFieldName));
+        outputField.setName(outputFieldName);
         outputField.setResultFeature(ResultFeature.PREDICTED_VALUE);
         List<OutputField> outputFields = Collections.singletonList(outputField);
         KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(ruleName, statusToSet, outputFields);
@@ -211,7 +210,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String outputFieldName = "OUTPUTFIELDNAME";
         Object result = "RESULT";
         OutputField outputField = new OutputField();
-        outputField.setName(FieldName.create(outputFieldName));
+        outputField.setName(outputFieldName);
         outputField.setResultFeature(ResultFeature.PREDICTED_VALUE);
         List<OutputField> outputFields = Collections.singletonList(outputField);
         StringJoiner joiner = new StringJoiner("");

@@ -23,7 +23,7 @@ import java.util.List;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.JavaType;
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

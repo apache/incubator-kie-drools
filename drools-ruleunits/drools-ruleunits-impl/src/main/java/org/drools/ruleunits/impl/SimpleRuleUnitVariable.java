@@ -18,11 +18,11 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.lang.reflect.Type;
+
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-
-import java.lang.reflect.Type;
 
 import static org.drools.util.ClassUtils.rawType;
 import static org.drools.util.StringUtils.ucFirst;
@@ -47,7 +47,15 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
         this.setter = setter;
         this.type = type;
         this.dataSourceParameterType = dataSourceParameterType;
-        this.boxedVarType = type instanceof Class ? convertFromPrimitiveType((Class)type) : rawType(type);
+
+        Class<?> varType = type instanceof Class ? convertFromPrimitiveType((Class)type) : rawType(type);
+        try {
+            this.boxedVarType = varType.getClassLoader() == null || varType.getClassLoader() == DataSource.class.getClassLoader() ?
+                    varType :
+                    DataSource.class.getClassLoader().loadClass(varType.getCanonicalName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public SimpleRuleUnitVariable(String name, Class<?> type) {

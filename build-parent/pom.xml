@@ -25,7 +25,7 @@
   <parent>
     <artifactId>drools-parent</artifactId>
     <groupId>org.kie</groupId>
-    <version>8.46.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -55,10 +55,10 @@
       - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
     -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
-    <version.commons-codec>1.15</version.commons-codec>
+    <version.commons-codec>1.16.0</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
-    <version.commons-io>2.11.0</version.commons-io>
+    <version.commons-io>2.13.0</version.commons-io>
     <version.common-text>1.10.0</version.common-text>
     <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
@@ -72,10 +72,10 @@
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
-    <version.info.picocli>4.7.1</version.info.picocli>
-    <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.16.12.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
+    <version.info.picocli>4.7.4</version.info.picocli>
+    <version.io.micrometer>1.11.1</version.io.micrometer>
+    <version.io.quarkus>3.2.9.Final</version.io.quarkus>
+    <version.io.smallrye.openapi.core>3.4.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -88,43 +88,43 @@
     <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.8.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
-    <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
+    <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.1.0</version.org.apache.poi>
-    <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
+    <version.org.apache.tomcat.tomcat-dbcp>10.1.7</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.23.1</version.org.assertj>
     <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
     <version.org.freemarker>2.3.32</version.org.freemarker>
-    <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
+    <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>1.3</version.org.hamcrest>
-    <version.org.hibernate>5.6.12.Final</version.org.hibernate>
+    <version.org.hibernate>6.2.13.Final</version.org.hibernate>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.infinispan>14.0.13.Final</version.org.infinispan>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>5.13.1.Final</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.narayana.tomcat>6.0.1.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
-    <version.org.eclipse.microprofile.config>2.0.1</version.org.eclipse.microprofile.config>
-    <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
-    <version.jakarta.activation>1.2.1</version.jakarta.activation>
-    <version.jakarta.activation-api>1.2.1</version.jakarta.activation-api>
-    <version.jakarta.inject-api>1.0</version.jakarta.inject-api>
-    <version.jakarta.annotation-api>1.3.5</version.jakarta.annotation-api>
+    <version.org.eclipse.microprofile.config>3.0.3</version.org.eclipse.microprofile.config>
+    <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
+    <version.jakarta.activation>2.0.1</version.jakarta.activation>
+    <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
+    <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
+    <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
     <version.jakarta.ejb-api>3.2.6</version.jakarta.ejb-api>
     <version.jakarta.servlet.jsp-api>2.3.6</version.jakarta.servlet.jsp-api>
     <version.jakarta.servlet.jsp.jstl-api>2.0.0</version.jakarta.servlet.jsp.jstl-api>
-    <version.jakarta.transaction-api>1.3.3</version.jakarta.transaction-api>
-    <version.jakarta.ws.rs-api>2.1.6</version.jakarta.ws.rs-api>
-    <version.jakarta.xml.ws-api>2.3.3</version.jakarta.xml.ws-api>
-    <version.jakarta.persistence-api>2.2.3</version.jakarta.persistence-api>
-    <version.jakarta.servlet-api>4.0.3</version.jakarta.servlet-api>
-    <version.jakarta.xml.bind-api>2.3.3</version.jakarta.xml.bind-api>
-    <version.jakarta.json.bind-api>1.0.2</version.jakarta.json.bind-api>
-    <version.jakarta.json>1.1.6</version.jakarta.json>
-    <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
-    <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-    <version.org.junit>5.9.2</version.org.junit>
+    <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
+    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
+    <version.jakarta.xml.ws-api>4.0.1</version.jakarta.xml.ws-api>
+    <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
+    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
+    <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
+    <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
+    <version.jakarta.json>1.1.2</version.jakarta.json>
+    <version.jakarta.json-api>2.1.2</version.jakarta.json-api>
+    <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
+    <version.org.junit>5.9.3</version.org.junit>
     <version.org.mvel>2.5.1.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
@@ -138,7 +138,7 @@
     <!-- New and overwritten dependencies -->
     <!-- ################################################################################ -->
 
-    <version.org.antlr4>4.13.0</version.org.antlr4>
+    <version.org.antlr4>4.10.1</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
@@ -171,7 +171,7 @@
     <version.surefire.plugin>2.22.1</version.surefire.plugin>
     <!-- Add for kie-maven-plugin -->
     <version.plugin.plugin>3.6.4</version.plugin.plugin>
-    <version.plugin.annotations>3.6.0</version.plugin.annotations>
+    <version.plugin.annotations>3.7.1</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.3.4</version.shared.utils>
     <version.common.compress>1.24.0</version.common.compress>
@@ -200,18 +200,18 @@
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.shade.plugin>3.3.0</version.shade.plugin>
 
-    <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
+    <version.net.byte-buddy>1.14.7</version.net.byte-buddy>
 
-    <version.org.postgresql>42.5.4</version.org.postgresql>
+    <version.org.postgresql>42.6.0</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex>3.1.2</version.io.smallrye.jandex>
     <version.io.smallrye.jandex-maven-plugin>${version.io.smallrye.jandex}</version.io.smallrye.jandex-maven-plugin>
-    <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
+    <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
-    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
+    <version.com.github.javaparser>3.25.3</version.com.github.javaparser>
 
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
@@ -232,7 +232,7 @@
     <!-- These are added as part of the migration from JBoss to Apache parent pom.xml. They may be extracted to a KIE parent bom. -->
     <version.maven-checkstyle>3.3.0</version.maven-checkstyle>
     <version.build.helper.maven.plugin>3.4.0</version.build.helper.maven.plugin>
-    <version.maven-javadoc-plugin.override>3.6.0</version.maven-javadoc-plugin.override>
+    <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
   </properties>
 
   <dependencyManagement>
@@ -283,7 +283,7 @@
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
-        <artifactId>jackson-module-jaxb-annotations</artifactId>
+        <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
         <version>${version.com.fasterxml.jackson.annotations}</version>
       </dependency>
       <dependency>
@@ -292,8 +292,8 @@
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
-        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+        <artifactId>jackson-jakarta-rs-json-provider</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
@@ -367,9 +367,9 @@
         <version>${version.com.sun.xml.bind}</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-impl</artifactId>
-        <version>${version.com.sun.xml.bind}</version>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>4.0.3</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
@@ -419,8 +419,8 @@
       </dependency>
 
       <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>jakarta.json</artifactId>
+        <groupId>org.eclipse.parsson</groupId>
+        <artifactId>parsson</artifactId>
         <version>${version.jakarta.json}</version>
       </dependency>
       <dependency>
@@ -455,8 +455,8 @@
       </dependency>
 
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>jakarta.activation</artifactId>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>angus-activation</artifactId>
         <version>${version.jakarta.activation}</version>
       </dependency>
       <dependency>
@@ -791,12 +791,12 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hibernate</groupId>
+        <groupId>org.hibernate.orm</groupId>
         <artifactId>hibernate-envers</artifactId>
         <version>${version.org.hibernate}</version>
       </dependency>
       <dependency>
-        <groupId>org.hibernate</groupId>
+        <groupId>org.hibernate.orm</groupId>
         <artifactId>hibernate-jpamodelgen</artifactId>
         <version>${version.org.hibernate}</version>
         <exclusions>
@@ -1113,7 +1113,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hibernate</groupId>
+        <groupId>org.hibernate.orm</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>${version.org.hibernate}</version>
         <exclusions>
@@ -1135,31 +1135,16 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>${version.org.hibernate}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.transaction</groupId>
-            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
       <!-- Required for Errai Dynamic Bean validation  -->
       <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <version>3.0.2</version>
       </dependency>
       <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <version>3.0.2</version>
         <classifier>sources</classifier>
       </dependency>
 
@@ -1430,6 +1415,9 @@
                     <ignoreClasses>
                       <!-- Duplication of javax.inject classes is necessary to also support migration to jakarta namespace. -->
                       <ignoreClass>javax.inject.*</ignoreClass>
+                      <!-- Contained in both com.google.inject:guice:jar and com.google.inject:guice:jar:no_aop -->
+                      <!-- and it is impossible to exclude only one of them -->
+                      <ignoreClass>com.google.inject.*</ignoreClass>
                       <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
                       <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
