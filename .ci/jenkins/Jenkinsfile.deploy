@@ -359,7 +359,7 @@ void commitAndCreatePR(String folder, String repo, String buildBranch) {
         } else {
             prBody += '\nPlease review and merge.'
         }
-
+        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
         githubscm.commitChanges(commitMsg, {
             githubscm.findAndStageNotIgnoredFiles('pom.xml')
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
