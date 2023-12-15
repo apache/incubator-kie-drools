@@ -18,10 +18,6 @@
  */
 package org.kie.kogito.index.service.messaging;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
@@ -34,6 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.properties.UnlessBuildProperty;
 import io.smallrye.mutiny.Uni;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 @UnlessBuildProperty(name = "kogito.data-index.blocking", stringValue = "true", enableIfMissing = true)

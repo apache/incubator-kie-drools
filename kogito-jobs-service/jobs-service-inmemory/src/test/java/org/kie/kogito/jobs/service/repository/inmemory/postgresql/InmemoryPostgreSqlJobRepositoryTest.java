@@ -20,8 +20,6 @@ package org.kie.kogito.jobs.service.repository.inmemory.postgresql;
 
 import java.time.Duration;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
@@ -31,6 +29,8 @@ import org.kie.kogito.jobs.service.repository.postgresql.PostgreSqlJobRepository
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.mutiny.pgclient.PgPool;
+
+import jakarta.inject.Inject;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

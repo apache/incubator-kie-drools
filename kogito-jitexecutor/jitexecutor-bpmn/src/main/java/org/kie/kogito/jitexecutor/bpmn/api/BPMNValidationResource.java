@@ -18,17 +18,17 @@
  */
 package org.kie.kogito.jitexecutor.bpmn.api;
 
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.kie.kogito.jitexecutor.bpmn.JITBPMNService;
 import org.kie.kogito.jitexecutor.bpmn.responses.JITBPMNValidationResult;
 import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("jitbpmn/validate")
 public class BPMNValidationResource {

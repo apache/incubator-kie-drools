@@ -27,10 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.Application;
 import org.kie.kogito.addon.source.files.SourceFilesProvider;
@@ -47,6 +43,10 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.svg.ProcessSvgService;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import static java.util.stream.Collectors.toMap;
 

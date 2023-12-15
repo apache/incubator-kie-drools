@@ -26,8 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -42,6 +40,8 @@ import org.kie.kogito.jobs.api.event.serialization.JobCloudEventSerializer;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+
+import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

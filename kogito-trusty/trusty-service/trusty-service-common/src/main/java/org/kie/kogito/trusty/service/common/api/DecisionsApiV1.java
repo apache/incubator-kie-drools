@@ -20,13 +20,6 @@ package org.kie.kogito.trusty.service.common.api;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -43,6 +36,13 @@ import org.kie.kogito.trusty.service.common.responses.decision.DecisionOutcomesR
 import org.kie.kogito.trusty.service.common.responses.decision.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("executions/decisions")
 public class DecisionsApiV1 {

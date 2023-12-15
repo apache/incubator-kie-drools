@@ -18,15 +18,15 @@
  */
 package org.kie.kogito.jobs.service.messaging.kafka;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
 import org.kie.kogito.jobs.service.messaging.MessagingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.smallrye.reactive.messaging.kafka.KafkaConnector;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class KafkaMessagingHandler implements MessagingHandler {

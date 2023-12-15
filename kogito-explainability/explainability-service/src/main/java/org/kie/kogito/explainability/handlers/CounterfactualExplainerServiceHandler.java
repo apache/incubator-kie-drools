@@ -29,9 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.explainability.ConversionUtils;
 import org.kie.kogito.explainability.PredictionProviderFactory;
@@ -59,6 +56,9 @@ import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.explainability.ConversionUtils.toFeatureList;
 import static org.kie.kogito.explainability.ConversionUtils.toOutputList;

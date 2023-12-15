@@ -43,7 +43,7 @@ import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
+    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @BuildStep(onlyIf = IsDevelopment.class)

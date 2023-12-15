@@ -21,8 +21,6 @@ package org.kie.kogito.jobs.service.repository.postgresql;
 import java.time.OffsetDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
@@ -32,6 +30,8 @@ import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

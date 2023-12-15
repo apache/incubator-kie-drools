@@ -20,12 +20,12 @@ package org.kie.kogito.jobs.service.validation;
 
 import java.util.Objects;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.jobs.service.exception.JobValidationException;
 import org.kie.kogito.jobs.service.model.JobDetails;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class JobDetailsValidator {

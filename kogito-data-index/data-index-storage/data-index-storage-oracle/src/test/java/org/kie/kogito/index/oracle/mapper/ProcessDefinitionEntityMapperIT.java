@@ -20,8 +20,6 @@ package org.kie.kogito.index.oracle.mapper;
 
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.Node;
@@ -30,6 +28,8 @@ import org.kie.kogito.index.oracle.model.NodeEntity;
 import org.kie.kogito.index.oracle.model.ProcessDefinitionEntity;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;

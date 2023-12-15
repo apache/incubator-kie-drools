@@ -25,8 +25,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +39,8 @@ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.http.ContentType;
+
+import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;

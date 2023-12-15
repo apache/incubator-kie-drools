@@ -20,8 +20,6 @@ package org.kie.kogito.jobs.service.resource;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+
+import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -87,6 +87,10 @@ public abstract class BaseKeycloakJobServiceTest {
         final ScheduledJob response = createJob(jobToJson(job), getAccessToken("jdoe"), OK_CODE)
                 .extract()
                 .as(ScheduledJob.class);
+
+        // Resetting the date to set the right UTC ZoneId. This is required due to recent changes on jackson-datatype-jsr310
+        response.setExpirationTime(DateUtil.instantToZonedDateTime(response.getExpirationTime().toInstant()));
+
         assertEquals(job, response);
     }
 
@@ -153,6 +157,10 @@ public abstract class BaseKeycloakJobServiceTest {
                 .contentType(ContentType.JSON)
                 .extract()
                 .as(ScheduledJob.class);
+
+        // Resetting the date to set the right UTC ZoneId. This is required due to recent changes on jackson-datatype-jsr310
+        response.setExpirationTime(DateUtil.instantToZonedDateTime(response.getExpirationTime().toInstant()));
+
         assertEquals(job, response);
     }
 

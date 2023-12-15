@@ -21,8 +21,6 @@ package org.kie.kogito.persistence.postgresql.reporting.api;
 import java.util.Collection;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +35,8 @@ import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionFi
 import org.kie.kogito.persistence.postgresql.reporting.service.PostgresMappingServiceImpl;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import jakarta.ws.rs.core.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

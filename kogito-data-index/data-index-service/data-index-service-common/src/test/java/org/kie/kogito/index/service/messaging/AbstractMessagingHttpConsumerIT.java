@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.index.service.messaging;
 
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
-
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
@@ -28,7 +25,10 @@ import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
-import io.smallrye.reactive.messaging.providers.connectors.InMemoryConnector;
+import io.smallrye.reactive.messaging.memory.InMemoryConnector;
+
+import jakarta.enterprise.inject.Any;
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_JOBS_EVENTS;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;

@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.persistence.mongodb.client;
 
-import javax.inject.Inject;
-
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
@@ -28,6 +26,8 @@ import com.mongodb.client.MongoCollection;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

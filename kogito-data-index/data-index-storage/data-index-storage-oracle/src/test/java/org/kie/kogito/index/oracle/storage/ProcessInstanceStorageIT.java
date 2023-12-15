@@ -20,8 +20,6 @@ package org.kie.kogito.index.oracle.storage;
 
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessInstance;
@@ -34,6 +32,8 @@ import org.kie.kogito.testcontainers.quarkus.OracleSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 @QuarkusTest
 @QuarkusTestResource(OracleSqlQuarkusTestResource.class)

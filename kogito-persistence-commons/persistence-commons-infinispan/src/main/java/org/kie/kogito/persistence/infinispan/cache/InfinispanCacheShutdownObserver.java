@@ -20,14 +20,14 @@ package org.kie.kogito.persistence.infinispan.cache;
 
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.persistence.api.StorageService;
 
 import io.quarkus.runtime.ShutdownEvent;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 import static org.kie.kogito.persistence.infinispan.Constants.INFINISPAN_STORAGE;

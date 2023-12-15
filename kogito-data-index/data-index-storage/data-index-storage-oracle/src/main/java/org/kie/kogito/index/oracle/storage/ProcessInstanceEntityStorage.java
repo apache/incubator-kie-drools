@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.index.oracle.storage;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.oracle.mapper.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.oracle.model.AbstractEntity;
 import org.kie.kogito.index.oracle.model.ProcessInstanceEntity;
 import org.kie.kogito.index.oracle.model.ProcessInstanceEntityRepository;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ProcessInstanceEntityStorage extends AbstractStorage<ProcessInstanceEntity, ProcessInstance> {

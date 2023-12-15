@@ -18,15 +18,15 @@
  */
 package org.kie.kogito.trusty.service.common.handlers;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class LIMEExplainerServiceHandler extends BaseExplainerServiceHandler<LIMEExplainabilityResult> {

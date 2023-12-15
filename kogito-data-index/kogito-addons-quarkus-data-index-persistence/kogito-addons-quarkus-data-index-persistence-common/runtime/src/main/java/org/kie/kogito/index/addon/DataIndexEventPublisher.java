@@ -22,10 +22,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collection;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
@@ -35,6 +31,10 @@ import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.service.IndexingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import static org.kie.kogito.event.process.ProcessDefinitionDataEvent.PROCESS_DEFINITION_EVENT;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;

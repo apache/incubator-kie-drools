@@ -20,9 +20,6 @@ package org.kie.kogito.explainability;
 
 import java.util.Collection;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.kie.kogito.explainability.api.HasNameValue;
@@ -31,6 +28,9 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import io.vertx.mutiny.core.Vertx;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class PredictionProviderFactoryImpl implements PredictionProviderFactory {

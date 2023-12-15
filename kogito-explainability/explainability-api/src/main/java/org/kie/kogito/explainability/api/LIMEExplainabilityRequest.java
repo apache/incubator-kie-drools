@@ -21,10 +21,10 @@ package org.kie.kogito.explainability.api;
 import java.util.Collection;
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class LIMEExplainabilityRequest extends BaseExplainabilityRequest {
 

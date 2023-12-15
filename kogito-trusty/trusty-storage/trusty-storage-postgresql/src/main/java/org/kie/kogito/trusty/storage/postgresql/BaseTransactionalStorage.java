@@ -20,8 +20,6 @@ package org.kie.kogito.trusty.storage.postgresql;
 
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.postgresql.PostgresStorage;
@@ -30,6 +28,8 @@ import org.kie.kogito.persistence.postgresql.model.CacheEntityRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.smallrye.mutiny.Multi;
+
+import jakarta.transaction.Transactional;
 
 public abstract class BaseTransactionalStorage<T> implements Storage<String, T> {
 

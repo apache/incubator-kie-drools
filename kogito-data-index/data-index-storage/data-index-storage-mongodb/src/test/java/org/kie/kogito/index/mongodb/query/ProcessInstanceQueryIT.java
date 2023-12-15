@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.index.mongodb.query;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntity;
@@ -32,6 +30,8 @@ import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_STORAGE;
 

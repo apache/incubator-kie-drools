@@ -24,7 +24,7 @@ import org.kie.kogito.index.spring.DataIndexPostgreSqlSpringTestResource;
 import org.kie.kogito.index.spring.KogitoServiceRandomPortSpringTestResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 

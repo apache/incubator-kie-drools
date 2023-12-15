@@ -65,18 +65,21 @@
         <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
 
         <!-- OptaPlanner version -->
-        <version.org.optaplanner>8.44.0.Final</version.org.optaplanner>
+        <version.org.optaplanner>9.44.0.Final</version.org.optaplanner>
 
-        <version.com.vladmihalcea.hibernate-types-55>2.12.1</version.com.vladmihalcea.hibernate-types-55>
+        <version.org.hibernate>6.2.13.Final</version.org.hibernate>
         <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.8</version.org.apache.commons.csv>
         <version.org.jredisearch>2.0.0</version.org.jredisearch>
-        <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
+        <version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
         <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
         <version.com.graphql-java-extended-scalars>19.0</version.com.graphql-java-extended-scalars>
 
         <!-- Explainability Toolkit version -->
         <version.explainability-core>1.22.1.Final</version.explainability-core>
+
+        <!-- Mutiny Zero Flow Adapters -->
+        <version.io.smallrye.reactive.mutiny-zero>1.0.0</version.io.smallrye.reactive.mutiny-zero>
     </properties>
 
     <build>
@@ -178,15 +181,20 @@
                 <version>${version.org.mapstruct}</version>
             </dependency>
             <dependency>
+                <groupId>io.smallrye.reactive</groupId>
+                <artifactId>mutiny-zero-flow-adapters</artifactId>
+                <version>${version.io.smallrye.reactive.mutiny-zero}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
                 <version>${version.org.skyscreamer}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>com.vladmihalcea</groupId>
-                <artifactId>hibernate-types-55</artifactId>
-                <version>${version.com.vladmihalcea.hibernate-types-55}</version>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-ant</artifactId>
+                <version>${version.org.hibernate}</version>
             </dependency>
             <dependency>
                 <groupId>com.graphql-java</groupId>

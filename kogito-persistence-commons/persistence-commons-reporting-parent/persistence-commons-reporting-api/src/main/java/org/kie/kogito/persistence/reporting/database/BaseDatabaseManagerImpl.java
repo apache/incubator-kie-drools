@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.ApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.Context;
@@ -46,6 +44,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import jakarta.persistence.EntityManager;
 
 public abstract class BaseDatabaseManagerImpl<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, D extends MappingDefinition<T, F, P, J, M>, C extends Context<T, F, P, J, M>>
         implements DatabaseManager<T, F, P, J, M, D, C> {

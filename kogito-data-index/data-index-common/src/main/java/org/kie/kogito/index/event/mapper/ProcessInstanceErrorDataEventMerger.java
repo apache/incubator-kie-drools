@@ -18,12 +18,12 @@
  */
 package org.kie.kogito.index.event.mapper;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ProcessInstanceErrorDataEventMerger implements ProcessInstanceEventMerger {

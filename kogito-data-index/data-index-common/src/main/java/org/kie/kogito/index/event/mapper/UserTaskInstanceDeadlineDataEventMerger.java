@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.index.event.mapper;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UserTaskInstanceDeadlineDataEventMerger implements UserTaskInstanceEventMerger {

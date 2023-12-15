@@ -21,10 +21,10 @@ package org.kie.kogito.explainability.api;
 import java.util.Collection;
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import jakarta.validation.constraints.NotNull;
 
 public class CounterfactualDomainCategorical extends CounterfactualDomain {
 

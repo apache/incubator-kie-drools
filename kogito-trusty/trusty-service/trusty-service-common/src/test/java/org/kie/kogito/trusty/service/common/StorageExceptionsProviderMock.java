@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.trusty.service.common;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 
 import io.quarkus.test.Mock;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Mock
 @ApplicationScoped

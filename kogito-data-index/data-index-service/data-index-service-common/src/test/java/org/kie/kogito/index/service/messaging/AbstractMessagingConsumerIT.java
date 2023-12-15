@@ -20,8 +20,6 @@ package org.kie.kogito.index.service.messaging;
 
 import java.time.Duration;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +27,8 @@ import org.junit.jupiter.api.Timeout;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 
 import io.restassured.http.ContentType;
+
+import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;

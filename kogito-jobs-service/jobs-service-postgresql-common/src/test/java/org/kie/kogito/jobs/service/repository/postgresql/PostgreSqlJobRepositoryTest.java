@@ -20,8 +20,6 @@ package org.kie.kogito.jobs.service.repository.postgresql;
 
 import java.time.Duration;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
@@ -30,6 +28,8 @@ import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.vertx.mutiny.pgclient.PgPool;
+
+import jakarta.inject.Inject;
 
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)

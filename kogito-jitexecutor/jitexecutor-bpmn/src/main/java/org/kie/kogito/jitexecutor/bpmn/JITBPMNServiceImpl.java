@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.drools.io.InputStreamResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
@@ -43,6 +41,8 @@ import org.kie.kogito.jitexecutor.common.requests.ResourceWithURI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class JITBPMNServiceImpl implements JITBPMNService {

@@ -22,12 +22,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
-@NativeImageTest
+@QuarkusIntegrationTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
 public class NativeInfinispanTrustyServiceIT {
 

@@ -93,6 +93,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
+    <dependency>
+       <groupId>io.smallrye.reactive</groupId>
+       <artifactId>mutiny-zero-flow-adapters</artifactId>
+    </dependency>
 
     <!-- Logging -->
     <dependency>

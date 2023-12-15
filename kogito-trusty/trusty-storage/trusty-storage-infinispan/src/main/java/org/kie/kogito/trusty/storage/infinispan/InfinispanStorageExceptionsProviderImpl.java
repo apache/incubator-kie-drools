@@ -18,10 +18,10 @@
  */
 package org.kie.kogito.trusty.storage.infinispan;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.infinispan.client.hotrod.exceptions.HotRodClientException;
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class InfinispanStorageExceptionsProviderImpl implements StorageExceptionsProvider {

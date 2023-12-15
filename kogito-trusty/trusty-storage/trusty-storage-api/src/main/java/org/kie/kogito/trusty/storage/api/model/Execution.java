@@ -20,8 +20,6 @@ package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-
 import org.kie.kogito.ModelDomain;
 import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.api.model.process.Process;
@@ -30,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Base abstract class for <b>Execution</b>

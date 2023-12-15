@@ -20,8 +20,6 @@ package org.kie.kogito.index.service.messaging;
 
 import java.util.UUID;
 
-import javax.enterprise.event.Event;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.DataEvent;
@@ -36,6 +34,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
+
+import jakarta.enterprise.event.Event;
 
 import static org.kie.kogito.index.test.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.test.TestUtils.getUserTaskCloudEvent;

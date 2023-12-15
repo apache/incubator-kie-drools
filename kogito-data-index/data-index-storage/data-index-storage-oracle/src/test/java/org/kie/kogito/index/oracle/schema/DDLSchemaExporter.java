@@ -46,7 +46,7 @@ public class DDLSchemaExporter {
     public static void main(String[] args) {
         try (KogitoOracleSqlContainer oracleSql = new KogitoOracleSqlContainer()) {
             oracleSql.start();
-            Map<String, String> settings = new HashMap<>();
+            Map<String, Object> settings = new HashMap<>();
             settings.put(Environment.URL, oracleSql.getJdbcUrl());
             settings.put(Environment.USER, oracleSql.getUsername());
             settings.put(Environment.PASS, oracleSql.getPassword());

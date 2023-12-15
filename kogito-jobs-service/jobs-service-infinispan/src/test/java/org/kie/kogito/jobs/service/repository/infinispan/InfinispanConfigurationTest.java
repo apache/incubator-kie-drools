@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.jobs.service.repository.infinispan;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +27,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.quarkus.runtime.StartupEvent;
+
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

@@ -29,8 +29,6 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-import javax.inject.Inject;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.AfterEach;
@@ -56,6 +54,8 @@ import com.mongodb.client.model.Indexes;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static io.quarkus.test.junit.QuarkusMock.installMockForType;
 import static java.util.stream.Collectors.toList;

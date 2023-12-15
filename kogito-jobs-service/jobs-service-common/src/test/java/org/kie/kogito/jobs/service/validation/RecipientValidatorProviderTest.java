@@ -21,12 +21,12 @@ package org.kie.kogito.jobs.service.validation;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.api.PayloadData;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.mockito.Mockito;
+
+import jakarta.enterprise.inject.Instance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

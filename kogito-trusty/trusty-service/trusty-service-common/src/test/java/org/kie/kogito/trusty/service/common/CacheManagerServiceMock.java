@@ -18,12 +18,12 @@
  */
 package org.kie.kogito.trusty.service.common;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
 
 import io.quarkus.arc.properties.IfBuildProperty;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 import static org.mockito.Mockito.mock;

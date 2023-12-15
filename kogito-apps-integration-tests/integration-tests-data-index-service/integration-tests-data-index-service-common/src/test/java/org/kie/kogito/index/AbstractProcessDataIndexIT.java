@@ -206,7 +206,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .get("/approvals/{processId}/tasks")
                 .then()
                 .statusCode(200)
-                .body("$.size()", is(1))
+                .body("size()", is(1))
                 .body("[0].name", is("secondLineApproval"))
                 .body("[0].id", notNullValue())
                 .extract()
@@ -473,7 +473,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
                         .then()
                         .statusCode(200)
-                        .body("$.size()", is(1))
+                        .body("size()", is(1))
                         .body("[0].content", is(commentContent)));
 
         await()
@@ -584,7 +584,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
                         .then()
                         .statusCode(200)
-                        .body("$.size()", is(1))
+                        .body("size()", is(1))
                         .body("[0].name", is(attachmentName)));
 
         AtomicReference<Map<String, String>> attachmentMapRef = new AtomicReference<>();

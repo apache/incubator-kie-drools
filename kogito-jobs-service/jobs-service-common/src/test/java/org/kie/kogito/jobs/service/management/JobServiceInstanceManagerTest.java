@@ -23,9 +23,6 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +41,9 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.mutiny.core.TimeoutStream;
 import io.vertx.mutiny.core.Vertx;
+
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Instance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

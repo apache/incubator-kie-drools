@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.index.oracle.storage;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.oracle.mapper.UserTaskInstanceEntityMapper;
 import org.kie.kogito.index.oracle.model.AbstractEntity;
 import org.kie.kogito.index.oracle.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.oracle.model.UserTaskInstanceEntityRepository;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class UserTaskInstanceEntityStorage extends AbstractStorage<UserTaskInstanceEntity, UserTaskInstance> {

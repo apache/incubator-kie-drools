@@ -22,8 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.service.api.Recipient;
@@ -33,6 +31,8 @@ import org.kie.kogito.jobs.service.utils.ModelUtil;
 import org.kie.kogito.jobs.service.validation.RecipientValidator;
 import org.kie.kogito.jobs.service.validation.ValidationException;
 import org.kie.kogito.jobs.service.validation.ValidatorContext;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class SinkRecipientValidator implements RecipientValidator {

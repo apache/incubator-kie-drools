@@ -28,9 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -41,6 +38,9 @@ import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import io.quarkus.arc.DefaultBean;
 import io.vertx.core.Vertx;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @DefaultBean
 @ApplicationScoped

@@ -20,12 +20,12 @@ package org.kie.kogito.index.event.mapper;
 
 import java.util.HashSet;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UserTaskInstanceAssignmentDataEventMerger implements UserTaskInstanceEventMerger {

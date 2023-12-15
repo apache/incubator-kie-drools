@@ -24,8 +24,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.service.graphql.GraphQLSchemaManagerImpl;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
@@ -38,6 +36,7 @@ import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchemaElement;
+import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;

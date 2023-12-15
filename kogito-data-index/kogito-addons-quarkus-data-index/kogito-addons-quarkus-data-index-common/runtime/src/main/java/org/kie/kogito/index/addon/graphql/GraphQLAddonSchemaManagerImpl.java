@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.index.addon.graphql;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
@@ -28,6 +26,7 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class GraphQLAddonSchemaManagerImpl extends AbstractGraphQLSchemaManager {

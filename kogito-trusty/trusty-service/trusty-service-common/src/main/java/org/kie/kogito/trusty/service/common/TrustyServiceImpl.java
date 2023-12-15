@@ -27,9 +27,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest;
@@ -57,6 +54,9 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static java.util.Arrays.asList;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;

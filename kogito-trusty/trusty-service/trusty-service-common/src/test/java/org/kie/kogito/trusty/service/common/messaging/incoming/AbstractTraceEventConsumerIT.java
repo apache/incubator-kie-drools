@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
@@ -35,6 +33,8 @@ import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.inject.Inject;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

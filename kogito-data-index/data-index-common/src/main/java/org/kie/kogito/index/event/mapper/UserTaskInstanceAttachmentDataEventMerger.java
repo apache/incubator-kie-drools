@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.index.DateTimeUtils;
 import org.kie.kogito.index.model.Attachment;
 import org.kie.kogito.index.model.UserTaskInstance;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UserTaskInstanceAttachmentDataEventMerger implements UserTaskInstanceEventMerger {

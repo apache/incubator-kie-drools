@@ -18,10 +18,6 @@
  */
 package org.kie.kogito.trusty.storage.redis;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
 import org.kie.kogito.persistence.redis.index.RedisCreateIndexEvent;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
@@ -31,6 +27,10 @@ import org.slf4j.LoggerFactory;
 
 import io.quarkus.runtime.Startup;
 import io.redisearch.Schema;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import static org.kie.kogito.explainability.api.BaseExplainabilityRequest.EXECUTION_ID_FIELD;
 import static org.kie.kogito.explainability.api.CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD;

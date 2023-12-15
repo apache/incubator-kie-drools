@@ -23,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.persistence.redis.RedisClientManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import io.redisearch.Client;
 import io.redisearch.Schema;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import redis.clients.jedis.exceptions.JedisDataException;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;

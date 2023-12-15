@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.index.infinispan.protostream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import org.infinispan.protostream.MessageMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ProtostreamProducer {

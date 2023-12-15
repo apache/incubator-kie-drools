@@ -20,8 +20,6 @@ package org.kie.kogito.index.event.mapper;
 
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
@@ -29,6 +27,8 @@ import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;

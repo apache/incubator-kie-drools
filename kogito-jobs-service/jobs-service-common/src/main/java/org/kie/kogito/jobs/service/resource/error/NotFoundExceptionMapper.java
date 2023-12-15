@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.jobs.service.resource.error;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class NotFoundExceptionMapper extends BaseExceptionMapper<NotFoundException> {

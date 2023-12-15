@@ -21,11 +21,11 @@ package org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.converter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
-import javax.ws.rs.ext.Provider;
-
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormFilter;
+
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class FormFilterParamConverterProvider implements ParamConverterProvider {

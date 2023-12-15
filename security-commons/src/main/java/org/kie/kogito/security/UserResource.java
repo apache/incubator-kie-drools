@@ -21,17 +21,17 @@ package org.kie.kogito.security;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.jboss.resteasy.annotations.cache.NoCache;
 
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @Path(UserResource.USER_PATH)
 @Authenticated

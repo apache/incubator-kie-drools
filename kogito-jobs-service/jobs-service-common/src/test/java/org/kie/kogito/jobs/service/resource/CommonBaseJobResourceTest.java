@@ -20,8 +20,6 @@ package org.kie.kogito.jobs.service.resource;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+
+import jakarta.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.MINUTES;

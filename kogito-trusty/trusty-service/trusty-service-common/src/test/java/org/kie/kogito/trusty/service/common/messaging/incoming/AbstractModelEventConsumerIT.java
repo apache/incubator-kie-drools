@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +28,8 @@ import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
 import org.kie.kogito.trusty.storage.api.model.decision.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
+
+import jakarta.inject.Inject;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

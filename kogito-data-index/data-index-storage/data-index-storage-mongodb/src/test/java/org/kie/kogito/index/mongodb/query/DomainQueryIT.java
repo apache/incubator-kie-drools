@@ -20,8 +20,6 @@ package org.kie.kogito.index.mongodb.query;
 
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +36,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

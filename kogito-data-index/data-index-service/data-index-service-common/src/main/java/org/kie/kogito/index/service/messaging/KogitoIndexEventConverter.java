@@ -22,9 +22,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.DataEvent;
@@ -69,6 +66,9 @@ import io.quarkus.reactivemessaging.http.runtime.IncomingHttpMetadata;
 import io.smallrye.reactive.messaging.MessageConverter;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * Converts the message payload into an indexable object. The conversion takes into account that the

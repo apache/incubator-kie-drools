@@ -18,10 +18,9 @@
  */
 package org.kie.kogito.trusty.storage.redis;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisExhaustedPoolException;
 

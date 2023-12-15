@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.MediaType;
-
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Node;
@@ -40,6 +37,9 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.MediaType;
 
 import static java.lang.String.format;
 

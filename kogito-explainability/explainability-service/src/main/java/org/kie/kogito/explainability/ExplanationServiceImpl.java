@@ -21,14 +21,14 @@ package org.kie.kogito.explainability;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.explainability.api.BaseExplainabilityRequest;
 import org.kie.kogito.explainability.api.BaseExplainabilityResult;
 import org.kie.kogito.explainability.handlers.LocalExplainerServiceHandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ExplanationServiceImpl implements ExplanationService {

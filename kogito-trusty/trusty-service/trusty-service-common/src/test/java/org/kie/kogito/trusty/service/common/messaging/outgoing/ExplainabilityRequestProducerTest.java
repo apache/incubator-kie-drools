@@ -26,6 +26,8 @@ import org.kie.kogito.explainability.api.ModelIdentifier;
 
 import io.smallrye.mutiny.helpers.test.AssertSubscriber;
 
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExplainabilityRequestProducerTest {
@@ -35,7 +37,7 @@ class ExplainabilityRequestProducerTest {
         AssertSubscriber<String> subscriber = AssertSubscriber.create(1);
 
         ExplainabilityRequestProducer producer = new ExplainabilityRequestProducer();
-        producer.getEventPublisher().subscribe(subscriber);
+        producer.getEventPublisher().subscribe(AdaptersToReactiveStreams.subscriber(subscriber));
 
         producer.sendEvent(new LIMEExplainabilityRequest(
                 "executionId", "http://localhost:8080/model",

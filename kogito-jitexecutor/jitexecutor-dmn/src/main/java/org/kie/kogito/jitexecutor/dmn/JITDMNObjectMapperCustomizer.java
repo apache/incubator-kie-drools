@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.jitexecutor.dmn;
 
-import javax.inject.Singleton;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
+
+import jakarta.inject.Singleton;
 
 @Singleton
 public class JITDMNObjectMapperCustomizer implements ObjectMapperCustomizer {

@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.PredictionProviderFactory;
@@ -34,6 +32,8 @@ import org.kie.kogito.explainability.api.ModelIdentifier;
 import org.kie.kogito.explainability.local.counterfactual.CounterfactualExplainer;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.PredictionProvider;
+
+import jakarta.enterprise.inject.Instance;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.index.oracle.storage;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.oracle.mapper.JobEntityMapper;
 import org.kie.kogito.index.oracle.model.AbstractEntity;
 import org.kie.kogito.index.oracle.model.JobEntity;
 import org.kie.kogito.index.oracle.model.JobEntityRepository;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class JobEntityStorage extends AbstractStorage<JobEntity, Job> {

@@ -1,0 +1,9 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: org.kie.kogito-apps.Quarkus3Migration
+displayName: All Quarkus 3 Migration for Kogito-Apps project
+recipeList:
+  - org.openrewrite.maven.ChangePropertyValue: {
+    newValue: 1.5.5.Final,
+    key: version.org.mapstruct
+  }

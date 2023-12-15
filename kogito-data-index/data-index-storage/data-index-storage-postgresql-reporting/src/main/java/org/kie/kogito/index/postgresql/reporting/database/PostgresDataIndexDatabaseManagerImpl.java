@@ -21,10 +21,6 @@ package org.kie.kogito.index.postgresql.reporting.database;
 import java.util.Locale;
 import java.util.Objects;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
 import org.kie.kogito.index.postgresql.model.JobEntityRepository;
 import org.kie.kogito.index.postgresql.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.postgresql.model.UserTaskInstanceEntityRepository;
@@ -34,6 +30,10 @@ import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.Post
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTableSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerDeleteSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresTriggerInsertSqlBuilder;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
 public class PostgresDataIndexDatabaseManagerImpl extends BasePostgresDatabaseManagerImpl {

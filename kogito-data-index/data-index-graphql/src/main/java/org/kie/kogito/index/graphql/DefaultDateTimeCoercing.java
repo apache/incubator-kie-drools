@@ -25,14 +25,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.index.DateTimeUtils;
 
 import io.quarkus.arc.DefaultBean;
 
 import graphql.language.StringValue;
 import graphql.schema.CoercingSerializeException;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @DefaultBean

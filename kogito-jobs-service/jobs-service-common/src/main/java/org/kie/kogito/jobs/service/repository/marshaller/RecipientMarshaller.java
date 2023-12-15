@@ -21,12 +21,12 @@ package org.kie.kogito.jobs.service.repository.marshaller;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.jobs.service.model.Recipient;
 import org.kie.kogito.jobs.service.model.RecipientInstance;
 
 import io.vertx.core.json.JsonObject;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class RecipientMarshaller implements Marshaller<Recipient, JsonObject> {

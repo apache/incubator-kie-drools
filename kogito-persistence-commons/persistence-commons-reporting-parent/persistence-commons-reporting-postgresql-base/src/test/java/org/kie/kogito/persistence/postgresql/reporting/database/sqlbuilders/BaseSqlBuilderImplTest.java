@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.persistence.EntityManager;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +34,8 @@ import org.kie.kogito.persistence.postgresql.reporting.model.PostgresMappingDefi
 import org.kie.kogito.persistence.postgresql.reporting.model.PostgresPartitionField;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import jakarta.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

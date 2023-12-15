@@ -78,7 +78,7 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
         UnicastProcessor<V> processor = UnicastProcessor.create();
         CacheObjectCreatedListener<K, V> listener = new CacheObjectCreatedListener<>(delegate, v -> processor.onNext(v));
         return processor
-                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
+                .onSubscription().invoke(s -> delegate.addClientListener(listener))
                 .onTermination().invoke(() -> delegate.removeClientListener(listener));
     }
 
@@ -88,7 +88,7 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
         UnicastProcessor<V> processor = UnicastProcessor.create();
         CacheObjectUpdatedListener<K, V> listener = new CacheObjectUpdatedListener<>(delegate, v -> processor.onNext(v));
         return processor
-                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
+                .onSubscription().invoke(s -> delegate.addClientListener(listener))
                 .onTermination().invoke(() -> delegate.removeClientListener(listener));
     }
 
@@ -98,7 +98,7 @@ public class InfinispanStorage<K, V> implements Storage<K, V> {
         UnicastProcessor<K> processor = UnicastProcessor.create();
         CacheObjectRemovedListener<K> listener = new CacheObjectRemovedListener<>(v -> processor.onNext(v));
         return processor
-                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
+                .onSubscription().invoke(s -> delegate.addClientListener(listener))
                 .onTermination().invoke(() -> delegate.removeClientListener(listener));
     }
 

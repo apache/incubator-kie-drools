@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.Response;
-
 import org.kie.kogito.job.recipient.common.http.converters.HttpConverters;
 import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.api.Recipient;
@@ -46,6 +44,8 @@ import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
+
+import jakarta.ws.rs.core.Response;
 
 public abstract class HTTPRequestExecutor<R extends Recipient<?>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(HTTPRequestExecutor.class);

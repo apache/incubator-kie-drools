@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.ws.rs.core.Response;
-
 import org.kie.kogito.persistence.reporting.database.DatabaseManager;
 import org.kie.kogito.persistence.reporting.database.sqlbuilders.Context;
 import org.kie.kogito.persistence.reporting.model.Field;
@@ -33,6 +31,8 @@ import org.kie.kogito.persistence.reporting.model.MappingDefinition;
 import org.kie.kogito.persistence.reporting.model.MappingDefinitions;
 import org.kie.kogito.persistence.reporting.model.PartitionField;
 import org.kie.kogito.persistence.reporting.service.MappingService;
+
+import jakarta.ws.rs.core.Response;
 
 public abstract class BaseMappingsApiV1<T, F extends Field, P extends PartitionField, J extends JsonField<T>, M extends Mapping<T, J>, D extends MappingDefinition<T, F, P, J, M>, S extends MappingDefinitions<T, F, P, J, M, D>, C extends Context<T, F, P, J, M>> {
 

@@ -24,9 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.explainability.api.LIMEExplainabilityResult;
 import org.kie.kogito.explainability.api.SaliencyModel;
 import org.kie.kogito.trusty.service.common.TrustyService;
@@ -34,6 +31,9 @@ import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.service.common.responses.SaliencyResponse;
 import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.api.model.decision.DecisionOutcome;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * Converts from the generic {@link SaliencyModel} to {@link SaliencyResponse} comaptible with the needs of the UI.

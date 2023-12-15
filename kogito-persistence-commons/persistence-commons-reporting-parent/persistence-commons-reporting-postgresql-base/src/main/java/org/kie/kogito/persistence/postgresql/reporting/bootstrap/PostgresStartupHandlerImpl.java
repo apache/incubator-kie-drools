@@ -18,10 +18,6 @@
  */
 package org.kie.kogito.persistence.postgresql.reporting.bootstrap;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresContext;
@@ -37,6 +33,10 @@ import org.kie.kogito.persistence.reporting.bootstrap.BaseStartupHandler;
 import org.kie.kogito.persistence.reporting.database.SchemaGenerationAction;
 
 import io.quarkus.runtime.StartupEvent;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class PostgresStartupHandlerImpl

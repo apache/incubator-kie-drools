@@ -20,11 +20,11 @@ package org.kie.kogito.persistence.redis;
 
 import java.net.URL;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.redisearch.Client;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class RedisClientManager {

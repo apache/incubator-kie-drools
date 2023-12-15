@@ -60,6 +60,10 @@ public abstract class BaseJobResourceTest extends CommonBaseJobResourceTest {
                 .statusCode(OK)
                 .extract()
                 .as(ScheduledJob.class);
+
+        // Resetting the date to set the right UTC ZoneId. This is required due to recent changes on jackson-datatype-jsr310
+        response.setExpirationTime(DateUtil.instantToZonedDateTime(response.getExpirationTime().toInstant()));
+
         assertEquals(job, response);
     }
 
@@ -116,6 +120,10 @@ public abstract class BaseJobResourceTest extends CommonBaseJobResourceTest {
                 .contentType(ContentType.JSON)
                 .extract()
                 .as(ScheduledJob.class);
+
+        // Resetting the date to set the right UTC ZoneId. This is required due to recent changes on jackson-datatype-jsr310
+        response.setExpirationTime(DateUtil.instantToZonedDateTime(response.getExpirationTime().toInstant()));
+
         assertEquals(job, response);
     }
 

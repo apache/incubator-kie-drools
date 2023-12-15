@@ -23,10 +23,10 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CounterfactualExplainabilityResult extends BaseExplainabilityResult {

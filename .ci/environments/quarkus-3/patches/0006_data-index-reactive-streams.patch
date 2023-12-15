@@ -1,10 +1,10 @@
 diff --git a/data-index/data-index-common/pom.xml b/data-index/data-index-common/pom.xml
-index b744de020..cea2bd368 100644
+index f25994ad6..72a276de2 100644
 --- a/data-index/data-index-common/pom.xml
 +++ b/data-index/data-index-common/pom.xml
-@@ -29,6 +29,10 @@
-       <groupId>com.google.guava</groupId>
-       <artifactId>guava</artifactId>
+@@ -65,6 +65,10 @@
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-oidc</artifactId>
      </dependency>
 +    <dependency>
 +      <groupId>io.smallrye.reactive</groupId>
@@ -14,56 +14,42 @@ index b744de020..cea2bd368 100644
        <groupId>io.quarkus</groupId>
        <artifactId>quarkus-junit5</artifactId>
 diff --git a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
-index b0d1086ae..b386b0ab2 100644
+index 3738fca0e..af2de1c99 100644
 --- a/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
 +++ b/data-index/data-index-service/data-index-service-common/src/main/java/org/kie/kogito/index/service/graphql/GraphQLSchemaManagerImpl.java
-@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
- import java.util.function.Supplier;
- 
- import jakarta.enterprise.context.ApplicationScoped;
--
-+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
- import jakarta.annotation.PostConstruct;
- import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
- import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
-@@ -327,11 +327,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
+@@ -49,6 +49,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
+
+ import static java.lang.String.format;
+ import static java.util.stream.Collectors.toList;
++import static mutiny.zero.flow.adapters.AdaptersToReactiveStreams.publisher;
+ import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+
+ @ApplicationScoped
+@@ -184,11 +185,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
      }
- 
+
      private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(Supplier<Storage> cache) {
 -        return env -> cache.get().objectCreatedListener();
-+        return env -> AdaptersToReactiveStreams.publisher(cache.get().objectCreatedListener());
++        return env -> publisher(cache.get().objectCreatedListener());
      }
- 
+
      private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(Supplier<Storage> cache) {
 -        return env -> cache.get().objectUpdatedListener();
-+        return env -> AdaptersToReactiveStreams.publisher(cache.get().objectUpdatedListener());
++        return env -> publisher(cache.get().objectUpdatedListener());
      }
- 
+
      private Supplier<DataIndexServiceException> cacheNotFoundException(String processId) {
-@@ -339,11 +339,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
+@@ -196,11 +197,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
      }
- 
+
      protected DataFetcher<Publisher<ObjectNode>> getDomainModelUpdatedDataFetcher(String processId) {
 -        return env -> Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener();
-+        return env -> AdaptersToReactiveStreams.publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener());
++        return env -> publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener());
      }
- 
+
      protected DataFetcher<Publisher<ObjectNode>> getDomainModelAddedDataFetcher(String processId) {
 -        return env -> Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener();
-+        return env -> AdaptersToReactiveStreams.publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener());
++        return env -> publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener());
      }
- 
+
      protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {
-diff --git a/kogito-apps-build-parent/pom.xml b/kogito-apps-build-parent/pom.xml
-index 29bf514bf..f28b1f42c 100644
---- a/kogito-apps-build-parent/pom.xml
-+++ b/kogito-apps-build-parent/pom.xml
-@@ -51,7 +51,7 @@
-         <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
-         <version.org.apache.commons.csv>1.8</version.org.apache.commons.csv>
-         <version.org.jredisearch>2.0.0</version.org.jredisearch>
--        <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
-+        <version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
-         <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
-         <version.com.graphql-java-extended-scalars>19.0</version.com.graphql-java-extended-scalars>
- 

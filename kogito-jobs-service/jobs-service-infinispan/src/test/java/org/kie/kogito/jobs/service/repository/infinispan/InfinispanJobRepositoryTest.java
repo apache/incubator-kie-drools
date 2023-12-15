@@ -20,14 +20,14 @@ package org.kie.kogito.jobs.service.repository.infinispan;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.awaitility.Awaitility.await;
 

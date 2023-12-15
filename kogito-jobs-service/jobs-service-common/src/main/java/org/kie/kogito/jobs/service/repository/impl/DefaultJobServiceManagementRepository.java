@@ -21,14 +21,14 @@ package org.kie.kogito.jobs.service.repository.impl;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
 import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import io.quarkus.arc.DefaultBean;
 import io.smallrye.mutiny.Uni;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @DefaultBean
 @ApplicationScoped

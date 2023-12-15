@@ -20,9 +20,6 @@ package org.kie.kogito.persistence.oracle;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.persistence.api.Storage;
@@ -39,6 +36,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.persistence.oracle.ProcessInstanceModel.newModel;

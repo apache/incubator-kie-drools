@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.json.DataIndexParsingException;
@@ -46,9 +43,12 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static mutiny.zero.flow.adapters.AdaptersToReactiveStreams.publisher;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 @ApplicationScoped
@@ -184,11 +184,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
     }
 
     private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(Supplier<Storage> cache) {
-        return env -> cache.get().objectCreatedListener();
+        return env -> publisher(cache.get().objectCreatedListener());
     }
 
     private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(Supplier<Storage> cache) {
-        return env -> cache.get().objectUpdatedListener();
+        return env -> publisher(cache.get().objectUpdatedListener());
     }
 
     private Supplier<DataIndexServiceException> cacheNotFoundException(String processId) {
@@ -196,11 +196,11 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelUpdatedDataFetcher(String processId) {
-        return env -> Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener();
+        return env -> publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectUpdatedListener());
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelAddedDataFetcher(String processId) {
-        return env -> Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener();
+        return env -> publisher(Optional.ofNullable(getCacheService().getDomainModelCache(processId)).orElseThrow(cacheNotFoundException(processId)).objectCreatedListener());
     }
 
     protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {

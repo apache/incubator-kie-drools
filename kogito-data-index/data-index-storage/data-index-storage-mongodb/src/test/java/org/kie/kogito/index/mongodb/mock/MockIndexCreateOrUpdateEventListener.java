@@ -20,13 +20,13 @@ package org.kie.kogito.index.mongodb.mock;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-
 import org.kie.kogito.persistence.mongodb.index.IndexCreateOrUpdateEvent;
 import org.mockito.Mockito;
 
 import io.quarkus.test.Mock;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;

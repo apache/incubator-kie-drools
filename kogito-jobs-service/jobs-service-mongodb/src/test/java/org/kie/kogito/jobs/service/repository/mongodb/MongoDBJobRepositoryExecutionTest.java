@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -39,7 +40,6 @@ import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.repository.marshaller.JobDetailsMarshaller;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.mockito.ArgumentCaptor;
-import org.reactivestreams.Publisher;
 
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.ReturnDocument;
@@ -127,7 +127,7 @@ class MongoDBJobRepositoryExecutionTest {
         MultiConvert convertMulti = mock(MultiConvert.class);
         when(multi.emitOn(any())).thenReturn(multi);
         when(multi.convert()).thenReturn(convertMulti);
-        Publisher publisher = mock(Publisher.class);
+        Flow.Publisher publisher = mock(Flow.Publisher.class);
         when(convertMulti.toPublisher()).thenReturn(publisher);
 
         completableFuture = mock(CompletableFuture.class);

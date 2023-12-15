@@ -22,14 +22,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.IntervalTrigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.kie.kogito.timer.impl.SimpleTimerTrigger;
 
 import io.vertx.core.json.JsonObject;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class TriggerMarshaller implements Marshaller<Trigger, JsonObject> {

@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.job.http.recipient.test;
 
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -35,6 +33,8 @@ import org.kie.kogito.jobs.service.model.RecipientInstance;
 import io.quarkus.test.QuarkusUnitTest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
+
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

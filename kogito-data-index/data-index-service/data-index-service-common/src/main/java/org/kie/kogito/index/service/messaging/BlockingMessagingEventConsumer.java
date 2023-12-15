@@ -18,11 +18,6 @@
  */
 package org.kie.kogito.index.service.messaging;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
@@ -35,6 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.properties.IfBuildProperty;
 import io.smallrye.reactive.messaging.annotations.Blocking;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.*;
 import static org.kie.kogito.index.service.messaging.ReactiveMessagingEventConsumer.KOGITO_JOBS_EVENTS;

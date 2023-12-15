@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.trusty.ui;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
+@QuarkusIntegrationTest
 public class NativeStaticContentTestIT extends StaticContentTest {
     // Execute the same tests but in native mode.
 }

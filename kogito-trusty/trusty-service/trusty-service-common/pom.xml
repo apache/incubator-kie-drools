@@ -85,6 +85,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>mutiny-zero-flow-adapters</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.quarkus</groupId>

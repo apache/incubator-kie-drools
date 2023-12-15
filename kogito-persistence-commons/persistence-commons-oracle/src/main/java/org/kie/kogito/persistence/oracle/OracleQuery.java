@@ -25,17 +25,19 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.hibernate.query.NativeQuery;
+import org.hibernate.type.CustomType;
+import org.hibernate.type.spi.TypeConfiguration;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
 import org.kie.kogito.persistence.api.query.FilterCondition;
 import org.kie.kogito.persistence.api.query.Query;
+import org.kie.kogito.persistence.oracle.hibernate.JsonBinaryType;
 import org.kie.kogito.persistence.oracle.model.CacheEntityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladmihalcea.hibernate.type.json.JsonBlobType;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
@@ -137,10 +139,10 @@ public class OracleQuery<T> implements Query<T> {
         }
 
         LOGGER.debug("Executing Oracle query: {}", queryString);
-        javax.persistence.Query query = repository.getEntityManager()
+        jakarta.persistence.Query query = repository.getEntityManager()
                 .createNativeQuery(queryString.toString())
                 .unwrap(NativeQuery.class)
-                .addScalar("json_value", new JsonBlobType(type));
+                .addScalar("json_value", new CustomType<>(new JsonBinaryType(), new TypeConfiguration()));
 
         if (limit != null) {
             query.setMaxResults(limit);

@@ -20,8 +20,6 @@ package org.kie.kogito.jobs.service.messaging.http;
 
 import java.lang.reflect.Type;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +31,8 @@ import io.quarkus.reactivemessaging.http.runtime.IncomingHttpMetadata;
 import io.smallrye.reactive.messaging.MessageConverter;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Converts the message payload into a io.cloudevents.CloudEvent object. The conversion takes into account that the

@@ -34,6 +34,7 @@
     <container.image.kogito-service>org.kie.kogito/integration-tests-trusty-service-springboot:${project.version}</container.image.kogito-service>
     <sonar.exclusions>**/KogitoApplication.java</sonar.exclusions>
     <version.jib-maven-plugin>2.5.2</version.jib-maven-plugin>
+    <jib-maven-plugin.container.image>eclipse-temurin:17-jre</jib-maven-plugin.container.image>
   </properties>
 
   <!-- The BOM guarantees the transitive dependencies -->
@@ -125,6 +126,9 @@
         <version>${version.jib-maven-plugin}</version>
         <configuration>
           <skip>${skip.springboot}</skip>
+          <from>
+            <image>${jib-maven-plugin.container.image}</image>
+          </from>
           <to>
             <image>${container.image.kogito-service}</image>
           </to>

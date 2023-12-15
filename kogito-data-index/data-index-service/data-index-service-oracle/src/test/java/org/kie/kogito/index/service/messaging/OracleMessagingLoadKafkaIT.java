@@ -27,6 +27,6 @@ import io.quarkus.test.junit.TestProfile;
 @QuarkusTest
 @TestProfile(KafkaMessageTestProfile.class)
 @Disabled
-class PostgreSqlMessagingLoadKafkaIT extends AbstractMessagingLoadKafkaIT {
+class OracleMessagingLoadKafkaIT extends AbstractMessagingLoadKafkaIT {
 
 }

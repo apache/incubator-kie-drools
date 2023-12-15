@@ -22,15 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.query.criteria.internal.path.PluralAttributePath;
 import org.kie.kogito.index.postgresql.model.AbstractEntity;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
@@ -38,6 +29,15 @@ import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.persistence.api.query.SortDirection;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.Attribute;
 
 import static java.util.stream.Collectors.toList;
 
@@ -98,7 +98,7 @@ public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T>
             criteriaQuery.orderBy(orderBy);
         }
 
-        javax.persistence.Query query = repository.getEntityManager().createQuery(criteriaQuery);
+        jakarta.persistence.Query query = repository.getEntityManager().createQuery(criteriaQuery);
 
         if (limit != null) {
             query.setMaxResults(limit);
@@ -135,10 +135,10 @@ public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T>
                     return builder.equal(getAttributePath(root, filter.getAttribute()), filter.getValue());
                 case IS_NULL:
                     Path pathNull = getAttributePath(root, filter.getAttribute());
-                    return pathNull instanceof PluralAttributePath ? builder.isEmpty(pathNull) : builder.isNull(pathNull);
+                    return isPluralAttribute(filter.getAttribute()) ? builder.isEmpty(pathNull) : builder.isNull(pathNull);
                 case NOT_NULL:
                     Path pathNotNull = getAttributePath(root, filter.getAttribute());
-                    return pathNotNull instanceof PluralAttributePath ? builder.isNotEmpty(pathNotNull) : builder.isNotNull(pathNotNull);
+                    return isPluralAttribute(filter.getAttribute()) ? builder.isNotEmpty(pathNotNull) : builder.isNotNull(pathNotNull);
                 case BETWEEN:
                     List<Object> value = (List<Object>) filter.getValue();
                     return builder
@@ -177,6 +177,12 @@ public class PostgreSqlQuery<K, E extends AbstractEntity, T> implements Query<T>
             join = join.join(split[i]);
         }
         return join.get(split[split.length - 1]);
+    }
+
+    private boolean isPluralAttribute(final String attribute) {
+        return this.repository.getEntityManager().getMetamodel().entity(this.entityClass).getDeclaredPluralAttributes().stream()
+                .map(Attribute::getName)
+                .anyMatch(pluralAttribute -> pluralAttribute.equals(attribute));
     }
 
     private List<Predicate> getRecursivePredicate(AttributeFilter<?> filter, Root<E> root, CriteriaBuilder builder) {

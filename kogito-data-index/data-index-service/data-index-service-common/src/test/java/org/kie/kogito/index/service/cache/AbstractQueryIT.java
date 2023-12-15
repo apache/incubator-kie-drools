@@ -22,14 +22,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
+
+import jakarta.inject.Inject;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

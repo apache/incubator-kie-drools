@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.index.graphql;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import graphql.execution.instrumentation.SimpleInstrumentation;
@@ -29,6 +26,8 @@ import graphql.execution.instrumentation.parameters.InstrumentationFieldFetchPar
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.PropertyDataFetcher;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class GraphQLInstrumentation extends SimpleInstrumentation {

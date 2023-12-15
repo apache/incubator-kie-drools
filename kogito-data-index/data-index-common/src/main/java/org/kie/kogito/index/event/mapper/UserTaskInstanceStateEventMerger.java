@@ -20,8 +20,6 @@ package org.kie.kogito.index.event.mapper;
 
 import java.net.URI;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
@@ -29,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.net.UrlEscapers;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static java.lang.String.format;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;

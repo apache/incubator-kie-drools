@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.jobs.service.messaging;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.Path;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.Path;
 
 import static org.kie.kogito.jobs.service.messaging.BaseCallbackResource.CALLBACK_RESOURCE_PATH;
 

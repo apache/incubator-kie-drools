@@ -20,8 +20,6 @@ package org.kie.kogito.persistence.mongodb.query;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +33,8 @@ import com.mongodb.client.MongoCollection;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;

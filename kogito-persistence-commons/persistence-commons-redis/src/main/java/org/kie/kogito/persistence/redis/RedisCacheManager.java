@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.persistence.redis;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
 import org.kie.kogito.persistence.redis.index.RedisIndexManager;
 
 import io.quarkus.arc.properties.IfBuildProperty;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 import static org.kie.kogito.persistence.redis.Constants.REDIS_STORAGE;

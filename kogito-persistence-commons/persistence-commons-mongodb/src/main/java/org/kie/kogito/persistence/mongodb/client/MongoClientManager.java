@@ -18,15 +18,15 @@
  */
 package org.kie.kogito.persistence.mongodb.client;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.bson.Document;
 import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class MongoClientManager {

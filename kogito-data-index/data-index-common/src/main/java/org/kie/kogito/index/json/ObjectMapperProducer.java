@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.index.json;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ObjectMapperProducer implements ObjectMapperCustomizer {

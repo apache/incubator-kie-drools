@@ -21,8 +21,6 @@ package org.kie.kogito.index.addon.api;
 import java.nio.Buffer;
 import java.util.Optional;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,6 +52,8 @@ import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+
+import jakarta.enterprise.inject.Instance;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;

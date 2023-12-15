@@ -21,8 +21,6 @@ package org.kie.kogito.trusty.service.common.handlers;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResult;
@@ -31,6 +29,8 @@ import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.trusty.storage.api.model.decision.Decision;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
+
+import jakarta.enterprise.inject.Instance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

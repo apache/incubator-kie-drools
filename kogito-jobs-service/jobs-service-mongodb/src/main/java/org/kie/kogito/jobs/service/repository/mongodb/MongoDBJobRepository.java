@@ -21,10 +21,6 @@ package org.kie.kogito.jobs.service.repository.mongodb;
 import java.time.ZonedDateTime;
 import java.util.concurrent.CompletionStage;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -46,6 +42,10 @@ import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gt;
@@ -58,6 +58,7 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.toList;
+import static mutiny.zero.flow.adapters.AdaptersToReactiveStreams.publisher;
 import static org.bson.Document.parse;
 import static org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams.fromPublisher;
 
@@ -144,17 +145,17 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
 
     @Override
     public PublisherBuilder<JobDetails> findAll() {
-        return fromPublisher(collection.find()
+        return fromPublisher(publisher(collection.find()
                 .map(document -> documentToJson(document))
                 .map(jobDetailsMarshaller::unmarshall)
                 .emitOn(Infrastructure.getDefaultExecutor())
                 .convert()
-                .toPublisher());
+                .toPublisher()));
     }
 
     @Override
     public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
-        return fromPublisher(
+        return fromPublisher(publisher(
                 collection.find(
                         and(
                                 in(STATUS_COLUMN, stream(status).map(Enum::name).collect(toList())),
@@ -165,7 +166,7 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
                         .map(jobDetailsMarshaller::unmarshall)
                         .emitOn(Infrastructure.getDefaultExecutor())
                         .convert()
-                        .toPublisher());
+                        .toPublisher()));
     }
 
     static JsonObject documentToJson(Document document) {

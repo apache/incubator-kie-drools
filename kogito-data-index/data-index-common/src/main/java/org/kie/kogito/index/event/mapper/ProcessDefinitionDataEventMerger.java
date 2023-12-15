@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.event.process.NodeDefinition;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionEventBody;
@@ -36,6 +34,8 @@ import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessDefinition;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static java.util.stream.Collectors.toList;
 

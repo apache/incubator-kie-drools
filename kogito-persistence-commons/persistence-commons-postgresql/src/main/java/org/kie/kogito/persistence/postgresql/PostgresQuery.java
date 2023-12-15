@@ -24,17 +24,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.hibernate.type.CustomType;
+import org.hibernate.type.spi.TypeConfiguration;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
 import org.kie.kogito.persistence.api.query.FilterCondition;
 import org.kie.kogito.persistence.api.query.Query;
+import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryType;
 import org.kie.kogito.persistence.postgresql.model.CacheEntityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
@@ -136,8 +138,8 @@ public class PostgresQuery<T> implements Query<T> {
         }
 
         LOGGER.debug("Executing PostgreSQL query: {}", queryString);
-        javax.persistence.Query query = repository.getEntityManager().createNativeQuery(queryString.toString());
-        query.unwrap(org.hibernate.query.NativeQuery.class).addScalar("json_value", JsonNodeBinaryType.INSTANCE);
+        jakarta.persistence.Query query = repository.getEntityManager().createNativeQuery(queryString.toString());
+        query.unwrap(org.hibernate.query.NativeQuery.class).addScalar("json_value", new CustomType<>(new JsonBinaryType(), new TypeConfiguration()));
 
         if (limit != null) {
             query.setMaxResults(limit);

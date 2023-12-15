@@ -20,11 +20,10 @@ package org.kie.kogito.index.graphql;
 
 import java.time.ZonedDateTime;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import io.quarkus.arc.properties.IfBuildProperty;
 
 import graphql.language.StringValue;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
 

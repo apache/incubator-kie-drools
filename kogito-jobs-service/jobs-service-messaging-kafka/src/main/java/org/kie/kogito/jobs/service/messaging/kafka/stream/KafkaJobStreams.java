@@ -20,9 +20,6 @@ package org.kie.kogito.jobs.service.messaging.kafka.stream;
 
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -34,6 +31,9 @@ import org.kie.kogito.jobs.service.stream.AbstractJobStreams;
 import org.kie.kogito.jobs.service.stream.AvailableStreams;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class KafkaJobStreams extends AbstractJobStreams {

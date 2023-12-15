@@ -21,8 +21,6 @@ package org.kie.kogito.jobs.service.messaging.http;
 import java.net.URI;
 import java.time.OffsetDateTime;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Metadata;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +35,8 @@ import io.quarkus.reactivemessaging.http.runtime.IncomingHttpMetadata;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+
+import jakarta.ws.rs.core.HttpHeaders;
 
 import static io.cloudevents.core.v1.CloudEventV1.DATACONTENTTYPE;
 import static io.cloudevents.core.v1.CloudEventV1.DATASCHEMA;

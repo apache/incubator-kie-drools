@@ -21,10 +21,6 @@ package org.kie.kogito.jobs.service.messaging.http.stream;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.core.HttpHeaders;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -40,6 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.HttpHeaders;
 
 @ApplicationScoped
 public class HttpJobStreams extends AbstractJobStreams {

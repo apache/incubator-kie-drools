@@ -21,12 +21,12 @@ package org.kie.kogito.trusty.storage.api.model.process;
 import java.util.Collection;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
 import org.kie.kogito.ModelDomain;
 import org.kie.kogito.trusty.storage.api.model.Execution;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A <b>Process</b> <code>Execution</code>

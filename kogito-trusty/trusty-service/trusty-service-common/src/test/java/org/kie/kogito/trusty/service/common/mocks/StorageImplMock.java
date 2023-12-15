@@ -21,12 +21,12 @@ package org.kie.kogito.trusty.service.common.mocks;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.NotFoundException;
-
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 
 import io.smallrye.mutiny.Multi;
+
+import jakarta.ws.rs.NotFoundException;
 
 public class StorageImplMock<K, V> implements Storage<K, V> {
 

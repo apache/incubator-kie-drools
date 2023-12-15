@@ -20,8 +20,6 @@ package org.kie.kogito.index.postgresql.storage;
 
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessDefinition;
@@ -33,6 +31,8 @@ import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
