@@ -18,34 +18,33 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.function.Supplier;
-
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.Msg;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 
 public class ForExpressionNode
         extends BaseNode {
 
+
     private List<IterationContextNode> iterationContexts;
-    private BaseNode                   expression;
+    private BaseNode expression;
 
     public ForExpressionNode(ParserRuleContext ctx, ListNode iterationContexts, BaseNode expression) {
-        super( ctx );
-        this.iterationContexts = new ArrayList<>(  );
+        super(ctx);
+        this.iterationContexts = new ArrayList<>();
         this.expression = expression;
-        for( BaseNode n : iterationContexts.getElements() ) {
-            this.iterationContexts.add( (IterationContextNode) n );
+        for (BaseNode n : iterationContexts.getElements()) {
+            this.iterationContexts.add((IterationContextNode) n);
         }
     }
 
@@ -69,17 +68,17 @@ public class ForExpressionNode
     public Object evaluate(EvaluationContext ctx) {
         try {
             ctx.enterFrame();
-            List results = new ArrayList(  );
+            List results = new ArrayList();
             ctx.setValue("partial", results);
-            ForIteration[] ictx = initializeContexts( ctx, iterationContexts);
+            ForIteration[] ictx = initializeContexts(ctx, iterationContexts);
 
-            while ( nextIteration( ctx, ictx ) ) {
-                Object result = expression.evaluate( ctx );
-                results.add( result );
+            while (nextIteration(ctx, ictx)) {
+                Object result = expression.evaluate(ctx);
+                results.add(result);
                 ctx.exitFrame(); // last i-th scope unrolled, see also ForExpressionNode.nextIteration(...)
             }
             return results;
-        } catch (EndpointOfRangeNotOfNumberException e) {
+        } catch (EndpointOfRangeNotValidTypeException | EndpointOfRangeOfDifferentTypeException e) {
             // ast error already reported
             return null;
         } finally {
@@ -88,18 +87,18 @@ public class ForExpressionNode
     }
 
     public static boolean nextIteration(EvaluationContext ctx, ForIteration[] ictx) {
-        int i = ictx.length-1;
-        while ( i >= 0 && i < ictx.length ) {
-            if ( ictx[i].hasNextValue() ) {
+        int i = ictx.length - 1;
+        while (i >= 0 && i < ictx.length) {
+            if (ictx[i].hasNextValue()) {
                 ctx.enterFrame(); // on first iter, open last scope frame; or new ones when prev unrolled
-                setValueIntoContext( ctx, ictx[i] );
+                setValueIntoContext(ctx, ictx[i]);
                 i++;
             } else {
-                if ( i > 0 ) {
+                if (i > 0) {
                     // end of iter loop for this i-th scope; i-th scope is always unrolled as part of the 
                     // for-loop cycle, so here must unroll the _prev_ scope;
                     // the if-guard for this code block makes sure NOT to unroll bottom one.
-                    ctx.exitFrame();         
+                    ctx.exitFrame();
                 }
                 i--;
             }
@@ -108,9 +107,9 @@ public class ForExpressionNode
     }
 
     public static void setValueIntoContext(EvaluationContext ctx, ForIteration forIteration) {
-        ctx.setValue( forIteration.getName(), forIteration.getNextValue() );
+        ctx.setValue(forIteration.getName(), forIteration.getNextValue());
     }
-    
+
     @Override
     public Type getResultType() {
         return BuiltInType.LIST;
@@ -119,139 +118,36 @@ public class ForExpressionNode
     private ForIteration[] initializeContexts(EvaluationContext ctx, List<IterationContextNode> iterationContexts) {
         ForIteration[] ictx = new ForIteration[iterationContexts.size()];
         int i = 0;
-        for ( IterationContextNode icn : iterationContexts ) {
-            ictx[i] = createQuantifiedExpressionIterationContext( ctx, icn );
-            if( i < iterationContexts.size()-1 && ictx[i].hasNextValue() ) {
+        for (IterationContextNode icn : iterationContexts) {
+            ictx[i] = createQuantifiedExpressionIterationContext(ctx, icn);
+            if (i < iterationContexts.size() - 1 && ictx[i].hasNextValue()) {
                 ctx.enterFrame(); // open loop scope frame, for every iter ctx, except last one as guarded by if clause above
-                setValueIntoContext( ctx, ictx[i] );
+                setValueIntoContext(ctx, ictx[i]);
             }
             i++;
         }
         return ictx;
     }
 
-    private static class EndpointOfRangeNotOfNumberException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
-    }
-
     private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextNode icn) {
         ForIteration fi;
-        String name = icn.evaluateName( ctx );
-        Object result = icn.evaluate( ctx );
+        String name = icn.evaluateName(ctx);
+        Object result = icn.evaluate(ctx);
         Object rangeEnd = icn.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
             Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
             fi = new ForIteration(name, values);
         } else {
-            valueMustBeANumber(ctx, result);
-            BigDecimal start = (BigDecimal) result;
-            valueMustBeANumber(ctx, rangeEnd);
-            BigDecimal end = (BigDecimal) rangeEnd;
-            fi = new ForIteration(name, start, end);
+            fi = getForIteration(ctx, name, result, rangeEnd);
         }
         return fi;
     }
 
-    private void valueMustBeANumber(EvaluationContext ctx, Object value) {
-        if (!(value instanceof BigDecimal)) {
-            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER, value), null));
-            throw new EndpointOfRangeNotOfNumberException();
-        }
-    }
-
-    public static class ForIteration {
-        private String   name;
-        private Iterable values;
-
-        private Supplier<Iterator> iteratorGenerator;
-        private Iterator iterator;
-
-        public ForIteration(String name, Iterable values) {
-            this.name = name;
-            this.values = values;
-            this.iteratorGenerator = () -> this.values.iterator();
-        }
-
-        public ForIteration(String name, final BigDecimal start, final BigDecimal end) {
-            this.name = name;
-            this.iteratorGenerator = () -> new BigDecimalRangeIterator(start, end);
-        }
-
-        public boolean hasNextValue() {
-            if( iterator == null ) {
-                iterator = iteratorGenerator.get();
-            }
-            boolean hasValue = this.iterator.hasNext();
-            if( ! hasValue ) {
-                this.iterator = null;
-            }
-            return hasValue;
-        }
-
-        public Object getNextValue() {
-            return iterator != null ? iterator.next() : null;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    public static class BigDecimalRangeIterator implements Iterator<BigDecimal> {
-
-        private enum Direction {
-            ASCENDANT,
-            DESCENDANT;
-        }
-
-        private final BigDecimal start;
-        private final BigDecimal end;
-
-        private BigDecimal cursor;
-        private final Direction direction;
-        private final BigDecimal increment;
-
-        public BigDecimalRangeIterator(BigDecimal start, BigDecimal end) {
-            this.start = start;
-            this.end = end;
-            this.direction = (start.compareTo(end) <= 0) ? Direction.ASCENDANT : Direction.DESCENDANT;
-            this.increment = (direction == Direction.ASCENDANT) ? new BigDecimal(1, MathContext.DECIMAL128) : new BigDecimal(-1, MathContext.DECIMAL128);
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (cursor == null) {
-                return true;
-            } else {
-                BigDecimal lookAhead = cursor.add(increment);
-                if (direction == Direction.ASCENDANT) {
-                    return lookAhead.compareTo(end) <= 0;
-                } else {
-                    return lookAhead.compareTo(end) >= 0;
-                }
-            }
-        }
-
-        @Override
-        public BigDecimal next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            if (cursor == null) {
-                cursor = start;
-            } else {
-                cursor = cursor.add(increment);
-            }
-            return cursor;
-        }
-
-    }
-
     @Override
     public ASTNode[] getChildrenNode() {
-        ASTNode[] children = new ASTNode[ iterationContexts.size() + 1 ];
+        ASTNode[] children = new ASTNode[iterationContexts.size() + 1];
         System.arraycopy(iterationContexts.toArray(new ASTNode[]{}), 0, children, 0, iterationContexts.size());
-        children[ children.length-1 ] = expression;
+        children[children.length - 1] = expression;
         return children;
     }
 

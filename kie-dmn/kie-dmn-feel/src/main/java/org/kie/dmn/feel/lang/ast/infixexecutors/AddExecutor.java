@@ -25,6 +25,7 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.Msg;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.*;
 import java.time.chrono.ChronoPeriod;
@@ -118,6 +119,10 @@ public class AddExecutor implements InfixExecutor {
                 ((OffsetTime) parameters.getLeft()).plus((Duration) parameters.getRight()));
         toReturn.put(new ClassIdentifierTuple(Duration.class, OffsetTime.class), (parameters, ctx) ->
                 ((OffsetTime) parameters.getRight()).plus((Duration) parameters.getLeft()));
+        toReturn.put(new ClassIdentifierTuple(LocalDate.class, BigDecimal.class), (parameters, ctx) -> {
+            Duration toAdd = Duration.ofDays(((BigDecimal) parameters.getRight()).longValue());
+            return addLocalDateAndDuration((LocalDate) parameters.getLeft(), toAdd);
+        });
         toReturn.put(new ClassIdentifierTuple(Temporal.class, Temporal.class), (parameters, ctx) -> {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
             return null;
