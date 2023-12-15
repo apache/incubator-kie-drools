@@ -23,7 +23,7 @@
 
   <process processType="Private" isExecutable="true" id="ServiceProcess" name="Service Process" >
     <extensionElements>
-      <tns:import name="javax.xml.bind.JAXBContext"/>
+      <tns:import name="jakarta.xml.bind.JAXBContext"/>
       <tns:import name="java.io.StringReader"/>
       <tns:import name="java.io.StringWriter"/>
       <tns:import name="org.jbpm.bpmn2.objects.Person"/>

@@ -20,15 +20,15 @@ package org.kie.kogito.core.rules.incubation.quarkus.support;
 
 import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.drools.ruleunits.api.RuleUnits;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.Id;
 import org.kie.kogito.incubation.rules.services.RuleUnitService;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class QuarkusRuleUnitService implements RuleUnitService {

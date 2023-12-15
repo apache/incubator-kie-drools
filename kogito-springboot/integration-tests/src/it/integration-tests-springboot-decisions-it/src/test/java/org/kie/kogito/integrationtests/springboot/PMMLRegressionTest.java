@@ -46,7 +46,7 @@ import static org.kie.kogito.integrationtests.springboot.CommonPMMLTestUtils.tes
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 class PMMLRegressionTest extends BaseRestTest {
 
-    private static final String BASE_PATH = "/PMMLRegression/LinReg/";
+    private static final String BASE_PATH = "/PMMLRegression/LinReg";
     private static final String TARGET = "fld4";
 
     static {

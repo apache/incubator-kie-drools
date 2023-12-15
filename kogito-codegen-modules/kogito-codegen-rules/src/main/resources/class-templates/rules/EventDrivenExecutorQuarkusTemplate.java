@@ -18,9 +18,9 @@
  */
 package com.myspace.demo;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import org.kie.kogito.eventdriven.rules.AbstractEventDrivenQueryExecutor;
 import org.drools.ruleunits.api.RuleUnit;

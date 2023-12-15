@@ -21,7 +21,6 @@ package org.kie.kogito.persistence.quarkus;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.enterprise.inject.Produces;
 import javax.sql.DataSource;
 
 import org.kie.kogito.correlation.CorrelationService;
@@ -30,6 +29,8 @@ import org.kie.kogito.persistence.jdbc.DatabaseType;
 import org.kie.kogito.persistence.jdbc.correlation.JDBCCorrelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.inject.Produces;
 
 public class JDBCorrelationServiceProducer {
 

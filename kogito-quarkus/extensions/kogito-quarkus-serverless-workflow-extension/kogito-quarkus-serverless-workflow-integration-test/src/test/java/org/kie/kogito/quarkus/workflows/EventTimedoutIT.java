@@ -80,7 +80,7 @@ public class EventTimedoutIT {
         String id = startProcess("eventTimedout");
         Converter<byte[], CloudEvent> converter = new ByteArrayCloudEventUnmarshallerFactory(objectMapper).unmarshaller(Map.class).cloudEvent();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        kafkaClient.consume("timeout", v -> {
+        kafkaClient.consume("timeoutError", v -> {
             try {
                 CloudEvent event = converter.convert(v);
                 if (id.equals(event.getExtension(CloudEventExtensionConstants.PROCESS_INSTANCE_ID))) {

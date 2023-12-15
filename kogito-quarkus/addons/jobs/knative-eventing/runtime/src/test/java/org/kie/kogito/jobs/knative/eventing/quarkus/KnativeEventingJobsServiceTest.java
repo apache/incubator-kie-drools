@@ -22,8 +22,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.jobs.messaging.quarkus.AbstractReactiveMessagingJobsServiceTest;
@@ -31,6 +29,8 @@ import org.kie.kogito.jobs.messaging.quarkus.AbstractReactiveMessagingJobsServic
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
+
+import jakarta.ws.rs.core.HttpHeaders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

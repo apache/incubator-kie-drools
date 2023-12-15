@@ -18,12 +18,12 @@
  */
 package org.kie.kogito.addon.quarkus.common.reactive.messaging.http;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecorator;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
+
+import jakarta.ws.rs.core.HttpHeaders;
 
 /**
  * Decorators for Http CloudEvents outgoing messages

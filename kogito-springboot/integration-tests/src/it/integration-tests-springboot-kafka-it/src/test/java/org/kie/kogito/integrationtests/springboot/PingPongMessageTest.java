@@ -84,7 +84,7 @@ public class PingPongMessageTest extends BaseRestTest {
                 .untilAsserted(() -> given()
                         .contentType(ContentType.JSON)
                         .when()
-                        .get("/pong_message/")
+                        .get("/pong_message")
                         .then()
                         .statusCode(200)
                         .body("$.size()", equalTo(1)));
@@ -92,7 +92,7 @@ public class PingPongMessageTest extends BaseRestTest {
         String pId = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/pong_message/")
+                .get("/pong_message")
                 .then()
                 .statusCode(200)
                 .body("$.size()", equalTo(1))

@@ -22,8 +22,8 @@ jobs:
       matrix:
         job_name: [ kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
         os: [ubuntu-latest]
-        java-version: [11]
-        maven-version: ['3.8.7']
+        java-version: [17]
+        maven-version: ['3.9.3']
         include:
           - job_name: kogito-apps
             repository: incubator-kie-kogito-apps

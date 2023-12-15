@@ -20,10 +20,10 @@ package org.kie.kogito;
 
 import java.io.IOException;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class HelloService {

@@ -19,17 +19,17 @@
 import java.util.HashMap;
 import java.util.Map;
 
-@javax.enterprise.context.ApplicationScoped()
+@jakarta.enterprise.context.ApplicationScoped()
 public class SampleRuntime extends org.kie.kogito.codegen.sample.core.SampleRuntimeImpl {
 
-    @javax.inject.Inject
+    @jakarta.inject.Inject
     protected org.kie.kogito.Application application;
 
     public SampleRuntime() {
         super();
     }
 
-    @javax.annotation.PostConstruct
+    @jakarta.annotation.PostConstruct
     protected void init() {
         initApplication(application);
         initContent();

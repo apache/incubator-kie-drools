@@ -20,10 +20,10 @@ package org.kie.kogito.workflows.services;
 
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class RPCCustomWorkItemHandler extends WorkflowWorkItemHandler {

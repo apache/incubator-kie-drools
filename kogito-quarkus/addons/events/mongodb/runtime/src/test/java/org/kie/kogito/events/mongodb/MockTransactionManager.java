@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.events.mongodb;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
 import com.mongodb.client.ClientSession;
 
 import io.quarkus.test.Mock;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Mock
 @ApplicationScoped

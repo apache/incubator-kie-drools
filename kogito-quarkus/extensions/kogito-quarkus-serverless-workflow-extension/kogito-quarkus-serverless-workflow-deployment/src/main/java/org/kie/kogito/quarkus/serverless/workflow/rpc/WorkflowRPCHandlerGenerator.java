@@ -22,9 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -48,6 +45,9 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 
 import io.grpc.Channel;
 import io.quarkus.grpc.GrpcClient;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 

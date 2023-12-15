@@ -15,7 +15,7 @@
   "errors": [
     {
       "name": "callbackError",
-      "code": "java.lang.Exception"
+      "code": "java.io.IOException"
     }
   ],
   "functions": [

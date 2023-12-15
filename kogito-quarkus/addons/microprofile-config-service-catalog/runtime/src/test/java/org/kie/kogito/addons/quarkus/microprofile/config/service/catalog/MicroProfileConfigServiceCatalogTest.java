@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.addons.quarkus.microprofile.config.service.catalog;
 
-import javax.inject.Inject;
-
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogTest;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 @QuarkusTest
 public class MicroProfileConfigServiceCatalogTest extends KubernetesServiceCatalogTest {

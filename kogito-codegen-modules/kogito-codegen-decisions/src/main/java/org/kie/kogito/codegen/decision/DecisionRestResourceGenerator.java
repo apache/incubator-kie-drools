@@ -292,7 +292,7 @@ public class DecisionRestResourceGenerator {
 
     private void interpolateRequestPath(String pathName, String placeHolder, MethodDeclaration clonedDmnMethod) {
         clonedDmnMethod.getAnnotations().stream()
-                .filter(a -> a.getNameAsString().endsWith("Path") || a.getNameAsString().endsWith("PostMapping")) // e.g.: @javax.ws.rs.Path("/DSn/dmnresult") or @org.springframework.web.bind.annotation.PostMapping(value = "$dmnMethodUrl$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+                .filter(a -> a.getNameAsString().endsWith("Path") || a.getNameAsString().endsWith("PostMapping")) // e.g.: @jakarta.ws.rs.Path("/DSn/dmnresult") or @org.springframework.web.bind.annotation.PostMapping(value = "$dmnMethodUrl$", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
                 .flatMap(a -> a.findAll(StringLiteralExpr.class).stream())
                 .forEach(vv -> {
                     String s = vv.getValue();

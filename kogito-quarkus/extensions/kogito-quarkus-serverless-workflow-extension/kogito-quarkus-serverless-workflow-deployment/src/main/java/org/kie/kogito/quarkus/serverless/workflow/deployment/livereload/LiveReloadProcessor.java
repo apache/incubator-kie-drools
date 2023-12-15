@@ -30,8 +30,6 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils;
@@ -66,6 +64,8 @@ import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.paths.PathTree;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.runtime.configuration.QuarkusConfigFactory;
+
+import jakarta.inject.Inject;
 
 /**
  * This class adds live reload support for {@link io.quarkus.deployment.CodeGenProvider} objects.

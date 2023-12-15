@@ -20,11 +20,11 @@ package org.kie.kogito.pmml.rest;
 
 import java.util.Collections;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 import org.kie.kogito.Application;
 
@@ -56,11 +56,11 @@ public class PMMLRestResourceTemplate extends org.kie.kogito.pmml.AbstractPMMLRe
         return super.descriptive(application, FILE_NAME, MODEL_NAME, variables);
     }
 
-    @javax.ws.rs.ext.Provider
-    public static class ErrorExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<java.lang.Exception> {
+    @jakarta.ws.rs.ext.Provider
+    public static class ErrorExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<java.lang.Exception> {
 
-        public javax.ws.rs.core.Response toResponse(java.lang.Exception e) {
-            return javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(org.kie.kogito.pmml.AbstractPMMLRestResource.getJsonErrorMessage(e)).build();
+        public jakarta.ws.rs.core.Response toResponse(java.lang.Exception e) {
+            return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR).entity(org.kie.kogito.pmml.AbstractPMMLRestResource.getJsonErrorMessage(e)).build();
         }
     }
 

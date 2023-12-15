@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.monitoring.core.springboot;
 
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
@@ -28,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.micrometer.core.instrument.Metrics;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class SpringbootSystemMetricsCollectorProvider implements SystemMetricsCollectorProvider {

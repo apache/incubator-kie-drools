@@ -27,7 +27,7 @@ public class Processes implements org.kie.kogito.process.Processes {
 
     private java.util.Map<String, org.kie.kogito.process.Process<? extends org.kie.kogito.Model>> mappedProcesses = new java.util.HashMap<>();
 
-    @javax.annotation.PostConstruct
+    @jakarta.annotation.PostConstruct
     public void setup() {
         for (org.kie.kogito.process.Process<? extends org.kie.kogito.Model> process : processes) {
             mappedProcesses.put(process.id(), process);

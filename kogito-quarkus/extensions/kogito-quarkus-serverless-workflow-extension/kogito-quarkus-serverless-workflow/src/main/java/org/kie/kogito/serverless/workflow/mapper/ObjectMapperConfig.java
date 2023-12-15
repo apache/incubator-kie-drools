@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.serverless.workflow.mapper;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.jackson.utils.JsonNodeFactoryListener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ObjectMapperConfig implements ObjectMapperCustomizer {

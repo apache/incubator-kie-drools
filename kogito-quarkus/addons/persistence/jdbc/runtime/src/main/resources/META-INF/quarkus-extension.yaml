@@ -25,6 +25,6 @@ metadata:
     - persistence
     - jdbc
     - process
-  guide: https://quarkus.io/version/2.13/guides/kogito
+  guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"

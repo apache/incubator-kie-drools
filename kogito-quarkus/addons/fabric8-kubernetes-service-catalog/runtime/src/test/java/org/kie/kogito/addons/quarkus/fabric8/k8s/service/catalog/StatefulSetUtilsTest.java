@@ -21,8 +21,6 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +34,8 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -65,7 +65,7 @@ public class StatefulSetUtilsTest {
     @Test
     public void testNotFoundStatefulSet() {
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
         statefulSet.getMetadata().setName("test");
         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
@@ -77,11 +77,11 @@ public class StatefulSetUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("statefulsets.v1.apps/" + namespace + "/example-statefulset-with-service");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).item();
         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).item();
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
@@ -92,7 +92,7 @@ public class StatefulSetUtilsTest {
     public void testStatefulSetWithServiceWithCustomPortName() {
         var kubeURI = KubernetesResourceUri.parse("statefulsets.v1.apps/" + namespace + "/custom-port-statefulset?port-name=my-custom-port-stateful");
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset.yaml")).item();
         statefulSet.getMetadata().setName("custom-port-statefulset");
         statefulSet.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
@@ -101,7 +101,7 @@ public class StatefulSetUtilsTest {
         mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-service.yaml")).item();
         service.getMetadata().setName("custom-port-name-service-statefulset");
         service.getSpec().getPorts().add(new ServicePortBuilder()
                 .withName("my-custom-port-stateful")
@@ -120,11 +120,11 @@ public class StatefulSetUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("statefulsets.v1.apps/" + namespace + "/process-quarkus-example-statefulset-no-service");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
         StatefulSet createdDeployment = mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).item();
         pod.getMetadata().setName("pod-deployment-no-service");
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
@@ -138,13 +138,13 @@ public class StatefulSetUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("statefulsets.v1.apps/" + namespace + "/example-statefulset-no-service-2-replicas");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
         statefulSet.getMetadata().setName("example-statefulset-no-service-2-replicas");
         statefulSet.getStatus().setReplicas(2);
         StatefulSet createdstatefulSet = mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).item();
         pod.getMetadata().setName("pod-2-replicas");
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdstatefulSet.getMetadata().getUid());
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
@@ -158,14 +158,14 @@ public class StatefulSetUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("statefulsets.v1.apps/" + namespace + "/custom-port-statefulset-1?port-name=my-custom-port");
 
         StatefulSet statefulSet = mockServer.getClient().apps().statefulSets().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-no-service.yaml")).item();
         statefulSet.getMetadata().setName("custom-port-statefulset-1");
         statefulSet.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
         StatefulSet createdStatefulSet = mockServer.getClient().resource(statefulSet).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("statefulset/statefulset-pod-no-service.yaml")).item();
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdStatefulSet.getMetadata().getUid());
         pod.getSpec().getContainers().get(0).getPorts()
                 .add(new ContainerPortBuilder()

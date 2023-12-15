@@ -20,9 +20,6 @@ package org.kie.kogito.jobs.api;
 
 import java.net.URI;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
@@ -32,6 +29,9 @@ import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

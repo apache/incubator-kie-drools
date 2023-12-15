@@ -18,12 +18,12 @@
  */
 package org.kie.kogito.tracing.decision;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.vertx.core.eventbus.EventBus;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * This class must always extend <code>org.kie.kogito.tracing.decision.DecisionTracingListener</code>

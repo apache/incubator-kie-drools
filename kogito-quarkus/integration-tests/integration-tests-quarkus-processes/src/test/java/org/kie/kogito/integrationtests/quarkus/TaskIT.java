@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.acme.travels.Traveller;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.workitem.AttachmentInfo;
@@ -36,6 +34,8 @@ import org.kie.kogito.task.management.service.TaskInfo;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+import jakarta.ws.rs.core.UriBuilder;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;

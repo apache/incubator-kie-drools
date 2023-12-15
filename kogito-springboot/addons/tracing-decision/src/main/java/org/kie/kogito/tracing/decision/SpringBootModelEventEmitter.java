@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.tracing.decision;
 
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class SpringBootModelEventEmitter extends BaseModelEventEmitter {

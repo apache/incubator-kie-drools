@@ -22,9 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Singleton;
-import javax.ws.rs.core.Response;
-
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.config.ConfigBean;
@@ -35,6 +32,9 @@ import org.kie.kogito.test.utils.SocketUtils;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.core.Response;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;

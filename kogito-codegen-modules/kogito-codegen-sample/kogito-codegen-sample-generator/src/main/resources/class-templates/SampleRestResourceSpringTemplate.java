@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.kogito.quarkus.example;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.sample.core.SampleRuntime;

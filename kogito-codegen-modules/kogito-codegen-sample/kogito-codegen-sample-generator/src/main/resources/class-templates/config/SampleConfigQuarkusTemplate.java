@@ -18,7 +18,7 @@
  */
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@javax.inject.Singleton
+@jakarta.inject.Singleton
 public class SampleConfig extends org.kie.kogito.codegen.sample.core.SampleConfigImpl {
 
     public SampleConfig(

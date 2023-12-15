@@ -70,7 +70,7 @@ class CallbackStateWithTimeoutsErrorHandlerIT extends AbstractCallbackStateIT {
         assertProcessInstanceExists(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId);
 
         assertProcessInstanceHasFinished(CALLBACK_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId, 1, 10);
-        waitForFinalizedEvent(processInstanceId, "timeout");
+        waitForFinalizedEvent(processInstanceId, "timeoutCallbackError");
     }
 
     @Test

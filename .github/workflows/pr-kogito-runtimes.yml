@@ -21,8 +21,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        java-version: [11]
-        maven-version: ['3.8.7']
+        java-version: [17]
+        maven-version: ['3.9.3']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}

@@ -24,7 +24,7 @@ tags: extension-codestart
 metadata:
   title: Kogito DMN codestart
   description: This is an example Kogito DMN Quarkus codestart, it contains a sample DMN model for REST code generation based on the model definition.
-  related-guide-section: https://quarkus.io/version/2.13/guides/kogito-dmn
+  related-guide-section: https://quarkus.io/guides/kogito-dmn
 language:
   base:
     test-dependencies:

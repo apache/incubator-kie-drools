@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.addons.quarkus.camel.runtime;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class CamelCustomWorkItemHandlerConfig extends CachedWorkItemHandlerConfig {

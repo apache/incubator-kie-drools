@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import io.vertx.core.impl.ConcurrentHashSet;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class BackpressureKogitoEmitter implements QuarkusEmitterController {

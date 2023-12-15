@@ -18,13 +18,6 @@
  */
 package org.kie.kogito.monitoring.core.quarkus;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.Provider;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.config.ConfigBean;
@@ -34,12 +27,19 @@ import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollect
 
 import io.micrometer.core.instrument.Metrics;
 
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.ext.Provider;
+
 @Provider
 public class QuarkusMetricsFilterRegister implements DynamicFeature {
 
     // Indirect Instance<Boolean> to solve warning message during compilation:
     // WARNING Directly injecting a @ConfigProperty into a JAX-RS provider may lead to unexpected results.
-    // To ensure proper results, please change the type of the field to javax.enterprise.inject.Instance<Boolean>.
+    // To ensure proper results, please change the type of the field to jakarta.enterprise.inject.Instance<Boolean>.
     @ConfigProperty(name = Constants.HTTP_INTERCEPTOR_USE_DEFAULT, defaultValue = "true")
     Instance<Boolean> httpInterceptorUseDefault;
 

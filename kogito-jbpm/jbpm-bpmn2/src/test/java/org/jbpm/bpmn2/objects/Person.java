@@ -20,7 +20,7 @@ package org.jbpm.bpmn2.objects;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "person")
 public class Person implements Serializable {

@@ -25,7 +25,7 @@ metadata:
   - "drools"
   - "decisions"
   - "DMN"
-  guide: "https://quarkus.io/version/2.13/guides/kogito-dmn"
+  guide: "https://quarkus.io/guides/kogito-dmn"
   categories:
   - "business-automation"
   codestart:

@@ -18,14 +18,15 @@
  */
 package org.kie.kogito.tracing.decision;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.concurrent.Flow.Publisher;
 
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
-import org.reactivestreams.Publisher;
 
 import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class QuarkusModelEventEmitter extends BaseModelEventEmitter {

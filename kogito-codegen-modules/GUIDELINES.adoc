@@ -157,14 +157,14 @@ This is the end-result when the class is rendered:
 .TravelersMessageConsumer_3.java
 [source,java]
 ----
-@javax.enterprise.context.ApplicationScoped()
+@jakarta.enterprise.context.ApplicationScoped()
 public class TravelersMessageConsumer_3 {
 
-    @javax.inject.Inject()
-    @javax.inject.Named("Travelers")
+    @jakarta.inject.Inject()
+    @jakarta.inject.Named("Travelers")
     Process<TravelersModel> process;
 
-    @javax.inject.Inject()
+    @jakarta.inject.Inject()
     Application application;
 
     @org.eclipse.microprofile.config.inject.ConfigProperty(name = "kogito.messaging.as-cloudevents")
@@ -219,7 +219,7 @@ u.findAll(FieldDeclaration.class,
         if (isSpring()) {
             vd.setType("java.util.List<WorkItemHandler>");
         } else {
-            vd.setType("javax.enterprise.inject.Instance<WorkItemHandler>");
+            vd.setType("jakarta.enterprise.inject.Instance<WorkItemHandler>");
         }
     });
 ----
@@ -292,7 +292,7 @@ public class TravelersProcess extends AbstractProcess<TravelersModel> {
 
     // post construct method that delegates to a non-final 
     // super-class method
-    @javax.annotation.PostConstruct()
+    @jakarta.annotation.PostConstruct()
     public void init() {
         this.activate();
     }

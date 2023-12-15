@@ -35,7 +35,7 @@ The official guides for Kogito can be found at our main website, these include g
 If you want to read more about Quarkus:
 
 - [Quarkus - Getting Started](https://quarkus.io/get-started/) - Quarkus Getting Started guide
-- [Quarkus - Using Kogito to add business automation capabilities to an application](https://quarkus.io/version/2.13/guides/kogito) - A simple quick start hosted on the Quarkus web site.
+- [Quarkus - Using Kogito to add business automation capabilities to an application](https://quarkus.io/guides/kogito) - A simple quick start hosted on the Quarkus web site.
 
 ## Building and Contributing to Kogito
 All contributions are welcome! Before you start please read the [contribution guide](CONTRIBUTING.md).

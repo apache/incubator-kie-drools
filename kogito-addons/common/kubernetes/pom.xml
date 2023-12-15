@@ -52,11 +52,13 @@
     <dependency>
       <groupId>io.fabric8</groupId>
       <artifactId>kubernetes-client</artifactId>
+      <version>${version.io.fabric8.kubernetes-client}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.fabric8</groupId>
       <artifactId>knative-client</artifactId>
+      <version>${version.io.fabric8.kubernetes-client}</version>
       <scope>provided</scope>
     </dependency>
 

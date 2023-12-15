@@ -2,15 +2,15 @@ diff --git a/kogito-build/kogito-dependencies-bom/pom.xml b/kogito-build/kogito-
 index 244c1c4a8f..a244f76be0 100644
 --- a/kogito-build/kogito-dependencies-bom/pom.xml
 +++ b/kogito-build/kogito-dependencies-bom/pom.xml
-@@ -45,7 +45,7 @@
-     <version.com.sun.activation>2.0.0</version.com.sun.activation>
+@@ -48,7 +48,7 @@
+     <version.com.sun.activation>2.0.1</version.com.sun.activation>
      <version.javax.annotation>1.3.2</version.javax.annotation>
      <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
 -    <version.javax.inject>1</version.javax.inject>
 +    <version.javax.inject>2.0.1</version.javax.inject>
      <version.javax.validation>2.0.1.Final</version.javax.validation>
      <version.javax.xml.bind>2.3.1</version.javax.xml.bind>
-     <version.org.eclipse.microprofile.openapi>3.1</version.org.eclipse.microprofile.openapi>
+     <version.org.eclipse.microprofile.openapi>3.1.1</version.org.eclipse.microprofile.openapi>
 @@ -545,8 +545,8 @@
          <version>3.0.2</version>
        </dependency>

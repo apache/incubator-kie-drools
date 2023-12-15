@@ -25,7 +25,7 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.addon.cloudevents.spring.SpringMessageConsumer;
 import org.kie.kogito.event.EventReceiver;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

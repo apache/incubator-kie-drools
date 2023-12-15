@@ -36,6 +36,9 @@
   <name>Kogito :: Quarkus :: BOM</name>
   <description>Internal BOM descriptor for Kogito modules targeting Quarkus use-cases. Specific dependencies targeting the Quarkus platform must be added here.</description>
 
+  <properties>
+    <version.io.fabric8.kubernetes-client>6.7.2</version.io.fabric8.kubernetes-client>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -100,6 +103,18 @@
         <groupId>io.quarkiverse.embedded.postgresql</groupId>
         <artifactId>quarkus-embedded-postgresql-deployment</artifactId>
         <version>${version.io.quarkiverse.embedded.postgresql}</version>
+      </dependency>
+
+      <!-- fabric8 -->
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>kubernetes-client</artifactId>
+        <version>${version.io.fabric8.kubernetes-client}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>knative-client</artifactId>
+        <version>${version.io.fabric8.kubernetes-client}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

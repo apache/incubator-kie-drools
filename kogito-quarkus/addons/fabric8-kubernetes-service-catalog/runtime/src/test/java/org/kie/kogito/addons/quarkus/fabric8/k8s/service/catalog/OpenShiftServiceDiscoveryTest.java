@@ -21,8 +21,6 @@ package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 
 import io.fabric8.kubernetes.api.model.Pod;
@@ -34,6 +32,8 @@ import io.fabric8.openshift.client.server.mock.OpenShiftServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.OpenShiftTestServer;
 import io.quarkus.test.kubernetes.client.WithOpenShiftTestServer;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -52,7 +52,7 @@ public class OpenShiftServiceDiscoveryTest {
     @Test
     public void testNotFoundDeploymentConfig() {
         DeploymentConfig deploymentConfig = mockServer.getOpenshiftClient().deploymentConfigs().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).item();
         deploymentConfig.getMetadata().setName("test");
         mockServer.getOpenshiftClient().resource(deploymentConfig).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
@@ -66,13 +66,13 @@ public class OpenShiftServiceDiscoveryTest {
         DeploymentConfig deploymentConfig = mockServer.getOpenshiftClient()
                 .deploymentConfigs()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config.yaml")).item();
         mockServer.getOpenshiftClient().resource(deploymentConfig).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getOpenshiftClient()
                 .services()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-service.yaml")).item();
         mockServer.getOpenshiftClient().resource(service).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI).map(URI::toString);
@@ -86,20 +86,20 @@ public class OpenShiftServiceDiscoveryTest {
         DeploymentConfig deploymentConfig = mockServer.getOpenshiftClient()
                 .deploymentConfigs()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/deployment-config-no-service.yaml")).item();
         DeploymentConfig createdDc = mockServer.getOpenshiftClient().resource(deploymentConfig).inNamespace(namespace).createOrReplace();
 
         ReplicationController rc = mockServer.getOpenshiftClient()
                 .replicationControllers()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/replication-controller-dc-no-svc.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/replication-controller-dc-no-svc.yaml")).item();
         rc.getMetadata().getOwnerReferences().get(0).setUid(createdDc.getMetadata().getUid());
         ReplicationController createdRc = mockServer.getOpenshiftClient().resource(rc).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getOpenshiftClient()
                 .pods()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/pod-deployment-config-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("deploymentConfig/pod-deployment-config-no-service.yaml")).item();
         pod.getMetadata().setName("example-dc-no-service-1-phlx4");
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRc.getMetadata().getUid());
         mockServer.getOpenshiftClient().resource(pod).inNamespace(namespace).createOrReplace();
@@ -113,7 +113,7 @@ public class OpenShiftServiceDiscoveryTest {
         Route route = mockServer.getOpenshiftClient()
                 .routes()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).item();
         mockServer.getOpenshiftClient().resource(route).inNamespace(namespace).createOrReplace();
 
         assertEquals(Optional.empty(),
@@ -127,7 +127,7 @@ public class OpenShiftServiceDiscoveryTest {
         Route route = mockServer.getOpenshiftClient()
                 .routes()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("route/route.yaml")).item();
         mockServer.getOpenshiftClient().resource(route).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI).map(URI::toString);
@@ -141,7 +141,7 @@ public class OpenShiftServiceDiscoveryTest {
         Route route = mockServer.getOpenshiftClient()
                 .routes()
                 .inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("route/route-tls.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("route/route-tls.yaml")).item();
         mockServer.getOpenshiftClient().resource(route).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI).map(URI::toString);

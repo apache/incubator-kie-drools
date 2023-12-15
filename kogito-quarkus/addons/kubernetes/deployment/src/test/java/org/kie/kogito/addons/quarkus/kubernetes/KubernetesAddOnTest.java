@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.addons.quarkus.kubernetes;
 
-import javax.inject.Inject;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
@@ -28,6 +26,8 @@ import org.kie.kogito.addons.k8s.EndpointDiscovery;
 import org.kie.kogito.addons.k8s.workitems.AbstractDiscoveredEndpointCaller;
 
 import io.quarkus.test.QuarkusUnitTest;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

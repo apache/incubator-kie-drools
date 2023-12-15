@@ -18,11 +18,6 @@
  */
 package org.kie.kogito.core.process.incubation.quarkus.support;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.kie.kogito.Application;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.ExtendedDataContext;
@@ -31,6 +26,11 @@ import org.kie.kogito.incubation.common.MetaDataContext;
 import org.kie.kogito.incubation.processes.services.humantask.HumanTaskService;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.ProcessServiceImpl;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class QuarkusHumanTaskService implements HumanTaskService {

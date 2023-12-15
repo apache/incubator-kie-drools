@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.events.mongodb;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
 import com.mongodb.client.MongoClient;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class QuarkusMongoDBEventPublisher extends MongoDBEventPublisher {

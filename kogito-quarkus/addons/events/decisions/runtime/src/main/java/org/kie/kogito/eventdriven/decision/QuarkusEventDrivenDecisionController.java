@@ -18,15 +18,15 @@
  */
 package org.kie.kogito.eventdriven.decision;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
 
 import io.quarkus.runtime.Startup;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 @Startup
 public class QuarkusEventDrivenDecisionController extends EventDrivenDecisionController {

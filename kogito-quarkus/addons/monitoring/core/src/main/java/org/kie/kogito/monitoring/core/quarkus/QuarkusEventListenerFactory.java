@@ -18,10 +18,6 @@
  */
 package org.kie.kogito.monitoring.core.quarkus;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.drools.core.config.DefaultRuleEventListenerConfig;
@@ -34,6 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Metrics;
 import io.quarkus.arc.properties.IfBuildProperty;
+
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 @Dependent
 public class QuarkusEventListenerFactory {

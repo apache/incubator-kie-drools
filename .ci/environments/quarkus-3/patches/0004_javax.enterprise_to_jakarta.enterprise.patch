@@ -20,55 +20,6 @@ index ae862535a4..a8ad497c5d 100644
          }
      });
  ----
-diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-index f06c26e151..27eb8803ca 100644
---- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-+++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-@@ -35,7 +35,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public <T extends NodeWithAnnotations<?>> T withProduces(T node, boolean isDefault) {
--        node.addAndGetAnnotation("javax.enterprise.inject.Produces");
-+        node.addAndGetAnnotation("jakarta.enterprise.inject.Produces");
-         if (isDefault) {
-             node.addAndGetAnnotation("io.quarkus.arc.DefaultBean");
-         }
-@@ -50,7 +50,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public <T extends NodeWithAnnotations<?>> T withApplicationComponent(T node) {
--        node.addAnnotation("javax.enterprise.context.ApplicationScoped");
-+        node.addAnnotation("jakarta.enterprise.context.ApplicationScoped");
-         return node;
-     }
- 
-@@ -106,7 +106,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public String optionalInstanceInjectionType() {
--        return "javax.enterprise.inject.Instance";
-+        return "jakarta.enterprise.inject.Instance";
-     }
- 
-     @Override
-@@ -133,7 +133,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public String applicationComponentType() {
--        return "javax.enterprise.context.ApplicationScoped";
-+        return "jakarta.enterprise.context.ApplicationScoped";
-     }
- 
-     @Override
-@@ -173,7 +173,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public <T extends NodeWithAnnotations<?>> T withFactoryMethod(T node) {
--        node.addAnnotation("javax.enterprise.inject.Produces");
-+        node.addAnnotation("jakarta.enterprise.inject.Produces");
-         return node;
-     }
- 
 diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
 index 64bd6d374c..023cf9e482 100644
 --- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
@@ -212,7 +163,7 @@ diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/
 index bf7aff2b2e..5baf698463 100644
 --- a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
 +++ b/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
-@@ -1,4 +1,4 @@
+@@ -19,4 +19,4 @@
 -import javax.enterprise.context.ApplicationScoped;
 +import jakarta.enterprise.context.ApplicationScoped;
  import jakarta.ws.rs.GET;

@@ -39,9 +39,9 @@ class PredictionConfigGeneratorTest {
         GeneratedFile retrieved = predictionConfigGenerator.generate();
         assertNotNull(retrieved);
         String retrievedContent = new String(retrieved.contents());
-        String expected = "@javax.inject.Singleton";
+        String expected = "@jakarta.inject.Singleton";
         assertTrue(retrievedContent.contains(expected));
-        expected = "@javax.inject.Inject";
+        expected = "@jakarta.inject.Inject";
         assertTrue(retrievedContent.contains(expected));
         String unexpected = "@org.springframework.stereotype.Component";
         assertFalse(retrievedContent.contains(unexpected));
@@ -60,9 +60,9 @@ class PredictionConfigGeneratorTest {
         assertTrue(retrievedContent.contains(expected));
         expected = "@org.springframework.beans.factory.annotation.Autowired";
         assertTrue(retrievedContent.contains(expected));
-        String unexpected = "@javax.inject.Singleton";
+        String unexpected = "@jakarta.inject.Singleton";
         assertFalse(retrievedContent.contains(unexpected));
-        unexpected = "@javax.inject.Inject";
+        unexpected = "@jakarta.inject.Inject";
         assertFalse(retrievedContent.contains(unexpected));
     }
 }

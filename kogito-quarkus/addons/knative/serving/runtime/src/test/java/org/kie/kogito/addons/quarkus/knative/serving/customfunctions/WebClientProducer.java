@@ -18,12 +18,12 @@
  */
 package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.WebClient;
+
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 public class WebClientProducer {
 

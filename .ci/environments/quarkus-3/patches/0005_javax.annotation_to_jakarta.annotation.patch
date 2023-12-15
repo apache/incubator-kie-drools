@@ -17,19 +17,6 @@ index a8ad497c5d..909d7a2b31 100644
      public void init() {
          this.activate();
      }
-diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java
-index 29ebcf1a4d..fa2fcbce68 100644
---- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java
-+++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/DependencyInjectionAnnotator.java
-@@ -179,7 +179,7 @@ public interface DependencyInjectionAnnotator {
-                 rolesExpr.add(new StringLiteralExpr(role.trim()));
-             }
- 
--            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
-+            node.addAnnotation(new SingleMemberAnnotationExpr(new Name("jakarta.annotation.security.RolesAllowed"), new ArrayInitializerExpr(NodeList.nodeList(rolesExpr))));
-         }
-         return node;
-     }
 diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java
 index b4593ab904..94041b4d11 100644
 --- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/config/ConfigBeanSpringTemplate.java

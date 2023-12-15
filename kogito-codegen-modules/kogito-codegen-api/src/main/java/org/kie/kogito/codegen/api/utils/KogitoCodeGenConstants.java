@@ -24,7 +24,7 @@ public class KogitoCodeGenConstants {
 
     }
 
-    public static final String VALIDATION_CLASS = "javax.validation.constraints.NotNull";
+    public static final String VALIDATION_CLASS = "jakarta.validation.constraints.NotNull";
     public static final String OPENAPI_SPEC_CLASS = "org.eclipse.microprofile.openapi.annotations.media.Schema";
     /**
      * Property that controls whether Kogito Codegen should ignore hidden files. Defaults to true.

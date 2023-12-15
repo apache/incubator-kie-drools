@@ -26,6 +26,6 @@ metadata:
     - drools
     - DRL
     - Kafka
-  guide: https://quarkus.io/version/2.13/guides/kogito-drl
+  guide: https://quarkus.io/guides/kogito-drl
   categories:
     - "business-automation"

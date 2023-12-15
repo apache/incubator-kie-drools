@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.quarkus.runtime;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import io.quarkus.arc.DefaultBean;
 import io.vertx.ext.web.client.WebClientOptions;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.sslWebClientOptions;
 

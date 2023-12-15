@@ -21,7 +21,7 @@ package io.quarkus.it.kogito.jbpm;
 import java.security.SecureRandom;
 import java.util.Random;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class CalculationService {

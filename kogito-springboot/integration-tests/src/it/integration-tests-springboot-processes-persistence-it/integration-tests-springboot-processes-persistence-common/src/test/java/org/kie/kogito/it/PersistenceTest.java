@@ -33,7 +33,7 @@ import org.kie.kogito.Address;
 import org.kie.kogito.AddressType;
 import org.kie.kogito.Person;
 import org.kie.kogito.Status;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

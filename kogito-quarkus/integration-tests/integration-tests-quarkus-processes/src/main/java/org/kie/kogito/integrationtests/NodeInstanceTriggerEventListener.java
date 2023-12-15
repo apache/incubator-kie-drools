@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.integrationtests;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static java.lang.String.format;
 

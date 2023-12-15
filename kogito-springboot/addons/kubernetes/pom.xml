@@ -32,23 +32,6 @@
   <artifactId>kogito-addons-springboot-kubernetes</artifactId>
   <name>Kogito :: Add-Ons :: Spring Boot :: Kubernetes</name>
 
-  <properties>
-    <!-- Fabric8 aligned with Spring Cloud. See: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-kubernetes-fabric8-autoconfig/2.1.1 -->
-    <version.io.fabric8>5.10.2</version.io.fabric8>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client-bom</artifactId>
-        <version>${version.io.fabric8}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -66,24 +49,18 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
     </dependency>
+    <!-- Forcing here since Fabric8 BOM won't bring it -->
     <dependency>
       <groupId>io.fabric8</groupId>
       <artifactId>knative-client</artifactId>
-      <version>${version.io.fabric8}</version>
     </dependency>
     <dependency>
       <groupId>io.fabric8</groupId>
       <artifactId>kubernetes-client</artifactId>
-      <version>${version.io.fabric8}</version>
     </dependency>
     <dependency>
       <groupId>io.fabric8</groupId>
       <artifactId>kubernetes-server-mock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>knative-mock</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

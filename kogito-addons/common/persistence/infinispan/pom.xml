@@ -49,9 +49,9 @@
       <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
 
-    <dependency>
+    <!--~~(No version provided)~~>--><dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-client-hotrod</artifactId>
+      <artifactId>infinispan-client-hotrod-jakarta</artifactId>
     </dependency>
 
     <!-- test dependencies -->

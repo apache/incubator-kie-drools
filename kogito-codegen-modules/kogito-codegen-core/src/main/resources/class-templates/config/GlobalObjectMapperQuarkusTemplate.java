@@ -18,11 +18,11 @@
  */
 package $Package$;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import java.util.TimeZone;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

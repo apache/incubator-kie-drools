@@ -18,12 +18,12 @@
  */
 package $Package$;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
-@javax.inject.Singleton
+@jakarta.inject.Singleton
 public class ApplicationConfig extends org.kie.kogito.StaticConfig {
 
-    @javax.inject.Inject
+    @jakarta.inject.Inject
     public ApplicationConfig(
             Instance<org.kie.kogito.KogitoConfig> configs) {
         super($Addons$, configs);

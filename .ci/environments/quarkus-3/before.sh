@@ -6,7 +6,7 @@ mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
 ci="${CI:-false}"
 
 rewrite_plugin_version=4.43.0
-quarkus_version=${QUARKUS_VERSION:-3.0.0.Final}
+quarkus_version=${QUARKUS_VERSION:-3.2.9.Final}
 
 quarkus_recipe_file="${script_dir_path}/quarkus3.yml"
 patch_file="${script_dir_path}"/patches/0001_before_sh.patch

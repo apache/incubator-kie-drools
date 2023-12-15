@@ -368,8 +368,8 @@ public class ProcessResourceGenerator {
     }
 
     private void insertValidationAnnotations(Parameter param) {
-        param.addAnnotation("javax.validation.Valid");
-        param.addAnnotation("javax.validation.constraints.NotNull");
+        param.addAnnotation("jakarta.validation.Valid");
+        param.addAnnotation("jakarta.validation.constraints.NotNull");
     }
 
     private void initializeProcessField(FieldDeclaration fd) {

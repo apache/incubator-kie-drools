@@ -20,7 +20,7 @@ package org.kie.kogito.workflows.services;
 
 import java.util.Date;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class AgePersonService {

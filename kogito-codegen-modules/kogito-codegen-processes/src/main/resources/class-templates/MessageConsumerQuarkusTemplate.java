@@ -22,8 +22,8 @@ package $Package$;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.kie.kogito.process.Process;
 import org.kie.kogito.addon.quarkus.messaging.common.QuarkusMessageConsumer;
@@ -42,7 +42,7 @@ public class $Type$MessageConsumer extends QuarkusMessageConsumer<$Type$, $DataT
     
     private Set<String> correlation;
 
-    @javax.annotation.PostConstruct
+    @jakarta.annotation.PostConstruct
     void init() {
         init(process,"$Trigger$",$DataType$.class, eventReceiver, correlation);
     }

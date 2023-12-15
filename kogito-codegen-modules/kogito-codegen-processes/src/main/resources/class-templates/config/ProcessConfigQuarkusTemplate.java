@@ -18,7 +18,7 @@
  */
 package $Package$;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.kogito.auth.IdentityProvider;
@@ -30,10 +30,10 @@ import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 
-@javax.inject.Singleton
+@jakarta.inject.Singleton
 public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessConfig {
 
-    @javax.inject.Inject
+    @jakarta.inject.Inject
     public ProcessConfig(
             Instance<WorkItemHandlerConfig> workItemHandlerConfig,
             Instance<UnitOfWorkManager> unitOfWorkManager,

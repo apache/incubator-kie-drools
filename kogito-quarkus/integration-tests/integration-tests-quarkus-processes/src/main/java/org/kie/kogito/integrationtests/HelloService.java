@@ -20,14 +20,14 @@ package org.kie.kogito.integrationtests;
 
 import java.io.IOException;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.integrationtests.excetpion.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class HelloService {

@@ -21,8 +21,6 @@ package org.kie.kogito.quarkus.pmml;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
@@ -30,6 +28,8 @@ import org.kie.kogito.prediction.PredictionModel;
 import org.kie.kogito.prediction.PredictionModels;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

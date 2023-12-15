@@ -20,12 +20,12 @@ package org.kie.kogito.monitoring.core.springboot;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.mockito.ArgumentCaptor;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
 import org.kie.kogito.event.cloudevents.extension.KogitoPredictionsExtension;
 import org.kie.kogito.event.cloudevents.extension.KogitoProcessExtension;
@@ -32,6 +29,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.runtime.Startup;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 /**
  * The goal of this bean is to register the Kogito CloudEvent extension

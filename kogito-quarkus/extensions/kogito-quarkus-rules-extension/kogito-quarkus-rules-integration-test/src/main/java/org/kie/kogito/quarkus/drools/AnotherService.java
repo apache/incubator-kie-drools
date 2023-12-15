@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.quarkus.drools;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.kogito.incubation.common.ReferenceContext;
 
 import io.quarkus.arc.Unremovable;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 @Unremovable // temporary workaround to allow injecting RuleUnitInstance<AnotherService>

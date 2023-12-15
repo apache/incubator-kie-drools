@@ -21,10 +21,17 @@ channels:
       summary: Success
       message:
         $ref: '#/components/messages/message'
-  timeout:
-    description: A message channel for expired timeouts
+  timeoutCallbackError:
+    description: A message channel for callback timeout error
     publish:
-      operationId: sendTimeoutExpired
+      operationId: sendTimeoutExpiredForCallbackError
+      summary: Timeout Expired
+      message:
+        $ref: '#/components/messages/message'
+  timeoutError:
+    description: A message channel for timeout error
+    publish:
+      operationId: sendTimeoutExpiredError
       summary: Timeout Expired
       message:
         $ref: '#/components/messages/message'

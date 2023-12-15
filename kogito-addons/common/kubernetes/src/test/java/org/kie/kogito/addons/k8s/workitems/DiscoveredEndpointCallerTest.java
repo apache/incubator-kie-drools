@@ -20,11 +20,11 @@ package org.kie.kogito.addons.k8s.workitems;
 
 import java.util.Map;
 
-import javax.ws.rs.HttpMethod;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
+
+import jakarta.ws.rs.HttpMethod;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

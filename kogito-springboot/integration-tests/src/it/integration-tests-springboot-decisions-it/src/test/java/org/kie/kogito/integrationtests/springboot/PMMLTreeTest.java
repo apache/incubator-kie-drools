@@ -43,7 +43,7 @@ import static org.kie.kogito.integrationtests.springboot.CommonPMMLTestUtils.tes
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 class PMMLTreeTest extends BaseRestTest {
 
-    private static final String BASE_PATH = "/PMMLTree/SampleMine/";
+    private static final String BASE_PATH = "/PMMLTree/SampleMine";
     private static final String TARGET = "decision";
 
     static {

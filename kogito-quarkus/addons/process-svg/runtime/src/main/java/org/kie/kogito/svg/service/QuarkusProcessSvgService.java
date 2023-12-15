@@ -20,12 +20,12 @@ package org.kie.kogito.svg.service;
 
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.svg.AbstractProcessSvgService;
 import org.kie.kogito.svg.dataindex.DataIndexClient;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class QuarkusProcessSvgService extends AbstractProcessSvgService {

@@ -21,9 +21,6 @@ package org.kie.kogito.addon.quarkus.messaging.common.message.http;
 import java.util.Collections;
 import java.util.Optional;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
@@ -31,6 +28,9 @@ import org.kie.kogito.addon.quarkus.common.reactive.messaging.http.CloudEventHtt
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

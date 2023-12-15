@@ -21,13 +21,13 @@ package org.kie.kogito.quarkus.workflows;
 import java.time.Duration;
 import java.util.UUID;
 
-import javax.ws.rs.core.MediaType;
-
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+import jakarta.ws.rs.core.MediaType;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;

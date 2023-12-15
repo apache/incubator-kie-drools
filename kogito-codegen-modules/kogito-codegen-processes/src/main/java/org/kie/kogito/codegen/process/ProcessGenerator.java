@@ -436,7 +436,7 @@ public class ProcessGenerator {
                 if (context.hasDI()) {
                     context.getDependencyInjectionAnnotator().withApplicationComponent(handlerClazz);
                     context.getDependencyInjectionAnnotator()
-                            .withOptionalInjection(
+                            .withInjection(
                                     handlerClazz
                                             .getConstructors()
                                             .stream()

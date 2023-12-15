@@ -50,14 +50,8 @@ class OASIT {
         parseOptions.setResolve(true);
         SwaggerParseResult result = new OpenAPIV3Parser().readLocation(url, null, parseOptions);
 
-        //Will be fixed by https://issues.redhat.com/browse/KOGITO-5734
-        assertThat(result.getMessages()).containsExactly(
-                "attribute components.schemas.MultiinstancetaskprocessModelInput.items is missing",
-                "attribute components.schemas.MultiinstancetaskprocessModelInput.items is missing",
-                "attribute components.schemas.MultiinstancetaskprocessModelOutput.items is missing",
-                "attribute components.schemas.MultiinstancetaskprocessModelOutput.items is missing",
-                "attribute components.schemas.Multiinstancetaskprocess_2_TaskInput.items is missing",
-                "attribute components.schemas.Multiinstancetaskprocess_2_TaskInput.items is missing");
+        // Should fix https://issues.redhat.com/browse/KOGITO-5734
+        assertThat(result.getMessages()).isEmpty();
 
         OpenAPI openAPI = result.getOpenAPI();
         PathItem p1 = openAPI.getPaths().get("/approvals");

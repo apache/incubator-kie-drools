@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.monitoring.core.springboot;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class SpringbootMetricsInterceptor implements HandlerInterceptor {
 

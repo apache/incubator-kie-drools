@@ -10,6 +10,15 @@ integrate with the Kubernetes API. It should work fine out of the box without an
 the [Spring Boot guide](https://docs.spring.io/spring-cloud-kubernetes/docs/current/reference/html/#discoveryclient-for-kubernetes)
 for more information about any needed customization.
 
+When using this add-on is important to set the following properties in your test environment:
+
+```properties
+spring.main.cloud-platform=KUBERNETES
+spring.cloud.bootstrap.enabled=true
+```
+
+This will guarantee that he right `KubernetesClient` bean is created for you. See more at [Kubernetes Ecosystem Awareness](https://docs.spring.io/spring-cloud-kubernetes/docs/current/reference/html/#kubernetes-ecosystem-awareness).
+
 ## Caching
 
 To avoid round trips to the Kubernetes Core API, this implementation uses the [Spring Boot Cache feature](https://docs.spring.io/spring-boot/docs/2.1.6.RELEASE/reference/html/boot-features-caching.html)

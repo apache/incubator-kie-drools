@@ -22,14 +22,12 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.Response;
-
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
+import org.jboss.jandex.VoidType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.serverless.workflow.ClassAnnotatedWorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
@@ -54,6 +52,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import io.quarkiverse.openapi.generator.annotations.GeneratedClass;
 import io.quarkiverse.openapi.generator.annotations.GeneratedMethod;
 import io.quarkiverse.openapi.generator.annotations.GeneratedParam;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
@@ -91,7 +92,7 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         BlockStmt body = executeMethod.createBody();
         MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(OPEN_API_REF), m.name());
         final NameExpr parameters = new NameExpr(WORK_ITEM_PARAMETERS);
-        if (m.returnType().name().equals(DotName.createSimple(Response.class.getName()))) {
+        if (m.returnType().name().equals(DotName.createSimple(Response.class.getName())) || (m.returnType() instanceof VoidType)) {
             body.addStatement(methodCallExpr).addStatement(new ReturnStmt(new NullLiteralExpr()));
         } else {
             body.addStatement(new ReturnStmt(methodCallExpr));

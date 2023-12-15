@@ -21,11 +21,6 @@ package org.kie.kogito.addons.quarkus.camel.runtime;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -35,6 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.addons.quarkus.camel.runtime.CamelConstants.BODY;
 import static org.kie.kogito.addons.quarkus.camel.runtime.CamelConstants.HEADERS;

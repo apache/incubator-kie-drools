@@ -64,7 +64,7 @@ public class CommonPMMLTestUtils {
                                   final String basePath,
                                   final String targetField,
                                   final Map<String, Object> expectedResultMap) {
-        String path = basePath + "descriptive";
+        String path = basePath + "/descriptive";
         final Response response = given()
                 .contentType(ContentType.JSON)
                 .body(inputData)

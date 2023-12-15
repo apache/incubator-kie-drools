@@ -235,10 +235,10 @@ public class ModelMetaData {
     private void applyValidation(FieldDeclaration fd, List<String> tags) {
 
         if (supportsValidation) {
-            fd.addAnnotation("javax.validation.Valid");
+            fd.addAnnotation("jakarta.validation.Valid");
 
             if (tags != null && tags.contains(Variable.REQUIRED_TAG)) {
-                fd.addAnnotation("javax.validation.constraints.NotNull");
+                fd.addAnnotation("jakarta.validation.constraints.NotNull");
             }
         }
     }

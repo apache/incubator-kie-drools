@@ -30,7 +30,7 @@ public class ConfigBean extends org.kie.kogito.config.StaticConfigBean {
     @org.springframework.beans.factory.annotation.Value("${kogito.jackson.fail-on-empty-bean:#{false}}")
     boolean failOnEmptyBean;
 
-    @javax.annotation.PostConstruct
+    @jakarta.annotation.PostConstruct
     protected void init() {
         setServiceUrl(kogitoService.orElse(""));
         setCloudEvents(useCloudEvents);

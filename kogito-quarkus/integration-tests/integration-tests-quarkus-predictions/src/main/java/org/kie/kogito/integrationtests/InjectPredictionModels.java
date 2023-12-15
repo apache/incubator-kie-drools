@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.integrationtests;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.prediction.PredictionConfig;

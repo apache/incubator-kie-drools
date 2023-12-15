@@ -18,13 +18,13 @@
  */
 package $Package$;
 
-@javax.inject.Singleton
+@jakarta.inject.Singleton
 public class Application extends org.kie.kogito.StaticApplication {
 
-    @javax.inject.Inject
+    @jakarta.inject.Inject
     public Application(
             org.kie.kogito.Config config,
-            javax.enterprise.inject.Instance<org.kie.kogito.KogitoEngine> engines) {
+            jakarta.enterprise.inject.Instance<org.kie.kogito.KogitoEngine> engines) {
         super(config, engines);
     }
 }

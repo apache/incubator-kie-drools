@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 public abstract class BaseExceptionMapper<E extends Throwable> implements ExceptionMapper<E> {
 

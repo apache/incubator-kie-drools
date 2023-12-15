@@ -87,7 +87,7 @@ public class WorkflowEventIT {
         String password = "buddy";
 
         kafkaClient.consume(Set.of(EventPublisher.PROCESS_INSTANCES_TOPIC_NAME), s -> {
-            LOGGER.info("Received from kafka: {}", s);
+            LOGGER.debug("Received from kafka: {}", s);
             try {
                 ProcessInstanceDataEvent<?> event = mapper.readValue(s, ProcessInstanceDataEvent.class);
                 Map data = (Map) event.getData();

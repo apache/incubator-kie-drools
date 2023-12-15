@@ -3,7 +3,7 @@ description: Update Quarkus version and refactor imports and resources if needed
 type: specs.openrewrite.org/v1beta/recipe
 recipeList:
 - org.openrewrite.maven.ChangePropertyValue: {
-    newValue: 3.0.0.Final,
+    newValue: 3.2.9.Final,
     key: version.io.quarkus
   }
 - org.openrewrite.maven.ChangePropertyValue: {

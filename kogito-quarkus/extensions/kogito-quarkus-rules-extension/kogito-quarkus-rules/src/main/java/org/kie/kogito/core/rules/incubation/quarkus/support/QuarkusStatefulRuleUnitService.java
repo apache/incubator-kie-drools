@@ -20,17 +20,17 @@ package org.kie.kogito.core.rules.incubation.quarkus.support;
 
 import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.kie.kogito.incubation.common.ExtendedDataContext;
 import org.kie.kogito.incubation.common.ExtendedReferenceContext;
 import org.kie.kogito.incubation.common.LocalId;
 import org.kie.kogito.incubation.common.MetaDataContext;
 import org.kie.kogito.incubation.rules.services.StatefulRuleUnitService;
 import org.kie.kogito.rules.RuleUnits;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class QuarkusStatefulRuleUnitService implements StatefulRuleUnitService {

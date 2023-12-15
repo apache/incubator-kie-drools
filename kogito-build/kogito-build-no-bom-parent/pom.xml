@@ -353,7 +353,7 @@
             <excludes>
               <exclude>${tests.surefire.include}</exclude>
             </excludes>
-            <argLine>-Xms2048m -Xmx4g -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none</argLine>
+            <argLine>-Xms2048m -Xmx4g  -XX:-TieredCompilation -XX:TieredStopAtLevel=1</argLine>
             <systemPropertyVariables>
               <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
               <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
@@ -372,7 +372,7 @@
             <excludes>
               <exclude>${tests.failsafe.include}</exclude>
             </excludes>
-            <argLine>-Xms2048m -Xmx4g -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Xms2048m -Xmx4g -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Dfile.encoding=UTF-8</argLine>
             <systemPropertyVariables>
               <apple.awt.UIElement>true</apple.awt.UIElement>
               <org.uberfire.nio.git.daemon.enabled>false</org.uberfire.nio.git.daemon.enabled>
@@ -639,7 +639,7 @@
         </plugin>
         <plugin>
           <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+          <artifactId>quarkus-extension-maven-plugin</artifactId>
           <version>${version.io.quarkus}</version>
         </plugin>
         <plugin>
@@ -761,7 +761,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-              <argLine>@{jacoco.agent.argLine} -Xms1024m -Xmx4g -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Dfile.encoding=UTF-8</argLine>
+              <argLine>@{jacoco.agent.argLine} -Xms1024m -Xmx4g  -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Dfile.encoding=UTF-8</argLine>
             </configuration>
           </plugin>
           <plugin>

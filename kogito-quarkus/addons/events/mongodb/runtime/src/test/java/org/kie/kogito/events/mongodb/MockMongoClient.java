@@ -20,8 +20,6 @@ package org.kie.kogito.events.mongodb;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -36,6 +34,8 @@ import com.mongodb.client.MongoIterable;
 import com.mongodb.connection.ClusterDescription;
 
 import io.quarkus.test.Mock;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

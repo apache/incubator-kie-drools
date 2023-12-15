@@ -26,10 +26,10 @@ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.kogito.rules.RuleEventListenerConfig;
 import org.kie.kogito.app.Application;
 
-@javax.enterprise.context.ApplicationScoped
+@jakarta.enterprise.context.ApplicationScoped
 public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
 
-    @javax.inject.Inject
+    @jakarta.inject.Inject
     Application application;
 
     @Override

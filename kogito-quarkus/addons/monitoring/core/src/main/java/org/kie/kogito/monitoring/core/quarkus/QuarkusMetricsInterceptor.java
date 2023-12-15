@@ -20,11 +20,11 @@ package org.kie.kogito.monitoring.core.quarkus;
 
 import java.util.List;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-
 import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
+
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
 
 public class QuarkusMetricsInterceptor implements ContainerResponseFilter {
 

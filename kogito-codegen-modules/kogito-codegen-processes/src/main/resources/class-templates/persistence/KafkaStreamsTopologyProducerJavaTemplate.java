@@ -21,8 +21,8 @@ package org.kie.kogito.persistence;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 import org.apache.kafka.streams.Topology;
 import org.slf4j.Logger;

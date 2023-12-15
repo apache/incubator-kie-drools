@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.core.rules.incubation.quarkus.support;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Wraps and configures a custom ObjectMapper for DataSources

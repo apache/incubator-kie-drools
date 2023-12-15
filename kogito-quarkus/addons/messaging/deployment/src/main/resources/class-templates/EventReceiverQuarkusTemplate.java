@@ -21,12 +21,12 @@ package $Package$;
 
 import java.util.concurrent.CompletionStage;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver ;
+import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver;
 
 
 import io.quarkus.runtime.Startup;

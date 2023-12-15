@@ -18,13 +18,13 @@
  */
 package org.kie.kogito.integrationtests;
 
-import javax.inject.Inject;
-
 import org.kie.kogito.Application;
 import org.kie.kogito.decision.DecisionConfig;
 import org.kie.kogito.decision.DecisionModels;
 
 import io.quarkus.runtime.Startup;
+
+import jakarta.inject.Inject;
 
 @Startup
 public class InjectDecisionModels {

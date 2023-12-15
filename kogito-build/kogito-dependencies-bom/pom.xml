@@ -16,79 +16,84 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.16.12.Final</version.io.quarkus>
+    <version.io.quarkus>3.2.9.Final</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
-    <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
+    <version.org.springframework.boot>3.0.5</version.org.springframework.boot>
     <version.org.apache.kafka>3.4.0</version.org.apache.kafka>
 
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
-    <version.com.fasterxml.jackson>2.14.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.14.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
     <version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
-    <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
-    <version.io.quarkiverse.openapi.generator>1.3.14</version.io.quarkiverse.openapi.generator>
-    <version.io.quarkiverse.asyncapi>0.0.6</version.io.quarkiverse.asyncapi>
-    <version.io.quarkiverse.reactivemessaging.http>1.1.5</version.io.quarkiverse.reactivemessaging.http>
-    <version.io.quarkiverse.embedded.postgresql>0.0.9</version.io.quarkiverse.embedded.postgresql>
+    <version.io.quarkiverse.jackson-jq>2.0.1</version.io.quarkiverse.jackson-jq>
+    <version.io.quarkiverse.openapi.generator>2.2.9</version.io.quarkiverse.openapi.generator>
+    <version.io.quarkiverse.asyncapi>0.2.0</version.io.quarkiverse.asyncapi>
+    <version.io.quarkiverse.reactivemessaging.http>2.0.2</version.io.quarkiverse.reactivemessaging.http>
+    <version.io.quarkiverse.embedded.postgresql>0.1.0</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
-    <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
-    <version.com.fasterxml.jackson.datatype>2.14.2</version.com.fasterxml.jackson.datatype>
+    <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
+    <version.com.fasterxml.jackson.datatype>2.15.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.33.2</version.com.github.tomakehurst.wiremock>
     <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
     <!-- We don't use gson directly. This is just to align versions of transitive dependencies -->
-    <version.com.google.gson>2.10</version.com.google.gson>
+    <version.com.google.gson>2.10.1</version.com.google.gson>
     <!-- currently required for integration test only -->
-    <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
+    <version.com.oracle.database.jdbc>21.5.0.0</version.com.oracle.database.jdbc>
     <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
     <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
-    <version.com.sun.activation>1.2.0</version.com.sun.activation>
+    <version.com.sun.activation>2.0.1</version.com.sun.activation>
     <version.javax.annotation>1.3.2</version.javax.annotation>
     <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
-    <version.javax.inject>1</version.javax.inject>
+    <version.javax.inject>2.0.1</version.javax.inject>
     <version.javax.validation>2.0.1.Final</version.javax.validation>
     <version.javax.xml.bind>2.3.1</version.javax.xml.bind>
-    <version.org.eclipse.microprofile.openapi>2.0.1</version.org.eclipse.microprofile.openapi>
-    <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
+    <version.org.eclipse.microprofile.openapi>3.1.1</version.org.eclipse.microprofile.openapi>
+    <version.ch.qos.logback>1.4.7</version.ch.qos.logback>
 
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
-    <version.io.fabric8.kubernetes-client>6.3.1</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.org.flywaydb>9.8.3</version.org.flywaydb>
-    <version.org.postgresql>42.5.1</version.org.postgresql>
+    <!--
+    We add Fabric8 here to use as a basis for Addons/Kubernetes
+    Don't add as a management dependency because it will break SpringBoot and Quarkus
+    Kubernetes addons since they use a different version.
+    -->
+    <version.io.fabric8.kubernetes-client>6.7.2</version.io.fabric8.kubernetes-client>
+    <version.io.micrometer>1.11.1</version.io.micrometer>
+    <version.org.flywaydb>9.16.3</version.org.flywaydb>
+    <version.org.postgresql>42.6.0</version.org.postgresql>
     <version.io.serverlessworkflow>4.0.5.Final</version.io.serverlessworkflow>
     <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
-    <version.io.smallrye-open-api>3.1.1</version.io.smallrye-open-api>
+    <version.io.smallrye-open-api>3.4.0</version.io.smallrye-open-api>
     <version.org.awaitility>4.2.0</version.org.awaitility>
 
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.30.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.7.2</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.3.7</version.io.vertx>
-    <version.io.grpc>1.53.0</version.io.grpc>
+    <version.io.vertx>4.4.6</version.io.vertx>
+    <version.io.grpc>1.56.0</version.io.grpc>
 
-    <version.io.quarkus.camel>2.15.0</version.io.quarkus.camel>
+    <version.io.quarkus.camel>3.0.0-M1</version.io.quarkus.camel>
 
     <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
 
     <version.org.apache.commons>3.12.0</version.org.apache.commons>
 
-    <version.org.graalvm.nativeimage>22.3.0</version.org.graalvm.nativeimage>
+    <version.org.graalvm.nativeimage>23.0.1</version.org.graalvm.nativeimage>
 
-    <version.org.infinispan>14.0.6.Final</version.org.infinispan>
-    <version.org.infinispan.protostream>4.5.1.Final</version.org.infinispan.protostream>
+    <version.org.infinispan>14.0.7.Final</version.org.infinispan>
+    <version.org.infinispan.protostream>4.6.2.Final</version.org.infinispan.protostream>
 
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
-    <version.jakarta.ws.rs>2.1.6</version.jakarta.ws.rs>
-    <version.org.jboss.resteasy>4.7.7.Final</version.org.jboss.resteasy>
-    <version.org.keycloak>20.0.2</version.org.keycloak>
+    <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
+    <version.org.jboss.resteasy>6.2.4.Final</version.org.jboss.resteasy>
+    <version.org.keycloak>21.0.1</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
     <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
-    <version.org.mongo>4.6.1</version.org.mongo>
+    <version.org.mongo>4.9.1</version.org.mongo>
     <version.org.mongo-image>4.4.14</version.org.mongo-image>
     <version.org.mozilla.rhino>1.7.13</version.org.mozilla.rhino>
     <version.org.redis>2.0.4</version.org.redis>
@@ -97,35 +102,35 @@
     <version.org.assertj>3.22.0</version.org.assertj>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.hamcrest>1.3</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
-    <version.org.junit.minor>8.2</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
+    <version.org.junit.minor>9.2</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
     <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
-    <version.org.junit.jupiter>5.9.2</version.org.junit.jupiter>
-    <version.org.junit.vintage>5.9.2</version.org.junit.vintage>
-    <version.org.junit.platform>1.9.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
+    <version.org.junit.jupiter>5.9.3</version.org.junit.jupiter>
+    <version.org.junit.vintage>5.9.3</version.org.junit.vintage>
+    <version.org.junit.platform>1.9.3</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.junit.pioneer>1.5.0</version.org.junit.pioneer>
     <version.org.mockito>4.11.0</version.org.mockito>
     <version.org.testcontainers>1.17.6</version.org.testcontainers>
     <version.org.xmlunit-core>2.9.1</version.org.xmlunit-core>
-    <version.io.rest-assured>4.5.1</version.io.rest-assured>
+    <version.io.rest-assured>5.3.2</version.io.rest-assured>
 
-    <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
+    <version.net.byte-buddy>1.14.7</version.net.byte-buddy>
 
     <version.org.mvel>2.5.0.Final</version.org.mvel>
-    <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
+    <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
     <version.org.reflections>0.10.2</version.org.reflections>
-    <version.org.slf4j>1.7.36</version.org.slf4j>
+    <version.org.slf4j>2.0.6</version.org.slf4j>
 
-    <version.maven>3.8.6</version.maven>
-    <version.maven.plugin>3.6.0</version.maven.plugin>
+    <version.maven>3.9.3</version.maven>
+    <version.maven.plugin>3.7.1</version.maven.plugin>
     <version.maven.invoker>3.2.0</version.maven.invoker>
 
-    <version.plexus>1.6</version.plexus>
+    <version.plexus>2.1.0</version.plexus>
     <version.plexus.classworld>2.6.0</version.plexus.classworld>
 
     <!-- see: https://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#parallel-test-execution-and-single-thread-execution -->
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.1.1</version.black.ninia>
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.24.0</version.apache.commons.commons-compress>
   </properties>
 
@@ -273,8 +278,8 @@
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
-        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+        <artifactId>jackson-jakarta-rs-json-provider</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
@@ -284,7 +289,7 @@
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
-        <artifactId>jackson-module-jaxb-annotations</artifactId>
+        <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
@@ -514,6 +519,12 @@
         <version>${version.com.github.tomakehurst.wiremock}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>com.github.tomakehurst</groupId>
+        <artifactId>wiremock-jre8-standalone</artifactId>
+        <version>${version.com.github.tomakehurst.wiremock}</version>
+        <scope>test</scope>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
@@ -564,9 +575,9 @@
       </dependency>
 
       <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>${version.javax.xml.bind}</version>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>4.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
@@ -574,29 +585,29 @@
         <version>${version.com.sun.xml.bind.core}</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-impl</artifactId>
-        <version>${version.com.sun.xml.bind.impl}</version>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>4.0.3</version>
       </dependency>
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>javax.activation</artifactId>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>angus-activation</artifactId>
         <version>${version.com.sun.activation}</version>
       </dependency>
       <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <version>3.0.2</version>
       </dependency>
       <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
+        <groupId>jakarta.inject</groupId>
+        <artifactId>jakarta.inject-api</artifactId>
         <version>${version.javax.inject}</version>
       </dependency>
       <dependency>
-        <groupId>javax.annotation</groupId>
-        <artifactId>javax.annotation-api</artifactId>
-        <version>${version.javax.annotation}</version>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.microprofile.openapi</groupId>
@@ -634,18 +645,6 @@
         <version>${version.io.swagger.core.v3}</version>
       </dependency>
 
-      <!-- fabric8 -->
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client</artifactId>
-        <version>${version.io.fabric8.kubernetes-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>knative-client</artifactId>
-        <version>${version.io.fabric8.kubernetes-client}</version>
-      </dependency>
-
       <!-- infinispan -->
       <dependency>
         <groupId>org.infinispan</groupId>
@@ -654,7 +653,7 @@
       </dependency>
       <dependency>
         <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-client-hotrod</artifactId>
+        <artifactId>infinispan-client-hotrod-jakarta</artifactId>
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>

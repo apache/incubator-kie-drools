@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.addons.quarkus.fabric8.k8s.service.catalog;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogTest;
 
@@ -27,6 +25,8 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+
+import jakarta.inject.Inject;
 
 import static org.kie.kogito.addons.quarkus.k8s.test.utils.KnativeResourceDiscoveryTestUtil.createServiceIfNotExists;
 

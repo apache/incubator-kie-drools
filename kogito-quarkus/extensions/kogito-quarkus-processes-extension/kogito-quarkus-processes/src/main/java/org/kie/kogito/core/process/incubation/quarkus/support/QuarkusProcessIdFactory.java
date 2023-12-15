@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.core.process.incubation.quarkus.support;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.incubation.processes.ProcessIds;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class QuarkusProcessIdFactory extends ProcessIds {

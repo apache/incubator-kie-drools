@@ -18,18 +18,18 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.kie.kogito.addon.cloudevents.AbstractTopicsInformationResource;
 import org.kie.kogito.event.TopicDiscovery;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("/messaging/topics")
 @ApplicationScoped()
@@ -48,7 +48,7 @@ public class QuarkusTopicsInformationResource extends AbstractTopicsInformationR
 
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response getTopics() {
-        return javax.ws.rs.core.Response.ok(getTopicList()).build();
+    public jakarta.ws.rs.core.Response getTopics() {
+        return jakarta.ws.rs.core.Response.ok(getTopicList()).build();
     }
 }

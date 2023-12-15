@@ -20,10 +20,6 @@ package org.kie.kogito.quarkus.workflow;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
-
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.DefaultCorrelationService;
@@ -38,6 +34,10 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.properties.IfBuildProperty;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class KogitoBeanProducer {

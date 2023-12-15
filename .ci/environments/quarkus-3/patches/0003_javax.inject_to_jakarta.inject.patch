@@ -36,37 +36,6 @@ index c15aa39596..bd1e412b4f 100644
  
      protected QuarkusKogitoBuildContext(QuarkusKogitoBuildContextBuilder builder) {
          super(builder, new CDIDependencyInjectionAnnotator(), new CDIRestAnnotator(), CONTEXT_NAME);
-diff --git a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-index ec8ccb9839..54cef037a5 100644
---- a/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-+++ b/kogito-codegen-modules/kogito-codegen-api/src/main/java/org/kie/kogito/codegen/api/di/impl/CDIDependencyInjectionAnnotator.java
-@@ -44,7 +44,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
--        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.inject.Named"), new StringLiteralExpr(name)));
-+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("jakarta.inject.Named"), new StringLiteralExpr(name)));
-         return node;
-     }
- 
-@@ -61,7 +61,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public <T extends NodeWithAnnotations<?>> T withSingletonComponent(T node) {
--        node.addAnnotation("javax.inject.Singleton");
-+        node.addAnnotation("jakarta.inject.Singleton");
-         return node;
-     }
- 
-@@ -72,7 +72,7 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
- 
-     @Override
-     public <T extends NodeWithAnnotations<?>> T withInjection(T node, boolean lazy) {
--        node.addAnnotation("javax.inject.Inject");
-+        node.addAnnotation("jakarta.inject.Inject");
-         return node;
-     }
- 
 diff --git a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
 index c1b9d1cdc1..64bd6d374c 100644
 --- a/kogito-codegen-modules/kogito-codegen-core/src/main/resources/class-templates/ApplicationQuarkusTemplate.java
@@ -296,32 +265,6 @@ index 2606d530d8..2897c9829e 100644
  
  import org.kie.kogito.eventdriven.rules.AbstractEventDrivenQueryExecutor;
  import org.drools.ruleunits.api.RuleUnit;
-diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/KogitoObjectMapperQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/KogitoObjectMapperQuarkusTemplate.java
-index 606b30f790..fe0f357f40 100644
---- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/KogitoObjectMapperQuarkusTemplate.java
-+++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/KogitoObjectMapperQuarkusTemplate.java
-@@ -21,7 +21,7 @@ import java.io.IOException;
- import java.util.List;
- 
- import com.fasterxml.jackson.databind.JavaType;
--import javax.inject.Singleton;
-+import jakarta.inject.Singleton;
- 
- import com.fasterxml.jackson.core.JsonParser;
- import com.fasterxml.jackson.databind.ObjectMapper;
-diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
-index 4bfc800f1a..56ce0d01d1 100644
---- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
-+++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
-@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toList;
- @Path("/$endpointName$")
- public class $unit$Query$name$Endpoint {
- 
--    @javax.inject.Inject
-+    @jakarta.inject.Inject
-     RuleUnit<$UnitType$> ruleUnit;
- 
-     public $unit$Query$name$Endpoint() { }
 diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java
 index 829d4c5ada..aa8fa8a753 100644
 --- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RuleUnitContainerQuarkusTemplate.java

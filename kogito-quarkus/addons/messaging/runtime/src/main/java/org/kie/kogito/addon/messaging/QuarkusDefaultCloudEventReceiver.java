@@ -18,16 +18,16 @@
  */
 package org.kie.kogito.addon.messaging;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventReceiver;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 import org.kie.kogito.event.EventUnmarshaller;
 
 import io.quarkus.arc.DefaultBean;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @DefaultBean
 @ApplicationScoped

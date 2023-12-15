@@ -27,7 +27,7 @@
     {
       "name": "publishTimeoutExpired",
       "type": "asyncapi",
-      "operation": "specs/callbackResults.yaml#sendTimeoutExpired"
+      "operation": "specs/callbackResults.yaml#sendTimeoutExpiredError"
     }
   ]
   ,

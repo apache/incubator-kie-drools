@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.events.mongodb;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 
@@ -27,6 +25,8 @@ import com.mongodb.client.MongoClient;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectSpy;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

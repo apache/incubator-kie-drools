@@ -18,8 +18,6 @@
  */
 package org.kie.kogito.jobs.management.quarkus;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
@@ -37,6 +35,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.WebClient;
+
+import jakarta.enterprise.inject.Instance;
 
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;

@@ -20,8 +20,6 @@ package org.kie.kogito.quarkus.drools;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.incubation.common.EmptyDataContext;
 import org.kie.kogito.incubation.common.ExtendedDataContext;
@@ -33,6 +31,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

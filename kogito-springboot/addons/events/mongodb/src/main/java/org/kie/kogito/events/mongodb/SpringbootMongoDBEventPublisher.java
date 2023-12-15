@@ -18,14 +18,14 @@
  */
 package org.kie.kogito.events.mongodb;
 
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.client.MongoClient;
+
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class SpringbootMongoDBEventPublisher extends MongoDBEventPublisher {

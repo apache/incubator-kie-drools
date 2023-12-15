@@ -18,11 +18,11 @@
  */
 package org.kie.kogito.jobs.management.quarkus;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
 

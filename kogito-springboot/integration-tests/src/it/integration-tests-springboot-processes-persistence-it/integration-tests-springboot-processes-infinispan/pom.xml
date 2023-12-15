@@ -59,11 +59,10 @@
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+      <artifactId>infinispan-spring-boot3-starter-remote</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-management</artifactId>
+      <groupId>org.kie.kogito</groupId>      <artifactId>kogito-addons-springboot-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

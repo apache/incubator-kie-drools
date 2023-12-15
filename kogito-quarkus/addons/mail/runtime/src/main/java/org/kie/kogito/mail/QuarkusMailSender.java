@@ -20,9 +20,6 @@ package org.kie.kogito.mail;
 
 import java.util.Arrays;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.slf4j.Logger;
@@ -30,6 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.reactive.ReactiveMailer;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class QuarkusMailSender {

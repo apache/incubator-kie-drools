@@ -18,12 +18,6 @@
  */
 package org.kie.kogito.persistence.quarkus.rocksdb;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import org.kie.kogito.persistence.rocksdb.RocksDBProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.rocksdb.Options;
@@ -31,6 +25,12 @@ import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class RocksDbProcessInstancesFactoryProducer {

@@ -21,12 +21,12 @@ package org.kie.kogito.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.uow.events.UnitOfWorkAbortEvent;
 import org.kie.kogito.uow.events.UnitOfWorkEndEvent;
 import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 import org.kie.kogito.uow.events.UnitOfWorkStartEvent;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UnitOfWorkTestEventListener implements UnitOfWorkEventListener {

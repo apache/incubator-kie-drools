@@ -20,13 +20,13 @@ package org.kie.kogito.addon.source.files;
 
 import java.util.Optional;
 
-import javax.ws.rs.core.Response;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

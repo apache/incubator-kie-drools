@@ -22,8 +22,6 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 
 import io.fabric8.kubernetes.api.model.Pod;
@@ -32,6 +30,8 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+
+import jakarta.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -53,7 +53,7 @@ public class PodUtilsTest {
     @Test
     public void testPodNotFound() {
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         pod.getMetadata().setName("test-pod");
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
@@ -65,7 +65,7 @@ public class PodUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/process-quarkus-example-pod-no-service");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
@@ -77,7 +77,7 @@ public class PodUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/pod-no-service-custom-port?port-name=my-custom-port");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service-custom-port-name.yaml")).item();
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = discovery.query(kubeURI).map(URI::toString);
@@ -89,12 +89,12 @@ public class PodUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/test-pod-with-service");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         pod.getMetadata().setName("test-pod-with-service");
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
 
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
@@ -107,17 +107,17 @@ public class PodUtilsTest {
         var kubeURI = KubernetesResourceUri.parse("pods.v1/" + namespace + "/test-pod-with-service-custom-label?labels=label-name=test-label;other-label=other-value");
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).item();
         pod.getMetadata().setName("test-pod-with-service-custom-label");
         mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
         service.getMetadata().setName(" process-quarkus-example-pod-clusterip-svc-custom-label");
         mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
         Service service1 = mockServer.getClient().services().inNamespace(namespace)
-                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).get();
+                .load(this.getClass().getClassLoader().getResourceAsStream("service/service-clusterip.yaml")).item();
         Map<String, String> labels = service1.getMetadata().getLabels();
         labels.put("label-name", "test-label");
         service1.getMetadata().setLabels(labels);

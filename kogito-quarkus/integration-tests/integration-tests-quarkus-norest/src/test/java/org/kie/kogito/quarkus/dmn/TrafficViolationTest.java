@@ -21,14 +21,14 @@ package org.kie.kogito.quarkus.dmn;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

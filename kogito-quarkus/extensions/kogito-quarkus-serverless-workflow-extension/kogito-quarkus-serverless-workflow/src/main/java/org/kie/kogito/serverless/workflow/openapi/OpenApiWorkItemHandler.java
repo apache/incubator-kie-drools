@@ -23,16 +23,16 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-
 import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import io.quarkus.restclient.runtime.RestClientBuilderFactory;
+
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 
 public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler {
 

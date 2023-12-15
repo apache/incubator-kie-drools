@@ -34,8 +34,7 @@ diff --git a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/
 index 7f07766c1c..d983b515cf 100644
 --- a/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionRestResourceQuarkusTemplate.java
 +++ b/kogito-codegen-modules/kogito-codegen-decisions/src/main/resources/class-templates/DecisionRestResourceQuarkusTemplate.java
-@@ -17,14 +17,14 @@ package org.kie.dmn.kogito.quarkus.example;
- 
+@@ -23,14 +23,14 @@ package org.kie.dmn.kogito.quarkus.example;
  import java.util.stream.Collectors;
  
 -import javax.ws.rs.Consumes;
@@ -54,7 +53,8 @@ index 7f07766c1c..d983b515cf 100644
 +import jakarta.ws.rs.core.MediaType;
 +import jakarta.ws.rs.core.Response;
 +import jakarta.ws.rs.core.Response.ResponseBuilder;
- 
+
+ import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
  import org.kie.kogito.Application;
  import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 @@ -82,7 +82,7 @@ public class DMNRestResourceTemplate {
@@ -214,7 +214,7 @@ diff --git a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/
 index c9611d5a32..bf7aff2b2e 100644
 --- a/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
 +++ b/kogito-codegen-modules/kogito-codegen-processes/src/test/resources/openapi/SimpleResource.java
-@@ -1,8 +1,8 @@
+@@ -19,8 +19,8 @@
  import javax.enterprise.context.ApplicationScoped;
 -import javax.ws.rs.GET;
 -import javax.ws.rs.Path;
@@ -227,48 +227,6 @@ index c9611d5a32..bf7aff2b2e 100644
  
  import org.eclipse.microprofile.openapi.annotations.tags.Tag;
  
-diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java
-index 39b86127ef..10cfcda88f 100644
---- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java
-+++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryJavaTemplate.java
-@@ -18,11 +18,11 @@ package com.myspace.demo;
- import java.util.List;
- import java.util.Map;
- 
--import javax.ws.rs.Consumes;
--import javax.ws.rs.POST;
--import javax.ws.rs.Path;
--import javax.ws.rs.Produces;
--import javax.ws.rs.core.MediaType;
-+import jakarta.ws.rs.Consumes;
-+import jakarta.ws.rs.POST;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.Produces;
-+import jakarta.ws.rs.core.MediaType;
- 
- import org.drools.ruleunits.api.RuleUnit;
- import org.drools.ruleunits.api.RuleUnitInstance;
-diff --git a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
-index 3447ad6f97..4bfc800f1a 100644
---- a/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
-+++ b/kogito-codegen-modules/kogito-codegen-rules/src/main/resources/class-templates/rules/RestQueryQuarkusTemplate.java
-@@ -18,11 +18,11 @@ package com.myspace.demo;
- import java.util.List;
- import java.util.Map;
- 
--import javax.ws.rs.Consumes;
--import javax.ws.rs.POST;
--import javax.ws.rs.Path;
--import javax.ws.rs.Produces;
--import javax.ws.rs.core.MediaType;
-+import jakarta.ws.rs.Consumes;
-+import jakarta.ws.rs.POST;
-+import jakarta.ws.rs.Path;
-+import jakarta.ws.rs.Produces;
-+import jakarta.ws.rs.core.MediaType;
- 
- import org.drools.ruleunits.api.RuleUnit;
- import org.drools.ruleunits.api.RuleUnitInstance;
 diff --git a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java b/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java
 index 7fdbefde91..8920575b8a 100644
 --- a/kogito-codegen-modules/kogito-codegen-sample/kogito-codegen-sample-generator/src/main/resources/class-templates/SampleRestResourceQuarkusTemplate.java

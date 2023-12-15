@@ -56,7 +56,7 @@ class ForEachRestIT {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
-                .body("{\"numbers\" : [1,2,3,4,5], \"constant\": 2}}").when()
+                .body("{\"numbers\" : [1,2,3,4,5], \"constant\": 2}").when()
                 .post("/foreach_parent")
                 .then()
                 .statusCode(201)

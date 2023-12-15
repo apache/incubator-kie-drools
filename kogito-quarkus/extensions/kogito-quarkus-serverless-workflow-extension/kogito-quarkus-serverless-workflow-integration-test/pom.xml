@@ -54,6 +54,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-grpc-codegen</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -199,6 +203,28 @@
               <goal>compile</goal>
               <goal>compile-custom</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Based on https://github.com/quarkusio/quarkus/pull/31115 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>post-process-grpc</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <skip>false</skip>
+              <includeProjectDependencies>true</includeProjectDependencies>
+              <arguments>
+                <argument>${project.build.directory}/generated-sources/grpc</argument>
+              </arguments>
+              <mainClass>io.quarkus.grpc.deployment.GrpcPostProcessing</mainClass>
+            </configuration>
           </execution>
         </executions>
       </plugin>

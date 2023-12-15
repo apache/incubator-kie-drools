@@ -18,12 +18,11 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
-
-import static java.util.Collections.singletonMap;
 
 /**
  * Keycloak spring boot resource that works within the test lifecycle.
@@ -32,6 +31,7 @@ import static java.util.Collections.singletonMap;
 public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoKeycloakContainer> {
 
     public static final String KOGITO_KEYCLOAK_PROPERTY = "keycloak.auth-server-url";
+    public static final String OAUTH2_JWT_ISSUER = "spring.security.oauth2.resourceserver.jwt.issuer-uri";
 
     public KeycloakSpringBootTestResource() {
         super(new KogitoKeycloakContainer());
@@ -39,7 +39,10 @@ public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestRes
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(KOGITO_KEYCLOAK_PROPERTY, String.format("http://localhost:%s", getTestResource().getMappedPort()));
+        Map<String, String> properties = new HashMap<>();
+        properties.put(KOGITO_KEYCLOAK_PROPERTY, String.format("http://localhost:%s", getTestResource().getMappedPort()));
+        properties.put(OAUTH2_JWT_ISSUER, String.format("http://localhost:%s/realms/%s", getTestResource().getMappedPort(), KogitoKeycloakContainer.REALM));
+        return properties;
     }
 
     public static class Conditional extends KeycloakSpringBootTestResource {

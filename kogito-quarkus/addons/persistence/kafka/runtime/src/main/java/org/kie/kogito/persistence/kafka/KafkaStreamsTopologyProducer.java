@@ -18,10 +18,10 @@
  */
 package org.kie.kogito.persistence.kafka;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
 import org.apache.kafka.streams.Topology;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.createTopologyForProcesses;
 

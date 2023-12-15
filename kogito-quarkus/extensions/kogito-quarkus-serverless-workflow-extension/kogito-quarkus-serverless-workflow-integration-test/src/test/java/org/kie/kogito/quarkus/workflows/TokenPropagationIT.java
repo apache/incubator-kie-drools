@@ -21,14 +21,14 @@ package org.kie.kogito.quarkus.workflows;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.path.json.JsonPath;
+
+import jakarta.ws.rs.core.HttpHeaders;
 
 import static org.kie.kogito.quarkus.workflows.ExternalServiceMock.SUCCESSFUL_QUERY;
 import static org.kie.kogito.quarkus.workflows.TokenPropagationExternalServicesMock.AUTHORIZATION_TOKEN;

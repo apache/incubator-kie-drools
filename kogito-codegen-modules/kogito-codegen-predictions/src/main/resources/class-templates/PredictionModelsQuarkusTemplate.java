@@ -18,7 +18,7 @@
  */
 package $Package$;
 
-@javax.enterprise.context.ApplicationScoped()
+@jakarta.enterprise.context.ApplicationScoped()
 public class PredictionModels extends org.kie.kogito.pmml.AbstractPredictionModels {
 
     static {

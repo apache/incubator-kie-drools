@@ -25,7 +25,7 @@ import org.kie.kogito.app.KogitoSpringbootApplication;
 import org.kie.kogito.event.ChannelType;
 import org.kie.kogito.event.Topic;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 import io.restassured.RestAssured;
 

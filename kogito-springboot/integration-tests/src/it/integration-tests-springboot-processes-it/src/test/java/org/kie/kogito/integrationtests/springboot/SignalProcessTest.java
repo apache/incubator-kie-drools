@@ -48,10 +48,10 @@ class SignalProcessTest extends BaseRestTest {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/signalStart/")
+                .get("/signalStart")
                 .then()
                 .statusCode(200)
-                .body("$.size()", is(1))
+                .body("size()", is(1))
                 .body("[0].message", equalTo("hello world"));
     }
     @Test

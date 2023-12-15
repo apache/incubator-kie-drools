@@ -18,10 +18,6 @@
  */
 package org.kie.kogito.addon.quarkus.messaging.common;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.impl.ByteArrayCloudEventMarshaller;
@@ -34,6 +30,10 @@ import org.kie.kogito.event.impl.StringEventMarshaller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.arc.DefaultBean;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class EventMarshallerProducer {

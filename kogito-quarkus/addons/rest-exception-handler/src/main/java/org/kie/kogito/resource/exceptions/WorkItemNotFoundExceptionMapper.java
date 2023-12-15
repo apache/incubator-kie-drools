@@ -18,10 +18,10 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
-
 import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
+
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class WorkItemNotFoundExceptionMapper extends BaseExceptionMapper<WorkItemNotFoundException> {
