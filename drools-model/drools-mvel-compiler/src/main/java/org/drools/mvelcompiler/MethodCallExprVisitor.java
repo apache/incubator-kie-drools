@@ -18,6 +18,21 @@
  */
 package org.drools.mvelcompiler;
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.utils.Pair;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvelcompiler.ast.MethodCallExprT;
+import org.drools.mvelcompiler.ast.TypedExpression;
+import org.drools.mvelcompiler.context.DeclaredFunction;
+import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.mvelcompiler.util.MethodResolutionUtils;
+import org.drools.mvelcompiler.util.VisitorContext;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,20 +41,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.util.MethodUtils;
-import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvelcompiler.ast.MethodCallExprT;
-import org.drools.mvelcompiler.ast.TypedExpression;
-import org.drools.mvelcompiler.context.DeclaredFunction;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.util.ClassUtils;
-
 import static org.drools.util.StreamUtils.optionalToStream;
 
-public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
+public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression, VisitorContext> {
 
     final RHSPhase parentVisitor;
     final MvelCompilerContext mvelCompilerContext;
@@ -50,24 +54,18 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
     }
 
     @Override
-    public TypedExpression defaultMethod(Node n, RHSPhase.Context context) {
+    public TypedExpression defaultMethod(Node n, VisitorContext context) {
         return n.accept(parentVisitor, context);
     }
 
     @Override
-    public TypedExpression visit(MethodCallExpr n, RHSPhase.Context arg) {
-        Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
-        TypedExpression name = n.getName().accept(this, new RHSPhase.Context(scope.orElse(null)));
-        final List<TypedExpression> arguments = new ArrayList<>(n.getArguments().size());
-        for (Expression child : n.getArguments()) {
-            TypedExpression a = child.accept(this, arg);
-            arguments.add(a);
-        }
-
-        Class<?>[] argumentsTypes = parametersType(arguments);
-
-        return parseMethodFromDeclaredFunction(n, arguments)
-                .orElseGet(() -> parseMethod(n, scope, name, arguments, argumentsTypes));
+    public TypedExpression visit(final MethodCallExpr n, final VisitorContext arg) {
+        final Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
+        final TypedExpression name = n.getName().accept(this, new VisitorContext(scope.orElse(null)));
+        final Pair<List<TypedExpression>, List<Integer>> typedArgumentsResult =
+                MethodResolutionUtils.getTypedArgumentsWithEmptyCollectionArgumentDetection(n.getArguments(), this, arg);
+        return parseMethodFromDeclaredFunction(n, typedArgumentsResult.a)
+                .orElseGet(() -> parseMethod(n, scope, name, typedArgumentsResult.a, typedArgumentsResult.b));
     }
 
     private Optional<TypedExpression> parseMethodFromDeclaredFunction(MethodCallExpr n, List<TypedExpression> arguments) {
@@ -89,43 +87,21 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
                                         Optional<TypedExpression> scope,
                                         TypedExpression name,
                                         List<TypedExpression> arguments,
-                                        Class<?>[] argumentsType) {
-        Optional<Method> method = scope.flatMap(TypedExpression::getType)
-                .<Class<?>>map(ClassUtils::classFromType)
-                .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
-
-        if (method.isEmpty()) {
-            method = mvelCompilerContext.getRootPattern()
-                    .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
-            if(method.isPresent()) {
-                scope = mvelCompilerContext.createRootTypePrefix();
-            }
+                                        List<Integer> emptyCollectionArgumentIndexes) {
+        Pair<Optional<Method>, Optional<TypedExpression>> resolveMethodResult =
+                MethodResolutionUtils.resolveMethod(n, mvelCompilerContext, scope, arguments);
+        // This is a workaround for mvel empty list and map ambiguity, please see the description in getTypedArguments() method.
+        if (resolveMethodResult.a.isEmpty() && !emptyCollectionArgumentIndexes.isEmpty()) {
+            resolveMethodResult = MethodResolutionUtils.resolveMethodWithEmptyCollectionArguments(n, mvelCompilerContext, resolveMethodResult.b, arguments, emptyCollectionArgumentIndexes);
         }
-
-        if (method.isEmpty()) {
-            method = mvelCompilerContext.findStaticMethod(n.getNameAsString());
-        }
-
-        Optional<Method> finalMethod = method;
-        Optional<Type> methodReturnType =
-                name.getType()
-                        .map(Optional::of)
-                        .orElseGet(() -> finalMethod.map(Method::getReturnType));
-
-        List<Class<?>> actualArgumentType = optionalToStream(method)
+        final Optional<Method> finalMethod = resolveMethodResult.a;
+        final Optional<TypedExpression> finalScope = resolveMethodResult.b;
+        final Optional<Type> methodReturnType = name.getType().or(() -> finalMethod.map(Method::getReturnType));
+        final List<Class<?>> actualArgumentType = optionalToStream(finalMethod)
                 .flatMap((Method m) -> Arrays.stream(m.getParameterTypes()))
                 .collect(Collectors.toList());
 
-        return new MethodCallExprT(n.getName().asString(), scope, arguments,
+        return new MethodCallExprT(n.getName().asString(), finalScope, arguments,
                                    actualArgumentType, methodReturnType);
-    }
-
-    private Class<?>[] parametersType(List<TypedExpression> arguments) {
-        return arguments.stream()
-                .map(TypedExpression::getType)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(ClassUtils::classFromType)
-                .toArray(Class[]::new);
     }
 }

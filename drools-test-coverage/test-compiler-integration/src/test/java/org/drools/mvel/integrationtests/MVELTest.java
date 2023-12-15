@@ -36,6 +36,8 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.mvel.compiler.PersonHolder;
+import org.drools.mvel.integrationtests.facts.FactWithList;
 import org.drools.util.DateUtils;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.compiler.Address;

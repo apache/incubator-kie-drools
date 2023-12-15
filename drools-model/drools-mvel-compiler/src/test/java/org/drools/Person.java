@@ -53,6 +53,9 @@ public class Person {
 
     private Integer ageAsInteger;
 
+    public Person() {
+    }
+
     public Person(String name) {
         this(name, null);
     }
@@ -65,6 +68,19 @@ public class Person {
         this.name = name;
         this.parent = parent;
         this.gender = gender;
+    }
+
+    public Person(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public Person(Map<String, String> items) {
+        this.items = items;
+    }
+
+    public Person(List<Address> addresses, Map<String, String> items) {
+        this.addresses = addresses;
+        this.items = items;
     }
 
     public String getName() {
@@ -203,5 +219,10 @@ public class Person {
 
     public void setFloatBoxed(Float floatBoxed) {
         this.floatBoxed = floatBoxed;
+    }
+
+    public void setAddressesAndItems(List<Address> addresses, Map<String, String> items) {
+        this.addresses = addresses;
+        this.items = items;
     }
 }

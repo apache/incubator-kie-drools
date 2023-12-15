@@ -18,28 +18,28 @@
  */
 package org.drools.mvel.integrationtests.facts;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class FactWithList {
+public class FactWithMap {
 
-    private List<String> items = new ArrayList<>();
+    private Map<Integer, String> itemsMap = new HashMap<>();
 
-    public FactWithList() { }
+    public FactWithMap() { }
 
-    public FactWithList(final String factString) {
-        this.items.add(factString);
+    public FactWithMap(final Integer key, final String value) {
+        this.itemsMap.put(key, value);
     }
 
-    public FactWithList(final List<String> items) {
-        this.items = items;
+    public FactWithMap(final Map<Integer, String> itemsMap) {
+        this.itemsMap = itemsMap;
     }
 
-    public List<String> getItems() {
-        return items;
+    public Map<Integer, String> getItemsMap() {
+        return itemsMap;
     }
 
-    public void setItems(List<String> items) {
-        this.items = items;
+    public void setItemsMap(Map<Integer, String> itemsMap) {
+        this.itemsMap = itemsMap;
     }
 }
