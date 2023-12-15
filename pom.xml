@@ -3,11 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-    <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <!-- Keep in sync with jboss-parent version in kie-user-bom-parent/pom.xml -->
-    <version>36</version>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>30</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -22,8 +21,8 @@
   <url>http://www.drools.org</url>
   <inceptionYear>2001</inceptionYear>
   <organization>
-    <name>JBoss by Red Hat</name>
-    <url>http://www.jboss.org/</url>
+    <name>The Apache Software Foundation</name>
+    <url>https://apache.org/</url>
   </organization>
   <licenses>
     <license>
@@ -36,10 +35,10 @@
   <repositories>
     <repository>
       <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the JBoss.org one).
+           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
            Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the JBoss.org Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use JBoss.org repo only to download our SNAPSHOTs. -->
+           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
+           We use Apache repo only to download our SNAPSHOTs. -->
       <id>central</id>
       <name>Central Repository</name>
       <url>https://repo.maven.apache.org/maven2</url>
@@ -48,12 +47,10 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
-    <!-- Conventions are described in http://community.jboss.org/wiki/MavenGettingStarted-Developers -->
     <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <id>apache-public-repository-group</id>
+      <name>Apache Public Repository Group</name>
+      <url>https://repository.apache.org/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
@@ -68,10 +65,10 @@
   <pluginRepositories>
     <pluginRepository>
       <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the JBoss.org one).
+           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
            Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the JBoss.org Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use JBoss.org repo only to download our SNAPSHOTs. -->
+           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
+           We use Apache repo only to download our SNAPSHOTs. -->
       <id>central</id>
       <name>Central Repository</name>
       <url>https://repo.maven.apache.org/maven2</url>
@@ -81,9 +78,9 @@
       </snapshots>
     </pluginRepository>
     <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <id>apache-public-repository-group</id>
+      <name>Apache Public Repository Group</name>
+      <url>https://repository.apache.org/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -94,18 +91,18 @@
   </pluginRepositories>
 
   <scm>
-    <connection>scm:git:https://github.com/kiegroup/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
-    <url>https://github.com/kiegroup/drools</url>
+    <connection>scm:git:https://github.com/apache/incubator-kie-drools.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/incubator-kie-drools.git</developerConnection>
+    <url>https://github.com/apache/incubator-kie-drools</url>
   </scm>
 
   <ciManagement>
     <system>jenkins</system>
-    <url>https://jenkins-kieci.rhcloud.com</url>
+    <url>https://ci-builds.apache.org/job/KIE/</url>
   </ciManagement>
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/DROOLS</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
   <developers>
     <developer>
@@ -121,6 +118,13 @@
   </contributors>
   <mailingLists>
     <mailingList>
+      <name>Development mailing list</name>
+      <post>dev@kie.apache.org</post>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
       <name>setup</name>
       <subscribe>https://groups.google.com/forum/#!forum/drools-setup</subscribe>
       <unsubscribe>https://groups.google.com/forum/#!forum/drools-setup</unsubscribe>
@@ -133,11 +137,6 @@
       <name>usage</name>
       <subscribe>https://groups.google.com/forum/#!forum/drools-usage</subscribe>
       <unsubscribe>https://groups.google.com/forum/#!forum/drools-usage</unsubscribe>
-    </mailingList>
-    <mailingList>
-      <name>development</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-development</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-development</unsubscribe>
     </mailingList>
   </mailingLists>
 
@@ -166,9 +165,7 @@
         <module>drools-commands</module>
         <module>drools-kiesession</module>
         <module>drools-ecj</module>
-        <module>drools-drl-ast</module>
-        <module>drools-drl-parser</module>
-        <module>drools-drl-extensions</module>
+        <module>drools-drl</module>
         <module>drools-compiler</module>
         <module>drools-mvel</module>
         <module>drools-xml-support</module>
@@ -200,7 +197,7 @@
         <module>kie-pmml-trusty</module>
         <module>kie-maven-plugin</module>
         <module>kie-archetypes</module>
-        <module>drools-drl-quarkus-extension</module>
+        <module>drools-quarkus-extension</module>
         <module>jpmml-migration-recipe</module>
         <module>drools-reliability</module>
         <module>drools-drlonyaml-parent</module>
@@ -294,7 +291,7 @@
         <module>kie-pmml-trusty</module>
         <module>kie-internal</module>
         <module>kie-test-util</module>
-        <module>drools-drl-quarkus-extension</module>
+        <module>drools-quarkus-extension</module>
         <module>drools-reliability</module>
       </modules>
     </profile>

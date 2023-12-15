@@ -21,6 +21,9 @@ package org.drools.drlonyaml.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
@@ -28,6 +31,15 @@ import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 
 public class Utils {
+    private static final ObjectMapper mapper;
+
+    static {
+        YAMLFactory yamlFactory = YAMLFactory.builder()
+                .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+                .build();
+        mapper = new ObjectMapper(yamlFactory);
+    }
+
     private Utils() {
         // only static methods.
     }
@@ -52,5 +64,9 @@ public class Utils {
             results.add(from((BaseDescr) item));
         }
         return results;
+    }
+
+    public static ObjectMapper getYamlMapper() {
+        return mapper;
     }
 }

@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -36,7 +37,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
-import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;

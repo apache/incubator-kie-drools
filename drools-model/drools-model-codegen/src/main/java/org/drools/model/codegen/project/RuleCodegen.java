@@ -18,13 +18,8 @@
  */
 package org.drools.model.codegen.project;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
-import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
@@ -33,9 +28,11 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RuleCodegen {
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
-    public static final GeneratedFileType RULE_TYPE = GeneratedFileType.of("RULE", GeneratedFileType.Category.SOURCE);
+public class RuleCodegen {
 
     public static final String GENERATOR_NAME = "rules";
 

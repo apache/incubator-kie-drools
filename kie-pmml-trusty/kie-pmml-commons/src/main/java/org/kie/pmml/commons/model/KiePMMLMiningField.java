@@ -31,9 +31,6 @@ import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see <a http://dmg.org/pmml/v4-4-1/MiningSchema.html>Mining Schema</a>
- */
 public class KiePMMLMiningField extends AbstractKiePMMLComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLMiningField.class);

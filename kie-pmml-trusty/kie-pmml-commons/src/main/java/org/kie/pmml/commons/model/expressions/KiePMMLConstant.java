@@ -29,9 +29,6 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_Constant>Constant</a>
- */
 public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = 3312643278386342170L;

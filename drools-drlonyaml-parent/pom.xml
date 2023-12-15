@@ -36,5 +36,6 @@
     <module>drools-drlonyaml-todrl</module>
     <module>drools-drlonyaml-cli</module>
     <module>drools-drlonyaml-cli-tests</module>
+    <module>drools-drlonyaml-integration-tests</module>
   </modules>
 </project>

@@ -30,9 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate>SimplePredicate</a>
- */
 public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicate.class);

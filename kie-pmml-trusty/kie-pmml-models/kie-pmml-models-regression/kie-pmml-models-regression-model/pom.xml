@@ -34,6 +34,10 @@
   <name>KIE :: PMML :: Models :: Regression :: Model</name>
   <description>KiePMML Model for Regression implementation</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.regression.model</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

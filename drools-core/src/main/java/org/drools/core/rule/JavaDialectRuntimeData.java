@@ -49,9 +49,6 @@ import org.drools.base.rule.DialectRuntimeRegistry;
 import org.drools.base.rule.EvalCondition;
 import org.drools.base.rule.Function;
 import org.drools.base.rule.GroupElement;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.PredicateConstraint;
-import org.drools.base.rule.constraint.Constraint;
 import org.drools.base.rule.accessor.Wireable;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.util.StringUtils;
@@ -392,20 +389,10 @@ public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizabl
             for (final Object object : group.getChildren()) {
                 if (object instanceof ConditionalElement) {
                     removeClasses((ConditionalElement) object);
-                } else if (object instanceof Pattern) {
-                    removeClasses((Pattern) object);
                 }
             }
         } else if (ce instanceof EvalCondition) {
             remove( ( (EvalCondition) ce ).getEvalExpression().getClass().getName() );
-        }
-    }
-
-    private void removeClasses( final Pattern pattern ) {
-        for (final Constraint object : pattern.getConstraints()) {
-            if (object instanceof PredicateConstraint) {
-                remove(((PredicateConstraint) object).getPredicateExpression().getClass().getName());
-            }
         }
     }
 

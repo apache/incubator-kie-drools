@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.base.factmodel.ClassDefinition;
 import org.drools.base.factmodel.GeneratedFact;
 import org.drools.base.facttemplates.FactTemplate;
 import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.base.ObjectType;
 import org.drools.base.util.PropertyReactivityUtil;
 import org.drools.base.util.TimeIntervalParser;
 import org.drools.util.ClassUtils;
@@ -381,13 +381,23 @@ public class TypeDeclaration
      */
     @Override
     public boolean equals( Object obj ) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         TypeDeclaration other = (TypeDeclaration) obj;
         if ( typeName == null ) {
-            if ( other.typeName != null ) return false;
-        } else if ( !typeName.equals( other.typeName ) ) return false;
+            if ( other.typeName != null ) {
+            return false;
+            }
+        } else if ( !typeName.equals( other.typeName ) ) {
+            return false;
+        }
         return true;
     }
 

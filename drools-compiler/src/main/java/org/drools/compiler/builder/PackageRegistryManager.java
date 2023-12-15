@@ -18,11 +18,11 @@
  */
 package org.drools.compiler.builder;
 
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.drl.ast.descr.PackageDescr;
-
 import java.util.Collection;
 import java.util.Map;
+
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.drl.ast.descr.PackageDescr;
 
 /**
  * Manages handling and creation of {@link PackageRegistry} instances.

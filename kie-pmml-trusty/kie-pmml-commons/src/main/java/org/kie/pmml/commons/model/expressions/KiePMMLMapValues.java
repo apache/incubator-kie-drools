@@ -34,9 +34,6 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 import static org.kie.pmml.commons.model.expressions.ExpressionsUtils.getFromPossibleSources;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_MapValues>MapValues</a>
- */
 public class KiePMMLMapValues extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = 4576394527423997787L;

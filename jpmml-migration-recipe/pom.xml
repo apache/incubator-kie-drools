@@ -35,6 +35,9 @@
   <name>Kie :: Jpmml Migration Recipe</name>
   <description>OpenRewrite recipe to migrate JPMML model library from 1.5.1 to 1.6.4</description>
 
+  <properties>
+    <java.module.name>org.kie.jpmml.migration.recipe</java.module.name>
+  </properties>
 
   <dependencyManagement>
     <dependencies>

@@ -22,9 +22,6 @@ import java.util.Arrays;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#reasoncodealgorithm>reasonCodeAlgorithm</a>
- */
 public enum REASONCODE_ALGORITHM implements Named {
 
     POINTS_ABOVE("pointsAbove"),

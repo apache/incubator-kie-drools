@@ -30,9 +30,6 @@ import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_DerivedField>DerivedField</a>
- */
 public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Serializable {
 
     private static final long serialVersionUID = 9187889880911645935L;

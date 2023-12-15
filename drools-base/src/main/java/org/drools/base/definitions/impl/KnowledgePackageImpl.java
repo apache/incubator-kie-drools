@@ -37,13 +37,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.base.rule.DialectRuntimeData;
-import org.drools.base.rule.DuplicateRuleNameException;
-import org.drools.base.rule.ImportDeclaration;
-import org.drools.base.rule.InvalidRuleException;
-import org.drools.base.rule.InvalidRulePackage;
-import org.drools.base.rule.TypeDeclaration;
-import org.drools.base.util.CloneUtil;
+import org.drools.base.RuleBase;
 import org.drools.base.common.DroolsObjectInputStream;
 import org.drools.base.common.DroolsObjectOutputStream;
 import org.drools.base.definitions.InternalKnowledgePackage;
@@ -52,10 +46,17 @@ import org.drools.base.definitions.ResourceTypePackageRegistry;
 import org.drools.base.definitions.rule.impl.GlobalImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.facttemplates.FactTemplate;
+import org.drools.base.rule.DialectRuntimeData;
 import org.drools.base.rule.DialectRuntimeRegistry;
+import org.drools.base.rule.DuplicateRuleNameException;
 import org.drools.base.rule.Function;
+import org.drools.base.rule.ImportDeclaration;
+import org.drools.base.rule.InvalidRuleException;
+import org.drools.base.rule.InvalidRulePackage;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.WindowDeclaration;
 import org.drools.base.ruleunit.RuleUnitDescriptionLoader;
+import org.drools.base.util.CloneUtil;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.ClassUtils;
 import org.drools.util.TypeResolver;
@@ -64,7 +65,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
-import org.drools.base.RuleBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -766,7 +766,9 @@ public class KnowledgePackageImpl
 
     private void removeProcess(Process process) {
         ProcessPackage rtp = (ProcessPackage) getResourceTypePackages().get(ResourceType.BPMN2);
-        if (rtp != null) rtp.remove(process.getId());
+        if (rtp != null) {
+            rtp.remove(process.getId());
+        }
     }
 
     private List<Process> getProcessesGeneratedFromResource(Resource resource) {

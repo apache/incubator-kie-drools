@@ -18,13 +18,13 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.Collection;
+
 import org.drools.drl.ast.descr.EnumDeclarationDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.Collection;
 
 public class TypeDeclarationAnnotationNormalizer implements CompilationPhase {
     private final AnnotationNormalizer annotationNormalizer;

@@ -27,6 +27,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 
+import static org.drools.drlonyaml.model.Utils.getYamlMapper;
+
 public class YAMLtoDrlDumper {
     public static final Configuration CONFIGURATION = config();
     
@@ -49,5 +51,10 @@ public class YAMLtoDrlDumper {
         String result = out.toString();
         out.close();
         return result;
+    }
+
+    public static String yaml2drl(String yaml) throws Exception {
+        DrlPackage readValue = getYamlMapper().readValue(yaml, DrlPackage.class);
+        return YAMLtoDrlDumper.dumpDRL(readValue);
     }
 }

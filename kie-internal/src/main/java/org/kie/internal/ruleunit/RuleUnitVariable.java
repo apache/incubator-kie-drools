@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 public interface RuleUnitVariable {
 
     boolean isDataSource();
+    boolean isDataStore();
 
     String getName();
 

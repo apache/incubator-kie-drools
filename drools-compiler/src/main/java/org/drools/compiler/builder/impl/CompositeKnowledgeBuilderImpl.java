@@ -18,6 +18,13 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.KieService;
@@ -31,14 +38,9 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
+
+    private static final KieAssemblers ASSEMBLERS = KieService.load(KieAssemblers.class);
 
     private final KnowledgeBuilderImpl kBuilder;
 
@@ -176,13 +178,12 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildAssemblerResourcesBeforeRules() {
-        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> resourceTypeListEntry : resourcesByType.entrySet()) {
                 ResourceType type = resourceTypeListEntry.getKey();
                 List<ResourceDescr> descrs = resourceTypeListEntry.getValue();
                 for (ResourceDescr descr : descrs) {
-                    assemblers.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
+                    ASSEMBLERS.addResourceBeforeRules(this.kBuilder, descr.resource, type, descr.configuration);
                 }
             }
         } catch (RuntimeException e) {
@@ -197,11 +198,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildAssemblerResourcesAfterRules() {
-        KieAssemblers assemblers = KieService.load(KieAssemblers.class);
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
                 List<ResourceWithConfiguration> rds = entry.getValue().stream().map(CompositeKnowledgeBuilderImpl::descrToResourceWithConfiguration).collect(Collectors.toList());
-                assemblers.addResourcesAfterRules(kBuilder, rds, entry.getKey());
+                ASSEMBLERS.addResourcesAfterRules(kBuilder, rds, entry.getKey());
             }
         } catch (RuntimeException e) {
             throw e;

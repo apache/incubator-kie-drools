@@ -93,7 +93,7 @@ public class GeneratedFile {
 
     public String toStringWithContent() {
         return "GeneratedFile{" + "path=" + path +
-                ", content='\n" + new String(contents) + "\n'}";
+                ", content='\n" + new String(contents, StandardCharsets.UTF_8) + "\n'}";
     }
 
     @Override

@@ -18,6 +18,15 @@
  */
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
@@ -39,15 +48,6 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
@@ -161,8 +161,12 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Id)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Id)) {
+                return false;
+            }
 
             Id otherId = (Id) o;
             return id == otherId.id && otnId == otherId.otnId;
@@ -351,7 +355,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         if (InitialFact.class.isAssignableFrom(classType)) {
             sink.assertObject(workingMemory.getInitialFactHandle(), context, workingMemory);
         } else {
-            Iterator<InternalFactHandle> it = workingMemory.getStoreForClass(classType).iterator();
+            Iterator<InternalFactHandle> it = getFactHandlesIterator(workingMemory);
             while (it.hasNext()) {
                 sink.assertObject(it.next(), context, workingMemory);
             }
@@ -362,7 +366,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
         return InitialFact.class.isAssignableFrom(classType) ?
                 Collections.singleton(workingMemory.getInitialFactHandle()).iterator() :
-                workingMemory.getStoreForClass(classType).iterator();
+                workingMemory.getEntryPoint(((EntryPointNode)source).getEntryPoint().getEntryPointId()).getObjectStore().getStoreForClass(classType).iterator();
     }
 
     /**

@@ -27,9 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.util.TypeResolver;
 import org.drools.base.base.ClassFieldInspector;
 import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.base.definitions.InternalKnowledgePackage;
@@ -37,12 +34,15 @@ import org.drools.base.factmodel.ClassDefinition;
 import org.drools.base.factmodel.FieldDefinition;
 import org.drools.base.factmodel.traits.Alias;
 import org.drools.base.rule.TypeDeclaration;
+import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.drl.ast.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.QualifiedName;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
+import org.drools.util.TypeResolver;
 import org.kie.api.definition.type.Key;
 import org.kie.api.io.Resource;
 
@@ -193,9 +193,9 @@ public class ClassHierarchyManager {
                     inheritedFlDescr.setResource(resource);
                     inheritedFlDescr.setInherited(!Modifier.isAbstract(inspector.getGetterMethods().get(name).getModifiers()));
 
-                    if (!fieldMap.containsKey(inheritedFlDescr.getFieldName()))
-                        fieldMap.put(inheritedFlDescr.getFieldName(),
-                                     inheritedFlDescr);
+                    if (!fieldMap.containsKey(inheritedFlDescr.getFieldName())) {
+                        fieldMap.put(inheritedFlDescr.getFieldName(), inheritedFlDescr);
+                    }
                 }
             }
         }

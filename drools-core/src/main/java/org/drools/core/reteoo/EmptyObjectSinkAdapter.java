@@ -18,14 +18,14 @@
  */
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
 

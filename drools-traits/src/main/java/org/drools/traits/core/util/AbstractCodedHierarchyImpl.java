@@ -58,9 +58,6 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
                 }
             }
             add( node );
-//            System.out.println( " Added inst node " + node );
-//            System.out.println( " \t parents " + parents( key ) );
-//            System.out.println( " \t children " + children( key ) );
         }
     }
 

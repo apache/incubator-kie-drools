@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.ReteEvaluator;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.rule.EvalCondition;
+import org.drools.core.common.ReteEvaluator;
 
 public class ConditionalBranchEvaluator implements Externalizable {
 

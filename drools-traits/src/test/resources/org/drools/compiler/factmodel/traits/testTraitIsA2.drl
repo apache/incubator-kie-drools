@@ -35,12 +35,10 @@ rule "print student"
     when
         student : Person( this isA Student )
     then
-        // System.out.println("Person is a student: " + student);
 end
 
 rule "print school"
     when
         Student( $school : school )
     then
-        // System.out.println("Student is attending " + $school);
 end

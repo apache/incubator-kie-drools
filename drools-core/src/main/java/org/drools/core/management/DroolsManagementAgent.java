@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
@@ -46,8 +47,8 @@ import static org.drools.base.util.Drools.isNativeImage;
  */
 public interface DroolsManagementAgent extends KieManagementAgentMBean {
 
-	String CONTAINER_NAME_PREFIX = "org.kie";
-	
+    String CONTAINER_NAME_PREFIX = "org.kie";
+    
     Logger logger = LoggerFactory.getLogger(DroolsManagementAgent.class);
 
     class DroolsManagementAgentHolder {
@@ -58,23 +59,23 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         return DroolsManagementAgentHolder.INSTANCE;
     }
 
-	static ObjectName createObjectNameFor(InternalRuleBase kbase) {
-		return DroolsManagementAgent.createObjectName(
-					DroolsManagementAgent.createObjectNameBy(kbase.getContainerId())
-					+ ",kbaseId=" + ObjectName.quote(kbase.getId())
-					);
-	}
-	
-	static ObjectName createObjectNameFor(InternalWorkingMemory ksession) {
-		return DroolsManagementAgent.createObjectName(
-				DroolsManagementAgent.createObjectNameFor(ksession.getKnowledgeBase()) + 
-				",group=Sessions,ksessionId=Session-"+ksession.getIdentifier());
-	}
-	
-	static ObjectName createObjectNameBy(String containerId) {
-		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId));
-	}
-	
+    static ObjectName createObjectNameFor(InternalRuleBase kbase) {
+        return DroolsManagementAgent.createObjectName(
+                    DroolsManagementAgent.createObjectNameBy(kbase.getContainerId())
+                    + ",kbaseId=" + ObjectName.quote(kbase.getId())
+                    );
+    }
+    
+    static ObjectName createObjectNameFor(InternalWorkingMemory ksession) {
+        return DroolsManagementAgent.createObjectName(
+                DroolsManagementAgent.createObjectNameFor(ksession.getKnowledgeBase()) + 
+                ",group=Sessions,ksessionId=Session-"+ksession.getIdentifier());
+    }
+
+    static ObjectName createObjectNameBy(String containerId) {
+        return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId));
+    }
+
     static ObjectName createObjectNameBy(String containerId, String kbaseId, KieSessionModel.KieSessionType ksessionType, String ksessionName) {
         return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId) 
                     + ",kbaseId=" + ObjectName.quote(kbaseId) 
@@ -163,28 +164,37 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (!(obj instanceof CBSKey))
+            }
+            if (!(obj instanceof CBSKey)) {
                 return false;
+            }
             CBSKey other = (CBSKey) obj;
             if (kbaseId == null) {
-                if (other.kbaseId != null)
+                if (other.kbaseId != null) {
                     return false;
-            } else if (!kbaseId.equals(other.kbaseId))
+                }
+            } else if (!kbaseId.equals(other.kbaseId)) {
                 return false;
+            }
             if (kcontainerId == null) {
-                if (other.kcontainerId != null)
+                if (other.kcontainerId != null) {
                     return false;
-            } else if (!kcontainerId.equals(other.kcontainerId))
+                }
+            } else if (!kcontainerId.equals(other.kcontainerId)) {
                 return false;
+            }
             if (ksessionName == null) {
-                if (other.ksessionName != null)
+                if (other.ksessionName != null) {
                     return false;
-            } else if (!ksessionName.equals(other.ksessionName))
+                }
+            } else if (!ksessionName.equals(other.ksessionName)) {
                 return false;
+            }
             return true;
         }
 

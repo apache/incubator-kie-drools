@@ -22,15 +22,14 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
+
 import org.drools.core.util.Queue.QueueEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

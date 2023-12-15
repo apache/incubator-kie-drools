@@ -109,7 +109,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
     protected void encode( HierNode<T> node ) {
         Collection<HierNode<T>> parents = node.getParents();
-        //System.out.println( "Trying to encode " + node );
         switch ( parents.size() ) {
             case 0 :
                 BitSet zero = new BitSet();
@@ -143,7 +142,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
                 break;
             default:
                 inheritMerged( node );
-                //System.out.println( " ----------------------------------------------------------------------------------------- " );
                 resolveConflicts( node );
                 break;
         }
@@ -155,21 +153,17 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
         Collection<HierNode<T>> nodes = new ArrayList<>( getNodes() );
         for ( HierNode<T> y : nodes ) {
             if ( incomparable( x, y ) ) {
-//                System.out.println( " \t\tIncomparability between " + x + " and " + y );
                 int sup = superset( y, x );
                 if ( sup == 0 ) {
-                    //System.out.println( " \t\tIncomparable, with same mask " + y );
                     // can't use update mask here, or the already existing node would be removed
                     x.setBitMask( increment( x.getBitMask(), freeBit( x ) ) );
                     propagate( y, freeBit( x, y ) );
                 }
                 if ( sup > 0 ) {
-//                    System.out.println( " \t\tIncomparable, but as parent " + y );
                     updateMask( x, increment( x.getBitMask(), freeBit( x ) ) );
                 }
                 int sub = superset( x, y );
                 if ( sub > 0 ) {
-//                    System.out.println( " \t\tIncomparable, but as child " + y );
                     modify( x, y );
                     conflicted = true;
                 }
@@ -184,12 +178,9 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
     }
 
     protected void modify( HierNode<T> x, HierNode<T> y ) {
-        //System.out.println( "Modifying on a inc between " + x + " and " + y );
 
         int i = freeBit( x, y );
-        //System.out.println( "I " + i );
 
-        //System.out.println( "Getting parents of " + y + " >> " + y.getParents() );
         Collection<HierNode<T>> py = y.getParents();
         BitSet t = new BitSet( y.getBitMask().length() );
         for ( HierNode<T> parent : py ) {
@@ -202,10 +193,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
         if ( inDex < 0 ) {
             propagate( y, i );
         } else {
-
-            //System.out.println( "D " + toBinaryString( d ) );
-
-
             Set<HierNode<T>> ancestors = ancestorNodes( x );
             Set<HierNode<T>> affectedAncestors = new HashSet<>();
 
@@ -214,16 +201,11 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
                     affectedAncestors.add( anc );
                 }
             }
-            //System.out.println( "Ancestors of " + x + " >> " + ancestors );
-            //System.out.println( "Affected " + x + " >> " + affectedAncestors );
-
             if ( affectedAncestors.size() == 0 ) {
                 return;
             }
 
             Set<HierNode<T>> gcs = gcs( affectedAncestors );
-            //System.out.println( "GCS of Affected " + gcs );
-
             Set<HierNode<T>> affectedDescendants = new HashSet<>();
             for ( HierNode<T> g : gcs ) {
                 affectedDescendants.addAll( descendantNodes( g ) );
@@ -251,8 +233,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
                 subMask = increment( subMask, i );
 
                 updateMask( sub, subMask );
-
-                //System.out.println( "\tModified Desc" + sub );
             }
 
             inDex = d.nextSetBit( inDex + 1 );
@@ -286,7 +266,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
         while ( iter.hasNext() ) {
             a.and( iter.next().getBitMask() );
         }
-        //System.out.println( "Root mask for ceil " + toBinaryString( a ) );
         for ( HierNode<T> node : getNodes() ) {
             if ( superset( node.getBitMask(), a ) >= 0 ) {
                 s.add( node );
@@ -298,7 +277,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
     }
 
     protected Set<HierNode<T>> ceil( Set<HierNode<T>> s ) {
-        //System.out.println( "Looking for the ceiling of " + s);
         if ( s.size() <= 1 ) { return s; }
         Set<HierNode<T>> ceil = new HashSet<>( s );
         for ( HierNode<T> x : s ) {
@@ -309,12 +287,10 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
                 }
             }
         }
-        //System.out.println("Found ceiling " + ceil);
         return ceil;
     }
 
     protected Set<HierNode<T>> floor( Set<HierNode<T>> s ) {
-        //System.out.println( "Looking for the floor of " + s);
         if ( s.size() <= 1 ) { return s; }
         Set<HierNode<T>> ceil = new HashSet<>( s );
         for ( HierNode<T> x : s ) {
@@ -325,7 +301,6 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
                 }
             }
         }
-        //System.out.println("Found ceiling " + ceil);
         return ceil;
     }
 
@@ -370,30 +345,25 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
     }
 
     protected int freeBit( HierNode<T> x, HierNode<T> z ) {
-        //System.out.println( "Looking for a free bit in node " + x );
         BitSet forbid = new BitSet( this.size() );
         forbid.or( x.getBitMask() );
         for ( HierNode<T> y : getNodes() ) {
 
             if ( superset( y, x ) > 0 ) {
-                //System.out.println( "\t\t Subtype " + y + " contributes " + toBinaryString( y.getBitMask() ) );
                 forbid.or( y.getBitMask() );
             }
 
             if ( z != null ) {
                 if ( superset( y, z ) > 0 ) {
-//                  System.out.println( "\t\t Subtype " + y + " contributes " + toBinaryString( y.getBitMask() ) );
                     forbid.or( y.getBitMask() );
                 }
             }
 
             if ( superset( x, y ) < 0 ) {
                 BitSet diff = singleBitDiff( x.getBitMask(), y.getBitMask() );
-                //System.out.println( "\t\t Incomparable " + y + " contributes " + toBinaryString( diff ) );
                 forbid.or(diff);
             }
         }
-        //System.out.println( "\t Forbidden mask " + toBinaryString( forbid ) );
         return firstZero( forbid );
     }
 

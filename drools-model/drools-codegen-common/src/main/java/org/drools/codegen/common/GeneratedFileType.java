@@ -33,6 +33,13 @@ public interface GeneratedFileType {
     GeneratedFileType STATIC_HTTP_RESOURCE = of(Category.STATIC_HTTP_RESOURCE);
     GeneratedFileType COMPILED_CLASS = of(Category.COMPILED_CLASS);
 
+    GeneratedFileType RULE = of("RULE", Category.SOURCE);
+
+    GeneratedFileType CONFIG = of("CONFIG", Category.SOURCE);
+    GeneratedFileType DECLARED_TYPE = of("DECLARED_TYPE", Category.SOURCE);
+
+    GeneratedFileType REST = of("REST", Category.SOURCE, true, true);
+
     String name();
 
     Category category();

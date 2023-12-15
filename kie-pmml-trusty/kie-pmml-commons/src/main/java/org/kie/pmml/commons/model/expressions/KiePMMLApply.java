@@ -32,9 +32,6 @@ import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Functions.html#xsdElement_Apply>Apply</a>
- */
 public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = -6975232157053159223L;

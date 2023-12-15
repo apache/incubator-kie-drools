@@ -98,6 +98,20 @@ public class ConstraintCompilerTest implements CompilerTest {
                        "$bd1.remainder(new java.math.BigDecimal(10), java.math.MathContext.DECIMAL128)");
     }
 
+    @Test
+    public void testBigDecimalValueOfInteger() {
+        testExpression(c -> c.addDeclaration("$bdvalue", BigDecimal.class),
+                "$bdvalue + BigDecimal.valueOf(10)",
+                "$bdvalue.add(BigDecimal.valueOf(10), java.math.MathContext.DECIMAL128)");
+    }
+
+    @Test
+    public void testBigDecimalValueOfDouble() {
+        testExpression(c -> c.addDeclaration("$bdvalue", BigDecimal.class),
+                "$bdvalue + BigDecimal.valueOf(0.5)",
+                "$bdvalue.add(BigDecimal.valueOf(0.5), java.math.MathContext.DECIMAL128)");
+    }
+
     public void testExpression(Consumer<MvelCompilerContext> testFunction,
                                String inputExpression,
                                String expectedResult,

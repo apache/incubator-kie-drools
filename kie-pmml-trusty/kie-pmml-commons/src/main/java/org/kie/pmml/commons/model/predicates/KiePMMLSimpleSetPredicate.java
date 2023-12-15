@@ -32,9 +32,6 @@ import org.kie.pmml.api.utils.ConverterTypeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate>SimpleSetPredicate</a>
- */
 public class KiePMMLSimpleSetPredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimpleSetPredicate.class);

@@ -18,6 +18,10 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.InternalFactHandle;
@@ -25,10 +29,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class MockObjectSource extends ObjectSource {
     private static final long serialVersionUID = 510l;

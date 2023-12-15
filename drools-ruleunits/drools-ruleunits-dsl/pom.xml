@@ -39,7 +39,7 @@
     </description>
 
     <properties>
-        <java.module.name>org.drools.ruleunits.impl</java.module.name>
+        <java.module.name>org.drools.ruleunits.dsl</java.module.name>
     </properties>
 
     <dependencies>

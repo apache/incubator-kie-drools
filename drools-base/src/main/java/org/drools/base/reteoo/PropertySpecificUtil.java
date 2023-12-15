@@ -22,17 +22,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.base.rule.TypeDeclaration;
+import org.drools.base.RuleBase;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ObjectType;
 import org.drools.base.factmodel.traits.TraitConstants;
 import org.drools.base.facttemplates.FactTemplateObjectType;
-import org.drools.base.base.ObjectType;
+import org.drools.base.rule.TypeDeclaration;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.AllSetButLastBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
 import org.drools.util.bitmask.EmptyButLastBitMask;
-import org.drools.base.RuleBase;
 
 public class PropertySpecificUtil {
 

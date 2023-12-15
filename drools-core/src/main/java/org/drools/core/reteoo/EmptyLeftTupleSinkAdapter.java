@@ -18,12 +18,12 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.base.common.RuleBasePartitionId;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.base.common.RuleBasePartitionId;
+import org.drools.core.common.BaseNode;
 
 public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 

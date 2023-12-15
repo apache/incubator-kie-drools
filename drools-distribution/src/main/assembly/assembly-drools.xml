@@ -14,7 +14,7 @@
   <fileSets>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <includes>
-        <include>../LICENSE-ASL-2.0.txt</include>
+        <include>../LICENSE-Apache-2.0.txt</include>
       </includes>
       <outputDirectory/>
     </fileSet>
@@ -89,7 +89,7 @@
         <include>ch.qos.logback:logback-classic</include>
       </includes>
       <excludes>
-        <exclude>*:sources</exclude>
+        <exclude>*:*:jar:sources</exclude>
       </excludes>
       <outputDirectory>examples/binaries</outputDirectory>
       <useTransitiveDependencies>true</useTransitiveDependencies>

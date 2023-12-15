@@ -21,8 +21,8 @@
   <url>http://www.kiegroup.org</url>
   <inceptionYear>2001</inceptionYear>
   <organization>
-    <name>JBoss by Red Hat</name>
-    <url>http://www.jboss.org/</url>
+    <name>The Apache Software Foundation</name>
+    <url>https://apache.org/</url>
   </organization>
 
   <licenses>
@@ -32,76 +32,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <properties>
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-  </properties>
-
-  <repositories>
-    <!-- Having the <repositories> in this POM is an ugly hack to make sure we can always find
-         the jboss-integration-platform-parent (ip-parent). In most of the cases the ip-parent is available directly from
-         Maven Central. However, when new version gets released it takes up to 24 hours to get it synced into the Maven
-         Central. So in that period the local build of droolsjbpm-build-bootstrap would fail (unless one would
-         locally build the ip-parent from the sources as well, which is not something users should be doing). Configuring the
-         'repository.jboss.org' directly works around this issue. -->
-    <repository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the JBoss.org one).
-           Artifacts with release (fixed) versions are being downloaded primarily from central. Without the central being the
-           first repository the JBoss.org Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use JBoss.org repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
-    <!-- Conventions are described in http://community.jboss.org/wiki/MavenGettingStarted-Developers -->
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the JBoss.org one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the JBoss.org Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use JBoss.org repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
   <!-- IMPORTANT: Do not declare any build things here! Declare them in kie-user-bom-parent. -->
   <build/>

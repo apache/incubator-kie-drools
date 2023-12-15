@@ -34,7 +34,7 @@
   <name>Drools :: Impact Analysis Graph :: Common</name>
 
   <properties>
-    <java.module.name>org.drools.impact.analysis.graph</java.module.name>
+    <java.module.name>org.drools.impact.analysis.graph.common</java.module.name>
   </properties>
 
   <dependencies>
@@ -46,10 +46,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
     </dependency>
 
     <dependency>

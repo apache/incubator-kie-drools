@@ -224,17 +224,17 @@ public class KieSessionModelImpl
     }
     
     public ChannelModel newChannelModel(String name, String type) {
-    	ChannelModelImpl channelModel = new ChannelModelImpl(this, name, type);
-    	channels.add(channelModel);
-    	return channelModel;
+        ChannelModelImpl channelModel = new ChannelModelImpl(this, name, type);
+        channels.add(channelModel);
+        return channelModel;
     }
     
     public List<ChannelModel> getChannelModels() {
-    	return channels;
+        return channels;
     }
 
     public void addChannelModel(ChannelModel channel) {
-    	channels.add(channel);
+        channels.add(channel);
     }
 
     public KieSessionModel addCalendar(String name, String type) {

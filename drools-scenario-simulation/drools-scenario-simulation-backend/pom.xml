@@ -33,6 +33,10 @@
   <artifactId>drools-scenario-simulation-backend</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.drools.scenariosimulation.backend</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

@@ -18,12 +18,12 @@
  */
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.drools.compiler.builder.impl.PackageRegistryCompiler;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class ConsequenceCompilationPhase implements CompilationPhase {
     private PackageRegistryCompiler packageRegistryCompiler;

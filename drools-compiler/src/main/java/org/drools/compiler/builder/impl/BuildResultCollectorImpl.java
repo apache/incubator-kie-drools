@@ -18,6 +18,11 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsWarning;
@@ -30,11 +35,6 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 

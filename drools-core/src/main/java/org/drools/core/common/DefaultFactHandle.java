@@ -18,6 +18,16 @@
  */
 package org.drools.core.common;
 
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -30,15 +40,6 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -97,7 +98,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                              final Object object,
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint) {
-        this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint );
+        this( id, 0, object, recency, wmEntryPoint );
     }
 
     public DefaultFactHandle(final long id,
@@ -182,14 +183,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public int getObjectHashCode() {
-        if (this.objectHashCode == 0 && this.object != null) {
+        if (this.objectHashCode == 0) {
             this.objectHashCode = object.hashCode();
         }
         return objectHashCode;
     }
 
     public int getIdentityHashCode() {
-        if (this.identityHashCode == 0 && this.object != null) {
+        if (this.identityHashCode == 0) {
             this.identityHashCode = determineIdentityHashCode( object );
         }
         return this.identityHashCode;

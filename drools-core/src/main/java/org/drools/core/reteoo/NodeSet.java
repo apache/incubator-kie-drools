@@ -18,13 +18,13 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.drools.core.common.BaseNode;
 
 public class NodeSet implements Iterable<BaseNode> {
     private final List<BaseNode> nodes = new ArrayList<>();

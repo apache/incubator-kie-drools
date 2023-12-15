@@ -18,9 +18,9 @@
  */
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.base.rule.EvalCondition;
 import org.drools.base.rule.RuleConditionElement;
+import org.drools.core.reteoo.CoreComponentFactory;
 
 public class EvalBuilder
     implements

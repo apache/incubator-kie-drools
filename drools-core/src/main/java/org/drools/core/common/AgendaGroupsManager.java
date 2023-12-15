@@ -18,10 +18,6 @@
  */
 package org.drools.core.common;
 
-import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.RuntimeComponentFactory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,6 +31,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 
 public interface AgendaGroupsManager extends Externalizable {
 
@@ -472,7 +472,7 @@ public interface AgendaGroupsManager extends Externalizable {
                 return;
             }
             this.workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group, this.workingMemory );
-            while ( removeGroup(group) ); // keep removing while group is on the stack
+            while ( removeGroup(group) ) {}; // keep removing while group is on the stack
             group.setActive( false );
             innerDeactiveRuleFlowGroup( group );
             this.workingMemory.getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );

@@ -69,5 +69,4 @@ rule "By thing"
         $d : PojoFact()
         exists Thing( core == $d )
     then
-        System.out.println(" !!QQE!");
 end

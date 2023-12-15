@@ -33,6 +33,10 @@
   <name>KIE :: PMML :: Evaluator :: Utils</name>
   <description>Evaluation utils for PMML models inside KIE runtime environment</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.evaluator.utils</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

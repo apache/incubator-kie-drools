@@ -18,9 +18,9 @@
  */
 package org.drools.core.phreak;
 
-import org.drools.core.common.InternalAgendaGroup;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.util.LinkedList;

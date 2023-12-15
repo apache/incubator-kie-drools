@@ -23,9 +23,6 @@ import java.util.List;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_LinearNorm>LinearNorm</a>
- */
 public class KiePMMLLinearNorm extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = -6437255657731885594L;

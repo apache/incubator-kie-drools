@@ -25,9 +25,9 @@ import java.lang.annotation.Annotation;
 import java.util.function.Function;
 
 import org.drools.base.base.DroolsQuery;
+import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.rule.Declaration;
-import org.drools.base.base.ObjectType;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.runtime.rule.Match;
 

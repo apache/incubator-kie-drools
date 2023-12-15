@@ -68,10 +68,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
             boolean allowed = ! vetoed || sameAndNotCoveredByDescendants((TraitProxyImpl) factHandle.getObject(), typeMask );
             if ( allowed ) {
-                //System.err.println(" INSERT PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 proxy.assignOtn( this.typeMask );
-            } else {
-                //System.err.println(" INSERT BLOCK !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
             }
             return allowed;
         }
@@ -134,8 +131,6 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                                                 modifyPreviousTuples,
                                                 context.adaptModificationMaskForObjectType(objectType, reteEvaluator),
                                                 reteEvaluator);
-            } else {
-                //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
             }
         } else {
             this.sink.propagateModifyObject(factHandle,

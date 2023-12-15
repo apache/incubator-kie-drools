@@ -18,12 +18,12 @@
  */
 package org.kie.internal.ruleunit;
 
+import org.kie.api.conf.KieBaseOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
+
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
-
-import org.kie.api.conf.KieBaseOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
 
 public interface RuleUnitDescription {
 
@@ -60,4 +60,8 @@ public interface RuleUnitDescription {
     ClockTypeOption getClockType();
 
     Collection<KieBaseOption> getKieBaseOptions();
+
+    default boolean isGenerated() {
+        return false;
+    }
 }

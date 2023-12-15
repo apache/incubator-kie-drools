@@ -18,11 +18,11 @@
  */
 package org.drools.compiler.builder.impl;
 
+import java.util.Collection;
+
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
-
-import java.util.Collection;
 
 /**
  * Holds build processing info, warnings and errors.

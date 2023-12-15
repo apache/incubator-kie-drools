@@ -113,12 +113,22 @@ public class Interval implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         Interval other = (Interval) obj;
-        if ( lowerBound != other.lowerBound ) return false;
-        if ( upperBound != other.upperBound ) return false;
+        if ( lowerBound != other.lowerBound ) {
+            return false;
+        }
+        if ( upperBound != other.upperBound ) {
+            return false;
+        }
         return true;
     }
     

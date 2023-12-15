@@ -32,6 +32,10 @@
   <name>KIE :: PMML :: Models :: Mining :: Compiler</name>
   <description>PMML Mining Compiler</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.mining.compiler</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

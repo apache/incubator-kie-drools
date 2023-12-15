@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.rule.Dialectable;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsWarning;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.rule.Dialectable;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.parser.DroolsError;
 

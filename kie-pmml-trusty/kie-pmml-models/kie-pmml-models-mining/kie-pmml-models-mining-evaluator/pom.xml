@@ -31,6 +31,10 @@
   <name>KIE :: PMML :: Models :: Mining :: Evaluator</name>
   <description>PMML Mining Evaluator</description>
 
+  <properties>
+    <java.module.name>org.kie.pmml.models.mining.evaluator</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- PMML -->
     <dependency>

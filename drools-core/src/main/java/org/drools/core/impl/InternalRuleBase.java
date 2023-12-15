@@ -18,6 +18,14 @@
  */
 package org.drools.core.impl;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
+
 import org.drools.base.RuleBase;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.InternalKnowledgePackage;
@@ -48,14 +56,6 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSessionConfiguration;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Future;
 
 public interface InternalRuleBase extends RuleBase {
 

@@ -18,37 +18,22 @@
  */
 package org.drools.mvel;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.drools.base.base.ValueResolver;
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.mvel.accessors.ClassFieldReader;
-import org.drools.base.base.ClassObjectType;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
-import org.drools.core.reteoo.RightTupleImpl;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.PredicateConstraint;
-import org.drools.base.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.rule.accessor.PredicateExpression;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.api.runtime.rule.FactHandle;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -154,99 +139,5 @@ public class FieldConstraintTest {
         // check constraint
         assertThat(constraint.isAllowed(stiltonHandle,
                 ksession)).isFalse();
-    }
-
-    /**
-     * <pre>
-     *
-     *
-     *                (Cheese (price ?price1 )
-     *                (Cheese (price ?price2&amp;:(= ?price2 (* 2 ?price1) )
-     *
-     *
-     * </pre>
-     */
-    @Test
-    public void testPredicateConstraint() {
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
-
-        final ReadAccessor priceExtractor = store.getReader( Cheese.class,
-                                                                     "price" );
-
-        Pattern pattern = new Pattern( 0,
-                                       new ClassObjectType( Cheese.class ) );
-
-        // Bind the extractor to a decleration
-        // Declarations know the pattern they derive their value form
-        final Declaration price1Declaration = new Declaration( "price1",
-                                                               priceExtractor,
-                                                               pattern );
-
-        pattern = new Pattern( 1,
-                               new ClassObjectType( Cheese.class ) );
-
-        // Bind the extractor to a decleration
-        // Declarations know the pattern they derive their value form
-        final Declaration price2Declaration = new Declaration( "price2",
-                                                               priceExtractor,
-                                                               pattern );
-
-        final PredicateExpression evaluator = new PredicateExpression() {
-
-            private static final long serialVersionUID = 510l;
-
-            public boolean evaluate(FactHandle handle,
-                                    BaseTuple tuple,
-                                    Declaration[] previousDeclarations,
-                                    Declaration[] localDeclarations,
-                                    ValueResolver valueResolver,
-                                    Object context) {
-                int price1 = previousDeclarations[0].getIntValue( valueResolver,
-                                                                  tuple.getObject( previousDeclarations[0] ) );
-                int price2 = localDeclarations[0].getIntValue( valueResolver,
-                                                               handle.getObject() );
-
-                return (price2 == (price1 * 2));
-
-            }
-
-            public Object createContext() {
-                return null;
-            }
-
-            public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
-            }
-
-            public void writeExternal(ObjectOutput out) throws IOException {
-            }
-        };
-
-        final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
-                                                                         new Declaration[]{price1Declaration},
-                                                                         new Declaration[]{price2Declaration} );
-
-        final Cheese cheddar0 = new Cheese( "cheddar",
-                                            5 );
-        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar0 );
-        JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
-                                         null,
-                                         true );
-
-        final Cheese cheddar1 = new Cheese( "cheddar",
-                                            10 );
-        final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
-
-        tuple = new JoinNodeLeftTuple( tuple,
-                               new RightTupleImpl( f1, null ),
-                               null,
-                               true );
-
-        final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
-        context.updateFromTuple(ksession,
-                tuple);
-        assertThat(constraint1.isAllowedCachedLeft(context,
-                f1)).isTrue();
     }
 }

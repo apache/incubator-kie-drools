@@ -18,6 +18,9 @@
  */
 package org.drools.core.reteoo;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
@@ -29,9 +32,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
-
-import java.util.Collection;
-import java.util.List;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.calculatePositiveMask;

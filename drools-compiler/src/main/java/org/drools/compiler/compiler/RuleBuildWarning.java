@@ -18,8 +18,8 @@
  */
 package org.drools.compiler.compiler;
 
-import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.drl.ast.descr.BaseDescr;
 
 public class RuleBuildWarning extends DescrBuildWarning {
     private final RuleImpl rule;

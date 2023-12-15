@@ -22,12 +22,12 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.rule.TypeDeclaration;
+import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderErrors;

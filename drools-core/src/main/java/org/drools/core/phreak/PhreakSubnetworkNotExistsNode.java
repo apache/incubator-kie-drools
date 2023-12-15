@@ -18,16 +18,16 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
-import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.index.TupleList;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;

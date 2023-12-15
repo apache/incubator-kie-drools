@@ -18,11 +18,6 @@
  */
 package org.drools.core.base.accumulators;
 
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.base.rule.Collect;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.accessor.Accumulator;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -32,6 +27,10 @@ import java.util.Objects;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.Collect;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.accessor.Accumulator;
+import org.drools.core.reteoo.LeftTuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**

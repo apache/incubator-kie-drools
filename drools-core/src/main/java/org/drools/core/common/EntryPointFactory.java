@@ -18,9 +18,9 @@
  */
 package org.drools.core.common;
 
+import org.drools.base.rule.EntryPointId;
 import org.drools.core.EntryPointsManager;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.base.rule.EntryPointId;
 
 public interface EntryPointFactory {
 

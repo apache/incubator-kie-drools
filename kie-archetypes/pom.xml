@@ -40,6 +40,7 @@
     <module>kie-drools-dmn-archetype</module>
     <module>kie-drools-exec-model-ruleunit-archetype</module>
     <module>kie-drools-exec-model-archetype</module>
+    <module>kie-drools-yaml-archetype</module>
   </modules>
 
   <!-- ensure integration test of the archetypes, after the kie-maven-plugin build -->

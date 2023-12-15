@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.drools.base.phreak.ReactiveObject;
-import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 import org.drools.base.reteoo.BaseTuple;
+import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 
 public class ReactiveCollection<T, W extends Collection<T>> extends AbstractReactiveObject implements Collection<T> {
 

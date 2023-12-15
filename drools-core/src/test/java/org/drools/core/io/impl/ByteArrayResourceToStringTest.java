@@ -18,16 +18,16 @@
  */
 package org.drools.core.io.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.drools.io.ByteArrayResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

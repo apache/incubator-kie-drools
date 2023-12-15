@@ -22,10 +22,10 @@ package org.drools.core.reteoo;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.base.rule.WindowDeclaration;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalRuleBase;
 
 public interface RuleBuilder {
 

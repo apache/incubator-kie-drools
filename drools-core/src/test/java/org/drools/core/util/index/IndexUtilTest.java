@@ -18,6 +18,11 @@
  */
 package org.drools.core.util.index;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.base.reteoo.BaseTuple;
@@ -43,11 +48,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.utils.ChainedProperties;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -20,9 +20,9 @@ package org.drools.core.runtime.rule.impl;
 
 import java.util.List;
 
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 

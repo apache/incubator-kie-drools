@@ -18,6 +18,24 @@
  */
 package org.drools.core.impl;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.common.PartitionsManager;
 import org.drools.base.common.RuleBasePartitionId;
@@ -79,31 +97,15 @@ import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
-import static org.drools.util.bitmask.BitMaskUtil.isSet;
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.util.bitmask.BitMaskUtil.isSet;
 
 public class KnowledgeBaseImpl implements InternalRuleBase {
 
     protected static final Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
+
+    private static final KieWeavers WEAVERS = KieService.load( KieWeavers.class );
 
     private Set<EntryPointNode> addedEntryNodeCache;
     private Set<EntryPointNode> removedEntryNodeCache;
@@ -445,9 +447,8 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-                KieWeavers weavers = KieService.load( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                    weavers.weave( newPkg, rtkKpg );
+                    WEAVERS.weave( newPkg, rtkKpg );
                 }
             }
 
@@ -817,12 +818,11 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         }
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-            KieWeavers weavers = KieService.load(KieWeavers.class);
-            if (weavers == null) {
+            if (WEAVERS == null) {
                 throw new IllegalStateException("Unable to find KieWeavers implementation");
             }
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                weavers.merge( pkg, rtkKpg );
+                WEAVERS.merge( pkg, rtkKpg );
             }
         }
     }
@@ -880,7 +880,9 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     }
 
     public void registeRremovedEntryNodeCache(EntryPointNode node) {
-        if (removedEntryNodeCache == null) removedEntryNodeCache = new HashSet<>();
+        if (removedEntryNodeCache == null) {
+            removedEntryNodeCache = new HashSet<>();
+        }
         removedEntryNodeCache.add(node);
     }
 

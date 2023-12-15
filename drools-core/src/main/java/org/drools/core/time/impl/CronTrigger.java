@@ -18,12 +18,12 @@
  */
 package org.drools.core.time.impl;
 
-import org.drools.base.time.Trigger;
-import org.kie.api.runtime.Calendars;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.drools.base.time.Trigger;
+import org.kie.api.runtime.Calendars;
 
 public class CronTrigger
     implements

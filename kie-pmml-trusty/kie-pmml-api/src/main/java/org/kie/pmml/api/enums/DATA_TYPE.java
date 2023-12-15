@@ -29,9 +29,6 @@ import org.kie.pmml.api.exceptions.KieDataFieldException;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.utils.ConverterTypeUtil;
 
-/**
- * @see <a href=http://dmg.org/pmml/v4-4/DataDictionary.html#xsdType_DATATYPE>DATATYPE</a>
- */
 public enum DATA_TYPE implements Named {
 
     STRING("string", String.class),

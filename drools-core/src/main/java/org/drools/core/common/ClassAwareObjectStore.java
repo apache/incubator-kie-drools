@@ -18,10 +18,6 @@
  */
 package org.drools.core.common;
 
-import org.drools.base.factmodel.traits.CoreWrapper;
-import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.ObjectFilter;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
+
+import org.drools.base.factmodel.traits.CoreWrapper;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.ObjectFilter;
 
 public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 

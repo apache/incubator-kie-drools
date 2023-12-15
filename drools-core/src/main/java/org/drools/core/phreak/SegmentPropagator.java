@@ -28,9 +28,9 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 
+import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushWhenRiaNode;
-import static org.drools.base.reteoo.NodeTypeEnums.hasNodeMemory;
 
 public class SegmentPropagator {
 
@@ -134,7 +134,7 @@ public class SegmentPropagator {
                 break;
             default:
                 // no clash, so just add
-                if ( hasNodeMemory( childLeftTuple.getTupleSink() ) ) {
+                if ( childLeftTuple.getTupleSink().getType() == AccumulateNode ) {
                     trgLeftTuples.addInsert(childLeftTuple);
                 } else {
                     trgLeftTuples.addUpdate(childLeftTuple);

@@ -21,6 +21,8 @@ package org.drools.compiler.compiler;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.compiler.rule.builder.AccumulateBuilder;
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.EnabledBuilder;
@@ -32,15 +34,11 @@ import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PatternBuilderForQuery;
-import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.util.TypeResolver;
-import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
@@ -52,6 +50,7 @@ import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.util.TypeResolver;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -84,8 +83,6 @@ public interface Dialect {
     AccumulateBuilder getAccumulateBuilder();
 
     GroupByBuilder getGroupByBuilder();
-
-    PredicateBuilder getPredicateBuilder();
 
     ConsequenceBuilder getConsequenceBuilder();
 
@@ -256,11 +253,6 @@ public interface Dialect {
         }
 
         public GroupByBuilder getGroupByBuilder() {
-            return throwExceptionForMissingMvel();
-        }
-
-        @Override
-        public PredicateBuilder getPredicateBuilder() {
             return throwExceptionForMissingMvel();
         }
 

@@ -76,13 +76,23 @@ public class DefaultJobHandle extends AbstractJobHandle<DefaultJobHandle> implem
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final DefaultJobHandle other = (DefaultJobHandle) obj;
         if ( getJob() == null ) {
-            if ( other.getJob() != null ) return false;
-        } else if ( !getJob().equals( other.getJob() ) ) return false;
+            if ( other.getJob() != null ) {
+                return false;
+            }
+        } else if ( !getJob().equals( other.getJob() ) ) {
+            return false;
+        }
         return true;
     }
 

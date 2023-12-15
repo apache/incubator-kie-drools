@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.base.factmodel.traits.Alias;
 import org.drools.base.base.CoreComponentsBuilder;
 import org.drools.base.base.FieldAccessor;
+import org.drools.base.factmodel.traits.Alias;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
@@ -54,8 +54,8 @@ public class FieldDefinition
     private String             initExpr   = null;
     private boolean            recursive  = false;
     private Map<String,Object> metaData;
-	private String             getterName = null;
-	private String             setterName = null;
+    private String             getterName = null;
+    private String             setterName = null;
 
     private List<AnnotationDefinition> annotations;
 
@@ -176,9 +176,9 @@ public class FieldDefinition
      * @return
      */
     public String getReadMethod() {
-    	if ( getterName != null ) {
-    		return getterName;
-	    }
+        if ( getterName != null ) {
+            return getterName;
+        }
         String prefix;
         if ( "boolean".equals( this.type.getRawType() ) ) {
             prefix = "is";
@@ -196,7 +196,7 @@ public class FieldDefinition
      */
     public String getWriteMethod() {
         return setterName != null ? setterName :
-		        "set" + this.name.substring( 0, 1 ).toUpperCase() + this.name.substring( 1 );
+                "set" + this.name.substring( 0, 1 ).toUpperCase() + this.name.substring( 1 );
     }
 
     /**
@@ -534,19 +534,19 @@ public class FieldDefinition
         this.overriding = overriding;
     }
 
-	public String getGetterName() {
-		return getterName;
-	}
+    public String getGetterName() {
+        return getterName;
+    }
 
-	public void setGetterName( String getterName ) {
-		this.getterName = getterName;
-	}
+    public void setGetterName( String getterName ) {
+        this.getterName = getterName;
+    }
 
-	public String getSetterName() {
-		return setterName;
-	}
+    public String getSetterName() {
+        return setterName;
+    }
 
-	public void setSetterName( String setterName ) {
-		this.setterName = setterName;
-	}
+    public void setSetterName( String setterName ) {
+        this.setterName = setterName;
+    }
 }

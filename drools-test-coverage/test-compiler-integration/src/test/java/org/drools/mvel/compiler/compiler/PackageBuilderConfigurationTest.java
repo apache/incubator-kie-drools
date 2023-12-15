@@ -18,11 +18,11 @@
  */
 package org.drools.mvel.compiler.compiler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.QueryImpl;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.AnalysisResult;
@@ -42,18 +42,11 @@ import org.drools.compiler.rule.builder.GroupElementBuilder;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.PatternBuilderForQuery;
-import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.util.TypeResolver;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.base.rule.Pattern;
-import org.drools.base.definitions.rule.impl.QueryImpl;
-import org.drools.base.rule.RuleConditionElement;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -65,6 +58,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
+import org.drools.util.TypeResolver;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -76,6 +70,11 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -344,10 +343,6 @@ public class PackageBuilderConfigurationTest {
         }
 
         public PatternBuilder getPatternBuilder() {
-            return null;
-        }
-
-        public PredicateBuilder getPredicateBuilder() {
             return null;
         }
 

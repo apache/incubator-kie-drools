@@ -259,7 +259,7 @@ public class FromTest extends BaseModelTest {
                            "rule \"set a value\" when\n" +
                            "  $s : Setting( $rn: rowNo, $cn: colNo, $v: value )\n" +
                            "  $c : Cell( rowNo == $rn, colNo == $cn, value == null)\n" +
-                           "  $ctr : Counter( $count: count )\n" +
+                           "  $ctr : Counter( $count: count != 0 )\n" +
                            "then\n" +
                            "  System.out.println(\"set a value [\" + $v + \"] to $c = \" + $c);\n" +
                            "  modify( $c ){ setValue( $v ) }\n" +
@@ -269,6 +269,7 @@ public class FromTest extends BaseModelTest {
                            "  $s: Setting( $rn: rowNo, $cn: colNo, $v: value )\n" +
                            "  Cell( rowNo == $rn, colNo == $cn, value == $v, $exCells: exCells )\n" +
                            "  $c: Cell( free contains $v ) from $exCells\n" +
+                           "  Counter( $count: count != 0 )\n" +
                            "then\n" +
                            "  System.out.println(\"eliminate a value [\" + $v + \"] from Cell : $c = \" + $c);\n" +
                            "  modify( $c ){ blockValue( $v ) }\n" +
@@ -280,6 +281,7 @@ public class FromTest extends BaseModelTest {
                            "    not( $x: Cell( free contains $v )\n" +
                            "         and\n" +
                            "         Cell( this == $c, exCells contains $x ) )\n" +
+                           "    Counter( $count: count != 0 )\n" +
                            "then\n" +
                            "    System.out.println( \"done setting cell \" + $c.toString() ); \n" +
                            "    delete( $s );\n" +
@@ -288,6 +290,7 @@ public class FromTest extends BaseModelTest {
                            "when\n" +
                            "    not Setting()\n" +
                            "    $c: Cell( $rn: rowNo, $cn: colNo, freeCount == 1 )\n" +
+                           "    Counter( $count: count != 0 )\n" +
                            "then\n" +
                            "    Integer i = $c.getFreeValue();\n" +
                            "    System.out.println( \"single \" + i + \" at \" + $c.toString() );\n" +
