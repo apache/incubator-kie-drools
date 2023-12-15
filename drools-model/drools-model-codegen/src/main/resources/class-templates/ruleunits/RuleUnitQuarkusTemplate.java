@@ -28,7 +28,7 @@ import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 
-@javax.enterprise.context.ApplicationScoped
+@jakarta.enterprise.context.ApplicationScoped
 public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
 
     private static final InternalRuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel(new RULE_UNIT_MODEL(), $KieBaseOptions$);
@@ -43,8 +43,8 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
         this((RuleUnits) null);
     }
 
-    @javax.inject.Inject
-    public CLASS_NAME(javax.enterprise.inject.Instance<RuleUnits> ruleUnits) {
+    @jakarta.inject.Inject
+    public CLASS_NA(jakarta.enterprise.inject.Instance<RuleUnits> ruleUnits) {
         this(ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
     }
 

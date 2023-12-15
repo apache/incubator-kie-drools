@@ -81,10 +81,10 @@ public class KiePMMLOutputFieldFactory {
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, OUTPUTFIELD, toReturn)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(outputField.getName().getValue());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(outputField.getName());
         final RESULT_FEATURE resultFeature = RESULT_FEATURE.byName(outputField.getResultFeature().value());
         final NameExpr resultFeatureExpr = new NameExpr(RESULT_FEATURE.class.getName() + "." + resultFeature.name());
-        final Expression targetFieldExpr = outputField.getTargetField() != null ? getExpressionForObject(outputField.getTargetField().getValue()) : new NullLiteralExpr();
+        final Expression targetFieldExpr = outputField.getTargetField() != null ? getExpressionForObject(outputField.getTargetField()) : new NullLiteralExpr();
         final Expression valueExpr = outputField.getValue() != null ? getExpressionForObject(outputField.getValue()) : new NullLiteralExpr();
         final Expression dataTypeExpression = getExpressionForDataType(outputField.getDataType());
         final Expression rankExpr = outputField.getRank() != null ? getExpressionForObject(outputField.getRank()) : new NullLiteralExpr();

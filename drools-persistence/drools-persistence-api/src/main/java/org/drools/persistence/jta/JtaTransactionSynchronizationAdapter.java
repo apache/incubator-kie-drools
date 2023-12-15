@@ -18,8 +18,8 @@
  */
 package org.drools.persistence.jta;
 
-import javax.transaction.Status;
-import javax.transaction.Synchronization;
+import jakarta.transaction.Status;
+import jakarta.transaction.Synchronization;
 
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionSynchronization;

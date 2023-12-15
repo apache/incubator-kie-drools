@@ -18,7 +18,7 @@
  */
 package org.drools.commands.runtime.rule;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.command.ExecutableCommand;

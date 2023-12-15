@@ -24,8 +24,8 @@ import org.drools.codegen.common.rest.impl.CDIRestAnnotator;
 public class QuarkusDroolsModelBuildContext extends AbstractDroolsModelBuildContext {
 
     public static final String CONTEXT_NAME = "Quarkus";
-    public static final String QUARKUS_REST = "javax.ws.rs.Path";
-    public static final String QUARKUS_DI = "javax.inject.Inject";
+    public static final String QUARKUS_REST = "jakarta.ws.rs.Path";
+    public static final String QUARKUS_DI = "jakarta.inject.Inject";
 
     public final boolean hasRest;
     public final boolean hasDI;

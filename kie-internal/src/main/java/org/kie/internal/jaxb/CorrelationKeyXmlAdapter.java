@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;

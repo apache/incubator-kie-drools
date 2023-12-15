@@ -74,7 +74,7 @@ public class KiePMMLNormDiscreteFactory {
                                                                       NORM_DISCRETE, toReturn)))
                 .asObjectCreationExpr();
 
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(normDiscrete.getField().getValue());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(normDiscrete.getField());
 
         final Expression mapMissingToExpr = getExpressionForObject(normDiscrete.getMapMissingTo());
         objectCreationExpr.getArguments().set(0, nameExpr);

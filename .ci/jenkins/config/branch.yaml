@@ -1,3 +1,20 @@
+generation_config:
+  missing_environment: ignore
+
+job_types:
+  setup-branch:
+    disabled: true
+  nightly:
+    disabled: false
+  other:
+    disabled: true
+  pullrequest:
+    disabled: true
+  release:
+    disabled: true
+  tools:
+    disabled: true
+
 environments:
   default:
     env_vars:
@@ -10,46 +27,17 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  quarkus-main:
-    enabled: false
-    env_vars:
-      QUARKUS_BRANCH: main
-      DROOLS_BUILD_MVN_OPTS: -Dfull
-    ids:
-    - quarkus
-  quarkus-3:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MAVEN_TOOL: maven_3.9.3
-      BUILD_JDK_TOOL: jdk_17_latest
-      BUILD_MVN_OPTS: -Denforcer.skip
-      # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
-      # BUILD_MVN_OPTS_QUARKUS_UPDATE: -Dfull
-    ids:
-    - quarkus
-    - quarkus3
-  quarkus-branch:
-    env_vars:
-      QUARKUS_BRANCH: '2.16'
-      DROOLS_BUILD_MVN_OPTS: -Dfull
-    ids:
-    - quarkus
-  sonarcloud:
-    auto_generation: false
-    env_vars:
-      ENABLE_SONARCLOUD: true
-      DROOLS_BUILD_MVN_OPTS: -Dfull
-    ids:
-    - sonarcloud
-    - coverage
+disable:
+  deploy: true
+  pr_checks: true
 repositories:
 - name: incubator-kie-drools
   job_display_name: drools
 # Not yet migrated to Apache
 # - name: incubator-kie-drools-website
 #   job_display_name: drools-website
-- name: incubator-kie-benchmarks
-  job_display_name: kie-benchmarks
+# - name: incubator-kie-benchmarks
+#   job_display_name: kie-benchmarks
 ## TODO to check if should be enabled
 # - name: incubator-kie-jpmml-integration
 #   job_display_name: kie-jpmml-integration
@@ -102,7 +90,7 @@ jenkins:
   agent:
     docker:
       builder:
-        image: quay.io/kiegroup/kogito-ci-build:main-latest
+        image: quay.io/kiegroup/kogito-ci-build:quarkus-3.2LTS-latest
         args: --privileged --group-add docker
   default_tools:
     jdk: jdk_11_latest

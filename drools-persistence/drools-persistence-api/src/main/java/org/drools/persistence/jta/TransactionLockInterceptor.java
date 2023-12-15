@@ -21,7 +21,7 @@ package org.drools.persistence.jta;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.transaction.Status;
+import jakarta.transaction.Status;
 
 import org.drools.commands.impl.AbstractInterceptor;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
