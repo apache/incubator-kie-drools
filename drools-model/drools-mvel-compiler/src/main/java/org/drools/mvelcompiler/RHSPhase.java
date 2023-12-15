@@ -52,9 +52,13 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.YieldStmt;
+import com.github.javaparser.utils.Pair;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
+import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
@@ -69,7 +73,9 @@ import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
+import org.drools.mvelcompiler.ast.ListExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
+import org.drools.mvelcompiler.ast.MapExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
@@ -77,6 +83,8 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.mvelcompiler.util.MethodResolutionUtils;
+import org.drools.mvelcompiler.util.VisitorContext;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils.NullType;
 
@@ -100,7 +108,7 @@ import static org.drools.util.ClassUtils.getAccessor;
  * might need to create new variables accordingly.
  *
  */
-public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
+public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorContext> {
 
     private static final Set<BinaryExpr.Operator> arithmeticOperators = Set.of(
             BinaryExpr.Operator.PLUS,
@@ -121,18 +129,6 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private final MethodCallExprVisitor methodCallExprVisitor;
 
-    static class Context {
-        final Optional<TypedExpression> scope;
-
-        Context(TypedExpression scope) {
-            this.scope = ofNullable(scope);
-        }
-
-        Optional<Type> getScopeType() {
-            return scope.flatMap(TypedExpression::getType);
-        }
-    }
-
     private final MvelCompilerContext mvelCompilerContext;
 
     RHSPhase(MvelCompilerContext mvelCompilerContext) {
@@ -141,19 +137,19 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     public TypedExpression invoke(Node statement) {
-        Context ctx = new Context(null);
+        VisitorContext ctx = new VisitorContext(null);
 
         return statement.accept(this, ctx);
     }
 
     @Override
-    public TypedExpression visit(DrlNameExpr n, Context arg) {
+    public TypedExpression visit(DrlNameExpr n, VisitorContext arg) {
         return n.getName().accept(this, arg);
     }
 
     @Override
-    public TypedExpression visit(SimpleName n, Context arg) {
-        if (arg.scope.isEmpty()) { // first node
+    public TypedExpression visit(SimpleName n, VisitorContext arg) {
+        if (arg.getScope().isEmpty()) { // first node
             return simpleNameAsFirstNode(n);
         } else {
             return simpleNameAsField(n, arg);
@@ -161,17 +157,17 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     @Override
-    public TypedExpression visit(YieldStmt n, Context arg) {
+    public TypedExpression visit(YieldStmt n, VisitorContext arg) {
         return null;
     }
 
     @Override
-    public TypedExpression visit(TextBlockLiteralExpr n, Context arg) {
+    public TypedExpression visit(TextBlockLiteralExpr n, VisitorContext arg) {
         return new UnalteredTypedExpression(n, String.class);
     }
 
     @Override
-    public TypedExpression visit(PatternExpr n, Context arg) {
+    public TypedExpression visit(PatternExpr n, VisitorContext arg) {
         return null;
     }
 
@@ -184,15 +180,15 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
-    private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
+    private TypedExpression simpleNameAsField(SimpleName n, VisitorContext arg) {
         return asPropertyAccessor(n, arg)
                 .map(Optional::of)
                 .orElseGet(() -> asFieldAccessTExpr(n, arg))
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
-    private Optional<TypedExpression> asFieldAccessTExpr(SimpleName n, Context arg) {
-        Optional<TypedExpression> lastTypedExpression = arg.scope;
+    private Optional<TypedExpression> asFieldAccessTExpr(SimpleName n, VisitorContext arg) {
+        Optional<TypedExpression> lastTypedExpression = arg.getScope();
         Optional<Type> scopeType = arg.getScopeType();
 
         Optional<Field> fieldType = scopeType.flatMap(te -> {
@@ -217,8 +213,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         return enumType.map(clazz -> new SimpleNameTExpr(n.asString(), clazz));
     }
 
-    private Optional<TypedExpression> asPropertyAccessor(SimpleName n, Context arg) {
-        Optional<TypedExpression> lastTypedExpression = arg.scope;
+    private Optional<TypedExpression> asPropertyAccessor(SimpleName n, VisitorContext arg) {
+        Optional<TypedExpression> lastTypedExpression = arg.getScope();
 
         Optional<Type> scopeType = lastTypedExpression.filter(ListAccessExprT.class::isInstance)
                                                       .map(ListAccessExprT.class::cast)
@@ -238,18 +234,18 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     @Override
-    public TypedExpression visit(FieldAccessExpr n, Context arg) {
+    public TypedExpression visit(FieldAccessExpr n, VisitorContext arg) {
         TypedExpression scope = n.getScope().accept(this, arg);
-        return n.getName().accept(this, new Context(scope));
+        return n.getName().accept(this, new VisitorContext(scope));
     }
 
     @Override
-    public TypedExpression visit(MethodCallExpr n, Context arg) {
+    public TypedExpression visit(MethodCallExpr n, VisitorContext arg) {
         return n.accept(methodCallExprVisitor, arg);
     }
 
     @Override
-    public TypedExpression visit(BinaryExpr n, Context arg) {
+    public TypedExpression visit(BinaryExpr n, VisitorContext arg) {
         TypedExpression left = n.getLeft().accept(this, arg);
         TypedExpression right = n.getRight().accept(this, arg);
         return withPossiblyBigDecimalConversion(left, right, n.getOperator());
@@ -303,78 +299,82 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     @Override
-    public TypedExpression visit(ExpressionStmt n, Context arg) {
+    public TypedExpression visit(ExpressionStmt n, VisitorContext arg) {
         return n.getExpression().accept(this, arg);
     }
 
     @Override
-    public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
+    public TypedExpression visit(VariableDeclarationExpr n, VisitorContext arg) {
         return n.getVariables().iterator().next().accept(this, arg);
     }
 
     @Override
-    public TypedExpression visit(VariableDeclarator n, Context arg) {
+    public TypedExpression visit(VariableDeclarator n, VisitorContext arg) {
         Optional<TypedExpression> initExpression = n.getInitializer().map(i -> i.accept(this, arg));
         return initExpression.orElse(null);
     }
 
     @Override
-    public TypedExpression visit(AssignExpr n, Context arg) {
+    public TypedExpression visit(AssignExpr n, VisitorContext arg) {
         return n.getValue().accept(this, arg);
     }
 
     @Override
-    public TypedExpression visit(StringLiteralExpr n, Context arg) {
+    public TypedExpression visit(StringLiteralExpr n, VisitorContext arg) {
         return new StringLiteralExpressionT(n);
     }
 
     @Override
-    public TypedExpression visit(IntegerLiteralExpr n, Context arg) {
+    public TypedExpression visit(IntegerLiteralExpr n, VisitorContext arg) {
         return new IntegerLiteralExpressionT(n);
     }
 
     @Override
-    public TypedExpression visit(DoubleLiteralExpr n, Context arg) {
+    public TypedExpression visit(DoubleLiteralExpr n, VisitorContext arg) {
         return new DoubleLiteralExpressionT(n);
     }
 
     @Override
-    public TypedExpression visit(CharLiteralExpr n, Context arg) {
+    public TypedExpression visit(CharLiteralExpr n, VisitorContext arg) {
         return new CharacterLiteralExpressionT(n);
     }
 
     @Override
-    public TypedExpression visit(LongLiteralExpr n, Context arg) {
+    public TypedExpression visit(LongLiteralExpr n, VisitorContext arg) {
         return new LongLiteralExpressionT(n);
     }
 
     @Override
-    public TypedExpression visit(BooleanLiteralExpr n, Context arg) {
+    public TypedExpression visit(BooleanLiteralExpr n, VisitorContext arg) {
         return new BooleanLiteralExpressionT(n);
     }
 
     @Override
-    public TypedExpression defaultMethod(Node n, Context context) {
+    public TypedExpression defaultMethod(Node n, VisitorContext context) {
         return new UnalteredTypedExpression(n);
     }
 
     @Override
-    public TypedExpression visit(ObjectCreationExpr n, Context arg) {
-        List<TypedExpression> constructorArguments = new ArrayList<>();
-        for(Expression e : n.getArguments()) {
-            TypedExpression compiledArgument = e.accept(this, arg);
-            constructorArguments.add(compiledArgument);
+    public TypedExpression visit(ObjectCreationExpr n, VisitorContext arg) {
+        final Class<?> type = resolveType(n.getType());
+        final Pair<List<TypedExpression>, List<Integer>> typedArgumentsResult =
+                MethodResolutionUtils.getTypedArgumentsWithEmptyCollectionArgumentDetection(n.getArguments(), this, arg);
+        if (!typedArgumentsResult.b.isEmpty()) {
+            return new ObjectCreationExpressionT(
+                    MethodResolutionUtils.coerceCorrectConstructorArguments(type, typedArgumentsResult.a, typedArgumentsResult.b),
+                    type);
+        } else {
+            return new ObjectCreationExpressionT(typedArgumentsResult.a, type);
         }
-        return new ObjectCreationExpressionT(constructorArguments, resolveType(n.getType()));
     }
 
     @Override
-    public TypedExpression visit(NullLiteralExpr n, Context arg) {
+    public TypedExpression visit(NullLiteralExpr n, VisitorContext arg) {
         return new UnalteredTypedExpression(n, NullType.class);
     }
 
     @Override
-    public TypedExpression visit(ArrayAccessExpr n, Context arg) {
+    public TypedExpression visit(ArrayAccessExpr n, VisitorContext arg) {
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
@@ -385,28 +385,28 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     @Override
-    public TypedExpression visit(EnclosedExpr n, Context arg) {
+    public TypedExpression visit(EnclosedExpr n, VisitorContext arg) {
         return n.getInner().accept(this, arg);
     }
 
     @Override
-    public TypedExpression visit(CastExpr n, Context arg) {
+    public TypedExpression visit(CastExpr n, VisitorContext arg) {
         TypedExpression innerExpr = n.getExpression().accept(this, arg);
         return new CastExprT(innerExpr, resolveType(n.getType()));
     }
 
     @Override
-    public TypedExpression visit(BigDecimalLiteralExpr n, Context arg) {
+    public TypedExpression visit(BigDecimalLiteralExpr n, VisitorContext arg) {
         return new BigDecimalConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
     }
 
     @Override
-    public TypedExpression visit(BigIntegerLiteralExpr n, Context arg) {
+    public TypedExpression visit(BigIntegerLiteralExpr n, VisitorContext arg) {
         return new BigIntegerConvertedExprT(new StringLiteralExpressionT(new StringLiteralExpr(n.getValue())));
     }
 
     @Override
-    public TypedExpression visit(UnaryExpr n, Context arg) {
+    public TypedExpression visit(UnaryExpr n, VisitorContext arg) {
         Expression innerExpr = n.getExpression();
         UnaryExpr.Operator operator = n.getOperator();
         if (innerExpr instanceof BigDecimalLiteralExpr && operator == UnaryExpr.Operator.MINUS) {
@@ -416,6 +416,16 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         } else {
             return defaultMethod(n, arg);
         }
+    }
+
+    @Override
+    public TypedExpression visit(ListCreationLiteralExpression n, VisitorContext arg) {
+        return new ListExprT(n);
+    }
+
+    @Override
+    public TypedExpression visit(MapCreationLiteralExpression n, VisitorContext arg) {
+        return new MapExprT(n);
     }
 
     private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {
