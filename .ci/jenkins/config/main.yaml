@@ -14,7 +14,6 @@ git:
   branches:
   - name: main
     main_branch: true
-  - name: quarkus-3.2LTS
   - name: 8.45.x
     seed:
       branch: seed-drools-8.45.x
