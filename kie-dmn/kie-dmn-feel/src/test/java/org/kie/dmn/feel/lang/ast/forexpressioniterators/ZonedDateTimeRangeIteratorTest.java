@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -21,30 +21,32 @@ package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
-public class LocalDateRangeIteratorTest {
+public class ZonedDateTimeRangeIteratorTest {
 
-    private static LocalDate before;
-    private static LocalDate after;
+    private static ZonedDateTime before;
+    private static ZonedDateTime after;
 
     @BeforeClass
     public static void setup() {
-        before = LocalDate.of(2021, 1, 1);
-        after = LocalDate.of(2021, 1, 3);
+        before = getZonedDateTime(2021, 1, 1, 10, 15);
+        after = getZonedDateTime(2021, 1, 3, 9, 36);
     }
 
     @Test
     public void hasNextAscendantTest() {
-        LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
+        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(before, after);
         assertTrue(iterator.hasNext());
-        LocalDate next = iterator.next();
-        while (!next.equals(after)) {
+        ZonedDateTime next = iterator.next();
+        while (next.isBefore(after)) {
             assertTrue(iterator.hasNext());
             next = iterator.next();
         }
@@ -53,9 +55,9 @@ public class LocalDateRangeIteratorTest {
 
     @Test
     public void hasNextDescendantTest() {
-        LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
+        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(after, before);
         assertTrue(iterator.hasNext());
-        LocalDate next = iterator.next();
+        ZonedDateTime next = iterator.next();
         while (!next.equals(before)) {
             assertTrue(iterator.hasNext());
             next = iterator.next();
@@ -65,16 +67,25 @@ public class LocalDateRangeIteratorTest {
 
     @Test
     public void nextAscendantTest() {
-        List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 3));
-        LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
+        List<ZonedDateTime> expected = Arrays.asList(getZonedDateTime(2021, 1, 1, 9, 23),
+                getZonedDateTime(2021, 1, 2, 9, 23),
+                getZonedDateTime(2021, 1, 3, 9, 23));
+        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(before, after);
         IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iterator.next()));
     }
 
     @Test
     public void nextDescendantTest() {
-        List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
-        LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
+        List<ZonedDateTime> expected = Arrays.asList(getZonedDateTime(2021, 1, 3, 9, 23),
+                getZonedDateTime(2021, 1, 2, 9, 23),
+                getZonedDateTime(2021, 1, 1, 9, 23));
+        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(after, before);
         IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iterator.next()));
+    }
+
+    private static ZonedDateTime getZonedDateTime(int year, int month, int dayOfMonth, int hour, int minute) {
+        LocalDateTime startDateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+        return ZonedDateTime.of(startDateTime, ZoneId.systemDefault());
     }
 
 
