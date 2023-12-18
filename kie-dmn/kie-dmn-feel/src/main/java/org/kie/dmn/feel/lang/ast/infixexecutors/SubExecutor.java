@@ -18,17 +18,20 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
+import java.math.MathContext;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
+import java.time.temporal.Temporal;
+
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-
-import java.math.MathContext;
-import java.time.*;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.Temporal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiFunction;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.subtractTemporals;
@@ -36,10 +39,8 @@ import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.subtra
 public class SubExecutor implements InfixExecutor {
 
     private static final SubExecutor INSTANCE = new SubExecutor();
-    private final Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> subFunctionsByClassesTuple;
 
     private SubExecutor() {
-        subFunctionsByClassesTuple = getSubFunctionsByClassesTuple();
     }
 
     public static SubExecutor instance() {
@@ -48,7 +49,7 @@ public class SubExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return evaluate(new EvaluatedParameters(left, right), ctx);
+        return sub(left, right, ctx);
     }
 
     @Override
@@ -56,49 +57,39 @@ public class SubExecutor implements InfixExecutor {
         return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
-    private Object evaluate(EvaluatedParameters params, EvaluationContext ctx) {
-        if (params.getLeft() == null || params.getRight() == null) {
+    private Object sub(Object left, Object right, EvaluationContext ctx) {
+        if (left == null || right == null) {
             return null;
-        }
-        ClassIdentifierTuple identifierTuple = new ClassIdentifierTuple(params.getLeft(), params.getRight());
-        if (subFunctionsByClassesTuple.containsKey(identifierTuple)) {
-            return subFunctionsByClassesTuple.get(identifierTuple).apply(params, ctx);
-        } else {
-            return math(params.getLeft(), params.getRight(), ctx, (l, r) -> l.subtract(r, MathContext.DECIMAL128));
-        }
-    }
-
-    private Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> getSubFunctionsByClassesTuple() {
-        Map<ClassIdentifierTuple, BiFunction<EvaluatedParameters, EvaluationContext, Object>> toReturn = new HashMap<>();
-        toReturn.put(new ClassIdentifierTuple(Temporal.class, Temporal.class), (parameters, ctx) ->
-                subtractTemporals((Temporal) parameters.getLeft(), (Temporal) parameters.getRight(), ctx));
-        toReturn.put(new ClassIdentifierTuple(ChronoPeriod.class, ChronoPeriod.class), (parameters, ctx) ->
-                new ComparablePeriod(((ChronoPeriod) parameters.getLeft()).minus((ChronoPeriod) parameters.getRight())));
-        toReturn.put(new ClassIdentifierTuple(Duration.class, Duration.class), (parameters, ctx) ->
-                ((Duration) parameters.getLeft()).minus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(ZonedDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((ZonedDateTime) parameters.getLeft()).minus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(OffsetDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((OffsetDateTime) parameters.getLeft()).minus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(LocalDateTime.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((LocalDateTime) parameters.getLeft()).minus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(LocalDate.class, ChronoPeriod.class), (parameters, ctx) ->
-                ((LocalDate) parameters.getLeft()).minus((ChronoPeriod) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(ZonedDateTime.class, Duration.class), (parameters, ctx) ->
-                ((ZonedDateTime) parameters.getLeft()).minus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(OffsetDateTime.class, Duration.class), (parameters, ctx) ->
-                ((OffsetDateTime) parameters.getLeft()).minus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(LocalDateTime.class, Duration.class), (parameters, ctx) ->
-                ((LocalDateTime) parameters.getLeft()).minus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(LocalDate.class, Duration.class), (parameters, ctx) -> {
-            LocalDateTime leftLDT = LocalDateTime.of((LocalDate) parameters.getLeft(), LocalTime.MIDNIGHT);
-            LocalDateTime evaluated = leftLDT.minus((Duration) parameters.getRight());
+        } else if (left instanceof Temporal && right instanceof Temporal) {
+            return subtractTemporals((Temporal) left, (Temporal) right, ctx);
+        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+            return new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right));
+        } else if (left instanceof Duration && right instanceof Duration) {
+            return ((Duration) left).minus((Duration) right);
+        } else if (left instanceof ZonedDateTime && right instanceof ChronoPeriod) {
+            return ((ZonedDateTime) left).minus((ChronoPeriod) right);
+        } else if (left instanceof OffsetDateTime && right instanceof ChronoPeriod) {
+            return ((OffsetDateTime) left).minus((ChronoPeriod) right);
+        } else if (left instanceof LocalDateTime && right instanceof ChronoPeriod) {
+            return ((LocalDateTime) left).minus((ChronoPeriod) right);
+        } else if (left instanceof LocalDate && right instanceof ChronoPeriod) {
+            return ((LocalDate) left).minus((ChronoPeriod) right);
+        } else if (left instanceof ZonedDateTime && right instanceof Duration) {
+            return ((ZonedDateTime) left).minus((Duration) right);
+        } else if (left instanceof OffsetDateTime && right instanceof Duration) {
+            return ((OffsetDateTime) left).minus((Duration) right);
+        } else if (left instanceof LocalDateTime && right instanceof Duration) {
+            return ((LocalDateTime) left).minus((Duration) right);
+        } else if (left instanceof LocalDate && right instanceof Duration) {
+            LocalDateTime leftLDT = LocalDateTime.of((LocalDate) left, LocalTime.MIDNIGHT);
+            LocalDateTime evaluated = leftLDT.minus((Duration) right);
             return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
-        });
-        toReturn.put(new ClassIdentifierTuple(LocalTime.class, Duration.class), (parameters, ctx) ->
-                ((LocalTime) parameters.getLeft()).minus((Duration) parameters.getRight()));
-        toReturn.put(new ClassIdentifierTuple(OffsetTime.class, Duration.class), (parameters, ctx) ->
-                ((OffsetTime) parameters.getLeft()).minus((Duration) parameters.getRight()));
-        return toReturn;
+        } else if (left instanceof LocalTime && right instanceof Duration) {
+            return ((LocalTime) left).minus((Duration) right);
+        } else if (left instanceof OffsetTime && right instanceof Duration) {
+            return ((OffsetTime) left).minus((Duration) right);
+        } else {
+            return math(left, right, ctx, (l, r) -> l.subtract(r, MathContext.DECIMAL128));
+        }
     }
 }
