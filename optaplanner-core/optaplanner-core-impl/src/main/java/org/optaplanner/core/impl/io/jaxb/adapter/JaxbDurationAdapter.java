@@ -21,7 +21,7 @@ package org.optaplanner.core.impl.io.jaxb.adapter;
 
 import java.time.Duration;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 // TODO: Move the code to the jaxb-ri
 public class JaxbDurationAdapter extends XmlAdapter<String, Duration> {

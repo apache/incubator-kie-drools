@@ -21,7 +21,7 @@ package org.optaplanner.quarkus.nativeimage;
 
 import java.util.function.Supplier;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 

@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>9.45.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -42,11 +42,11 @@
     <version.org.drools>8.44.0.Final</version.org.drools>
 
     <!-- Normal dependency versions -->
-    <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
+    <version.ch.qos.logback>1.4.6</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.20.0</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
-    <version.io.quarkiverse.operatorsdk>5.1.4</version.io.quarkiverse.operatorsdk>
-    <version.io.quarkus>2.16.10.Final</version.io.quarkus>
+    <version.io.quarkiverse.operatorsdk>6.0.3</version.io.quarkiverse.operatorsdk>
+    <version.io.quarkus>3.2.9.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.10.0</version.org.apache.commons.text>
     <version.org.apache.poi>5.2.3</version.org.apache.poi>
@@ -55,9 +55,9 @@
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
-    <version.org.slf4j>1.7.36</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
-    <version.org.springframework>5.3.27</version.org.springframework>
-    <version.org.springframework.boot>2.7.12</version.org.springframework.boot>
+    <version.org.slf4j>2.0.6</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
+    <version.org.springframework>6.0.8</version.org.springframework>
+    <version.org.springframework.boot>3.0.7</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
@@ -76,7 +76,7 @@
       Do not upgrade unless prepared to deal with JPMS issues.
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
-    <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
+    <version.jaxb2.plugin>3.1.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.14.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.23</version.sniffer.plugin>

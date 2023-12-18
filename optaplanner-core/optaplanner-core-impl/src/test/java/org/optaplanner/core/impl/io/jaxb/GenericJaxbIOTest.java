@@ -28,9 +28,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlValue;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;

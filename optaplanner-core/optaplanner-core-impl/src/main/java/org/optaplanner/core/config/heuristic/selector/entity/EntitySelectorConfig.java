@@ -22,9 +22,9 @@ package org.optaplanner.core.config.heuristic.selector.entity;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;

@@ -19,7 +19,7 @@
 
 package org.optaplanner.benchmark.config.statistic;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;

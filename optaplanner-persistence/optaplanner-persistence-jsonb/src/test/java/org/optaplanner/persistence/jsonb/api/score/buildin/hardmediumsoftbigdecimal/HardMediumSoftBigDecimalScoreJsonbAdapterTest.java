@@ -21,7 +21,7 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.hardmediumsoftbigdec
 
 import java.math.BigDecimal;
 
-import javax.json.bind.annotation.JsonbTypeAdapter;
+import jakarta.json.bind.annotation.JsonbTypeAdapter;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;

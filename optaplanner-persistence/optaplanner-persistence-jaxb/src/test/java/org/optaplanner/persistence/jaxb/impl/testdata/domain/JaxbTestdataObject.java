@@ -19,7 +19,7 @@
 
 package org.optaplanner.persistence.jaxb.impl.testdata.domain;
 
-import javax.xml.bind.annotation.XmlID;
+import jakarta.xml.bind.annotation.XmlID;
 
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 

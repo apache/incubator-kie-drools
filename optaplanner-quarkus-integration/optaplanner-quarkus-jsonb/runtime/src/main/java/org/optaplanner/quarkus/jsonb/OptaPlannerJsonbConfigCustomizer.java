@@ -19,8 +19,8 @@
 
 package org.optaplanner.quarkus.jsonb;
 
-import javax.inject.Singleton;
-import javax.json.bind.JsonbConfig;
+import jakarta.inject.Singleton;
+import jakarta.json.bind.JsonbConfig;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jsonb.api.OptaPlannerJsonbConfig;

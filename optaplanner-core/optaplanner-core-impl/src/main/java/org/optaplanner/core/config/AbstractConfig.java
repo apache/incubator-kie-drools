@@ -21,8 +21,8 @@ package org.optaplanner.core.config;
 
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * A config class is a user-friendly, validating configuration class that maps XML input.

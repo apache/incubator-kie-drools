@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>9.45.0-SNAPSHOT</version>
     <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -43,7 +43,7 @@
   <properties>
     <java.module.name>org.optaplanner.operator</java.module.name>
     <!-- Quarkus Ecosystem CI (and other CI possibly too) updates the version.io.quarkus property. -->
-    <version.io.quarkus.override>2.15.0.Final</version.io.quarkus.override>
+    <version.io.quarkus.override>3.0.0.Final</version.io.quarkus.override>
   </properties>
 
   <!-- TODO: Remove when OptaPlanner no longer supports Quarkus 2.13 -->

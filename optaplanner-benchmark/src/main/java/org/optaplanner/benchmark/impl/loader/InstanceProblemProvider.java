@@ -21,7 +21,7 @@ package org.optaplanner.benchmark.impl.loader;
 
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;

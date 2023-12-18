@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>9.45.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-devui-integration-test</artifactId>
@@ -37,7 +37,7 @@
     <!-- Code of integration tests should not be a part of test coverage reports. -->
     <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     <!-- Quarkus 2 and 3 use different context roots. -->
-    <dev.ui.root>/q/dev</dev.ui.root>
+    <dev.ui.root>/q/dev-v1</dev.ui.root>
   </properties>
 
   <dependencies>

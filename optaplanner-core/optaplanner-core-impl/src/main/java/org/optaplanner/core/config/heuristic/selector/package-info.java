@@ -22,7 +22,7 @@
         elementFormDefault = XmlNsForm.QUALIFIED)
 package org.optaplanner.core.config.heuristic.selector;
 
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlSchema;
+import jakarta.xml.bind.annotation.XmlNsForm;
+import jakarta.xml.bind.annotation.XmlSchema;
 
 import org.optaplanner.core.config.solver.SolverConfig;

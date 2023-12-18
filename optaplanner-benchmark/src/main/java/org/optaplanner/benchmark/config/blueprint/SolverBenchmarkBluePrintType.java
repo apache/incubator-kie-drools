@@ -22,7 +22,7 @@ package org.optaplanner.benchmark.config.blueprint;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;

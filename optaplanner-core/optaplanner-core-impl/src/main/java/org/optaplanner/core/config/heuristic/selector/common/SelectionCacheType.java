@@ -19,7 +19,7 @@
 
 package org.optaplanner.core.config.heuristic.selector.common;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 /**
  * There is no INHERIT by design because 2 sequential caches provides no benefit, only memory overhead.

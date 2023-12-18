@@ -19,7 +19,7 @@
 
 package org.optaplanner.core.config.exhaustivesearch;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;

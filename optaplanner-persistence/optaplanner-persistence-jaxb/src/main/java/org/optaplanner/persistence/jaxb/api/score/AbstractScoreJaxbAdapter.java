@@ -19,7 +19,7 @@
 
 package org.optaplanner.persistence.jaxb.api.score;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.optaplanner.core.api.score.Score;
 

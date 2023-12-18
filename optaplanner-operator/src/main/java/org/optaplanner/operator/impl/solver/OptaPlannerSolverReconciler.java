@@ -22,7 +22,7 @@ package org.optaplanner.operator.impl.solver;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
 import org.optaplanner.operator.impl.solver.model.DeploymentDependentResource;

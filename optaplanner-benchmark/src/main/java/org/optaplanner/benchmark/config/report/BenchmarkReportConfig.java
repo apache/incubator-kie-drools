@@ -23,8 +23,8 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;

@@ -19,7 +19,7 @@
 
 package org.optaplanner.core.config.localsearch.decider.forager;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.FinalistPodium;
 import org.optaplanner.core.impl.localsearch.decider.forager.finalist.HighestScoreFinalistPodium;

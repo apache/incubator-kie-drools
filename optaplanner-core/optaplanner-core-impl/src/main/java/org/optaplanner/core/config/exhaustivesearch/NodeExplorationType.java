@@ -21,7 +21,7 @@ package org.optaplanner.core.config.exhaustivesearch;
 
 import java.util.Comparator;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;

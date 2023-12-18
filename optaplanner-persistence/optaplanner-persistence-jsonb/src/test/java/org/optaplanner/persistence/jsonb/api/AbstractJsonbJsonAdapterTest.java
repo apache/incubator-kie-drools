@@ -19,9 +19,9 @@
 
 package org.optaplanner.persistence.jsonb.api;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbException;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbException;
 
 public abstract class AbstractJsonbJsonAdapterTest {
 

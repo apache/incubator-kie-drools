@@ -19,7 +19,7 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.optaplanner.core.config.AbstractConfig;
 

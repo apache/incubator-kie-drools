@@ -22,7 +22,7 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.io.File;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;

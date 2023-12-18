@@ -19,7 +19,7 @@
 
 package org.optaplanner.persistence.jsonb.api.score;
 
-import javax.json.bind.adapter.JsonbAdapter;
+import jakarta.json.bind.adapter.JsonbAdapter;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jsonb.api.OptaPlannerJsonbConfig;

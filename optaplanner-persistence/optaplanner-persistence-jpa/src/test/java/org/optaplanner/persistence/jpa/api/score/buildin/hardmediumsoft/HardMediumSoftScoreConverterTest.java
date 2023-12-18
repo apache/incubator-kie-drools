@@ -19,8 +19,8 @@
 
 package org.optaplanner.persistence.jpa.api.score.buildin.hardmediumsoft;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;

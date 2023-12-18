@@ -21,7 +21,7 @@ package org.optaplanner.core.config.solver;
 
 import java.util.Random;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.heuristic.move.Move;

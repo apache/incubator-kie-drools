@@ -21,7 +21,7 @@ package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
 import java.util.function.Consumer;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;

@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>9.45.0-SNAPSHOT</version>
     <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
@@ -173,8 +173,8 @@
     </dependency>
     <!-- External dependencies -->
     <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.json</artifactId>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jfree</groupId>

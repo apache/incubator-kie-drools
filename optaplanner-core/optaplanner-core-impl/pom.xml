@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-core-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>9.45.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-core-impl</artifactId>
@@ -140,6 +140,9 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

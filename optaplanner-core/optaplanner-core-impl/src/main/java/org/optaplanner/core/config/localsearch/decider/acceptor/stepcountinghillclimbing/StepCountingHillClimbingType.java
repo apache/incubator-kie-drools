@@ -19,7 +19,7 @@
 
 package org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;

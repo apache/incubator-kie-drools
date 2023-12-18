@@ -23,7 +23,7 @@
         elementFormDefault = XmlNsForm.QUALIFIED)
 package org.optaplanner.benchmark.config.report;
 
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlSchema;
+import jakarta.xml.bind.annotation.XmlNsForm;
+import jakarta.xml.bind.annotation.XmlSchema;
 
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
