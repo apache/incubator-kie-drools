@@ -18,12 +18,12 @@ The application is packageable using:
 ```
 mvn package
 ```
-It produces the executable `trusty-ui-2.0.0-SNAPSHOT-runner.jar` file in `/target` directory.
+It produces the executable `trusty-ui-999-SNAPSHOT-runner.jar` file in `/target` directory.
 Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/lib` directory.
 
 The application is now runnable using:
 ```
-java -jar target/trusty-ui-2.0.0-SNAPSHOT-runner.jar
+java -jar target/trusty-ui-999-SNAPSHOT-runner.jar
 ```
 
 ## Creating a native executable
@@ -38,7 +38,7 @@ Or you can use Docker to build the native executable using:
 mvn package -Dnative -Dquarkus.native.container-build=true
 ```
 
-You can then execute your binary: `./target/trusty-ui-2.0.0-SNAPSHOT-runner`
+You can then execute your binary: `./target/trusty-ui-999-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image-guide .
 

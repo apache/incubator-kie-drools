@@ -73,7 +73,7 @@ Go to the docker-compose folder:
 cd ui-packages/packages/trusty/docker-compose
 ```
 
-Create the ".env" file which content the "VERSION=\${project.version}" tag. Be sure that this tag reference to the right version of docker images. For example: "VERSION=2.0.0-SNAPSHOT"
+Create the ".env" file which content the "VERSION=\${project.version}" tag. Be sure that this tag reference to the right version of docker images. For example: "VERSION=999-SNAPSHOT"
 
 To be sure that you have built all necessary docker images. Check file docker-compose.yml and output of this command:
 
