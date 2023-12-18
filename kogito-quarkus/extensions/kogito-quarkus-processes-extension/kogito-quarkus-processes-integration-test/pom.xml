@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-processes-extension</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>999-SNAPSHOT</version>
     </parent>
 
     <artifactId>kogito-quarkus-processes-integration-test</artifactId>

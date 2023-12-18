@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-addons-quarkus-explainability-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>kogito-addons-quarkus-explainability-deployment</artifactId>
   <name>Kogito Add-On Explainability - Deployment</name>

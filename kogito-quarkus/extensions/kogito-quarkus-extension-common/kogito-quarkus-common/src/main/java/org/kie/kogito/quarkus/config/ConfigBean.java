@@ -20,9 +20,10 @@ package org.kie.kogito.quarkus.config;
 
 import java.util.Optional;
 
-import io.quarkus.runtime.Startup;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.config.StaticConfigBean;
+
+import io.quarkus.runtime.Startup;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;

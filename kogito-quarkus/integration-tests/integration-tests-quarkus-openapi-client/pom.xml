@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-quarkus-integration-tests</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <name>Kogito :: Integration Tests :: Quarkus :: OpenAPI Client Codegen</name>
   <artifactId>integration-tests-quarkus-openapi-client</artifactId>

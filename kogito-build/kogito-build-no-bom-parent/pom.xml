@@ -28,7 +28,7 @@
     <groupId>org.kie.kogito</groupId>
     <!-- The Kogito Dependencies BOM is inherited here to reuse all the version properties defined there and used across our internal modules. -->
     <artifactId>kogito-dependencies-bom</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
     <relativePath>../kogito-dependencies-bom/pom.xml</relativePath>
   </parent>
 
