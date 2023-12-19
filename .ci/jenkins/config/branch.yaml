@@ -1,3 +1,5 @@
+generation_config:
+  missing_environment: ignore
 environments:
   default:
     env_vars:
