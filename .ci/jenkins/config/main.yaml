@@ -13,9 +13,6 @@ git:
   branches:
   - name: main
     main_branch: true
-  - name: 8.45.x
-    seed:
-      branch: seed-optaplanner-8.45.x
 seed:
   config_file:
     git:

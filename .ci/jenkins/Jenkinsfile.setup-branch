@@ -74,8 +74,7 @@ pipeline {
 
         stage('Update Optaplanner version in kie-benchmarks') {
             when {
-                // TODO to change once Optaplanner is totally migrated to Quarkus 3
-                expression { isStream8() && isMainBranch() }
+                expression { isMainBranch() }
             }
             steps {
                 script {
@@ -159,12 +158,3 @@ void mergeAndPush(String prLink, String targetBranch) {
         githubscm.pushObject('origin', targetBranch, getGitAuthorPushCredsId())
     }
 }
-
-boolean isStream8() {
-    return env.OPTAPLANNER_LATEST_STREAM == '8'
-}
-
-boolean isStream9() {
-    return env.OPTAPLANNER_LATEST_STREAM == '9'
-}
-

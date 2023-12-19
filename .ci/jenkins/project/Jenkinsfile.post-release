@@ -281,11 +281,3 @@ def forcePushBranch(String branch) {
         """
     }
 }
-
-boolean isStream8() {
-    return env.OPTAPLANNER_LATEST_STREAM == '8'
-}
-
-boolean isStream9() {
-    return env.OPTAPLANNER_LATEST_STREAM == '9'
-}

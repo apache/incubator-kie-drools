@@ -196,11 +196,3 @@ String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, S
         error 'Cannot parse given branch as a release branch, aka [M].[m].x ...'
         }
 }
-
-boolean isStream8() {
-    return env.OPTAPLANNER_LATEST_STREAM == '8'
-}
-
-boolean isStream9() {
-    return env.OPTAPLANNER_LATEST_STREAM == '9'
-}

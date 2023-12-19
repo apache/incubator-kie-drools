@@ -53,7 +53,7 @@ setupProjectNightlyJob()
 setupProjectReleaseJob()
 setupProjectPostReleaseJob()
 
-if (Utils.isMainBranch(this) && isStream8()) { // When there is Drools 9, we may enable the job for 9.x
+if (Utils.isMainBranch(this)) {
     setupProjectDroolsJob('main')
 }
 
@@ -93,7 +93,7 @@ void createProjectSetupBranchJob() {
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
 
         IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -115,7 +115,7 @@ void setupProjectNightlyJob() {
 
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -134,7 +134,7 @@ void setupProjectReleaseJob() {
 
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -165,7 +165,7 @@ void setupProjectPostReleaseJob() {
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
         GITHUB_CLI_VERSION: '0.11.1',
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -222,10 +222,6 @@ createSetupBranchJob()
 // Nightly jobs
 setupDeployJob(JobType.NIGHTLY)
 setupSpecificBuildChainNightlyJob('native')
-setupSpecificBuildChainNightlyJob('quarkus-main')
-setupSpecificBuildChainNightlyJob('quarkus-branch')
-setupSpecificBuildChainNightlyJob('quarkus-lts')
-setupSpecificBuildChainNightlyJob('native-lts')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
@@ -265,7 +261,7 @@ void createSetupBranchJob() {
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
 
         IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -293,7 +289,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream(),
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}",
         DISABLE_DEPLOY: Utils.isDeployDisabled(this),
     ])
     if (jobType == JobType.PULL_REQUEST) {
@@ -378,7 +374,7 @@ void setupPromoteJob(JobType jobType) {
 
         PROPERTIES_FILE_NAME: 'deployment.properties',
         GITHUB_CLI_VERSION: '0.11.1',
-        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
+        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -419,20 +415,4 @@ void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
         }
     }
-}
-
-String getOptaPlannerLatestStream() {
-    String gitMainBranch = "${GIT_MAIN_BRANCH}"
-
-    if (gitMainBranch == 'main') {
-        return '8'
-    } else if (gitMainBranch == '9.x') {
-        return '9'
-    } else {
-        return gitMainBranch
-    }
-}
-
-boolean isStream8() {
-    return getOptaPlannerLatestStream() == '8'
 }

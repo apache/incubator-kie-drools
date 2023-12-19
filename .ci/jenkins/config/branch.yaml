@@ -1,3 +1,5 @@
+generation_config:
+  missing_environment: ignore
 environments:
   native:
     env_vars:
@@ -6,17 +8,6 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  quarkus-main:
-    enabled: false
-    env_vars:
-      QUARKUS_BRANCH: main
-    ids:
-    - quarkus
-  quarkus-branch:
-    env_vars:
-      QUARKUS_BRANCH: '2.16'
-    ids:
-    - quarkus
   ecosystem:
     auto_generation: false
     ids:
@@ -85,5 +76,5 @@ jenkins:
         args: --privileged --group-add docker
   default_tools:
     jdk: jdk_17_latest
-    maven: maven_3.8.6
+    maven: maven_3.9.3
     sonar_jdk: jdk_17_latest
