@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-core-parent</artifactId>
-        <version>9.45.0-SNAPSHOT</version>
+        <version>999-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
