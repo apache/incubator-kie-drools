@@ -772,4 +772,45 @@ public class BigDecimalTest extends BaseModelTest {
     public static String intToString(int value) {
         return Integer.toString(value);
     }
+
+    @Test
+    public void bindVariableToBigDecimalCoercion2Operands_shouldBindCorrectResult() {
+        bindVariableToBigDecimalCoercion("$var : (1000 * value1)");
+    }
+
+    @Test
+    public void bindVariableToBigDecimalCoercion3Operands_shouldBindCorrectResult() {
+        bindVariableToBigDecimalCoercion("$var : (100000 * value1 / 100)");
+    }
+
+    @Test
+    public void bindVariableToBigDecimalCoercion3OperandsWithParentheses_shouldBindCorrectResult() {
+        bindVariableToBigDecimalCoercion("$var : ((100000 * value1) / 100)");
+    }
+
+    private void bindVariableToBigDecimalCoercion(String binding) {
+        // KIE-775
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BDFact.class.getCanonicalName() + ";\n" +
+                        "global java.util.List result;\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        BDFact( " + binding +  " )\n" +
+                        "    then\n" +
+                        "        result.add($var);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        BDFact bdFact = new BDFact();
+        bdFact.setValue1(new BigDecimal("80"));
+
+        ksession.insert(bdFact);
+        ksession.fireAllRules();
+
+        assertThat(result).contains(new BigDecimal("80000"));
+    }
 }
