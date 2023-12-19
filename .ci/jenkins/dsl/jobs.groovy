@@ -73,11 +73,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
         ],
     ]
 
-    // For Quarkus 3, run only runtimes PR check... for now
-    if (isMainStream() && EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'quarkus3')) {
-        jobConfig.jobs.retainAll { it.id == 'kogito-runtimes' }
-    }
-
     return jobConfig
 }
 
@@ -111,10 +106,6 @@ Closure nightlyJobParamsGetter = isMainStream() ? JobParamsUtils.DEFAULT_PARAMS_
 KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 setupSpecificBuildChainNightlyJob('sonarcloud', setupSonarProjectKeyEnv(nightlyJobParamsGetter))
 setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('quarkus-branch', nightlyJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('quarkus-lts', nightlyJobParamsGetter)
-setupNightlyQuarkusIntegrationJob('native-lts', nightlyJobParamsGetter)
 
 // Release jobs
 setupReleaseDeployJob()
@@ -127,13 +118,6 @@ if (isMainStream()) {
         compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
         properties: [ 'version.io.quarkus' ],
     ])
-
-    // Quarkus 3
-    if (EnvUtils.isEnvironmentEnabled(this, 'quarkus-3')) {
-        // TODO create PR job with branch source plugin. How to ?
-        // setupPrQuarkus3RewriteJob() // Deactivated due to ghprb not available on Apache Jenkins
-        setupStandaloneQuarkus3RewriteJob()
-    }
 }
 
 /////////////////////////////////////////////////////////////////
@@ -248,49 +232,6 @@ void setupReleasePromoteJob() {
 
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
 
-            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
-        }
-    }
-}
-
-void setupPrQuarkus3RewriteJob() {
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-runtimes.rewrite', JobType.PULL_REQUEST, 'quarkus-3', "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.pr", 'Kogito Runtimes Quarkus 3 rewrite patch regeneration')
-    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
-    jobParams.jenkinsfile = "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.pr"
-    jobParams.pr.putAll([
-        run_only_for_branches: [ "${GIT_BRANCH}" ],
-        disable_status_message_error: true,
-        disable_status_message_failure: true,
-        trigger_phrase: '.*[j|J]enkins,?.*(rewrite|write) [Q|q]uarkus-3.*',
-        trigger_phrase_only: true,
-        commitContext: 'Quarkus 3 rewrite',
-    ])
-    jobParams.env.putAll([
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
-    ])
-    KogitoJobTemplate.createPRJob(this, jobParams)
-}
-
-void setupStandaloneQuarkus3RewriteJob() {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes.quarkus-3.rewrite', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.quarkus-3.rewrite.standalone", 'Kogito Runtimes Quarkus 3 rewrite patch regeneration')
-    jobParams.env.putAll(EnvUtils.getEnvironmentEnvVars(this, 'quarkus-3'))
-    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
-    jobParams.env.putAll([
-        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        BASE_BRANCH: Utils.getGitBranch(this),
-        BASE_AUTHOR: Utils.getGitAuthor(this),
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            booleanParam('IS_PR_SOURCE_BRANCH', false, 'Set to true if you are launching the job for a PR source branch')
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
