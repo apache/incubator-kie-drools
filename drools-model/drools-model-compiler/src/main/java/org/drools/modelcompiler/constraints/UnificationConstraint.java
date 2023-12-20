@@ -26,7 +26,9 @@ import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.MutableTypeConstraint;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.rule.accessor.RightTupleValueExtractor;
+import org.drools.base.rule.accessor.TupleValueExtractor;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.model.Index;
@@ -34,26 +36,26 @@ import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class UnificationConstraint extends MutableTypeConstraint implements IndexableConstraint {
+public class UnificationConstraint extends MutableTypeConstraint<ContextEntry> implements IndexableConstraint {
 
-    private Declaration indexingDeclaration;
+    private Declaration        leftIndexingDeclaration;
     private final ReadAccessor readAccessor;
     private final ConstraintEvaluator evaluator;
 
     private boolean unification = true;
 
-    public UnificationConstraint( Declaration indexingDeclaration ) {
-        this( indexingDeclaration, null);
+    public UnificationConstraint( Declaration leftIndexingDeclaration) {
+        this(leftIndexingDeclaration, null);
     }
 
-    public UnificationConstraint( Declaration indexingDeclaration, ConstraintEvaluator evaluator ) {
-        this.indexingDeclaration = indexingDeclaration;
-        this.evaluator = evaluator;
+    public UnificationConstraint(Declaration leftIndexingDeclaration, ConstraintEvaluator evaluator) {
+        this.leftIndexingDeclaration = leftIndexingDeclaration;
+        this.evaluator               = evaluator;
         if (evaluator != null) {
             Index index = evaluator.getIndex();
             this.readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
         } else {
-            this.readAccessor = new LambdaReadAccessor( indexingDeclaration.getDeclarationClass(), x -> x );
+            this.readAccessor = new LambdaReadAccessor(leftIndexingDeclaration.getDeclarationClass(), x -> x );
         }
     }
 
@@ -83,8 +85,8 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public FieldIndex getFieldIndex() {
-        return new FieldIndex(readAccessor, indexingDeclaration );
+    public IndexedValueReader getFieldIndex() {
+        return new IndexedValueReader(leftIndexingDeclaration, getRightIndexExtractor());
     }
 
     @Override
@@ -93,19 +95,24 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public Declaration getIndexExtractor() {
-        return indexingDeclaration;
+    public TupleValueExtractor getRightIndexExtractor() {
+        return new RightTupleValueExtractor(readAccessor);
+    }
+
+    @Override
+    public Declaration getLeftIndexExtractor() {
+        return leftIndexingDeclaration;
     }
 
     @Override
     public Declaration[] getRequiredDeclarations() {
-        return new Declaration[] { indexingDeclaration };
+        return new Declaration[] {leftIndexingDeclaration};
     }
 
     @Override
     public void replaceDeclaration( Declaration oldDecl, Declaration newDecl ) {
-        if (indexingDeclaration == oldDecl) {
-            indexingDeclaration = newDecl;
+        if (leftIndexingDeclaration == oldDecl) {
+            leftIndexingDeclaration = newDecl;
         }
         if (evaluator != null) {
             evaluator.replaceDeclaration( oldDecl, newDecl );
@@ -114,7 +121,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
 
     @Override
     public MutableTypeConstraint clone() {
-        return new UnificationConstraint( indexingDeclaration, evaluator );
+        return new UnificationConstraint(leftIndexingDeclaration, evaluator );
     }
 
     @Override
@@ -142,18 +149,18 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
             return evaluator.evaluate(handle, tuple, reteEvaluator);
         }
         DroolsQueryImpl query = (DroolsQueryImpl) tuple.getObject(0);
-        if (query.getVariables()[indexingDeclaration.getExtractor().getIndex()] != null) {
+        if (query.getVariables()[leftIndexingDeclaration.getExtractor().getIndex()] != null) {
             return true;
         }
         if (evaluator != null) {
             return evaluator.evaluate(handle, tuple, reteEvaluator);
         }
-        Object argument = indexingDeclaration.getValue( null, query );
+        Object argument = leftIndexingDeclaration.getValue(null, query);
         return handle.getObject().equals( argument );
     }
 
     @Override
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         return new LambdaContextEntry();
     }
 }

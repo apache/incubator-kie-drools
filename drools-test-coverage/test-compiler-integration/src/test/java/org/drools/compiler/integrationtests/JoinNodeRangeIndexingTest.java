@@ -468,7 +468,6 @@ public class JoinNodeRangeIndexingTest {
 
         final KieSession ksession = kbase.newKieSession();
         try {
-
             ksession.insert(new IntegerHolder(30));
             ksession.insert(new Person("Paul", 20));
             assertThat(ksession.fireAllRules()).isEqualTo(1);

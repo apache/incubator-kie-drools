@@ -33,7 +33,7 @@ import org.drools.base.rule.IntervalProviderConstraint;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.time.Interval;
 import org.drools.base.time.TimeUtils;
 import org.drools.core.common.BaseNode;
@@ -161,9 +161,9 @@ public class BuildUtils {
             alphaConstraint.addPackageNames(((AlphaNode) duplicate).getConstraint().getPackageNames());
             alphaConstraint.mergeEvaluationContext(((AlphaNode) duplicate).getConstraint());
         } else if (node instanceof BetaNode) {
-            BetaNodeFieldConstraint[] betaConstraints = ((BetaNode) node).getConstraints();
-            int i = 0;
-            for (BetaNodeFieldConstraint betaConstraint : betaConstraints) {
+            BetaConstraint[] betaConstraints = ((BetaNode) node).getConstraints();
+            int              i               = 0;
+            for (BetaConstraint betaConstraint : betaConstraints) {
                 betaConstraint.addPackageNames(((BetaNode) duplicate).getConstraints()[i].getPackageNames());
                 betaConstraint.mergeEvaluationContext(((BetaNode) duplicate).getConstraints()[i]);
                 i++;
@@ -203,9 +203,14 @@ public class BuildUtils {
      * @param list the list of constraints
      */
     public BetaConstraints createBetaNodeConstraint(final BuildContext context,
-                                                    final List<BetaNodeFieldConstraint> list,
+                                                    final List<BetaConstraint> list,
                                                     final boolean disableIndexing) {
         BetaConstraints constraints;
+        if ( list.size() == 1 && list.get(0) instanceof BetaConstraints) {
+            // If the constraint also implements BetaConstraints us it directly, do not wrap.
+            return (BetaConstraints) list.get(0);
+        }
+
         switch ( list.size() ) {
             case 0 :
                 constraints = EmptyBetaConstraints.getInstance();
@@ -216,22 +221,22 @@ public class BuildUtils {
                                                          disableIndexing );
                 break;
             case 2 :
-                constraints = BetaNodeConstraintFactory.Factory.get().createDoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createDoubleBetaConstraints( list.toArray( new BetaConstraint[list.size()]),
                                                          context.getRuleBase().getRuleBaseConfiguration(),
                                                          disableIndexing );
                 break;
             case 3 :
-                constraints = BetaNodeConstraintFactory.Factory.get().createTripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createTripleBetaConstraints( list.toArray( new BetaConstraint[list.size()]),
                                                          context.getRuleBase().getRuleBaseConfiguration(),
                                                          disableIndexing );
                 break;
             case 4 :
-                constraints = BetaNodeConstraintFactory.Factory.get().createQuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createQuadroupleBetaConstraints( list.toArray( new BetaConstraint[list.size()]),
                                                              context.getRuleBase().getRuleBaseConfiguration(),
                                                              disableIndexing );
                 break;
             default :
-                constraints = BetaNodeConstraintFactory.Factory.get().createDefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = BetaNodeConstraintFactory.Factory.get().createDefaultBetaConstraints( list.toArray( new BetaConstraint[list.size()]),
                                                           context.getRuleBase().getRuleBaseConfiguration(),
                                                           disableIndexing );
         }

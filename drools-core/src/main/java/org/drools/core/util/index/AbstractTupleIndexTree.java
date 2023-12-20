@@ -18,12 +18,12 @@
  */
 package org.drools.core.util.index;
 
-import org.drools.base.util.FieldIndex;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.reteoo.Tuple;
+import org.drools.base.util.IndexedValueReader;
 
 public abstract class AbstractTupleIndexTree {
-    protected FieldIndex index;
+    protected IndexedValueReader index;
 
     protected ConstraintTypeOperator constraintType;
 
@@ -46,8 +46,8 @@ public abstract class AbstractTupleIndexTree {
 
     protected Comparable getIndexedValue(Tuple tuple, boolean left) {
         return left ?
-               (Comparable) index.getLeftExtractor().getValue( tuple ) :
-               (Comparable) index.getRightExtractor().getValue( tuple.getFactHandle().getObject() );
+               (Comparable) index.getLeftExtractor().getValue( null, tuple ) :
+               (Comparable) index.getRightExtractor().getValue( null, tuple );
     }
 
     public static class IndexTupleList extends TupleList<Tuple> {

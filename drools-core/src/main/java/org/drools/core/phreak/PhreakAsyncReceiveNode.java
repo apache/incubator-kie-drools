@@ -70,7 +70,7 @@ public class PhreakAsyncReceiveNode {
                                                    TupleSets<LeftTuple> trgLeftTuples) {
 
         BetaConstraints betaConstraints = node.getBetaConstraints();
-        ContextEntry[] context = betaConstraints.createContext();
+        Object context = betaConstraints.createContext();
 
         TupleList leftTuples = memory.getInsertOrUpdateLeftTuples();
         for ( LeftTuple leftTuple = (LeftTuple) leftTuples.getFirst(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {

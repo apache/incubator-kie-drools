@@ -36,9 +36,9 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -67,8 +67,8 @@ public abstract class BaseBetaConstraintsTest {
         return parameters;
     }
 
-    protected BetaNodeFieldConstraint getCheeseTypeConstraint(final String identifier,
-                                                    Operator operator) {
+    protected BetaConstraint getCheeseTypeConstraint(final String identifier,
+                                                     Operator operator) {
         if (useLambdaConstraint) {
             Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
 
@@ -107,12 +107,12 @@ public abstract class BaseBetaConstraintsTest {
         }
     }
 
-    protected void checkBetaConstraints(BetaNodeFieldConstraint[] constraints,
+    protected void checkBetaConstraints(BetaConstraint[] constraints,
                                         Class cls) {
         checkBetaConstraints(constraints, cls, NodeTypeEnums.JoinNode);
     }
 
-    protected void checkBetaConstraints(BetaNodeFieldConstraint[] constraints,
+    protected void checkBetaConstraints(BetaConstraint[] constraints,
                                         Class cls,
                                         short betaNodeType) {
         RuleBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration().as(RuleBaseConfiguration.KEY);
@@ -121,7 +121,7 @@ public abstract class BaseBetaConstraintsTest {
         BetaConstraints betaConstraints;
 
         try {
-            betaConstraints = (BetaConstraints) cls.getConstructor( new Class[]{BetaNodeFieldConstraint[].class, RuleBaseConfiguration.class} ).newInstance( constraints, config );
+            betaConstraints = (BetaConstraints) cls.getConstructor( new Class[]{BetaConstraint[].class, RuleBaseConfiguration.class}).newInstance(constraints, config);
         } catch ( Exception e ) {
             throw new RuntimeException( "could not invoke constructor for " + cls.getName() );
         }
@@ -183,16 +183,16 @@ public abstract class BaseBetaConstraintsTest {
     }
 
     protected void checkSameConstraintForIndex(IndexableConstraint constraint,
-                                               FieldIndex fieldIndex) {
+                                               IndexedValueReader fieldIndex) {
         assertThat(fieldIndex.getLeftExtractor()).isSameAs(constraint.getRequiredDeclarations()[0]);
-        assertThat(fieldIndex.getRightExtractor()).isSameAs(constraint.getFieldExtractor());
+        assertThat(fieldIndex.getRightExtractor()).isSameAs(constraint.getRightIndexExtractor());
     }
 
-    protected BetaNodeFieldConstraint[] convertToConstraints(LinkedList list) {
-        final BetaNodeFieldConstraint[] array = new BetaNodeFieldConstraint[list.size()];
-        int i = 0;
+    protected BetaConstraint[] convertToConstraints(LinkedList list) {
+        final BetaConstraint[] array = new BetaConstraint[list.size()];
+        int                    i     = 0;
         for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-            array[i++] = (BetaNodeFieldConstraint) entry.getObject();
+            array[i++] = (BetaConstraint) entry.getObject();
         }
         return array;
     }

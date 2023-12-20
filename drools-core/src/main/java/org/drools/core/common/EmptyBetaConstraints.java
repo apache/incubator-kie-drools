@@ -24,9 +24,10 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.Tuple;
@@ -39,7 +40,7 @@ import static org.drools.base.reteoo.PropertySpecificUtil.getEmptyPropertyReacti
 
 public class EmptyBetaConstraints
     implements
-    BetaConstraints {
+    BetaConstraints<ContextEntry[]> {
 
     private static final BetaConstraints INSTANCE = new EmptyBetaConstraints();
     private static final ContextEntry[]  EMPTY    = new ContextEntry[0];
@@ -95,8 +96,8 @@ public class EmptyBetaConstraints
     /* (non-Javadoc)
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedRight(org.kie.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final Tuple tuple) {
+    public boolean isAllowedCachedRight(final BaseTuple tuple,
+                                        final ContextEntry[] context) {
         return true;
     }
 
@@ -127,8 +128,8 @@ public class EmptyBetaConstraints
     /* (non-Javadoc)
      * @see org.kie.common.BetaNodeConstraints#getConstraints()
      */
-    public BetaNodeFieldConstraint[] getConstraints() {
-        return new BetaNodeFieldConstraint[0];
+    public BetaConstraint[] getConstraints() {
+        return new BetaConstraint[0];
     }
 
     /**

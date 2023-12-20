@@ -111,7 +111,7 @@ public class PhreakExistsNode {
                               TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
@@ -147,7 +147,7 @@ public class PhreakExistsNode {
                                TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
@@ -172,8 +172,8 @@ public class PhreakExistsNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                         ) ) {
                         leftTuple.setBlocker( rightTuple );
                         rightTuple.addBlocked( leftTuple );
 
@@ -200,7 +200,7 @@ public class PhreakExistsNode {
                               TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
         boolean leftUpdateOptimizationAllowed = existsNode.isLeftUpdateOptimizationAllowed();
 
@@ -299,7 +299,7 @@ public class PhreakExistsNode {
                                TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
 
         boolean iterateFromStart = existsNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison();
@@ -329,8 +329,8 @@ public class PhreakExistsNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                         ) ) {
                         leftTuple.setBlocker( rightTuple );
                         rightTuple.addBlocked( leftTuple );
 
@@ -448,7 +448,7 @@ public class PhreakExistsNode {
                                TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
         TupleMemory ltm = bm.getLeftTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
 
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
