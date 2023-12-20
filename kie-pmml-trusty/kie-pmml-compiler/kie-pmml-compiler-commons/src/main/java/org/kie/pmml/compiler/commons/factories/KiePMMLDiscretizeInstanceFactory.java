@@ -46,7 +46,7 @@ public class KiePMMLDiscretizeInstanceFactory {
         String defaultValue = discretize.getDefaultValue() != null ? discretize.getDefaultValue().toString() : null;
         DATA_TYPE dataType = discretize.getDataType() != null ? DATA_TYPE.byName(discretize.getDataType().value()) :
                 null;
-        return new KiePMMLDiscretize(discretize.getField().getValue(),
+        return new KiePMMLDiscretize(discretize.getField(),
                                      getKiePMMLExtensions(discretize.getExtensions()),
                                      discretizeBins,
                                      mapMissingTo,

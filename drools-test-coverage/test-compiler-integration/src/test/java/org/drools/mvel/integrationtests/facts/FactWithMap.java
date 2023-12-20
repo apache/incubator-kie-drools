@@ -16,23 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.lang.ast.infixexecutors;
+package org.drools.mvel.integrationtests.facts;
 
-public class EvaluatedParameters {
+import java.util.HashMap;
+import java.util.Map;
 
-        private final Object left;
-        private final Object right;
+public class FactWithMap {
 
-        public EvaluatedParameters(Object leftObject, Object rightObject) {
-            this.left = leftObject;
-            this.right = rightObject;
-        }
+    private Map<Integer, String> itemsMap = new HashMap<>();
 
-        public Object getLeft() {
-            return left;
-        }
+    public FactWithMap() { }
 
-        public Object getRight() {
-            return right;
-        }
+    public FactWithMap(final Integer key, final String value) {
+        this.itemsMap.put(key, value);
     }
+
+    public FactWithMap(final Map<Integer, String> itemsMap) {
+        this.itemsMap = itemsMap;
+    }
+
+    public Map<Integer, String> getItemsMap() {
+        return itemsMap;
+    }
+
+    public void setItemsMap(Map<Integer, String> itemsMap) {
+        this.itemsMap = itemsMap;
+    }
+}

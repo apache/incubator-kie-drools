@@ -22,7 +22,7 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 
-import javax.transaction.Synchronization;
+import jakarta.transaction.Synchronization;
 
 public interface PersistenceContextManager {
     

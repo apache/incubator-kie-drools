@@ -16,20 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.lang.ast.infixexecutors;
+package org.drools.mvel.integrationtests.facts;
 
-import org.junit.Test;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+public class FactWithObject {
 
-import java.time.chrono.ChronoPeriod;
+    private Object objectValue;
 
-import static org.junit.Assert.assertTrue;
+    public FactWithObject(final Object objectValue) {
+        this.objectValue = objectValue;
+    }
 
+    public Object getObjectValue() {
+        return objectValue;
+    }
 
-public class ClassidentifierTupleTest {
-
-    @Test
-    public void testClassidentifierTuple_isEquals() {
-        assertTrue(ClassIdentifierTuple.isEquals(ComparablePeriod.class, ChronoPeriod.class));
+    public void setObjectValue(final Object objectValue) {
+        this.objectValue = objectValue;
     }
 }

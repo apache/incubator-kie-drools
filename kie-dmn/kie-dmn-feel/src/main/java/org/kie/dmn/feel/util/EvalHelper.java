@@ -41,8 +41,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
@@ -150,33 +148,39 @@ public class EvalHelper {
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
-        if (!(value instanceof Number
-              || value instanceof String)
-            || (value instanceof Double
-                && (value.toString().equals("NaN") || value.toString().equals("Infinity") || value.toString().equals("-Infinity")))) {
-            return null;
+        if ( value instanceof BigDecimal ) {
+            return (BigDecimal) value;
         }
-        if ( !BigDecimal.class.isAssignableFrom( value.getClass() ) ) {
-            if ( value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte ||
-                 value instanceof AtomicLong || value instanceof AtomicInteger ) {
-                value = new BigDecimal( ((Number) value).longValue(), MathContext.DECIMAL128 );
-            } else if ( value instanceof BigInteger ) {
-                value = new BigDecimal( (BigInteger) value, MathContext.DECIMAL128 );
-            } else if ( value instanceof String ) {
-                try {
-                    // we need to remove leading zeros to prevent octal conversion
-                    value = new BigDecimal( ((String) value).replaceFirst("^0+(?!$)", ""), MathContext.DECIMAL128 );
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            } else {
-                // doubleValue() sometimes produce rounding errors, so we need to use toString() instead
-                // We also need to remove trailing zeros, if there are some so for 10d we get BigDecimal.valueOf(10)
-                // instead of BigDecimal.valueOf(10.0).
-                value = new BigDecimal( removeTrailingZeros(value.toString()), MathContext.DECIMAL128 );
+
+        if ( value instanceof BigInteger ) {
+            return new BigDecimal((BigInteger) value, MathContext.DECIMAL128);
+        }
+
+        if ( value instanceof Double || value instanceof Float ) {
+            String stringVal = value.toString();
+            if (stringVal.equals("NaN") || stringVal.equals("Infinity") || stringVal.equals("-Infinity")) {
+                return null;
+            }
+            // doubleValue() sometimes produce rounding errors, so we need to use toString() instead
+            // We also need to remove trailing zeros, if there are some so for 10d we get BigDecimal.valueOf(10)
+            // instead of BigDecimal.valueOf(10.0).
+            return new BigDecimal( removeTrailingZeros(value.toString()), MathContext.DECIMAL128 );
+        }
+
+        if ( value instanceof Number ) {
+            return new BigDecimal( ((Number) value).longValue(), MathContext.DECIMAL128 );
+        }
+
+        if ( value instanceof String ) {
+            try {
+                // we need to remove leading zeros to prevent octal conversion
+                return new BigDecimal(((String) value).replaceFirst("^0+(?!$)", ""), MathContext.DECIMAL128);
+            } catch (NumberFormatException e) {
+                return null;
             }
         }
-        return (BigDecimal) value;
+
+        return null;
     }
 
     public static Object coerceNumber(Object value) {

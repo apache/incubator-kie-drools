@@ -31,6 +31,10 @@ public class FactWithList {
         this.items.add(factString);
     }
 
+    public FactWithList(final List<String> items) {
+        this.items = items;
+    }
+
     public List<String> getItems() {
         return items;
     }

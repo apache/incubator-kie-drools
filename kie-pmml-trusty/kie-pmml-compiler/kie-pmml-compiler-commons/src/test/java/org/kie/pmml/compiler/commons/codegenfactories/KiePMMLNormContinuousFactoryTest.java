@@ -57,8 +57,7 @@ public class KiePMMLNormContinuousFactoryTest {
         String outlierString =
                 OUTLIER_TREATMENT_METHOD.class.getName() + "." + OUTLIER_TREATMENT_METHOD.byName(normContinuous.getOutliers().value()).name();
         String text = getFileContent(TEST_01_SOURCE);
-        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                                                                      normContinuous.getField().getValue(),
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,normContinuous.getField(),
                                                                       linearNorms.get(0).getOrig(),
                                                                       linearNorms.get(0).getNorm(),
                                                                       linearNorms.get(1).getOrig(),

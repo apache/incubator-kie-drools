@@ -125,4 +125,14 @@ public class TestModel extends Model {
     public VisitorAction accept(Visitor visitor) {
         return null;
     }
+
+    @Override
+    public MiningFunction requireMiningFunction() {
+        return null;
+    }
+
+    @Override
+    public MiningSchema requireMiningSchema() {
+        return null;
+    }
 }

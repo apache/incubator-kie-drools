@@ -194,7 +194,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         if (targetFields.size() != 1) {
             throw new KiePMMLException("Expected one target field, retrieved " + targetFields.size());
         }
-        if (toValidate.getTargetField() != null && !(Objects.equals(toValidate.getTargetField().getValue(),
+        if (toValidate.getTargetField() != null && !(Objects.equals(toValidate.getTargetField(),
                                                                     targetFields.get(0).getName()))) {
             throw new KiePMMLException(String.format("Not-matching target fields: %s %s", toValidate.getTargetField()
                     , targetFields.get(0).getName()));
@@ -209,7 +209,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         return fields.stream()
                 .filter(DataField.class::isInstance)
                 .map(DataField.class::cast)
-                .filter(dataField -> Objects.equals(dataField.getName().getValue(), categoricalFieldName)).mapToDouble(dataField -> dataField.getValues().size())
+                .filter(dataField -> Objects.equals(dataField.getName(), categoricalFieldName)).mapToDouble(dataField -> dataField.getValues().size())
                 .findFirst().orElse(0) == 2;
     }
 
@@ -217,7 +217,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         List<KiePMMLNameOpType> targetFields = getTargetFields(fields, toValidate);
         final List<String> categoricalFields = fields.stream()
                 .filter(dataField -> OpType.CATEGORICAL.equals(dataField.getOpType()))
-                .map(dataField -> dataField.getName().getValue())
+                .map(dataField ->dataField.getName())
                 .collect(Collectors.toList());
         final List<KiePMMLNameOpType> categoricalNameTypes =
                 targetFields.stream().filter(targetField -> categoricalFields.contains(targetField.getName())).collect(Collectors.toList());

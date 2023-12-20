@@ -21,7 +21,7 @@ package org.kie.internal.jaxb;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class LocalDateXmlAdapter extends XmlAdapter<String, LocalDate> {
 

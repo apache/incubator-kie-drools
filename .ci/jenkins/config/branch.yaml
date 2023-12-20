@@ -1,3 +1,5 @@
+generation_config:
+  missing_environment: ignore
 environments:
   default:
     env_vars:
@@ -10,30 +12,6 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  quarkus-main:
-    enabled: false
-    env_vars:
-      QUARKUS_BRANCH: main
-      DROOLS_BUILD_MVN_OPTS: -Dfull
-    ids:
-    - quarkus
-  quarkus-3:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MAVEN_TOOL: maven_3.9.3
-      BUILD_JDK_TOOL: jdk_17_latest
-      BUILD_MVN_OPTS: -Denforcer.skip
-      # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
-      # BUILD_MVN_OPTS_QUARKUS_UPDATE: -Dfull
-    ids:
-    - quarkus
-    - quarkus3
-  quarkus-branch:
-    env_vars:
-      QUARKUS_BRANCH: '2.16'
-      DROOLS_BUILD_MVN_OPTS: -Dfull
-    ids:
-    - quarkus
   sonarcloud:
     auto_generation: false
     env_vars:
@@ -105,6 +83,6 @@ jenkins:
         image: quay.io/kiegroup/kogito-ci-build:main-latest
         args: --privileged --group-add docker
   default_tools:
-    jdk: jdk_11_latest
-    maven: maven_3.8.6
+    jdk: jdk_17_latest
+    maven: maven_3.9.3
     sonar_jdk: jdk_17_latest
