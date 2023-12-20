@@ -18,6 +18,7 @@
  */
 package org.drools.compiler.integrationtests.operators;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -286,5 +287,188 @@ public class ExistsTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    @Test
+    public void existsAndNotWithSingleCoercion_shouldNotMatchExists() {
+        // KIE-766
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                           "import " + StringHolder.class.getCanonicalName() + "\n" +
+                           "import " + BDHolder.class.getCanonicalName() + "\n" +
+                           "global java.util.List list \n" +
+                           "rule R1\n" +
+                           "  when\n" +
+                           "    $stringHolder : StringHolder( $value1 : value1 )\n" +
+                           "    exists BDHolder( $value1 == value1 )\n" +
+                           "  then\n" +
+                           "    list.add(\"R1\");\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "  when\n" +
+                           "    $stringHolder : StringHolder( $value1 : value1 )\n" +
+                           "    not BDHolder( $value1 == value1 )\n" +
+                           "  then\n" +
+                           "    list.add(\"R2\");\n" +
+                           "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("exists-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            ksession.insert(new StringHolder("9999", "567"));
+            ksession.insert(new BDHolder(new BigDecimal("0"), new BigDecimal("567")));
+            ksession.fireAllRules();
+
+            assertThat(list).hasSize(1);
+            assertThat(list).as("BDHolder shouldn't match the exists constraints").containsExactly("R2");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void existsAndNotWithMultipleCoercion_shouldNotMatchExists() {
+        // KIE-766
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                           "import " + StringHolder.class.getCanonicalName() + "\n" +
+                           "import " + BDHolder.class.getCanonicalName() + "\n" +
+                           "global java.util.List list \n" +
+                           "rule R1\n" +
+                           "  when\n" +
+                           "    $stringHolder : StringHolder( $value1 : value1, $value2 : value2 )\n" +
+                           "    exists BDHolder( $value1 == value1, $value2 == value2 )\n" +
+                           "  then\n" +
+                           "    list.add(\"R1\");\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "  when\n" +
+                           "    $stringHolder : StringHolder( $value1 : value1, $value2 : value2 )\n" +
+                           "    not BDHolder( $value1 == value1, $value2 == value2 )\n" +
+                           "  then\n" +
+                           "    list.add(\"R2\");\n" +
+                           "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("exists-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            ksession.insert(new StringHolder("9999", "567"));
+            ksession.insert(new BDHolder(new BigDecimal("0"), new BigDecimal("567")));
+            ksession.fireAllRules();
+
+            assertThat(list).hasSize(1);
+            assertThat(list).as("BDHolder shouldn't match the exists constraints").containsExactly("R2");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void existsAndNotWithBigDecimals_shouldNotMatchExists() {
+        // KIE-766
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                           "import " + BDHolder.class.getCanonicalName() + "\n" +
+                           "global java.util.List list \n" +
+                           "rule R1\n" +
+                           "  when\n" +
+                           "    $bdHolder1 : BDHolder( $value1 : value1, $value2 : value2 )\n" +
+                           "    exists BDHolder( this != $bdHolder1, $value1 == value1, $value2 == value2 )\n" +
+                           "  then\n" +
+                           "    list.add(\"R1\");\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "  when\n" +
+                           "    $bdHolder1 : BDHolder( $value1 : value1, $value2 : value2 )\n" +
+                           "    not BDHolder( this != $bdHolder1, $value1 == value1, $value2 == value2 )\n" +
+                           "  then\n" +
+                           "    list.add(\"R2\");\n" +
+                           "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("exists-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            ksession.insert(new BDHolder(new BigDecimal("9999"), new BigDecimal("567")));
+            ksession.insert(new BDHolder(new BigDecimal("0"), new BigDecimal("567")));
+            ksession.fireAllRules();
+
+            assertThat(list).hasSize(2);
+            assertThat(list).as("BDHolder shouldn't match the exists constraints. R2 fires twice because 2 objects can match as $bdHolder1")
+                            .containsExactly("R2", "R2");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    public static class StringHolder {
+
+        private String value1;
+        private String value2;
+
+        public StringHolder(String value1, String value2) {
+            this.value1 = value1;
+            this.value2 = value2;
+        }
+
+        public String getValue1() {
+            return value1;
+        }
+
+        public void setValue1(String value1) {
+            this.value1 = value1;
+        }
+
+        public String getValue2() {
+            return value2;
+        }
+
+        public void setValue2(String value2) {
+            this.value2 = value2;
+        }
+
+    }
+
+    public static class BDHolder {
+
+        private BigDecimal value1;
+        private BigDecimal value2;
+
+        public BDHolder(BigDecimal value1, BigDecimal value2) {
+            super();
+            this.value1 = value1;
+            this.value2 = value2;
+        }
+
+        public BigDecimal getValue1() {
+            return value1;
+        }
+
+        public void setValue1(BigDecimal value1) {
+            this.value1 = value1;
+        }
+
+        public BigDecimal getValue2() {
+            return value2;
+        }
+
+        public void setValue2(BigDecimal value2) {
+            this.value2 = value2;
+        }
+
     }
 }

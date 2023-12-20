@@ -62,7 +62,7 @@ public class IndexUtil {
     }
 
     public static boolean isIndexable(BetaConstraint constraint, short nodeType, KieBaseConfiguration config) {
-        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config);
+        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config) && !isBigDecimalEqualityConstraint((IndexableConstraint)constraint);
     }
 
     public static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {

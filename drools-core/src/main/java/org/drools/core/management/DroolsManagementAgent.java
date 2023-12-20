@@ -28,8 +28,8 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
+import org.drools.base.RuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -59,7 +59,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         return DroolsManagementAgentHolder.INSTANCE;
     }
 
-    static ObjectName createObjectNameFor(InternalRuleBase kbase) {
+    static ObjectName createObjectNameFor(RuleBase kbase) {
         return DroolsManagementAgent.createObjectName(
                     DroolsManagementAgent.createObjectNameBy(kbase.getContainerId())
                     + ",kbaseId=" + ObjectName.quote(kbase.getId())
@@ -101,9 +101,9 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
 
     long getNextKnowledgeSessionId();
 
-    void registerKnowledgeBase(InternalRuleBase kbase);
+    void registerKnowledgeBase(RuleBase kbase);
     
-    void unregisterKnowledgeBase(InternalRuleBase kbase);
+    void unregisterKnowledgeBase(RuleBase kbase);
     
     void registerKnowledgeSessionUnderName(CBSKey cbsKey, KieRuntimeEventManager ksession);
 
@@ -240,7 +240,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         }
 
         @Override
-        public void registerKnowledgeBase(InternalRuleBase kbase) {
+        public void registerKnowledgeBase(RuleBase kbase) {
             KnowledgeBaseMonitoring mbean = new KnowledgeBaseMonitoring( kbase );
             registerMBean( kbase,
                     mbean,
@@ -248,7 +248,7 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         }
 
         @Override
-        public void unregisterKnowledgeBase(InternalRuleBase kbase) {
+        public void unregisterKnowledgeBase(RuleBase kbase) {
             unregisterMBeansFromOwner(kbase);
         }
 
@@ -417,12 +417,12 @@ public interface DroolsManagementAgent extends KieManagementAgentMBean {
         }
 
         @Override
-        public void registerKnowledgeBase(InternalRuleBase kbase) {
+        public void registerKnowledgeBase(RuleBase kbase) {
 
         }
 
         @Override
-        public void unregisterKnowledgeBase(InternalRuleBase kbase) {
+        public void unregisterKnowledgeBase(RuleBase kbase) {
 
         }
 
