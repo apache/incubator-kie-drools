@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
+import org.drools.base.RuleBase;
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -60,7 +61,6 @@ import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -941,7 +941,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             }
             throw new IllegalArgumentException("Could not parse knowledge. See the logs for details.");
         }
-        InternalRuleBase kbase = RuleBaseFactory.newRuleBase(conf);
+        RuleBase kbase = RuleBaseFactory.newRuleBase(conf);
         kbase.addPackages(asList(getPackages()));
         return KnowledgeBaseFactory.newKnowledgeBase(kbase);
     }

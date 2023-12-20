@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 import org.drools.base.RuleBase;
 import org.drools.base.common.RuleBasePartitionId;
@@ -80,7 +78,6 @@ public interface InternalRuleBase extends RuleBase {
 
     Set<String> getEntryPointIds();
 
-    String getId();
 
     RuleBasePartitionId createNewPartitionId();
     boolean isPartitioned();
@@ -99,7 +96,6 @@ public interface InternalRuleBase extends RuleBase {
 
     FactHandleFactory newFactHandleFactory(long id, long counter) throws IOException;
 
-    Map<String, Type> getGlobals();
 
     int getNodeCount();
     int getMemoryCount();
@@ -120,11 +116,6 @@ public interface InternalRuleBase extends RuleBase {
 
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 
-    InternalKnowledgePackage[] getPackages();
-    InternalKnowledgePackage getPackage(String name);
-    Future<KiePackage> addPackage(KiePackage pkg );
-    void addPackages( Collection<? extends KiePackage> newPkgs );
-    Map<String, InternalKnowledgePackage> getPackagesMap();
 
     ClassFieldAccessorCache getClassFieldAccessorCache();
 
@@ -140,9 +131,6 @@ public interface InternalRuleBase extends RuleBase {
     boolean hasSegmentPrototypes();
 
     void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs );
-
-    void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
-    void removeRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
 
     default void beforeIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
     default void afterIncrementalUpdate(KieBaseUpdate kieBaseUpdate) { }
@@ -160,8 +148,6 @@ public interface InternalRuleBase extends RuleBase {
 
     ReleaseId getResolvedReleaseId();
     void setResolvedReleaseId(ReleaseId currentReleaseId);
-    String getContainerId();
-    void setContainerId(String containerId);
 
     RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry();
     boolean hasUnits();

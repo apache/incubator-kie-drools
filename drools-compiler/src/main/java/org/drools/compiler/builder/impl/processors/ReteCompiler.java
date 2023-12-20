@@ -21,20 +21,20 @@ package org.drools.compiler.builder.impl.processors;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.RuleBase;
 import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.impl.InternalRuleBase;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.kie.internal.builder.ResourceChange;
 
 public class ReteCompiler extends AbstractPackageCompilationPhase {
     private final AssetFilter assetFilter;
-    private InternalRuleBase kBase;
+    private RuleBase kBase;
 
-    public ReteCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, InternalRuleBase kBase, AssetFilter assetFilter) {
+    public ReteCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, RuleBase kBase, AssetFilter assetFilter) {
         super(pkgRegistry, packageDescr);
         this.kBase = kBase;
         this.assetFilter = assetFilter;
