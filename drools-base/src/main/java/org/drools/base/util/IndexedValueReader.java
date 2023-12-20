@@ -18,42 +18,38 @@
  */
 package org.drools.base.util;
 
+import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.rule.accessor.TupleValueExtractor;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.rule.accessor.TupleValueExtractor;
-
-public class FieldIndex implements Externalizable {
-
+public class IndexedValueReader implements Externalizable {
     private static final long serialVersionUID = 510l;
 
     private TupleValueExtractor leftExtractor;
-    private ReadAccessor rightExtractor;
+    private TupleValueExtractor rightExtractor;
     private boolean requiresCoercion;
 
-    public FieldIndex() {
+    public IndexedValueReader() {
     }
 
-    public FieldIndex(ReadAccessor rightExtractor, TupleValueExtractor leftExtractor) {
-        this.rightExtractor = rightExtractor;
+    public IndexedValueReader(TupleValueExtractor leftExtractor, TupleValueExtractor rightExtractor) {
         this.leftExtractor = leftExtractor;
+        this.rightExtractor = rightExtractor;
         this.requiresCoercion = isCoercionRequired(rightExtractor, leftExtractor);
     }
 
-    private boolean isCoercionRequired(ReadAccessor extractor, TupleValueExtractor declaration) {
+    private boolean isCoercionRequired(TupleValueExtractor extractor, TupleValueExtractor declaration) {
         return extractor.getValueType() != declaration.getValueType();
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
-        rightExtractor = (ReadAccessor) in.readObject();
-        leftExtractor = (Declaration) in.readObject();
+        rightExtractor = (TupleValueExtractor) in.readObject();
+        leftExtractor = (TupleValueExtractor) in.readObject();
         requiresCoercion = isCoercionRequired(rightExtractor, leftExtractor);
     }
 
@@ -67,7 +63,7 @@ public class FieldIndex implements Externalizable {
         return this.leftExtractor;
     }
 
-    public ReadAccessor getRightExtractor() {
+    public TupleValueExtractor getRightExtractor() {
         return this.rightExtractor;
     }
 
@@ -80,6 +76,6 @@ public class FieldIndex implements Externalizable {
                 (requiresCoercion ?
                         rightExtractor.getValueType().coerce(leftExtractor.getValue(tuple)) :
                         leftExtractor.getValue(tuple)) :
-                rightExtractor.getValue(null, tuple.getFactHandle().getObject());
+                rightExtractor.getValue(tuple);
     }
 }

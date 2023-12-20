@@ -31,7 +31,7 @@ import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.TupleIndexHashTable;
@@ -54,9 +54,9 @@ public class RightTupleIndexHashTableIteratorTest extends AbstractTupleIndexHash
 
     @Test
     public void test1() {
-        BetaNodeFieldConstraint constraint0 = createFooThisEqualsDBetaConstraint(useLambdaConstraint);
+        BetaConstraint constraint0 = createFooThisEqualsDBetaConstraint(useLambdaConstraint);
 
-        BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[]{constraint0};
+        BetaConstraint[] constraints = new BetaConstraint[]{constraint0};
 
         RuleBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration().as(RuleBaseConfiguration.KEY);
 

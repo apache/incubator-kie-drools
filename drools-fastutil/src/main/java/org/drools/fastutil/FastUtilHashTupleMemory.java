@@ -23,22 +23,16 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
-import org.drools.base.util.FieldIndex;
 import org.drools.core.util.AbstractHashTable.HashEntry;
 import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.core.util.AbstractHashTable.SingleIndex;
-import org.drools.core.util.AbstractHashTable.TripleCompositeIndex;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.TupleList;
 
+import java.util.function.Supplier;
+
 public class FastUtilHashTupleMemory implements TupleMemory {
-
-    public static final int                    PRIME            = 31;
-
-    private int                                startResult;
 
     private int                                factSize;
 
@@ -68,7 +62,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
         }
     }
 
-    public FastUtilHashTupleMemory(FieldIndex[] index,
+    public FastUtilHashTupleMemory(Index index,
                                    boolean left) {
         this.set = new FastUtilMergableHashSet<>(HashStrategy.get());
 
@@ -76,29 +70,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
         fullFastIterator = new FullFastIterator(set);
 
-        this.startResult = PRIME;
-        for ( FieldIndex i : index ) {
-            this.startResult += PRIME * this.startResult + i.getRightExtractor().getIndex();
-        }
-
-        switch ( index.length ) {
-            case 0 :
-                throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  0" );
-            case 1 :
-                this.index = new SingleIndex(index,
-                                             this.startResult );
-                break;
-            case 2 :
-                this.index = new DoubleCompositeIndex(index,
-                                                      this.startResult );
-                break;
-            case 3 :
-                this.index = new TripleCompositeIndex(index,
-                                                      this.startResult );
-                break;
-            default :
-                throw new IllegalArgumentException( "FieldIndexHashTable cannot use an index[] of length  great than 3" );
-        }
+        this.index = index;
     }
 
     @Override
@@ -230,7 +202,6 @@ public class FastUtilHashTupleMemory implements TupleMemory {
     @Override
     public void clear() {
         set.clear();
-        this.startResult = PRIME;
         this.factSize = 0;
     }
 

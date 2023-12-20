@@ -134,7 +134,7 @@ public class IndexMemory {
 
         @Override
         public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
-            return new TupleIndexHashTable(indexSpec.getIndexes(), isLeft);
+            return new TupleIndexHashTable(indexSpec.getIndex(), isLeft);
         }
     }
 

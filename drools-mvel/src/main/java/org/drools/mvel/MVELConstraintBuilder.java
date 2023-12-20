@@ -527,7 +527,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         @Override
         public boolean areComparisonCompatible(Class<?> c1, Class<?> c2) {
-            return super.areEqualityCompatible(c1, c2);
+            return areEqualityCompatible(c1, c2);
         }
     }
 

@@ -33,4 +33,8 @@ public interface TupleValueExtractor extends Cloneable {
     Object getValue(ValueResolver valueResolver, BaseTuple tuple);
 
     TupleValueExtractor clone();
+
+    default int getIndex() {
+        throw new UnsupportedOperationException();
+    }
 }

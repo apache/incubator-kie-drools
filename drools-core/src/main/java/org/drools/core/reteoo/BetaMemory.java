@@ -26,7 +26,7 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
-public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
+public class BetaMemory<C> extends AbstractBaseLinkedListNode<Memory>
         implements
         SegmentNodeMemory {
 
@@ -34,7 +34,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     private TupleMemory                leftTupleMemory;
     private TupleMemory                rightTupleMemory;
     private TupleSets<RightTuple>      stagedRightTuples;
-    private ContextEntry[]             context;
+    private C                          context;
     // the node type this memory belongs to
     private short                      nodeType;
     private SegmentMemory              segmentMemory;
@@ -47,7 +47,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
 
     public BetaMemory(final TupleMemory tupleMemory,
                       final TupleMemory objectMemory,
-                      final ContextEntry[] context,
+                      final C context,
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
@@ -83,7 +83,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     /**
      * @return the context
      */
-    public ContextEntry[] getContext() {
+    public C getContext() {
         return context;
     }
 

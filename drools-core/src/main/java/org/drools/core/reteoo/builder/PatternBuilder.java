@@ -38,7 +38,7 @@ import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.WindowReference;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.Constraint;
 import org.drools.base.rule.constraint.XpathConstraint;
 import org.drools.base.time.impl.Timer;
@@ -189,7 +189,7 @@ public class PatternBuilder
                     linkAlphaConstraint( (AlphaNodeFieldConstraint) constraint, constraints.alphaConstraints );
                     break;
                 case BETA:
-                    linkBetaConstraint( (BetaNodeFieldConstraint) constraint, constraints.betaConstraints );
+                    linkBetaConstraint((BetaConstraint) constraint, constraints.betaConstraints);
                     if ( isNegative && context.getRuleBase().getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
                         checkDelaying( context, constraint );
                     }
@@ -204,7 +204,7 @@ public class PatternBuilder
         return constraints;
     }
 
-    protected void linkBetaConstraint( BetaNodeFieldConstraint constraint, List<BetaNodeFieldConstraint> betaConstraints ) {
+    protected void linkBetaConstraint(BetaConstraint constraint, List<BetaConstraint> betaConstraints) {
         betaConstraints.add( constraint );
     }
 
@@ -390,7 +390,7 @@ public class PatternBuilder
      */
     private void checkRemoveIdentities(final BuildContext context,
                                        final Pattern pattern,
-                                       final List<BetaNodeFieldConstraint> betaConstraints) {
+                                       final List<BetaConstraint> betaConstraints) {
         if ( context.getRuleBase().getRuleBaseConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
@@ -416,7 +416,7 @@ public class PatternBuilder
 
     private static class Constraints {
         private final List<AlphaNodeFieldConstraint> alphaConstraints = new ArrayList<>();
-        private final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
-        private final List<XpathConstraint> xpathConstraints = new ArrayList<>();
+        private final List<BetaConstraint>           betaConstraints  = new ArrayList<>();
+        private final List<XpathConstraint>          xpathConstraints = new ArrayList<>();
     }
 }

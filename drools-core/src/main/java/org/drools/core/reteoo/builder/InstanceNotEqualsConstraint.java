@@ -27,12 +27,12 @@ import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class InstanceNotEqualsConstraint
     implements
-    BetaNodeFieldConstraint {
+    BetaConstraint<ContextEntry> {
 
     private static final long          serialVersionUID = 510l;
 
@@ -75,7 +75,7 @@ public class InstanceNotEqualsConstraint
         return false;
     }
 
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         return new InstanceNotEqualsConstraintContextEntry( this.otherPattern );
     }
 
@@ -182,7 +182,7 @@ public class InstanceNotEqualsConstraint
         }
     }
 
-    public BetaNodeFieldConstraint cloneIfInUse() {
+    public BetaConstraint cloneIfInUse() {
         return this;
     }
 }

@@ -18,34 +18,34 @@
  */
 package org.drools.core.reteoo.builder;
 
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.kie.api.internal.utils.KieService;
 
 public interface BetaNodeConstraintFactory extends KieService {
 
-    SingleBetaConstraints createSingleBetaConstraints(final BetaNodeFieldConstraint constraint,
+    SingleBetaConstraints createSingleBetaConstraints(final BetaConstraint constraint,
                                                       final RuleBaseConfiguration conf,
                                                       final boolean disableIndex);
 
-    DoubleBetaConstraints createDoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    DoubleBetaConstraints createDoubleBetaConstraints(final BetaConstraint[] constraints,
                                                       final RuleBaseConfiguration conf,
                                                       final boolean disableIndexing);
 
-    TripleBetaConstraints createTripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    TripleBetaConstraints createTripleBetaConstraints(final BetaConstraint[] constraints,
                                                       final RuleBaseConfiguration conf,
                                                       final boolean disableIndexing);
 
-    QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaConstraint[] constraints,
                                                               final RuleBaseConfiguration conf,
                                                               final boolean disableIndexing);
 
-    DefaultBetaConstraints createDefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    DefaultBetaConstraints createDefaultBetaConstraints(final BetaConstraint[] constraints,
                                                         final RuleBaseConfiguration conf,
                                                         final boolean disableIndexing);
 

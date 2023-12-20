@@ -21,7 +21,7 @@ package org.drools.mvel.integrationtests.phreak;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.rule.Declaration;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.mvel.MVELKnowledgePackageImpl;
 
 public class ReteTesterHelper {
@@ -37,10 +37,10 @@ public class ReteTesterHelper {
         return pkg;
     }
 
-    public BetaNodeFieldConstraint getBoundVariableConstraint(final Class clazz,
-                                                              final String fieldName,
-                                                              final Declaration declaration,
-                                                              final String evaluatorString) {
+    public BetaConstraint getBoundVariableConstraint(final Class clazz,
+                                                     final String fieldName,
+                                                     final Declaration declaration,
+                                                     final String evaluatorString) {
         return new FakeBetaNodeFieldConstraint(clazz, fieldName, declaration, evaluatorString);
     }
 

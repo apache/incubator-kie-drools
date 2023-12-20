@@ -26,8 +26,8 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -52,7 +52,7 @@ import org.kie.api.runtime.rule.FactHandle;
  */
 public class TupleStartEqualsConstraint
     implements
-    BetaNodeFieldConstraint {
+    BetaConstraint<ContextEntry> {
 
     private static final long                       serialVersionUID = 510l;
 
@@ -88,7 +88,7 @@ public class TupleStartEqualsConstraint
         return false;
     }
 
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         return new TupleStartEqualsConstraintContextEntry();
     }
 
@@ -190,7 +190,7 @@ public class TupleStartEqualsConstraint
         return ConstraintType.BETA;
     }
 
-    public BetaNodeFieldConstraint cloneIfInUse() {
+    public BetaConstraint cloneIfInUse() {
         return this;
     }
 }
