@@ -18,6 +18,7 @@
  */
 package org.drools.kiesession.rulebase;
 
+import org.drools.base.RuleBase;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
@@ -32,7 +33,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.KieBaseUpdate;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
@@ -108,7 +108,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         this(RuleBaseFactory.newRuleBase(kbaseConfiguration));
     }
 
-    public SessionsAwareKnowledgeBase(InternalRuleBase delegate) {
+    public SessionsAwareKnowledgeBase(RuleBase delegate) {
         this.delegate = (KnowledgeBaseImpl) delegate;
 
         if (this.delegate.getRuleBaseConfiguration().getSessionPoolSize() > 0) {

@@ -39,7 +39,8 @@ import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.impl.InternalRuleBase;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.io.ResourceConfigurationImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -69,6 +70,7 @@ import org.kie.util.maven.support.PomModel;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.drools.base.RuleBase;
 
 import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
@@ -220,7 +222,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
 
-        InternalRuleBase kBase = RuleBaseFactory.newRuleBase(kBaseModel.getName(), conf);
+        RuleBase kBase = RuleBaseFactory.newRuleBase(kBaseModel.getName(), conf);
         kBase.addPackages( pkgs );
         return KnowledgeBaseFactory.newKnowledgeBase(kBase);
     }
