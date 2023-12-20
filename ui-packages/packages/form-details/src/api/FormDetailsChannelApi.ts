@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Form, FormContent } from './FormDetailsEnvelopeApi';
+import { Form, FormContent } from '@kogito-apps/components-common/dist/types';
 
 /**
  * Channel Api for Forms Details

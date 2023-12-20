@@ -35,7 +35,7 @@ import {
   componentOuiaProps,
   OUIAProps
 } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
-import { FormFilter } from '../../../api';
+import { FormFilter } from '@kogito-apps/components-common/dist/types';
 
 interface FormsListToolbarProps {
   filterFormNames: string[];

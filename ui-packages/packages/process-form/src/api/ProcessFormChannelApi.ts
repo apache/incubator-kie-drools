@@ -16,11 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Form } from '@kogito-apps/components-common/dist/types';
 import { ProcessDefinition } from './ProcessFormEnvelopeApi';
 
 export interface ProcessFormChannelApi {
   processForm__getProcessFormSchema(
     processDefinitionData: ProcessDefinition
   ): Promise<Record<string, any>>;
+  processForm__getCustomForm(
+    processDefinitionData: ProcessDefinition
+  ): Promise<Form>;
   processForm__startProcess(formData: any): Promise<void>;
 }

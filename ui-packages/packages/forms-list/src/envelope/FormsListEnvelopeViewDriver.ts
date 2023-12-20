@@ -17,12 +17,12 @@
  * under the License.
  */
 import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
+import { FormsListChannelApi, FormsListDriver } from '../api';
+
 import {
   FormFilter,
-  FormsListChannelApi,
-  FormsListDriver,
   FormInfo
-} from '../api';
+} from '@kogito-apps/components-common/dist/types';
 
 /**
  * Implementation of FormsListDriver that delegates calls to the channel Api

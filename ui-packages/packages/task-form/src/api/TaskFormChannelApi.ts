@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { CustomForm } from '../types';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 export interface TaskFormChannelApi {
   taskForm__getTaskFormSchema(): Promise<Record<string, any>>;
-  taskForm__getCustomForm(): Promise<CustomForm>;
+  taskForm__getCustomForm(): Promise<Form>;
   taskForm__doSubmit(phase?: string, payload?: any): Promise<any>;
 }

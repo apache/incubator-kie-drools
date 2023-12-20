@@ -30,7 +30,7 @@ import { UndoIcon } from '@patternfly/react-icons/dist/js/icons/undo-icon';
 import { SaveIcon } from '@patternfly/react-icons/dist/js/icons/save-icon';
 import { RedoIcon } from '@patternfly/react-icons/dist/js/icons/redo-icon';
 import { PlayIcon } from '@patternfly/react-icons/dist/js/icons/play-icon';
-import { Form } from '../../../api';
+import { Form } from '@kogito-apps/components-common/dist/types';
 import { useFormDetailsContext } from '../contexts/FormDetailsContext';
 import { ResizableContent } from '../FormDetails/FormDetails';
 import cloneDeep from 'lodash/cloneDeep';

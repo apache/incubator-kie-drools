@@ -20,7 +20,7 @@ import {
   FormDisplayerInitArgs,
   FormSubmitContext,
   FormSubmitResponse
-} from './types';
+} from '@kogito-apps/components-common/dist/types';
 
 export interface FormDisplayerApi {
   init: (args: FormDisplayerInitArgs) => void;

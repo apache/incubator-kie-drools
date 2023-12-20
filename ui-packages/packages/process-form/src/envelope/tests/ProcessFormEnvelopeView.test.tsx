@@ -33,7 +33,11 @@ describe('ProcessFormEnvelopeView tests', () => {
     const forwardRef = React.createRef<ProcessFormEnvelopeViewApi>();
 
     let wrapper = mount(
-      <ProcessFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+      <ProcessFormEnvelopeView
+        channelApi={channelApi}
+        ref={forwardRef}
+        targetOrigin="http://localhost:4000"
+      />
     ).find('ProcessFormEnvelopeView');
 
     act(() => {

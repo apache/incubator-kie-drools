@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormFilter, FormInfo, FormsListDriver, FormType } from '../../../api';
+import { FormsListDriver } from '../../../api';
+import {
+  FormFilter,
+  FormInfo,
+  FormType
+} from '@kogito-apps/components-common/dist';
 
 export const formList: FormInfo[] = [
   {

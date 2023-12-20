@@ -21,7 +21,7 @@ import {
   FormDisplayerInitArgs,
   FormSubmitContext,
   FormSubmitResponse
-} from './types';
+} from '@kogito-apps/components-common/dist/types';
 
 export interface FormDisplayerEnvelopeApi {
   formDisplayer__init(

@@ -22,7 +22,6 @@ import {
   componentOuiaProps
 } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { FormDetailsDriver } from '../../../api/FormDetailsDriver';
-import { FormInfo } from '@kogito-apps/forms-list';
 import { Card } from '@patternfly/react-core/dist/js/components/Card';
 import {
   Drawer,
@@ -40,7 +39,7 @@ import FormEditor from '../FormEditor/FormEditor';
 import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import isEmpty from 'lodash/isEmpty';
-import { Form } from '../../../api';
+import { Form, FormInfo } from '@kogito-apps/components-common/dist/types';
 import FormDisplayerContainer from '../../containers/FormDisplayerContainer/FormDisplayerContainer';
 
 export interface FormDetailsProps {

@@ -21,11 +21,8 @@ import {
   MockedFormDisplayerEnvelopeViewApi
 } from './mocks/Mocks';
 import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
-import {
-  FormDisplayerChannelApi,
-  FormDisplayerEnvelopeApi,
-  FormType
-} from '../../api';
+import { FormDisplayerChannelApi, FormDisplayerEnvelopeApi } from '../../api';
+import { FormType } from '@kogito-apps/components-common/dist';
 import { FormDisplayerEnvelopeApiImpl } from '../FormDisplayerEnvelopeApiImpl';
 import { FormDisplayerEnvelopeViewApi } from '../FormDisplayerEnvelopeView';
 import { FormDisplayerEnvelopeContext } from '../FormDisplayerEnvelopeContext';

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from './types';
 export * from './FormDisplayerApi';
 export * from './FormDisplayerChannelApi';
 export * from './FormDisplayerEnvelopeApi';

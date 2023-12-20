@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useContext } from 'react';
-import { Form } from '../../../api';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 export interface FormDetailsContext {
   updateContent(formContent: Form): void;

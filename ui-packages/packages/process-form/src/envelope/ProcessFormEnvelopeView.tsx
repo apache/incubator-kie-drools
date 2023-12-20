@@ -29,6 +29,7 @@ export interface ProcessFormEnvelopeViewApi {
 
 interface Props {
   channelApi: MessageBusClientApi<ProcessFormChannelApi>;
+  targetOrigin: string;
 }
 
 export const ProcessFormEnvelopeView = React.forwardRef<
@@ -54,6 +55,7 @@ export const ProcessFormEnvelopeView = React.forwardRef<
       isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
       processDefinition={processDefinition}
       driver={new ProcessFormEnvelopeViewDriver(props.channelApi)}
+      targetOrigin={props.targetOrigin}
     />
   );
 });

@@ -22,7 +22,7 @@ import {
   EmbeddedFormDisplayer,
   FormDisplayerApi
 } from '@kogito-apps/form-displayer';
-import { Form } from '../../../api';
+import { Form } from '@kogito-apps/components-common/dist/types';
 import { useFormDetailsContext } from '../../components/contexts/FormDetailsContext';
 import { buildTestContext } from './utils/utils';
 

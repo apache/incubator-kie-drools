@@ -23,3 +23,79 @@ export enum SCHEMA_VERSION {
 export interface FormRendererApi {
   doReset: () => void;
 }
+
+export interface FormFilter {
+  formNames: string[];
+}
+
+export enum FormType {
+  HTML = 'HTML',
+  TSX = 'TSX'
+}
+
+export type FormInfo = {
+  type: FormType;
+  name: string;
+  lastModified: Date;
+};
+
+export type FormConfiguration = {
+  resources: FormResources;
+  schema: string;
+};
+
+export type FormResources = {
+  scripts: Record<string, string>;
+  styles: Record<string, string>;
+};
+
+export interface FormDisplayerInitArgs {
+  form: Form;
+  data?: any;
+  context?: Record<string, any>;
+}
+
+export type FormSubmitContext = {
+  params?: Record<string, string>;
+};
+
+export enum FormOpenedState {
+  OPENED = 'opened',
+  ERROR = 'error'
+}
+
+export type FormOpened = {
+  state: FormOpenedState;
+  size: FormSize;
+};
+
+export type FormSize = {
+  width: number;
+  height: number;
+};
+
+export enum FormSubmitResponseType {
+  SUCCESS = 'success',
+  FAILURE = 'failure'
+}
+
+export type FormSubmitResponse = {
+  type: FormSubmitResponseType;
+  info: any;
+};
+
+export interface Association {
+  origin: string;
+  envelopeServerId: string;
+}
+
+export interface Form {
+  formInfo: FormInfo;
+  source: string;
+  configuration: FormConfiguration;
+}
+
+export interface FormContent {
+  source: string;
+  configuration: FormConfiguration;
+}

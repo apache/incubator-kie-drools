@@ -22,7 +22,8 @@ import {
 } from '@kie-tools-core/envelope-bus/dist/api';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import FormsListEnvelopeViewDriver from '../FormsListEnvelopeViewDriver';
-import { FormInfo, FormsListChannelApi, FormType } from '../../api';
+import { FormsListChannelApi } from '../../api';
+import { FormInfo, FormType } from '@kogito-apps/components-common/dist';
 
 let channelApi: MessageBusClientApi<FormsListChannelApi>;
 let requests: Pick<

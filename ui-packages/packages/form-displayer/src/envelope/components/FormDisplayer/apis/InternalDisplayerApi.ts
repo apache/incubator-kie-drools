@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormSubmitContext, FormSubmitResponse } from '../../../../api';
+import {
+  FormSubmitContext,
+  FormSubmitResponse
+} from '@kogito-apps/components-common/dist/types';
 
 declare global {
   interface Window {

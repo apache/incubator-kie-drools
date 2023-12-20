@@ -26,7 +26,7 @@ import {
   Gallery,
   GalleryItem
 } from '@patternfly/react-core/dist/js/layouts/Gallery';
-import { FormInfo } from '../../../api/FormsListEnvelopeApi';
+import { FormInfo } from '@kogito-apps/components-common/dist/types';
 import FormCard from '../FormCard/FormCard';
 import { FormsListDriver } from '../../../api/FormsListDriver';
 import {

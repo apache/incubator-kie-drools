@@ -19,12 +19,12 @@
 import axios from 'axios';
 import { User } from '@kogito-apps/consoles-common/dist/environment/auth';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
-import { CustomForm } from '@kogito-apps/task-form';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 export interface TaskFormGatewayApi {
   getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>>;
 
-  getCustomForm(userTask: UserTaskInstance): Promise<CustomForm>;
+  getCustomForm(userTask: UserTaskInstance): Promise<Form>;
 
   doSubmit(
     userTask: UserTaskInstance,
@@ -88,8 +88,8 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
-  getCustomForm(userTask: UserTaskInstance): Promise<CustomForm> {
-    return new Promise<CustomForm>((resolve, reject) => {
+  getCustomForm(userTask: UserTaskInstance): Promise<Form> {
+    return new Promise<Form>((resolve, reject) => {
       const endpoint = getCustomFormEndpoint(userTask);
 
       axios

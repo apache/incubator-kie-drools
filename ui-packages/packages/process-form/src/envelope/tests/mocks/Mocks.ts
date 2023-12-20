@@ -30,6 +30,7 @@ export const MockedApiRequests = jest.fn<
   []
 >(() => ({
   processForm__getProcessFormSchema: jest.fn(),
+  processForm__getCustomForm: jest.fn(),
   processForm__startProcess: jest.fn()
 }));
 

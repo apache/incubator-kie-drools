@@ -25,7 +25,7 @@ import {
   FormDisplayerEnvelopeView,
   FormDisplayerEnvelopeViewApi
 } from '../FormDisplayerEnvelopeView';
-import { FormType } from '../../api';
+import { FormType } from '@kogito-apps/components-common/dist';
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
 jest.mock('../components/FormDisplayer/FormDisplayer');

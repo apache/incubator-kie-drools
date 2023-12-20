@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormOpened } from './types';
+import { FormOpened } from '@kogito-apps/components-common/dist/types';
 
 export interface FormDisplayerChannelApi {
   notifyOnOpenForm: (opened: FormOpened) => void;

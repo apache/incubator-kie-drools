@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { init } from '@kogito-apps/form-displayer';
+import { init } from '@kogito-apps/form-displayer/dist/envelope';
 import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 
 init({

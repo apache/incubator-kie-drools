@@ -19,14 +19,14 @@
 import * as React from 'react';
 import { useImperativeHandle, useRef, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
+import { FormDisplayerChannelApi } from '../api';
 import {
-  FormDisplayerChannelApi,
   Form,
   FormSubmitContext,
   FormSubmitResponse,
   FormDisplayerInitArgs,
   FormOpened
-} from '../api';
+} from '@kogito-apps/components-common/dist/types';
 import { EmbeddedFormApi } from './components/FormDisplayer/apis';
 import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
 import FormDisplayer from './components/FormDisplayer/FormDisplayer';

@@ -35,7 +35,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType
 } from '@kogito-apps/components-common/dist/components/KogitoEmptyState';
-import { CustomForm } from '../types';
+import { Form } from '@kogito-apps/components-common/dist/types';
 import { TaskFormEnvelopeViewDriver } from './TaskFormEnvelopeViewDriver';
 import CustomTaskFormDisplayer from './components/CustomTaskFormDisplayer/CustomTaskFormDisplayer';
 import TaskForm from './components/TaskForm/TaskForm';
@@ -62,7 +62,7 @@ export const TaskFormEnvelopeView = React.forwardRef<
   const [user, setUser] = useState<User>();
   const [taskFormSchema, setTaskFormSchema] =
     useState<Record<string, any>>(null);
-  const [customForm, setCustomForm] = useState<CustomForm>(null);
+  const [customForm, setCustomForm] = useState<Form>(null);
 
   const [driver] = useState<TaskFormEnvelopeViewDriver>(
     new TaskFormEnvelopeViewDriver(channelApi)

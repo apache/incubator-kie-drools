@@ -20,7 +20,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { Helmet } from 'react-helmet';
 import ResourcesContainer from '../ResourcesContainer';
-import { FormResources } from '../../../../api';
+import { FormResources } from '@kogito-apps/components-common/dist';
 
 const getWrapper = (resources: FormResources) => {
   return mount(<ResourcesContainer resources={resources} />);

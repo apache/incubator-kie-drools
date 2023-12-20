@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormInfo, FormsListDriver, FormType } from '../../api';
+import { FormsListDriver } from '../../api';
+import { FormInfo, FormType } from '@kogito-apps/components-common/dist';
 import { FormsListChannelApiImpl } from '../FormsListChannelApiImpl';
 import { MockedFormsListDriver } from './utils/Mocks';
 

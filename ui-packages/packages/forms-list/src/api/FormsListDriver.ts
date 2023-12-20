@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormFilter, FormInfo } from './FormsListEnvelopeApi';
+import {
+  FormFilter,
+  FormInfo
+} from '@kogito-apps/components-common/dist/types';
 
 /**
  * Interface that defines a Driver for FormsList views.

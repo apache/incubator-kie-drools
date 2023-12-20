@@ -26,7 +26,8 @@ import {
   OUIAProps,
   componentOuiaProps
 } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
-import { FormInfo, FormsListDriver } from '../../../api';
+import { FormsListDriver } from '../../../api';
+import { FormInfo } from '@kogito-apps/components-common/dist/types';
 import {
   getFormNameColumn,
   getDateColumn,

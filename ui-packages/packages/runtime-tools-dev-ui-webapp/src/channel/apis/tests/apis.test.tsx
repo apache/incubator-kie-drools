@@ -53,8 +53,7 @@ import {
 } from '@kogito-apps/management-console-shared/dist/types';
 import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
 import { processInstance } from '../../ProcessList/tests/ProcessListGatewayApi.test';
-import { Form } from '@kogito-apps/form-details';
-import { FormType } from '@kogito-apps/forms-list';
+import { Form, FormType } from '@kogito-apps/components-common/dist';
 import * as SwaggerParser from '@apidevtools/swagger-parser';
 import {
   CloudEventMethod,

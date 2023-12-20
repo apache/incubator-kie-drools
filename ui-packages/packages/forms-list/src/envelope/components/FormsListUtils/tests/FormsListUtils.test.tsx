@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormType } from '../../../../api/FormsListEnvelopeApi';
+import { FormType } from '@kogito-apps/components-common/dist';
 import {
   getDateColumn,
   getFormNameColumn,

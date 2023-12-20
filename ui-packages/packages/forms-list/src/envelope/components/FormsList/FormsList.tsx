@@ -30,7 +30,10 @@ import {
   ToggleGroup,
   ToggleGroupItem
 } from '@patternfly/react-core';
-import { FormInfo, FormFilter } from '../../../api/FormsListEnvelopeApi';
+import {
+  FormInfo,
+  FormFilter
+} from '@kogito-apps/components-common/dist/types';
 import FormsTable from '../FormsTable/FormsTable';
 import FormsGallery from '../FormsGallery/FormsGallery';
 import { BarsIcon, ThIcon } from '@patternfly/react-icons';

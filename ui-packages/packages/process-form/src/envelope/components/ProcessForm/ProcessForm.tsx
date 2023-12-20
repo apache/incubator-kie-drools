@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   componentOuiaProps,
   OUIAProps
@@ -25,24 +25,32 @@ import { ProcessDefinition, ProcessFormDriver } from '../../../api';
 import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import { ServerErrors } from '@kogito-apps/components-common/dist/components/ServerErrors';
 import { FormRenderer } from '@kogito-apps/components-common/dist/components/FormRenderer';
-import { FormRendererApi } from '@kogito-apps/components-common/dist/types';
+import {
+  Form,
+  FormRendererApi
+} from '@kogito-apps/components-common/dist/types';
 import { FormAction } from '@kogito-apps/components-common/dist/components/utils';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';
+import CustomProcessFormDisplayer from './CustomProcessFormDisplayer';
+
 export interface ProcessFormProps {
   processDefinition: ProcessDefinition;
   driver: ProcessFormDriver;
   isEnvelopeConnectedToChannel: boolean;
+  targetOrigin: string;
 }
 
 const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
   processDefinition,
   driver,
   isEnvelopeConnectedToChannel,
+  targetOrigin,
   ouiaId,
   ouiaSafe
 }) => {
   const formRendererApi = React.useRef<FormRendererApi>();
   const [processFormSchema, setProcessFormSchema] = useState<any>({});
+  const [processCustomForm, setProcessCustomForm] = useState<Form>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>(null);
 
@@ -52,24 +60,47 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
     }
   ];
 
+  const init = useCallback(async (): Promise<void> => {
+    if (!isEnvelopeConnectedToChannel) {
+      return;
+    }
+    const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
+      driver
+        .getCustomForm(processDefinition)
+        .then((customForm) => {
+          setProcessCustomForm(customForm);
+          resolve();
+        })
+        .catch((error) => resolve());
+    });
+
+    const schemaPromise: Promise<void> = new Promise<void>(
+      (resolve, reject) => {
+        driver
+          .getProcessFormSchema(processDefinition)
+          .then((schema) => {
+            setProcessFormSchema(schema);
+            resolve();
+          })
+          .catch((error) => {
+            setError(error);
+            reject(error);
+          });
+      }
+    );
+
+    Promise.all([customFormPromise, schemaPromise]).finally(() => {
+      setIsLoading(false);
+    });
+  }, [driver, isEnvelopeConnectedToChannel, processDefinition]);
+
   useEffect(() => {
     if (!isEnvelopeConnectedToChannel) {
       setIsLoading(true);
       return;
     }
     init();
-  }, [isEnvelopeConnectedToChannel]);
-
-  const init = async (): Promise<void> => {
-    try {
-      const schema = await driver.getProcessFormSchema(processDefinition);
-      setProcessFormSchema(schema);
-    } catch (errorContent) {
-      setError(errorContent);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [init, isEnvelopeConnectedToChannel]);
 
   const onSubmit = (value: any): void => {
     driver.startProcess(value).then(() => {
@@ -92,24 +123,40 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
     return <ServerErrors error={error} variant={'large'} />;
   }
 
-  return (
-    <div
-      {...componentOuiaProps(
-        ouiaId,
-        'process-form',
-        ouiaSafe ? ouiaSafe : !isLoading
-      )}
-    >
-      <FormRenderer
-        formSchema={processFormSchema}
-        model={{}}
-        readOnly={false}
-        onSubmit={onSubmit}
-        formActions={formAction}
-        ref={formRendererApi}
+  if (!processCustomForm) {
+    return (
+      <div
+        {...componentOuiaProps(
+          ouiaId,
+          'process-form',
+          ouiaSafe ? ouiaSafe : !isLoading
+        )}
+      >
+        <FormRenderer
+          formSchema={processFormSchema}
+          model={{}}
+          readOnly={false}
+          onSubmit={onSubmit}
+          formActions={formAction}
+          ref={formRendererApi}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <CustomProcessFormDisplayer
+        {...componentOuiaProps(
+          ouiaId,
+          'process-form',
+          ouiaSafe ? ouiaSafe : !isLoading
+        )}
+        schema={processFormSchema}
+        customForm={processCustomForm}
+        driver={driver}
+        targetOrigin={targetOrigin}
       />
-    </div>
-  );
+    );
+  }
 };
 
 export default ProcessForm;

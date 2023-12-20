@@ -19,7 +19,7 @@
 import React from 'react';
 import { EmbeddedFormDisplayer } from '../EmbeddedFormDisplayer';
 import { mount } from 'enzyme';
-import { FormType } from '../../api';
+import { FormType } from '@kogito-apps/components-common/dist';
 
 describe('EmbeddedFormDisplayer tests', () => {
   it('Snapshot', () => {

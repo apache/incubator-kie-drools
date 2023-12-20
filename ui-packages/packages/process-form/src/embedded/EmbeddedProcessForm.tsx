@@ -71,7 +71,8 @@ export const EmbeddedProcessForm = React.forwardRef(
             postMessage(message, targetOrigin, transfer) {
               window.postMessage(message, targetOrigin, transfer);
             }
-          }
+          },
+          targetOrigin: props.targetOrigin
         });
         return envelopeServer.envelopeApi.requests.processForm__init(
           {

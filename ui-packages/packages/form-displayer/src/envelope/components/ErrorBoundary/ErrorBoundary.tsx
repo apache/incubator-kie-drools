@@ -18,7 +18,10 @@
  */
 import React, { ErrorInfo } from 'react';
 import FormErrorsWrapper from '../FormErrorsWrapper/FormErrorsWrapper';
-import { FormOpened, FormOpenedState } from '../../../api';
+import {
+  FormOpened,
+  FormOpenedState
+} from '@kogito-apps/components-common/dist/types';
 
 interface ErrorBoundaryProps {
   children: React.ReactElement;

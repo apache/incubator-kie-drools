@@ -22,7 +22,7 @@ import { FormDetailsChannelApi } from '../api';
 import FormDetails from './components/FormDetails/FormDetails';
 import FormDetailsEnvelopeViewDriver from './FormDetailsEnvelopeViewDriver';
 import '@patternfly/patternfly/patternfly.css';
-import { FormInfo } from '@kogito-apps/forms-list';
+import { FormInfo } from '@kogito-apps/components-common/dist/types';
 import FormDetailsContextProvider from './components/contexts/FormDetailsContextProvider';
 
 export interface FormDetailsEnvelopeViewApi {

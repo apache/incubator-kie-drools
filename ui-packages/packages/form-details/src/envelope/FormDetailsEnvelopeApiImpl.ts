@@ -18,13 +18,12 @@
  */
 import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { FormDetailsEnvelopeViewApi } from './FormDetailsEnvelopeView';
+import { FormDetailsChannelApi, FormDetailsEnvelopeApi } from '../api';
+import { FormDetailsEnvelopeContext } from './FormDetailsEnvelopeContext';
 import {
   Association,
-  FormDetailsChannelApi,
-  FormDetailsEnvelopeApi
-} from '../api';
-import { FormDetailsEnvelopeContext } from './FormDetailsEnvelopeContext';
-import { FormInfo } from '@kogito-apps/forms-list';
+  FormInfo
+} from '@kogito-apps/components-common/dist/types';
 
 /**
  * Implementation of the FormDetailsEnvelopeApi

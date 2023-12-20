@@ -18,7 +18,7 @@
  */
 import React from 'react';
 import InnerHTML from 'dangerously-set-html-content';
-import { FormResources } from '../../../api';
+import { FormResources } from '@kogito-apps/components-common/dist/types';
 import ResourcesContainer from '../ResourcesContainer/ResourcesContainer';
 
 interface HtmlFormRendererProps {

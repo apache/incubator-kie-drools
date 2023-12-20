@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { CustomForm } from '../types';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 /**
  * Interface that defines a Driver for TaskForm views.
  */
 export interface TaskFormDriver {
   getTaskFormSchema(): Promise<Record<string, any>>;
-  getCustomForm(): Promise<CustomForm>;
+  getCustomForm(): Promise<Form>;
   doSubmit(phase?: string, payload?: any): Promise<any>;
 }

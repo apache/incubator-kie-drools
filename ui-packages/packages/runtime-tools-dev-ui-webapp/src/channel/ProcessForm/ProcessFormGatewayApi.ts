@@ -17,10 +17,12 @@
  * under the License.
  */
 import { ProcessDefinition } from '@kogito-apps/process-definition-list';
-import { getProcessSchema, startProcessInstance } from '../apis';
+import { getProcessSchema, getCustomForm, startProcessInstance } from '../apis';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 export interface ProcessFormGatewayApi {
   getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any>;
+  getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form>;
   startProcess(
     formData: any,
     processDefinitionData: ProcessDefinition
@@ -47,6 +49,10 @@ export class ProcessFormGatewayApiImpl implements ProcessFormGatewayApi {
     processDefinitionData: ProcessDefinition
   ): Promise<Record<string, any>> {
     return getProcessSchema(processDefinitionData);
+  }
+
+  getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form> {
+    return getCustomForm(processDefinitionData);
   }
 
   startProcess(

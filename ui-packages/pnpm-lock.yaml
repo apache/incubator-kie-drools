@@ -1584,6 +1584,9 @@ importers:
       '@kogito-apps/components-common':
         specifier: workspace:*
         version: link:../components-common
+      '@kogito-apps/form-displayer':
+        specifier: workspace:*
+        version: link:../form-displayer
       '@kogito-apps/task-console-shared':
         specifier: workspace:*
         version: link:../task-console-shared
@@ -1663,6 +1666,9 @@ importers:
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
+      uuid:
+        specifier: ^3.4.0
+        version: 3.4.0
       waait:
         specifier: ^1.0.5
         version: 1.0.5

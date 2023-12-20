@@ -19,7 +19,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import FormDisplayer from '../FormDisplayer';
-import { FormType, Form } from '../../../../api';
+import { FormType, Form } from '@kogito-apps/components-common/dist';
 import HtmlFormRenderer from '../../HtmlFormRenderer/HtmlFormRenderer';
 import ReactFormRenderer from '../../ReactFormRenderer/ReactFormRenderer';
 import { Bullseye } from '@patternfly/react-core/dist/js/layouts/Bullseye';

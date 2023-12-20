@@ -28,7 +28,11 @@ import {
   OUIAProps
 } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { BallBeat } from 'react-pure-loaders';
-import { Form, FormOpened, FormOpenedState } from '../../../api';
+import {
+  Form,
+  FormOpened,
+  FormOpenedState
+} from '@kogito-apps/components-common/dist/types';
 import ReactFormRenderer from '../ReactFormRenderer/ReactFormRenderer';
 import HtmlFormRenderer from '../HtmlFormRenderer/HtmlFormRenderer';
 import '../styles.css';

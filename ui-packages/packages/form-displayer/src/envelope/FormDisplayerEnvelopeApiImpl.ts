@@ -17,14 +17,13 @@
  * under the License.
  */
 import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
+import { FormDisplayerChannelApi, FormDisplayerEnvelopeApi } from '../api';
 import {
   Association,
-  FormDisplayerChannelApi,
-  FormDisplayerEnvelopeApi,
   FormDisplayerInitArgs,
   FormSubmitContext,
   FormSubmitResponse
-} from '../api';
+} from '@kogito-apps/components-common/dist/types';
 import { FormDisplayerEnvelopeViewApi } from './FormDisplayerEnvelopeView';
 import { FormDisplayerEnvelopeContext } from './FormDisplayerEnvelopeContext';
 import isEmpty from 'lodash/isEmpty';

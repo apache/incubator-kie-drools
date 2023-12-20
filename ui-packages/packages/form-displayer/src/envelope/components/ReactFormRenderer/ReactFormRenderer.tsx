@@ -21,7 +21,7 @@ import uuidv4 from 'uuid';
 import * as Babel from '@babel/standalone';
 import ReactDOM from 'react-dom';
 import * as Patternfly from '@patternfly/react-core';
-import { FormResources } from '../../../api';
+import { FormResources } from '@kogito-apps/components-common/dist/types';
 import { sourceHandler } from '../../../utils';
 import ResourcesContainer from '../ResourcesContainer/ResourcesContainer';
 

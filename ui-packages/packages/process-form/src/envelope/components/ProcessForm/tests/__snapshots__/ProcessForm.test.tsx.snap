@@ -4,6 +4,7 @@ exports[`ProcessForm Test Envelope not connected 1`] = `
 <ProcessForm
   driver={
     Object {
+      "getCustomForm": [MockFunction],
       "getProcessFormSchema": [MockFunction],
       "startProcess": [MockFunction],
     }
@@ -15,6 +16,7 @@ exports[`ProcessForm Test Envelope not connected 1`] = `
       "processName": "process1",
     }
   }
+  targetOrigin="http://localhost:4000/hiring"
 >
   <Bullseye>
     <div
@@ -87,10 +89,26 @@ exports[`ProcessForm Test Envelope not connected 1`] = `
 </ProcessForm>
 `;
 
-exports[`ProcessForm Test Process Form rendering 1`] = `
+exports[`ProcessForm Test Process Custom Form rendering 1`] = `
 <ProcessForm
   driver={
     Object {
+      "getCustomForm": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "endpoint": "http://localhost:4000/hiring",
+              "processName": "process1",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
       "getProcessFormSchema": [MockFunction] {
         "calls": Array [
           Array [
@@ -117,6 +135,168 @@ exports[`ProcessForm Test Process Form rendering 1`] = `
       "processName": "process1",
     }
   }
+  targetOrigin="http://localhost:4000/hiring"
+>
+  <MockedCustomProcessFormDisplayer
+    customForm={
+      <div>
+        form mock
+      </div>
+    }
+    data-ouia-component-type="process-form"
+    data-ouia-safe={true}
+    driver={
+      Object {
+        "getCustomForm": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "endpoint": "http://localhost:4000/hiring",
+                "processName": "process1",
+              },
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": Promise {},
+            },
+          ],
+        },
+        "getProcessFormSchema": [MockFunction] {
+          "calls": Array [
+            Array [
+              Object {
+                "endpoint": "http://localhost:4000/hiring",
+                "processName": "process1",
+              },
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": Promise {},
+            },
+          ],
+        },
+        "startProcess": [MockFunction],
+      }
+    }
+    schema={
+      Object {
+        "properties": Object {
+          "flight": Object {
+            "properties": Object {
+              "arrival": Object {
+                "format": "date-time",
+                "type": "string",
+              },
+              "departure": Object {
+                "format": "date-time",
+                "type": "string",
+              },
+              "flightNumber": Object {
+                "type": "string",
+              },
+              "gate": Object {
+                "type": "string",
+              },
+              "seat": Object {
+                "type": "string",
+              },
+            },
+            "type": "object",
+          },
+          "hotel": Object {
+            "properties": Object {
+              "address": Object {
+                "properties": Object {
+                  "city": Object {
+                    "type": "string",
+                  },
+                  "country": Object {
+                    "type": "string",
+                  },
+                  "street": Object {
+                    "type": "string",
+                  },
+                  "zipCode": Object {
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+              "bookingNumber": Object {
+                "type": "string",
+              },
+              "name": Object {
+                "type": "string",
+              },
+              "phone": Object {
+                "type": "string",
+              },
+              "room": Object {
+                "type": "string",
+              },
+            },
+            "type": "object",
+          },
+        },
+        "type": "object",
+      }
+    }
+    targetOrigin="http://localhost:4000/hiring"
+  />
+</ProcessForm>
+`;
+
+exports[`ProcessForm Test Process Form rendering 1`] = `
+<ProcessForm
+  driver={
+    Object {
+      "getCustomForm": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "endpoint": "http://localhost:4000/hiring",
+              "processName": "process1",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "getProcessFormSchema": [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              "endpoint": "http://localhost:4000/hiring",
+              "processName": "process1",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
+        ],
+      },
+      "startProcess": [MockFunction],
+    }
+  }
+  isEnvelopeConnectedToChannel={true}
+  processDefinition={
+    Object {
+      "endpoint": "http://localhost:4000/hiring",
+      "processName": "process1",
+    }
+  }
+  targetOrigin="http://localhost:4000/hiring"
 >
   <div
     data-ouia-component-type="process-form"

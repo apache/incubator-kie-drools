@@ -16,12 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {
-  FormDetailsDriver,
-  FormDetailsChannelApi,
-  Form,
-  FormContent
-} from '../api';
+import { FormDetailsDriver, FormDetailsChannelApi } from '../api';
+
+import { Form, FormContent } from '@kogito-apps/components-common/dist/types';
 
 /**
  * Implementation of the TaskInboxChannelApi delegating to a TaskInboxDriver

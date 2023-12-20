@@ -24,7 +24,8 @@ import {
 import { useKogitoAppContext } from '@kogito-apps/consoles-common/dist/environment/context';
 import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { CustomForm, EmbeddedTaskForm } from '@kogito-apps/task-form';
+import { EmbeddedTaskForm } from '@kogito-apps/task-form';
+import { Form } from '@kogito-apps/components-common/dist';
 import { useTaskFormGatewayApi } from '../../../../../channel/forms/TaskFormContext';
 
 interface Props {
@@ -63,7 +64,7 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
         getTaskFormSchema(): Promise<Record<string, any>> {
           return gatewayApi.getTaskFormSchema(userTask);
         },
-        getCustomForm(): Promise<CustomForm> {
+        getCustomForm(): Promise<Form> {
           return gatewayApi.getCustomForm(userTask);
         }
       }}

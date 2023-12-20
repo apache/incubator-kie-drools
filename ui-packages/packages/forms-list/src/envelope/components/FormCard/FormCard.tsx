@@ -36,7 +36,7 @@ import {
   Text
 } from '@patternfly/react-core/dist/js/components/Text';
 import { Label } from '@patternfly/react-core/dist/js/components/Label';
-import { FormInfo } from '../../../api/FormsListEnvelopeApi';
+import { FormInfo } from '@kogito-apps/components-common/dist/types';
 import { FormsListDriver } from '../../../api/FormsListDriver';
 import Moment from 'react-moment';
 export interface FormCardProps {

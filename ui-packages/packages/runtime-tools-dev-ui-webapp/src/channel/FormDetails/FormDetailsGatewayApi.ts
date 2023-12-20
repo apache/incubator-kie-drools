@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Form, FormContent } from '@kogito-apps/form-details';
+import { Form, FormContent } from '@kogito-apps/components-common/dist/types';
 
 import { getFormContent, saveFormContent } from '../apis';
 

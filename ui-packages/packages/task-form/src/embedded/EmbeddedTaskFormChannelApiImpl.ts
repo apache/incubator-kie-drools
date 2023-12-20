@@ -17,7 +17,7 @@
  * under the License.
  */
 import { TaskFormChannelApi, TaskFormDriver } from '../api';
-import { CustomForm } from '../types';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 export class EmbeddedTaskFormChannelApiImpl implements TaskFormChannelApi {
   constructor(private readonly driver: TaskFormDriver) {}
@@ -30,7 +30,7 @@ export class EmbeddedTaskFormChannelApiImpl implements TaskFormChannelApi {
     return this.driver.getTaskFormSchema();
   }
 
-  taskForm__getCustomForm(): Promise<CustomForm> {
+  taskForm__getCustomForm(): Promise<Form> {
     return this.driver.getCustomForm();
   }
 }

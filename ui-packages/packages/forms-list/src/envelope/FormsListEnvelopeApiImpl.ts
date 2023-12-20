@@ -18,7 +18,8 @@
  */
 import { EnvelopeApiFactoryArgs } from '@kie-tools-core/envelope';
 import { FormsListEnvelopeViewApi } from './FormsListEnvelopeView';
-import { Association, FormsListChannelApi, FormsListEnvelopeApi } from '../api';
+import { FormsListChannelApi, FormsListEnvelopeApi } from '../api';
+import { Association } from '@kogito-apps/components-common/dist/types';
 import { FormsListEnvelopeContext } from './FormsListEnvelopeContext';
 
 /**

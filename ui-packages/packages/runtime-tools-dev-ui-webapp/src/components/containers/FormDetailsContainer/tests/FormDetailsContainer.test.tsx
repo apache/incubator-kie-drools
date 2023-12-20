@@ -26,8 +26,7 @@ import {
   DefaultUser,
   User
 } from '@kogito-apps/consoles-common/dist/environment/auth';
-import { EmbeddedFormDetails } from '@kogito-apps/form-details';
-import { FormType } from '@kogito-apps/forms-list';
+import { FormType } from '@kogito-apps/components-common/dist';
 
 jest
   .spyOn(FormDetailsContext, 'useFormDetailsGatewayApi')
@@ -59,6 +58,7 @@ describe('FormDetailsContainer tests', () => {
           }}
           onSuccess={jest.fn}
           onError={jest.fn}
+          targetOrigin="localhost"
         />
       </DevUIAppContextProvider>
     );

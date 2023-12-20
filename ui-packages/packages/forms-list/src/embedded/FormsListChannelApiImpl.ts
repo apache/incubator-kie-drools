@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { FormsListDriver, FormsListChannelApi } from '../api';
+
 import {
-  FormsListDriver,
-  FormsListChannelApi,
   FormFilter,
   FormInfo
-} from '../api';
+} from '@kogito-apps/components-common/dist/types';
 
 /**
  * Implementation of the FormsListChannelApiImpl delegating to a FormsListDriver

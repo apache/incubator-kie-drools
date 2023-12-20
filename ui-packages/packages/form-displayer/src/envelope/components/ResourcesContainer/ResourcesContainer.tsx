@@ -18,7 +18,7 @@
  */
 import React, { ReactElement } from 'react';
 import { Helmet } from 'react-helmet';
-import { FormResources } from '../../../api';
+import { FormResources } from '@kogito-apps/components-common/dist/types';
 
 interface ResourcesContainerProps {
   resources: FormResources;

@@ -26,17 +26,17 @@ import CustomTaskFormDisplayer, {
 import { TaskFormDriver } from '../../../../api';
 import { MockedTaskFormDriver } from '../../../../embedded/tests/mocks/Mocks';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
-import { CustomForm, FormType } from '../../../../types';
+import { Form, FormType } from '@kogito-apps/components-common/dist';
 import { KogitoSpinner } from '@kogito-apps/components-common/dist/components/KogitoSpinner';
 import { FormFooter } from '@kogito-apps/components-common/dist/components/FormFooter';
+import { EmbeddedFormDisplayer } from '@kogito-apps/form-displayer';
 import {
-  EmbeddedFormDisplayer,
   FormOpenedState,
-  FormSubmitResponse
-} from '@kogito-apps/form-displayer';
+  FormSubmitResponse,
+  FormSubmitResponseType
+} from '@kogito-apps/components-common/dist';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
-import { FormSubmitResponseType } from '@kogito-apps/form-displayer';
 
 jest.mock('uuid', () => {
   return () => 'testId';
@@ -99,7 +99,7 @@ const getTaskFormDriver = (): TaskFormDriver => {
   return driver;
 };
 
-export const customForm: CustomForm = {
+export const customForm: Form = {
   formInfo: {
     type: FormType.HTML,
     name: 'travels_VisaApplication',

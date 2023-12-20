@@ -24,10 +24,13 @@ import {
   TriggerableNode
 } from '@kogito-apps/management-console-shared/dist/types';
 import { OperationType } from '@kogito-apps/management-console-shared/dist/components/BulkList';
-import { FormInfo } from '@kogito-apps/forms-list';
 import axios from 'axios';
 import uuidv4 from 'uuid';
-import { Form, FormContent } from '@kogito-apps/form-details';
+import {
+  Form,
+  FormContent,
+  FormInfo
+} from '@kogito-apps/components-common/dist/types';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { createProcessDefinitionList } from '../../utils/Utils';
 import { ProcessDefinition } from '@kogito-apps/process-definition-list';
@@ -383,6 +386,28 @@ export const getProcessSchema = (
   return new Promise((resolve, reject) => {
     axios
       .get(`${processDefinitionData.endpoint}/schema`)
+      .then((response) => {
+        /* istanbul ignore else*/
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+export const getCustomForm = (
+  processDefinitionData: ProcessDefinition
+): Promise<Form> => {
+  return new Promise((resolve, reject) => {
+    const lastIndex = processDefinitionData.endpoint.lastIndexOf(
+      `/${processDefinitionData.processName}`
+    );
+    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
+    axios
+      .get(`${baseEndpoint}/forms/${processDefinitionData.processName}`)
       .then((response) => {
         /* istanbul ignore else*/
         if (response.status === 200) {

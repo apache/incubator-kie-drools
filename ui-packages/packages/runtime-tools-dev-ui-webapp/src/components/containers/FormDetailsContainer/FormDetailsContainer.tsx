@@ -23,9 +23,12 @@ import {
 } from '@kogito-apps/ouia-tools/dist/utils/OuiaUtils';
 import { FormDetailsGatewayApi } from '../../../channel/FormDetails';
 import { useFormDetailsGatewayApi } from '../../../channel/FormDetails/FormDetailsContext';
-import { EmbeddedFormDetails, FormContent } from '@kogito-apps/form-details';
-import { FormInfo } from '@kogito-apps/forms-list';
-import { Form } from '@kogito-apps/form-displayer';
+import { EmbeddedFormDetails } from '@kogito-apps/form-details';
+import {
+  Form,
+  FormContent,
+  FormInfo
+} from '@kogito-apps/components-common/dist/types';
 
 interface FormDetailsContainerProps {
   formData: FormInfo;

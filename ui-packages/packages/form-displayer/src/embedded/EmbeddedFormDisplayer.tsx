@@ -20,11 +20,13 @@ import React, { useCallback } from 'react';
 import {
   FormDisplayerApi,
   FormDisplayerChannelApi,
-  FormDisplayerEnvelopeApi,
+  FormDisplayerEnvelopeApi
+} from '../api';
+import {
   Form,
   FormDisplayerInitArgs,
   FormOpened
-} from '../api';
+} from '@kogito-apps/components-common/dist/types';
 import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { EnvelopeServer } from '@kie-tools-core/envelope-bus/dist/channel';
 import {

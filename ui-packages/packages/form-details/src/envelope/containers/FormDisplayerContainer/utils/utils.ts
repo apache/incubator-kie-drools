@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Form } from '../../../../api';
+import { Form } from '@kogito-apps/components-common/dist/types';
 
 import uuidv4 from 'uuid';
 

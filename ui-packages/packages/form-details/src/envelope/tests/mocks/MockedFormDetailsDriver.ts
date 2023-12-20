@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Form, FormContent, FormDetailsDriver } from '../../../api';
+import { FormDetailsDriver } from '../../../api';
+import { Form, FormContent } from '@kogito-apps/components-common/dist';
 
 export const formContent: Form = {
   formInfo: {

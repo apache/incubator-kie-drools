@@ -17,12 +17,9 @@
  * under the License.
  */
 import { MessageBusClientApi } from '@kie-tools-core/envelope-bus/dist/api';
-import {
-  Form,
-  FormContent,
-  FormDetailsChannelApi,
-  FormDetailsDriver
-} from '../api';
+import { FormDetailsChannelApi, FormDetailsDriver } from '../api';
+
+import { Form, FormContent } from '@kogito-apps/components-common/dist/types';
 
 /**
  * Implementation of FormDetailsDriver that delegates calls to the channel Api

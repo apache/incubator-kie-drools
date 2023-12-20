@@ -4,6 +4,7 @@ exports[`EmbeddedProcessForm tests Snapshot 1`] = `
 <ForwardRef
   driver={
     Object {
+      "getCustomForm": [MockFunction],
       "getProcessFormSchema": [MockFunction],
       "startProcess": [MockFunction],
     }
@@ -15,6 +16,7 @@ exports[`EmbeddedProcessForm tests Snapshot 1`] = `
     apiImpl={
       EmbeddedProcessFormChannelApiImpl {
         "driver": Object {
+          "getCustomForm": [MockFunction],
           "getProcessFormSchema": [MockFunction],
           "startProcess": [MockFunction],
         },

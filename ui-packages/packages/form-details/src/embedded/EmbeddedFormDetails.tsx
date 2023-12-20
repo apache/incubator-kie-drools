@@ -29,7 +29,7 @@ import {
   FormDetailsDriver
 } from '../api';
 import { FormDetailsChannelApiImpl } from './FormDetailsChannelApiImpl';
-import { FormInfo } from '@kogito-apps/forms-list';
+import { FormInfo } from '@kogito-apps/components-common/dist/types';
 import { ContainerType } from '@kie-tools-core/envelope/dist/api';
 import { init } from '../envelope';
 export interface Props {
