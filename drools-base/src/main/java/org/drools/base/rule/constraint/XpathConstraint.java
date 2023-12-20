@@ -195,13 +195,13 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         private List<Object> evaluateObject(ValueResolver valueResolver, BaseTuple leftBaseTuple, XpathChunk chunk, List<Object> list, Object object) {
             Object result = chunk.evaluate(object);
-            if (!chunk.lazy && result instanceof ReactiveObject) {
-                ((ReactiveObject) result).addTuple(leftBaseTuple);
+            if (!chunk.lazy && result instanceof ReactiveObject ro) {
+                ro.addTuple(leftBaseTuple);
             }
-            if (chunk.iterate && result instanceof Iterable) {
-                for (Object value : (Iterable<?>) result) {
-                    if (!chunk.lazy && value instanceof ReactiveObject) {
-                        ((ReactiveObject) value).addTuple(leftBaseTuple);
+            if (chunk.iterate && result instanceof Iterable i) {
+                for (Object value : i) {
+                    if (!chunk.lazy && value instanceof ReactiveObject ro) {
+                        ro.addTuple(leftBaseTuple);
                     }
                     if (value != null) {
                         list.add(value);
@@ -380,8 +380,8 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         private Class<?> getParametricType(Method accessor) {
             Type returnedType = accessor.getGenericReturnType();
-            if (returnedType instanceof ParameterizedType) {
-                Type[] parametricType = ((ParameterizedType) returnedType).getActualTypeArguments();
+            if (returnedType instanceof ParameterizedType pt) {
+                Type[] parametricType = pt.getActualTypeArguments();
                 if (parametricType.length > 0) {
                     return parametricType[0] instanceof Class ?
                            (Class<?>) parametricType[0] :

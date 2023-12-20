@@ -137,7 +137,7 @@ public class QueryNameConstraint implements
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof QueryNameConstraint && queryName.equals(((QueryNameConstraint)obj).queryName);
+        return obj instanceof QueryNameConstraint qnc && queryName.equals(qnc.queryName);
     }
 
     @Override
