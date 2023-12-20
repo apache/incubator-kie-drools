@@ -46,8 +46,8 @@ public class PatternExtractor extends BaseObjectClassFieldReader
 
     public PatternExtractor(final ObjectType objectType) {
         this.objectType = objectType;
-        if (objectType instanceof ClassObjectType) {
-            setClassObjectType((ClassObjectType) objectType);
+        if (objectType instanceof ClassObjectType cot) {
+            setClassObjectType(cot);
         }
     }
 

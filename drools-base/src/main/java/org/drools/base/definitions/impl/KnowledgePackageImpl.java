@@ -809,8 +809,8 @@ public class KnowledgePackageImpl
                 // if the classloader isn't changed there's no need for a clone
                 return this;
             }
-            if (originalClassLoader instanceof ProjectClassLoader) {
-                ((ProjectClassLoader) classLoader).initFrom((ProjectClassLoader) originalClassLoader);
+            if (originalClassLoader instanceof ProjectClassLoader ocl) {
+                ocl.initFrom((ProjectClassLoader) originalClassLoader);
             }
         }
 

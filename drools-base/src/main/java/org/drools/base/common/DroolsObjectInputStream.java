@@ -44,9 +44,9 @@ public class DroolsObjectInputStream extends ObjectInputStream
     private Package pkg;
     private ReadAccessorSupplier store;
 
-    private Map<AccessorKey, List<Consumer<ReadAccessor>>> extractorBinders = new HashMap<>();
+    private final Map<AccessorKey, List<Consumer<ReadAccessor>>> extractorBinders = new HashMap<>();
     
-    private Map<String, Object> customExtensions = new HashMap<>();
+    private final Map<String, Object> customExtensions = new HashMap<>();
 
     private final Map<String, Object> clonedByIdentity;
 
@@ -131,12 +131,12 @@ public class DroolsObjectInputStream extends ObjectInputStream
 
     public void readExtractor( Consumer<ReadAccessor> binder ) throws ClassNotFoundException, IOException {
         Object accessor = readObject();
-        if (accessor instanceof AccessorKey ) {
-            ReadAccessor reader = store != null ? store.getReader((AccessorKey) accessor) : null;
+        if (accessor instanceof AccessorKey key) {
+            ReadAccessor reader = store != null ? store.getReader(key) : null;
             if (reader == null) {
                 // when an accessor is used in a query it may have been defined in a different package and that package
                 // couldn't have been deserialized yet, so delay this binding at the end of the deserialization process
-                extractorBinders.computeIfAbsent( (AccessorKey) accessor, k -> new ArrayList<>() ).add( binder );
+                extractorBinders.computeIfAbsent( key, k -> new ArrayList<>() ).add( binder );
             } else {
                 binder.accept( reader );
             }
