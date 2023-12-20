@@ -19,8 +19,17 @@
 package org.drools.base;
 
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.Future;
+
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.InvalidPatternException;
 import org.drools.base.rule.TypeDeclaration;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.definition.KiePackage;
 
 public interface RuleBase {
     ClassLoader getRootClassLoader();
@@ -30,4 +39,22 @@ public interface RuleBase {
     TypeDeclaration getTypeDeclaration(Class<?> classType);
 
     KieBaseConfiguration getConfiguration();
+    
+    InternalKnowledgePackage[] getPackages();
+    InternalKnowledgePackage getPackage(String name);
+    Future<KiePackage> addPackage(KiePackage pkg ); 
+    void addPackages( Collection<? extends KiePackage> newPkgs );
+    Map<String, InternalKnowledgePackage> getPackagesMap();
+
+    void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
+    void removeRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
+
+    String getId();
+    
+    String getContainerId();
+    void setContainerId(String containerId);
+    
+    Map<String, Type> getGlobals();
+
+
 }
