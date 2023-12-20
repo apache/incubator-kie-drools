@@ -148,7 +148,7 @@ public class IndexUtilTest {
     public void isIndexableForExistsNodeWithBigDecimal() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
         FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
-        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
+        BetaConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.ExistsNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
     }
@@ -157,7 +157,7 @@ public class IndexUtilTest {
     public void isIndexableForNotNodeWithBigDecimal() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
         FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
-        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
+        BetaConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
         boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.NotNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
     }
