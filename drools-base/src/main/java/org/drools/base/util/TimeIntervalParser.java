@@ -54,24 +54,24 @@ public class TimeIntervalParser {
     }
 
     public static long getTimestampFromDate( Object obj ) {
-        if (obj instanceof Long ) {
-            return ( Long ) obj;
+        if (obj instanceof Long l ) {
+            return l;
         }
-        if (obj instanceof Date) {
-            return ( (Date) obj ).getTime();
+        if (obj instanceof Date d) {
+            return d.getTime();
         }
         try {
-            if (obj instanceof LocalDate) {
-                return ((LocalDate) obj).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+            if (obj instanceof LocalDate ld) {
+                return ld.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
             }
-            if (obj instanceof LocalDateTime) {
-                return ((LocalDateTime) obj).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
+            if (obj instanceof LocalDateTime ldt) {
+                return ldt.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
             }
-            if (obj instanceof ZonedDateTime) {
-                return ((ZonedDateTime) obj).toInstant().toEpochMilli();
+            if (obj instanceof ZonedDateTime zdt) {
+                return zdt.toInstant().toEpochMilli();
             }
-            if (obj instanceof Instant) {
-                return ((Instant) obj).toEpochMilli();
+            if (obj instanceof Instant i) {
+                return i.toEpochMilli();
             }
         } catch (ArithmeticException ae) {
             throw new RuntimeException("Cannot convert " + obj.getClass().getSimpleName() + " '" + obj + "' into a long value");

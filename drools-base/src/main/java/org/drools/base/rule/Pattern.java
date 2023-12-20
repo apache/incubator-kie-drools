@@ -127,8 +127,8 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         tupleIndex = in.readInt();
         objectIndex = in.readInt();
         listenedProperties = (Collection<String>) in.readObject();
-        if ( source instanceof From ) {
-            ((From)source).setResultPattern( this );
+        if ( source instanceof From from ) {
+            from.setResultPattern( this );
         }
         annotations = (Map<String,AnnotationDefinition>) in.readObject();
         passive = in.readBoolean();
@@ -558,7 +558,7 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
     }
 
     private Class<?> getPatternType() {
-        return objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+        return objectType instanceof ClassObjectType cot ? cot.getClassType() : null;
     }
 
     private static boolean isIterable(Class<?> clazz) {
