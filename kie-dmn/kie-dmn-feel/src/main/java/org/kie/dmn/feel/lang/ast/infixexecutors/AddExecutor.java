@@ -80,6 +80,10 @@ public class AddExecutor implements InfixExecutor {
         if (right instanceof Duration && left instanceof LocalDate) {
             return addLocalDateAndDuration((LocalDate) left, (Duration) right);
         }
+        if (left instanceof LocalDate && right instanceof BigDecimal) {
+            Duration toAdd = Duration.ofDays(((BigDecimal) right).longValue());
+            return addLocalDateAndDuration((LocalDate) left, toAdd);
+        }
 
         if (left instanceof Temporal) {
             if (right instanceof TemporalAmount) {
@@ -93,7 +97,6 @@ public class AddExecutor implements InfixExecutor {
                 return ((ChronoPeriod) right).plus((TemporalAmount) left);
             }
         }
-
         ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
         return null;
     }
