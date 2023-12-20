@@ -176,8 +176,8 @@ public class Pattern implements RuleConditionElement, AcceptsClassObjectType, Ex
         clone.listenedProperties = listenedProperties;
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
-            if ( source instanceof From from ) {
-                from.setResultPattern( clone );
+            if ( source instanceof From ) {
+                ((From)clone.getSource()).setResultPattern( clone );
             }
         }
 
