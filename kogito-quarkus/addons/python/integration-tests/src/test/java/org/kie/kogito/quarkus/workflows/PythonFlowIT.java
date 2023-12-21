@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
@@ -28,7 +27,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusIntegrationTest
-@Disabled
 class PythonFlowIT {
 
     @Test
