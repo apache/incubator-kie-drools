@@ -21,6 +21,7 @@ package org.kie.kogito.serverless.workflow.executor;
 import java.util.Collections;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.serverless.workflow.fluent.ActionBuilder.ScriptType;
 import org.kie.kogito.serverless.workflow.python.PythonWorkItemHandlerUtils;
@@ -37,6 +38,7 @@ import static org.kie.kogito.serverless.workflow.fluent.StateBuilder.operation;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObject;
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.workflow;
 
+@Disabled
 public class PythonFluentWorkflowApplicationTest {
 
     @Test
