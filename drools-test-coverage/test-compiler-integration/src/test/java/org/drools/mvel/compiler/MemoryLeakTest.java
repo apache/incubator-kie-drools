@@ -36,6 +36,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
@@ -119,8 +120,8 @@ public class MemoryLeakTest {
         }
 
         assertThat(joinNode).isNotNull();
-        InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
-        BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
+        InternalWorkingMemory wm                = (InternalWorkingMemory) ksession;
+        BetaMemoryImpl        memory            = (BetaMemoryImpl) wm.getNodeMemory(joinNode);
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
         assertThat(stagedRightTuples.getDeleteFirst()).isNull();
         assertThat(stagedRightTuples.getInsertFirst()).isNull();

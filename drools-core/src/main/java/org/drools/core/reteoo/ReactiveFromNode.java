@@ -47,10 +47,10 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     }
 
     public ReactiveFromMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory beta = new BetaMemory( new TupleList(),
-                                          null,
-                                          this.betaConstraints.createContext(),
-                                          NodeTypeEnums.FromNode );
+        BetaMemoryImpl beta = new BetaMemoryImpl(new TupleList(),
+                                                 null,
+                                                 this.betaConstraints.createContext(),
+                                                 NodeTypeEnums.FromNode );
         return new ReactiveFromMemory( beta,
                                        this.dataProvider );
     }
@@ -65,7 +65,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
 
         private final TupleSets<LeftTuple> stagedLeftTuples;
 
-        public ReactiveFromMemory(BetaMemory betaMemory,
+        public ReactiveFromMemory(BetaMemoryImpl betaMemory,
                                   DataProvider dataProvider) {
             super(betaMemory, dataProvider);
             stagedLeftTuples = new TupleSetsImpl<>();

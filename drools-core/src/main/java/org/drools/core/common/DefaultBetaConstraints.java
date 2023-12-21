@@ -219,7 +219,7 @@ public class DefaultBetaConstraints
     }
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                       final short nodeType ) {
+                                       final short nodeType) {
         return IndexFactory.createBetaMemory(config, nodeType, constraints);
     }
 

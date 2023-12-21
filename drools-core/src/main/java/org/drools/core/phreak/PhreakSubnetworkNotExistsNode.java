@@ -20,7 +20,7 @@ package org.drools.core.phreak;
 
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -35,7 +35,7 @@ import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 public class PhreakSubnetworkNotExistsNode {
     public static void doSubNetworkNode(BetaNode node,
                                         LeftTupleSink sink,
-                                        BetaMemory bm,
+                                        BetaMemoryImpl bm,
                                         TupleSets<LeftTuple> srcLeftTuples,
                                         TupleSets<LeftTuple> trgLeftTuples,
                                         TupleSets<LeftTuple> stagedLeftTuples) {

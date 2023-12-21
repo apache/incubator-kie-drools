@@ -112,7 +112,7 @@ public class ExistsNode extends BetaNode {
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext pctx,
                                   final ReteEvaluator reteEvaluator) {
-        final BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory( this );
+        final BetaMemoryImpl memory = (BetaMemoryImpl) reteEvaluator.getNodeMemory(this);
         rightTuple.setPropagationContext( pctx );
         doDeleteRightTuple( rightTuple, reteEvaluator, memory );
     }

@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.base.rule.ContextEntry;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.BetaConstraints;
@@ -38,6 +37,7 @@ import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
@@ -544,14 +544,14 @@ public class RuleNetworkEvaluator {
                                  SegmentMemory[] smems, int smemIndex, TupleSets<LeftTuple> trgTuples, ActivationsManager activationsManager,
                                  LinkedList<StackEntry> stack, boolean processRian, RuleExecutor executor,
                                  TupleSets<LeftTuple> srcTuples, TupleSets<LeftTuple> stagedLeftTuples, LeftTupleSinkNode sink) {
-        BetaNode betaNode = (BetaNode) node;
-        BetaMemory bm;
+        BetaNode         betaNode = (BetaNode) node;
+        BetaMemoryImpl   bm;
         AccumulateMemory am = null;
         if (NodeTypeEnums.AccumulateNode == node.getType()) {
             am = (AccumulateMemory) nodeMem;
             bm = am.getBetaMemory();
         } else {
-            bm = (BetaMemory) nodeMem;
+            bm = (BetaMemoryImpl) nodeMem;
         }
 
         if (processRian && betaNode.isRightInputIsRiaNode()) {
@@ -568,7 +568,7 @@ public class RuleNetworkEvaluator {
     }
 
     private void switchOnDoBetaNode(NetworkNode node, TupleSets<LeftTuple> trgTuples, ReteEvaluator reteEvaluator, TupleSets<LeftTuple> srcTuples,
-                                    TupleSets<LeftTuple> stagedLeftTuples, LeftTupleSinkNode sink, BetaMemory bm, AccumulateMemory am) {
+                                    TupleSets<LeftTuple> stagedLeftTuples, LeftTupleSinkNode sink, BetaMemoryImpl bm, AccumulateMemory am) {
         if (log.isTraceEnabled()) {
             int offset = getOffset(node);
             log.trace("{} rightTuples {}", indent(offset), bm.getStagedRightTuples().toStringSizes());
@@ -610,7 +610,7 @@ public class RuleNetworkEvaluator {
                            SegmentMemory[] smems,
                            int smemIndex,
                            Memory nodeMem,
-                           BetaMemory bm,
+                           BetaMemoryImpl bm,
                            LinkedList<StackEntry> stack,
                            RuleExecutor executor) {
         RiaPathMemory pathMem = bm.getRiaRuleMemory();
@@ -646,30 +646,30 @@ public class RuleNetworkEvaluator {
 
         ObjectSink[] sinks = riaNode.getObjectSinkPropagator().getSinks();
 
-        BetaNode betaNode = (BetaNode) sinks[0];
-        BetaMemory bm;
-        Memory nodeMem = reteEvaluator.getNodeMemory(betaNode);
+        BetaNode       betaNode = (BetaNode) sinks[0];
+        BetaMemoryImpl bm;
+        Memory         nodeMem = reteEvaluator.getNodeMemory(betaNode);
         if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
             bm = ((AccumulateMemory) nodeMem).getBetaMemory();
         } else {
-            bm = (BetaMemory) nodeMem;
+            bm = (BetaMemoryImpl) nodeMem;
         }
         TupleSets<RightTuple> rightTuples = bm.getStagedRightTuples();
 
         // Build up iteration array for other sinks
-        BetaNode[] bns = null;
-        BetaMemory[] bms = null;
-        int length = sinks.length;
+        BetaNode[]       bns    = null;
+        BetaMemoryImpl[] bms    = null;
+        int              length = sinks.length;
         if (length > 1) {
             bns = new BetaNode[sinks.length - 1];
-            bms = new BetaMemory[sinks.length - 1];
+            bms = new BetaMemoryImpl[sinks.length - 1];
             for (int i = 1; i < length; i++) {
                 bns[i - 1] = (BetaNode) sinks[i];
                 Memory nodeMem2 = reteEvaluator.getNodeMemory(bns[i - 1]);
                 if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
                     bms[i - 1] = ((AccumulateMemory) nodeMem2).getBetaMemory();
                 } else {
-                    bms[i - 1] = (BetaMemory) nodeMem2;
+                    bms[i - 1] = (BetaMemoryImpl) nodeMem2;
                 }
             }
         }

@@ -115,7 +115,7 @@ public class TripleNonIndexSkipBetaConstraints
         return constraints.isEmpty();
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
         return constraints.createBetaMemory(config,
                 nodeType);

@@ -63,7 +63,7 @@ public interface BetaConstraints<C>
     boolean isEmpty();
 
     BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                final short nodeType );
+                                final short nodeType);
 
     void resetTuple(final C context);
 

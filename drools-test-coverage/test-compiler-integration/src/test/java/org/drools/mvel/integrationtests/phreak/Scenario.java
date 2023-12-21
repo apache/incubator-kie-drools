@@ -26,6 +26,7 @@ import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.phreak.SegmentPropagator;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -51,7 +52,7 @@ public class Scenario {
     Class                 phreakNode;
     BetaNode              betaNode;
     LeftTupleSink         sinkNode;
-    BetaMemory            bm;
+    BetaMemoryImpl        bm;
     InternalWorkingMemory wm;
 
     TupleSets<LeftTuple>  leftTuples;
@@ -75,7 +76,7 @@ public class Scenario {
     public Scenario(Class phreakNode,
                     BetaNode betaNode,
                     LeftTupleSink sinkNode,
-                    BetaMemory bm,
+                    BetaMemoryImpl bm,
                     InternalWorkingMemory wm) {
         this.phreakNode = phreakNode;
         this.betaNode = betaNode;

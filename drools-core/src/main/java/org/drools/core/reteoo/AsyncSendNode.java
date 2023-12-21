@@ -168,10 +168,10 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
     }
 
     public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory beta = new BetaMemory( new TupleList(),
-                                          null,
-                                          this.betaConstraints.createContext(),
-                                          NodeTypeEnums.FromNode );
+        BetaMemoryImpl beta = new BetaMemoryImpl(new TupleList(),
+                                                 null,
+                                                 this.betaConstraints.createContext(),
+                                                 NodeTypeEnums.FromNode );
         return (T) new AsyncSendMemory( beta, this.dataProvider );
     }
    
@@ -236,10 +236,10 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
 
         private DataProvider      dataProvider;
 
-        private final BetaMemory         betaMemory;
-        public Object                    providerContext;
+        private final BetaMemoryImpl betaMemory;
+        public        Object         providerContext;
 
-        public AsyncSendMemory( BetaMemory betaMemory,
+        public AsyncSendMemory( BetaMemoryImpl betaMemory,
                                 DataProvider dataProvider) {
             this.betaMemory = betaMemory;
             this.dataProvider = dataProvider;

@@ -25,8 +25,8 @@ import org.drools.core.positional.Predicates.Predicate1;
 import org.drools.core.positional.Predicates.Predicate2;
 import org.drools.core.positional.Predicates.Predicate3;
 import org.drools.core.positional.Predicates.Predicate4;
-import org.drools.core.positional.Predicates.Predicate5;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -213,16 +213,16 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     public BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType) {
 
         if (config.getCompositeKeyDepth() < 1) {
-            return new BetaMemory( config.isSequential() ? null : new TupleList(),
-                                   new TupleList(),
-                                   createContext(),
-                                   nodeType );
+            return new BetaMemoryImpl(config.isSequential() ? null : new TupleList(),
+                                      new TupleList(),
+                                      createContext(),
+                                      nodeType );
         }
 
-        return new BetaMemory( createLeftMemory(config, indexSpec),
-                               createRightMemory(config, indexSpec),
-                               createContext(),
-                               nodeType );
+        return new BetaMemoryImpl(createLeftMemory(config, indexSpec),
+                                  createRightMemory(config, indexSpec),
+                                  createContext(),
+                                  nodeType );
     }
 
     private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {

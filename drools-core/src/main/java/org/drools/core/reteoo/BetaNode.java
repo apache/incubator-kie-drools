@@ -249,7 +249,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     @Override
     public void assertObject( InternalFactHandle factHandle, PropagationContext pctx, ReteEvaluator reteEvaluator ) {
-        final BetaMemory memory = getBetaMemoryFromRightInput(this, reteEvaluator);
+        final BetaMemoryImpl memory = (BetaMemoryImpl) getBetaMemoryFromRightInput(this, reteEvaluator);
 
         RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
@@ -282,7 +282,7 @@ public abstract class BetaNode extends LeftTupleSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemory bm  = getBetaMemory( rightTuple.getTupleSink(), reteEvaluator );
+            BetaMemoryImpl bm = getBetaMemory(rightTuple.getTupleSink(), reteEvaluator);
             (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, reteEvaluator, bm );
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
@@ -294,7 +294,7 @@ public abstract class BetaNode extends LeftTupleSource
                 // RightTuple previously existed, so continue as modify
                 rightTuple.setPropagationContext( context );  // only update, if the mask intersects
 
-                BetaMemory bm = getBetaMemory( this, reteEvaluator );
+                BetaMemoryImpl bm = getBetaMemory(this, reteEvaluator);
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, reteEvaluator, bm);
             } else if (rightTuple.getMemory() != null) {
@@ -315,7 +315,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void doDeleteRightTuple(final RightTuple rightTuple,
                                    final ReteEvaluator reteEvaluator,
-                                   final BetaMemory memory) {
+                                   final BetaMemoryImpl memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
@@ -338,7 +338,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void doUpdateRightTuple(final RightTuple rightTuple,
                                     final ReteEvaluator reteEvaluator,
-                                    final BetaMemory memory) {
+                                    final BetaMemoryImpl memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
@@ -508,12 +508,12 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
 
-    public static BetaMemory getBetaMemory(BetaNode node, ReteEvaluator reteEvaluator) {
-        BetaMemory bm;
+    public static BetaMemoryImpl getBetaMemory(BetaNode node, ReteEvaluator reteEvaluator) {
+        BetaMemoryImpl bm;
         if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
             bm = ((AccumulateMemory)reteEvaluator.getNodeMemory(node)).getBetaMemory();
         } else {
-            bm = ((BetaMemory)reteEvaluator.getNodeMemory( node ));
+            bm = ((BetaMemoryImpl)reteEvaluator.getNodeMemory(node));
         }
         return bm;
     }
@@ -528,7 +528,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        return constraints.createBetaMemory(config, getType());
+        return (Memory) constraints.createBetaMemory(config, getType());
     }
 
     public String toString() {
@@ -646,7 +646,7 @@ public abstract class BetaNode extends LeftTupleSource
         return rightTuple;
     }
     
-    public static BetaMemory getBetaMemoryFromRightInput( BetaNode betaNode, ReteEvaluator reteEvaluator ) {
+    public static BetaMemory getBetaMemoryFromRightInput(BetaNode betaNode, ReteEvaluator reteEvaluator) {
         return NodeTypeEnums.AccumulateNode == betaNode.getType() ?
                             ((AccumulateMemory)reteEvaluator.getNodeMemory( betaNode )).getBetaMemory() :
                             (BetaMemory) reteEvaluator.getNodeMemory( betaNode );

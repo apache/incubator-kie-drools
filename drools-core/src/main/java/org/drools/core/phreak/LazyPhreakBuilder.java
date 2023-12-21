@@ -49,6 +49,7 @@ import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -739,12 +740,12 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void deleteRightInputData(LeftTupleSink node, InternalWorkingMemory wm) {
         if (wm.getNodeMemories().peekNodeMemory(node) != null) {
-            BetaNode   bn = (BetaNode) node;
-            BetaMemory bm;
+            BetaNode       bn = (BetaNode) node;
+            BetaMemoryImpl bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
                 bm = ((AccumulateMemory) wm.getNodeMemory(bn)).getBetaMemory();
             } else {
-                bm = (BetaMemory) wm.getNodeMemory(bn);
+                bm = (BetaMemoryImpl) wm.getNodeMemory(bn);
             }
 
             TupleMemory  rtm = bm.getRightTupleMemory();
@@ -959,7 +960,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 prevLt = lt;
                 lt = lt.getPeer();
             } else if (insert) {
-                BetaMemory bm = (BetaMemory) wm.getNodeMemory( (BetaNode) sink );
+                BetaMemoryImpl bm = (BetaMemoryImpl) wm.getNodeMemory((BetaNode) sink);
                 prevLt = rian.createPeer( prevLt );
                 bm.linkNode( (BetaNode) sink, wm );
                 bm.getStagedRightTuples().addInsert((RightTuple)prevLt);
@@ -1559,7 +1560,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static long processBetaNode(BetaNode betaNode, ReteEvaluator reteEvaluator, SegmentMemory smem, List<Memory> memories, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {
-        BetaMemory bm;
+        BetaMemoryImpl bm;
         if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
             AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) smem.createNodeMemory(betaNode, reteEvaluator));
             memories.add(accMemory);
@@ -1567,7 +1568,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
             bm = accMemory.getBetaMemory();
         } else {
-            bm = (BetaMemory) smem.createNodeMemory(betaNode, reteEvaluator);
+            bm = (BetaMemoryImpl) smem.createNodeMemory(betaNode, reteEvaluator);
             memories.add(bm);
         }
 

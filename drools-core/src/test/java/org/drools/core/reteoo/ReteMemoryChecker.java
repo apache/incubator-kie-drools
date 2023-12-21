@@ -48,7 +48,7 @@ public class ReteMemoryChecker {
                     if ( !( memory instanceof AccumulateNode.AccumulateMemory ) ) {
                         throw new RuntimeException( "Invalid memory type. Node: " + node + " has memory " + memory );
                     }
-                } else if ( !( memory instanceof BetaMemory ) ) {
+                } else if ( !( memory instanceof BetaMemoryImpl) ) {
                     throw new RuntimeException( "Invalid memory type. Node: " + node + " has memory " + memory );
                 }
             } else if ( NodeTypeEnums.FromNode == node.getType() ) {

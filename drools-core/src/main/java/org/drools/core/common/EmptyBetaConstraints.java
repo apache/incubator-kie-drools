@@ -31,6 +31,7 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.index.TupleList;
@@ -116,10 +117,10 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
-        return new BetaMemory( config.isSequential() ? null : new TupleList(),
-                               new TupleList(),
-                               EMPTY,
-                               nodeType );
+        return new BetaMemoryImpl(config.isSequential() ? null : new TupleList(),
+                                  new TupleList(),
+                                  EMPTY,
+                                  nodeType );
     }
 
     public int hashCode() {

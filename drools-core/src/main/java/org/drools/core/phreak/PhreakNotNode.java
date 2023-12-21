@@ -23,6 +23,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
@@ -35,7 +36,7 @@ import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 public class PhreakNotNode {
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
-                       BetaMemory bm,
+                       BetaMemoryImpl bm,
                        ReteEvaluator reteEvaluator,
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
@@ -51,7 +52,7 @@ public class PhreakNotNode {
 
     public void doNormalNode(NotNode notNode,
                              LeftTupleSink sink,
-                             BetaMemory bm,
+                             BetaMemoryImpl bm,
                              ReteEvaluator reteEvaluator,
                              TupleSets<LeftTuple> srcLeftTuples,
                              TupleSets<LeftTuple> trgLeftTuples,
@@ -139,7 +140,7 @@ public class PhreakNotNode {
     }
 
     public void doRightInserts(NotNode notNode,
-                               BetaMemory bm,
+                               BetaMemoryImpl bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples,
@@ -204,7 +205,7 @@ public class PhreakNotNode {
     }
 
     public static void unlinkNotNodeOnRightInsert(NotNode notNode,
-                                                  BetaMemory bm,
+                                                  BetaMemoryImpl bm,
                                                   ReteEvaluator reteEvaluator) {
         if (bm.getSegmentMemory().isSegmentLinked() && notNode.isEmptyBetaConstraints()) {
             // this must be processed here, rather than initial insert, as we need to link the blocker

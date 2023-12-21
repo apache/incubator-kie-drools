@@ -21,25 +21,25 @@ package org.drools.core.util.index;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.base.rule.constraint.BetaConstraint;
 
 public interface IndexFactory {
 
-    static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaConstraint... constraints) {
+    static BetaMemoryImpl createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaConstraint... constraints) {
         if (config.getCompositeKeyDepth() < 1) {
-            return new BetaMemory( config.isSequential() ? null : new TupleList(),
-                    new TupleList(),
-                    createContext(constraints),
-                    nodeType );
+            return new BetaMemoryImpl(config.isSequential() ? null : new TupleList(),
+                                      new TupleList(),
+                                      createContext(constraints),
+                                      nodeType );
         }
 
         IndexSpec indexSpec = new IndexSpec(nodeType, constraints, config);
-        return new BetaMemory( createLeftMemory(config, indexSpec),
-                createRightMemory(config, indexSpec),
-                createContext(constraints),
-                nodeType );
+        return new BetaMemoryImpl(createLeftMemory(config, indexSpec),
+                                  createRightMemory(config, indexSpec),
+                                  createContext(constraints),
+                                  nodeType );
     }
 
     private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {

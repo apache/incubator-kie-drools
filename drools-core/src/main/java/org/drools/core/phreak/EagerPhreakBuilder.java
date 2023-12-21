@@ -44,6 +44,7 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -951,12 +952,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         private static void deleteRightInputData(LeftTupleNode node, Memory m, InternalWorkingMemory wm) {
-            BetaNode   bn = (BetaNode) node;
-            BetaMemory bm;
+            BetaNode       bn = (BetaNode) node;
+            BetaMemoryImpl bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
                 bm = ((AccumulateMemory) m).getBetaMemory();
             } else {
-                bm = (BetaMemory) m;
+                bm = (BetaMemoryImpl) m;
             }
 
             TupleMemory  rtm = bm.getRightTupleMemory();
@@ -1206,7 +1207,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 prevLt = lt;
                 lt = lt.getPeer();
             } else if (insert) {
-                BetaMemory bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory( sink );
+                BetaMemoryImpl bm = (BetaMemoryImpl) wm.getNodeMemories().peekNodeMemory(sink);
                 if (bm != null) {
                     prevLt = rian.createPeer(prevLt);
                     bm.linkNode((BetaNode) sink, wm);

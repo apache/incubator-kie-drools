@@ -609,8 +609,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         protected long nodePosMaskBit;
 
         public static MemoryPrototype get(Memory memory) {
-            if (memory instanceof BetaMemory) {
-                BetaMemory betaMemory = (BetaMemory)memory;
+            if (memory instanceof BetaMemoryImpl) {
+                BetaMemoryImpl betaMemory = (BetaMemoryImpl)memory;
                 return new BetaMemoryPrototype(betaMemory.getNodePosMaskBit(), betaMemory.getRiaRuleMemory() != null ? betaMemory.getRiaRuleMemory().getRightInputAdapterNode() : null);
             }
             if (memory instanceof LeftInputAdapterNode.LiaNodeMemory) {
@@ -624,7 +624,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 return new TimerMemoryPrototype(((TimerNodeMemory)memory).getNodePosMaskBit());
             }
             if (memory instanceof AccumulateNode.AccumulateMemory) {
-                BetaMemory betaMemory = ((AccumulateNode.AccumulateMemory)memory).getBetaMemory();
+                BetaMemoryImpl betaMemory = ((AccumulateNode.AccumulateMemory)memory).getBetaMemory();
                 return new AccumulateMemoryPrototype(new BetaMemoryPrototype( betaMemory.getNodePosMaskBit(), betaMemory.getRiaRuleMemory() != null ? betaMemory.getRiaRuleMemory().getRightInputAdapterNode() : null) );
             }
             if (memory instanceof ReactiveFromNode.ReactiveFromMemory) {
@@ -654,7 +654,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         @Override
         public void populateMemory(ReteEvaluator reteEvaluator, Memory memory) {
-            BetaMemory betaMemory = (BetaMemory)memory;
+            BetaMemoryImpl betaMemory = (BetaMemoryImpl)memory;
             betaMemory.setNodePosMaskBit(nodePosMaskBit);
             if (riaNode != null) {
                 RiaPathMemory riaMem = (RiaPathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(riaNode);

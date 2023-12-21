@@ -26,7 +26,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.PhreakJoinNode;
-import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -53,12 +53,12 @@ public class SegmentPropagationTest {
     JoinNode              sinkNode2;    
     InternalWorkingMemory wm;
     
-    BetaMemory            bm;
-    SegmentMemory         smem;
+    BetaMemoryImpl bm;
+    SegmentMemory  smem;
     
-    BetaMemory            bm0;
-    BetaMemory            bm1;
-    BetaMemory            bm2;
+    BetaMemoryImpl bm0;
+    BetaMemoryImpl bm1;
+    BetaMemoryImpl bm2;
     
     SegmentMemory smem0;
     SegmentMemory smem1;
@@ -98,11 +98,11 @@ public class SegmentPropagationTest {
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();;
         
-        bm =(BetaMemory)  wm.getNodeMemory( joinNode );
+        bm =(BetaMemoryImpl)  wm.getNodeMemory(joinNode);
         
-        bm0 =(BetaMemory)  wm.getNodeMemory( sinkNode0 );
-        bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode1 );
-        bm2 =(BetaMemory)  wm.getNodeMemory( sinkNode2 );
+        bm0 =(BetaMemoryImpl)  wm.getNodeMemory(sinkNode0);
+        bm1 =(BetaMemoryImpl)  wm.getNodeMemory(sinkNode1);
+        bm2 =(BetaMemoryImpl)  wm.getNodeMemory(sinkNode2);
         
         smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );
@@ -216,7 +216,7 @@ public class SegmentPropagationTest {
     private Scenario test(Class phreakNode,
                           JoinNode joinNode,
                              LeftTupleSink sinkNode,
-                             BetaMemory bm,
+                             BetaMemoryImpl bm,
                              InternalWorkingMemory wm) {
         return new Scenario( phreakNode, joinNode, sinkNode, bm, wm ) ;
     }    
