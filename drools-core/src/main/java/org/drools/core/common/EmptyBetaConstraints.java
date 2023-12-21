@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Pattern;
@@ -67,7 +68,7 @@ public class EmptyBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final ReteEvaluator reteEvaluator,
+                                final ValueResolver valueResolver,
                                 final Tuple tuple) {
     }
 
@@ -75,7 +76,7 @@ public class EmptyBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final ReteEvaluator reteEvaluator,
+                                     final ValueResolver valueResolver,
                                      final FactHandle handle) {
     }
 

@@ -24,7 +24,6 @@ import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
 import org.drools.base.rule.constraint.BetaConstraint;
-import org.drools.core.reteoo.Tuple;
 import org.drools.metric.util.MetricLogUtils;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.IndexPrecedenceOption;

@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.util.List;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.BetaConstraint;
@@ -39,11 +40,11 @@ public interface BetaConstraints<C>
     C createContext();
 
     void updateFromTuple(C context,
-                         ReteEvaluator reteEvaluator,
+                         ValueResolver valueResolver,
                          Tuple tuple);
 
     void updateFromFactHandle(C context,
-                              ReteEvaluator reteEvaluator,
+                              ValueResolver valueResolver,
                               FactHandle handle);
 
     boolean isAllowedCachedLeft(C context,

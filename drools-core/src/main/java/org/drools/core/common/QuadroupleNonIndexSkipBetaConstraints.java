@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
@@ -93,15 +94,15 @@ public class QuadroupleNonIndexSkipBetaConstraints
     }
 
     public void updateFromTuple(ContextEntry[] context,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver valueResolver,
                                 Tuple tuple) {
-        constraints.updateFromTuple(context, reteEvaluator, tuple);
+        constraints.updateFromTuple(context, valueResolver, tuple);
     }
 
     public void updateFromFactHandle(ContextEntry[] context,
-                                     ReteEvaluator reteEvaluator,
+                                     ValueResolver valueResolver,
                                      FactHandle handle) {
-        constraints.updateFromFactHandle(context, reteEvaluator, handle);
+        constraints.updateFromFactHandle(context, valueResolver, handle);
     }
 
     public boolean isIndexed() {

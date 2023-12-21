@@ -18,7 +18,6 @@ import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.positional.Functions.Function1;
 import org.drools.core.positional.Functions.Function2;
 import org.drools.core.positional.PositionalConstraint.PositionalContextEntry;
@@ -31,9 +30,6 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.AbstractHashTable.HashEntry;
-import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.index.IndexMemory;
 import org.drools.core.util.index.IndexSpec;
 import org.drools.core.util.index.TupleList;
@@ -46,7 +42,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PositionalConstraint extends MutableTypeConstraint<PositionalContextEntry> implements BetaConstraints<PositionalContextEntry>, IndexableConstraint, IntervalProviderConstraint  {
@@ -146,12 +141,12 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public void updateFromTuple(PositionalContextEntry context, ReteEvaluator reteEvaluator, Tuple tuple) {
+    public void updateFromTuple(PositionalContextEntry context, ValueResolver valueResolver, Tuple tuple) {
         context.tp = tuple;
     }
 
     @Override
-    public void updateFromFactHandle(PositionalContextEntry context, ReteEvaluator reteEvaluator, FactHandle handle) {
+    public void updateFromFactHandle(PositionalContextEntry context, ValueResolver valueResolver, FactHandle handle) {
         context.fh = handle;
     }
 
