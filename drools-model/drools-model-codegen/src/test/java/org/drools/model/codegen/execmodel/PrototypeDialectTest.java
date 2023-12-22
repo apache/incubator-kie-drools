@@ -1,0 +1,132 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.drools.model.codegen.execmodel;
+
+import org.drools.base.facttemplates.Fact;
+import org.drools.model.Index;
+import org.drools.model.Model;
+import org.drools.model.Prototype;
+import org.drools.model.PrototypeVariable;
+import org.drools.model.Rule;
+import org.drools.model.codegen.ExecutableModelProject;
+import org.drools.model.codegen.execmodel.domain.Person;
+import org.drools.model.impl.ModelImpl;
+import org.drools.modelcompiler.KieBaseBuilder;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.rule;
+import static org.drools.model.PrototypeDSL.protoPattern;
+import static org.drools.model.PrototypeDSL.prototype;
+import static org.drools.model.PrototypeDSL.variable;
+import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
+
+public class PrototypeDialectTest {
+
+    @Test
+    public void testModel() {
+        PrototypeVariable personV = variable(prototype( "Person" ));
+
+        Rule rule = rule("alpha" )
+                .build(
+                        protoPattern(personV)
+                                .expr("age", Index.ConstraintType.GREATER_OR_EQUAL, 18 ),
+                        on(personV).execute(p -> System.out.println("found"))
+                );
+
+        Model model = new ModelImpl().addRule(rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Prototype personFact = prototype( "Person" );
+
+        Fact sofia = createMapBasedFact(personFact);
+        sofia.set( "name", "Sofia" );
+        sofia.set( "age", 12 );
+
+        ksession.insert(sofia);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact mario = createMapBasedFact(personFact);
+        mario.set( "name", "Mario" );
+        mario.set( "age", 49 );
+
+        ksession.insert(mario);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testPrototypeDrl() {
+        String str =
+                "rule R dialect \"prototype\" when\n" +
+                "  Person( age >= 18 )\n" +
+                "then\n" +
+                "  System.out.println(\"found\");\n" +
+                "end";
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+
+        Prototype personFact = prototype( "Person" );
+
+        Fact sofia = createMapBasedFact(personFact);
+        sofia.set( "name", "Sofia" );
+        sofia.set( "age", 12 );
+
+        ksession.insert(sofia);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact mario = createMapBasedFact(personFact);
+        mario.set( "name", "Mario" );
+        mario.set( "age", 49 );
+
+        ksession.insert(mario);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testJavaDrl() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "  Person( age >= 18 )\n" +
+                "then\n" +
+                "  System.out.println(\"found\");\n" +
+                "end";
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+
+        ksession.insert(new Person("Sofia", 12));
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        ksession.insert(new Person("Mario", 49));
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+}

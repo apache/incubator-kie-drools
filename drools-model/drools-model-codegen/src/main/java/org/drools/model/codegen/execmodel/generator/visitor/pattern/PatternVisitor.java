@@ -57,6 +57,10 @@ public class PatternVisitor {
 
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
+        if (context.getRuleDialect() == RuleContext.RuleDialect.PROTOTYPE) {
+            return new PrototypePatternDSL(context, packageModel, pattern, constraintDescrs, className);
+        }
+
         Class<?> patternType;
         try {
             patternType = context.getTypeResolver().resolveType(className);
@@ -66,7 +70,7 @@ public class PatternVisitor {
             return () -> { };
         }
 
-        return new PatternDSLPattern(context, packageModel, pattern, constraintDescrs, patternType);
+        return new ClassPatternDSL(context, packageModel, pattern, constraintDescrs, patternType);
     }
 
     private DSLNode parsePatternWithClass(PatternDescr pattern, String className) {

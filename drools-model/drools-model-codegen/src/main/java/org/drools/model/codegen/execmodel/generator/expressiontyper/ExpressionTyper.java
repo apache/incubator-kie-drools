@@ -65,7 +65,7 @@ import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.ParseExpressionErrorResult;
-import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
+import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
@@ -450,7 +450,7 @@ public class ExpressionTyper {
             return of(new TypedExpression(plusThis, expression.getType(), name));
         }
 
-        Optional<DeclarationSpec> decl = ruleContext.getDeclarationById(name);
+        Optional<TypedDeclarationSpec> decl = ruleContext.getDeclarationById(name);
         if (decl.isPresent()) {
             // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
             context.addUsedDeclarations(name);
@@ -535,7 +535,7 @@ public class ExpressionTyper {
 
         if (originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
             // try infer type  from the declarations
-            final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(printNode(firstChild));
+            final Optional<TypedDeclarationSpec> declarationById = ruleContext.getDeclarationById(printNode(firstChild));
             originalTypeCursor = declarationById.map(d -> (java.lang.reflect.Type)d.getDeclarationClass()).orElse(originalTypeCursor);
         }
 
@@ -713,7 +713,7 @@ public class ExpressionTyper {
 
         } else if (firstNode instanceof MethodCallExpr) {
             Optional<Expression> scopeExpr = ((MethodCallExpr) firstNode).getScope();
-            Optional<DeclarationSpec> scopeDecl = scopeExpr.flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printNode(scope) ) );
+            Optional<TypedDeclarationSpec> scopeDecl = scopeExpr.flatMap(scope -> ruleContext.getDeclarationById(PrintUtil.printNode(scope) ) );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -751,7 +751,7 @@ public class ExpressionTyper {
             result = of( binaryExpr( ( BinaryExpr ) firstNode ));
 
         } else if (firstNode instanceof ArrayAccessExpr) {
-            Optional<DeclarationSpec> scopeDecl = ruleContext.getDeclarationById( ((ArrayAccessExpr) firstNode).getName().toString() );
+            Optional<TypedDeclarationSpec> scopeDecl = ruleContext.getDeclarationById(((ArrayAccessExpr) firstNode).getName().toString() );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -1127,10 +1127,10 @@ public class ExpressionTyper {
 
         // In OOPath a declaration is based on a position rather than a name.
         // Only an OOPath chunk can have a backreference expression
-        Optional<DeclarationSpec> backReference = empty();
+        Optional<TypedDeclarationSpec> backReference = empty();
         if ( firstNode.getBackReferencesCount() > 0) {
-            List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
-            DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
+            List<TypedDeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
+            TypedDeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
             typeCursor = backReferenceDeclaration.getDeclarationClass();
             backReference = of(backReferenceDeclaration);
             context.addUsedDeclarations(backReferenceDeclaration.getBindingId());
@@ -1181,7 +1181,7 @@ public class ExpressionTyper {
             }
         }
 
-        Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
+        Optional<TypedDeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
         if (declarationById.isPresent()) {
             // do NOT append any reactOnProperties.
             // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.

@@ -139,8 +139,8 @@ public class ExpressionTyperTest {
     public void testAssignment() {
         final TypedExpression expected = typedResult("total = total + $cheese.getPrice()", Integer.class);
         final TypedExpression actual = toTypedExpression("total = total + $cheese.price", Object.class,
-                                                         new DeclarationSpec("$cheese", Cheese.class),
-                                                         new DeclarationSpec("total", Integer.class));
+                                                         new TypedDeclarationSpec("$cheese", Cheese.class),
+                                                         new TypedDeclarationSpec("total", Integer.class));
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -173,7 +173,7 @@ public class ExpressionTyperTest {
     @Test
     public void mapAccessExpr2() {
         final TypedExpression expected3 = typedResult("$p.getItems().get(\"type\")", Integer.class, "$p.items[\"type\"]");
-        final TypedExpression actual3 = toTypedExpression("$p.items[\"type\"]", Object.class, new DeclarationSpec("$p", Person.class));
+        final TypedExpression actual3 = toTypedExpression("$p.items[\"type\"]", Object.class, new TypedDeclarationSpec("$p", Person.class));
         assertThat(actual3).isEqualTo(expected3);
     }
 
@@ -181,7 +181,7 @@ public class ExpressionTyperTest {
     public void mapAccessExpr3() {
         final TypedExpression expected = typedResult("$p.getItems().get(1)", Integer.class, "$p.items[1]");
         final TypedExpression actual = toTypedExpression("$p.items[1]", Object.class,
-                                                         new DeclarationSpec("$p", Person.class));
+                                                         new TypedDeclarationSpec("$p", Person.class));
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -189,7 +189,7 @@ public class ExpressionTyperTest {
     public void arrayAccessExprDeclaration() {
         final TypedExpression expected = typedResult("$data.getValues().get(0)", Integer.class, "$data.values[0]");
         final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
-                                                         new DeclarationSpec("$data", Data.class));
+                                                         new TypedDeclarationSpec("$data", Data.class));
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -274,9 +274,9 @@ public class ExpressionTyperTest {
         assertThat(typedExpression.getExpression().toString()).isEqualTo(expected);
     }
 
-    private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {
+    private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, TypedDeclarationSpec... declarations) {
 
-        for(DeclarationSpec d : declarations) {
+        for(TypedDeclarationSpec d : declarations) {
             ruleContext.addDeclaration(d);
         }
         Expression expression = DrlxParseUtil.parseExpression(inputExpression).getExpr();
@@ -294,8 +294,8 @@ public class ExpressionTyperTest {
         return new TypedExpression(resultExpression, classResult, fieldName);
     }
 
-    private DeclarationSpec aPersonDecl(String $mark) {
-        return new DeclarationSpec($mark, Person.class);
+    private TypedDeclarationSpec aPersonDecl(String $mark) {
+        return new TypedDeclarationSpec($mark, Person.class);
     }
 
     private void addInlineCastImport() {

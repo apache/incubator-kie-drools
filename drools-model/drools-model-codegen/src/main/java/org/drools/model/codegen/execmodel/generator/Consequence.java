@@ -138,7 +138,7 @@ public class Consequence {
     public MethodCallExpr createCall(String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
 
-        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
+        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA || context.getRuleDialect() == RuleContext.RuleDialect.PROTOTYPE) {
             // for MVEL, it will be done in createExecuteCallMvel()
             ruleConsequence = rewriteConsequence( consequenceString );
             if ( ruleConsequence != null ) {
@@ -163,6 +163,7 @@ public class Consequence {
         MethodCallExpr executeCall;
         switch (context.getRuleDialect()) {
             case JAVA:
+            case PROTOTYPE:
                 rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
                 executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
                 break;
@@ -260,7 +261,7 @@ public class Consequence {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
-        } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
+        } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA || context.getRuleDialect() == RuleContext.RuleDialect.PROTOTYPE) {
             Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
             return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
         }
@@ -422,7 +423,7 @@ public class Consequence {
             }
         } else {
             return context.getDeclarationById(updatedVar)
-                    .map(DeclarationSpec::getDeclarationClass)
+                    .map(TypedDeclarationSpec::getDeclarationClass)
                     .orElseThrow(ConsequenceRewriteException::new);
         }
     }
@@ -528,7 +529,7 @@ public class Consequence {
 
     private boolean isDataStoreScope(Expression scope) {
         return scope.isNameExpr() && context.getDeclarationById(scope.asNameExpr().getNameAsString())
-                .map(DeclarationSpec::getDeclarationClass)
+                .map(TypedDeclarationSpec::getDeclarationClass)
                 .map(dataStoreClass::isAssignableFrom).orElse(false);
     }
 

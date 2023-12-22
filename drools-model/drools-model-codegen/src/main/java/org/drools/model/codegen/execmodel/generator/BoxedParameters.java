@@ -46,7 +46,7 @@ public class BoxedParameters {
         NodeList<Parameter> parameters = NodeList.nodeList();
 
         for (String parameterName : declarationUsedInRHS) {
-            DeclarationSpec declaration = context.getDeclarationByIdWithException(parameterName);
+            TypedDeclarationSpec declaration = context.getDeclarationByIdWithException(parameterName);
 
             Parameter boxedParameter;
             Type boxedType = declaration.getBoxedType();
