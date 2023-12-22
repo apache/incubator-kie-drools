@@ -44,6 +44,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -162,8 +163,9 @@ public class Consequence {
 
         MethodCallExpr executeCall;
         switch (context.getRuleDialect()) {
-            case JAVA:
             case PROTOTYPE:
+                rewriteConsequenceForPrototype(ruleConsequence, usedDeclarationInRHS);
+            case JAVA:
                 rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
                 executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
                 break;
@@ -178,6 +180,19 @@ public class Consequence {
             executeCall = new MethodCallExpr(executeCall, BREAKING_CALL);
         }
         return executeCall;
+    }
+
+    private void rewriteConsequenceForPrototype(BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS) {
+        for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
+            FieldAccessExpr fieldAccessExpr = assignExpr.getTarget().asFieldAccessExpr();
+            String assignedVariable = fieldAccessExpr.getScope().toString();
+            if ( usedDeclarationInRHS.contains( assignedVariable ) ) {
+                MethodCallExpr assignCall = new MethodCallExpr( new NameExpr( assignedVariable ), "set" );
+                assignCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
+                assignCall.addArgument( assignExpr.getValue() );
+                assignExpr.replace(assignCall);
+            }
+        }
     }
 
     private void replaceKcontext(BlockStmt ruleConsequence) {
@@ -289,7 +304,9 @@ public class Consequence {
             executeLambda.addParameter(new Parameter(toClassOrInterfaceType(org.drools.model.Drools.class), "drools"));
         }
 
-        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
+        NodeList<Parameter> parameters = context.getRuleDialect() == RuleContext.RuleDialect.JAVA ?
+                new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence) :
+                new BoxedParameters(context).getParametersForPrototype(verifiedDeclUsedInRHS, ruleConsequence);
         parameters.forEach(executeLambda::addParameter);
 
         executeLambda.setBody(ruleConsequence);
@@ -422,7 +439,7 @@ public class Consequence {
                 throw new ConsequenceRewriteException();
             }
         } else {
-            return context.getDeclarationById(updatedVar)
+            return context.getTypedDeclarationById(updatedVar)
                     .map(TypedDeclarationSpec::getDeclarationClass)
                     .orElseThrow(ConsequenceRewriteException::new);
         }
@@ -528,7 +545,7 @@ public class Consequence {
     }
 
     private boolean isDataStoreScope(Expression scope) {
-        return scope.isNameExpr() && context.getDeclarationById(scope.asNameExpr().getNameAsString())
+        return scope.isNameExpr() && context.getTypedDeclarationById(scope.asNameExpr().getNameAsString())
                 .map(TypedDeclarationSpec::getDeclarationClass)
                 .map(dataStoreClass::isAssignableFrom).orElse(false);
     }

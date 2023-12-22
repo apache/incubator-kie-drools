@@ -237,7 +237,7 @@ public class AccumulateVisitor {
 
     private void nameExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         String nameExpr = ((DrlNameExpr) accumulateFunctionParameter).getName().asString();
-        Optional<DeclarationSpec> declaration = context.getDeclarationById(nameExpr).map(DeclarationSpec.class::cast);
+        Optional<DeclarationSpec> declaration = context.getTypedDeclarationById(nameExpr).map(DeclarationSpec.class::cast);
         if (declaration.isEmpty()) {
             String name = nameExpr;
             declaration = context.getAllDeclarations().stream().filter( d -> d.getVariableName().map( n -> n.equals( name ) ).orElse( false ) ).findFirst();
@@ -271,7 +271,7 @@ public class AccumulateVisitor {
         final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
 
         String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
-        Optional<TypedDeclarationSpec> decl = context.getDeclarationById(rootNodeName);
+        Optional<TypedDeclarationSpec> decl = context.getTypedDeclarationById(rootNodeName);
 
         Class<?> clazz = decl.map(TypedDeclarationSpec::getDeclarationClass)
                 .orElseGet( () -> {
@@ -307,7 +307,7 @@ public class AccumulateVisitor {
         PatternDescr inputPattern = decl.isPresent() ? null : findInputPattern(input);
         if (inputPattern != null) {
             String inputId = inputPattern.getIdentifier();
-            Optional<TypedDeclarationSpec> accumulateClassDeclOpt = context.getDeclarationById(inputId);
+            Optional<TypedDeclarationSpec> accumulateClassDeclOpt = context.getTypedDeclarationById(inputId);
             if (accumulateClassDeclOpt.isPresent()) {
                 // when static method is used in accumulate function, "_this" is a pattern input
                 // Note that DrlxParseUtil.generateLambdaWithoutParameters() takes the patternType as a class of "_this"
@@ -530,7 +530,7 @@ public class AccumulateVisitor {
 
     static List<String> collectNamesInBlock(BlockStmt block, RuleContext context) {
         return block.findAll(NameExpr.class, n -> {
-            Optional<TypedDeclarationSpec> optD = context.getDeclarationById(n.getNameAsString());
+            Optional<TypedDeclarationSpec> optD = context.getTypedDeclarationById(n.getNameAsString());
             return optD.filter(d -> !d.isGlobal()).isPresent(); // Global aren't supported
         })
                 .stream()

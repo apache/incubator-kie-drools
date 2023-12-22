@@ -237,7 +237,7 @@ public class AccumulateInline {
             String nameExpr = allNamesInActionBlock.iterator().next();
             accumulateMethod.getParameter(1).setName(nameExpr);
             singleAccumulateType =
-                    context.getDeclarationById(nameExpr)
+                    context.getTypedDeclarationById(nameExpr)
                             .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
                             .getBoxedType();
 

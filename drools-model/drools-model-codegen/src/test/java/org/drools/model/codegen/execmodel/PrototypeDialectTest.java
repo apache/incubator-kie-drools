@@ -48,11 +48,11 @@ public class PrototypeDialectTest {
     public void testModel() {
         PrototypeVariable personV = variable(prototype( "Person" ));
 
-        Rule rule = rule("alpha" )
+        Rule rule = rule("adult" )
                 .build(
                         protoPattern(personV)
                                 .expr("age", Index.ConstraintType.GREATER_OR_EQUAL, 18 ),
-                        on(personV).execute(p -> System.out.println("found"))
+                        on(personV).execute(p -> p.set("adult", true))
                 );
 
         Model model = new ModelImpl().addRule(rule );
@@ -68,6 +68,7 @@ public class PrototypeDialectTest {
 
         ksession.insert(sofia);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
+        assertThat(sofia.get("adult")).isNull();
 
         Fact mario = createMapBasedFact(personFact);
         mario.set( "name", "Mario" );
@@ -75,15 +76,16 @@ public class PrototypeDialectTest {
 
         ksession.insert(mario);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(mario.get("adult")).isEqualTo(true);
     }
 
     @Test
     public void testPrototypeDrl() {
         String str =
-                "rule R dialect \"prototype\" when\n" +
-                "  Person( age >= 18 )\n" +
+                "rule Adult dialect \"prototype\" when\n" +
+                "  $p : Person( age >= 18 )\n" +
                 "then\n" +
-                "  System.out.println(\"found\");\n" +
+                "  $p.adult = true;\n" +
                 "end";
 
         KieSession ksession = new KieHelper()
@@ -99,6 +101,7 @@ public class PrototypeDialectTest {
 
         ksession.insert(sofia);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
+        assertThat(sofia.get("adult")).isNull();
 
         Fact mario = createMapBasedFact(personFact);
         mario.set( "name", "Mario" );
@@ -106,6 +109,7 @@ public class PrototypeDialectTest {
 
         ksession.insert(mario);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(mario.get("adult")).isEqualTo(true);
     }
 
     @Test
@@ -113,9 +117,9 @@ public class PrototypeDialectTest {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R when\n" +
-                "  Person( age >= 18 )\n" +
+                "  $p : Person( age >= 18 )\n" +
                 "then\n" +
-                "  System.out.println(\"found\");\n" +
+                "  $p.setEmployed(true);\n" +
                 "end";
 
         KieSession ksession = new KieHelper()
@@ -123,10 +127,13 @@ public class PrototypeDialectTest {
                 .build(ExecutableModelProject.class)
                 .newKieSession();
 
-        ksession.insert(new Person("Sofia", 12));
+        Person sofia = new Person("Sofia", 12);
+        ksession.insert(sofia);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        ksession.insert(new Person("Mario", 49));
+        Person mario = new Person("Mario", 49);
+        ksession.insert(mario);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(mario.getEmployed()).isEqualTo(true);
     }
 }

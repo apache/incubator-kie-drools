@@ -450,7 +450,7 @@ public class ExpressionTyper {
             return of(new TypedExpression(plusThis, expression.getType(), name));
         }
 
-        Optional<TypedDeclarationSpec> decl = ruleContext.getDeclarationById(name);
+        Optional<TypedDeclarationSpec> decl = ruleContext.getTypedDeclarationById(name);
         if (decl.isPresent()) {
             // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
             context.addUsedDeclarations(name);
@@ -535,7 +535,7 @@ public class ExpressionTyper {
 
         if (originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
             // try infer type  from the declarations
-            final Optional<TypedDeclarationSpec> declarationById = ruleContext.getDeclarationById(printNode(firstChild));
+            final Optional<TypedDeclarationSpec> declarationById = ruleContext.getTypedDeclarationById(printNode(firstChild));
             originalTypeCursor = declarationById.map(d -> (java.lang.reflect.Type)d.getDeclarationClass()).orElse(originalTypeCursor);
         }
 
@@ -641,7 +641,7 @@ public class ExpressionTyper {
             }
         } else if (arg instanceof NameExpr) {
             String name = ((NameExpr) arg).getNameAsString();
-            ruleContext.getDeclarationById(name)
+            ruleContext.getTypedDeclarationById(name)
                        .filter(decl -> decl.getBelongingPatternDescr().isPresent())
                        .filter(decl -> {
                            if (decl.getBelongingPatternDescr().equals(ruleContext.getCurrentPatternDescr())) {
@@ -713,7 +713,7 @@ public class ExpressionTyper {
 
         } else if (firstNode instanceof MethodCallExpr) {
             Optional<Expression> scopeExpr = ((MethodCallExpr) firstNode).getScope();
-            Optional<TypedDeclarationSpec> scopeDecl = scopeExpr.flatMap(scope -> ruleContext.getDeclarationById(PrintUtil.printNode(scope) ) );
+            Optional<TypedDeclarationSpec> scopeDecl = scopeExpr.flatMap(scope -> ruleContext.getTypedDeclarationById(PrintUtil.printNode(scope) ) );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -751,7 +751,7 @@ public class ExpressionTyper {
             result = of( binaryExpr( ( BinaryExpr ) firstNode ));
 
         } else if (firstNode instanceof ArrayAccessExpr) {
-            Optional<TypedDeclarationSpec> scopeDecl = ruleContext.getDeclarationById(((ArrayAccessExpr) firstNode).getName().toString() );
+            Optional<TypedDeclarationSpec> scopeDecl = ruleContext.getTypedDeclarationById(((ArrayAccessExpr) firstNode).getName().toString() );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -1181,7 +1181,7 @@ public class ExpressionTyper {
             }
         }
 
-        Optional<TypedDeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
+        Optional<TypedDeclarationSpec> declarationById = ruleContext.getTypedDeclarationById(firstName);
         if (declarationById.isPresent()) {
             // do NOT append any reactOnProperties.
             // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.

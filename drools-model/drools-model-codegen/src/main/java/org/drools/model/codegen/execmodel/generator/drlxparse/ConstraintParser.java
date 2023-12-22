@@ -505,7 +505,7 @@ public class ConstraintParser {
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirstForBean(nameExpr.getNameAsString()) );
         } else if (context.hasDeclaration( expression )) {
-            Optional<TypedDeclarationSpec> declarationSpec = context.getDeclarationById(expression);
+            Optional<TypedDeclarationSpec> declarationSpec = context.getTypedDeclarationById(expression);
             if (declarationSpec.isPresent()) {
                 return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printNode(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
             } else {
@@ -800,7 +800,7 @@ public class ConstraintParser {
     private boolean hasDeclarationFromOtherPattern(ExpressionTyperContext expressionTyperContext) {
         return expressionTyperContext.getUsedDeclarations()
                                      .stream()
-                                     .map(context::getDeclarationById)
+                                     .map(context::getTypedDeclarationById)
                                      .anyMatch(optDecl -> {
                                          if (optDecl.isPresent()) {
                                              TypedDeclarationSpec decl = optDecl.get();

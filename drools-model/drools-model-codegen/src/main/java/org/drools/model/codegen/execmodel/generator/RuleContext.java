@@ -242,8 +242,16 @@ public class RuleContext {
         return ofNullable(explicitCastType.get(field));
     }
 
-    public Optional<TypedDeclarationSpec> getDeclarationById(String id) {
-        TypedDeclarationSpec spec = (TypedDeclarationSpec) scopedDeclarations.get(getDeclarationKey(id ));
+    public Optional<TypedDeclarationSpec> getTypedDeclarationById(String id) {
+        return getDeclarationById(id).map(TypedDeclarationSpec.class::cast);
+    }
+
+    public TypedDeclarationSpec getTypedDeclarationByIdWithException(String id) {
+        return getTypedDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
+    }
+
+    public Optional<DeclarationSpec> getDeclarationById(String id) {
+        DeclarationSpec spec = scopedDeclarations.get(getDeclarationKey(id ));
         if (spec == null) {
             Class<?> unitVarType = ruleUnitVarsOriginalType.get( id );
             if(unitVarType == null) {
@@ -256,7 +264,7 @@ public class RuleContext {
         return ofNullable( spec );
     }
 
-    public TypedDeclarationSpec getDeclarationByIdWithException(String id) {
+    public DeclarationSpec getDeclarationByIdWithException(String id) {
         return getDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
     }
 
@@ -390,7 +398,7 @@ public class RuleContext {
 
     public void addDeclarationReplacing(TypedDeclarationSpec d) {
         final String bindingId = d.getBindingId();
-        final Optional<TypedDeclarationSpec> declarationById = getDeclarationById(bindingId);
+        final Optional<TypedDeclarationSpec> declarationById = getTypedDeclarationById(bindingId);
         if (declarationById.isPresent()) {
             removeDeclarationById(bindingId);
         }
@@ -726,7 +734,7 @@ public class RuleContext {
     }
 
     public Type getDelarationType(String variableName) {
-        return getDeclarationById(variableName).map(TypedDeclarationSpec::getBoxedType)
+        return getTypedDeclarationById(variableName).map(TypedDeclarationSpec::getBoxedType)
                                                .orElseGet(UnknownType::new);
     }
 

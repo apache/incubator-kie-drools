@@ -295,7 +295,7 @@ public class DrlxParseUtil {
         if (usedDeclarations != null) {
             usedDeclarations.add(name);
         }
-        Optional<java.lang.reflect.Type> type = context.getDeclarationById( name ).map(TypedDeclarationSpec::getDeclarationClass);
+        Optional<java.lang.reflect.Type> type = context.getTypedDeclarationById(name ).map(TypedDeclarationSpec::getDeclarationClass);
         return type.orElseThrow(() -> new NoSuchElementException("Cannot get expression type by name " + name + "!"));
     }
 

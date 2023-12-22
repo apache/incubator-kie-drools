@@ -121,7 +121,7 @@ public class FromVisitor {
             if (isEnumeratedList( expr )) {
                 asListCall.addArgument( createListForLiteralFrom( expr.substring( 1, expr.length()-1 ), fromCall, usedDeclarations ) );
             } else {
-                Optional<TypedDeclarationSpec> optContainsBinding = context.getDeclarationById(expr );
+                Optional<TypedDeclarationSpec> optContainsBinding = context.getTypedDeclarationById(expr );
                 if ( optContainsBinding.isPresent() ) {
                     String bindingId = optContainsBinding.get().getBindingId();
                     fromCall.addArgument( context.getVarExpr( bindingId ) );
@@ -269,7 +269,7 @@ public class FromVisitor {
 
     private Expression createArg(String expression, String bindingId, MethodCallExpr fromCall) {
         if (bindingId != null) {
-            TypedDeclarationSpec declarationSpec = context.getDeclarationById(bindingId ).orElseThrow(RuntimeException::new );
+            TypedDeclarationSpec declarationSpec = context.getTypedDeclarationById(bindingId ).orElseThrow(RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
             DrlxParseResult drlxParseResult = ConstraintParser.withoutVariableValidationConstraintParser(context, context.getPackageModel())

@@ -28,6 +28,9 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
+import org.drools.model.PrototypeFact;
+
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class BoxedParameters {
 
@@ -40,27 +43,40 @@ public class BoxedParameters {
     // Types in the executable model are promoted to boxed to type check the Java DSL.
     // We add such promoted types as _<PARAMETER_NAME> (with the underscore prefix)
     // and then we downcast to the original unboxed type in the body of the function (methodBody)
-    public NodeList<Parameter> getBoxedParametersWithUnboxedAssignment(Collection<String> declarationUsedInRHS,
-                                                                       BlockStmt methodBody) {
-
+    public NodeList<Parameter> getBoxedParametersWithUnboxedAssignment(Collection<String> declarationUsedInRHS, BlockStmt methodBody) {
         NodeList<Parameter> parameters = NodeList.nodeList();
-
         for (String parameterName : declarationUsedInRHS) {
-            TypedDeclarationSpec declaration = context.getDeclarationByIdWithException(parameterName);
+            TypedDeclarationSpec declaration = context.getTypedDeclarationByIdWithException(parameterName);
+            Parameter boxedParameter = getTypedParameter(methodBody, parameterName, declaration);
+            parameters.add(boxedParameter);
+        }
+        return parameters;
+    }
 
-            Parameter boxedParameter;
-            Type boxedType = declaration.getBoxedType();
+    private static Parameter getTypedParameter(BlockStmt methodBody, String parameterName, TypedDeclarationSpec declaration) {
+        Parameter boxedParameter;
+        Type boxedType = declaration.getBoxedType();
 
-            if (declaration.isBoxed()) {
-                String boxedParameterName = "_" + parameterName;
-                boxedParameter = new Parameter(boxedType, boxedParameterName);
-                Expression unboxedTypeDowncast = new VariableDeclarationExpr(new VariableDeclarator(declaration.getRawType(),
-                                                                                                    parameterName,
-                                                                                                    new NameExpr(boxedParameterName)));
-                methodBody.addStatement(0, unboxedTypeDowncast);
-            } else {
-                boxedParameter = new Parameter(boxedType, parameterName);
-            }
+        if (declaration.isBoxed()) {
+            String boxedParameterName = "_" + parameterName;
+            boxedParameter = new Parameter(boxedType, boxedParameterName);
+            Expression unboxedTypeDowncast = new VariableDeclarationExpr(new VariableDeclarator(declaration.getRawType(),
+                                                                                                parameterName,
+                                                                                                new NameExpr(boxedParameterName)));
+            methodBody.addStatement(0, unboxedTypeDowncast);
+        } else {
+            boxedParameter = new Parameter(boxedType, parameterName);
+        }
+        return boxedParameter;
+    }
+
+    public NodeList<Parameter> getParametersForPrototype(Collection<String> declarationUsedInRHS, BlockStmt methodBody) {
+        NodeList<Parameter> parameters = NodeList.nodeList();
+        for (String parameterName : declarationUsedInRHS) {
+            DeclarationSpec declaration = context.getDeclarationByIdWithException(parameterName);
+            Parameter boxedParameter = declaration instanceof TypedDeclarationSpec tSpec ?
+                    getTypedParameter(methodBody, parameterName, tSpec) :
+                    new Parameter(toClassOrInterfaceType(PrototypeFact.class), parameterName);
             parameters.add(boxedParameter);
         }
         return parameters;

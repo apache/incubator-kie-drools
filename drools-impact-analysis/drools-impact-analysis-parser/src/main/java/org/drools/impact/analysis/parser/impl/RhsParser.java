@@ -97,7 +97,7 @@ public class RhsParser {
         Expression actionArg = statement.getArgument(0);
         Class<?> actionClass = null;
         if (actionArg.isNameExpr()) {
-            actionClass = context.getDeclarationById(actionArg.toString()).map(TypedDeclarationSpec::getDeclarationClass)
+            actionClass = context.getTypedDeclarationById(actionArg.toString()).map(TypedDeclarationSpec::getDeclarationClass)
                     .orElseGet(() -> getClassFromAssignment(consequenceExpr, actionArg));
         } else if (actionArg.isLiteralExpr()) {
             actionClass = literalType(actionArg.asLiteralExpr());
@@ -175,7 +175,7 @@ public class RhsParser {
 
     private ModifyAction processModify( RuleContext context, MethodCallExpr consequenceExpr, MethodCallExpr statement, BlockStmt ruleVariablesBlock ) {
         String modifiedId = statement.getArgument( 0 ).toString();
-        Class<?> modifiedClass = context.getDeclarationById( modifiedId ).orElseThrow( () -> new RuntimeException("Unknown declaration: " + modifiedId) ).getDeclarationClass();
+        Class<?> modifiedClass = context.getTypedDeclarationById(modifiedId ).orElseThrow(() -> new RuntimeException("Unknown declaration: " + modifiedId) ).getDeclarationClass();
 
         ModifyAction action = new ModifyAction(modifiedClass);
 
