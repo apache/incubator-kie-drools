@@ -28,12 +28,15 @@ public class KogitoAddonsQuarkusJobsServiceEmbeddedConfigSource implements Confi
 
     private static final String KAFKA_DEV_SERVICES = "quarkus.kafka.devservices.enabled";
     private static final String DATASOURCE_DEV_SERVICES = "quarkus.datasource.devservices.enabled";
-
+    private static final String JOBS_SERVICE_URL = "kogito.jobs-service.url";
+    private static final String SERVICE_URL = "kogito.service.url";
     private static final Map<String, String> DEFAULT_CONFIG = new HashMap<>();
 
     static {
         DEFAULT_CONFIG.put(KAFKA_DEV_SERVICES, "false");
         DEFAULT_CONFIG.put(DATASOURCE_DEV_SERVICES, "false");
+        DEFAULT_CONFIG.put(SERVICE_URL, "http://localhost:${quarkus.http.port}");
+        DEFAULT_CONFIG.put(JOBS_SERVICE_URL, "${" + SERVICE_URL + "}");
     }
 
     @Override

@@ -40,8 +40,6 @@ import static org.kie.kogito.addons.quarkus.jobs.service.embedded.stream.EventPu
 
 class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKogitoAddOnProcessor {
     private static final String FEATURE = "kogito-addons-quarkus-jobs-service-embedded";
-    private static final String JOBS_SERVICE_URL = "kogito.jobs-service.url";
-    private static final String SERVICE_URL = "kogito.service.url";
     private static final String DATA_SOURCE_NAME = "jobs_service";
     private static final String DATA_SOURCE_NAME_KEY = "datasource.name";
 
@@ -56,8 +54,6 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessor extends OneOfCapabilityKog
 
     @BuildStep
     void buildConfiguration(BuildProducer<SystemPropertyBuildItem> systemProperties) {
-        systemProperties.produce(new SystemPropertyBuildItem(SERVICE_URL, "http://${quarkus.http.host}:${quarkus.http.port}"));
-        systemProperties.produce(new SystemPropertyBuildItem(JOBS_SERVICE_URL, "${" + SERVICE_URL + "}"));
         systemProperties.produce(new SystemPropertyBuildItem(DATA_SOURCE_NAME_KEY, DATA_SOURCE_NAME));
     }
 

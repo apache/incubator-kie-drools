@@ -45,11 +45,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class KogitoAddonsQuarkusJobsServiceEmbeddedProcessorTest {
 
-    private static final String JOBS_SERVICE_URL = "kogito.jobs-service.url";
-    private static final String SERVICE_URL = "kogito.service.url";
-
     private KogitoAddonsQuarkusJobsServiceEmbeddedProcessor processor;
-
     @Mock
     private BuildProducer<SystemPropertyBuildItem> systemPropertyBuildItemBuildProducer;
     @Captor
@@ -77,11 +73,10 @@ class KogitoAddonsQuarkusJobsServiceEmbeddedProcessorTest {
     @Test
     void buildConfiguration() {
         processor.buildConfiguration(systemPropertyBuildItemBuildProducer);
-        verify(systemPropertyBuildItemBuildProducer, times(3)).produce(systemPropertyBuildItemCaptor.capture());
+        verify(systemPropertyBuildItemBuildProducer, times(1)).produce(systemPropertyBuildItemCaptor.capture());
         List<SystemPropertyBuildItem> items = systemPropertyBuildItemCaptor.getAllValues();
         assertThat(items)
-                .anyMatch(item -> JOBS_SERVICE_URL.equals(item.getKey()) && ("${" + SERVICE_URL + "}").equals(item.getValue()))
-                .anyMatch(item -> SERVICE_URL.equals(item.getKey()) && "http://${quarkus.http.host}:${quarkus.http.port}".equals(item.getValue()));
+                .anyMatch(item -> "datasource.name".equals(item.getKey()) && ("jobs_service").equals(item.getValue()));
     }
 
     @Test
