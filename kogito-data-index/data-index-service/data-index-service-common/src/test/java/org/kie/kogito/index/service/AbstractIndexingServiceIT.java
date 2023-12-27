@@ -399,18 +399,18 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                 event);
 
         state = "Completed";
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, "kogito", 2);
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, "kogito", "Completed");
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(
                 getUserTaskInstanceByIdAndCompleted(taskId, formatDateTime(event.getData().getEventDate())), event);
 
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, "admin", 2);
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, "admin", "Completed");
         indexUserTaskCloudEvent(event);
 
         validateUserTaskInstance(getUserTaskInstanceByIdAndActualOwner(taskId, "admin"), event);
 
-        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, null, 2);
+        event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state, null, "Completed");
         LOGGER.info("event {}", event);
         indexUserTaskCloudEvent(event);
 

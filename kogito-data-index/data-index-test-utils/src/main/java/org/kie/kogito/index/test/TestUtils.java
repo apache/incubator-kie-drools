@@ -270,11 +270,11 @@ public final class TestUtils {
     }
 
     public static UserTaskInstanceStateDataEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state) {
-        return getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, "kogito", 1);
+        return getUserTaskCloudEvent(taskId, processId, processInstanceId, rootProcessInstanceId, rootProcessId, state, "kogito", "STARTED");
     }
 
     public static UserTaskInstanceStateDataEvent getUserTaskCloudEvent(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state,
-            String actualOwner, Integer eventType) {
+            String actualOwner, String eventType) {
 
         UserTaskInstanceStateEventBody body = UserTaskInstanceStateEventBody.create()
                 .eventType(eventType)

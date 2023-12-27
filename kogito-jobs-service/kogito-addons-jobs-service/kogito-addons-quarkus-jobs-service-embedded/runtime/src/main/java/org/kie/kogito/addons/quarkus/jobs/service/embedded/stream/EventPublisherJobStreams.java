@@ -18,11 +18,14 @@
  */
 package org.kie.kogito.addons.quarkus.jobs.service.embedded.stream;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.jobs.JobsServiceException;
 import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -55,7 +58,7 @@ public class EventPublisherJobStreams {
 
     private final String url;
 
-    private final EventPublisher eventPublisher;
+    private final List<EventPublisher> eventPublisher;
 
     private final ObjectMapper objectMapper;
 
@@ -64,10 +67,7 @@ public class EventPublisherJobStreams {
             Instance<EventPublisher> eventPublishers,
             ObjectMapper objectMapper) {
         this.url = url;
-        eventPublisher = eventPublishers.stream()
-                .filter(publisher -> publisher.getClass().getName().startsWith(DATA_INDEX_EVENT_PUBLISHER))
-                .findFirst()
-                .orElse(null);
+        eventPublisher = eventPublishers.stream().collect(Collectors.toList());
         this.objectMapper = objectMapper;
     }
 
@@ -83,7 +83,7 @@ public class EventPublisherJobStreams {
             } catch (Exception e) {
                 throw new JobsServiceException("It was not possible to serialize scheduledJob to json: " + scheduledJob, e);
             }
-            EventPublisherJobDataEvent event = new EventPublisherJobDataEvent(JOB_EVENT_TYPE,
+            JobInstanceDataEvent event = new JobInstanceDataEvent(JOB_EVENT_TYPE,
                     url + RestApiConstants.JOBS_PATH,
                     jsonContent,
                     scheduledJob.getProcessInstanceId(),
@@ -92,24 +92,11 @@ public class EventPublisherJobStreams {
                     scheduledJob.getRootProcessId(),
                     null);
             try {
-                eventPublisher.publish(event);
+                eventPublisher.forEach(e -> e.publish(event));
             } catch (Exception e) {
                 LOGGER.error("Job status change propagation has failed at eventPublisher: " + eventPublisher.getClass() + " execution.", e);
             }
         }
     }
 
-    public static class EventPublisherJobDataEvent extends AbstractDataEvent<byte[]> {
-        public EventPublisherJobDataEvent(String type,
-                String source,
-                byte[] data,
-                String kogitoProcessInstanceId,
-                String kogitoRootProcessInstanceId,
-                String kogitoProcessId,
-                String kogitoRootProcessId,
-                String kogitoIdentity) {
-            super(type, source, data, kogitoProcessInstanceId, kogitoRootProcessInstanceId, kogitoProcessId,
-                    kogitoRootProcessId, null, kogitoIdentity);
-        }
-    }
 }

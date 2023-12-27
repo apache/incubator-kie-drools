@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.EventPublisher;
+import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.index.addon.DataIndexEventPublisherMock;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -87,7 +88,7 @@ class EventPublisherJobStreamsTest {
 
     @Test
     void onJobStatusChange() throws Exception {
-        ArgumentCaptor<EventPublisherJobStreams.EventPublisherJobDataEvent> eventCaptor = ArgumentCaptor.forClass(EventPublisherJobStreams.EventPublisherJobDataEvent.class);
+        ArgumentCaptor<JobInstanceDataEvent> eventCaptor = ArgumentCaptor.forClass(JobInstanceDataEvent.class);
         DataIndexEventPublisherMock eventPublisher = spy(new DataIndexEventPublisherMock());
         Instance<EventPublisher> eventPublisherInstance = mock(Instance.class);
         Stream<EventPublisher> eventPublishers = Arrays.stream(new EventPublisher[] { eventPublisher });
@@ -104,7 +105,7 @@ class EventPublisherJobStreamsTest {
         verify(eventPublisher).publish(eventCaptor.capture());
         verify(eventPublisher, never()).publish(anyCollection());
 
-        EventPublisherJobStreams.EventPublisherJobDataEvent event = eventCaptor.getValue();
+        JobInstanceDataEvent event = eventCaptor.getValue();
         assertThat(event).isNotNull();
 
         assertThat(event.getSpecVersion()).hasToString("1.0");

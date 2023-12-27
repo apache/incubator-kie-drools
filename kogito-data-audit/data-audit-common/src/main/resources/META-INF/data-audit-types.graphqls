@@ -1,0 +1,183 @@
+scalar Long
+scalar Int
+scalar JSON
+scalar DateTime
+scalar Date
+
+type JobExecutionLog {
+    jobId : String!
+    expirationTime : DateTime
+    priority: Int
+    processInstanceId : String
+    nodeInstanceId : String
+    repeatInterval : Long
+    repeatLimit : Int
+    scheduledId : String
+    retries : Int
+    status : String
+    executionCounter : Int
+    eventDate : DateTime
+}
+
+type ProcessInstanceStateLog {
+    eventId : String!
+    eventDate : DateTime
+    processType : String
+    processId : String
+    processVersion : String
+    parentProcessInstanceId : String
+    rootProcessId : String
+    rootProcessInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    eventType : String
+    outcome : String
+    state : String
+    slaDueDate : DateTime
+    roles : [String]
+}
+
+type ProcessInstanceNodeLog {
+    eventId : String!
+    eventDate : DateTime
+    processType : String
+    processId : String
+    processVersion : String
+    parentProcessInstanceId : String
+    rootProcessId : String
+    rootProcessInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    eventType : String
+    nodeType : String
+    nodeName : String
+    nodeInstanceId : String
+    connection : String
+    workItemId : String
+    slaDueDate : DateTime
+    eventData : JSON
+}
+
+type ProcessInstanceErrorLog {
+    eventId : String!
+    eventDate : DateTime
+    processType : String
+    processId : String
+    processVersion : String
+    parentProcessInstanceId : String
+    rootProcessId : String
+    rootProcessInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    errorMessage : String
+    nodeDefinitionId : String
+    nodeInstanceId : String
+}
+
+type ProcessInstanceVariableLog {
+    eventId : String
+    eventDate : DateTime
+    processType : String
+    processId : String
+    processVersion : String
+    parentProcessInstanceId : String
+    rootProcessId : String
+    rootProcessInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    variableId : String
+    variableName : String
+    variableValue : JSON
+}
+
+type ProcessInstanceVariableHistoryLog {
+    variableId : String!
+    variableName : String!
+    logs : [ProcessInstanceVariableLog]
+}
+  
+type UserTaskInstanceStateLog {
+    eventId : String!
+    eventDate : DateTime
+    userTaskDefinitionId : String
+    userTaskInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    name : String
+    description : String
+    actualUser : String
+    state : String
+    slaDueDate : DateTime
+    eventType : String
+}
+   
+type UserTaskInstanceAssignmentLog {
+    eventId : String!
+    eventDate : DateTime
+    userTaskDefinitionId : String
+    userTaskInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    userTaskName : String
+    assignmentType : String
+    users : [String]
+}
+
+type UserTaskInstanceAttachmentLog {
+    eventId : String!
+    eventDate : DateTime
+    userTaskDefinitionId : String
+    userTaskInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    attachmentId : String
+    attachmentName : String
+    attachmentURI : String
+    eventType : Int
+}
+   
+type UserTaskInstanceCommentLog {
+    eventId : String!
+    eventDate : DateTime
+    userTaskDefinitionId : String
+    userTaskInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    commentId : String
+    commentContent : String
+    eventType : Int
+}
+
+type UserTaskInstanceDeadlineLog {
+    eventId : String!
+    eventDate : DateTime
+    userTaskDefinitionId : String
+    userTaskInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    eventType : String
+    notification : JSON
+}
+   
+type UserTaskInstanceVariableLog {
+    eventId : String!
+    eventDate : DateTime
+    userTaskDefinitionId : String
+    userTaskInstanceId : String
+    processInstanceId : String
+    businessKey : String
+    variableId : String
+    variableName : String
+    variableValue : JSON
+    variableType : String
+}
+
+input Pagination {
+    limit: Int
+    offset: Int
+}
+
+
+schema {
+    query: Query
+}

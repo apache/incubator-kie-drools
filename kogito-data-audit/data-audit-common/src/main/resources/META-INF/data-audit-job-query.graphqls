@@ -1,0 +1,21 @@
+
+type Query {
+    GetAllScheduledJobs (pagination: Pagination): [JobExecutionLog]
+
+    GetJobById (jobId : String!) : [JobExecutionLog]
+    GetJobByProcessInstanceId (processInstanceId : String!) : [JobExecutionLog]
+
+    GetJobHistoryById (jobId : String!) : [JobExecutionLog]
+    GetJobHistoryByProcessInstanceId (processInstanceId : String!) : [JobExecutionLog]
+
+    GetAllPendingJobs (pagination: Pagination): [JobExecutionLog]
+    GetAllEligibleJobsForExecution (pagination: Pagination) : [JobExecutionLog]
+    GetAllEligibleJobsForRetry (pagination: Pagination) : [JobExecutionLog]
+    GetAllJobs (pagination: Pagination) : [JobExecutionLog]
+    GetAllCompletedJobs (pagination: Pagination) : [JobExecutionLog]
+    GetAllInErrorJobs (pagination: Pagination) : [JobExecutionLog]
+    GetAllCancelledJobs (pagination: Pagination) : [JobExecutionLog]
+    GetAllJobsByStatus (status : [String]!, pagination: Pagination) : [JobExecutionLog]
+
+}
+

@@ -1,0 +1,15 @@
+
+type Query {
+
+    GetAllProcessInstancesState (pagination: Pagination): [ProcessInstanceStateLog]
+    GetAllProcessInstancesStateByStatus (status : String!, pagination: Pagination): [ProcessInstanceStateLog]
+    GetAllProcessInstancesStateByProcessId (processId : String!, pagination: Pagination): [ProcessInstanceStateLog]
+    GetProcessInstancesStateHistory (processInstanceId : String!, pagination: Pagination): [ProcessInstanceStateLog]
+    GetProcessInstancesStateHistoryByBusinessKey (businessKey : String!, pagination: Pagination): [ProcessInstanceStateLog]
+
+    GetAllProcessInstancesNodeByProcessInstanceId (processInstanceId : String!, pagination: Pagination) : [ProcessInstanceNodeLog]
+    GetAllProcessInstancesErrorByProcessInstanceId (processInstanceId : String!, pagination: Pagination) : [ProcessInstanceErrorLog]
+
+    GetAllProcessInstancesVariableByProcessInstanceId (processInstanceId : String!, pagination: Pagination) : [ProcessInstanceVariableLog]
+    GetAllProcessInstancesVariableHistoryByProcessInstanceId (processInstanceId : String!, pagination: Pagination) : [ProcessInstanceVariableHistoryLog]
+}

@@ -1,0 +1,3 @@
+org.kie.kogito.app.audit.jpa.queries.JPAGraphQLSchemaJobsQueryProvider
+org.kie.kogito.app.audit.jpa.queries.JPAGraphQLSchemaProcessInstancesQueryProvider
+org.kie.kogito.app.audit.jpa.queries.JPAGraphQLSchemaUserTaskInstancesQueryProvider

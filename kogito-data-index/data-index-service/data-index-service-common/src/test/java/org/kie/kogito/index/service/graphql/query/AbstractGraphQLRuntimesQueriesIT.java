@@ -259,7 +259,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String taskId = UUID.randomUUID().toString();
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
         checkOkResponse("{ \"query\" : \"{UserTaskInstances (where: {id: {equal:\\\"" + taskId + "\\\" }}){ " +
@@ -280,7 +280,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String newDescription = "NewDescription";
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
         checkOkResponse("{ \"query\" : \"mutation { UserTaskInstanceUpdate ( " +
@@ -306,7 +306,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String comment = "Comment to add";
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
 
@@ -338,7 +338,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String commentContent = "commentContent";
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
 
@@ -368,7 +368,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         String commentId = UUID.randomUUID().toString();
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
 
@@ -400,7 +400,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         URI attachmentUri = URI.create("https://drive.google.com/file/d/1Z_Lipg2jzY9TNewTaskAttachmentUri");
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
 
@@ -435,7 +435,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         URI attachmentUri = URI.create("http://localhost:8080");
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
 
@@ -468,7 +468,7 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         URI attachmentUri = URI.create("http://localhost:8080");
 
         UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
-                null, "InProgress", user, 1);
+                null, "InProgress", user, "STARTED");
 
         indexUserTaskCloudEvent(event);
 
