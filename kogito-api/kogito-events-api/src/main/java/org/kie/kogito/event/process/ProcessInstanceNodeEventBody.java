@@ -29,6 +29,14 @@ public class ProcessInstanceNodeEventBody {
 
     public static final int EVENT_TYPE_EXIT = 2;
 
+    public static final int EVENT_TYPE_ABORTED = 3;
+
+    public static final int EVENT_TYPE_SKIPPED = 4;
+
+    public static final int EVENT_TYPE_OBSOLETE = 5;
+
+    public static final int EVENT_TYPE_ERROR = 6;
+
     // common fields for events
 
     private Date eventDate;
@@ -47,7 +55,7 @@ public class ProcessInstanceNodeEventBody {
 
     // custom data fields
 
-    private String connectionNodeInstanceId; // only for entering and leaving
+    private String connectionNodeDefinitionId; // only for entering and leaving
 
     private String nodeDefinitionId; // definition on bpmn2
 
@@ -56,6 +64,10 @@ public class ProcessInstanceNodeEventBody {
     private String nodeType;
 
     private String nodeInstanceId;
+
+    private String workItemId;
+
+    private Date slaDueDate;
 
     private Map<String, Object> data;
 
@@ -87,8 +99,8 @@ public class ProcessInstanceNodeEventBody {
         return processInstanceId;
     }
 
-    public String getConnectionNodeInstanceId() {
-        return connectionNodeInstanceId;
+    public String getConnectionNodeDefinitionId() {
+        return connectionNodeDefinitionId;
     }
 
     public String getNodeDefinitionId() {
@@ -107,6 +119,14 @@ public class ProcessInstanceNodeEventBody {
         return nodeInstanceId;
     }
 
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public String getWorkItemId() {
+        return workItemId;
+    }
+
     public Map<String, Object> getData() {
         return data;
     }
@@ -114,7 +134,7 @@ public class ProcessInstanceNodeEventBody {
     @Override
     public String toString() {
         return "ProcessInstanceNodeEventBody [eventDate=" + eventDate + ", eventUser=" + eventUser + ", eventType=" + eventType + ", processId=" + processId + ", processVersion=" + processVersion
-                + ", processInstanceId=" + processInstanceId + ", connectionNodeInstanceId=" + connectionNodeInstanceId + ", nodeDefinitionId=" + nodeDefinitionId + ", nodeName=" + nodeName
+                + ", processInstanceId=" + processInstanceId + ", connectionNodeInstanceId=" + connectionNodeDefinitionId + ", nodeDefinitionId=" + nodeDefinitionId + ", nodeName=" + nodeName
                 + ", nodeType=" + nodeType + ", nodeInstanceId=" + nodeInstanceId + ", data=" + data + "]";
     }
 
@@ -181,8 +201,8 @@ public class ProcessInstanceNodeEventBody {
             return this;
         }
 
-        public Builder connectionNodeInstanceId(String connectionNodeInstanceId) {
-            instance.connectionNodeInstanceId = connectionNodeInstanceId;
+        public Builder connectionNodeDefinitionId(String connectionNodeDefinitionId) {
+            instance.connectionNodeDefinitionId = connectionNodeDefinitionId;
             return this;
         }
 
@@ -211,8 +231,20 @@ public class ProcessInstanceNodeEventBody {
             return this;
         }
 
+        public Builder slaDueDate(Date slaDueDate) {
+            instance.slaDueDate = slaDueDate;
+            return this;
+        }
+
+        public Builder workItemId(String workItemId) {
+            instance.workItemId = workItemId;
+            return this;
+        }
+
         public ProcessInstanceNodeEventBody build() {
             return instance;
         }
+
     }
+
 }

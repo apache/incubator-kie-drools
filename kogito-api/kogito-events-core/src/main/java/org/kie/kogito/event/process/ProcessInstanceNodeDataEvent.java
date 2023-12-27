@@ -41,4 +41,5 @@ public class ProcessInstanceNodeDataEvent extends ProcessInstanceDataEvent<Proce
                 null,
                 identity);
     }
+
 }

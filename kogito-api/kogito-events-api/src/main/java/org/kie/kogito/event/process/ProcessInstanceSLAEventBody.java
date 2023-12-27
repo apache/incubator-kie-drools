@@ -41,6 +41,20 @@ public class ProcessInstanceSLAEventBody {
 
     private String nodeInstanceId;
 
+    private String nodeName;
+
+    private String nodeType;
+
+    private Date slaDueDate;
+
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     public Date getEventDate() {
         return eventDate;
     }
@@ -69,6 +83,14 @@ public class ProcessInstanceSLAEventBody {
         return nodeInstanceId;
     }
 
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
     @Override
     public String toString() {
         return "ProcessErrorEventBody [processId=" + processId + ", processInstanceId=" + processInstanceId + ", nodeDefinitionId=" + nodeDefinitionId + ", nodeInstanceId=" + nodeInstanceId + "]";
@@ -84,6 +106,11 @@ public class ProcessInstanceSLAEventBody {
 
         private Builder(ProcessInstanceSLAEventBody instance) {
             this.instance = instance;
+        }
+
+        public Builder slaDueDate(Date slaDueDate) {
+            this.instance.slaDueDate = slaDueDate;
+            return this;
         }
 
         public Builder eventDate(Date eventDate) {
@@ -121,8 +148,19 @@ public class ProcessInstanceSLAEventBody {
             return this;
         }
 
+        public Builder nodeName(String nodeName) {
+            instance.nodeName = nodeName;
+            return this;
+        }
+
+        public Builder nodeType(String nodeType) {
+            instance.nodeType = nodeType;
+            return this;
+        }
+
         public ProcessInstanceSLAEventBody build() {
             return instance;
         }
     }
+
 }

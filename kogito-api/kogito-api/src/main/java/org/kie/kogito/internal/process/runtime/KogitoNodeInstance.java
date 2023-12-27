@@ -18,7 +18,9 @@
  */
 package org.kie.kogito.internal.process.runtime;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 import org.kie.api.runtime.process.NodeInstance;
 
@@ -67,4 +69,10 @@ public interface KogitoNodeInstance extends NodeInstance {
      * @return actual leave time
      */
     Date getLeaveTime();
+
+    Date getSlaDueDate();
+
+    default Map<String, Object> getMetaData() {
+        return Collections.emptyMap();
+    }
 }

@@ -387,12 +387,18 @@ public class HumanTaskWorkItemDecoratorImpl implements InternalHumanTaskWorkItem
     @Override
     public void setTaskDescription(String taskDescription) {
         delegate.setTaskDescription(taskDescription);
+        if (delegate.getPhaseStatus() == null) {
+            return;
+        }
         getEventSupport().ifPresent(e -> e.fireOneUserTaskStateChange(getProcessInstance(), getNodeInstance(), getKieRuntime(), delegate.getPhaseStatus(), delegate.getPhaseStatus()));
     }
 
     @Override
     public void setTaskPriority(String taskPriority) {
         delegate.setTaskPriority(taskPriority);
+        if (delegate.getPhaseStatus() == null) {
+            return;
+        }
         getEventSupport().ifPresent(e -> e.fireOneUserTaskStateChange(getProcessInstance(), getNodeInstance(), getKieRuntime(), delegate.getPhaseStatus(), delegate.getPhaseStatus()));
     }
 
@@ -405,6 +411,9 @@ public class HumanTaskWorkItemDecoratorImpl implements InternalHumanTaskWorkItem
     public void setActualOwner(String actualOwner) {
         String currentPhaseStatus = delegate.getPhaseStatus();
         delegate.setActualOwner(actualOwner);
+        if (currentPhaseStatus == null) {
+            return;
+        }
         getEventSupport().ifPresent(e -> e.fireOneUserTaskStateChange(getProcessInstance(), getNodeInstance(), getKieRuntime(), currentPhaseStatus, currentPhaseStatus));
     }
 

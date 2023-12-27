@@ -18,7 +18,6 @@
  */
 package org.jbpm.workflow.instance;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.jbpm.process.instance.ContextInstance;
@@ -50,8 +49,6 @@ public interface NodeInstance extends KogitoNodeInstance {
     void setDynamicParameters(Map<String, Object> dynamicParameters);
 
     int getSlaCompliance();
-
-    Date getSlaDueDate();
 
     String getSlaTimerId();
 

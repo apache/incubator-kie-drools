@@ -90,7 +90,7 @@ public class UserTaskEventImpl extends EventObject implements UserTaskEvent {
 
     @Override
     public String getUserTaskDefinitionId() {
-        return getWorkItem().getStringId();
+        return getHumanTaskNodeInstance().getNodeDefinitionId();
     }
 
 }

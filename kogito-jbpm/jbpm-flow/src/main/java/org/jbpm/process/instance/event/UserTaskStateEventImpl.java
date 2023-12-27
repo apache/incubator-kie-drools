@@ -48,10 +48,12 @@ public class UserTaskStateEventImpl extends UserTaskEventImpl implements UserTas
 
     }
 
+    @Override
     public String getNewStatus() {
         return newStatus;
     }
 
+    @Override
     public String getOldStatus() {
         return oldStatus;
     }

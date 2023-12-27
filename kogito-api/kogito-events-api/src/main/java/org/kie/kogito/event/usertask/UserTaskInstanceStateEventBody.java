@@ -35,9 +35,6 @@ public class UserTaskInstanceStateEventBody {
     private String userTaskInstanceId;
     private String userTaskName;
 
-    // custom data fields
-    private Integer eventType; // CREATED, ADDED, CLAIMED....
-
     private String userTaskDescription;
     private String userTaskPriority;
     private String userTaskReferenceName;
@@ -47,6 +44,8 @@ public class UserTaskInstanceStateEventBody {
     private String actualOwner;
 
     private String processInstanceId;
+
+    private String eventType;
 
     public Date getEventDate() {
         return eventDate;
@@ -66,10 +65,6 @@ public class UserTaskInstanceStateEventBody {
 
     public String getUserTaskName() {
         return userTaskName;
-    }
-
-    public Integer getEventType() {
-        return eventType;
     }
 
     public String getUserTaskDescription() {
@@ -96,6 +91,10 @@ public class UserTaskInstanceStateEventBody {
         return processInstanceId;
     }
 
+    public String getEventType() {
+        return eventType;
+    }
+
     public Map<String, Object> metaData() {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA, userTaskInstanceId);
@@ -107,7 +106,7 @@ public class UserTaskInstanceStateEventBody {
     @Override
     public String toString() {
         return "UserTaskInstanceStateEventBody [eventDate=" + eventDate + ", eventUser=" + eventUser + ", userTaskDefinitionId=" + userTaskDefinitionId + ", userTaskInstanceId=" + userTaskInstanceId
-                + ", userTaskName=" + userTaskName + ", eventType=" + eventType + ", userTaskDescription=" + userTaskDescription + ", userTaskPriority=" + userTaskPriority + ", userTaskReferenceName="
+                + ", userTaskName=" + userTaskName + ", userTaskDescription=" + userTaskDescription + ", userTaskPriority=" + userTaskPriority + ", userTaskReferenceName="
                 + userTaskReferenceName
                 + ", state=" + state + ", actualOwner=" + actualOwner + ", processInstanceId=" + processInstanceId + "]";
     }
@@ -170,11 +169,6 @@ public class UserTaskInstanceStateEventBody {
             return this;
         }
 
-        public Builder eventType(Integer eventType) {
-            this.instance.eventType = eventType;
-            return this;
-        }
-
         public Builder userTaskDescription(String userTaskDescription) {
             this.instance.userTaskDescription = userTaskDescription;
             return this;
@@ -200,6 +194,11 @@ public class UserTaskInstanceStateEventBody {
             return this;
         }
 
+        public Builder eventType(String eventType) {
+            this.instance.eventType = eventType;
+            return this;
+        }
+
         public Builder processInstanceId(String processInstanceId) {
             this.instance.processInstanceId = processInstanceId;
             return this;
@@ -209,4 +208,5 @@ public class UserTaskInstanceStateEventBody {
             return this.instance;
         }
     }
+
 }

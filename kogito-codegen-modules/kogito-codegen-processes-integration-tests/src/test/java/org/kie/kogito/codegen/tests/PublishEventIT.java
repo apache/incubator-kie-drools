@@ -137,7 +137,7 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         assertProcessInstanceEvent(event.get(), "compensateAll", "Compensate All", ProcessInstanceStateEventBody.EVENT_TYPE_ENDED);
 
-        List<ProcessInstanceNodeEventBody> nodes = findNodeInstanceEvents(events, 2);
+        List<ProcessInstanceNodeEventBody> nodes = findNodeInstanceEvents(events, ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT);
         assertThat(nodes).hasSize(9).extractingResultOf("getNodeType").contains("StartNode", "ActionNode", "BoundaryEventNode", "EndNode");
 
     }
@@ -284,7 +284,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         events = publisher.extract();
         assertThat(events).hasSize(4);
 
-        triggered = findNodeInstanceEvents(events, 2);
+        triggered = findNodeInstanceEvents(events, ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED);
         assertThat(triggered).hasSize(1).extractingResultOf("getNodeName").containsOnly("First Task");
 
         assertProcessInstanceEvent(events.get(3), "UserTasksProcess", "UserTasksProcess", ProcessInstance.STATE_ABORTED);

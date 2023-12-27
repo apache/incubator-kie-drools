@@ -50,6 +50,8 @@ public interface KogitoWorkflowProcessInstance extends WorkflowProcessInstance, 
      */
     String getNodeIdInError();
 
+    String getNodeInstanceIdInError();
+
     /**
      * Returns error message associated with this process instance in case it is in an error
      * state. It will consists of
@@ -87,5 +89,7 @@ public interface KogitoWorkflowProcessInstance extends WorkflowProcessInstance, 
      * @return AdHocFragments from the process instances
      */
     Collection<AdHocFragment> adHocFragments();
+
+    Date getSlaDueDate();
 
 }

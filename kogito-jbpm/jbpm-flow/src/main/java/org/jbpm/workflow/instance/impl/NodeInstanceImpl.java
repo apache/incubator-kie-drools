@@ -175,6 +175,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return false;
     }
 
+    @Override
     public CancelType getCancelType() {
         return cancelType;
     }
@@ -564,6 +565,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return result.toString();
     }
 
+    @Override
     public Map<String, Object> getMetaData() {
         return this.metaData;
     }
