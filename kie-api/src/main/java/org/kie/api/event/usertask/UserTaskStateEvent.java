@@ -21,6 +21,10 @@ package org.kie.api.event.usertask;
 
 public interface UserTaskStateEvent extends UserTaskEvent {
 
+    String getNewStatus();
+
+    String getOldStatus();
+
 
 
 }
