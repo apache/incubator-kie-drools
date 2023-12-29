@@ -23,7 +23,6 @@ import java.util.Collection;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -54,20 +53,15 @@ public class BoxedParameters {
     }
 
     private static Parameter getTypedParameter(BlockStmt methodBody, String parameterName, TypedDeclarationSpec declaration) {
-        Parameter boxedParameter;
         Type boxedType = declaration.getBoxedType();
-
-        if (declaration.isBoxed()) {
-            String boxedParameterName = "_" + parameterName;
-            boxedParameter = new Parameter(boxedType, boxedParameterName);
-            Expression unboxedTypeDowncast = new VariableDeclarationExpr(new VariableDeclarator(declaration.getRawType(),
-                                                                                                parameterName,
-                                                                                                new NameExpr(boxedParameterName)));
-            methodBody.addStatement(0, unboxedTypeDowncast);
-        } else {
-            boxedParameter = new Parameter(boxedType, parameterName);
+        if (!declaration.isBoxed()) {
+            return new Parameter(boxedType, parameterName);
         }
-        return boxedParameter;
+
+        String boxedParameterName = "_" + parameterName;
+        VariableDeclarator varDec = new VariableDeclarator(declaration.getRawType(), parameterName, new NameExpr(boxedParameterName));
+        methodBody.addStatement(0, new VariableDeclarationExpr(varDec));
+        return new Parameter(boxedType, boxedParameterName);
     }
 
     public NodeList<Parameter> getParametersForPrototype(Collection<String> declarationUsedInRHS, BlockStmt methodBody) {
