@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -32,10 +33,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"name", "imports", "globals", "rules", "functions"})
+@JsonPropertyOrder({"name", "dialect", "imports", "globals", "rules", "functions"})
 public class DrlPackage {
     @JsonInclude(Include.NON_EMPTY)
     private String name = ""; // default empty, consistent with DRL parser.
+    @JsonInclude(Include.NON_EMPTY)
+    private String dialect = "java";
     @JsonInclude(Include.NON_EMPTY)
     private List<Import> imports = new ArrayList<>();
     @JsonInclude(Include.NON_EMPTY)
@@ -48,6 +51,10 @@ public class DrlPackage {
         Objects.requireNonNull(o);
         DrlPackage result = new DrlPackage();
         result.name = o.getName();
+        AttributeDescr dialectAttr = o.getAttribute("dialect");
+        if (dialectAttr != null) {
+            result.dialect = dialectAttr.getValue();
+        }
         for (ImportDescr i : o.getImports()) {
             result.imports.add(Import.from(i));
         }
@@ -65,6 +72,10 @@ public class DrlPackage {
 
     public String getName() {
         return name;
+    }
+
+    public String getDialect() {
+        return dialect;
     }
 
     public List<Import> getImports() {

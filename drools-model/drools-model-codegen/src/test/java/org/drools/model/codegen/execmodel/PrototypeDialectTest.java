@@ -43,6 +43,7 @@ import static org.drools.model.PrototypeDSL.protoPattern;
 import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PrototypeDialectTest {
 
@@ -123,5 +124,48 @@ public class PrototypeDialectTest {
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo("Mario");
+    }
+
+    @Test
+    public void testJoin() {
+        String str =
+                """
+                package org.drools.prototype;
+                dialect "prototype";
+                
+                rule "R1"
+                when
+                  $r : Result()
+                  $p : Person(age >= 18)
+                then
+                  $r.value = $p.name + " can drink";
+                end
+               
+                rule "R2"
+                when
+                  $r : Result()
+                  $p : Person(age < 18)
+                then
+                  $r.value = $p.name + " can NOT drink";
+                end
+                """;
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+
+        Prototype personFact = prototype( "Person" );
+        Fact mark = createMapBasedFact(personFact);
+        mark.set( "name", "Mark" );
+        mark.set( "age", 17 );
+        ksession.insert(mark);
+
+        Prototype resultFact = prototype( "Result" );
+        Fact result = createMapBasedFact(resultFact);
+        ksession.insert(result);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertEquals("Mark can NOT drink", result.get("value"));
     }
 }

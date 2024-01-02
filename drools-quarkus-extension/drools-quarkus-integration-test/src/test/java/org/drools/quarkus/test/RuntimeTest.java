@@ -18,16 +18,20 @@
  */
 package org.drools.quarkus.test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import org.drools.base.facttemplates.Fact;
+import org.drools.model.Prototype;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
 
-import jakarta.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import static org.drools.model.PrototypeDSL.prototype;
+import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -50,7 +54,7 @@ public class RuntimeTest {
 
     @Test
     public void testYamlEvaluation() {
-        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDYaml"), "org.drools.yaml");
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSYaml"), "org.drools.yaml");
     }
 
     private void testSimpleDrl(KieSession ksession, String assetPackage) {
@@ -65,5 +69,24 @@ public class RuntimeTest {
         ksession.fireAllRules();
 
         assertEquals("Mark can NOT drink", result.toString());
+    }
+
+    @Test
+    public void testPrototypeEvaluation() {
+        KieSession ksession = runtimeBuilder.newKieSession("canDrinkKSPrototype");
+
+        Prototype personFact = prototype( "Person" );
+        Fact mark = createMapBasedFact(personFact);
+        mark.set( "name", "Mark" );
+        mark.set( "age", 17 );
+        ksession.insert(mark);
+
+        Prototype resultFact = prototype( "Result" );
+        Fact result = createMapBasedFact(resultFact);
+        ksession.insert(result);
+
+        ksession.fireAllRules();
+
+        assertEquals("Mark can NOT drink", result.get("value"));
     }
 }
