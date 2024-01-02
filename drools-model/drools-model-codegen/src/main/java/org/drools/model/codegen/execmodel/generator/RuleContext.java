@@ -264,6 +264,10 @@ public class RuleContext {
         return ofNullable( spec );
     }
 
+    public boolean isPrototypeDeclaration(String id) {
+        return getDeclarationById(id).map(DeclarationSpec::isPrototypeDeclaration).orElse(false);
+    }
+
     public DeclarationSpec getDeclarationByIdWithException(String id) {
         return getDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
     }

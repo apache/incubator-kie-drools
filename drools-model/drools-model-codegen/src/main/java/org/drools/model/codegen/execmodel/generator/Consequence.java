@@ -186,11 +186,20 @@ public class Consequence {
         for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
             FieldAccessExpr fieldAccessExpr = assignExpr.getTarget().asFieldAccessExpr();
             String assignedVariable = fieldAccessExpr.getScope().toString();
-            if ( usedDeclarationInRHS.contains( assignedVariable ) ) {
-                MethodCallExpr assignCall = new MethodCallExpr( new NameExpr( assignedVariable ), "set" );
-                assignCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
-                assignCall.addArgument( assignExpr.getValue() );
-                assignExpr.replace(assignCall);
+            if ( usedDeclarationInRHS.contains( assignedVariable ) && context.isPrototypeDeclaration( assignedVariable ) ) {
+                MethodCallExpr setCall = new MethodCallExpr( new NameExpr( assignedVariable ), "set" );
+                setCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
+                setCall.addArgument( assignExpr.getValue() );
+                assignExpr.replace(setCall);
+            }
+        }
+
+        for (FieldAccessExpr fieldAccessExpr : ruleConsequence.findAll(FieldAccessExpr.class)) {
+            String assignedVariable = fieldAccessExpr.getScope().toString();
+            if ( usedDeclarationInRHS.contains( assignedVariable ) && context.isPrototypeDeclaration( assignedVariable ) ) {
+                MethodCallExpr getCall = new MethodCallExpr( new NameExpr( assignedVariable ), "get" );
+                getCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
+                fieldAccessExpr.replace(getCall);
             }
         }
     }

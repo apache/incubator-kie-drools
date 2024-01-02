@@ -37,4 +37,8 @@ public interface DeclarationSpec {
     void setBindingExpr( MethodCallExpr bindingExpr );
 
     void registerOnPackage(PackageModel packageModel, RuleContext context, BlockStmt ruleBlock);
+
+    default boolean isPrototypeDeclaration() {
+        return false;
+    }
 }

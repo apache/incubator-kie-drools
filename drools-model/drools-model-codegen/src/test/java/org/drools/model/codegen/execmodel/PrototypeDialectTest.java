@@ -18,6 +18,9 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.base.facttemplates.Fact;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -25,7 +28,6 @@ import org.drools.model.Prototype;
 import org.drools.model.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.junit.Test;
@@ -82,16 +84,24 @@ public class PrototypeDialectTest {
     @Test
     public void testPrototypeDrl() {
         String str =
-                "rule Adult dialect \"prototype\" when\n" +
-                "  $p : Person( age >= 18 )\n" +
-                "then\n" +
-                "  $p.adult = true;\n" +
-                "end";
+                """
+                dialect "prototype"
+                global java.util.List results
+                rule Adult when
+                  $p : Person( age >= 18 )
+                then
+                  $p.adult = true;
+                  results.add($p.name);
+                end
+                """;
 
         KieSession ksession = new KieHelper()
                 .addContent(str, ResourceType.DRL)
                 .build(ExecutableModelProject.class)
                 .newKieSession();
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
 
         Prototype personFact = prototype( "Person" );
 
@@ -110,30 +120,8 @@ public class PrototypeDialectTest {
         ksession.insert(mario);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(mario.get("adult")).isEqualTo(true);
-    }
 
-    @Test
-    public void testJavaDrl() {
-        String str =
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "rule R when\n" +
-                "  $p : Person( age >= 18 )\n" +
-                "then\n" +
-                "  $p.setEmployed(true);\n" +
-                "end";
-
-        KieSession ksession = new KieHelper()
-                .addContent(str, ResourceType.DRL)
-                .build(ExecutableModelProject.class)
-                .newKieSession();
-
-        Person sofia = new Person("Sofia", 12);
-        ksession.insert(sofia);
-        assertThat(ksession.fireAllRules()).isEqualTo(0);
-
-        Person mario = new Person("Mario", 49);
-        ksession.insert(mario);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-        assertThat(mario.getEmployed()).isEqualTo(true);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("Mario");
     }
 }

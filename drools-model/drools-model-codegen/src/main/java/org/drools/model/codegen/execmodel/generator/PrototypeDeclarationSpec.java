@@ -52,6 +52,11 @@ public class PrototypeDeclarationSpec implements DeclarationSpec {
     }
 
     @Override
+    public boolean isPrototypeDeclaration() {
+        return true;
+    }
+
+    @Override
     public MethodCallExpr getBindingExpr() {
         return bindingExpr;
     }

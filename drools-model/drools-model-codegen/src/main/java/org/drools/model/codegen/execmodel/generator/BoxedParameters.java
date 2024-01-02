@@ -33,7 +33,7 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClass
 
 public class BoxedParameters {
 
-    RuleContext context;
+    private final RuleContext context;
 
     public BoxedParameters(RuleContext context) {
         this.context = context;
