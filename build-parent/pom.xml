@@ -156,9 +156,6 @@
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
-    <!-- In community builds productized is false, in product builds it's true to enable branding changes -->
-    <org.kie.productized>false</org.kie.productized>
-
     <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 
     <!-- This property needs to be defined in all modules that use the packaging 'jar' or 'bundle'. It is
@@ -2286,17 +2283,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>productizedProfile</id>
-      <activation>
-        <property>
-          <name>productized</name>
-        </property>
-      </activation>
-      <properties>
-        <org.kie.productized>true</org.kie.productized>
-      </properties>
     </profile>
     <!--
       Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
