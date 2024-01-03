@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.modelcompiler.facttemplate;
+package org.drools.model.prototype.facttemplate;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +29,7 @@ import org.drools.base.facttemplates.FactTemplateImpl;
 import org.drools.base.facttemplates.FieldTemplate;
 import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.model.Prototype;
+import org.drools.model.prototype.Prototype;
 
 public class FactFactory {
 

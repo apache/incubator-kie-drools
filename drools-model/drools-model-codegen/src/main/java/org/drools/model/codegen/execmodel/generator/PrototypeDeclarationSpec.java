@@ -9,8 +9,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.model.PrototypeVariable;
 import org.drools.model.codegen.execmodel.PackageModel;
+import org.drools.model.prototype.PrototypeVariable;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PROTOTYPE_CALL;

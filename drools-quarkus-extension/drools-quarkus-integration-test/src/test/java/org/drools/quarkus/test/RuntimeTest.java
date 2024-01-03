@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.drools.base.facttemplates.Fact;
-import org.drools.model.Prototype;
+import org.drools.model.prototype.Prototype;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
 
-import static org.drools.model.PrototypeDSL.prototype;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
+import static org.drools.model.prototype.PrototypeDSL.prototype;
+import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedFact;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

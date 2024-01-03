@@ -22,7 +22,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import org.drools.model.PrototypeDSL;
+import org.drools.model.prototype.PrototypeDSL;
 
 public class DslMethodNames {
 

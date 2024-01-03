@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.base.facttemplates.Event;
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeDSL;
-import org.drools.model.PrototypeFact;
+import org.drools.model.prototype.Prototype;
+import org.drools.model.prototype.PrototypeDSL;
+import org.drools.model.prototype.PrototypeFact;
 
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
+import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedEvent;
 
 public class PrototypeUtils {
 

@@ -16,23 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.modelcompiler.facttemplate;
+package org.drools.model.prototype;
 
-import java.util.Map;
+import org.drools.model.Variable;
 
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeFact;
-import org.drools.model.PrototypeFactFactory;
-
-public class PrototypeFactFactoryImpl implements PrototypeFactFactory {
+public interface PrototypeVariable extends Variable<PrototypeFact> {
+    Prototype getPrototype();
 
     @Override
-    public PrototypeFact createMapBasedFact(Prototype prototype) {
-        return (PrototypeFact) FactFactory.createMapBasedFact(prototype);
-    }
-
-    @Override
-    public PrototypeFact createMapBasedFact(Prototype prototype, Map<String, Object> valuesMap) {
-        return (PrototypeFact) FactFactory.createMapBasedFact(prototype, valuesMap);
+    default boolean isPrototype() {
+        return true;
     }
 }

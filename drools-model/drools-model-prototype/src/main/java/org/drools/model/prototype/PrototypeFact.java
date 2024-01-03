@@ -16,28 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.impl;
+package org.drools.model.prototype;
 
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeFact;
-import org.drools.model.PrototypeVariable;
+public interface PrototypeFact {
 
-public class PrototypeVariableImpl extends DeclarationImpl<PrototypeFact> implements PrototypeVariable {
+    boolean has(String name);
 
-    private final Prototype prototype;
+    Object get(String name);
 
-    public PrototypeVariableImpl( Prototype prototype ) {
-        super( PrototypeFact.class );
-        this.prototype = prototype;
-    }
-
-    public PrototypeVariableImpl( Prototype prototype, String name ) {
-        super( PrototypeFact.class, name );
-        this.prototype = prototype;
-    }
-
-    @Override
-    public Prototype getPrototype() {
-        return prototype;
-    }
+    void set(String name, Object value);
 }

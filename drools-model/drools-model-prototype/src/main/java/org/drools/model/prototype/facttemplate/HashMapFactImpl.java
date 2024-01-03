@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.modelcompiler.facttemplate;
+package org.drools.model.prototype.facttemplate;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplate;
-import org.drools.model.PrototypeFact;
+import org.drools.model.prototype.PrototypeFact;
 
 public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
 

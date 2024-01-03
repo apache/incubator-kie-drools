@@ -24,8 +24,8 @@ import java.util.List;
 import org.drools.base.facttemplates.Fact;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeVariable;
+import org.drools.model.prototype.Prototype;
+import org.drools.model.prototype.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.impl.ModelImpl;
@@ -39,10 +39,10 @@ import org.kie.internal.utils.KieHelper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PrototypeDSL.protoPattern;
-import static org.drools.model.PrototypeDSL.prototype;
-import static org.drools.model.PrototypeDSL.variable;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
+import static org.drools.model.prototype.PrototypeDSL.protoPattern;
+import static org.drools.model.prototype.PrototypeDSL.prototype;
+import static org.drools.model.prototype.PrototypeDSL.variable;
+import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedFact;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PrototypeDialectTest {

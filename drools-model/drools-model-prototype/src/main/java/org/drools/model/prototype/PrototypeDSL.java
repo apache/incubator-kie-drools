@@ -16,15 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model;
-
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.impl.PrototypeImpl;
-import org.drools.model.impl.PrototypeVariableImpl;
+package org.drools.model.prototype;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,12 +25,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.drools.model.AlphaIndex;
+import org.drools.model.BetaIndex;
+import org.drools.model.ConstraintOperator;
+import org.drools.model.Index;
+import org.drools.model.PatternDSL;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.temporal.TemporalPredicate;
+import org.drools.model.prototype.impl.PrototypeImpl;
+import org.drools.model.prototype.impl.PrototypeVariableImpl;
+
 import static java.util.UUID.randomUUID;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.reactOn;
-import static org.drools.model.PrototypeExpression.prototypeArrayItem;
-import static org.drools.model.PrototypeExpression.prototypeField;
+import static org.drools.model.prototype.PrototypeExpression.prototypeArrayItem;
+import static org.drools.model.prototype.PrototypeExpression.prototypeField;
 
 public class PrototypeDSL {
 
@@ -286,7 +291,7 @@ public class PrototypeDSL {
         private final PatternDSL.LogicalCombiner combiner;
 
         public PrototypeSubPatternDefImpl(PrototypePatternDefImpl parent, PatternDSL.LogicalCombiner combiner ) {
-            super((PrototypeVariable) parent.variable);
+            super((PrototypeVariable) parent.getFirstVariable());
             this.parent = parent;
             this.combiner = combiner;
         }
@@ -296,7 +301,7 @@ public class PrototypeDSL {
             if (combiner == PatternDSL.LogicalCombiner.OR) {
                 throw new UnsupportedOperationException();
             }
-            parent.items.add( new PatternDSL.CombinedPatternExprItem<>( combiner, this.getItems() ));
+            parent.getItems().add( new PatternDSL.CombinedPatternExprItem<>( combiner, this.getItems() ));
             return parent;
         }
 
@@ -305,7 +310,7 @@ public class PrototypeDSL {
             if (combiner == PatternDSL.LogicalCombiner.AND) {
                 throw new UnsupportedOperationException();
             }
-            parent.items.add( new PatternDSL.CombinedPatternExprItem<>( combiner, this.getItems() ));
+            parent.getItems().add( new PatternDSL.CombinedPatternExprItem<>( combiner, this.getItems() ));
             return parent;
         }
     }

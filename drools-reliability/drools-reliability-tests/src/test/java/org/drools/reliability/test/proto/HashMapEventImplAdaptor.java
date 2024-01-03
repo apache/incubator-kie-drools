@@ -21,14 +21,14 @@ package org.drools.reliability.test.proto;
 import java.util.Map;
 import java.util.UUID;
 
-import org.drools.modelcompiler.facttemplate.HashMapEventImpl;
+import org.drools.model.prototype.facttemplate.HashMapEventImpl;
 import org.drools.reliability.infinispan.proto.ProtoStreamUtils;
 import org.infinispan.protostream.annotations.ProtoAdapter;
 import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.model.prototype.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
 
 /**

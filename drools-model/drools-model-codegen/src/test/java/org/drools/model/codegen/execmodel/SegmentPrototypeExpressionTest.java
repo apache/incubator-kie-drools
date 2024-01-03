@@ -18,16 +18,16 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeExpression;
-import org.drools.model.PrototypeFact;
+import org.drools.model.prototype.Prototype;
+import org.drools.model.prototype.PrototypeExpression;
+import org.drools.model.prototype.PrototypeFact;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.model.PrototypeDSL.prototype;
-import static org.drools.model.PrototypeExpression.fixedValue;
-import static org.drools.model.PrototypeExpression.prototypeField;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
+import static org.drools.model.prototype.PrototypeDSL.prototype;
+import static org.drools.model.prototype.PrototypeExpression.fixedValue;
+import static org.drools.model.prototype.PrototypeExpression.prototypeField;
+import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedFact;
 
 public class SegmentPrototypeExpressionTest {
 

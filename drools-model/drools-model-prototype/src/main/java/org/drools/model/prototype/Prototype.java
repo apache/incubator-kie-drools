@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model;
+package org.drools.model.prototype;
 
 import java.util.Collection;
 import java.util.function.Function;
+
+import org.drools.model.NamedModelItem;
 
 public interface Prototype extends NamedModelItem {
 

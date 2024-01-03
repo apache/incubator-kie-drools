@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.impl;
+package org.drools.model.prototype.impl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,8 +26,8 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeFact;
+import org.drools.model.prototype.Prototype;
+import org.drools.model.prototype.PrototypeFact;
 
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 

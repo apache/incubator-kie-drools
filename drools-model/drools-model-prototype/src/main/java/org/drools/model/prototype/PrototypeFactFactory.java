@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model;
+package org.drools.model.prototype;
 
 import java.util.Map;
 import java.util.ServiceLoader;
