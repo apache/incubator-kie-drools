@@ -19,25 +19,21 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>drools-impact-analysis</artifactId>
-    <groupId>org.drools</groupId>
-    <version>999-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+<configuration>
 
-  <artifactId>drools-impact-analysis-graph</artifactId>
-  <packaging>pom</packaging>
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %class{36} %msg%n</pattern>
+    </encoder>
+  </appender>
 
-  <name>Drools :: Impact Analysis Graph</name>
+  <logger name="org.kie" level="warn"/>
+  <logger name="org.drools" level="warn"/>
+<!--   <logger name="org.drools.impact.analysis.parser" level="debug"/> -->
+  <logger name="org.drools.impact.analysis" level="info"/>
 
-  <modules>
-    <module>drools-impact-analysis-graph-common</module>
-    <module>drools-impact-analysis-graph-graphviz</module>
-    <module>drools-impact-analysis-graph-json</module>
-  </modules>
+  <root level="warn">
+    <appender-ref ref="consoleAppender" />
+  </root>
 
-</project>
+</configuration>
