@@ -28,8 +28,8 @@ import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-import static org.drools.model.prototype.facttemplate.FactFactory.prototypeToFactTemplate;
-import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
+import static org.drools.model.prototype.impl.FactFactory.prototypeToFactTemplate;
+import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 
 /**
  * This adopter resides in test module, because main drools-reliability-infinispan module does not have dependency on drools-model-compiler module.
@@ -40,7 +40,7 @@ public class HashMapEventImplAdaptor {
     @ProtoFactory
     HashMapEventImpl create(String uuid, String factTemplate, AnySchema.Any valuesMapObject, long timestamp, long expiration) {
         Map<String, Object> valuesMap = (Map<String, Object>) ProtoStreamUtils.fromAnySchema(valuesMapObject);
-        return new HashMapEventImpl(UUID.fromString(uuid), prototypeToFactTemplate(getPrototype(factTemplate)), valuesMap, timestamp, expiration);
+        return new HashMapEventImpl(UUID.fromString(uuid), prototypeToFactTemplate(getPrototypeEvent(factTemplate)), valuesMap, timestamp, expiration);
     }
 
     @ProtoField(1)

@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype;
+package org.kie.api.prototype;
 
-public interface PrototypeFact {
+import java.util.concurrent.TimeUnit;
 
-    boolean has(String name);
+public interface PrototypeEventInstance extends PrototypeFactInstance {
 
-    Object get(String name);
+    long getTimestamp();
 
-    void set(String name, Object value);
+    long getExpiration();
+
+    PrototypeEventInstance withExpiration( long value, TimeUnit unit );
 }

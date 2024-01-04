@@ -16,41 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype;
+package org.kie.api.prototype;
 
 import java.util.Collection;
 import java.util.function.Function;
 
-import org.drools.model.NamedModelItem;
+public interface Prototype {
+    String getPackage();
+    String getName();
 
-public interface Prototype extends NamedModelItem {
-
-    Object UNDEFINED_VALUE = UndefinedValue.INSTANCE;
+    default String getFullName() {
+        return getPackage() + "." + getName();
+    }
 
     Collection<String> getFieldNames();
-
     Field getField(String name);
 
-    int getFieldIndex(final String name);
+    int getFieldIndex(String name);
 
-    default Function<PrototypeFact, Object> getFieldValueExtractor(String name) {
+    default Function<PrototypeFactInstance, Object> getFieldValueExtractor(String name) {
         Field field = getField(name);
         return field != null ? field.getExtractor() : p -> p.has(name) ? p.get(name) : UNDEFINED_VALUE;
     }
 
     boolean isEvent();
 
-    Prototype setAsEvent(boolean event);
-
     interface Field {
         String getName();
 
-        Function<PrototypeFact, Object> getExtractor();
+        Function<PrototypeFactInstance, Object> getExtractor();
 
         boolean isTyped();
 
         Class<?> getType();
     }
+
+    Object UNDEFINED_VALUE = UndefinedValue.INSTANCE;
 
     class UndefinedValue {
         static final UndefinedValue INSTANCE = new UndefinedValue();

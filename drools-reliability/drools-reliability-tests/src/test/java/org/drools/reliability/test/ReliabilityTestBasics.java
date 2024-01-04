@@ -18,7 +18,14 @@
  */
 package org.drools.reliability.test;
 
-import org.drools.base.facttemplates.Event;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import org.drools.core.ClassObjectFilter;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.model.Model;
@@ -41,6 +48,7 @@ import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.Option;
 import org.kie.api.io.ResourceType;
+import org.kie.api.prototype.PrototypeEventInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.KieSessionOption;
@@ -51,14 +59,6 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.test.domain.Person;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MARSHALLER;
 import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.INFINISPAN_STORAGE_MODE;
@@ -502,26 +502,26 @@ public abstract class ReliabilityTestBasics {
     }
 
     private void insertSensuEvent(String host, String type) {
-        Event sensu = createEvent();
+        PrototypeEventInstance sensu = createEvent();
         sensu.set("sensu.host", host);
         sensu.set("sensu.process.type", type);
         sessions.get(0).insert(sensu);
     }
 
     protected void insertMatchingSensuProcessStatusEvent(String status) {
-        Event sensu = createEvent();
+        PrototypeEventInstance sensu = createEvent();
         sensu.set("sensu.process.status", status);
         sessions.get(0).insert(sensu);
     }
 
     protected void insertMatchingPingTimeoutEvent(boolean timeout) {
-        Event ping = createEvent();
+        PrototypeEventInstance ping = createEvent();
         ping.set("ping.timeout", timeout);
         sessions.get(0).insert(ping);
     }
 
     protected void insertMatchingSensuStoragePercentEvent(int percent) {
-        Event sensu = createEvent();
+        PrototypeEventInstance sensu = createEvent();
         sensu.set("sensu.storage.percent", percent);
         sessions.get(0).insert(sensu);
     }

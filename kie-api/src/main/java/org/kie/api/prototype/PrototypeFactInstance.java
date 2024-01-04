@@ -16,29 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype.impl;
+package org.kie.api.prototype;
 
-import org.drools.model.impl.DeclarationImpl;
-import org.drools.model.prototype.PrototypeVariable;
-import org.kie.api.prototype.Prototype;
-import org.kie.api.prototype.PrototypeFactInstance;
+import java.util.Map;
 
-public class PrototypeVariableImpl extends DeclarationImpl<PrototypeFactInstance> implements PrototypeVariable {
+public interface PrototypeFactInstance {
+    Object get(String name);
 
-    private final Prototype prototype;
+    void set(String name, Object value);
 
-    public PrototypeVariableImpl( Prototype prototype ) {
-        super( PrototypeFactInstance.class );
-        this.prototype = prototype;
-    }
+    boolean has(String name);
 
-    public PrototypeVariableImpl( Prototype prototype, String name ) {
-        super( PrototypeFactInstance.class, name );
-        this.prototype = prototype;
-    }
-
-    @Override
-    public Prototype getPrototype() {
-        return prototype;
-    }
+    Map<String, Object> asMap();
 }

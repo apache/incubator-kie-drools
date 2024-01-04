@@ -25,9 +25,9 @@ import java.util.UUID;
 
 import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplate;
-import org.drools.model.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
 
-public class HashMapFactImpl implements Fact, PrototypeFact, Serializable {
+public class HashMapFactImpl implements Fact, PrototypeFactInstance, Serializable {
 
     protected final UUID uuid;
 

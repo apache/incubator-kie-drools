@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-import org.drools.base.facttemplates.Event;
-import org.drools.base.facttemplates.Fact;
 import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.core.ClockType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -48,15 +46,18 @@ import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.functions.Function1;
 import org.drools.model.impl.ModelImpl;
-import org.drools.model.prototype.Prototype;
 import org.drools.model.prototype.PrototypeExpression;
-import org.drools.model.prototype.PrototypeFact;
 import org.drools.model.prototype.PrototypeVariable;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeEventInstance;
+import org.kie.api.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -81,15 +82,12 @@ import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
-import static org.drools.model.prototype.PrototypeDSL.field;
 import static org.drools.model.prototype.PrototypeDSL.protoPattern;
-import static org.drools.model.prototype.PrototypeDSL.prototype;
 import static org.drools.model.prototype.PrototypeDSL.variable;
 import static org.drools.model.prototype.PrototypeExpression.fixedValue;
 import static org.drools.model.prototype.PrototypeExpression.prototypeField;
 import static org.drools.model.prototype.PrototypeExpression.thisPrototype;
-import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedEvent;
-import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedFact;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 public class FactTemplateTest {
 
@@ -108,7 +106,7 @@ public class FactTemplateTest {
     private static final ConstraintOperator existsFieldOp = new ConstraintOperator() {
         @Override
         public <T, V> BiPredicate<T, V> asPredicate() {
-            return (t,v) -> ((PrototypeFact) t).has((String) v);
+            return (t,v) -> ((PrototypeFactInstance) t).has((String) v);
         }
 
         @Override
@@ -119,15 +117,15 @@ public class FactTemplateTest {
 
     @Test
     public void testAlphaWithPropertyReactivity() {
-        testAlpha(prototype( "org.drools.Person", field("name", String.class), field("age", Integer.class) ), true);
+        testAlpha(prototype( "org.drools.Person").withField("name", String.class).withField("age", Integer.class).asFact(), true);
     }
 
     @Test
     public void testAlphaWithoutPropertyReactivity() {
-        testAlpha(prototype( "org.drools.Person" ), false);
+        testAlpha(prototype( "org.drools.Person" ).asFact(), false);
     }
 
-    private void testAlpha(Prototype personFact, boolean hasFields) {
+    private void testAlpha(PrototypeFact personFact, boolean hasFields) {
         PrototypeVariable markV = variable(personFact);
 
         Rule rule = rule( "alpha" )
@@ -146,7 +144,7 @@ public class FactTemplateTest {
 
         assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
 
-        Fact mark = createMapBasedFact(personFact);
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
 
@@ -169,7 +167,7 @@ public class FactTemplateTest {
     @Test
     public void testExpressionAlphaConstraint() {
         // DROOLS-7075
-        Prototype testPrototype = prototype( "test" );
+        PrototypeFact testPrototype = prototype( "test" ).asFact();
         PrototypeVariable testV = variable(testPrototype);
 
         Rule rule = rule( "alpha" )
@@ -186,7 +184,7 @@ public class FactTemplateTest {
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
         KieSession ksession = kieBase.newKieSession();
 
-        Fact testFact = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact = testPrototype.newInstance();
         testFact.set( "fieldA", 12 );
         testFact.set( "fieldB", 8 );
 
@@ -201,7 +199,7 @@ public class FactTemplateTest {
     @Test
     public void testExistsField() {
         // DROOLS-7075
-        Prototype testPrototype = prototype( "test" );
+        PrototypeFact testPrototype = prototype( "test" ).asFact();
         PrototypeVariable testV = variable(testPrototype);
 
         Rule rule = rule( "alpha" )
@@ -217,7 +215,7 @@ public class FactTemplateTest {
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
         KieSession ksession = kieBase.newKieSession();
 
-        Fact testFact = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact = testPrototype.newInstance();
         testFact.set( "fieldB", 8 );
 
         FactHandle fh = ksession.insert( testFact );
@@ -230,7 +228,7 @@ public class FactTemplateTest {
 
     @Test
     public void testNotNull() {
-        Prototype personFact = prototype( "org.drools.Person" );
+        PrototypeFact personFact = prototype( "org.drools.Person" ).asFact();
         PrototypeVariable markV = variable(personFact);
 
         Rule rule = rule("alpha")
@@ -247,12 +245,12 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact unknown = createMapBasedFact(personFact);
+        PrototypeFactInstance unknown = personFact.newInstance();
         unknown.set( "age", 40 );
         ksession.insert( unknown );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact mark = createMapBasedFact(personFact);
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
         ksession.insert( mark );
@@ -263,7 +261,7 @@ public class FactTemplateTest {
     public void testBeta() {
         Result result = new Result();
 
-        Prototype personFact = prototype( "org.drools.Person", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.Person").withField("name").withField("age").asFact();
 
         PrototypeVariable markV = variable( personFact );
         PrototypeVariable olderV = variable( personFact );
@@ -285,15 +283,15 @@ public class FactTemplateTest {
 
         assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
 
-        Fact mark = createMapBasedFact( personFact );
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 37 );
 
-        Fact edson = createMapBasedFact( personFact );
+        PrototypeFactInstance edson = personFact.newInstance();
         edson.set( "name", "Edson" );
         edson.set( "age", 35 );
 
-        Fact mario = createMapBasedFact( personFact );
+        PrototypeFactInstance mario = personFact.newInstance();
         mario.set( "name", "Mario" );
         mario.set( "age", 40 );
 
@@ -319,7 +317,7 @@ public class FactTemplateTest {
     @Test
     public void testExpressionBetaConstraint() {
         // DROOLS-7075
-        Prototype testPrototype = prototype( "test" );
+        PrototypeFact testPrototype = prototype( "test" ).asFact();
         PrototypeVariable test1V = variable(testPrototype);
         PrototypeVariable test2V = variable(testPrototype);
 
@@ -338,11 +336,11 @@ public class FactTemplateTest {
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
         KieSession ksession = kieBase.newKieSession();
 
-        Fact testFact1 = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact1 = testPrototype.newInstance();
         testFact1.set( "fieldA", 12 );
         FactHandle fh1 = ksession.insert( testFact1 );
 
-        Fact testFact2 = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact2 = testPrototype.newInstance();
         testFact2.set( "fieldB", 8 );
         FactHandle fh2 = ksession.insert( testFact2 );
 
@@ -355,7 +353,7 @@ public class FactTemplateTest {
 
     @Test
     public void testBetaMixingClassAndFact() {
-        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.FactPerson").withField("name").withField("age").asFact();
 
         PrototypeVariable markV = variable( personFact );
 
@@ -382,8 +380,8 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
-        
-        Fact mark = createMapBasedFact( personFact );
+
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 37 );
 
@@ -414,7 +412,7 @@ public class FactTemplateTest {
 
     @Test
     public void testIndexedAlpha() {
-        Prototype personFact = prototype( "org.drools.Person", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.Person").withField("name").withField("age").asFact();
 
         PrototypeVariable personV = variable( personFact );
 
@@ -453,7 +451,7 @@ public class FactTemplateTest {
         ObjectTypeNode otn = getFactTemplateObjectTypeNode( ksession, "Person" );
         assertThat(((CompositeObjectSinkAdapter) otn.getObjectSinkPropagator()).getHashedSinkMap().size()).isEqualTo(3);
 
-        Fact mark = createMapBasedFact( personFact );
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
 
@@ -467,7 +465,7 @@ public class FactTemplateTest {
 
     @Test
     public void testAccumulate() {
-        Prototype personFact = prototype( "org.drools.Person", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.Person").withField("name").withField("age").asFact();
 
         PrototypeVariable person = variable( personFact );
 
@@ -490,17 +488,17 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact mark = createMapBasedFact( personFact );
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 37 );
         ksession.insert( mark );
 
-        Fact edson = createMapBasedFact( personFact );
+        PrototypeFactInstance edson = personFact.newInstance();
         edson.set( "name", "Edson" );
         edson.set( "age", 35 );
         ksession.insert( edson );
 
-        Fact mario = createMapBasedFact( personFact );
+        PrototypeFactInstance mario = personFact.newInstance();
         mario.set( "name", "Mario" );
         mario.set( "age", 40 );
         ksession.insert( mario );
@@ -511,8 +509,8 @@ public class FactTemplateTest {
 
     @Test
     public void testQuery() {
-        Prototype customerFact = prototype( "customer" );
-        Prototype addressFact = prototype( "address" );
+        PrototypeFact customerFact = prototype( "customer" ).asFact();
+        PrototypeFact addressFact = prototype( "address" ).asFact();
 
         PrototypeVariable customerV = variable( customerFact, "c" );
         PrototypeVariable addressV = variable( addressFact, "a" );
@@ -529,14 +527,14 @@ public class FactTemplateTest {
         MaterializedViewChangedEventListener listener = new MaterializedViewChangedEventListener();
         ksession.openLiveQuery("Q0", new Object[0], listener);
 
-        Fact address1 = createMapBasedFact( addressFact );
+        PrototypeFactInstance address1 = addressFact.newInstance();
         address1.set("id", "100001");
         address1.set("customer_id", "1001");
         address1.set("street", "42 Main Street");
         FactHandle fhA1 = ksession.insert( address1 );
         ksession.fireAllRules();
 
-        Fact customer1 = createMapBasedFact( customerFact );
+        PrototypeFactInstance customer1 = customerFact.newInstance();
         customer1.set("id", "1001");
         customer1.set("first_name", "Sally");
         ksession.insert( customer1 );
@@ -546,7 +544,7 @@ public class FactTemplateTest {
         assertThat(listener.updates).isEqualTo(0);
         assertThat(listener.deletes).isEqualTo(0);
 
-        Fact address2 = createMapBasedFact( addressFact );
+        PrototypeFactInstance address2 = addressFact.newInstance();
         address2.set("id", "100002");
         address2.set("customer_id", "1001");
         address2.set("street", "11 Post Dr.");
@@ -592,7 +590,7 @@ public class FactTemplateTest {
 
     @Test
     public void testRetract() {
-        Prototype personFact = prototype( "org.drools.Person" );
+        PrototypeFact personFact = prototype( "org.drools.Person" ).asFact();
         PrototypeVariable markV = variable(personFact, "m");
 
         Rule rule = rule( "alpha" )
@@ -610,7 +608,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Fact mark = createMapBasedFact(personFact);
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
 
@@ -624,7 +622,7 @@ public class FactTemplateTest {
     @Test
     public void testUndefinedOnAlpha() {
         // DROOLS-7192
-        Prototype prototype = prototype( "org.X" );
+        PrototypeFact prototype = prototype( "org.X" ).asFact();
 
         PrototypeVariable var1 = variable( prototype );
 
@@ -639,19 +637,19 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact f1 = createMapBasedFact( prototype );
+        PrototypeFactInstance f1 = prototype.newInstance();
         f1.set( "j", 2 );
 
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f2 = createMapBasedFact( prototype );
+        PrototypeFactInstance f2 = prototype.newInstance();
         f2.set( "i", 3 );
 
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f3 = createMapBasedFact( prototype );
+        PrototypeFactInstance f3 = prototype.newInstance();
         f3.set( "i", null );
 
         ksession.insert(f3);
@@ -661,7 +659,7 @@ public class FactTemplateTest {
     @Test
     public void testUndefinedOnBeta() {
         // DROOLS-7192
-        Prototype prototype = prototype( "org.X" );
+        PrototypeFact prototype = prototype( "org.X" ).asFact();
 
         PrototypeVariable var1 = variable( prototype );
         PrototypeVariable var2 = variable( prototype );
@@ -679,19 +677,19 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact f1 = createMapBasedFact( prototype );
+        PrototypeFactInstance f1 = prototype.newInstance();
         f1.set( "custom.expected_index", 2 );
 
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f2 = createMapBasedFact( prototype );
+        PrototypeFactInstance f2 = prototype.newInstance();
         f2.set( "i", 3 );
 
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f3 = createMapBasedFact( prototype );
+        PrototypeFactInstance f3 = prototype.newInstance();
         f3.set( "i", 2 );
 
         ksession.insert(f3);
@@ -701,7 +699,7 @@ public class FactTemplateTest {
     @Test
     public void testArrayAccess() {
         // DROOLS-7194
-        Prototype prototype = prototype( "org.X" );
+        PrototypeFact prototype = prototype( "org.X" ).asFact();
 
         PrototypeVariable var1 = variable( prototype );
 
@@ -716,17 +714,17 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact f1 = createMapBasedFact( prototype );
+        PrototypeFactInstance f1 = prototype.newInstance();
         f1.set("i", List.of(3));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f2 = createMapBasedFact( prototype );
+        PrototypeFactInstance f2 = prototype.newInstance();
         f2.set( "i", Arrays.asList(1, 3, 5) );
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Fact f3 = createMapBasedFact( prototype );
+        PrototypeFactInstance f3 = prototype.newInstance();
         f3.set( "i", new int[] {1, 3, 5} );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -735,7 +733,7 @@ public class FactTemplateTest {
     @Test
     public void testArrayAccessWithOr() {
         // DROOLS-7194
-        Prototype prototype = prototype( "org.X" );
+        PrototypeFact prototype = prototype( "org.X" ).asFact();
 
         PrototypeVariable var1 = variable( prototype );
 
@@ -750,17 +748,17 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact f1 = createMapBasedFact( prototype );
+        PrototypeFactInstance f1 = prototype.newInstance();
         f1.set("i", List.of(3));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f2 = createMapBasedFact( prototype );
+        PrototypeFactInstance f2 = prototype.newInstance();
         f2.set( "i", Arrays.asList(1, 3, 5) );
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Fact f3 = createMapBasedFact( prototype );
+        PrototypeFactInstance f3 = prototype.newInstance();
         f3.set( "i", new int[] {1, 5, 3} );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -769,7 +767,7 @@ public class FactTemplateTest {
     @Test
     public void testInnerArrayAccess() {
         // DROOLS-7194
-        Prototype prototype = prototype( "org.X" );
+        PrototypeFact prototype = prototype( "org.X" ).asFact();
 
         PrototypeVariable var1 = variable( prototype );
 
@@ -784,17 +782,17 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact f1 = createMapBasedFact( prototype );
+        PrototypeFactInstance f1 = prototype.newInstance();
         f1.set("i", List.of(Map.of("a", 3)));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f2 = createMapBasedFact( prototype );
+        PrototypeFactInstance f2 = prototype.newInstance();
         f2.set( "i", Arrays.asList(Map.of("a", 1), Map.of("b", 3), Map.of("c", 5)) );
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact f3 = createMapBasedFact( prototype );
+        PrototypeFactInstance f3 = prototype.newInstance();
         f3.set( "i", Arrays.asList(Map.of("c", 1), Map.of("a", 3), Map.of("b", 5)) );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -805,7 +803,7 @@ public class FactTemplateTest {
         // DROOLS-7223
         Result result = new Result();
 
-        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeEvent stockTickPrototype = prototype("org.drools.StockTick" ).asEvent();
 
         PrototypeVariable tick1Var = variable( stockTickPrototype );
         PrototypeVariable tick2Var = variable( stockTickPrototype );
@@ -829,7 +827,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession(conf, null);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
         tick1.set( "name", "RedHat" );
         tick1.set( "value", 10 );
         ksession.insert(tick1);
@@ -837,7 +835,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
-        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
         tick2.set( "name", "RedHat" );
         tick2.set( "value", 15 );
         ksession.insert(tick2);
@@ -845,13 +843,13 @@ public class FactTemplateTest {
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
-        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
         tick3.set( "name", "test" );
         tick3.set( "value", 12 );
         ksession.insert(tick3);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Event tick4 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick4 = stockTickPrototype.newInstance();
         tick4.set( "name", "RedHat" );
         tick4.set( "value", 9 );
         ksession.insert(tick4);
@@ -859,7 +857,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
-        Event tick5 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick5 = stockTickPrototype.newInstance();
         tick5.set( "name", "RedHat" );
         tick5.set( "value", 14 );
         ksession.insert(tick5);
@@ -869,7 +867,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 6, TimeUnit.SECONDS );
 
-        Event tick6 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick6 = stockTickPrototype.newInstance();
         tick6.set( "name", "RedHat" );
         tick6.set( "value", 13 );
         ksession.insert(tick6);
@@ -882,10 +880,10 @@ public class FactTemplateTest {
     public void testUniqueEventInTimeWindow() {
         Result result = new Result();
 
-        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeEvent stockTickPrototype = prototype( "org.drools.StockTick" ).asEvent();
         PrototypeVariable tick1Var = variable( stockTickPrototype );
 
-        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeEvent controlPrototype = prototype( "org.drools.ControlEvent" ).asEvent();
         PrototypeVariable controlVar = variable( controlPrototype );
 
         Rule rule = rule( "stock" )
@@ -893,7 +891,7 @@ public class FactTemplateTest {
                         protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
                         not( protoPattern(controlVar).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ) ),
                         on(tick1Var).execute((drools, t1) -> {
-                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
                             controlEvent.set( "name", t1.get( "name" ) );
                             drools.insert(controlEvent);
                             result.setValue( t1.get( "name" ) + " worth " + t1.get( "value" ));
@@ -916,7 +914,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession(conf, null);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
         tick1.set( "name", "RedHat" );
         tick1.set( "value", 10 );
         ksession.insert(tick1);
@@ -927,13 +925,13 @@ public class FactTemplateTest {
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
-        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
         tick2.set( "name", "RedHat" );
         tick2.set( "value", 12 );
         ksession.insert(tick2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        Event tickTest = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tickTest = stockTickPrototype.newInstance();
         tickTest.set( "name", "test" );
         tickTest.set( "value", 42 );
         FactHandle fhTest = ksession.insert(tickTest);
@@ -944,7 +942,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
-        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
         tick3.set( "name", "RedHat" );
         tick3.set( "value", 14 );
         ksession.insert(tick3);
@@ -953,7 +951,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 5, TimeUnit.SECONDS );
 
-        Event tick4 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick4 = stockTickPrototype.newInstance();
         tick4.set( "name", "RedHat" );
         tick4.set( "value", 15 );
         ksession.insert(tick4);
@@ -967,7 +965,7 @@ public class FactTemplateTest {
         // DROOLS-7244
         Result result = new Result();
 
-        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeEvent controlPrototype = prototype( "org.drools.ControlEvent" ).asEvent();
         PrototypeVariable controlVar1 = variable( controlPrototype );
         PrototypeVariable controlVar2 = variable( controlPrototype );
 
@@ -990,7 +988,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession(conf, null);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        Event tick1 = createMapBasedEvent( controlPrototype );
+        PrototypeEventInstance tick1 = controlPrototype.newInstance();
         tick1.set( "name", "start_R" );
         ksession.insert(tick1);
 
@@ -1011,10 +1009,10 @@ public class FactTemplateTest {
         // DROOLS-7244
         Result result = new Result();
 
-        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeEvent stockTickPrototype = prototype( "org.drools.StockTick" ).asEvent();
         PrototypeVariable tick1Var = variable( stockTickPrototype );
 
-        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeEvent controlPrototype = prototype( "org.drools.ControlEvent" ).asEvent();
         PrototypeVariable controlVar1 = variable( controlPrototype );
         PrototypeVariable controlVar2 = variable( controlPrototype );
 
@@ -1023,7 +1021,7 @@ public class FactTemplateTest {
                         protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 10 ),
                         not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "R1" ) ),
                         on(tick1Var).execute((drools, t1) -> {
-                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
                             controlEvent.set( "name", "R1" );
                             controlEvent.set( "event", t1 );
                             System.out.println("insert: " + controlEvent);
@@ -1036,7 +1034,7 @@ public class FactTemplateTest {
                         protoPattern(tick1Var).expr( "value", Index.ConstraintType.LESS_THAN, 5 ),
                         not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "R2" ) ),
                         on(tick1Var).execute((drools, t1) -> {
-                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
                             controlEvent.set( "name", "R2" );
                             controlEvent.set( "event", t1 );
                             System.out.println("insert: " + controlEvent);
@@ -1053,7 +1051,7 @@ public class FactTemplateTest {
                                 accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(resultCount)),
                         pattern(resultCount).expr(count -> count > 0),
                         on(resultCount).execute((drools, count) -> {
-                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
                             controlEvent.set( "name", "start_R" );
                             System.out.println("insert: " + controlEvent);
                             drools.insert(controlEvent);
@@ -1067,7 +1065,7 @@ public class FactTemplateTest {
                                 accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(resultCount)),
                         pattern(resultCount).expr(count -> count == 2),
                         on(resultCount).execute((drools, count) -> {
-                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
                             controlEvent.set( "name", "end_R" );
                             System.out.println("insert: " + controlEvent);
                             drools.insert(controlEvent);
@@ -1114,7 +1112,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession(conf, null);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
         tick1.set( "name", "RedHat" );
         tick1.set( "value", 7 );
         ksession.insert(tick1);
@@ -1124,7 +1122,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 1, TimeUnit.SECONDS );
 
-        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
         tick2.set( "name", "RedHat" );
         tick2.set( "value", 17 );
         ksession.insert(tick2);
@@ -1134,7 +1132,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 9, TimeUnit.SECONDS );
 
-        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
         tick3.set( "name", "RedHat" );
         tick3.set( "value", 3 );
         ksession.insert(tick3);
@@ -1144,7 +1142,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 5, TimeUnit.SECONDS );
 
-        Event tick4 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick4 = stockTickPrototype.newInstance();
         tick4.set( "name", "RedHat" );
         tick4.set( "value", 2 );
         ksession.insert(tick4);
@@ -1166,7 +1164,7 @@ public class FactTemplateTest {
     @Test
     public void testListContains() {
         // DROOLS-7259
-        Prototype prototype = prototype( "org.X" );
+        PrototypeFact prototype = prototype( "org.X" ).asFact();
         PrototypeVariable prototypeV = variable(prototype);
 
         Rule rule = rule( "alpha" )
@@ -1183,14 +1181,14 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact fact1 = createMapBasedFact(prototype);
+        PrototypeFactInstance fact1 = prototype.newInstance();
         fact1.set( "name", "fact1" );
         fact1.set( "ids", Arrays.asList(2, 4) );
         ksession.insert(fact1);
 
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact fact2 = createMapBasedFact(prototype);
+        PrototypeFactInstance fact2 = prototype.newInstance();
         fact2.set( "name", "fact2" );
         fact2.set( "ids", Arrays.asList(1, 3, 5) );
         ksession.insert(fact2);
@@ -1205,10 +1203,10 @@ public class FactTemplateTest {
     public void testCollectUniqueEventsAfterTimeWindow() {
         Result result = new Result();
 
-        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeEvent stockTickPrototype = prototype( "org.drools.StockTick" ).asEvent();
         PrototypeVariable tick1Var = variable( stockTickPrototype );
 
-        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeEvent controlPrototype = prototype( "org.drools.ControlEvent" ).asEvent();
         PrototypeVariable controlVar1 = variable( controlPrototype );
         PrototypeVariable controlVar2 = variable( controlPrototype );
         PrototypeVariable controlVar3 = variable( controlPrototype );
@@ -1220,7 +1218,7 @@ public class FactTemplateTest {
                         protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
                         not( protoPattern(controlVar1).expr( "rule_name", Index.ConstraintType.EQUAL, "stock" ).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ) ),
                         on(tick1Var).execute((drools, t1) -> {
-                            Event controlEvent = createMapBasedEvent( controlPrototype );
+                            PrototypeEventInstance controlEvent = controlPrototype.newInstance();
                             controlEvent.set( "name", t1.get( "name" ) );
                             controlEvent.set( "event", t1 );
                             controlEvent.set( "rule_name", "stock" );
@@ -1234,11 +1232,11 @@ public class FactTemplateTest {
                         protoPattern(controlVar1).expr( "rule_name", Index.ConstraintType.EQUAL, "stock" ),
                         not( protoPattern(controlVar2).expr( "end_once_after", Index.ConstraintType.EQUAL, "stock" ) ),
                         on(controlVar1).execute((drools, c1) -> {
-                            Event startControlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            PrototypeEventInstance startControlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
                             startControlEvent.set( "start_once_after", c1.get( "rule_name" ) );
                             drools.insert(startControlEvent);
 
-                            Event endControlEvent = createMapBasedEvent( controlPrototype );
+                            PrototypeEventInstance endControlEvent = controlPrototype.newInstance();
                             endControlEvent.set( "end_once_after", c1.get( "rule_name" ) );
                             drools.insert(endControlEvent);
                         })
@@ -1252,7 +1250,7 @@ public class FactTemplateTest {
                                 accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction::new, controlVar3).as(resultsVar)),
                         on(controlVar1, resultsVar).execute((drools, c1, results) -> {
                             drools.delete(c1);
-                            result.setValue(results.stream().peek(drools::delete).map(r -> ((PrototypeFact) r).get("event")).collect(Collectors.toList()));
+                            result.setValue(results.stream().peek(drools::delete).map(r -> ((PrototypeFactInstance) r).get("event")).collect(Collectors.toList()));
                         })
                 );
 
@@ -1272,7 +1270,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession(conf, null);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
         tick1.set( "name", "RedHat" );
         tick1.set( "value", 10 );
         ksession.insert(tick1);
@@ -1280,14 +1278,14 @@ public class FactTemplateTest {
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
-        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
         tick2.set( "name", "RedHat" );
         tick2.set( "value", 12 );
         ksession.insert(tick2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(result.getValue()).isNull();
 
-        Event tickTest = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tickTest = stockTickPrototype.newInstance();
         tickTest.set( "name", "test" );
         tickTest.set( "value", 42 );
         ksession.insert(tickTest);
@@ -1296,7 +1294,7 @@ public class FactTemplateTest {
 
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
-        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
         tick3.set( "name", "RedHat" );
         tick3.set( "value", 14 );
         ksession.insert(tick3);
@@ -1307,9 +1305,9 @@ public class FactTemplateTest {
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        List<PrototypeFact> events = (List<PrototypeFact>) result.getValue();
+        List<PrototypeFactInstance> events = (List<PrototypeFactInstance>) result.getValue();
         assertThat(events).hasSize(2);
-        for (PrototypeFact event : events) {
+        for (PrototypeFactInstance event : events) {
             if (event.get("name").equals("RedHat")) {
                 assertThat(event.get("value")).isEqualTo(10);
             } else if (event.get("name").equals("test")) {
@@ -1322,7 +1320,7 @@ public class FactTemplateTest {
 
     @Test
     public void testAddOnDifferentPrototypes() {
-        Prototype testPrototype = prototype( "test" );
+        PrototypeFact testPrototype = prototype( "test" ).asFact();
         PrototypeVariable test1V = variable(testPrototype);
         PrototypeVariable test2V = variable(testPrototype);
         PrototypeVariable test3V = variable(testPrototype);
@@ -1343,22 +1341,22 @@ public class FactTemplateTest {
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
         KieSession ksession = kieBase.newKieSession();
 
-        Fact testFact1 = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact1 = testPrototype.newInstance();
         testFact1.set( "i", 1 );
         ksession.insert(testFact1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact testFact2 = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact2 = testPrototype.newInstance();
         testFact2.set( "i", 2 );
         ksession.insert(testFact2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact testFact3 = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact3 = testPrototype.newInstance();
         testFact3.set( "i", 3 );
         ksession.insert(testFact3);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        Fact testFact4 = createMapBasedFact(testPrototype);
+        PrototypeFactInstance testFact4 = testPrototype.newInstance();
         testFact4.set( "i", 4 );
         ksession.insert(testFact4);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -1367,7 +1365,7 @@ public class FactTemplateTest {
     @Test
     public void testComparisonWithDifferentNumericTypes() {
         // DROOLS-7332
-        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.FactPerson" ).withField("name").withField("age").asFact();
 
         PrototypeVariable markV = variable( personFact );
 
@@ -1385,7 +1383,7 @@ public class FactTemplateTest {
 
         assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
 
-        Fact mark = createMapBasedFact( personFact );
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 18 );
 
@@ -1400,7 +1398,7 @@ public class FactTemplateTest {
     @Test
     public void testEqualityWithDifferentNumericTypes() {
         // DROOLS-7332
-        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.FactPerson" ).withField("name").withField("age").asFact();
 
         PrototypeVariable markV = variable( personFact );
 
@@ -1418,7 +1416,7 @@ public class FactTemplateTest {
 
         assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
 
-        Fact mark = createMapBasedFact( personFact );
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 18 );
 
@@ -1433,7 +1431,7 @@ public class FactTemplateTest {
     @Test
     public void bigDecimalEqualityWithDifferentScale_shouldBeEqual() {
         // DROOLS-7332
-        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.FactPerson" ).withField("name").withField("age").asFact();
 
         PrototypeVariable markV = variable( personFact );
 
@@ -1451,7 +1449,7 @@ public class FactTemplateTest {
 
         assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
 
-        Fact mark = createMapBasedFact( personFact );
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", new BigDecimal("18.00") );
 
@@ -1466,7 +1464,7 @@ public class FactTemplateTest {
     @Test
     public void testMixFieldNameAndPrototypeExpr() {
         // DROOLS-7517
-        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+        PrototypeFact personFact = prototype( "org.drools.FactPerson" ).withField("name").withField("age").asFact();
 
         PrototypeVariable markV = variable( personFact );
 
@@ -1502,7 +1500,7 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        Fact mark = createMapBasedFact(personFact);
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 40 );
 
@@ -1522,7 +1520,7 @@ public class FactTemplateTest {
         }
 
         @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
             return prototype.getFieldValueExtractor(fieldName)::apply;
         }
 

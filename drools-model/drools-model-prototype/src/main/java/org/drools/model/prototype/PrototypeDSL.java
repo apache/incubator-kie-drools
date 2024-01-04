@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
@@ -35,8 +34,11 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.prototype.impl.PrototypeImpl;
 import org.drools.model.prototype.impl.PrototypeVariableImpl;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 import static java.util.UUID.randomUUID;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
@@ -44,37 +46,18 @@ import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.prototype.PrototypeExpression.prototypeArrayItem;
 import static org.drools.model.prototype.PrototypeExpression.prototypeField;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 public class PrototypeDSL {
 
-    public static final Prototype DEFAULT_PROTOTYPE = prototype("$DEFAULT_PROTOTYPE$");
+    static final PrototypeFact DEFAULT_PROTOTYPE = prototype("$DEFAULT_PROTOTYPE$").asFact();
 
-    public static Prototype prototype(String name) {
-        return new PrototypeImpl(name);
+    public static PrototypeFact prototypeFact(String name) {
+        return prototype(name).asFact();
     }
 
-    public static Prototype prototype(String name, String... fields) {
-        return new PrototypeImpl(name, fields);
-    }
-
-    public static Prototype prototype(String name, Prototype.Field... fields) {
-        return new PrototypeImpl(name, fields);
-    }
-
-    public static Prototype.Field field(String name) {
-        return new PrototypeImpl.FieldImpl(name);
-    }
-
-    public static Prototype.Field field(String name, Function<PrototypeFact, Object> extractor) {
-        return new PrototypeImpl.FieldImpl(name, extractor);
-    }
-
-    public static Prototype.Field field(String name, Class<?> type) {
-        return new PrototypeImpl.FieldImpl(name, type);
-    }
-
-    public static Prototype.Field field(String name, Class<?> type, Function<PrototypeFact, Object> extractor) {
-        return new PrototypeImpl.FieldImpl(name, type, extractor);
+    public static PrototypeEvent prototypeEvent(String name) {
+        return prototype(name).asEvent();
     }
 
     public static PrototypeVariable variable(Prototype prototype) {
@@ -89,7 +72,7 @@ public class PrototypeDSL {
         return new PrototypePatternDefImpl(protoVar);
     }
 
-    public interface PrototypePatternDef extends PatternDSL.PatternDef<PrototypeFact> {
+    public interface PrototypePatternDef extends PatternDSL.PatternDef<PrototypeFactInstance> {
         PrototypePatternDef expr(String fieldName, ConstraintOperator operator, Object value);
         PrototypePatternDef expr(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right);
 
@@ -103,7 +86,7 @@ public class PrototypeDSL {
         PrototypePatternDef or();
     }
 
-    public static class PrototypePatternDefImpl extends PatternDSL.PatternDefImpl<PrototypeFact> implements PrototypePatternDef {
+    public static class PrototypePatternDefImpl extends PatternDSL.PatternDefImpl<PrototypeFactInstance> implements PrototypePatternDef {
         public PrototypePatternDefImpl(PrototypeVariable variable) {
             super(variable);
         }
@@ -138,7 +121,7 @@ public class PrototypeDSL {
             }
 
             Prototype prototype = getPrototype();
-            Function1<PrototypeFact, Object> leftExtractor = left.asFunction(prototype);
+            Function1<PrototypeFactInstance, Object> leftExtractor = left.asFunction(prototype);
 
             Set<String> reactOnFields = new HashSet<>();
             reactOnFields.addAll(left.getImpactedFields());
@@ -152,10 +135,9 @@ public class PrototypeDSL {
             return this;
         }
 
-        private static AlphaIndex createAlphaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Function1<PrototypeFact, Object> leftExtractor) {
-            if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
+        private static AlphaIndex createAlphaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Function1<PrototypeFactInstance, Object> leftExtractor) {
+            if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType constraintType) {
                 String fieldName = left.getIndexingKey().get();
-                Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
                 Object value = ((PrototypeExpression.FixedValue) right).getValue();
 
@@ -200,12 +182,11 @@ public class PrototypeDSL {
         }
 
         private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
-            if (left.getIndexingKey().isPresent() && operator instanceof Index.ConstraintType && right.getIndexingKey().isPresent()) {
+            if (left.getIndexingKey().isPresent() && operator instanceof Index.ConstraintType constraintType && right.getIndexingKey().isPresent()) {
                 String fieldName = left.getIndexingKey().get();
-                Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 Prototype.Field field = prototype.getField(fieldName);
-                Function1<PrototypeFact, Object> extractor = left.asFunction(prototype);
-                Function1<PrototypeFact, Object> otherExtractor = right.asFunction(otherPrototype);
+                Function1<PrototypeFactInstance, Object> extractor = left.asFunction(prototype);
+                Function1<PrototypeFactInstance, Object> otherExtractor = right.asFunction(otherPrototype);
 
                 Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : Object.class);
                 return betaIndexedBy( fieldClass, constraintType, getFieldIndex(prototype, fieldName, field), extractor, otherExtractor );
@@ -215,13 +196,14 @@ public class PrototypeDSL {
 
         @Override
         public PrototypePatternDef expr(TemporalPredicate temporalPredicate, PrototypeVariable other) {
+            if (!getPrototype().isEvent() || !other.getPrototype().isEvent()) {
+                throw new UnsupportedOperationException("Use of temporal predicates is allowed only on events, not on facts.");
+            }
             expr( randomUUID().toString(), other, temporalPredicate );
-            getPrototype().setAsEvent(true);
-            other.getPrototype().setAsEvent(true);
             return this;
         }
 
-        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> left, ConstraintOperator operator, Function1<PrototypeFact, Object> right) {
+        private Predicate1<PrototypeFactInstance> asPredicate1(Function1<PrototypeFactInstance, Object> left, ConstraintOperator operator, Function1<PrototypeFactInstance, Object> right) {
             return p -> {
                 Object leftValue = left.apply(p);
                 Object rightValue = right.apply(p);
@@ -229,7 +211,7 @@ public class PrototypeDSL {
             };
         }
 
-        private Predicate2<PrototypeFact, PrototypeFact> asPredicate2(Function1<PrototypeFact, Object> extractor, ConstraintOperator operator, Function1<PrototypeFact, Object> otherExtractor) {
+        private Predicate2<PrototypeFactInstance, PrototypeFactInstance> asPredicate2(Function1<PrototypeFactInstance, Object> extractor, ConstraintOperator operator, Function1<PrototypeFactInstance, Object> otherExtractor) {
             return (p1, p2) -> {
                 Object leftValue = extractor.apply(p1);
                 Object rightValue = otherExtractor.apply(p2);
@@ -241,23 +223,21 @@ public class PrototypeDSL {
             PrototypeVariable leftVar = getPrototypeVariable();
             PrototypeVariable[] protoVars = findRightPrototypeVariables(right, leftVar);
 
-            switch (protoVars.length) {
-                case 2:
-                    expr( "expr:" + left + ":" + operator + ":" + right,
-                            protoVars[0], protoVars[1],
-                            asPredicate3(leftVar, left, operator, (PrototypeExpression.EvaluableExpression) right, protoVars)
-                        );
-                    break;
-                default:
-                    throw new UnsupportedOperationException();
+            if (protoVars.length == 2) {
+                expr("expr:" + left + ":" + operator + ":" + right,
+                     protoVars[0], protoVars[1],
+                     asPredicate3(leftVar, left, operator, (PrototypeExpression.EvaluableExpression) right, protoVars)
+                );
+            } else {
+                throw new UnsupportedOperationException();
             }
 
             return this;
         }
 
-        private Predicate3<PrototypeFact, PrototypeFact, PrototypeFact> asPredicate3(PrototypeVariable leftVar, PrototypeExpression left, ConstraintOperator operator, PrototypeExpression.EvaluableExpression right, PrototypeVariable[] protoVars) {
+        private Predicate3<PrototypeFactInstance, PrototypeFactInstance, PrototypeFactInstance> asPredicate3(PrototypeVariable leftVar, PrototypeExpression left, ConstraintOperator operator, PrototypeExpression.EvaluableExpression right, PrototypeVariable[] protoVars) {
             return (l, r1, r2) -> {
-                Map<PrototypeVariable, PrototypeFact> factsMap = new HashMap<>();
+                Map<PrototypeVariable, PrototypeFactInstance> factsMap = new HashMap<>();
                 factsMap.put(leftVar, l);
                 factsMap.put(protoVars[0], r1);
                 factsMap.put(protoVars[1], r2);
@@ -286,7 +266,7 @@ public class PrototypeDSL {
         }
     }
 
-    public static class PrototypeSubPatternDefImpl<T> extends PrototypePatternDefImpl {
+    public static class PrototypeSubPatternDefImpl extends PrototypePatternDefImpl {
         private final PrototypePatternDefImpl parent;
         private final PatternDSL.LogicalCombiner combiner;
 

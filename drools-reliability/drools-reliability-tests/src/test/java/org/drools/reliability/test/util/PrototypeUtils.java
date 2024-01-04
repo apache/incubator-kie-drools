@@ -24,37 +24,42 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.base.facttemplates.Event;
-import org.drools.model.prototype.Prototype;
-import org.drools.model.prototype.PrototypeDSL;
-import org.drools.model.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeEventInstance;
+import org.kie.api.prototype.PrototypeFact;
 
-import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedEvent;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 public class PrototypeUtils {
 
     public static final String DEFAULT_PROTOTYPE_NAME = "DROOLS_PROTOTYPE";
     public static final String SYNTHETIC_PROTOTYPE_NAME = "DROOLS_SYNTHETIC_PROTOTYPE";
 
-    private static final Map<String, Prototype> prototypes = new HashMap<>();
+    private static final Map<String, PrototypeFact> prototypeFacts = new HashMap<>();
+    private static final Map<String, PrototypeEvent> prototypeEvents = new HashMap<>();
 
     private PrototypeUtils() {
         // It is not allowed to create instances of util classes.
     }
 
-    public static Event createControlEvent() {
-        return createMapBasedEvent(getPrototype(SYNTHETIC_PROTOTYPE_NAME));
+    public static PrototypeEventInstance createControlEvent() {
+        return getPrototypeEvent(SYNTHETIC_PROTOTYPE_NAME).newInstance();
     }
 
-    public static Prototype getPrototype(String name) {
-        return prototypes.computeIfAbsent(name, PrototypeDSL::prototype);
+    public static PrototypeFact getPrototypeFact(String name) {
+        return prototypeFacts.computeIfAbsent(name, n -> prototype(n).asFact());
+    }
+
+    public static PrototypeEvent getPrototypeEvent(String name) {
+        return prototypeEvents.computeIfAbsent(name, n -> prototype(n).asEvent());
     }
 
     public static void processResults(List<Object> globalResults, List<Event> controlResults) {
-        List<Object> events = controlResults.stream().map(r -> ((PrototypeFact) r).get("event")).collect(Collectors.toList());
+        List<Object> events = controlResults.stream().map(r -> r.get("event")).collect(Collectors.toList());
         globalResults.addAll(events);
     }
 
-    public static Event createEvent() {
-        return createMapBasedEvent(getPrototype(DEFAULT_PROTOTYPE_NAME));
+    public static PrototypeEventInstance createEvent() {
+        return getPrototypeEvent(DEFAULT_PROTOTYPE_NAME).newInstance();
     }
 }

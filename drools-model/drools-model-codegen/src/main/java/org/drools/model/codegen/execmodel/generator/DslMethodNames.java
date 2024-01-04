@@ -75,7 +75,7 @@ public class DslMethodNames {
     public static final NameExpr PROTO_DSL_NAMESPACE = new NameExpr(PrototypeDSL.class.getCanonicalName());
     public static final String PROTO_PATTERN_CALL = "protoPattern";
     public static final String PROTO_EXPR_CALL = "expr";
-    public static final String PROTOTYPE_CALL = "prototype";
+    public static final String PROTOTYPE_FACT_CALL = "prototypeFact";
     public static final String PROTOTYPE_VARIABLE_CALL = "variable";
 
     // expressions

@@ -18,27 +18,26 @@
  */
 package org.drools.model.prototype.impl;
 
-import org.drools.model.impl.DeclarationImpl;
-import org.drools.model.prototype.PrototypeVariable;
-import org.kie.api.prototype.Prototype;
-import org.kie.api.prototype.PrototypeFactInstance;
+import java.util.List;
 
-public class PrototypeVariableImpl extends DeclarationImpl<PrototypeFactInstance> implements PrototypeVariable {
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeEventInstance;
 
-    private final Prototype prototype;
+import static org.drools.model.prototype.impl.FactFactory.createMapBasedEvent;
 
-    public PrototypeVariableImpl( Prototype prototype ) {
-        super( PrototypeFactInstance.class );
-        this.prototype = prototype;
-    }
+public class PrototypeEventImpl extends PrototypeImpl implements PrototypeEvent {
 
-    public PrototypeVariableImpl( Prototype prototype, String name ) {
-        super( PrototypeFactInstance.class, name );
-        this.prototype = prototype;
+    public PrototypeEventImpl(String name, List<Field> fields ) {
+        super(name, fields);
     }
 
     @Override
-    public Prototype getPrototype() {
-        return prototype;
+    public PrototypeEventInstance newInstance() {
+        return createMapBasedEvent(this);
+    }
+
+    @Override
+    public boolean isEvent() {
+        return true;
     }
 }

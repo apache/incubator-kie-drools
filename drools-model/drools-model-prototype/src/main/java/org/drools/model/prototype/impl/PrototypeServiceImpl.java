@@ -26,11 +26,11 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.model.Variable;
-import org.drools.model.prototype.Prototype;
 import org.drools.model.prototype.PrototypeVariable;
 import org.drools.modelcompiler.PrototypeService;
+import org.kie.api.prototype.Prototype;
 
-import static org.drools.model.prototype.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.model.prototype.impl.FactFactory.prototypeToFactTemplate;
 
 public class PrototypeServiceImpl implements PrototypeService {
 

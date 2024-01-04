@@ -20,38 +20,28 @@ package org.drools.model.prototype.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
-import org.drools.model.prototype.Prototype;
-import org.drools.model.prototype.PrototypeFact;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
-public class PrototypeImpl implements Prototype {
+public abstract class PrototypeImpl implements Prototype {
 
     private final String pkg;
     private final String name;
     private final SortedMap<String, Field> fields;
 
-    private boolean event;
-
-    public PrototypeImpl( String name ) {
-        this(name, new Field[0]);
-    }
-
-    public PrototypeImpl( String name, String... fields ) {
-        this(name, Stream.of(fields).map(FieldImpl::new).toArray(Field[]::new));
-    }
-
-    public PrototypeImpl( String name, Field... fields ) {
+    public PrototypeImpl( String name, List<Field> fields ) {
         int lastDot = name.lastIndexOf('.');
         this.pkg = lastDot > 0 ? name.substring(0, lastDot) : DEFAULT_PACKAGE;
         this.name = lastDot > 0 ? name.substring(lastDot+1) : name;
-        if (fields != null && fields.length > 0) {
+        if (fields != null && !fields.isEmpty()) {
             this.fields = new TreeMap<>();
             for (Field field : fields) {
                 this.fields.put(field.getName(), field);
@@ -77,7 +67,7 @@ public class PrototypeImpl implements Prototype {
     }
 
     @Override
-    public Field getField(String name) {
+    public Prototype.Field getField(String name) {
         return fields.get(name);
     }
 
@@ -106,18 +96,9 @@ public class PrototypeImpl implements Prototype {
         return Objects.hash(pkg, name, fields);
     }
 
-    public boolean isEvent() {
-        return event;
-    }
-
-    public PrototypeImpl setAsEvent(boolean event) {
-        this.event = event;
-        return this;
-    }
-
     public static class FieldImpl implements Prototype.Field {
         private final String name;
-        private final Function<PrototypeFact, Object> extractor;
+        private final Function<PrototypeFactInstance, Object> extractor;
         private final boolean typed;
         private final Class<?> type;
 
@@ -125,7 +106,7 @@ public class PrototypeImpl implements Prototype {
             this(name, p -> p.get(name));
         }
 
-        public FieldImpl( String name, Function<PrototypeFact, Object> extractor ) {
+        public FieldImpl( String name, Function<PrototypeFactInstance, Object> extractor ) {
             this.name = name;
             this.extractor = extractor;
             this.type = Object.class;
@@ -136,7 +117,7 @@ public class PrototypeImpl implements Prototype {
             this(name, type, p -> p.get(name));
         }
 
-        public FieldImpl( String name, Class<?> type, Function<PrototypeFact, Object> extractor ) {
+        public FieldImpl( String name, Class<?> type, Function<PrototypeFactInstance, Object> extractor ) {
             this.name = name;
             this.extractor = extractor;
             this.type = type;
@@ -149,7 +130,7 @@ public class PrototypeImpl implements Prototype {
         }
 
         @Override
-        public Function<PrototypeFact, Object> getExtractor() {
+        public Function<PrototypeFactInstance, Object> getExtractor() {
             return extractor;
         }
 

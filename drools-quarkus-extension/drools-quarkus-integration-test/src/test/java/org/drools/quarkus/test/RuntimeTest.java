@@ -23,17 +23,16 @@ import java.util.stream.Collectors;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.drools.base.facttemplates.Fact;
-import org.drools.model.prototype.Prototype;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
 
-import static org.drools.model.prototype.PrototypeDSL.prototype;
-import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedFact;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 @QuarkusTest
 public class RuntimeTest {
@@ -75,14 +74,14 @@ public class RuntimeTest {
     public void testPrototypeEvaluation() {
         KieSession ksession = runtimeBuilder.newKieSession("canDrinkKSPrototype");
 
-        Prototype personFact = prototype( "Person" );
-        Fact mark = createMapBasedFact(personFact);
+        PrototypeFact personFact = prototype("Person" ).asFact();
+        PrototypeFactInstance mark = personFact.newInstance();
         mark.set( "name", "Mark" );
         mark.set( "age", 17 );
         ksession.insert(mark);
 
-        Prototype resultFact = prototype( "Result" );
-        Fact result = createMapBasedFact(resultFact);
+        PrototypeFact resultFact = prototype( "Result" ).asFact();
+        PrototypeFactInstance result = resultFact.newInstance();
         ksession.insert(result);
 
         ksession.fireAllRules();

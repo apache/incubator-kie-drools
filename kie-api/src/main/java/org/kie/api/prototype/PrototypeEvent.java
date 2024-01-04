@@ -16,29 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype.impl;
+package org.kie.api.prototype;
 
-import org.drools.model.impl.DeclarationImpl;
-import org.drools.model.prototype.PrototypeVariable;
-import org.kie.api.prototype.Prototype;
-import org.kie.api.prototype.PrototypeFactInstance;
+public interface PrototypeEvent extends Prototype {
 
-public class PrototypeVariableImpl extends DeclarationImpl<PrototypeFactInstance> implements PrototypeVariable {
+    PrototypeEventInstance newInstance();
 
-    private final Prototype prototype;
-
-    public PrototypeVariableImpl( Prototype prototype ) {
-        super( PrototypeFactInstance.class );
-        this.prototype = prototype;
-    }
-
-    public PrototypeVariableImpl( Prototype prototype, String name ) {
-        super( PrototypeFactInstance.class, name );
-        this.prototype = prototype;
-    }
-
-    @Override
-    public Prototype getPrototype() {
-        return prototype;
-    }
 }

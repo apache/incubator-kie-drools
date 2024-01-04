@@ -18,15 +18,9 @@
  */
 package org.drools.base.facttemplates;
 
-import java.util.concurrent.TimeUnit;
+import org.kie.api.prototype.PrototypeEventInstance;
 
-public interface Event extends Fact {
-
-    long getTimestamp();
-
-    long getExpiration();
-
-    Event withExpiration( long value, TimeUnit unit );
+public interface Event extends Fact, PrototypeEventInstance {
 
     default boolean isEvent() {
         return true;

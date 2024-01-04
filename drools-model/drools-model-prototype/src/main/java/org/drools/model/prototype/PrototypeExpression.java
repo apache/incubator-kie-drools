@@ -29,14 +29,16 @@ import java.util.Set;
 
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 public interface PrototypeExpression {
 
     interface EvaluableExpression {
-        Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap);
+        Object evaluate(Map<PrototypeVariable, PrototypeFactInstance> factsMap);
     }
 
-    Function1<PrototypeFact, Object> asFunction(Prototype prototype);
+    Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype);
 
     Collection<String> getImpactedFields();
     
@@ -104,7 +106,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
             return x -> value;
         }
 
@@ -123,7 +125,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap) {
+        public Object evaluate(Map<PrototypeVariable, PrototypeFactInstance> factsMap) {
             return value;
         }
     }
@@ -133,7 +135,7 @@ public interface PrototypeExpression {
         INSTANCE;
 
         @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
             return p -> p;
         }
 
@@ -157,7 +159,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
             return prototype.getFieldValueExtractor(fieldName)::apply;
         }
 
@@ -200,7 +202,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap) {
+        public Object evaluate(Map<PrototypeVariable, PrototypeFactInstance> factsMap) {
             return protoVar.getPrototype().getFieldValueExtractor(getIndexingKey().get()).apply(factsMap.get(protoVar));
         }
 
@@ -221,7 +223,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
             return fact -> extractArrayItem( prototype.getFieldValueExtractor(fieldName).apply(fact) );
         }
 
@@ -263,19 +265,21 @@ public interface PrototypeExpression {
             this.first = first;
             this.second = second;
         }
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
-            return first.asFunction(prototype).andThen(this::object2PrototypeFact).andThen(second.asFunction(prototype));
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
+            return first.asFunction(prototype).andThen(this::object2PrototypeFactInstance).andThen(second.asFunction(prototype));
         }
 
-        private PrototypeFact object2PrototypeFact(Object object) {
+        private PrototypeFactInstance object2PrototypeFactInstance(Object object) {
             if (object == Prototype.UNDEFINED_VALUE) {
-                return PrototypeFactFactory.get().createMapBasedFact(PrototypeDSL.DEFAULT_PROTOTYPE);
+                return PrototypeDSL.DEFAULT_PROTOTYPE.newInstance();
             }
-            if (object instanceof PrototypeFact) {
-                return (PrototypeFact) object;
+            if (object instanceof PrototypeFactInstance) {
+                return (PrototypeFactInstance) object;
             }
             if (object instanceof Map) {
-                return PrototypeFactFactory.get().createMapBasedFact(PrototypeDSL.DEFAULT_PROTOTYPE, (Map<String, Object>) object);
+                PrototypeFactInstance fact = PrototypeDSL.DEFAULT_PROTOTYPE.newInstance();
+                ((Map<String, Object>) object).forEach(fact::set);
+                return fact;
             }
             throw new UnsupportedOperationException("Cannot convert " + object + " into a Prototype");
         }
@@ -392,8 +396,8 @@ public interface PrototypeExpression {
         private final PrototypeExpression right;
 
         @Override
-        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
-            return (PrototypeFact fact) -> {
+        public Function1<PrototypeFactInstance, Object> asFunction(Prototype prototype) {
+            return (PrototypeFactInstance fact) -> {
                 Object leftValue = left.asFunction(prototype).apply(fact);
                 Object rightValue = right.asFunction(prototype).apply(fact);
                 return op.operator.apply(leftValue, rightValue);
@@ -426,7 +430,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap) {
+        public Object evaluate(Map<PrototypeVariable, PrototypeFactInstance> factsMap) {
             Object leftValue = ((EvaluableExpression) left).evaluate(factsMap);
             Object rightValue = ((EvaluableExpression) right).evaluate(factsMap);
             return op.operator.apply(leftValue, rightValue);

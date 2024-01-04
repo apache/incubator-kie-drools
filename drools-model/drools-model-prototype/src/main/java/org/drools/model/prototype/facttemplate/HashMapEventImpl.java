@@ -25,10 +25,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.base.facttemplates.Event;
 import org.drools.base.facttemplates.FactTemplate;
+import org.kie.api.prototype.PrototypeEventInstance;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class HashMapEventImpl extends HashMapFactImpl implements Event {
+public class HashMapEventImpl extends HashMapFactImpl implements Event, PrototypeEventInstance {
 
     private long timestamp = -1;
     private long expiration = Long.MAX_VALUE;

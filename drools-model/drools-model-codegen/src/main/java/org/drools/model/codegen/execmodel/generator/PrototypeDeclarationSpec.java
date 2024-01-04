@@ -13,7 +13,7 @@ import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.prototype.PrototypeVariable;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PROTOTYPE_CALL;
+import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PROTOTYPE_FACT_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PROTOTYPE_VARIABLE_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createProtoDslTopLevelMethod;
 
@@ -71,7 +71,7 @@ public class PrototypeDeclarationSpec implements DeclarationSpec {
         ClassOrInterfaceType varType = toClassOrInterfaceType(PrototypeVariable.class);
         VariableDeclarationExpr varExpr = new VariableDeclarationExpr(varType, context.getVar(getBindingId()), Modifier.finalModifier());
 
-        MethodCallExpr prototypeCall = createProtoDslTopLevelMethod(PROTOTYPE_CALL);
+        MethodCallExpr prototypeCall = createProtoDslTopLevelMethod(PROTOTYPE_FACT_CALL);
         prototypeCall.addArgument(new StringLiteralExpr(prototypeType));
         MethodCallExpr variableCall = createProtoDslTopLevelMethod(PROTOTYPE_VARIABLE_CALL);
         variableCall.addArgument(prototypeCall);

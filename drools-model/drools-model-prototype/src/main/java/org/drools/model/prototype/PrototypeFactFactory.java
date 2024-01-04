@@ -21,6 +21,9 @@ package org.drools.model.prototype;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFact;
+
 public interface PrototypeFactFactory {
 
     PrototypeFact createMapBasedFact(Prototype prototype);

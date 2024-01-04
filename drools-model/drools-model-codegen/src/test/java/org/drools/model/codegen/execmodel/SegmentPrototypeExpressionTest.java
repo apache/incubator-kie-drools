@@ -18,16 +18,16 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.drools.model.prototype.Prototype;
 import org.drools.model.prototype.PrototypeExpression;
-import org.drools.model.prototype.PrototypeFact;
 import org.junit.Test;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.model.prototype.PrototypeDSL.prototype;
 import static org.drools.model.prototype.PrototypeExpression.fixedValue;
 import static org.drools.model.prototype.PrototypeExpression.prototypeField;
-import static org.drools.model.prototype.facttemplate.FactFactory.createMapBasedFact;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 public class SegmentPrototypeExpressionTest {
 
@@ -36,8 +36,8 @@ public class SegmentPrototypeExpressionTest {
         PrototypeExpression expr1 = prototypeField("fieldA");
         PrototypeExpression expr2 = prototypeField("fieldB").add(prototypeField("fieldC")).sub(fixedValue(1));
 
-        Prototype prototype = prototype("test");
-        PrototypeFact testFact = (PrototypeFact) createMapBasedFact(prototype);
+        PrototypeFact prototype = prototype("test").asFact();
+        PrototypeFactInstance testFact = prototype.newInstance();
         testFact.set( "fieldA", 12 );
         testFact.set( "fieldB", 8 );
         testFact.set( "fieldC", 5 );

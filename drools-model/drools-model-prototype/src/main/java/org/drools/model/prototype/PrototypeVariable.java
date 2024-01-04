@@ -19,8 +19,10 @@
 package org.drools.model.prototype;
 
 import org.drools.model.Variable;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFactInstance;
 
-public interface PrototypeVariable extends Variable<PrototypeFact> {
+public interface PrototypeVariable extends Variable<PrototypeFactInstance> {
     Prototype getPrototype();
 
     @Override

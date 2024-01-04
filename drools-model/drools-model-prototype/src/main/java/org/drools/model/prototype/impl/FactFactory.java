@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype.facttemplate;
+package org.drools.model.prototype.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,42 +29,36 @@ import org.drools.base.facttemplates.FactTemplateImpl;
 import org.drools.base.facttemplates.FieldTemplate;
 import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.model.prototype.Prototype;
+import org.drools.model.prototype.facttemplate.HashMapEventImpl;
+import org.drools.model.prototype.facttemplate.HashMapFactImpl;
+import org.kie.api.prototype.Prototype;
 
 public class FactFactory {
 
     private static final Map<Prototype, FactTemplate> factTemplateCache = new ConcurrentHashMap<>();
 
-    public static Fact createMapBasedFact(FactTemplate factTemplate) {
-        return new HashMapFactImpl( factTemplate );
+    static Fact createMapBasedFact(FactTemplate factTemplate) {
+        return new HashMapFactImpl(factTemplate );
     }
 
-    public static Fact createMapBasedFact(FactTemplate factTemplate, Map<String, Object> valuesMap) {
+    static Fact createMapBasedFact(FactTemplate factTemplate, Map<String, Object> valuesMap) {
         return new HashMapFactImpl( factTemplate, valuesMap );
     }
 
-    public static Fact createMapBasedFact(Prototype prototype) {
+    static Fact createMapBasedFact(Prototype prototype) {
         return createMapBasedFact( prototypeToFactTemplate( prototype ) );
     }
 
-    public static Fact createMapBasedFact(Prototype prototype, Map<String, Object> valuesMap) {
-        return createMapBasedFact( prototypeToFactTemplate( prototype ), valuesMap );
+    static Event createMapBasedEvent(FactTemplate factTemplate) {
+        return new HashMapEventImpl(factTemplate );
     }
 
-    public static Event createMapBasedEvent(FactTemplate factTemplate) {
-        return new HashMapEventImpl( factTemplate );
-    }
-
-    public static Event createMapBasedEvent(FactTemplate factTemplate, Map<String, Object> valuesMap) {
+    static Event createMapBasedEvent(FactTemplate factTemplate, Map<String, Object> valuesMap) {
         return new HashMapEventImpl( factTemplate, valuesMap );
     }
 
-    public static Event createMapBasedEvent(Prototype prototype) {
+    static Event createMapBasedEvent(Prototype prototype) {
         return createMapBasedEvent( prototypeToFactTemplate( prototype ) );
-    }
-
-    public static Event createMapBasedEvent(Prototype prototype, Map<String, Object> valuesMap) {
-        return createMapBasedEvent( prototypeToFactTemplate( prototype ), valuesMap );
     }
 
     public static FactTemplate prototypeToFactTemplate( Prototype prototype ) {

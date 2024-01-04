@@ -27,7 +27,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
-import org.drools.model.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 
@@ -70,7 +70,7 @@ public class BoxedParameters {
             DeclarationSpec declaration = context.getDeclarationByIdWithException(parameterName);
             Parameter boxedParameter = declaration instanceof TypedDeclarationSpec tSpec ?
                     getTypedParameter(methodBody, parameterName, tSpec) :
-                    new Parameter(toClassOrInterfaceType(PrototypeFact.class), parameterName);
+                    new Parameter(toClassOrInterfaceType(PrototypeFactInstance.class), parameterName);
             parameters.add(boxedParameter);
         }
         return parameters;

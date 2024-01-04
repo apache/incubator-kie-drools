@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-//import woolfel.engine.rule.Rule;
-
 public class FactImpl implements Fact, Externalizable {
 
     private FactTemplate factTemplate = null;
@@ -56,6 +54,11 @@ public class FactImpl implements Fact, Externalizable {
 
     public void set(final String name, final Object value) {
         this.values.put( name, value );
+    }
+
+    @Override
+    public boolean has(String name) {
+        return values.containsKey(name);
     }
 
     /**
