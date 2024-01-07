@@ -31,7 +31,9 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -213,7 +215,7 @@ public class MVELConsequenceBuilderTest {
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
         final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
-                                               null,
+                                               new MockLeftTupleSink(0),
                                                true );
 
         RuleTerminalNode rtn = new RuleTerminalNode();
@@ -492,7 +494,7 @@ public class MVELConsequenceBuilderTest {
         public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
         }
 
-        public void retractRightTuple(final RightTuple rightTuple,
+        public void retractRightTuple(final TupleImpl rightTuple,
                                       final PropagationContext context,
                                       final ReteEvaluator reteEvaluator) {
         }
@@ -501,7 +503,7 @@ public class MVELConsequenceBuilderTest {
             return 0;
         }
 
-        public void modifyRightTuple(RightTuple rightTuple,
+        public void modifyRightTuple(TupleImpl rightTuple,
                                      PropagationContext context,
                                      ReteEvaluator reteEvaluator) {
         }
@@ -511,28 +513,28 @@ public class MVELConsequenceBuilderTest {
             return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
         }    
         
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+        public LeftTuple createLeftTuple(TupleImpl leftTuple,
                                          Sink sink,
                                          PropagationContext pctx, boolean leftTupleMemoryEnabled) {
             return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
         }
 
         public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                         final LeftTuple leftTuple,
+                                         final TupleImpl leftTuple,
                                          final Sink sink) {
             return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
         }
 
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
+        public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                         TupleImpl rightTuple,
                                          Sink sink) {
             return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
         }   
         
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTuple currentLeftChild,
-                                         LeftTuple currentRightChild,
+        public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                         TupleImpl rightTuple,
+                                         TupleImpl currentLeftChild,
+                                         TupleImpl currentRightChild,
                                          Sink sink,
                                          boolean leftTupleMemoryEnabled) {
             return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
@@ -542,7 +544,7 @@ public class MVELConsequenceBuilderTest {
         }
 
         @Override
-        public LeftTuple createPeer(LeftTuple original) {
+        public LeftTuple createPeer(TupleImpl original) {
             return null;
         }                
     }

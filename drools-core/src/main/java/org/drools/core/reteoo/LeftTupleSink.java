@@ -33,35 +33,35 @@ public interface LeftTupleSink extends LeftTupleNode, Sink {
 
     boolean isLeftTupleMemoryEnabled();
 
-    LeftTuple createPeer(LeftTuple original);
-    
-    LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+    TupleImpl createPeer(TupleImpl original);
+
+    TupleImpl createLeftTuple(final InternalFactHandle factHandle,
                               boolean leftTupleMemoryEnabled);
 
-    LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                              final LeftTuple leftTuple,
+    TupleImpl createLeftTuple(final InternalFactHandle factHandle,
+                              final TupleImpl leftTuple,
                               final Sink sink);
 
-    LeftTuple createLeftTuple(LeftTuple leftTuple,
+    TupleImpl createLeftTuple(TupleImpl leftTuple,
                               Sink sink,
                               PropagationContext pctx,
                               boolean leftTupleMemoryEnabled);
-    
-    LeftTuple createLeftTuple(LeftTuple leftTuple,
-                              RightTuple rightTuple,
+
+    TupleImpl createLeftTuple(TupleImpl leftTuple,
+                              TupleImpl rightTuple,
                               Sink sink);
-    
-    LeftTuple createLeftTuple(LeftTuple leftTuple,
-                              RightTuple rightTuple,
-                              LeftTuple currentLeftChild,
-                              LeftTuple currentRightChild,
+
+    TupleImpl createLeftTuple(TupleImpl leftTuple,
+                              TupleImpl rightTuple,
+                              TupleImpl currentLeftChild,
+                              TupleImpl currentRightChild,
                               Sink sink,
                               boolean leftTupleMemoryEnabled);
 
-    ObjectTypeNode.Id getLeftInputOtnId();
+    ObjectTypeNodeId getLeftInputOtnId();
 
-    void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId);
-    
+    void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId);
+
     BitMask getLeftInferredMask();
 
     void setPartitionIdWithSinks( RuleBasePartitionId partitionId );

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
@@ -80,7 +81,10 @@ public abstract class BetaNode extends LeftTupleSource
     private ObjectSinkNode previousObjectSinkNode;
     private ObjectSinkNode nextObjectSinkNode;
 
+    private ObjectTypeNodeId rightInputOtnId = ObjectTypeNodeId.DEFAULT_ID;
+
     protected boolean objectMemory = true; // hard coded to true
+
     protected boolean tupleMemoryEnabled;
 
     protected boolean indexedUnificationJoin;
@@ -91,8 +95,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     private Collection<String> leftListenedProperties;
     private Collection<String> rightListenedProperties;
-
-    private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
     protected boolean rightInputIsRiaNode;
 
@@ -251,7 +253,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void assertObject( InternalFactHandle factHandle, PropagationContext pctx, ReteEvaluator reteEvaluator ) {
         final BetaMemoryImpl memory = (BetaMemoryImpl) getBetaMemoryFromRightInput(this, reteEvaluator);
 
-        RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
+        RightTupleImpl rightTuple = createRightTuple( factHandle, this, pctx );
 
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         if ( isLogTraceEnabled ) {
@@ -274,10 +276,10 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, ReteEvaluator reteEvaluator) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
+        TupleImpl rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
-        while ( rightTuple != null && rightTuple.getInputOtnId().before( getRightInputOtnId() ) ) {
+        while ( rightTuple != null && rightTuple.getInputOtnId().before(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple(partitionId);
 
             // we skipped this node, due to alpha hashing, so retract now
@@ -287,7 +289,7 @@ public abstract class BetaNode extends LeftTupleSource
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
-        if ( rightTuple != null && rightTuple.getInputOtnId().equals( getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple(partitionId);
             rightTuple.reAdd();
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
@@ -308,15 +310,15 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    protected void reorderRightTuple(ReteEvaluator reteEvaluator, RightTuple rightTuple) {
+    protected void reorderRightTuple(ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
         getBetaMemory(this, reteEvaluator).getRightTupleMemory().removeAdd(rightTuple);
         doUpdatesReorderChildLeftTuple(rightTuple);
     }
 
-    public void doDeleteRightTuple(final RightTuple rightTuple,
+    public void doDeleteRightTuple(final TupleImpl rightTuple,
                                    final ReteEvaluator reteEvaluator,
                                    final BetaMemoryImpl memory) {
-        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
+        TupleSets stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
 
@@ -336,10 +338,10 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public void doUpdateRightTuple(final RightTuple rightTuple,
+    public void doUpdateRightTuple(final TupleImpl rightTuple,
                                     final ReteEvaluator reteEvaluator,
                                     final BetaMemoryImpl memory) {
-        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
+        TupleSets stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
 
@@ -370,7 +372,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightInputIsRiaNode = NodeTypeEnums.RightInputAdapterNode == rightInput.getType();
     }
 
-    public FastIterator<AbstractTuple> getRightIterator( TupleMemory memory ) {
+    public FastIterator<TupleImpl> getRightIterator(TupleMemory memory) {
         if ( this.indexedUnificationJoin ) {
             return memory.fullFastIterator();
         } else {
@@ -378,9 +380,9 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public RightTupleImpl getFirstRightTuple(final Tuple leftTuple,
+    public RightTupleImpl getFirstRightTuple(final TupleImpl leftTuple,
                                          final TupleMemory memory,
-                                         final FastIterator<Tuple> it) {
+                                         final FastIterator<TupleImpl> it) {
         if ( this.indexedUnificationJoin ) {
             return (RightTupleImpl) it.next( null );
         } else {
@@ -388,7 +390,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public FastIterator<AbstractTuple> getLeftIterator(TupleMemory memory) {
+    public FastIterator<TupleImpl> getLeftIterator(TupleMemory memory) {
         if (rightInputIsRiaNode) {
             return FastIterator.NullFastIterator.INSTANCE;
         } else {
@@ -400,21 +402,21 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
+    public TupleImpl getFirstLeftTuple(final TupleImpl rightTuple,
                                        final TupleMemory memory,
-                                       final FastIterator<Tuple> it) {
+                                       final FastIterator<TupleImpl> it) {
         if (rightInputIsRiaNode) {
-            return getStartTuple((SubnetworkTuple)rightTuple);
+            return getStartTuple(rightTuple);
         } else {
             if ( this.indexedUnificationJoin ) {
-                return (LeftTuple) it.next(null );
+                return it.next(null );
             } else {
-                return (LeftTuple) memory.getFirst(rightTuple);
+                return memory.getFirst(rightTuple);
             }
         }
     }
 
-    public LeftTuple getStartTuple(LeftTuple lt) {
+    public TupleImpl getStartTuple(TupleImpl lt) {
         LeftTupleSource startTupleSource = (( RightInputAdapterNode ) getRightInput()).getStartTupleSource();
 
         // Iterate find start
@@ -423,14 +425,14 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         // Now iterate to find peer. It is not guaranteed that the next node is the correct one, see testSubnetworkSharingWith2Sinks
-        while (lt.getTupleSink() != this) {
+        while (lt.getSink() != this) {
             lt = lt.getPeer();
         }
 
         return lt;
     }
 
-    public static Tuple getFirstTuple(TupleMemory memory, FastIterator<Tuple> it) {
+    public static TupleImpl getFirstTuple(TupleMemory memory, FastIterator<TupleImpl> it) {
         if ( !memory.isIndexed() ) {
             return memory.getFirst( null );
         } else {
@@ -508,12 +510,12 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
 
-    public static BetaMemoryImpl getBetaMemory(BetaNode node, ReteEvaluator reteEvaluator) {
+    public static BetaMemoryImpl getBetaMemory(NetworkNode node, ReteEvaluator reteEvaluator) {
         BetaMemoryImpl bm;
         if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
-            bm = ((AccumulateMemory)reteEvaluator.getNodeMemory(node)).getBetaMemory();
+            bm = ((AccumulateMemory)reteEvaluator.getNodeMemory((AccumulateNode)node)).getBetaMemory();
         } else {
-            bm = ((BetaMemoryImpl)reteEvaluator.getNodeMemory(node));
+            bm = ((BetaMemoryImpl)reteEvaluator.getNodeMemory((BetaNode)node));
         }
         return bm;
     }
@@ -638,10 +640,10 @@ public abstract class BetaNode extends LeftTupleSource
         this.previousObjectSinkNode = previous;
     }
 
-    public RightTuple createRightTuple(InternalFactHandle handle,
+    public RightTupleImpl createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink,
                                        PropagationContext context) {
-        RightTuple rightTuple = new RightTupleImpl( handle, sink );
+        RightTupleImpl rightTuple = new RightTupleImpl( handle, sink );
         rightTuple.setPropagationContext( context );
         return rightTuple;
     }
@@ -671,11 +673,11 @@ public abstract class BetaNode extends LeftTupleSource
         return rightNegativeMask;
     }
 
-    public ObjectTypeNode.Id getRightInputOtnId() {
+    public ObjectTypeNodeId getRightInputOtnId() {
         return rightInputOtnId;
     }
 
-    public void setRightInputOtnId(ObjectTypeNode.Id rightInputOtnId) {
+    public void setRightInputOtnId(ObjectTypeNodeId rightInputOtnId) {
         this.rightInputOtnId = rightInputOtnId;
     }
 }

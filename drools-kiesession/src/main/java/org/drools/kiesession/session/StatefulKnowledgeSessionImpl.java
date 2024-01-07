@@ -74,6 +74,7 @@ import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -741,7 +742,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 
-            LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
+            TupleImpl childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
             LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, StatefulKnowledgeSessionImpl.this, lian, false, lmem );
 
             for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {

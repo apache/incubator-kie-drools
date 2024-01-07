@@ -24,6 +24,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 public class OpenQueryViewChangedEventListenerAdapter
@@ -36,18 +37,18 @@ public class OpenQueryViewChangedEventListenerAdapter
         this.viewEventListener = viewEventListener;
     }
 
-    public void rowAdded(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowAdded(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator) {
         RowAdapter rowAdapter = new RowAdapter(rule, tuple);
         tuple.setContextObject( rowAdapter );
         this.viewEventListener.rowInserted( rowAdapter );
     }
 
-    public void rowRemoved(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowRemoved(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator ) {
         RowAdapter rowAdapter = (RowAdapter) tuple.getContextObject();
         this.viewEventListener.rowDeleted( rowAdapter );
     }
 
-    public void rowUpdated(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowUpdated(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator ) {
         RowAdapter rowAdapter = (RowAdapter) tuple.getContextObject();
         this.viewEventListener.rowUpdated( rowAdapter );
     }

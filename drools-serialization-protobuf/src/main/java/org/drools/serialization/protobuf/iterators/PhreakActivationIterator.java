@@ -36,7 +36,7 @@ import java.util.*;
 
 public class PhreakActivationIterator
     implements
-    Iterator {
+    Iterator<InternalMatch> {
 
     private java.util.Iterator<InternalMatch> agendaItemIter;
 
@@ -56,7 +56,7 @@ public class PhreakActivationIterator
         return new PhreakActivationIterator( reteEvaluator, reteEvaluator.getKnowledgeBase() );
     }
 
-    public Object next() {
+    public InternalMatch next() {
         if ( agendaItemIter.hasNext() ) {
             return agendaItemIter.next();
         } else {
@@ -192,13 +192,13 @@ public class PhreakActivationIterator
         }
     }
 
-    private static void collectFromLeftInput(LeftTuple lt, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
+    private static void collectFromLeftInput(TupleImpl lt, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         for (; lt != null; lt = lt.getHandleNext()) {
             collectFromPeers(lt, internalMatches, nodeSet, reteEvaluator);
         }
     }
 
-    private static void collectFromPeers(LeftTuple peer, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
+    private static void collectFromPeers(TupleImpl peer, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         while (peer != null) {
             if ( peer.getTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
                 Object accctx = peer.getContextObject();
@@ -207,7 +207,7 @@ public class PhreakActivationIterator
                     collectFromLeftInput((LeftTuple) ((AccumulateContext) accctx).getResultLeftTuple(), internalMatches, nodeSet, reteEvaluator);
                 }
             } else if ( peer.getFirstChild() != null ) {
-                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
+                for (TupleImpl childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
                     collectFromLeftInput(childLt, internalMatches, nodeSet, reteEvaluator);
                 }
             } else if ( peer.getTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {

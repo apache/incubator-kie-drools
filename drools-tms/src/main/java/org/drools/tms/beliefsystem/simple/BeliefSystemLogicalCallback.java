@@ -25,6 +25,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
@@ -94,7 +95,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
             }
         } else  {
             if ( fullyRetract ) {
-                nep.delete( this.handle, context.getRuleOrigin(), this.internalMatch.getTuple().getTupleSink());
+                nep.delete( this.handle, context.getRuleOrigin(), (TerminalNode) this.internalMatch.getTuple().getTupleSink());
             } else {
                 ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( nep.getEntryPoint(), handle.getObject() );
                 nep.getEntryPointNode().immediateDeleteObject( handle, context, typeConf, reteEvaluator );

@@ -41,7 +41,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
@@ -195,7 +195,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    public RightTupleImpl createRightTuple( final LeftTuple leftTuple,
+    public RightTupleImpl createRightTuple( final TupleImpl leftTuple,
                                         final PropagationContext context,
                                         final ReteEvaluator reteEvaluator,
                                         final Object object ) {
@@ -227,7 +227,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                 // this is for the obscene case where two or more objects returned by "from"
                 // have the same hash code and evaluate equals() to true, so we need to preserve
                 // all of them to avoid leaks
-                rightTuple.setNext((AbstractTuple) existingMatch);
+                rightTuple.setNext((TupleImpl) existingMatch);
             }
             matches.put( object,
                          rightTuple );
@@ -246,7 +246,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
    
 
     @Override
-    public LeftTuple createPeer(LeftTuple original) {
+    public LeftTuple createPeer(TupleImpl original) {
         JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
         peer.initPeer(original, this);
         original.setPeer( peer );
@@ -297,7 +297,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return NodeTypeEnums.FromNode;
     } 
 
-    public static class FromMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class FromMemory extends AbstractLinkedListNode<Memory>
         implements
         Serializable,
         SegmentNodeMemory {
@@ -327,7 +327,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             betaMemory.setSegmentMemory(segmentMemory);
         }
 
-        public BetaMemoryImpl getBetaMemory() {
+        public BetaMemoryImpl<Object> getBetaMemory() {
             return betaMemory;
         }
 
@@ -363,28 +363,28 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+                                     final TupleImpl leftTuple,
                                      final Sink sink) {
         return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, sink, pctx,
                                      leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
                                      Sink sink) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
+                                     TupleImpl currentLeftChild,
+                                     TupleImpl currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        

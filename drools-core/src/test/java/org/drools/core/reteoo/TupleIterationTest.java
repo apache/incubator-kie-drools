@@ -66,12 +66,12 @@ public class TupleIterationTest {
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
-        final List<LeftTuple> foundLeafs = new ArrayList<LeftTuple>();
+        final List<TupleImpl> foundLeafs = new ArrayList<TupleImpl>();
         
         TupleIterator iterator = new TupleIterator();
         OnLeaf onLeaf = new OnLeaf() {
 
-            public void execute(LeftTuple leafLeftTuple) {
+            public void execute(TupleImpl leafLeftTuple) {
                 foundLeafs.add( leafLeftTuple );
             }
             
@@ -125,12 +125,12 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
-        final List<LeftTuple> foundLeafs = new ArrayList<LeftTuple>();
+        final List<TupleImpl> foundLeafs = new ArrayList<>();
         
         TupleIterator iterator = new TupleIterator();
         OnLeaf onLeaf = new OnLeaf() {
 
-            public void execute(LeftTuple leafLeftTuple) {
+            public void execute(TupleImpl leafLeftTuple) {
                 foundLeafs.add( leafLeftTuple );
             }
             

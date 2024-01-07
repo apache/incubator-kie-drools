@@ -25,18 +25,19 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.TupleImpl;
 
 public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
     protected InternalWorkingMemory wm;
     protected LeftTupleSink         sink;
-    protected TupleSets<LeftTuple>  leftTuples;
+    protected TupleSets             leftTuples;
     protected Scenario              scenario;
     
     private boolean testStagedInsert;
     private boolean testStagedDelete;
     private boolean testStagedUpdate;    
 
-    public BaseLeftTuplesBuilder(Scenario scenario, TupleSets<LeftTuple> leftTuples) {
+    public BaseLeftTuplesBuilder(Scenario scenario, TupleSets leftTuples) {
         this.wm = scenario.getWorkingMemory();
         this.scenario = scenario;
         this.sink = scenario.getSinkNode();
@@ -73,8 +74,8 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
                 InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
                 LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
-                InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                LeftTuple leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
+                InternalFactHandle fh2        = wm.getFactHandle(p.getO2());
+                TupleImpl          leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink);
 
                 leftTuples.addInsert( leftTuple2 );                
             }
@@ -102,7 +103,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
                 LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                LeftTuple leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
+                TupleImpl leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
 
                 leftTuples.addDelete( leftTuple2 );                
             }
@@ -130,7 +131,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
                 LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                LeftTuple leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
+                TupleImpl leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
 
                 leftTuples.addUpdate( leftTuple2 );                
             }
@@ -139,7 +140,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
         return (T) this ;
     }
 
-    TupleSets<LeftTuple> get() {
+    TupleSets get() {
         return this.leftTuples;
     }
 

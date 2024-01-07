@@ -22,7 +22,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 
-public interface RightTuple extends Tuple {
+public interface RightTuple extends Tuple<TupleImpl> {
 
     LeftTuple getBlocked();
     void setBlocked( LeftTuple leftTuple );
@@ -32,8 +32,8 @@ public interface RightTuple extends Tuple {
     LeftTuple getTempBlocked();
     void setTempBlocked( LeftTuple tempBlocked );
 
-    RightTuple getTempNextRightTuple();
-    void setTempNextRightTuple( RightTuple tempNextRightTuple );
+    RightTupleImpl getTempNextRightTuple();
+    void setTempNextRightTuple( RightTupleImpl tempNextRightTuple );
 
     InternalFactHandle getFactHandleForEvaluation();
 

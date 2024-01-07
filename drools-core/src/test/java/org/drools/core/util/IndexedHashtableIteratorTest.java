@@ -21,7 +21,7 @@ package org.drools.core.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
@@ -42,7 +42,7 @@ public class IndexedHashtableIteratorTest {
         TupleList rtList = new TupleList();
         table[0] = rtList;        
         for ( int i = 0; i < numEntries; i++ ) {
-            RightTuple rightTuple = new RightTupleImpl();
+            TupleImpl rightTuple = new RightTupleImpl();
             rightTuple.setMemory( rtList );
             rtList.add( rightTuple );
         }
@@ -50,7 +50,7 @@ public class IndexedHashtableIteratorTest {
         rtList = new TupleList();
         table[2] = rtList;
         for ( int i = 0; i < numEntries; i++ ) {
-            RightTuple rightTuple = new RightTupleImpl();
+            TupleImpl rightTuple = new RightTupleImpl();
             rightTuple.setMemory( rtList );
             rtList.add( rightTuple );
         }
@@ -58,7 +58,7 @@ public class IndexedHashtableIteratorTest {
         rtList = new TupleList();
         table[2].setNext( rtList );
         for ( int i = 0; i < numEntries; i++ ) {
-            RightTuple rightTuple = new RightTupleImpl();
+            TupleImpl rightTuple = new RightTupleImpl();
             rightTuple.setMemory( rtList );
             rtList.add( rightTuple );
         }
@@ -66,7 +66,7 @@ public class IndexedHashtableIteratorTest {
         // test fast
         TupleIndexHashTable.FullFastIterator iter = new TupleIndexHashTable.FullFastIterator( table );
         List<RightTuple> list = new ArrayList<RightTuple>();
-        for ( RightTuple rightTuple = (RightTuple) iter.next( null ); rightTuple != null; rightTuple = (RightTupleImpl) iter.next((AbstractTuple) rightTuple) ) {
+        for ( RightTuple rightTuple = (RightTuple) iter.next( null ); rightTuple != null; rightTuple = (RightTupleImpl) iter.next((TupleImpl) rightTuple) ) {
             assertThat(contains(list, rightTuple)).isFalse(); // ensure no duplicate
             list.add( rightTuple );
         }

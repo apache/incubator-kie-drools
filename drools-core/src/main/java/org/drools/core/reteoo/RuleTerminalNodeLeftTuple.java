@@ -80,12 +80,12 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+                                     final TupleImpl leftTuple,
                                      final Sink sink) {
         super(factHandle, leftTuple, sink);
     }
 
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final TupleImpl leftTuple,
                                      final Sink sink,
                                      final PropagationContext pctx,
                                      final boolean leftTupleMemoryEnabled) {
@@ -95,18 +95,18 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
               leftTupleMemoryEnabled);
     }
 
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     RightTuple rightTuple,
+    public RuleTerminalNodeLeftTuple(final TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
                                      Sink sink) {
         super(leftTuple,
               rightTuple,
               sink);
     }
 
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
-                                     final LeftTuple currentLeftChild,
-                                     final LeftTuple currentRightChild,
+    public RuleTerminalNodeLeftTuple(final TupleImpl leftTuple,
+                                     final TupleImpl rightTuple,
+                                     final TupleImpl currentLeftChild,
+                                     final TupleImpl currentRightChild,
                                      final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,

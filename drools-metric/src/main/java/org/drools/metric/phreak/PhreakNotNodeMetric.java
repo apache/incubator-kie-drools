@@ -34,9 +34,9 @@ public class PhreakNotNodeMetric extends PhreakNotNode {
                        LeftTupleSink sink,
                        BetaMemoryImpl bm,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       TupleSets srcLeftTuples,
+                       TupleSets trgLeftTuples,
+                       TupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(notNode);

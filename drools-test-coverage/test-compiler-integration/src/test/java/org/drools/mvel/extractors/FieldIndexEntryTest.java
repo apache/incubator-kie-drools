@@ -24,7 +24,7 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.TupleImpl ;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
@@ -69,7 +69,7 @@ public class FieldIndexEntryTest {
                                                              stilton1 );
 
         // test add
-        RightTuple h1RightTuple = new RightTupleImpl( h1, null );
+        TupleImpl  h1RightTuple = new RightTupleImpl( h1, null );
         index.add( h1RightTuple );
 
         final Tuple entry1 = index.getFirst();
@@ -106,8 +106,8 @@ public class FieldIndexEntryTest {
         final InternalFactHandle h2 = new DefaultFactHandle( 2,
                                                              stilton2 );
         
-        RightTuple h1RightTuple = new RightTupleImpl( h1, null );
-        RightTuple h2RightTuple = new RightTupleImpl( h2, null );
+        TupleImpl  h1RightTuple = new RightTupleImpl( h1, null );
+        TupleImpl  h2RightTuple = new RightTupleImpl( h2, null );
 
         // test add
         index.add( h1RightTuple );
@@ -157,9 +157,9 @@ public class FieldIndexEntryTest {
         final InternalFactHandle h3 = new DefaultFactHandle( 3,
                                                              stilton3 );
 
-        RightTuple h1RightTuple = new RightTupleImpl( h1, null );
-        RightTuple h2RightTuple = new RightTupleImpl( h2, null );
-        RightTuple h3RightTuple = new RightTupleImpl( h3, null );
+        TupleImpl  h1RightTuple = new RightTupleImpl( h1, null );
+        TupleImpl  h2RightTuple = new RightTupleImpl( h2, null );
+        TupleImpl  h3RightTuple = new RightTupleImpl( h3, null );
         
         // test add
         index.add( h1RightTuple );

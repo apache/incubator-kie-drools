@@ -372,7 +372,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
                 final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                    internalMatch == null ? null : internalMatch.getRule(),
-                                                                                                   internalMatch == null ? null : internalMatch.getTuple().getTupleSink(),
+                                                                                                   internalMatch == null ? null : (TerminalNode) internalMatch.getTuple().getTupleSink(),
                                                                                                    handle, entryPoint, mask, modifiedClass, null);
 
                 if (typeConf.isTMSEnabled()) {

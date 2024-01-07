@@ -21,17 +21,17 @@ package org.drools.mvel.util;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.drools.base.rule.accessor.RightTupleValueExtractor;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.util.index.IndexSpec;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.TupleImpl ;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
@@ -40,7 +40,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.base.util.IndexedValueReader;
-import org.drools.core.util.Entry;
+import org.drools.core.util.SingleLinkedEntry;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.junit.Before;
@@ -84,12 +84,12 @@ public class RightTupleIndexHashTableTest {
 
         assertThat(map.size()).isEqualTo(0);
         assertThat(map.getFirst(new JoinNodeLeftTuple( cheddarHandle1,
-                null,
+                                                       new MockLeftTupleSink(0),
                 true ))).isNull();
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
-        RightTuple stiltonRighTuple = new RightTupleImpl( new DefaultFactHandle( 1,
+        TupleImpl  stiltonRighTuple = new RightTupleImpl( new DefaultFactHandle( 1,
                                                                              stilton1 ),
                                                       null );
 
@@ -104,7 +104,7 @@ public class RightTupleIndexHashTableTest {
                                                                          stilton2 );
 
         final Tuple tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle2,
-                                                             null,
+                                                                 new MockLeftTupleSink(0),
                                                              true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonRighTuple.getFactHandle());
         assertThat(tuple.getNext()).isNull();
@@ -150,7 +150,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
         Tuple tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle2,
-                                                       null,
+                                                           new MockLeftTupleSink(0),
                                                        true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
         assertThat(tuple.getNext()).isNull();
@@ -160,7 +160,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
                                                                          cheddar2 );
         tuple = map.getFirst( new JoinNodeLeftTuple( cheddarHandle2,
-                                                 null,
+                                                     new MockLeftTupleSink(0),
                                                  true ) );
         assertThat(tuple.getFactHandle()).isSameAs(cheddarHandle1);
         assertThat(tuple.getNext()).isNull();
@@ -214,8 +214,8 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
                                                                          stilton2 );
 
-        final Tuple tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle3,
-                                                           null,
+        final TupleImpl tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle3,
+                                                                     new MockLeftTupleSink(0),
                                                            true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
         assertThat(tuple.getNext().getFactHandle()).isSameAs(stiltonHandle2);
@@ -262,7 +262,7 @@ public class RightTupleIndexHashTableTest {
         assertThat(tablePopulationSize(map)).isEqualTo(1);
 
         // this table bucket will have two FieldIndexEntries, as they are actually two different values
-        Entry[] entries = getEntries( map );
+        SingleLinkedEntry[] entries = getEntries(map);
         assertThat(entries.length).isEqualTo(1);
         TupleList list = (TupleList) entries[0];
         assertThat(list.getFirst().getFactHandle()).isSameAs(ch2);
@@ -295,7 +295,7 @@ public class RightTupleIndexHashTableTest {
                                             35 );
         final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                          stilton1 );
-        RightTuple stiltonRightTuple1 = new RightTupleImpl( stiltonHandle1,
+        TupleImpl  stiltonRightTuple1 = new RightTupleImpl( stiltonHandle1,
                                                         null );
         map.add( stiltonRightTuple1 );
 
@@ -303,7 +303,7 @@ public class RightTupleIndexHashTableTest {
                                             35 );
         final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                          cheddar1 );
-        RightTuple cheddarRightTuple1 = new RightTupleImpl( cheddarHandle1,
+        TupleImpl  cheddarRightTuple1 = new RightTupleImpl( cheddarHandle1,
                                                         null );
         map.add( cheddarRightTuple1 );
 
@@ -311,7 +311,7 @@ public class RightTupleIndexHashTableTest {
                                             81 );
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
                                                                          stilton2 );
-        RightTuple stiltonRightTuple2 = new RightTupleImpl( stiltonHandle2,
+        TupleImpl  stiltonRightTuple2 = new RightTupleImpl( stiltonHandle2,
                                                         null );
         map.add( stiltonRightTuple2 );
 
@@ -438,7 +438,7 @@ public class RightTupleIndexHashTableTest {
 
         assertThat(map.size()).isEqualTo(16);
 
-        Entry[] table = map.getTable();
+        SingleLinkedEntry[] table = map.getTable();
         assertThat(table.length).isEqualTo(16);
 
         final Cheese feta = new Cheese( "feta",
@@ -465,7 +465,7 @@ public class RightTupleIndexHashTableTest {
 
     }
 
-    private RightTuple newRightTuple(int id,
+    private TupleImpl  newRightTuple(int id,
                                      Object object) {
         return new RightTupleImpl( new DefaultFactHandle( id,
                                                       object ),
@@ -529,8 +529,8 @@ public class RightTupleIndexHashTableTest {
     private int tablePopulationSize(final AbstractHashTable map) throws Exception {
         final Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
-        final Entry[] array = (Entry[]) field.get( map );
-        int size = 0;
+        final SingleLinkedEntry[] array = (SingleLinkedEntry[]) field.get(map);
+        int                       size  = 0;
         for ( int i = 0, length = array.length; i < length; i++ ) {
             if ( array[i] != null ) {
                 size++;
@@ -539,18 +539,18 @@ public class RightTupleIndexHashTableTest {
         return size;
     }
 
-    private Entry[] getEntries(final AbstractHashTable map) throws Exception {
+    private SingleLinkedEntry[] getEntries(final AbstractHashTable map) throws Exception {
         final Field field = AbstractHashTable.class.getDeclaredField( "table" );
         field.setAccessible( true );
         final List list = new ArrayList();
 
-        final Entry[] array = (Entry[]) field.get( map );
+        final SingleLinkedEntry[] array = (SingleLinkedEntry[]) field.get(map);
         for ( int i = 0, length = array.length; i < length; i++ ) {
             if ( array[i] != null ) {
                 list.add( array[i] );
             }
         }
-        return (Entry[]) list.toArray( new Entry[list.size()] );
+        return (SingleLinkedEntry[]) list.toArray(new SingleLinkedEntry[list.size()]);
     }
 
     @Test
@@ -574,7 +574,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
                                                                         stilton );
 
-        assertThat(map.getFirst(new JoinNodeLeftTuple( stiltonHandle, null, true ))).isNull();
+        assertThat(map.getFirst(new JoinNodeLeftTuple(stiltonHandle, new MockLeftTupleSink(0), true ))).isNull();
     }
 
 }

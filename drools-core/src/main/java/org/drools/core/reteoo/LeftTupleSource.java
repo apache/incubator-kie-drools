@@ -59,11 +59,10 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     protected LeftTupleSource         leftInput;
 
 
+    private ObjectTypeNodeId leftInputOtnId = ObjectTypeNodeId.DEFAULT_ID;
 
     /** The destination for <code>Tuples</code>. */
     protected LeftTupleSinkPropagator sink;
-
-    private transient ObjectTypeNode.Id leftInputOtnId;
 
     private int pathIndex;
 
@@ -97,7 +96,16 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     public abstract short getType();
 
-    public abstract LeftTuple createPeer(LeftTuple original);
+    public abstract LeftTuple createPeer(TupleImpl original);
+
+    public ObjectTypeNodeId getLeftInputOtnId() {
+        return leftInputOtnId;
+    }
+
+    public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
+        this.leftInputOtnId = leftInputOtnId;
+    }
+
 
     public void addTupleSink(final LeftTupleSink tupleSink) {
         addTupleSink(tupleSink, null);
@@ -309,14 +317,6 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     public BitMask getLeftNegativeMask() {
         return leftNegativeMask;
-    }
-
-    public ObjectTypeNode.Id getLeftInputOtnId() {
-        return leftInputOtnId;
-    }
-
-    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
-        this.leftInputOtnId = leftInputOtnId;
     }
 
     public ObjectType getObjectType() {

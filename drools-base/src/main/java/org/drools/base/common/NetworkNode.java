@@ -21,6 +21,7 @@ package org.drools.base.common;
 import java.io.Serializable;
 
 import org.drools.base.reteoo.BaseTerminalNode;
+import org.drools.core.reteoo.ObjectTypeNodeId;
 import org.kie.api.definition.rule.Rule;
 
 /**

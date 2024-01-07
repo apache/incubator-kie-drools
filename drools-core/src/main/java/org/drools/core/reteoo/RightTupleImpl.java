@@ -22,18 +22,12 @@ import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.util.index.TupleList;
 
-public class RightTupleImpl extends AbstractTuple implements RightTuple {
-
-    private TupleList            memory;
-
-    private LeftTuple            firstChild;
-    private LeftTuple            lastChild;
+public class RightTupleImpl extends TupleImpl implements RightTuple {
 
     private LeftTuple            blocked;
 
-    private RightTuple           tempNextRightTuple;
+    private RightTupleImpl       tempNextRightTuple;
     private LeftTuple            tempBlocked;
 
     private boolean              retracted;
@@ -42,17 +36,65 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     
     public RightTupleImpl(InternalFactHandle handle) {
         // This constructor is here for DSL testing
-        setFactHandle( handle );
+        this.handle =  handle;
     }
 
     public RightTupleImpl(InternalFactHandle handle,
-                      RightTupleSink sink) {
-        this( handle );
+                          RightTupleSink sink) {
         setSink(sink);
-
+        this.handle = handle;
         // add to end of RightTuples on handle
         handle.addLastRightTuple( this );
     }
+
+
+    // This constructor is for SubNetworkTuples
+    public RightTupleImpl(InternalFactHandle factHandle,
+                           Sink sink,
+                           boolean leftTupleMemoryEnabled) {
+        super(factHandle, sink, leftTupleMemoryEnabled);
+    }
+
+    public RightTupleImpl(InternalFactHandle factHandle,
+                           TupleImpl leftTuple,
+                           Sink sink) {
+        super(factHandle, leftTuple, sink);
+    }
+
+    public RightTupleImpl(TupleImpl leftTuple,
+                           Sink sink,
+                           PropagationContext pctx,
+                           boolean leftTupleMemoryEnabled) {
+        super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
+    }
+
+    public RightTupleImpl(TupleImpl leftTuple,
+                           TupleImpl rightTuple,
+                           Sink sink) {
+        super(leftTuple, rightTuple, sink);
+    }
+
+    public RightTupleImpl(TupleImpl leftTuple,
+                          TupleImpl rightTuple,
+                          Sink sink,
+                          boolean leftTupleMemoryEnabled) {
+        super( leftTuple,
+               rightTuple,
+               null,
+               null,
+               sink,
+               leftTupleMemoryEnabled );
+    }
+
+    public RightTupleImpl(TupleImpl leftTuple,
+                           TupleImpl rightTuple,
+                           TupleImpl currentLeftChild,
+                           TupleImpl currentRightChild,
+                           Sink sink,
+                           boolean leftTupleMemoryEnabled) {
+        super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
+    }
+
 
     // It's better to always cast to a concrete or abstract class to avoid
     // secondary super cache problem. See https://issues.redhat.com/browse/DROOLS-7521
@@ -64,7 +106,8 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
             return (RightTupleSink) sink;
         }
     }
-    
+
+
     public void reAdd() {
         getFactHandle().addLastRightTuple( this );
     }
@@ -81,10 +124,6 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         this.firstChild = null;
         this.lastChild = null;
         setSink(null);
-    }
-
-    public void unlinkFromLeftParent() {
-
     }
 
     public LeftTuple getBlocked() {
@@ -123,46 +162,6 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         leftTuple.clearBlocker();
     }
 
-    public TupleList getMemory() {
-        return memory;
-    }
-
-    public void setMemory(TupleList memory) {
-        this.memory = memory;
-    }
-
-    public RightTupleImpl getHandlePrevious() {
-        return (RightTupleImpl) handlePrevious;
-    }
-
-    public RightTupleImpl getHandleNext() {
-        return (RightTupleImpl) handleNext;
-    }
-
-    public LeftTuple getFirstChild() {
-        return firstChild;
-    }
-
-    public void setFirstChild(LeftTuple firstChild) {
-        this.firstChild = firstChild;
-    }
-
-    public LeftTuple getLastChild() {
-        return lastChild;
-    }
-
-    public void setLastChild(LeftTuple lastChild) {
-        this.lastChild = lastChild;
-    }
-    
-    public RightTupleImpl getStagedNext() {
-        return (RightTupleImpl) stagedNext;
-    }
-
-    public RightTupleImpl getStagedPrevious() {
-        return (RightTupleImpl) stagedPrevious;
-    }
-
     public LeftTuple getTempBlocked() {
         return tempBlocked;
     }
@@ -171,44 +170,14 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
         this.tempBlocked = tempBlocked;
     }
 
-    public RightTuple getTempNextRightTuple() {
+    public RightTupleImpl getTempNextRightTuple() {
         return tempNextRightTuple;
     }
 
-    public void setTempNextRightTuple(RightTuple tempNextRightTuple) {
+    public void setTempNextRightTuple(RightTupleImpl tempNextRightTuple) {
         this.tempNextRightTuple = tempNextRightTuple;
     }
 
-    public int hashCode() {
-        return getFactHandle().hashCode();
-    }
-
-    public String toString() {
-        return getFactHandle().toString() + "\n";
-    }
-
-    public boolean equals(Object object) {
-        if (!(object instanceof RightTupleImpl)) {
-            return false;
-        }
-
-        if ( object == this ) {
-            return true;
-        }
-
-        RightTupleImpl other = (RightTupleImpl) object;
-        // A ReteTuple is  only the same if it has the same hashCode, factId and parent
-        if (hashCode() != other.hashCode()) {
-            return false;
-        }
-
-        return getFactHandle() == other.getFactHandle();
-    }
-
-    public void clear() {
-        super.clear();
-        this.memory = null;
-    }
 
     public void clearStaged() {
         super.clearStaged();
@@ -217,53 +186,8 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     }
 
     @Override
-    public Object getObject( int pattern ) {
-        return pattern == 0 ? getFactHandle().getObject() : null;
-    }
-
-    @Override
-    public int size() {
-        return 1;
-    }
-
-    @Override
-    public int getIndex() {
-        return 0;
-    }
-
-    @Override
-    public Object[] toObjects(boolean reverse) {
-        return new Object[] { getFactHandle().getObject() };
-    }
-
-    @Override
-    public InternalFactHandle get( int pattern ) {
-        return pattern == 0 ? getFactHandle() : null;
-    }
-
-    @Override
-    public InternalFactHandle[] toFactHandles() {
-        return new InternalFactHandle[] { getFactHandle() };
-    }
-
-    @Override
-    public Tuple getParent() {
-        return null;
-    }
-
-    @Override
-    public Tuple getSubTuple( int elements ) {
-        return elements == 1 ? this : null;
-    }
-
-    @Override
-    public ObjectTypeNode.Id getInputOtnId() {
-        return getSink() != null ? getTupleSink().getRightInputOtnId() : null;
-    }
-
-    @Override
-    public LeftTupleSource getTupleSource() {
-        throw new UnsupportedOperationException();
+    public ObjectTypeNodeId getInputOtnId() {
+        return ((RightTupleSink)getSink()).getRightInputOtnId();
     }
 
     @Override
@@ -285,6 +209,10 @@ public class RightTupleImpl extends AbstractTuple implements RightTuple {
     }
 
     public InternalFactHandle getFactHandleForEvaluation() {
-        return getFactHandle();
+        return handle;
+    }
+
+    public LeftTupleSource getTupleSource() {
+        return getSink() != null ? ((LeftTupleNode) getTupleSink()).getLeftTupleSource() : null;
     }
 }

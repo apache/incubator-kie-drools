@@ -33,11 +33,11 @@ public class HashTableIterator
 
     private static final long serialVersionUID = 510l;
 
-    private AbstractHashTable hashTable;
-    private Entry[]           table;
-    public int               row;
-    private int               length;
-    private Entry             entry;
+    private AbstractHashTable   hashTable;
+    private SingleLinkedEntry[] table;
+    public  int                 row;
+    private int                 length;
+    private SingleLinkedEntry   entry;
 
     public HashTableIterator() {
     }
@@ -50,10 +50,10 @@ public class HashTableIterator
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         hashTable = (AbstractHashTable) in.readObject();
-        table = (Entry[]) in.readObject();
+        table = (SingleLinkedEntry[]) in.readObject();
         row = in.readInt();
         length = in.readInt();
-        entry = (Entry) in.readObject();
+        entry = (SingleLinkedEntry) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

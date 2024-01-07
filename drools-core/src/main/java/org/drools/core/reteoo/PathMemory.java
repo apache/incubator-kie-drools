@@ -28,11 +28,11 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PathMemory extends AbstractBaseLinkedListNode<Memory>
+public class PathMemory extends AbstractLinkedListNode<Memory>
         implements
         Serializable, Memory {
 

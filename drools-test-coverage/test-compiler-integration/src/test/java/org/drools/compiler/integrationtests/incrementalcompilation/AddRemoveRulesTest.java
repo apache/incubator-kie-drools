@@ -32,6 +32,7 @@ import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -1418,7 +1419,7 @@ public class AddRemoveRulesTest {
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            final LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
+            final TupleImpl lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
             assertThat(fh1.getFirstLeftTuple().getFirstChild().getLastChild()).isSameAs(lt);
             assertThat(lt.getPeer()).isNull();
             assertThat(lt.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
@@ -1445,7 +1446,7 @@ public class AddRemoveRulesTest {
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            final LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
+            final TupleImpl lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
             assertThat(fh1.getFirstLeftTuple().getFirstChild().getLastChild()).isSameAs(lt);
             assertThat(lt.getPeer()).isNull();
             assertThat(lt.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
@@ -1471,13 +1472,13 @@ public class AddRemoveRulesTest {
             kieSession.fireAllRules();
 
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
-            final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
-            final LeftTuple lt = fh1.getFirstLeftTuple().getFirstChild();
+            final InternalFactHandle fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
+            final TupleImpl          lt  = fh1.getFirstLeftTuple().getFirstChild();
             assertThat(fh1.getFirstLeftTuple().getLastChild()).isSameAs(lt);
             assertThat(lt.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
             assertThat(lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
 
-            final LeftTuple peer = lt.getPeer();
+            final TupleImpl peer = lt.getPeer();
             assertThat(peer.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
             assertThat(peer.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE3_NAME))).isTrue();
         } finally {
@@ -1504,11 +1505,11 @@ public class AddRemoveRulesTest {
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
             final InternalFactHandle  fh3 = (InternalFactHandle) kieSession.getFactHandle(5);
-            final LeftTuple lt1 = fh1.getFirstLeftTuple();
+            final TupleImpl lt1 = fh1.getFirstLeftTuple();
 
-            final LeftTuple lt1_1 = lt1.getFirstChild();
-            final LeftTuple lt1_2 = lt1_1.getHandleNext();
-            final LeftTuple lt1_3= lt1_2.getHandleNext();
+            final TupleImpl lt1_1 = lt1.getFirstChild();
+            final TupleImpl lt1_2 = lt1_1.getHandleNext();
+            final TupleImpl lt1_3= lt1_2.getHandleNext();
             assertThat(lt1_1).isNotNull();
             assertThat(lt1_2).isNotNull();
             assertThat(lt1_3).isNotNull();
@@ -1530,12 +1531,12 @@ public class AddRemoveRulesTest {
             assertThat(lt1_3.getPeer()).isNull();
 
 
-            final RightTuple rt1 = fh3.getFirstRightTuple();
-            final LeftTuple rt1_1 = rt1.getLastChild();
+            final TupleImpl rt1 = fh3.getFirstRightTuple();
+            final TupleImpl rt1_1 = rt1.getLastChild();
             assertThat(rt1_1).isSameAs(lt1_1);
 
-            final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
-            final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
+            final TupleImpl rt1_2 = rt1_1.getRightParentPrevious();
+            final TupleImpl rt1_3 = rt1_2.getRightParentPrevious();
 
             assertThat(rt1_1).isNotNull();
             assertThat(rt1_2).isNotNull();
@@ -1579,11 +1580,11 @@ public class AddRemoveRulesTest {
 
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
             final InternalFactHandle  fh3 = (InternalFactHandle) kieSession.getFactHandle(5);
-            final LeftTuple lt1 = fh1.getFirstLeftTuple();
+            final TupleImpl lt1 = fh1.getFirstLeftTuple();
 
-            final LeftTuple lt1_1 = lt1.getFirstChild();
-            final LeftTuple lt1_2 = lt1_1.getHandleNext();
-            final LeftTuple lt1_3= lt1_2.getHandleNext();
+            final TupleImpl lt1_1 = lt1.getFirstChild();
+            final TupleImpl lt1_2 = lt1_1.getHandleNext();
+            final TupleImpl lt1_3= lt1_2.getHandleNext();
             assertThat(lt1_1).isNotNull();
             assertThat(lt1_2).isNotNull();
             assertThat(lt1_3).isNotNull();
@@ -1605,12 +1606,12 @@ public class AddRemoveRulesTest {
             assertThat(lt1_3.getPeer()).isNull();
 
 
-            final RightTuple rt1 = fh3.getFirstRightTuple();
-            final LeftTuple rt1_1 = rt1.getLastChild();
+            final TupleImpl rt1 = fh3.getFirstRightTuple();
+            final TupleImpl rt1_1 = rt1.getLastChild();
             assertThat(rt1_1).isSameAs(lt1_1);
 
-            final LeftTuple rt1_2 = rt1_1.getRightParentPrevious();
-            final LeftTuple rt1_3 = rt1_2.getRightParentPrevious();
+            final TupleImpl rt1_2 = rt1_1.getRightParentPrevious();
+            final TupleImpl rt1_3 = rt1_2.getRightParentPrevious();
 
             assertThat(rt1_1).isNotNull();
             assertThat(rt1_2).isNotNull();

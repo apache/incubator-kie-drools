@@ -18,27 +18,29 @@
  */
 package org.drools.core.util;
 
+import org.drools.core.reteoo.TupleImpl;
+import org.drools.core.util.index.TupleList;
+
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  *
  * @see LinkedList
  */
-public interface LinkedListNode<T extends LinkedListNode> extends Entry<T> {
+public interface DoubleLinkedEntry<T extends DoubleLinkedEntry<T>> extends SingleLinkedEntry<T> {
 
     /**
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
      */
-    public T getPrevious();
+    T getPrevious();
 
     /**
      * Sets the previous node
      * @param previous
      *      The previous LinkedListNode
      */
-    public void setPrevious(T previous);
+    void setPrevious(T previous);
 
-    void nullPrevNext();
-
+    void clear();
 }

@@ -27,68 +27,91 @@ import org.drools.core.common.ReteEvaluator;
 
 public class SubnetworkTuple extends LeftTuple implements RightTuple {
 
-    private LeftTuple blocked;
-    private LeftTuple tempBlocked;
-
-    private RightTuple tempNextRightTuple;
-
     private static final AtomicInteger idGenerator = new AtomicInteger( 0 );
     private InternalFactHandle factHandleForEvaluation = new DefaultFactHandle(idGenerator.decrementAndGet(), this);
 
+    private LeftTuple            blocked;
+
+    private RightTupleImpl       tempNextRightTuple;
+    private LeftTuple            tempBlocked;
+
+    private boolean              retracted;
+
     private boolean stagedOnRight;
     private short stagedTypeOnRight;
-    private Tuple stagedNextOnRight;
-    private Tuple stagedPreviousOnRight;
+    private TupleImpl stagedNextOnRight;
+    private TupleImpl stagedPreviousOnRight;
 
 
     public SubnetworkTuple() {
         // constructor needed for serialisation
+        super();
     }
 
-    // ------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------
-    public SubnetworkTuple(final InternalFactHandle factHandle,
-                           final Sink sink,
-                           final boolean leftTupleMemoryEnabled) {
+
+    public SubnetworkTuple(InternalFactHandle factHandle,
+                     Sink sink,
+                     boolean leftTupleMemoryEnabled) {
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
-    public SubnetworkTuple(final InternalFactHandle factHandle,
-                           final LeftTuple leftTuple,
-                           final Sink sink) {
-        super( factHandle, leftTuple, sink );
+    public SubnetworkTuple(InternalFactHandle factHandle,
+                     TupleImpl leftTuple,
+                     Sink sink) {
+        super(factHandle, leftTuple, sink);
     }
 
-    public SubnetworkTuple(final LeftTuple leftTuple,
-                           final Sink sink,
-                           final PropagationContext pctx,
-                           final boolean leftTupleMemoryEnabled) {
+    public SubnetworkTuple(TupleImpl leftTuple,
+                     Sink sink,
+                     PropagationContext pctx,
+                     boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public SubnetworkTuple(final LeftTuple leftTuple,
-                           final RightTuple rightTuple,
-                           final Sink sink) {
+    public SubnetworkTuple(TupleImpl leftTuple,
+                     TupleImpl rightTuple,
+                     Sink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
-    public SubnetworkTuple(final LeftTuple leftTuple,
-                           final RightTuple rightTuple,
-                           final LeftTuple currentLeftChild,
-                           final LeftTuple currentRightChild,
-                           final Sink sink,
-                           final boolean leftTupleMemoryEnabled) {
-        super(leftTuple,
-              rightTuple,
-              currentLeftChild,
-              currentRightChild,
-              sink,
-              leftTupleMemoryEnabled);
+    public SubnetworkTuple(TupleImpl leftTuple,
+                     TupleImpl rightTuple,
+                     TupleImpl currentLeftChild,
+                     TupleImpl currentRightChild,
+                     Sink sink,
+                     boolean leftTupleMemoryEnabled) {
+        super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
 
     public InternalFactHandle getFactHandleForEvaluation() {
         return factHandleForEvaluation;
+    }
+
+    public boolean isStagedOnRight() {
+        return stagedOnRight;
+    }
+
+    public void setStagedOnRight() {
+        this.stagedOnRight = true;
+    }
+
+    public void prepareStagingOnRight() {
+        super.clearStaged();
+        setStagedOnRight();
+        stagedTypeOnRight = Tuple.NONE;
+    }
+
+
+    public void unlinkFromRightParent() {
+        super.unlinkFromRightParent();
+//        getFactHandle().removeRightTuple( this );
+//        setFactHandle( null );
+//        this.handlePrevious = null;
+//        this.handleNext = null;
+        this.blocked = null;
+//        setPrevious( null );
+//        setNext( null );
+//        setSink(null);
     }
 
     public LeftTuple getBlocked() {
@@ -135,32 +158,21 @@ public class SubnetworkTuple extends LeftTuple implements RightTuple {
         this.tempBlocked = tempBlocked;
     }
 
-    public RightTuple getTempNextRightTuple() {
+    public RightTupleImpl getTempNextRightTuple() {
         return tempNextRightTuple;
     }
 
-    public void setTempNextRightTuple(RightTuple tempNextRightTuple) {
+    public void setTempNextRightTuple(RightTupleImpl tempNextRightTuple) {
         this.tempNextRightTuple = tempNextRightTuple;
     }
 
-    public boolean isStagedOnRight() {
-        return stagedOnRight;
-    }
-
-    public void setStagedOnRight() {
-        this.stagedOnRight = true;
-    }
-
-    public void prepareStagingOnRight() {
-        super.clearStaged();
-        setStagedOnRight();
-        stagedTypeOnRight = Tuple.NONE;
-    }
 
     @Override
     public void clearStaged() {
         super.clearStaged();
         stagedOnRight = false;
+        this.tempNextRightTuple = null;
+        this.tempBlocked = null;
     }
 
     @Override

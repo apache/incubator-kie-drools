@@ -34,6 +34,7 @@ import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 
@@ -61,7 +62,7 @@ public interface MarshallerReaderContext extends ObjectInput {
     Object getReaderForInt(int i);
     void setReaderForInt(int i, Object reader);
 
-    InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator, LeftTuple leftTuple, Object result, int nodeId);
+    InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator, TupleImpl leftTuple, Object result, int nodeId);
     InternalFactHandle createAsyncNodeHandle( Tuple leftTuple, ReteEvaluator reteEvaluator, Object object, int nodeId, ObjectTypeConf objectTypeConf );
     QueryElementFactHandle createQueryResultHandle( Tuple leftTuple, Object[] objects, int nodeId );
     InternalFactHandle createQueryHandle(Tuple leftTuple, ReteEvaluator reteEvaluator, int nodeId );

@@ -26,6 +26,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 
 public abstract class AbstractQueryViewListener implements InternalViewChangedEventListener {
@@ -42,9 +43,9 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
 
     public abstract FactHandle getHandle(FactHandle originalHandle);
 
-    public void rowAdded(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator) {
+    public void rowAdded(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator) {
         FactHandle[] handles = new FactHandle[((LeftTupleNode)tuple.getTupleSink()).getObjectCount()];
-        LeftTuple entry = (LeftTuple) tuple.skipEmptyHandles();
+        TupleImpl    entry   = (LeftTuple) tuple.skipEmptyHandles();
 
         // Add all the FactHandles
         int i = handles.length-1;
@@ -58,10 +59,10 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
 
-    public void rowRemoved(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowRemoved(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator ) {
     }
 
-    public void rowUpdated(RuleImpl rule, LeftTuple tuple, ReteEvaluator reteEvaluator ) {
+    public void rowUpdated(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator ) {
     }
 
 }

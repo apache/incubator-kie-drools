@@ -33,6 +33,7 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
 import static org.drools.core.phreak.PhreakFromNode.isAllowed;
@@ -55,7 +56,7 @@ public class ReactiveObjectUtil {
                 continue;
             }
             PropagationContext propagationContext = tuple.getPropagationContext();
-            ReactiveFromNode node = tuple.getTupleSink();
+            ReactiveFromNode node = (ReactiveFromNode) tuple.getTupleSink();
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
             ReteEvaluator reteEvaluator =((InternalFactHandle) propagationContext.getFactHandle()).getReteEvaluator();
@@ -106,9 +107,9 @@ public class ReactiveObjectUtil {
                            mem.getStagedLeftTuples(),
                            null );
             } else {
-                LeftTuple childLeftTuple = ((LeftTuple)leftTuple).getFirstChild();
+                TupleImpl childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
-                    LeftTuple next = childLeftTuple.getHandleNext();
+                    TupleImpl next = childLeftTuple.getHandleNext();
                     if ( object == childLeftTuple.getFactHandle().getObject() ) {
                         deleteChildLeftTuple( propagationContext, mem.getStagedLeftTuples(), null, childLeftTuple );
                     }

@@ -33,7 +33,9 @@ import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.EvalNodeLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.index.TupleList;
+import org.drools.core.util.index.TupleListWithContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.IOException;
@@ -113,8 +115,8 @@ public class MVELGroupByAccumulate extends Accumulate {
     public Object accumulate(Object workingMemoryContext, Object context,
             BaseTuple match, FactHandle handle, ValueResolver valueResolver) {
         AccumulateNode.GroupByContext groupByContext = (AccumulateNode.GroupByContext) context;
-        TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
-                (Tuple) match, getKey( (Tuple) match, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
+        TupleListWithContext<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
+                                                                                         match, getKey( (Tuple) match, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
 
         return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, valueResolver);
     }
@@ -122,7 +124,7 @@ public class MVELGroupByAccumulate extends Accumulate {
     @Override
     public Object accumulate(Object workingMemoryContext, BaseTuple match, FactHandle handle,
             Object groupByContext, Object tupleList, ValueResolver valueResolver) {
-        TupleList<AccumulateContextEntry> list = (TupleList<AccumulateContextEntry>) tupleList;
+        TupleListWithContext<AccumulateContextEntry> list = (TupleListWithContext<AccumulateContextEntry>) tupleList;
         ((AccumulateNode.GroupByContext)groupByContext).moveToPropagateTupleList( list);
         return innerAccumulate.accumulate(workingMemoryContext, list.getContext(), match, handle, valueResolver);
     }
@@ -130,14 +132,14 @@ public class MVELGroupByAccumulate extends Accumulate {
     @Override
     public boolean tryReverse(Object workingMemoryContext, Object context, BaseTuple leftTuple, FactHandle handle,
             BaseTuple match, ValueResolver valueResolver) {
-        Tuple tupleMatch = (Tuple) match;
-        TupleList<AccumulateContextEntry> memory = tupleMatch.getMemory();
+        TupleImpl tupleMatch = (TupleImpl) match;
+        TupleListWithContext<AccumulateContextEntry> memory = (TupleListWithContext<AccumulateContextEntry>) tupleMatch.getMemory();
         AccumulateContextEntry entry = memory.getContext();
         boolean reversed = innerAccumulate.tryReverse(workingMemoryContext, entry, leftTuple, handle, match, valueResolver);
 
         if (reversed) {
             AccumulateNode.GroupByContext groupByContext = (AccumulateNode.GroupByContext) context;
-            groupByContext.moveToPropagateTupleList( tupleMatch.getMemory() );
+            groupByContext.moveToPropagateTupleList( memory );
 
             memory.remove( tupleMatch );
             if ( memory.isEmpty() ) {

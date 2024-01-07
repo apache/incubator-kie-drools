@@ -25,7 +25,7 @@ public class EvalNodeLeftTuple extends LeftTuple {
 
     private static final long serialVersionUID = 540l;
 
-    private RightTuple blocker;
+    private RightTupleImpl blocker;
 
     private LeftTuple blockedPrevious;
 
@@ -47,12 +47,12 @@ public class EvalNodeLeftTuple extends LeftTuple {
     }
 
     public EvalNodeLeftTuple(final InternalFactHandle factHandle,
-                             final LeftTuple leftTuple,
+                             final TupleImpl leftTuple,
                              final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+    public EvalNodeLeftTuple(final TupleImpl leftTuple,
                              final Sink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
@@ -62,16 +62,16 @@ public class EvalNodeLeftTuple extends LeftTuple {
               leftTupleMemoryEnabled);
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
-                             RightTuple rightTuple,
+    public EvalNodeLeftTuple(final TupleImpl leftTuple,
+                             TupleImpl rightTuple,
                              Sink sink) {
         super(leftTuple,
               rightTuple,
               sink);
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
-                             final RightTuple rightTuple,
+    public EvalNodeLeftTuple(final TupleImpl leftTuple,
+                             final TupleImpl rightTuple,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
@@ -82,10 +82,10 @@ public class EvalNodeLeftTuple extends LeftTuple {
              leftTupleMemoryEnabled);
     }
 
-    public EvalNodeLeftTuple(final LeftTuple leftTuple,
-                             final RightTuple rightTuple,
-                             final LeftTuple currentLeftChild,
-                             final LeftTuple currentRightChild,
+    public EvalNodeLeftTuple(final TupleImpl leftTuple,
+                             final TupleImpl rightTuple,
+                             final TupleImpl currentLeftChild,
+                             final TupleImpl currentRightChild,
                              final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -121,14 +121,14 @@ public class EvalNodeLeftTuple extends LeftTuple {
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
-    public void setBlocker(RightTuple blocker) {
+    public void setBlocker(RightTupleImpl blocker) {
         this.blocker = blocker;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#getBlocker()
      */
-    public RightTuple getBlocker() {
+    public RightTupleImpl getBlocker() {
         return this.blocker;
     }
 

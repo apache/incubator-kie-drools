@@ -23,19 +23,19 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 
-public class BetaMemoryImpl<C> extends AbstractBaseLinkedListNode<Memory>
+public class BetaMemoryImpl<C> extends AbstractLinkedListNode<Memory>
         implements
         SegmentNodeMemory, BetaMemory<C> {
 
-    private static final long serialVersionUID = 510l;
-    private TupleMemory                leftTupleMemory;
-    private TupleMemory                rightTupleMemory;
-    private TupleSets<RightTuple>      stagedRightTuples;
-    private C                          context;
+    private static final long      serialVersionUID = 510l;
+    private              TupleMemory leftTupleMemory;
+    private              TupleMemory rightTupleMemory;
+    private              TupleSets stagedRightTuples;
+    private              C         context;
     // the node type this memory belongs to
-    private short                      nodeType;
+    private              short     nodeType;
     private SegmentMemory              segmentMemory;
     private long                       nodePosMaskBit;
     private int                        counter;
@@ -50,16 +50,16 @@ public class BetaMemoryImpl<C> extends AbstractBaseLinkedListNode<Memory>
                           final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new TupleSetsImpl<>();
+        this.stagedRightTuples = new TupleSetsImpl();
         this.context = context;
         this.nodeType = nodeType;
     }
 
-    public TupleSets<RightTuple> getStagedRightTuples() {
+    public TupleSets getStagedRightTuples() {
         return stagedRightTuples;
     }
 
-    public void setStagedRightTuples(TupleSets<RightTuple> stagedRightTuples) {
+    public void setStagedRightTuples(TupleSets stagedRightTuples) {
         this.stagedRightTuples = stagedRightTuples;
     }
 

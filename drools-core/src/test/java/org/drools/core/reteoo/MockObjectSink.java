@@ -48,7 +48,7 @@ public class MockObjectSink
         this.asserted.add( new Object[]{factHandle, context, reteEvaluator} );
     }
 
-    public void retractRightTuple(final RightTuple rightTuple,
+    public void retractRightTuple(final TupleImpl rightTuple,
                               final PropagationContext context,
                               final ReteEvaluator reteEvaluator) {
         this.retracted.add( new Object[]{rightTuple.getFactHandle(), context, reteEvaluator} );
@@ -125,7 +125,7 @@ public class MockObjectSink
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              ReteEvaluator reteEvaluator) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
+        TupleImpl rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
         while ( rightTuple != null ) {
             modifyPreviousTuples.removeRightTuple(RuleBasePartitionId.MAIN_PARTITION);
             rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
@@ -134,7 +134,7 @@ public class MockObjectSink
         
     }
 
-    public void modifyRightTuple(RightTuple rightTuple,
+    public void modifyRightTuple(TupleImpl rightTuple,
                                  PropagationContext context,
                                  ReteEvaluator reteEvaluator) {
         this.updated.add( new Object[]{rightTuple, context, reteEvaluator} );
@@ -171,10 +171,6 @@ public class MockObjectSink
     @Override
     public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
         return false;
-    }
-
-    public ObjectTypeNode.Id getRightInputOtnId() {
-        return null;
     }
 
     public boolean thisNodeEquals(final Object object) {

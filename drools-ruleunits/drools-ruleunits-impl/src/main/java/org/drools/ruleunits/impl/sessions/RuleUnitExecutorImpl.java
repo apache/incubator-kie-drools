@@ -404,7 +404,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
                 // This handle has been insert from a datasource, so remove from it
                 ((RuleUnitDefaultFactHandle) h).getDataStore().delete((RuleUnitDefaultFactHandle) h,
                         knowledgeHelper.getActivation().getRule(),
-                        knowledgeHelper.getActivation().getTuple().getTupleSink(),
+                        (TerminalNode) knowledgeHelper.getActivation().getTuple().getTupleSink(),
                         fhState);
                 return;
             }
@@ -416,7 +416,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
             h.getEntryPoint(reteEvaluator).delete(handle,
                     knowledgeHelper.getActivation().getRule(),
-                    knowledgeHelper.getActivation().getTuple().getTupleSink(),
+                    (TerminalNode) knowledgeHelper.getActivation().getTuple().getTupleSink(),
                     fhState);
         }
 

@@ -32,6 +32,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class QueryElementFactHandle
@@ -195,17 +196,17 @@ public class QueryElementFactHandle
     }
 
     
-    public LeftTuple getFirstLeftTuple() {
+    public TupleImpl getFirstLeftTuple() {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     
-    public RightTuple getFirstRightTuple() {
+    public TupleImpl getFirstRightTuple() {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     
-    public RightTuple getLastRightTuple() {
+    public TupleImpl getLastRightTuple() {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -226,15 +227,15 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addFirstLeftTuple(LeftTuple leftTuple) {
+    public void addFirstLeftTuple(TupleImpl leftTuple) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addLastLeftTuple( LeftTuple leftTuple ) {
+    public void addLastLeftTuple( TupleImpl leftTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void removeLeftTuple( LeftTuple leftTuple ) {
+    public void removeLeftTuple( TupleImpl leftTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -246,15 +247,15 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addLastRightTuple( RightTuple rightTuple ) {
+    public void addLastRightTuple( TupleImpl rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addTupleInPosition( Tuple rightTuple ) {
+    public void addTupleInPosition( TupleImpl rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void removeRightTuple( RightTuple rightTuple ) {
+    public void removeRightTuple( TupleImpl rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
@@ -273,13 +274,13 @@ public class QueryElementFactHandle
         return false;
     }
 
-    public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
+    public void forEachRightTuple( Consumer<TupleImpl> rightTupleConsumer) { }
 
     @Override
-    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer) { }
+    public void forEachLeftTuple( Consumer<TupleImpl> leftTupleConsumer) { }
 
     @Override
-    public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
+    public LeftTuple findFirstLeftTuple(Predicate<TupleImpl> lefttTuplePredicate ) {
         return null;
     }
 }

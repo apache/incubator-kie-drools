@@ -220,7 +220,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
     public static void removeRightTuplesMatchingOTN( PropagationContext pctx, ReteEvaluator reteEvaluator, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node, int partition ) {
         // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partition);
+        TupleImpl rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         while ( rightTuple != null &&
                 ((BaseNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
             modifyPreviousTuples.removeRightTuple(partition);
@@ -232,12 +232,12 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
 
 
         while ( true ) {
-            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partition);
-            ObjectTypeNode otn = null;
+            TupleImpl      leftTuple = modifyPreviousTuples.peekLeftTuple(partition);
+            ObjectTypeNode otn       = null;
             if (leftTuple != null) {
-                LeftTupleSink leftTupleSink = leftTuple.getTupleSink();
+                Sink leftTupleSink = leftTuple.getTupleSink();
                 if (leftTupleSink instanceof LeftTupleSource ) {
-                    otn = leftTupleSink.getLeftTupleSource().getObjectTypeNode();
+                    otn = ((LeftTupleSource)leftTupleSink).getLeftTupleSource().getObjectTypeNode();
                 } else if (leftTupleSink instanceof RuleTerminalNode ) {
                     otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();
                 }

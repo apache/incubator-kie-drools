@@ -126,27 +126,27 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+                                     final TupleImpl leftTuple,
                                      final Sink sink) {
         return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
                                      Sink sink) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
+                                     TupleImpl currentLeftChild,
+                                     TupleImpl currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
@@ -171,7 +171,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     @Override
-    public LeftTuple createPeer(LeftTuple original) {
+    public LeftTuple createPeer(TupleImpl original) {
         return null;
     }
 }

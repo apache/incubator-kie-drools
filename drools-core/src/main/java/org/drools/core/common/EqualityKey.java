@@ -31,7 +31,8 @@ import org.drools.core.util.LinkedList;
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  */
-public abstract class EqualityKey extends LinkedList<DefaultFactHandle> implements Externalizable {
+public abstract class EqualityKey extends LinkedList<DefaultFactHandle>
+        implements Externalizable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 

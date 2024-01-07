@@ -46,7 +46,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) sinks[i];
             RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
-            LeftTuple leftTuple = rtn.createLeftTuple(factHandle, true );
+            TupleImpl leftTuple = rtn.createLeftTuple(factHandle, true );
             leftTuple.setPropagationContext( propagationContext );
 
             if ( rtn.getRule().getAutoFocus() && !agendaItem.getAgendaGroup().isActive() ) {
@@ -63,14 +63,14 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         NetworkNode[] sinks = getSinks();
 
         for (int i = 0; i < sinks.length; i++) {
-            TerminalNode rtn = ( TerminalNode ) sinks[i];
-            ObjectTypeNode.Id otnId = rtn.getLeftInputOtnId();
-            LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
+            TerminalNode     rtn       = ( TerminalNode ) sinks[i];
+            ObjectTypeNodeId otnId     = rtn.getLeftInputOtnId();
+            TupleImpl        leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 
             RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
             RuleExecutor executor = agendaItem.getRuleExecutor();
 
-            if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
+            if ( leftTuple != null && leftTuple.getInputOtnId().equals(otnId) ) {
                 modifyPreviousTuples.removeLeftTuple(partitionId);
                 leftTuple.reAdd();
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
@@ -91,7 +91,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     }
 
     @Override
-    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
+    public void retractLeftTuple(TupleImpl leftTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
         TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();

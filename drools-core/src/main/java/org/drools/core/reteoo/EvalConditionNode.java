@@ -36,7 +36,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.kie.api.definition.rule.Rule;
 
 public class EvalConditionNode extends LeftTupleSource
@@ -140,7 +140,7 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     @Override
-    public LeftTuple createPeer(LeftTuple original) {
+    public LeftTuple createPeer(TupleImpl original) {
         EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
         peer.initPeer(original, this);
         original.setPeer( peer );
@@ -199,33 +199,33 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+                                     final TupleImpl leftTuple,
                                      final Sink sink) {
         return new EvalNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new EvalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
                                      Sink sink) {
         return new EvalNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
+                                     TupleImpl currentLeftChild,
+                                     TupleImpl currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }        
     
-    public static class EvalMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class EvalMemory extends AbstractLinkedListNode<Memory>
         implements
         Externalizable,
         Memory {

@@ -33,19 +33,19 @@ public class ModifyPreviousTuples {
         this.linkedTuples = linkedTuples;
     }
     
-    public LeftTuple peekLeftTuple(int partition) {
+    public TupleImpl peekLeftTuple(int partition) {
         return linkedTuples.getFirstLeftTuple(partition);
     }
 
-    public LeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
+    public TupleImpl peekLeftTuple(RuleBasePartitionId partitionId) {
         return linkedTuples.getFirstLeftTuple(partitionId);
     }
 
-    public RightTuple peekRightTuple(int partition) {
+    public TupleImpl peekRightTuple(int partition) {
         return linkedTuples.getFirstRightTuple(partition);
     }
 
-    public RightTuple peekRightTuple(RuleBasePartitionId partitionId) {
+    public TupleImpl peekRightTuple(RuleBasePartitionId partitionId) {
         return linkedTuples.getFirstRightTuple(partitionId);
     }
 
@@ -71,7 +71,7 @@ public class ModifyPreviousTuples {
         linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, reteEvaluator, rt) );
     }
 
-    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
+    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl leftTuple) {
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
@@ -85,8 +85,8 @@ public class ModifyPreviousTuples {
         }
     }
 
-    public void doRightDelete(PropagationContext pctx, ReteEvaluator reteEvaluator, RightTuple rightTuple) {
+    public void doRightDelete(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        rightTuple.retractTuple( pctx, reteEvaluator );
+        ((RightTupleImpl)rightTuple).retractTuple( pctx, reteEvaluator );
     }
 }

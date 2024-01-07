@@ -29,7 +29,7 @@ import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.constraint.BetaConstraint;
-import org.drools.core.util.Entry;
+import org.drools.core.util.SingleLinkedEntry;
 import org.drools.core.util.index.IndexMemory;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.drl.parser.impl.Operator;
@@ -108,13 +108,13 @@ public abstract class AbstractTupleIndexHashTableIteratorTest {
     }
 
     protected List createTableIndexListForAssertion(TupleIndexHashTable hashTable) {
-        Entry[] table = hashTable.getTable();
-        List list = new ArrayList();
+        SingleLinkedEntry[] table = hashTable.getTable();
+        List                list  = new ArrayList();
         for (int i = 0; i < table.length; i++) {
             if (table[i] != null) {
                 List entries = new ArrayList();
                 entries.add(i);
-                Entry entry = table[i];
+                SingleLinkedEntry entry = table[i];
                 while (entry != null) {
                     entries.add(entry);
                     entry = entry.getNext();

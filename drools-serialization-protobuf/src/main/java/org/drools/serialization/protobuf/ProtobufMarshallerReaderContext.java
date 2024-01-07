@@ -40,6 +40,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.serialization.protobuf.marshalling.ObjectMarshallingStrategyStoreImpl;
@@ -277,7 +278,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
 
     @Override
     public InternalFactHandle createAccumulateHandle(EntryPointId entryPointId, ReteEvaluator reteEvaluator,
-                                                     LeftTuple leftTuple, Object result, int nodeId) {
+                                                     TupleImpl leftTuple, Object result, int nodeId) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, ProtobufMessages.FactHandle> map = (Map<TupleKey, ProtobufMessages.FactHandle>) getNodeMemories().get( nodeId );

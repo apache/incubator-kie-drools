@@ -37,7 +37,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
 
 public class AsyncReceiveNode extends LeftTupleSource
@@ -173,7 +173,7 @@ public class AsyncReceiveNode extends LeftTupleSource
     }
 
     @Override
-    public LeftTuple createPeer(LeftTuple original ) {
+    public LeftTuple createPeer(TupleImpl original ) {
         EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
         peer.initPeer(original, this);
         original.setPeer( peer );
@@ -239,26 +239,26 @@ public class AsyncReceiveNode extends LeftTupleSource
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+                                     final TupleImpl leftTuple,
                                      final Sink sink ) {
         return new EvalNodeLeftTuple( factHandle, leftTuple, sink );
     }
 
     @Override
-    public LeftTuple createLeftTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
+    public LeftTuple createLeftTuple(TupleImpl leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
         return new EvalNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
                                      Sink sink ) {
         return new EvalNodeLeftTuple( leftTuple, rightTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+    public LeftTuple createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
+                                     TupleImpl currentLeftChild,
+                                     TupleImpl currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled ) {
         return new EvalNodeLeftTuple( leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
@@ -269,7 +269,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         return leftInput.getObjectTypeNode();
     }
 
-    public static class AsyncReceiveMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class AsyncReceiveMemory extends AbstractLinkedListNode<Memory>
             implements
             SegmentNodeMemory {
 
@@ -302,7 +302,7 @@ public class AsyncReceiveNode extends LeftTupleSource
             return insertOrUpdateLeftTuples;
         }
 
-        public void addInsertOrUpdateLeftTuple(LeftTuple leftTuple) {
+        public void addInsertOrUpdateLeftTuple(TupleImpl leftTuple) {
             insertOrUpdateLeftTuples.add( leftTuple );
         }
 

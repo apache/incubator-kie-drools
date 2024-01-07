@@ -40,10 +40,10 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
         // constructor needed for serialisation
     }
 
-    public ReactiveFromNodeLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
-                                     final LeftTuple currentLeftChild,
-                                     final LeftTuple currentRightChild,
+    public ReactiveFromNodeLeftTuple(final TupleImpl leftTuple,
+                                     final TupleImpl rightTuple,
+                                     final TupleImpl currentLeftChild,
+                                     final TupleImpl currentRightChild,
                                      final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
@@ -51,7 +51,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
 
-    public ReactiveFromNodeLeftTuple(InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink ) {
+    public ReactiveFromNodeLeftTuple(InternalFactHandle factHandle, TupleImpl leftTuple, Sink sink ) {
         super(factHandle, leftTuple, sink);
         storeTupleObjects(leftTuple, factHandle);
     }
@@ -62,7 +62,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
         hash = Arrays.hashCode( objects );
     }
 
-    private void storeTupleObjects(LeftTuple leftTuple, FactHandle factHandle) {
+    private void storeTupleObjects(TupleImpl leftTuple, FactHandle factHandle) {
         Object[] leftObjects = leftTuple.toObjects();
         // left tuple size + 1 for the right object
         objects = new Object[leftObjects.length + 1];
@@ -72,7 +72,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
     @Override
-    public void initPeer(LeftTuple original, LeftTupleSink sink) {
+    public void initPeer(TupleImpl original, LeftTupleSink sink) {
         super.initPeer( original, sink );
         if ( original instanceof ReactiveFromNodeLeftTuple ) {
             ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );

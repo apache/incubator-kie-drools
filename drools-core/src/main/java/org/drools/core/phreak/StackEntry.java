@@ -21,11 +21,10 @@ package org.drools.core.phreak;
 import org.drools.base.common.NetworkNode;
 import org.drools.core.common.Memory;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 
 /**
 * Created with IntelliJ IDEA.
@@ -34,7 +33,7 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 * Time: 15:47
 * To change this template use File | Settings | File Templates.
 */
-public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
+public class StackEntry extends AbstractLinkedListNode<StackEntry> {
     private final long                 bit;
     private final NetworkNode          node;
     private final LeftTupleSinkNode    sink;
@@ -42,7 +41,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     private final Memory               nodeMem;
     private final SegmentMemory[]      smems;
     private final int                  smemIndex;
-    private final TupleSets<LeftTuple> trgTuples;
+    private final TupleSets trgTuples;
     private final boolean              resumeFromNextNode;
     private final boolean              processRian;
 
@@ -54,7 +53,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
                       Memory nodeMem,
                       SegmentMemory[] smems,
                       int smemIndex,
-                      TupleSets<LeftTuple> trgTuples,
+                      TupleSets trgTuples,
                       boolean resumeFromNextNode,
                       boolean processRian) {
         this.bit = bit;
@@ -93,7 +92,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
         return smemIndex;
     }
 
-    public TupleSets<LeftTuple> getTrgTuples() {
+    public TupleSets getTrgTuples() {
         return trgTuples;
     }
 

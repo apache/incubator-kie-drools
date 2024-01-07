@@ -26,6 +26,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.Tuple;
 import org.drools.testcoverage.common.model.Address;
@@ -219,7 +220,7 @@ public class RemoveRuleTest {
         final KieSession ksession = kbase.newKieSession();
         final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
         ksession.fireAllRules();
-        LeftTuple leftTuple = handle.getFirstLeftTuple();
+        TupleImpl leftTuple = handle.getFirstLeftTuple();
         assertThat(leftTuple).isNotNull();
         assertThat(leftTuple.getPeer()).isNotNull();
         kbase.removeRule("org.drools.compiler", "rule2");

@@ -133,8 +133,8 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             this.otnId = otnId;
         }
 
-        private Id nextId() {
-            return new Id(otnId, otnIdCounter++);
+        private ObjectTypeNodeId nextId() {
+            return new ObjectTypeNodeId(otnId, otnIdCounter++);
         }
 
         private void reset() {
@@ -142,49 +142,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         }
     }
 
-    public static final Id DEFAULT_ID = new Id(-1, 0);
-
-    public static class Id {
-
-        private final int otnId;
-        private final int id;
-
-        public Id(int otnId, int id) {
-            this.otnId = otnId;
-            this.id = id;
-        }
-
-        @Override
-        public String toString() {
-            return "ObjectTypeNode.Id[" + otnId + "#" + id + "]";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Id)) {
-                return false;
-            }
-
-            Id otherId = (Id) o;
-            return id == otherId.id && otnId == otherId.otnId;
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * otnId + 37 * id;
-        }
-
-        public boolean before(Id otherId) {
-            return otherId != null && (otnId < otherId.otnId || (otnId == otherId.otnId && id < otherId.id));
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
+    public static final ObjectTypeNodeId DEFAULT_ID = new ObjectTypeNodeId(-1, 0);
 
     @Override
     public short getType() {
@@ -289,27 +247,27 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         retractLeftTuples( factHandle, context, reteEvaluator );
     }
 
-    public static void expireLeftTuple(LeftTuple leftTuple) {
+    public static void expireLeftTuple(TupleImpl leftTuple) {
         if (!leftTuple.isExpired()) {
             leftTuple.setExpired();
-            for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+            for ( TupleImpl child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
                 expireLeftTuple(child);
             }
-            for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+            for ( TupleImpl peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
                 expireLeftTuple(peer);
             }
         }
     }
 
-    public static void expireRightTuple(RightTuple rightTuple) {
-        for ( LeftTuple child = rightTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+    public static void expireRightTuple(TupleImpl rightTuple) {
+        for ( TupleImpl child = rightTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
             expireLeftTuple(child);
         }
     }
 
     public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachLeftTuple( lt -> {
-            LeftTupleSink sink = lt.getTupleSink();
+            LeftTupleNode sink = (LeftTupleNode) lt.getTupleSink();
             ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
         } );
         factHandle.clearLeftTuples();
@@ -318,20 +276,20 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
         linkedTuples.forEachLeftTuple( partition, lt -> {
-            LeftTupleSink sink = lt.getTupleSink();
+            LeftTupleNode sink = (LeftTupleNode) lt.getTupleSink();
             ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
         } );
         linkedTuples.clearLeftTuples(partition);
     }
 
     public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
-        factHandle.forEachRightTuple( rt -> rt.retractTuple( context, reteEvaluator) );
+        factHandle.forEachRightTuple( rt -> ((RightTupleImpl)rt).retractTuple( context, reteEvaluator) );
         factHandle.clearRightTuples();
     }
 
     public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
-        linkedTuples.forEachRightTuple( partition, rt -> rt.retractTuple( context, reteEvaluator) );
+        linkedTuples.forEachRightTuple( partition, rt -> ((RightTupleImpl)rt).retractTuple( context, reteEvaluator) );
         linkedTuples.clearRightTuples(partition);
     }
 
@@ -397,13 +355,13 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
                                             ObjectSource source) {
         for (ObjectSink sink : source.sink.getSinks()) {
             if (sink instanceof BetaNode) {
-                ((BetaNode) sink).setRightInputOtnId(otn.nextOtnId());
+                ((BetaNode)sink).setRightInputOtnId(otn.nextOtnId());
             } else if (sink instanceof LeftInputAdapterNode) {
                 for (LeftTupleSink liaChildSink : ((LeftInputAdapterNode) sink).getSinkPropagator().getSinks()) {
                     liaChildSink.setLeftInputOtnId(otn.nextOtnId());
                 }
             } else if (sink instanceof WindowNode) {
-                ((WindowNode) sink).setRightInputOtnId(otn.nextOtnId());
+                ((WindowNode)sink).setRightInputOtnId(otn.nextOtnId());
                 updateTupleSinkId(otn, (WindowNode) sink);
             } else if (sink instanceof AlphaNode) {
                 updateTupleSinkId(otn, (AlphaNode) sink);
@@ -411,7 +369,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
         }
     }
 
-    public Id nextOtnId() {
+    public ObjectTypeNodeId nextOtnId() {
         return idGenerator.nextId();
     }
 

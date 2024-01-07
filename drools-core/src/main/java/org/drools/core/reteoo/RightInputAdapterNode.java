@@ -190,9 +190,9 @@ public class RightInputAdapterNode extends ObjectSource
         return (RiaPathMemory) AbstractTerminalNode.initPathMemory( this, new RiaPathMemory(this, reteEvaluator) );
     }
     
-    public SubnetworkTuple createPeer(LeftTuple original) {
+    public SubnetworkTuple createPeer(TupleImpl original) {
         SubnetworkTuple peer = new SubnetworkTuple();
-        peer.initPeer((LeftTuple) original, this);
+        peer.initPeer(original, this);
         original.setPeer( peer );
         return peer;
     }     
@@ -280,34 +280,34 @@ public class RightInputAdapterNode extends ObjectSource
                + source + ", associations=" + associations + ", partitionId=" + partitionId + "]";
     }
     
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+    public TupleImpl createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
         return new SubnetworkTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
+    public TupleImpl createLeftTuple(final InternalFactHandle factHandle,
+                                     final TupleImpl leftTuple,
                                      final Sink sink) {
         return new SubnetworkTuple(factHandle,leftTuple, sink );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+    public TupleImpl createLeftTuple(TupleImpl leftTuple,
                                      Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return new SubnetworkTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
+    public TupleImpl createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
                                      Sink sink) {
         return new SubnetworkTuple(leftTuple, rightTuple, sink );
     }   
     
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
+    public TupleImpl createLeftTuple(TupleImpl leftTuple,
+                                     TupleImpl rightTuple,
+                                     TupleImpl currentLeftChild,
+                                     TupleImpl currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new SubnetworkTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
@@ -321,11 +321,11 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource = tupleSource;
     }
 
-    public ObjectTypeNode.Id getLeftInputOtnId() {
+    public ObjectTypeNodeId getLeftInputOtnId() {
         throw new UnsupportedOperationException();
     }
 
-    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         throw new UnsupportedOperationException();
     }      
     
