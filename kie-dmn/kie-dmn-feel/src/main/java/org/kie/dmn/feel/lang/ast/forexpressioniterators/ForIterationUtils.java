@@ -35,11 +35,11 @@ public class ForIterationUtils {
 
     public static ForIteration getForIteration(EvaluationContext ctx, String name, Object start, Object end) {
         validateValues(ctx, start, end);
-        if (start instanceof BigDecimal) {
-            return new ForIteration(name, (BigDecimal) start, (BigDecimal) end);
+        if (start instanceof BigDecimal bigDecimal) {
+            return new ForIteration(name, bigDecimal, (BigDecimal) end);
         }
-        if (start instanceof LocalDate) {
-            return new ForIteration(name, (LocalDate) start, (LocalDate) end);
+        if (start instanceof LocalDate localDate) {
+            return new ForIteration(name, localDate, (LocalDate) end);
         }
         ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR,
                                              Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER_NOT_A_DATE, start), null));

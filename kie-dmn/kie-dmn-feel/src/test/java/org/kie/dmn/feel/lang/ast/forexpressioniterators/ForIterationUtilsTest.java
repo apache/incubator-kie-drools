@@ -34,9 +34,15 @@ import java.time.LocalDate;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
-import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.*;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.validateValues;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.valueMustBeValid;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ForIterationUtilsTest {
 

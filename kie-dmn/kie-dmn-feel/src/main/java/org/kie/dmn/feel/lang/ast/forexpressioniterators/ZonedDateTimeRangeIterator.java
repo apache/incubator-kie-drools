@@ -24,11 +24,6 @@ import java.util.NoSuchElementException;
 
 public class ZonedDateTimeRangeIterator implements Iterator<ZonedDateTime> {
 
-    private enum Direction {
-        ASCENDANT,
-        DESCENDANT;
-    }
-
     private final ZonedDateTime start;
     private final ZonedDateTime end;
 

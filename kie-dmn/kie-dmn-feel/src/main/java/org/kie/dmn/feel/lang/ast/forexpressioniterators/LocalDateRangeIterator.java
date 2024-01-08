@@ -23,12 +23,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class LocalDateRangeIterator implements Iterator<LocalDate> {
-
-    private enum Direction {
-        ASCENDANT,
-        DESCENDANT;
-    }
-
     private final LocalDate start;
     private final LocalDate end;
 

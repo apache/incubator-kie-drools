@@ -25,11 +25,6 @@ import java.util.NoSuchElementException;
 
 public class BigDecimalRangeIterator implements Iterator<BigDecimal> {
 
-    private enum Direction {
-        ASCENDANT,
-        DESCENDANT;
-    }
-
     private final BigDecimal start;
     private final BigDecimal end;
 
