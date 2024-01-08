@@ -99,7 +99,7 @@ public class JobCallbackResourceDef {
         return objectMapper.valueToTree(new JobCallbackPayload(description.id()));
     }
 
-    private static TimerSchedule buildSchedule(ProcessInstanceJobDescription description) {
+    public static TimerSchedule buildSchedule(ProcessInstanceJobDescription description) {
         return TimerSchedule.builder()
                 .startTime(description.expirationTime().get().toOffsetDateTime().truncatedTo(ChronoUnit.MILLIS))
                 .repeatCount(translateLimit(description.expirationTime().repeatLimit()))
