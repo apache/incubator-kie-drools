@@ -7,16 +7,16 @@ options {
 }
   
 @header {
-    package org.drools.compiler.lang;
+    package org.drools.drl.parser.lang;
 
     import java.util.LinkedList;
-    import org.drools.compiler.compiler.DroolsParserException;
-    import org.drools.compiler.lang.ParserHelper;
-    import org.drools.compiler.lang.DroolsParserExceptionFactory;
-    import org.drools.compiler.lang.Location;
+    import org.drools.drl.parser.DroolsParserException;
+    import org.drools.drl.parser.lang.ParserHelper;
+    import org.drools.drl.parser.lang.DroolsParserExceptionFactory;
+    import org.drools.drl.parser.lang.Location;
 
-    import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
-    import org.drools.compiler.lang.api.AnnotationDescrBuilder;
+    import org.drools.drl.ast.dsl.AnnotatedDescrBuilder;
+    import org.drools.drl.ast.dsl.AnnotationDescrBuilder;
 
     import org.drools.drl.ast.descr.AtomicExprDescr;
     import org.drools.drl.ast.descr.AnnotatedBaseDescr;
@@ -72,6 +72,13 @@ options {
             return true;
         }
         return input.get( input.index() ).getType() != DRL6Lexer.EOF;
+    }
+
+    private boolean notStartWithNewline() {
+        int currentTokenIndex = input.index(); // current position in input stream
+        Token previousHiddenToken = input.get(currentTokenIndex - 1);
+        String previousHiddenTokenText = previousHiddenToken.getText();
+        return !previousHiddenTokenText.contains("\n");
     }
 }
 
@@ -567,7 +574,7 @@ xpathSeparator
     ;
 
 xpathPrimary returns [BaseDescr result]
-    : xpathChunk+
+    : xpathChunk ({notStartWithNewline()}? xpathChunk)*
     ;
 
 xpathChunk returns [BaseDescr result]

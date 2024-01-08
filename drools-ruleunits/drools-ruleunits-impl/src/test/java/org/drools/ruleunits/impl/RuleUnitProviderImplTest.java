@@ -27,7 +27,9 @@ import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.conf.RuleConfig;
+import org.drools.ruleunits.impl.domain.Measurement;
 import org.drools.ruleunits.impl.domain.Person;
+import org.drools.ruleunits.impl.domain.Sensor;
 import org.drools.ruleunits.impl.listener.TestAgendaEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
@@ -221,6 +223,18 @@ public class RuleUnitProviderImplTest {
         try (RuleUnitInstance<RuleNameUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit)) {
             assertThat(unitInstance.fire(new RuleNameStartsWithAgendaFilter("GoodBye"))).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("GoodByeWorld");
+        }
+    }
+
+    @Test
+    public void multipleOOPathLines() {
+        MultipleDataSourceUnit unit = new MultipleDataSourceUnit();
+        unit.getMeasurements().add(new Measurement("color", "red"));
+        unit.getSensors().add(new Sensor("color"));
+
+        try ( RuleUnitInstance<MultipleDataSourceUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+            assertThat(unitInstance.fire()).isEqualTo(1);
+            assertThat(unit.getControlSet()).containsExactly("red");
         }
     }
 }
