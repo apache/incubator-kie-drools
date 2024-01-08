@@ -21,6 +21,7 @@ package org.drools.fastutil;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.base.base.extractors.BaseObjectClassFieldReader;
+import org.drools.base.rule.accessor.RightTupleValueExtractor;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.BaseTuple;
@@ -30,7 +31,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.FastIterator;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.fastutil.FastUtilTreeMemory.TreeFastIterator;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.junit.Test;
@@ -42,17 +43,17 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testMocks() {
         TupleValueExtractor leftValueExtractor = getTupleValueExtractor();
-        ReadAccessor rightValueExtractor = getRightExtractor();
+        TupleValueExtractor rightValueExtractor = getRightExtractor();
 
         Tuple tuple10 = getLeftTuple(10);
 
-        FieldIndex fieldIndex = new FieldIndex(rightValueExtractor, leftValueExtractor);
+        IndexedValueReader fieldIndex = new IndexedValueReader(leftValueExtractor, rightValueExtractor);
         assertThat(fieldIndex.getLeftExtractor().getValue(tuple10)).isEqualTo(10);
     }
 
     @Test
     public void testGreaterThan() {
-        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        IndexedValueReader fieldIndex = new IndexedValueReader(getTupleValueExtractor(), getRightExtractor());
         FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
@@ -84,7 +85,7 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testGreaterOrEqual() {
-        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        IndexedValueReader fieldIndex = new IndexedValueReader(getTupleValueExtractor(), getRightExtractor());
         FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_OR_EQUAL, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
@@ -116,7 +117,7 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testLessOrEqual() {
-        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        IndexedValueReader fieldIndex = new IndexedValueReader(getTupleValueExtractor(), getRightExtractor());
         FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.LESS_OR_EQUAL, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
@@ -170,7 +171,7 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testLessThan() {
-        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        IndexedValueReader fieldIndex = new IndexedValueReader(getTupleValueExtractor(), getRightExtractor());
         FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.LESS_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
@@ -221,8 +222,8 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testSharedFirstBucket() {
-        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory  treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
+        IndexedValueReader fieldIndex = new IndexedValueReader(getTupleValueExtractor(), getRightExtractor());
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10_1 = getLeftTuple(10);
         Tuple tuple10_2 = getLeftTuple(10);
@@ -267,7 +268,7 @@ public class FastUtilTreeMemoryTest {
 
     @Test
     public void testSharedLastBucket() {
-        FieldIndex fieldIndex = new FieldIndex(getRightExtractor(), getTupleValueExtractor());
+        IndexedValueReader fieldIndex = new IndexedValueReader(getTupleValueExtractor(), getRightExtractor());
         FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintTypeOperator.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
@@ -373,7 +374,7 @@ public class FastUtilTreeMemoryTest {
         return extractor;
     }
 
-    public static ReadAccessor getRightExtractor() {
+    public static TupleValueExtractor getRightExtractor() {
         ReadAccessor readAccessor = new BaseObjectClassFieldReader() {
             @Override
             public Object getValue(ValueResolver valueResolver, Object object) {
@@ -381,6 +382,8 @@ public class FastUtilTreeMemoryTest {
             }
         };
 
-        return readAccessor;
+        RightTupleValueExtractor rightTupleValueExtractor = new RightTupleValueExtractor(readAccessor);
+
+        return rightTupleValueExtractor;
     }
 }

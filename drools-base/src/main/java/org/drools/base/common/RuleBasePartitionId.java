@@ -49,7 +49,7 @@ public final class RuleBasePartitionId {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || (obj instanceof RuleBasePartitionId && id == ((RuleBasePartitionId)obj).id);
+        return this == obj || (obj instanceof RuleBasePartitionId o && id == o.id);
     }
 
     @Override

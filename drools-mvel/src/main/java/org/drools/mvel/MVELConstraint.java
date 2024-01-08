@@ -36,9 +36,10 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.AcceptsReadAccessor;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.RightTupleValueExtractor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.rule.constraint.Constraint;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -99,7 +100,7 @@ import static org.drools.util.StringUtils.extractFirstIdentifier;
 import static org.drools.util.StringUtils.lookAheadIgnoringSpaces;
 import static org.drools.util.StringUtils.skipBlanks;
 
-public class MVELConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
+public class MVELConstraint extends MutableTypeConstraint<ContextEntry> implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
 
     private static final Logger logger = LoggerFactory.getLogger(MVELConstraint.class);
@@ -111,9 +112,13 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     protected String expression;
     private ConstraintTypeOperator constraintType = ConstraintTypeOperator.UNKNOWN;
     private Declaration[] declarations;
-    private EvaluatorWrapper[] operators;
-    private TupleValueExtractor indexingDeclaration;
-    private ReadAccessor extractor;
+    private EvaluatorWrapper[]  operators;
+    private TupleValueExtractor leftIndexingDeclaration;
+
+    private TupleValueExtractor rightIndexingDeclaration;
+    private ReadAccessor        extractor;
+
+
     private boolean isUnification;
     protected boolean isDynamic;
     private FieldValue fieldValue;
@@ -169,17 +174,17 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                           EvaluatorWrapper[] operators,
                           MVELCompilationUnit compilationUnit,
                           ConstraintTypeOperator constraintType,
-                          TupleValueExtractor indexingDeclaration,
+                          TupleValueExtractor leftIndexingDeclaration,
                           ReadAccessor extractor,
                           boolean isUnification) {
         this.packageNames = new LinkedHashSet<>(packageNames);
         this.expression = expression;
-        this.compilationUnit = compilationUnit;
-        this.constraintType = indexingDeclaration != null ? constraintType : ConstraintTypeOperator.UNKNOWN;
-        this.declarations = declarations == null ? EMPTY_DECLARATIONS : declarations;
-        this.operators = operators == null ? EMPTY_OPERATORS : operators;
-        this.indexingDeclaration = indexingDeclaration;
-        this.extractor = extractor;
+        this.compilationUnit         = compilationUnit;
+        this.constraintType          = leftIndexingDeclaration != null ? constraintType : ConstraintTypeOperator.UNKNOWN;
+        this.declarations            = declarations == null ? EMPTY_DECLARATIONS : declarations;
+        this.operators               = operators == null ? EMPTY_OPERATORS : operators;
+        this.leftIndexingDeclaration = leftIndexingDeclaration;
+        this.extractor               = extractor;
         this.isUnification = isUnification;
     }
 
@@ -381,7 +386,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return mvelEvaluator;
     }
 
-    public ContextEntry createContextEntry() {
+    public ContextEntry createContext() {
         if (declarations.length == 0) return null;
         ContextEntry contextEntry = new MvelContextEntry(declarations);
         if (isUnification) {
@@ -390,8 +395,10 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         return contextEntry;
     }
 
-    public FieldIndex getFieldIndex() {
-        return new FieldIndex(extractor, indexingDeclaration);
+
+
+    public IndexedValueReader getFieldIndex() {
+        return new IndexedValueReader(leftIndexingDeclaration, getRightIndexExtractor());
     }
 
     public ReadAccessor getFieldExtractor() {
@@ -399,8 +406,16 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     @Override
-    public TupleValueExtractor getIndexExtractor() {
-        return indexingDeclaration;
+    public TupleValueExtractor getRightIndexExtractor() {
+        if (rightIndexingDeclaration == null) {
+            rightIndexingDeclaration = new RightTupleValueExtractor(extractor);
+        }
+        return rightIndexingDeclaration;
+    }
+
+    @Override
+    public TupleValueExtractor getLeftIndexExtractor() {
+        return leftIndexingDeclaration;
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -419,17 +434,17 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                 }
                 declarations[i] = newDecl;
 
-                if (indexingDeclaration != null && i == 0) {
+                if (leftIndexingDeclaration != null && i == 0) {
                     // indexed MVELConstraints currently only have a single required declaration.
                     // So this is a hack that works for this limited scenario.
                     // It needs to clone first, due to unification otherwise you
                     // might change the pattern incorrectly for other nodes.
-                    if (!indexingDeclaration.equals(oldDecl)) {
+                    if (!leftIndexingDeclaration.equals(oldDecl)) {
                         // This is true for synthetic declarations
-                        indexingDeclaration = indexingDeclaration.clone();
-                        ((Declaration) indexingDeclaration).setPattern(newDecl.getPattern());
+                        leftIndexingDeclaration = leftIndexingDeclaration.clone();
+                        ((Declaration) leftIndexingDeclaration).setPattern(newDecl.getPattern());
                     } else {
-                        indexingDeclaration = newDecl;
+                        leftIndexingDeclaration = newDecl;
                     }
                 }
                 break;
@@ -668,7 +683,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             out.writeObject(extractor);
         }
 
-        out.writeObject(indexingDeclaration);
+        out.writeObject(leftIndexingDeclaration);
         out.writeObject(declarations);
         out.writeObject(constraintType);
         out.writeBoolean(isUnification);
@@ -690,8 +705,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             extractor = (ReadAccessor) in.readObject();
         }
 
-        indexingDeclaration = (Declaration) in.readObject();
-        declarations = (Declaration[]) in.readObject();
+        leftIndexingDeclaration = (Declaration) in.readObject();
+        declarations            = (Declaration[]) in.readObject();
         constraintType = (ConstraintTypeOperator) in.readObject();
         isUnification = in.readBoolean();
         isDynamic = in.readBoolean();
@@ -726,8 +741,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         clone.constraintType = constraintType;
         clone.declarations = clonedDeclarations;
         clone.operators = operators;
-        if (indexingDeclaration != null) {
-            clone.indexingDeclaration = indexingDeclaration.clone();
+        if (leftIndexingDeclaration != null) {
+            clone.leftIndexingDeclaration = leftIndexingDeclaration.clone();
         }
         clone.extractor = extractor;
         clone.isUnification = isUnification;

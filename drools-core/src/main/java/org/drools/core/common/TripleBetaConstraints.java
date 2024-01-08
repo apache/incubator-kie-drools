@@ -22,10 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -39,20 +40,20 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
 
     public TripleBetaConstraints() { }
 
-    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public TripleBetaConstraints(final BetaConstraint[] constraints,
                                  final RuleBaseConfiguration conf) {
         this(constraints,
                 conf,
                 false);
     }
 
-    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public TripleBetaConstraints(final BetaConstraint[] constraints,
                                  final RuleBaseConfiguration conf,
                                  final boolean disableIndexing) {
         super(constraints, conf, disableIndexing);
     }
 
-    protected TripleBetaConstraints( BetaNodeFieldConstraint[] constraints,
+    protected TripleBetaConstraints( BetaConstraint[] constraints,
                                    IndexPrecedenceOption indexPrecedenceOption,
                                    boolean disableIndexing) {
         super(constraints, indexPrecedenceOption, disableIndexing);
@@ -60,7 +61,7 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
 
     public TripleBetaConstraints cloneIfInUse() {
         if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraints[0]).setInUse()) {
-            BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
+            BetaConstraint[] clonedConstraints = new BetaConstraint[constraints.length];
             for (int i = 0; i < constraints.length; i++) {
                 clonedConstraints[i] = constraints[i].cloneIfInUse();
             }
@@ -124,8 +125,8 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
     /* (non-Javadoc)
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedRight(org.kie.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final Tuple tuple) {
+    public boolean isAllowedCachedRight(final BaseTuple tuple,
+                                        final ContextEntry[] context) {
         return constraints[0].isAllowedCachedRight( tuple, context[0] ) &&
                constraints[1].isAllowedCachedRight( tuple, context[1] ) &&
                constraints[2].isAllowedCachedRight( tuple, context[2] );

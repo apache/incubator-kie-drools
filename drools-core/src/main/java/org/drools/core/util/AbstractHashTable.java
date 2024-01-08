@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Objects;
 
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 
@@ -186,7 +186,7 @@ public abstract class AbstractHashTable
     }
 
     public interface Index extends Externalizable {
-        FieldIndex getFieldIndex(int index);
+        IndexedValueReader getFieldIndex(int index);
         HashEntry hashCodeOf(Tuple tuple, boolean left);
     }
 
@@ -194,7 +194,7 @@ public abstract class AbstractHashTable
 
         private static final long    serialVersionUID = 510l;
 
-        private FieldIndex index;
+        private IndexedValueReader index;
 
         private int startResult;
 
@@ -204,7 +204,7 @@ public abstract class AbstractHashTable
 
         }
 
-        public SingleIndex(final FieldIndex[] indexes,
+        public SingleIndex(final IndexedValueReader[] indexes,
                            final int startResult) {
             this.startResult = startResult;
             this.index = indexes[0];
@@ -213,7 +213,7 @@ public abstract class AbstractHashTable
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            index = (FieldIndex) in.readObject();
+            index = (IndexedValueReader) in.readObject();
             startResult = in.readInt();
         }
 
@@ -224,7 +224,7 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public FieldIndex getFieldIndex(int index) {
+        public IndexedValueReader getFieldIndex(int index) {
             if ( index > 0 ) {
                 throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
@@ -284,8 +284,8 @@ public abstract class AbstractHashTable
 
         private static final long serialVersionUID = 510l;
 
-        private FieldIndex index1;
-        private FieldIndex index2;
+        private IndexedValueReader index1;
+        private IndexedValueReader index2;
 
         private int startResult;
 
@@ -295,7 +295,7 @@ public abstract class AbstractHashTable
 
         }
 
-        public DoubleCompositeIndex(final FieldIndex[] indexes,
+        public DoubleCompositeIndex(final IndexedValueReader[] indexes,
                                     final int startResult) {
             this.startResult = startResult;
 
@@ -306,8 +306,8 @@ public abstract class AbstractHashTable
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            index1 = (FieldIndex) in.readObject();
-            index2 = (FieldIndex) in.readObject();
+            index1 = (IndexedValueReader) in.readObject();
+            index2 = (IndexedValueReader) in.readObject();
             startResult = in.readInt();
         }
 
@@ -319,7 +319,7 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public FieldIndex getFieldIndex(int index) {
+        public IndexedValueReader getFieldIndex(int index) {
             switch ( index ) {
                 case 0 :
                     return index1;
@@ -340,9 +340,9 @@ public abstract class AbstractHashTable
 
         private static final long serialVersionUID = 510l;
 
-        private FieldIndex index1;
-        private FieldIndex index2;
-        private FieldIndex index3;
+        private IndexedValueReader index1;
+        private IndexedValueReader index2;
+        private IndexedValueReader index3;
 
         private int startResult;
 
@@ -352,7 +352,7 @@ public abstract class AbstractHashTable
 
         }
 
-        public TripleCompositeIndex(final FieldIndex[] indexes,
+        public TripleCompositeIndex(final IndexedValueReader[] indexes,
                                     final int startResult) {
             this.startResult = startResult;
 
@@ -364,9 +364,9 @@ public abstract class AbstractHashTable
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            index1 = (FieldIndex) in.readObject();
-            index2 = (FieldIndex) in.readObject();
-            index3 = (FieldIndex) in.readObject();
+            index1 = (IndexedValueReader) in.readObject();
+            index2 = (IndexedValueReader) in.readObject();
+            index3 = (IndexedValueReader) in.readObject();
             startResult = in.readInt();
         }
 
@@ -379,7 +379,7 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public FieldIndex getFieldIndex(int index) {
+        public IndexedValueReader getFieldIndex(int index) {
             switch ( index ) {
                 case 0 :
                     return index1;

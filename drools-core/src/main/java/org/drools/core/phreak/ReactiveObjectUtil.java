@@ -92,7 +92,7 @@ public class ReactiveObjectUtil {
             InternalFactHandle factHandle = node.createFactHandle( reteEvaluator, object );
 
             if ( type != ModificationType.REMOVE && isAllowed( factHandle, node.getAlphaConstraints(), reteEvaluator, mem ) ) {
-                ContextEntry[] context = mem.getBetaMemory().getContext();
+                Object context = mem.getBetaMemory().getContext();
                 BetaConstraints betaConstraints = node.getBetaConstraints();
                 betaConstraints.updateFromTuple( context, reteEvaluator, leftTuple );
 

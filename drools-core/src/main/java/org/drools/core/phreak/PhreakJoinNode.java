@@ -80,13 +80,13 @@ public class PhreakJoinNode {
 
     public void doLeftInserts(JoinNode joinNode,
                               LeftTupleSink sink,
-                              BetaMemory bm,
+                              BetaMemory<?> bm,
                               ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
@@ -124,13 +124,13 @@ public class PhreakJoinNode {
 
     public void doRightInserts(JoinNode joinNode,
                                LeftTupleSink sink,
-                               BetaMemory bm,
+                               BetaMemory<?> bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
                                TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
         if (srcRightTuples.getInsertSize() > 32 && rtm instanceof AbstractHashTable ) {
@@ -154,8 +154,8 @@ public class PhreakJoinNode {
                         continue;
                     }
 
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                         ) ) {
                         insertChildLeftTuple( trgLeftTuples,
                                               leftTuple,
                                               rightTuple,
@@ -174,13 +174,13 @@ public class PhreakJoinNode {
 
     public void doLeftUpdates(JoinNode joinNode,
                               LeftTupleSink sink,
-                              BetaMemory bm,
+                              BetaMemory<?> bm,
                               ReteEvaluator reteEvaluator,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
@@ -220,7 +220,7 @@ public class PhreakJoinNode {
                                                   LeftTuple leftTuple,
                                                   RightTuple rightTuple,
                                                   TupleSets<LeftTuple> stagedLeftTuples,
-                                                  ContextEntry[] contextEntry,
+                                                  Object contextEntry,
                                                   BetaConstraints constraints,
                                                   LeftTupleSink sink,
                                                   FastIterator it,
@@ -283,7 +283,7 @@ public class PhreakJoinNode {
                                TupleSets<LeftTuple> trgLeftTuples,
                                TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
@@ -326,7 +326,7 @@ public class PhreakJoinNode {
                                                    LeftTuple leftTuple,
                                                    RightTuple rightTuple,
                                                    TupleSets<LeftTuple> stagedLeftTuples,
-                                                   ContextEntry[] contextEntry,
+                                                   Object contextEntry,
                                                    BetaConstraints constraints,
                                                    LeftTupleSink sink,
                                                    FastIterator it,
@@ -340,8 +340,8 @@ public class PhreakJoinNode {
                     continue;
                 }
 
-                if (constraints.isAllowedCachedRight(contextEntry,
-                                                     leftTuple)) {
+                if (constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                    )) {
                     insertChildLeftTuple(trgLeftTuples,
                                          leftTuple,
                                          rightTuple,
@@ -358,8 +358,8 @@ public class PhreakJoinNode {
                     // ignore, as it will get processed via left iteration. Children cannot be processed twice
                     continue;
                 }
-                if (constraints.isAllowedCachedRight(contextEntry,
-                                                     leftTuple)) {
+                if (constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                    )) {
                     // insert, childLeftTuple is not updated
                     if (childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple) {
                         insertChildLeftTuple(trgLeftTuples,

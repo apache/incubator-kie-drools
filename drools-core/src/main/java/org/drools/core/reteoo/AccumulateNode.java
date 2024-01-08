@@ -175,7 +175,7 @@ public class AccumulateNode extends BetaNode {
         return this.leftInput.getId() == other.leftInput.getId() && this.rightInput.getId() == other.rightInput.getId() &&
                this.constraints.equals( other.constraints ) &&
                this.accumulate.equals( other.accumulate ) &&
-               resultBinder.equals( other.resultBinder ) &&
+               this.resultBinder.equals( other.resultBinder ) &&
                Arrays.equals( this.resultConstraints, other.resultConstraints );
     }
 
@@ -199,8 +199,8 @@ public class AccumulateNode extends BetaNode {
         SegmentNodeMemory {
 
         public Object             workingMemoryContext;
-        private final BetaMemory  betaMemory;
-        public ContextEntry[]     resultsContext;
+        private final BetaMemory<?>  betaMemory;
+        public Object     resultsContext;
 
         protected AccumulateMemory( BetaMemory betaMemory ) {
             this.betaMemory = betaMemory;

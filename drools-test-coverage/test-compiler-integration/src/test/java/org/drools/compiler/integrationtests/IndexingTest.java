@@ -50,6 +50,7 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
+import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -917,6 +918,44 @@ public class IndexingTest {
             Person john = new Person("John");
             john.setSalary(new BigDecimal("10"));
             ksession.insert(john);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testBeta() {
+
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Address.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        a : Address()\n" +
+                "        Person( name == a.street )\n" +
+                "    then\n" +
+                "        list.add(\"R1\");\n" +
+                "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            // BigDecimal Index is disabled
+            //assertAlphaIndex(kbase, Person.class, 0);
+
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person person = new Person("London");
+            Address address = new Address("London");
+
+            ksession.insert(person);
+            ksession.insert(address);
             ksession.fireAllRules();
 
             assertThat(list).containsExactly("R1");

@@ -35,7 +35,7 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleComponent;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.XpathConstraint;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
@@ -71,11 +71,11 @@ public class BuildContext implements RuleBuildContext {
     // the rule component being processed at the moment
     private final Deque<RuleComponent> ruleComponent = new ArrayDeque<>();
     // a build stack to track nested elements
-    private Deque<RuleConditionElement> buildstack;
+    private Deque<RuleConditionElement>    buildstack;
     // beta constraints from the last pattern attached
-    private List<BetaNodeFieldConstraint>    betaconstraints;
+    private List<BetaConstraint>           betaconstraints;
     // alpha constraints from the last pattern attached
-    private List<AlphaNodeFieldConstraint>   alphaConstraints;
+    private List<AlphaNodeFieldConstraint> alphaConstraints;
     // xpath constraints from the last pattern attached
     private List<XpathConstraint>            xpathConstraints;
 
@@ -245,11 +245,11 @@ public class BuildContext implements RuleBuildContext {
         return this.buildstack == null ? Collections.emptyList() : buildstack;
     }
 
-    public List<BetaNodeFieldConstraint> getBetaconstraints() {
+    public List<BetaConstraint> getBetaconstraints() {
         return this.betaconstraints;
     }
 
-    public void setBetaconstraints(final List<BetaNodeFieldConstraint> betaconstraints) {
+    public void setBetaconstraints(final List<BetaConstraint> betaconstraints) {
         this.betaconstraints = betaconstraints;
     }
 

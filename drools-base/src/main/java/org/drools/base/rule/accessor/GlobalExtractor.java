@@ -88,8 +88,8 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
 
     public Class< ? > getExtractToClass() {
         // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            return ((ClassObjectType) this.objectType).getClassType();
+        if ( this.objectType instanceof ClassObjectType cot ) {
+            return cot.getClassType();
         } else {
             return Fact.class;
         }
@@ -98,8 +98,8 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
     public String getExtractToClassName() {
         Class< ? > clazz;
         // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            clazz = ((ClassObjectType) this.objectType).getClassType();
+        if ( this.objectType instanceof ClassObjectType cot ) {
+            clazz = cot.getClassType();
         } else {
             clazz = Fact.class;
         }

@@ -18,7 +18,6 @@
  */
 package org.drools.core.phreak;
 
-import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
@@ -115,7 +114,7 @@ public class PhreakNotNode {
                               TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
@@ -148,7 +147,7 @@ public class PhreakNotNode {
 
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
         // this must be processed here, rather than initial insert, as we need to link the blocker
@@ -177,8 +176,8 @@ public class PhreakNotNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                         ) ) {
                         leftTuple.setBlocker( rightTuple );
                         rightTuple.addBlocked( leftTuple );
 
@@ -223,7 +222,7 @@ public class PhreakNotNode {
                               TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
         boolean leftUpdateOptimizationAllowed = notNode.isLeftUpdateOptimizationAllowed();
 
@@ -316,7 +315,7 @@ public class PhreakNotNode {
                                TupleSets<LeftTuple> stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
         boolean iterateFromStart = notNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison();
@@ -345,8 +344,8 @@ public class PhreakNotNode {
                     }
 
                     // we know that only unblocked LeftTuples are  still in the memory
-                    if ( constraints.isAllowedCachedRight( contextEntry,
-                                                           leftTuple ) ) {
+                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry
+                                                         ) ) {
                         leftTuple.setBlocker( rightTuple );
                         rightTuple.addBlocked( leftTuple );
 
@@ -373,7 +372,7 @@ public class PhreakNotNode {
         constraints.resetTuple(contextEntry);
     }
 
-    public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, ReteEvaluator reteEvaluator, TupleMemory rtm, ContextEntry[] contextEntry,
+    public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, ReteEvaluator reteEvaluator, TupleMemory rtm, Object contextEntry,
                                                      BetaConstraints constraints, boolean iterateFromStart, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleMemory ltm) {
         LeftTuple firstBlocked = rightTuple.getTempBlocked();
         if ( firstBlocked != null ) {
@@ -467,7 +466,7 @@ public class PhreakNotNode {
                                TupleSets<LeftTuple> trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {

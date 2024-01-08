@@ -25,7 +25,7 @@ import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.reteoo.builder.BetaNodeConstraintFactory;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.metric.common.DefaultBetaConstraintsMetric;
 import org.drools.metric.common.DoubleBetaConstraintsMetric;
 import org.drools.metric.common.QuadroupleBetaConstraintsMetric;
@@ -36,7 +36,7 @@ import org.drools.metric.util.MetricLogUtils;
 public class MetricBetaNodeConstraintFactoryImpl implements BetaNodeConstraintFactory {
 
     @Override
-    public SingleBetaConstraints createSingleBetaConstraints(final BetaNodeFieldConstraint constraint,
+    public SingleBetaConstraints createSingleBetaConstraints(final BetaConstraint constraint,
                                                              final RuleBaseConfiguration conf,
                                                              final boolean disableIndex) {
         if (MetricLogUtils.getInstance().isEnabled()) {
@@ -47,7 +47,7 @@ public class MetricBetaNodeConstraintFactoryImpl implements BetaNodeConstraintFa
     }
 
     @Override
-    public DoubleBetaConstraints createDoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public DoubleBetaConstraints createDoubleBetaConstraints(final BetaConstraint[] constraints,
                                                              final RuleBaseConfiguration conf,
                                                              final boolean disableIndexing) {
         if (MetricLogUtils.getInstance().isEnabled()) {
@@ -58,7 +58,7 @@ public class MetricBetaNodeConstraintFactoryImpl implements BetaNodeConstraintFa
     }
 
     @Override
-    public TripleBetaConstraints createTripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public TripleBetaConstraints createTripleBetaConstraints(final BetaConstraint[] constraints,
                                                              final RuleBaseConfiguration conf,
                                                              final boolean disableIndexing) {
         if (MetricLogUtils.getInstance().isEnabled()) {
@@ -69,7 +69,7 @@ public class MetricBetaNodeConstraintFactoryImpl implements BetaNodeConstraintFa
     }
 
     @Override
-    public QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaConstraint[] constraints,
                                                                      final RuleBaseConfiguration conf,
                                                                      final boolean disableIndexing) {
         if (MetricLogUtils.getInstance().isEnabled()) {
@@ -80,7 +80,7 @@ public class MetricBetaNodeConstraintFactoryImpl implements BetaNodeConstraintFa
     }
 
     @Override
-    public DefaultBetaConstraints createDefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public DefaultBetaConstraints createDefaultBetaConstraints(final BetaConstraint[] constraints,
                                                                final RuleBaseConfiguration conf,
                                                                final boolean disableIndexing) {
         if (MetricLogUtils.getInstance().isEnabled()) {

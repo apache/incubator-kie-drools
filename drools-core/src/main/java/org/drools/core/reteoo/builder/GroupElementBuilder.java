@@ -29,7 +29,6 @@ import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.GroupElement.Type;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
@@ -41,6 +40,7 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.kie.api.definition.rule.Propagation;
 
 public class GroupElementBuilder
@@ -260,7 +260,7 @@ public class GroupElementBuilder
 
                 // create a tuple start equals constraint and set it in the context
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List<BetaNodeFieldConstraint> predicates = new ArrayList<>();
+                final List<BetaConstraint>       predicates = new ArrayList<>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
             }
@@ -338,7 +338,7 @@ public class GroupElementBuilder
                 context.setTupleSource( tupleSource );
 
 
-                final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+                final List<BetaConstraint> betaConstraints = new ArrayList<>();
                 context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
             }
 

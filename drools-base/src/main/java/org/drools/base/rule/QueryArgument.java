@@ -36,8 +36,8 @@ public interface QueryArgument extends Externalizable {
 
     static Object evaluateDeclaration( ValueResolver valueResolver, BaseTuple tuple, Declaration declaration ) {
         Object tupleObject = tuple.get( declaration ).getObject();
-        if (tupleObject instanceof DroolsQuery && declaration.getExtractor().getIndex() >= 0 &&
-                ( (DroolsQuery) tupleObject ).getVariables()[declaration.getExtractor().getIndex()] != null ) {
+        if (tupleObject instanceof DroolsQuery query && declaration.getExtractor().getIndex() >= 0 &&
+                query.getVariables()[declaration.getExtractor().getIndex()] != null ) {
             return Variable.v;
         }
         return declaration.getValue( valueResolver, tupleObject );

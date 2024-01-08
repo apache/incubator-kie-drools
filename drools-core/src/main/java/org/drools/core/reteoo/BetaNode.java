@@ -28,7 +28,6 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.base.util.index.IndexUtil;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
@@ -49,6 +48,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.util.FastIterator;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
@@ -228,9 +228,9 @@ public abstract class BetaNode extends LeftTupleSource
     private void setUnificationJoin() {
         // If this join uses a indexed, ==, constraint on a query parameter then set indexedUnificationJoin to true
         // This ensure we get the correct iterator
-        BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
+        BetaConstraint[] betaCconstraints = this.constraints.getConstraints();
         if ( betaCconstraints.length > 0 ) {
-            BetaNodeFieldConstraint c = betaCconstraints[0];
+            BetaConstraint c = betaCconstraints[0];
             if ( indexable && ((IndexableConstraint) c).isUnification() ) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
                     setConstraints( new SingleNonIndexSkipBetaConstraints( (SingleBetaConstraints) this.constraints ) );
@@ -442,7 +442,7 @@ public abstract class BetaNode extends LeftTupleSource
         return indexedUnificationJoin;
     }
 
-    public BetaNodeFieldConstraint[] getConstraints() {
+    public BetaConstraint[] getConstraints() {
         return constraints.getConstraints();
     }
 
@@ -451,7 +451,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
     
     private void setConstraints(BetaConstraints constraints) {
-        this.constraints = constraints.cloneIfInUse();
+        this.constraints = (BetaConstraints) constraints.cloneIfInUse();
     }
 
     public void networkUpdated(UpdateContext updateContext) {

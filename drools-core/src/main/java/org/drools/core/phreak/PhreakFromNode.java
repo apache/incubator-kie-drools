@@ -77,7 +77,7 @@ public class PhreakFromNode {
                               TupleSets<LeftTuple> trgLeftTuples) {
 
         BetaMemory bm = fm.getBetaMemory();
-        ContextEntry[] context = bm.getContext();
+        Object context = bm.getContext();
         BetaConstraints betaConstraints = fromNode.getBetaConstraints();
         AlphaNodeFieldConstraint[] alphaConstraints = fromNode.getAlphaConstraints();
         DataProvider dataProvider = fromNode.getDataProvider();
@@ -132,7 +132,7 @@ public class PhreakFromNode {
                               TupleSets<LeftTuple> trgLeftTuples,
                               TupleSets<LeftTuple> stagedLeftTuples) {
         BetaMemory bm = fm.getBetaMemory();
-        ContextEntry[] context = bm.getContext();
+        Object context = bm.getContext();
         BetaConstraints betaConstraints = fromNode.getBetaConstraints();
         AlphaNodeFieldConstraint[] alphaConstraints = fromNode.getAlphaConstraints();
         DataProvider dataProvider = fromNode.getDataProvider();
@@ -237,7 +237,7 @@ public class PhreakFromNode {
                                   RightTuple rightTuple,
                                   BetaConstraints betaConstraints,
                                   PropagationContext propagationContext,
-                                  ContextEntry[] context,
+                                  Object context,
                                   boolean useLeftMemory,
                                   TupleSets<LeftTuple> trgLeftTuples,
                                   TupleSets<LeftTuple> stagedLeftTuples ) {

@@ -25,7 +25,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.Tuple;
@@ -45,7 +45,7 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
         // constructor for serialisation
     }
 
-    public TupleIndexRBTree(ConstraintTypeOperator constraintType, FieldIndex index, boolean left) {
+    public TupleIndexRBTree(ConstraintTypeOperator constraintType, IndexedValueReader index, boolean left) {
         this.index = index;
         this.constraintType = constraintType;
         this.left = left;
@@ -62,7 +62,7 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         tree = (TupleRBTree<Comparable<Comparable>>) in.readObject();
-        index = (FieldIndex) in.readObject();
+        index = (IndexedValueReader) in.readObject();
         constraintType = (ConstraintTypeOperator) in.readObject();
         factSize = in.readInt();
         left = in.readBoolean();
@@ -191,7 +191,7 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
         return firstNode == null ? null : firstNode.getFirst();
     }
 
-    public static Comparable coerceType(FieldIndex index, Comparable treeRootKey, Comparable key) {
+    public static Comparable coerceType(IndexedValueReader index, Comparable treeRootKey, Comparable key) {
         // We don't do dynamic coercion other than Numbers. See IndexUtil.areRangeIndexCompatibleOperands().
         if (index.requiresCoercion() && key != null && treeRootKey != null && !key.getClass().equals(treeRootKey.getClass())) {
             if (treeRootKey instanceof Number && key instanceof Number) {
