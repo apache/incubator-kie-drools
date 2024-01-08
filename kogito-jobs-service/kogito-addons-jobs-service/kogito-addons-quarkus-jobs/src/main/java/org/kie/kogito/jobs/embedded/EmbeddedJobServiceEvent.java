@@ -16,32 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.repository.impl;
+package org.kie.kogito.jobs.embedded;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.model.JobDetails;
 
-import io.vertx.core.Vertx;
+public class EmbeddedJobServiceEvent {
 
-class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {
+    private JobDetails jobDetails;
 
-    private InMemoryJobRepository tested;
-    private static Vertx vertx;
-
-    @BeforeAll
-    static void init() {
-        vertx = Vertx.vertx();
+    public EmbeddedJobServiceEvent(JobDetails jobDetails) {
+        this.jobDetails = jobDetails;
     }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        tested = new InMemoryJobRepository(vertx, mockJobEventPublisher());
-        super.setUp();
+    public JobDetails getJobDetails() {
+        return jobDetails;
     }
 
-    @Override
-    public ReactiveJobRepository tested() {
-        return tested;
-    }
 }

@@ -16,32 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.repository.impl;
+package org.kie.kogito.jobs.embedded;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.api.Recipient;
 
-import io.vertx.core.Vertx;
+public class InVMRecipient extends Recipient<InVMPayloadData> {
 
-class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {
+    private InVMPayloadData data;
 
-    private InMemoryJobRepository tested;
-    private static Vertx vertx;
-
-    @BeforeAll
-    static void init() {
-        vertx = Vertx.vertx();
+    public InVMRecipient() {
+        // do nothing
     }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        tested = new InMemoryJobRepository(vertx, mockJobEventPublisher());
-        super.setUp();
+    public void setData(InVMPayloadData data) {
+        this.data = data;
+    }
+
+    public InVMPayloadData getData() {
+        return data;
+    }
+
+    public InVMRecipient(InVMPayloadData data) {
+        this.data = data;
     }
 
     @Override
-    public ReactiveJobRepository tested() {
-        return tested;
+    public InVMPayloadData getPayload() {
+        return data;
     }
+
+    @Override
+    public String toString() {
+        return "InVMRecipient [data=" + data + "]";
+    }
+
 }

@@ -16,32 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.repository.impl;
+package org.kie.kogito.jobs.embedded;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.Application;
+import org.kie.kogito.Config;
+import org.kie.kogito.KogitoEngine;
+import org.kie.kogito.uow.UnitOfWork;
+import org.kie.kogito.uow.UnitOfWorkManager;
+import org.mockito.Mockito;
 
-import io.vertx.core.Vertx;
+import jakarta.enterprise.context.ApplicationScoped;
 
-class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {
+@ApplicationScoped
+public class TestApplication implements Application {
 
-    private InMemoryJobRepository tested;
-    private static Vertx vertx;
-
-    @BeforeAll
-    static void init() {
-        vertx = Vertx.vertx();
-    }
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        tested = new InMemoryJobRepository(vertx, mockJobEventPublisher());
-        super.setUp();
+    @Override
+    public Config config() {
+        return Mockito.mock(Config.class);
     }
 
     @Override
-    public ReactiveJobRepository tested() {
-        return tested;
+    public <T extends KogitoEngine> T get(Class<T> clazz) {
+        return (T) Mockito.mock(KogitoEngine.class);
     }
+
+    @Override
+    public UnitOfWorkManager unitOfWorkManager() {
+        UnitOfWorkManager uowm = Mockito.mock(UnitOfWorkManager.class);
+        Mockito.when(uowm.newUnitOfWork()).thenReturn(Mockito.mock(UnitOfWork.class));
+        return uowm;
+    }
+
 }

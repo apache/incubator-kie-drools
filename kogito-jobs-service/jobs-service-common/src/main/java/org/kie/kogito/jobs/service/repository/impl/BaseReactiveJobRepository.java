@@ -30,7 +30,7 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-import org.kie.kogito.jobs.service.stream.JobStreams;
+import org.kie.kogito.jobs.service.stream.JobEventPublisher;
 
 import io.vertx.core.Vertx;
 
@@ -38,11 +38,11 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
 
     private Vertx vertx;
 
-    private JobStreams jobStreams;
+    private JobEventPublisher jobEventPublisher;
 
-    protected BaseReactiveJobRepository(Vertx vertx, JobStreams jobStreams) {
+    protected BaseReactiveJobRepository(Vertx vertx, JobEventPublisher jobEventPublisher) {
         this.vertx = vertx;
-        this.jobStreams = jobStreams;
+        this.jobEventPublisher = jobEventPublisher;
     }
 
     public <T> CompletionStage<T> runAsync(Supplier<T> function) {
@@ -62,7 +62,7 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
     @Override
     public CompletionStage<JobDetails> save(JobDetails job) {
         return doSave(job)
-                .thenApply(jobStreams::publishJobStatusChange);
+                .thenApply(jobEventPublisher::publishJobStatusChange);
     }
 
     public abstract CompletionStage<JobDetails> doSave(JobDetails job);
@@ -70,7 +70,7 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
     @Override
     public CompletionStage<JobDetails> delete(JobDetails job) {
         return delete(job.getId())
-                .thenApply(j -> jobStreams.publishJobStatusChange(job));
+                .thenApply(j -> jobEventPublisher.publishJobStatusChange(job));
     }
 
     @Override

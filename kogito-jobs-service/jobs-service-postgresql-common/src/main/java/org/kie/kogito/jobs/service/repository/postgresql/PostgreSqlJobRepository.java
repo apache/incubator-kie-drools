@@ -34,7 +34,7 @@ import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller;
 import org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller;
-import org.kie.kogito.jobs.service.stream.JobStreams;
+import org.kie.kogito.jobs.service.stream.JobEventPublisher;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
 
@@ -74,9 +74,9 @@ public class PostgreSqlJobRepository extends BaseReactiveJobRepository implement
     }
 
     @Inject
-    public PostgreSqlJobRepository(Vertx vertx, JobStreams jobStreams, PgPool client,
+    public PostgreSqlJobRepository(Vertx vertx, JobEventPublisher jobEventPublisher, PgPool client,
             TriggerMarshaller triggerMarshaller, RecipientMarshaller recipientMarshaller) {
-        super(vertx, jobStreams);
+        super(vertx, jobEventPublisher);
         this.client = client;
         this.triggerMarshaller = triggerMarshaller;
         this.recipientMarshaller = recipientMarshaller;

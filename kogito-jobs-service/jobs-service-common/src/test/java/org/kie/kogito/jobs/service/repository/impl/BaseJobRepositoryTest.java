@@ -34,7 +34,7 @@ import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.Recipient;
 import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-import org.kie.kogito.jobs.service.stream.JobStreams;
+import org.kie.kogito.jobs.service.stream.JobEventPublisher;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.jobs.service.utils.FunctionsUtil;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
@@ -56,8 +56,8 @@ public abstract class BaseJobRepositoryTest {
         createAndSaveJob(ID);
     }
 
-    public JobStreams mockJobStreams() {
-        final JobStreams mock = mock(JobStreams.class);
+    public JobEventPublisher mockJobEventPublisher() {
+        final JobEventPublisher mock = mock(JobEventPublisher.class);
         lenient().when(mock.publishJobStatusChange(any(JobDetails.class))).thenAnswer(a -> a.getArgument(0));
         lenient().when(mock.publishJobSuccess(any(JobExecutionResponse.class))).thenAnswer(a -> a.getArgument(0));
         lenient().when(mock.publishJobError(any(JobExecutionResponse.class))).thenAnswer(a -> a.getArgument(0));

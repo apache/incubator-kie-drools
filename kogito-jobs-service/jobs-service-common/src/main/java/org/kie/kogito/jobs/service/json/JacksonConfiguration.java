@@ -18,12 +18,16 @@
  */
 package org.kie.kogito.jobs.service.json;
 
+import org.kie.kogito.jobs.DurationExpirationTime;
+import org.kie.kogito.jobs.ExactExpirationTime;
+import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.jackson.JsonFormat;
@@ -41,8 +45,16 @@ public class JacksonConfiguration {
     public ObjectMapperCustomizer customizer() {
         return objectMapper -> {
             LOGGER.debug("Jackson customization initialized.");
+            SimpleModule kogitoCustomModule = new SimpleModule();
+            kogitoCustomModule.addSerializer(ProcessInstanceJobDescription.class, new ProcessInstanceJobDescriptionSerializer());
+            kogitoCustomModule.addDeserializer(ProcessInstanceJobDescription.class, new ProcessInstanceJobDescriptionDeserializer());
+            kogitoCustomModule.addSerializer(DurationExpirationTime.class, new DurationExpirationTimeSerializer());
+            kogitoCustomModule.addDeserializer(DurationExpirationTime.class, new DurationExpirationTimeDeserializer());
+            kogitoCustomModule.addSerializer(ExactExpirationTime.class, new ExactExpirationTimeSerializer());
+            kogitoCustomModule.addDeserializer(ExactExpirationTime.class, new ExactExpirationTimeDeserializer());
             objectMapper
                     .registerModule(new JavaTimeModule())
+                    .registerModule(kogitoCustomModule)
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                     .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
                     .registerModule(JsonFormat.getCloudEventJacksonModule());

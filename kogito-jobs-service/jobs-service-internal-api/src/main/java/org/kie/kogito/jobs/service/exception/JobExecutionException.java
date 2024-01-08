@@ -22,6 +22,11 @@ public class JobExecutionException extends JobServiceException {
 
     private String jobId;
 
+    public JobExecutionException(String jobId, String message, Throwable th) {
+        super(message, th);
+        this.jobId = jobId;
+    }
+
     public JobExecutionException(String jobId, String message) {
         super(message);
         this.jobId = jobId;

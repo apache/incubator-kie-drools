@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.jobs.service.stream;
 
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
@@ -26,6 +29,8 @@ import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
+import org.kie.kogito.jobs.service.scheduler.ReactiveJobScheduler;
+import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +44,12 @@ import jakarta.inject.Inject;
  * received item.
  */
 @ApplicationScoped
-public class JobStreams {
+public class JobStreamsEventPublisher implements JobEventPublisher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobStreams.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobStreamsEventPublisher.class);
+
+    @Inject
+    ReactiveJobScheduler scheduler;
 
     /**
      * Publish on Stream of Job Error events
@@ -82,8 +90,36 @@ public class JobStreams {
         return scheduledJob;
     }
 
-    //Broadcast Events from Emitter to Streams
+    //Stream Processors
+    @Incoming(AvailableStreams.JOB_ERROR_EVENTS)
+    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
+    public CompletionStage<Boolean> jobErrorProcessor(JobExecutionResponse response) {
+        LOGGER.warn("Error received {}", response);
+        return ErrorHandling.skipErrorPublisherBuilder(scheduler::handleJobExecutionError, response)
+                .findFirst()
+                .run()
+                .thenApply(Optional::isPresent)
+                .exceptionally(e -> {
+                    LOGGER.error("Error handling error {}", response, e);
+                    return false;
+                });
+    }
 
+    @Incoming(AvailableStreams.JOB_SUCCESS_EVENTS)
+    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
+    public CompletionStage<Boolean> jobSuccessProcessor(JobExecutionResponse response) {
+        LOGGER.debug("Success received to be processed {}", response);
+        return ErrorHandling.skipErrorPublisherBuilder(scheduler::handleJobExecutionSuccess, response)
+                .findFirst()
+                .run()
+                .thenApply(Optional::isPresent)
+                .exceptionally(e -> {
+                    LOGGER.error("Error handling error {}", response, e);
+                    return false;
+                });
+    }
+
+    // Broadcast Events from Emitter to Streams
     @Incoming(AvailableStreams.JOB_ERROR)
     @Outgoing(AvailableStreams.JOB_ERROR_EVENTS)
     @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)

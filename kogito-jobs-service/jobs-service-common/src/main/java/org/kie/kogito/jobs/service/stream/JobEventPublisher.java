@@ -16,32 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.repository.impl;
+package org.kie.kogito.jobs.service.stream;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 
-import io.vertx.core.Vertx;
+public interface JobEventPublisher {
 
-class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {
+    JobExecutionResponse publishJobError(JobExecutionResponse response);
 
-    private InMemoryJobRepository tested;
-    private static Vertx vertx;
+    JobExecutionResponse publishJobSuccess(JobExecutionResponse response);
 
-    @BeforeAll
-    static void init() {
-        vertx = Vertx.vertx();
-    }
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        tested = new InMemoryJobRepository(vertx, mockJobEventPublisher());
-        super.setUp();
-    }
-
-    @Override
-    public ReactiveJobRepository tested() {
-        return tested;
-    }
+    JobDetails publishJobStatusChange(JobDetails scheduledJob);
 }

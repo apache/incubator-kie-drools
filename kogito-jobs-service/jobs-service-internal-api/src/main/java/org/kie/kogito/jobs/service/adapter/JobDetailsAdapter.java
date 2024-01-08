@@ -29,8 +29,6 @@ import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.Retry;
 import org.kie.kogito.jobs.service.api.Schedule;
 import org.kie.kogito.jobs.service.api.TemporalUnit;
-import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
-import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
@@ -161,7 +159,6 @@ public class JobDetailsAdapter {
         }
 
         public static Recipient<?> toRecipient(JobDetails jobDetails) {
-            checkIsSupported(jobDetails.getRecipient().getRecipient());
             return jobDetails.getRecipient().getRecipient();
         }
 
@@ -170,15 +167,9 @@ public class JobDetailsAdapter {
         }
 
         public static org.kie.kogito.jobs.service.model.Recipient from(Recipient<?> recipient) {
-            checkIsSupported(recipient);
             return new RecipientInstance(recipient);
         }
 
-        static void checkIsSupported(Recipient<?> recipient) {
-            if (!(recipient instanceof HttpRecipient) && !(recipient instanceof SinkRecipient)) {
-                throw new UnsupportedOperationException("Only HttpRecipient and SinkRecipient are supported");
-            }
-        }
     }
 
     public static class RetryAdapter {

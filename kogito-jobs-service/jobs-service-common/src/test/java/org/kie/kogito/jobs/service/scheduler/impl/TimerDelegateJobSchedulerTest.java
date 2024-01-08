@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,10 +45,8 @@ import org.reactivestreams.Publisher;
 import io.smallrye.mutiny.Multi;
 
 import static mutiny.zero.flow.adapters.AdaptersToFlow.publisher;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -97,42 +94,6 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
                 tested.doCancel(JobDetails.builder().of(scheduledJob).scheduledId(null).build());
         Multi.createFrom().publisher(publisher(cancel)).subscribe().with(dummyCallback(), dummyCallback());
         verify(timer, never()).removeJob(any(ManageableJobHandle.class));
-    }
-
-    @Test
-    void testJobSuccessProcessor() {
-        JobExecutionResponse response = getJobResponse();
-        doReturn(ReactiveStreams.of(JobDetails.builder().build()))
-                .when(tested).handleJobExecutionSuccess(response);
-        tested.jobSuccessProcessor(response).thenAccept(r -> assertThat(r).isTrue());
-        verify(tested).handleJobExecutionSuccess(response);
-    }
-
-    @Test
-    void testJobSuccessProcessorFail() {
-        JobExecutionResponse response = getJobResponse();
-        doReturn(ReactiveStreams.failed(new RuntimeException()))
-                .when(tested).handleJobExecutionSuccess(response);
-        tested.jobSuccessProcessor(response).thenAccept(r -> assertThat(r).isFalse());
-        verify(tested).handleJobExecutionSuccess(response);
-    }
-
-    @Test
-    void testJobErrorProcessor() {
-        JobExecutionResponse response = getJobResponse();
-        doReturn(ReactiveStreams.of(JobDetails.builder().build()))
-                .when(tested).handleJobExecutionError(response);
-        tested.jobErrorProcessor(response).thenAccept(r -> assertThat(r).isTrue());
-        verify(tested).handleJobExecutionError(response);
-    }
-
-    @Test
-    void testJobErrorProcessorFail() {
-        JobExecutionResponse response = getJobResponse();
-        doReturn(ReactiveStreams.failed(new RuntimeException()))
-                .when(tested).handleJobExecutionError(response);
-        tested.jobErrorProcessor(response).thenAccept(r -> assertThat(r).isFalse());
-        verify(tested).handleJobExecutionError(response);
     }
 
     private JobExecutionResponse getJobResponse() {
