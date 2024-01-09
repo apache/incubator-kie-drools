@@ -39,7 +39,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.drools>8.44.0.Final</version.org.drools>
+    <version.org.drools>999-SNAPSHOT</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.4.6</version.ch.qos.logback>
