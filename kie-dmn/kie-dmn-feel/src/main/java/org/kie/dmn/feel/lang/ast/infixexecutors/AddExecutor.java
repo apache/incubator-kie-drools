@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -38,6 +39,10 @@ import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 public class AddExecutor implements InfixExecutor {
 
     private static final AddExecutor INSTANCE = new AddExecutor();
+
+    private AddExecutor() {
+        // Singleton pattern
+    }
 
     public static AddExecutor instance() {
         return INSTANCE;
@@ -65,35 +70,38 @@ public class AddExecutor implements InfixExecutor {
                     null;
         }
 
-        if (left instanceof String) {
-            return right instanceof String ? left + (String) right : null;
+        if (left instanceof String stringLeft) {
+            return right instanceof String stringRight ? stringLeft + stringRight : null;
         }
 
-        if (left instanceof Duration) {
-            if (right instanceof LocalDate) {
-                return addLocalDateAndDuration((LocalDate) right, (Duration) left);
+        if (left instanceof Duration leftDuration) {
+            if (right instanceof LocalDate localDate) {
+                return addLocalDateAndDuration(localDate, leftDuration);
             }
-            if (right instanceof Duration) {
-                return ((Duration) left).plus((Duration) right);
+            if (right instanceof Duration rightDuration) {
+                return leftDuration.plus(rightDuration);
             }
         }
-        if (right instanceof Duration && left instanceof LocalDate) {
-            return addLocalDateAndDuration((LocalDate) left, (Duration) right);
-        }
-
-        if (left instanceof Temporal) {
-            if (right instanceof TemporalAmount) {
-                return ((Temporal) left).plus((TemporalAmount) right);
-            }
-        } else if (left instanceof TemporalAmount) {
-            if (right instanceof Temporal) {
-                return ((Temporal) right).plus((TemporalAmount) left);
-            }
-            if (right instanceof ChronoPeriod) {
-                return ((ChronoPeriod) right).plus((TemporalAmount) left);
-            }
+        if (right instanceof Duration duration && left instanceof LocalDate localDate) {
+            return addLocalDateAndDuration(localDate, duration);
         }
 
+        if (left instanceof Temporal temporal) {
+            if (right instanceof TemporalAmount temporalAmount) {
+                return temporal.plus(temporalAmount);
+            }
+            if (right instanceof BigDecimal bigDecimal) {
+                Period toAdd = Period.ofDays(bigDecimal.intValue());
+                return temporal.plus(toAdd);
+            }
+        } else if (left instanceof TemporalAmount temporalAmount) {
+            if (right instanceof Temporal temporal) {
+                return temporal.plus(temporalAmount);
+            }
+            if (right instanceof ChronoPeriod chronoPeriod) {
+                return chronoPeriod.plus(temporalAmount);
+            }
+        }
         ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
         return null;
     }
