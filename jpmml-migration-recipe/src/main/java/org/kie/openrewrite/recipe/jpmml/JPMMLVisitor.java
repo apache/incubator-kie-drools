@@ -59,8 +59,8 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
 
     private static final String DATADICTIONARY_FQDN = "org.dmg.pmml.DataDictionary";
 
-    private static final Map<String, RemovedListTupla> REMOVED_LIST_FROM_INSTANTIATION = Map.of(DATADICTIONARY_FQDN,
-            new RemovedListTupla("addDataFields", JavaType.buildType("org.dmg.pmml.DataField")));
+    private static final Map<String, RemovedListTuple> REMOVED_LIST_FROM_INSTANTIATION = Map.of(DATADICTIONARY_FQDN,
+            new RemovedListTuple("addDataFields", JavaType.buildType("org.dmg.pmml.DataField")));
 
 
     private static final J.Identifier STRING_IDENTIFIER = new J.Identifier(Tree.randomId(), Space.build(" ", Collections.emptyList()), Markers.EMPTY, "String", JavaType.buildType(String.class.getCanonicalName()), null);
@@ -327,23 +327,23 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
      */
     protected Expression replaceInstantiationListRemoved(J.NewClass newClass) {
         logger.trace("replaceInstantiationListRemoved {}", newClass);
-        Optional<RemovedListTupla> optionalRetrieved = getRemovedListTupla(newClass);
+        Optional<RemovedListTuple> optionalRetrieved = getRemovedListTuple(newClass);
         if (optionalRetrieved.isPresent()) {
-            RemovedListTupla removedListTupla = optionalRetrieved.get();
-            return removedListTupla.getJMethod(newClass);
+            RemovedListTuple removedListTuple = optionalRetrieved.get();
+            return removedListTuple.getJMethod(newClass);
         } else {
             return newClass;
         }
     }
 
     /**
-     * Return <code>Optional&lt;RemovedListTupla&gt;</code> if the given <code>J.NewClass</code> constructor has not the <b>List</b> anymore
+     * Return <code>Optional&lt;RemovedListTuple&gt;</code> if the given <code>J.NewClass</code> constructor has not the <b>List</b> anymore
      * <code>Optional.empty()</code> otherwise
      *
      * @param toCheck
      * @return
      */
-    protected Optional<RemovedListTupla> getRemovedListTupla(J.NewClass toCheck) {
+    protected Optional<RemovedListTuple> getRemovedListTuple(J.NewClass toCheck) {
         return toCheck.getType() != null &&
                 REMOVED_LIST_FROM_INSTANTIATION.containsKey(toCheck.getType().toString()) &&
                 toCheck.getArguments() != null &&
@@ -428,7 +428,7 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
                 .withType(targetInstantiatedType);
     }
 
-    static class RemovedListTupla {
+    static class RemovedListTuple {
 
         private final String addMethodName;
 
@@ -439,7 +439,7 @@ public class JPMMLVisitor extends JavaVisitor<ExecutionContext> {
         private final J.Identifier elementToArrayIdentifier;
         private final J.Identifier addMethodIdentifier;
 
-        public RemovedListTupla(String addMethodName, JavaType elementJavaType) {
+        public RemovedListTuple(String addMethodName, JavaType elementJavaType) {
             this.addMethodName = addMethodName;
             elementIdentifier = new J.Identifier(Tree.randomId(), Space.build(" ", Collections.emptyList()), Markers.EMPTY, elementJavaType.toString(), elementJavaType, null);
             elementArray = new JavaType.Array(null, elementJavaType);

@@ -52,7 +52,7 @@ public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFact
     /**
      * Returns the <code>KiePMMLDroolsAST</code> built out of the given parameters.
      * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between
-     * original field' name and <b>original type/generated type</b> tupla
+     * original field' name and <b>original type/generated type</b> tuple
      *
      * @param fields
      * @param model

@@ -24,7 +24,7 @@ import java.util.Objects;
 import org.kie.pmml.api.enums.OPERATOR;
 
 /**
- * Tupla representing the operator and the value to be applied to a given field
+ * Tuple representing the operator and the value to be applied to a given field
  */
 public class KiePMMLOperatorValue implements Serializable {
 
