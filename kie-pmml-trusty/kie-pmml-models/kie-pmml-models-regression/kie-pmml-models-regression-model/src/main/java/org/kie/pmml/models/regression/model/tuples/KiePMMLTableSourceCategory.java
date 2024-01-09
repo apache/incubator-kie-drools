@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Class to represent a <b>table source/table category</b> tupla
+ * Class to represent a <b>table source/table category</b> tuple
  */
 public class KiePMMLTableSourceCategory implements Serializable {
 

@@ -49,7 +49,7 @@ public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
 
     /**
      * Returns the <code>KiePMMLDroolsAST</code> built out of the given parameters.
-     * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      *
      * @param dataDictionary
      * @param model
