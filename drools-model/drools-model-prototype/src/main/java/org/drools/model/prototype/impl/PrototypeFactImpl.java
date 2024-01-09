@@ -23,8 +23,6 @@ import java.util.List;
 import org.kie.api.prototype.PrototypeFact;
 import org.kie.api.prototype.PrototypeFactInstance;
 
-import static org.drools.model.prototype.impl.FactFactory.createMapBasedFact;
-
 public class PrototypeFactImpl extends PrototypeImpl implements PrototypeFact {
 
     public PrototypeFactImpl( String name, List<Field> fields ) {
@@ -33,7 +31,7 @@ public class PrototypeFactImpl extends PrototypeImpl implements PrototypeFact {
 
     @Override
     public PrototypeFactInstance newInstance() {
-        return createMapBasedFact(this);
+        return new HashMapFactImpl(this);
     }
 
     @Override

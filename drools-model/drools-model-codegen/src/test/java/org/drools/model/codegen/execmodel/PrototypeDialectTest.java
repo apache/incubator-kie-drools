@@ -19,7 +19,9 @@
 package org.drools.model.codegen.execmodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -54,7 +56,7 @@ public class PrototypeDialectTest {
                 .build(
                         protoPattern(personV)
                                 .expr("age", Index.ConstraintType.GREATER_OR_EQUAL, 18 ),
-                        on(personV).execute(p -> p.set("adult", true))
+                        on(personV).execute(p -> p.put("adult", true))
                 );
 
         Model model = new ModelImpl().addRule(rule );
@@ -65,16 +67,16 @@ public class PrototypeDialectTest {
         PrototypeFact personFact = prototype("Person").asFact();
 
         PrototypeFactInstance sofia = personFact.newInstance();
-        sofia.set( "name", "Sofia" );
-        sofia.set( "age", 12 );
+        sofia.put("name", "Sofia" );
+        sofia.put("age", 12 );
 
         ksession.insert(sofia);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
         assertThat(sofia.get("adult")).isNull();
 
         PrototypeFactInstance mario = personFact.newInstance();
-        mario.set( "name", "Mario" );
-        mario.set( "age", 49 );
+        mario.put("name", "Mario" );
+        mario.put("age", 49 );
 
         ksession.insert(mario);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -106,16 +108,16 @@ public class PrototypeDialectTest {
         PrototypeFact personFact = prototype("Person").asFact();
 
         PrototypeFactInstance sofia = personFact.newInstance();
-        sofia.set( "name", "Sofia" );
-        sofia.set( "age", 12 );
+        sofia.put("name", "Sofia" );
+        sofia.put("age", 12 );
 
         ksession.insert(sofia);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
         assertThat(sofia.get("adult")).isNull();
 
         PrototypeFactInstance mario = personFact.newInstance();
-        mario.set( "name", "Mario" );
-        mario.set( "age", 49 );
+        mario.put("name", "Mario" );
+        mario.put("age", 49 );
 
         ksession.insert(mario);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -156,8 +158,8 @@ public class PrototypeDialectTest {
 
         PrototypeFact personFact = prototype("Person").asFact();
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 17 );
+        mark.put("name", "Mark" );
+        mark.put("age", 17 );
         ksession.insert(mark);
 
         PrototypeFact resultFact = prototype("Result").asFact();
@@ -166,5 +168,49 @@ public class PrototypeDialectTest {
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertEquals("Mark can NOT drink", result.get("value"));
+    }
+
+
+    @Test
+    public void testAccessMapFieldsInMvel() {
+        String str =
+                """
+                dialect "mvel"
+                import java.util.Map
+                global java.util.List results
+                rule Adult when
+                  $p : Map( age >= 18 )
+                then
+                  $p.adult = true;
+                  results.add($p.name);
+                end
+                """;
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Map<String, Object> sofia = new HashMap<>();
+        sofia.put( "name", "Sofia" );
+        sofia.put( "age", 12 );
+
+        ksession.insert(sofia);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+        assertThat(sofia.get("adult")).isNull();
+
+        Map<String, Object> mario = new HashMap<>();
+        mario.put( "name", "Mario" );
+        mario.put( "age", 49 );
+
+        ksession.insert(mario);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(mario.get("adult")).isEqualTo(true);
+
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo("Mario");
     }
 }

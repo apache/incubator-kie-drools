@@ -112,9 +112,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                              on(patternVariable0).execute((drools, t1) -> {
                                  PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                          .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                 controlEvent.set( "rulename", subRuleName0 );
-                                 controlEvent.set( "event", t1 );
-                                 controlEvent.set( "binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
+                                 controlEvent.put("rulename", subRuleName0 );
+                                 controlEvent.put("event", t1 );
+                                 controlEvent.put("binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
                                  drools.insert(controlEvent);
                              })
                      )
@@ -133,9 +133,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                              on(patternVariable1).execute((drools, t1) -> {
                                  PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                          .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                 controlEvent.set( "rulename", subRuleName1 );
-                                 controlEvent.set( "event", t1 );
-                                 controlEvent.set( "binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
+                                 controlEvent.put("rulename", subRuleName1 );
+                                 controlEvent.put("event", t1 );
+                                 controlEvent.put("binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
                                  drools.insert(controlEvent);
                              })
                      )
@@ -154,9 +154,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                              on(patternVariable2).execute((drools, t1) -> {
                                  PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                          .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                 controlEvent.set( "rulename", subRuleName2 );
-                                 controlEvent.set( "event", t1 );
-                                 controlEvent.set( "binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
+                                 controlEvent.put("rulename", subRuleName2 );
+                                 controlEvent.put("event", t1 );
+                                 controlEvent.put("binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
                                  drools.insert(controlEvent);
                              })
                       )
@@ -171,9 +171,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                               on(controlVar2).execute((drools, firstEvent) -> {
                                   PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                           .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                  controlEvent.set( "rulename", startTag );
-                                  controlEvent.set( "event", firstEvent.get("event") );
-                                  controlEvent.set( "binding", firstEvent.get("binding") );
+                                  controlEvent.put("rulename", startTag );
+                                  controlEvent.put("event", firstEvent.get("event") );
+                                  controlEvent.put("binding", firstEvent.get("binding") );
                                   drools.insert(controlEvent);
                               })
                       )
@@ -190,7 +190,7 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                               on(resultCount).execute((drools, count) -> {
                                   PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                           .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                  controlEvent.set( "rulename", endTag );
+                                  controlEvent.put("rulename", endTag );
                                   drools.insert(controlEvent);
                               })
                       )

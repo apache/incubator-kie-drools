@@ -16,34 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype.facttemplate;
+package org.drools.model.prototype.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.base.facttemplates.Event;
-import org.drools.base.facttemplates.FactTemplate;
+import org.kie.api.prototype.Prototype;
 import org.kie.api.prototype.PrototypeEventInstance;
 
 import static org.drools.model.functions.temporal.TimeUtil.unitToLong;
 
-public class HashMapEventImpl extends HashMapFactImpl implements Event, PrototypeEventInstance {
+public class HashMapEventImpl extends HashMapFactImpl implements PrototypeEventInstance {
 
     private long timestamp = -1;
     private long expiration = Long.MAX_VALUE;
 
-    public HashMapEventImpl(FactTemplate factTemplate) {
-        this( factTemplate, new HashMap<>() );
+    public HashMapEventImpl(Prototype prototype) {
+        this( prototype, new HashMap<>() );
     }
 
-    public HashMapEventImpl(FactTemplate factTemplate, Map<String, Object> valuesMap) {
-        super(factTemplate, valuesMap);
+    public HashMapEventImpl(Prototype prototype, Map<String, Object> valuesMap) {
+        super(prototype, valuesMap);
     }
 
-    public HashMapEventImpl(UUID uuid, FactTemplate factTemplate, Map<String, Object> valuesMap, long timestamp, long expiration) {
-        super(uuid, factTemplate, valuesMap);
+    public HashMapEventImpl(UUID uuid, Prototype prototype, Map<String, Object> valuesMap, long timestamp, long expiration) {
+        super(uuid, prototype, valuesMap);
         this.timestamp = timestamp;
         this.expiration = expiration;
     }
@@ -66,6 +65,6 @@ public class HashMapEventImpl extends HashMapFactImpl implements Event, Prototyp
 
     @Override
     public String toString() {
-        return "Event " + factTemplate.getName() + " with values = " + valuesMap;
+        return "Event " + prototype.getFullName() + " with values = " + valuesMap;
     }
 }

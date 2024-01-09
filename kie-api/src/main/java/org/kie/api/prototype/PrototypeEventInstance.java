@@ -27,4 +27,8 @@ public interface PrototypeEventInstance extends PrototypeFactInstance {
     long getExpiration();
 
     PrototypeEventInstance withExpiration( long value, TimeUnit unit );
+
+    default boolean isEvent() {
+        return true;
+    }
 }

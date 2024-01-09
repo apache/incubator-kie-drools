@@ -24,13 +24,11 @@ import java.util.function.Function;
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.impl.KnowledgePackageImpl;
-import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.prototype.PrototypeObjectType;
 import org.drools.model.Variable;
 import org.drools.model.prototype.PrototypeVariable;
 import org.drools.modelcompiler.PrototypeService;
 import org.kie.api.prototype.Prototype;
-
-import static org.drools.model.prototype.impl.FactFactory.prototypeToFactTemplate;
 
 public class PrototypeServiceImpl implements PrototypeService {
 
@@ -38,7 +36,7 @@ public class PrototypeServiceImpl implements PrototypeService {
         Prototype prototype = ((PrototypeVariable) patternVariable).getPrototype();
         return objectTypeCache.computeIfAbsent( prototype.getFullName(), name -> {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent(prototype.getPackage(), packageCreator );
-            FactTemplateObjectType objectType = new FactTemplateObjectType(prototypeToFactTemplate(prototype, pkg ));
+            PrototypeObjectType objectType = new PrototypeObjectType(prototype);
             objectType.setEvent(prototype.isEvent());
             return objectType;
         } );

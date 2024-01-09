@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.base.facttemplates;
+package org.drools.base.prototype;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -28,47 +28,45 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.util.ClassUtils;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFactInstance;
 
-public class FactTemplateFieldExtractor
-    implements
-    Externalizable,
-        ReadAccessor {
+public class PrototypeFieldExtractor implements Externalizable, ReadAccessor {
 
     private static final long serialVersionUID = 510l;
-    private FactTemplate factTemplate;
+    private Prototype prototype;
     private String fieldName;
     private int fieldIndex;
 
-    public FactTemplateFieldExtractor() {
+    public PrototypeFieldExtractor() {
 
     }
 
-    public FactTemplateFieldExtractor(FactTemplate factTemplate, String fieldName) {
-        this.factTemplate = factTemplate;
+    public PrototypeFieldExtractor(Prototype prototype, String fieldName) {
+        this.prototype = prototype;
         this.fieldName = fieldName;
-        this.fieldIndex = factTemplate.getFieldTemplateIndex(fieldName);
+        this.fieldIndex = prototype.getFieldIndex(fieldName);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        factTemplate = (FactTemplate) in.readObject();
+        prototype = (Prototype) in.readObject();
         fieldName = in.readUTF();
         fieldIndex = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( factTemplate );
+        out.writeObject( prototype );
         out.writeUTF( fieldName );
         out.writeInt( fieldIndex );
     }
 
     public ValueType getValueType() {
-        return this.factTemplate.getFieldTemplate( this.fieldName ).getValueType();
+        return ValueType.determineValueType(getExtractToClass());
     }
 
-    public Object getValue(ValueResolver valueResolver,
-                           final Object object) {
-        return ((Fact) object).get( this.fieldName );
+    public Object getValue(ValueResolver valueResolver, final Object object) {
+        return ((PrototypeFactInstance) object).get(this.fieldName );
     }
 
     public int getIndex() {
@@ -76,51 +74,44 @@ public class FactTemplateFieldExtractor
     }
 
     public Class getExtractToClass() {
-        return this.factTemplate.getFieldTemplate( fieldName ).getValueType().getClassType();
+        Prototype.Field field = this.prototype.getField( fieldName );
+        return field != null ? field.getClass() : Object.class;
     }
 
     public String getExtractToClassName() {
         return ClassUtils.canonicalName( getExtractToClass() );
     }
 
-    public boolean getBooleanValue(ValueResolver valueResolver,
-                                   final Object object) {
-        return ((Boolean) ((Fact) object).get( fieldName )).booleanValue();
+    public boolean getBooleanValue(ValueResolver valueResolver, Object object) {
+        return (Boolean) ((PrototypeFactInstance) object).get(fieldName);
     }
 
-    public byte getByteValue(ValueResolver valueResolver,
-                             final Object object) {
-        return ((Number) ((Fact) object).get( fieldName )).byteValue();
+    public byte getByteValue(ValueResolver valueResolver, Object object) {
+        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).byteValue();
     }
 
-    public char getCharValue(ValueResolver valueResolver,
-                             final Object object) {
-        return ((Character) ((Fact) object).get( fieldName )).charValue();
+    public char getCharValue(ValueResolver valueResolver, Object object) {
+        return (Character) ((PrototypeFactInstance) object).get(fieldName);
     }
 
-    public double getDoubleValue(ValueResolver valueResolver,
-                                 final Object object) {
-        return ((Number) ((Fact) object).get( fieldName )).doubleValue();
+    public double getDoubleValue(ValueResolver valueResolver, Object object) {
+        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).doubleValue();
     }
 
-    public float getFloatValue(ValueResolver valueResolver,
-                               final Object object) {
-        return ((Number) ((Fact) object).get( fieldName )).floatValue();
+    public float getFloatValue(ValueResolver valueResolver, Object object) {
+        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).floatValue();
     }
 
-    public int getIntValue(ValueResolver valueResolver,
-                           final Object object) {
-        return ((Number) ((Fact) object).get( fieldName )).intValue();
+    public int getIntValue(ValueResolver valueResolver, Object object) {
+        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).intValue();
     }
 
-    public long getLongValue(ValueResolver valueResolver,
-                             final Object object) {
-        return ((Number) ((Fact) object).get( fieldName )).longValue();
+    public long getLongValue(ValueResolver valueResolver, Object object) {
+        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).longValue();
     }
 
-    public short getShortValue(ValueResolver valueResolver,
-                               final Object object) {
-        return ((Number) ((Fact) object).get( fieldName )).shortValue();
+    public short getShortValue(ValueResolver valueResolver, Object object) {
+        return ((Number) ((PrototypeFactInstance) object).get( fieldName )).shortValue();
     }
 
     public Method getNativeReadMethod() {
@@ -150,7 +141,7 @@ public class FactTemplateFieldExtractor
     }
 
     public boolean isNullValue(ValueResolver valueResolver, Object object) {
-        return ((Fact) object).get( this.fieldName ) == null;
+        return ((PrototypeFactInstance) object).get( this.fieldName ) == null;
     }
 
     public int getHashCode(Object object) {
@@ -169,7 +160,7 @@ public class FactTemplateFieldExtractor
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((factTemplate == null) ? 0 : factTemplate.hashCode());
+        result = prime * result + ((prototype == null) ? 0 : prototype.hashCode());
         result = prime * result + fieldIndex;
         return result;
     }
@@ -185,13 +176,13 @@ public class FactTemplateFieldExtractor
         if ( getClass() != obj.getClass() ) {
             return false;
         }
-        FactTemplateFieldExtractor other = (FactTemplateFieldExtractor) obj;
+        PrototypeFieldExtractor other = (PrototypeFieldExtractor) obj;
         
-        if ( factTemplate == null ) {
-            if ( other.factTemplate != null ) {
+        if ( prototype == null ) {
+            if ( other.prototype != null ) {
             return false;
             }
-        } else if ( !factTemplate.equals( other.factTemplate ) ) {
+        } else if ( !prototype.equals( other.prototype ) ) {
             return false;
         }
         

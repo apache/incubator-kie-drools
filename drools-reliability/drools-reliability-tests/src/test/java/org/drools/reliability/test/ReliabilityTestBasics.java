@@ -503,26 +503,26 @@ public abstract class ReliabilityTestBasics {
 
     private void insertSensuEvent(String host, String type) {
         PrototypeEventInstance sensu = createEvent();
-        sensu.set("sensu.host", host);
-        sensu.set("sensu.process.type", type);
+        sensu.put("sensu.host", host);
+        sensu.put("sensu.process.type", type);
         sessions.get(0).insert(sensu);
     }
 
     protected void insertMatchingSensuProcessStatusEvent(String status) {
         PrototypeEventInstance sensu = createEvent();
-        sensu.set("sensu.process.status", status);
+        sensu.put("sensu.process.status", status);
         sessions.get(0).insert(sensu);
     }
 
     protected void insertMatchingPingTimeoutEvent(boolean timeout) {
         PrototypeEventInstance ping = createEvent();
-        ping.set("ping.timeout", timeout);
+        ping.put("ping.timeout", timeout);
         sessions.get(0).insert(ping);
     }
 
     protected void insertMatchingSensuStoragePercentEvent(int percent) {
         PrototypeEventInstance sensu = createEvent();
-        sensu.set("sensu.storage.percent", percent);
+        sensu.put("sensu.storage.percent", percent);
         sessions.get(0).insert(sensu);
     }
 }

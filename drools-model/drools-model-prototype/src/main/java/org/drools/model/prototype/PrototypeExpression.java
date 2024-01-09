@@ -278,7 +278,7 @@ public interface PrototypeExpression {
             }
             if (object instanceof Map) {
                 PrototypeFactInstance fact = PrototypeDSL.DEFAULT_PROTOTYPE.newInstance();
-                ((Map<String, Object>) object).forEach(fact::set);
+                ((Map<String, Object>) object).forEach(fact::put);
                 return fact;
             }
             throw new UnsupportedOperationException("Cannot convert " + object + " into a Prototype");

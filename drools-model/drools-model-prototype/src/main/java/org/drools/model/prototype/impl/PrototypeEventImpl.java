@@ -23,8 +23,6 @@ import java.util.List;
 import org.kie.api.prototype.PrototypeEvent;
 import org.kie.api.prototype.PrototypeEventInstance;
 
-import static org.drools.model.prototype.impl.FactFactory.createMapBasedEvent;
-
 public class PrototypeEventImpl extends PrototypeImpl implements PrototypeEvent {
 
     public PrototypeEventImpl(String name, List<Field> fields ) {
@@ -33,7 +31,7 @@ public class PrototypeEventImpl extends PrototypeImpl implements PrototypeEvent 
 
     @Override
     public PrototypeEventInstance newInstance() {
-        return createMapBasedEvent(this);
+        return new HashMapEventImpl(this);
     }
 
     @Override

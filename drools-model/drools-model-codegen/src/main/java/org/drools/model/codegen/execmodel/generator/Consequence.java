@@ -60,6 +60,7 @@ import org.drools.model.codegen.execmodel.errors.ConsequenceRewriteException;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
@@ -184,24 +185,34 @@ public class Consequence {
 
     private void rewriteConsequenceForPrototype(BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS) {
         for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
-            FieldAccessExpr fieldAccessExpr = assignExpr.getTarget().asFieldAccessExpr();
-            String assignedVariable = fieldAccessExpr.getScope().toString();
-            if ( usedDeclarationInRHS.contains( assignedVariable ) && context.isPrototypeDeclaration( assignedVariable ) ) {
-                MethodCallExpr setCall = new MethodCallExpr( new NameExpr( assignedVariable ), "set" );
-                setCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
-                setCall.addArgument( assignExpr.getValue() );
-                assignExpr.replace(setCall);
+            if (assignExpr.getTarget().isFieldAccessExpr()) {
+                FieldAccessExpr fieldAccessExpr = assignExpr.getTarget().asFieldAccessExpr();
+                String assignedVariable = getAssignedVariable(fieldAccessExpr);
+                if (assignedVariable != null && usedDeclarationInRHS.contains(assignedVariable) && context.isPrototypeDeclaration(assignedVariable)) {
+                    MethodCallExpr setCall = new MethodCallExpr(new NameExpr(assignedVariable), "put");
+                    setCall.addArgument(new StringLiteralExpr(fieldAccessExpr.getNameAsString()));
+                    setCall.addArgument(assignExpr.getValue());
+                    assignExpr.replace(setCall);
+                }
             }
         }
 
         for (FieldAccessExpr fieldAccessExpr : ruleConsequence.findAll(FieldAccessExpr.class)) {
-            String assignedVariable = fieldAccessExpr.getScope().toString();
-            if ( usedDeclarationInRHS.contains( assignedVariable ) && context.isPrototypeDeclaration( assignedVariable ) ) {
+            String assignedVariable = getAssignedVariable(fieldAccessExpr);
+            if ( assignedVariable != null && usedDeclarationInRHS.contains( assignedVariable ) && context.isPrototypeDeclaration( assignedVariable ) ) {
                 MethodCallExpr getCall = new MethodCallExpr( new NameExpr( assignedVariable ), "get" );
                 getCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
                 fieldAccessExpr.replace(getCall);
             }
         }
+    }
+
+    private static String getAssignedVariable(FieldAccessExpr fieldAccessExpr) {
+        Expression scope = fieldAccessExpr.getScope();
+        if (scope instanceof DrlNameExpr drlName) {
+            return drlName.getName().toString();
+        }
+        return scope instanceof NameExpr ? scope.toString() : null;
     }
 
     private void replaceKcontext(BlockStmt ruleConsequence) {
@@ -242,6 +253,7 @@ public class Consequence {
         replaceKcontext(compile.statementResults());
         rewriteChannels(compile.statementResults());
 
+        rewriteConsequenceForPrototype(compile.statementResults(), usedDeclarationInRHS);
         return executeCall(ruleVariablesBlock,
                                   compile.statementResults(),
                                   usedDeclarationInRHS,
@@ -285,7 +297,7 @@ public class Consequence {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
-        } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA || context.getRuleDialect() == RuleContext.RuleDialect.PROTOTYPE) {
+        } else if (ruleConsequence != null) {
             Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
             return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
         }

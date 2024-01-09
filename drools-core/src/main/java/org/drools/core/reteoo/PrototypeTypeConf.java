@@ -24,10 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.base.base.ObjectType;
-import org.drools.base.facttemplates.Event;
-import org.drools.base.facttemplates.Fact;
-import org.drools.base.facttemplates.FactTemplate;
-import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.prototype.PrototypeObjectType;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -35,8 +32,11 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeEventInstance;
+import org.kie.api.prototype.PrototypeFactInstance;
 
-public class FactTemplateTypeConf
+public class PrototypeTypeConf
     implements
     ObjectTypeConf,
     Externalizable {
@@ -45,33 +45,33 @@ public class FactTemplateTypeConf
 
     private transient InternalRuleBase ruleBase;
 
-    private ObjectType        objectType;
-    private FactTemplate      factTemplate;
-    private ObjectTypeNode    concreteObjectTypeNode;
-    private ObjectTypeNode[]  cache;
+    private ObjectType objectType;
+    private Prototype prototype;
+    private ObjectTypeNode concreteObjectTypeNode;
+    private ObjectTypeNode[] cache;
     
-    private boolean          tmsEnabled;
+    private boolean tmsEnabled;
     
     EntryPointId entryPoint;
 
 
-    public FactTemplateTypeConf() {
+    public PrototypeTypeConf() {
     }
 
-    public FactTemplateTypeConf(final EntryPointId entryPoint,
-                                final FactTemplate factTemplate,
-                                final InternalRuleBase ruleBase) {
+    public PrototypeTypeConf(final EntryPointId entryPoint,
+                             final Prototype prototype,
+                             final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.factTemplate = factTemplate;
+        this.prototype = prototype;
         this.entryPoint = entryPoint;
-        this.objectType = new FactTemplateObjectType( factTemplate );
+        this.objectType = new PrototypeObjectType(prototype);
         this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         ruleBase = (InternalRuleBase) in.readObject();
-        factTemplate = (FactTemplate) in.readObject();
+        prototype = (Prototype) in.readObject();
         concreteObjectTypeNode = (ObjectTypeNode) in.readObject();
         cache = (ObjectTypeNode[]) in.readObject();
         objectType = (ObjectType) in.readObject();
@@ -79,7 +79,7 @@ public class FactTemplateTypeConf
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( ruleBase );
-        out.writeObject( factTemplate );
+        out.writeObject( prototype );
         out.writeObject( concreteObjectTypeNode );
         out.writeObject( cache );
         out.writeObject( objectType );
@@ -100,7 +100,7 @@ public class FactTemplateTypeConf
     }
 
     public boolean isAssignableFrom(Object object) {
-        return this.factTemplate.equals( object );
+        return this.prototype.equals( object );
     }
 
     public void resetCache() {
@@ -145,15 +145,15 @@ public class FactTemplateTypeConf
 
     @Override
     public String getTypeName() {
-        return factTemplate.getName();
+        return prototype.getFullName();
     }
 
     @Override
     public InternalFactHandle createFactHandle(FactHandleFactory factHandleFactory, long id, Object object, long recency,
                                                ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint entryPoint) {
-        Fact fact = (Fact) object;
+        PrototypeFactInstance fact = (PrototypeFactInstance) object;
         if (fact.isEvent()) {
-            Event event = (Event) fact;
+            PrototypeEventInstance event = (PrototypeEventInstance) fact;
             long timestamp = event.getTimestamp() >= 0 ? event.getTimestamp() : reteEvaluator.getTimerService().getCurrentTime();
             return factHandleFactory.createEventFactHandle(id, object, recency, entryPoint, timestamp, 0);
         }

@@ -101,12 +101,12 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
                                   not(duplicateControlPattern(originalEventVariable)),
                                   on(originalEventVariable).execute((drools, event) -> {
                                       PrototypeEventInstance controlEvent = controlPrototype.newInstance();
-                                      controlEvent.set("sensu.host", event.get("sensu.host")); // groupByAttributes
-                                      controlEvent.set("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
-                                      controlEvent.set("drools_rule_name", RULE_NAME);
-                                      controlEvent.set("event", event);
-                                      controlEvent.set("once_after_time_window", "10 minutes");
-                                      controlEvent.set("events_in_window", 1);
+                                      controlEvent.put("sensu.host", event.get("sensu.host")); // groupByAttributes
+                                      controlEvent.put("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
+                                      controlEvent.put("drools_rule_name", RULE_NAME);
+                                      controlEvent.put("event", event);
+                                      controlEvent.put("once_after_time_window", "10 minutes");
+                                      controlEvent.put("events_in_window", 1);
                                       drools.insert(controlEvent);
                                       drools.delete(event);
                                   })
@@ -123,11 +123,11 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
                                   on(controlVar1).execute((drools, c1) -> {
                                       PrototypeEventInstance startControlEvent = controlPrototype.newInstance()
                                               .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                      startControlEvent.set("start_once_after", RULE_NAME);
+                                      startControlEvent.put("start_once_after", RULE_NAME);
                                       drools.insert(startControlEvent);
 
                                       PrototypeEventInstance endControlEvent = controlPrototype.newInstance();
-                                      endControlEvent.set("end_once_after", RULE_NAME);
+                                      endControlEvent.put("end_once_after", RULE_NAME);
                                       drools.insert(endControlEvent);
                                   })
                           )
@@ -141,7 +141,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
                                   guardedPattern(originalEventVariable),
                                   duplicateControlPattern,
                                   on(originalEventVariable, duplicateControlPattern.getFirstVariable()).execute((drools, event, control) -> {
-                                      control.set("events_in_window", ((int) control.get("events_in_window")) + 1);
+                                      control.put("events_in_window", ((int) control.get("events_in_window")) + 1);
                                       drools.delete(event);
                                   })
                           )

@@ -18,6 +18,7 @@
  */
 package org.drools.model.prototype.impl;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,29 +27,48 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.kie.api.prototype.Prototype;
 import org.kie.api.prototype.PrototypeFactInstance;
 
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
-public abstract class PrototypeImpl implements Prototype {
+public abstract class PrototypeImpl implements Prototype, Serializable {
 
     private final String pkg;
     private final String name;
     private final SortedMap<String, Field> fields;
 
-    public PrototypeImpl( String name, List<Field> fields ) {
-        int lastDot = name.lastIndexOf('.');
-        this.pkg = lastDot > 0 ? name.substring(0, lastDot) : DEFAULT_PACKAGE;
-        this.name = lastDot > 0 ? name.substring(lastDot+1) : name;
+    public PrototypeImpl( String fulllName, List<Field> fields ) {
+        int lastDot = fulllName.lastIndexOf('.');
+        this.pkg = lastDot > 0 ? fulllName.substring(0, lastDot) : DEFAULT_PACKAGE;
+        this.name = lastDot > 0 ? fulllName.substring(lastDot+1) : fulllName;
+        this.fields = initFields(fields);
+        registerPrototype();
+    }
+
+    public PrototypeImpl( String pkg, String name, List<Field> fields ) {
+        this.pkg = pkg != null && !pkg.isEmpty() ? pkg : DEFAULT_PACKAGE;
+        this.name = name;
+        this.fields = initFields(fields);
+        registerPrototype();
+    }
+
+    private void registerPrototype() {
+        CoreComponentFactory.get().createKnowledgePackage(pkg).addPrototype(this);
+    }
+
+    private SortedMap<String, Field> initFields(List<Field> fields) {
+        final SortedMap<String, Field> sortedFields;
         if (fields != null && !fields.isEmpty()) {
-            this.fields = new TreeMap<>();
+            sortedFields = new TreeMap<>();
             for (Field field : fields) {
-                this.fields.put(field.getName(), field);
+                sortedFields.put(field.getName(), field);
             }
         } else {
-            this.fields = Collections.emptySortedMap();
+            sortedFields = Collections.emptySortedMap();
         }
+        return sortedFields;
     }
 
     @Override
@@ -86,7 +106,7 @@ public abstract class PrototypeImpl implements Prototype {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof PrototypeImpl)) return false;
         PrototypeImpl prototype = (PrototypeImpl) o;
         return pkg.equals(prototype.pkg) && name.equals(prototype.name) && fields.equals(prototype.fields);
     }
@@ -96,7 +116,7 @@ public abstract class PrototypeImpl implements Prototype {
         return Objects.hash(pkg, name, fields);
     }
 
-    public static class FieldImpl implements Prototype.Field {
+    public static class FieldImpl implements Prototype.Field, Serializable {
         private final String name;
         private final Function<PrototypeFactInstance, Object> extractor;
         private final boolean typed;

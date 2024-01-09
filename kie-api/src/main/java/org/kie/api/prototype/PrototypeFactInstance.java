@@ -23,9 +23,15 @@ import java.util.Map;
 public interface PrototypeFactInstance {
     Object get(String name);
 
-    void set(String name, Object value);
+    void put(String name, Object value);
 
     boolean has(String name);
 
     Map<String, Object> asMap();
+
+    Prototype getPrototype();
+
+    default boolean isEvent() {
+        return false;
+    }
 }

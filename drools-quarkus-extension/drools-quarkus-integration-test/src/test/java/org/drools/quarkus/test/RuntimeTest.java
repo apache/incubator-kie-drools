@@ -76,8 +76,8 @@ public class RuntimeTest {
 
         PrototypeFact personFact = prototype("Person" ).asFact();
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 17 );
+        mark.put("name", "Mark" );
+        mark.put("age", 17 );
         ksession.insert(mark);
 
         PrototypeFact resultFact = prototype( "Result" ).asFact();

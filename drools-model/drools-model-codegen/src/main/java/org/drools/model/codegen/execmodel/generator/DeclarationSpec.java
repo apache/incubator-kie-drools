@@ -18,6 +18,7 @@
  */
 package org.drools.model.codegen.execmodel.generator;
 
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -39,6 +40,6 @@ public interface DeclarationSpec {
     void registerOnPackage(PackageModel packageModel, RuleContext context, BlockStmt ruleBlock);
 
     default boolean isPrototypeDeclaration() {
-        return false;
+        return getDeclarationClass().isAssignableFrom(Map.class);
     }
 }

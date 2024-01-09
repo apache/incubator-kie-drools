@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.prototype.PrototypeObjectType;
 import org.drools.core.ClockType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
@@ -89,7 +89,7 @@ import static org.drools.model.prototype.PrototypeExpression.prototypeField;
 import static org.drools.model.prototype.PrototypeExpression.thisPrototype;
 import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
-public class FactTemplateTest {
+public class PrototypeTest {
 
     private static final ConstraintOperator listContainsOp = new ConstraintOperator() {
         @Override
@@ -142,11 +142,11 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
+        assertThat(hasPrototypeObjectType(ksession, "org.drools.Person")).isTrue();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 40 );
+        mark.put("name", "Mark" );
+        mark.put("age", 40 );
 
         FactHandle fh = ksession.insert( mark );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -154,7 +154,7 @@ public class FactTemplateTest {
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results).contains(new Result("Found a 40 years old Mark"));
 
-        mark.set( "age", 41 );
+        mark.put("age", 41 );
         ksession.update(fh, mark, "age");
         // property reactivity should prevent this firing
         assertThat(ksession.fireAllRules()).isEqualTo(hasFields ? 0 : 1);
@@ -185,13 +185,13 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance testFact = testPrototype.newInstance();
-        testFact.set( "fieldA", 12 );
-        testFact.set( "fieldB", 8 );
+        testFact.put("fieldA", 12 );
+        testFact.put("fieldB", 8 );
 
         FactHandle fh = ksession.insert( testFact );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        testFact.set( "fieldC", 5 );
+        testFact.put("fieldC", 5 );
         ksession.update(fh, testFact, "fieldC");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -216,12 +216,12 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance testFact = testPrototype.newInstance();
-        testFact.set( "fieldB", 8 );
+        testFact.put("fieldB", 8 );
 
         FactHandle fh = ksession.insert( testFact );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        testFact.set( "fieldA", null );
+        testFact.put("fieldA", null );
         ksession.update(fh, testFact, "fieldA");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -246,13 +246,13 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance unknown = personFact.newInstance();
-        unknown.set( "age", 40 );
+        unknown.put("age", 40 );
         ksession.insert( unknown );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 40 );
+        mark.put("name", "Mark" );
+        mark.put("age", 40 );
         ksession.insert( mark );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -281,19 +281,19 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertThat(hasFactTemplateObjectType(ksession, "Person")).isTrue();
+        assertThat(hasPrototypeObjectType(ksession, "org.drools.Person")).isTrue();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 37 );
+        mark.put("name", "Mark" );
+        mark.put("age", 37 );
 
         PrototypeFactInstance edson = personFact.newInstance();
-        edson.set( "name", "Edson" );
-        edson.set( "age", 35 );
+        edson.put("name", "Edson" );
+        edson.put("age", 35 );
 
         PrototypeFactInstance mario = personFact.newInstance();
-        mario.set( "name", "Mario" );
-        mario.set( "age", 40 );
+        mario.put("name", "Mario" );
+        mario.put("age", 40 );
 
         FactHandle markFH = ksession.insert(mark);
         FactHandle edsonFH = ksession.insert(edson);
@@ -307,7 +307,7 @@ public class FactTemplateTest {
         ksession.fireAllRules();
         assertThat(result.getValue()).isNull();
 
-        mark.set( "age", 34 );
+        mark.put("age", 34 );
         ksession.update( markFH, mark );
 
         ksession.fireAllRules();
@@ -337,16 +337,16 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance testFact1 = testPrototype.newInstance();
-        testFact1.set( "fieldA", 12 );
+        testFact1.put("fieldA", 12 );
         FactHandle fh1 = ksession.insert( testFact1 );
 
         PrototypeFactInstance testFact2 = testPrototype.newInstance();
-        testFact2.set( "fieldB", 8 );
+        testFact2.put("fieldB", 8 );
         FactHandle fh2 = ksession.insert( testFact2 );
 
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
-        testFact2.set( "fieldC", 5 );
+        testFact2.put("fieldC", 5 );
         ksession.update(fh2, testFact2, "fieldC");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -379,11 +379,11 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
+        assertThat(hasPrototypeObjectType(ksession, "org.drools.FactPerson")).isTrue();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 37 );
+        mark.put("name", "Mark" );
+        mark.put("age", 37 );
 
         ksession.insert( mark );
 
@@ -396,14 +396,14 @@ public class FactTemplateTest {
         assertThat(results).contains(new Result("Mario is older than Mark"));
     }
 
-    private boolean hasFactTemplateObjectType( KieSession ksession, String name ) {
-        return getFactTemplateObjectTypeNode( ksession, name ) != null;
+    private boolean hasPrototypeObjectType(KieSession ksession, String name ) {
+        return getPrototypeObjectTypeNode(ksession, name ) != null;
     }
 
-    private ObjectTypeNode getFactTemplateObjectTypeNode( KieSession ksession, String name ) {
+    private ObjectTypeNode getPrototypeObjectTypeNode(KieSession ksession, String name ) {
         EntryPointNode epn = ((InternalKnowledgeBase) ksession.getKieBase()).getRete().getEntryPointNodes().values().iterator().next();
         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
-            if (otn.getObjectType() instanceof FactTemplateObjectType && (( FactTemplateObjectType ) otn.getObjectType()).getFactTemplate().getName().equals( name )) {
+            if (otn.getObjectType() instanceof PrototypeObjectType && ((PrototypeObjectType) otn.getObjectType()).getPrototype().getFullName().equals(name )) {
                 return otn;
             }
         }
@@ -448,12 +448,12 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        ObjectTypeNode otn = getFactTemplateObjectTypeNode( ksession, "Person" );
+        ObjectTypeNode otn = getPrototypeObjectTypeNode(ksession, "org.drools.Person" );
         assertThat(((CompositeObjectSinkAdapter) otn.getObjectSinkPropagator()).getHashedSinkMap().size()).isEqualTo(3);
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 40 );
+        mark.put("name", "Mark" );
+        mark.put("age", 40 );
 
         ksession.insert( mark );
         ksession.fireAllRules();
@@ -489,18 +489,18 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 37 );
+        mark.put("name", "Mark" );
+        mark.put("age", 37 );
         ksession.insert( mark );
 
         PrototypeFactInstance edson = personFact.newInstance();
-        edson.set( "name", "Edson" );
-        edson.set( "age", 35 );
+        edson.put("name", "Edson" );
+        edson.put("age", 35 );
         ksession.insert( edson );
 
         PrototypeFactInstance mario = personFact.newInstance();
-        mario.set( "name", "Mario" );
-        mario.set( "age", 40 );
+        mario.put("name", "Mario" );
+        mario.put("age", 40 );
         ksession.insert( mario );
 
         ksession.fireAllRules();
@@ -528,15 +528,15 @@ public class FactTemplateTest {
         ksession.openLiveQuery("Q0", new Object[0], listener);
 
         PrototypeFactInstance address1 = addressFact.newInstance();
-        address1.set("id", "100001");
-        address1.set("customer_id", "1001");
-        address1.set("street", "42 Main Street");
+        address1.put("id", "100001");
+        address1.put("customer_id", "1001");
+        address1.put("street", "42 Main Street");
         FactHandle fhA1 = ksession.insert( address1 );
         ksession.fireAllRules();
 
         PrototypeFactInstance customer1 = customerFact.newInstance();
-        customer1.set("id", "1001");
-        customer1.set("first_name", "Sally");
+        customer1.put("id", "1001");
+        customer1.put("first_name", "Sally");
         ksession.insert( customer1 );
         ksession.fireAllRules();
 
@@ -545,9 +545,9 @@ public class FactTemplateTest {
         assertThat(listener.deletes).isEqualTo(0);
 
         PrototypeFactInstance address2 = addressFact.newInstance();
-        address2.set("id", "100002");
-        address2.set("customer_id", "1001");
-        address2.set("street", "11 Post Dr.");
+        address2.put("id", "100002");
+        address2.put("customer_id", "1001");
+        address2.put("street", "11 Post Dr.");
         ksession.insert( address2 );
         ksession.fireAllRules();
 
@@ -609,8 +609,8 @@ public class FactTemplateTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 40 );
+        mark.put("name", "Mark" );
+        mark.put("age", 40 );
 
         FactHandle fh = ksession.insert( mark );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
@@ -638,19 +638,19 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance f1 = prototype.newInstance();
-        f1.set( "j", 2 );
+        f1.put("j", 2 );
 
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f2 = prototype.newInstance();
-        f2.set( "i", 3 );
+        f2.put("i", 3 );
 
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f3 = prototype.newInstance();
-        f3.set( "i", null );
+        f3.put("i", null );
 
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -678,19 +678,19 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance f1 = prototype.newInstance();
-        f1.set( "custom.expected_index", 2 );
+        f1.put("custom.expected_index", 2 );
 
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f2 = prototype.newInstance();
-        f2.set( "i", 3 );
+        f2.put("i", 3 );
 
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f3 = prototype.newInstance();
-        f3.set( "i", 2 );
+        f3.put("i", 2 );
 
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -715,17 +715,17 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance f1 = prototype.newInstance();
-        f1.set("i", List.of(3));
+        f1.put("i", List.of(3));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f2 = prototype.newInstance();
-        f2.set( "i", Arrays.asList(1, 3, 5) );
+        f2.put("i", Arrays.asList(1, 3, 5) );
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         PrototypeFactInstance f3 = prototype.newInstance();
-        f3.set( "i", new int[] {1, 3, 5} );
+        f3.put("i", new int[] {1, 3, 5} );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -749,17 +749,17 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance f1 = prototype.newInstance();
-        f1.set("i", List.of(3));
+        f1.put("i", List.of(3));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f2 = prototype.newInstance();
-        f2.set( "i", Arrays.asList(1, 3, 5) );
+        f2.put("i", Arrays.asList(1, 3, 5) );
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         PrototypeFactInstance f3 = prototype.newInstance();
-        f3.set( "i", new int[] {1, 5, 3} );
+        f3.put("i", new int[] {1, 5, 3} );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -783,17 +783,17 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance f1 = prototype.newInstance();
-        f1.set("i", List.of(Map.of("a", 3)));
+        f1.put("i", List.of(Map.of("a", 3)));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f2 = prototype.newInstance();
-        f2.set( "i", Arrays.asList(Map.of("a", 1), Map.of("b", 3), Map.of("c", 5)) );
+        f2.put("i", Arrays.asList(Map.of("a", 1), Map.of("b", 3), Map.of("c", 5)) );
         ksession.insert(f2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance f3 = prototype.newInstance();
-        f3.set( "i", Arrays.asList(Map.of("c", 1), Map.of("a", 3), Map.of("b", 5)) );
+        f3.put("i", Arrays.asList(Map.of("c", 1), Map.of("a", 3), Map.of("b", 5)) );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -828,38 +828,38 @@ public class FactTemplateTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
-        tick1.set( "name", "RedHat" );
-        tick1.set( "value", 10 );
+        tick1.put("name", "RedHat" );
+        tick1.put("value", 10 );
         ksession.insert(tick1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
-        tick2.set( "name", "RedHat" );
-        tick2.set( "value", 15 );
+        tick2.put("name", "RedHat" );
+        tick2.put("value", 15 );
         ksession.insert(tick2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
-        tick3.set( "name", "test" );
-        tick3.set( "value", 12 );
+        tick3.put("name", "test" );
+        tick3.put("value", 12 );
         ksession.insert(tick3);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeEventInstance tick4 = stockTickPrototype.newInstance();
-        tick4.set( "name", "RedHat" );
-        tick4.set( "value", 9 );
+        tick4.put("name", "RedHat" );
+        tick4.put("value", 9 );
         ksession.insert(tick4);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick5 = stockTickPrototype.newInstance();
-        tick5.set( "name", "RedHat" );
-        tick5.set( "value", 14 );
+        tick5.put("name", "RedHat" );
+        tick5.put("value", 14 );
         ksession.insert(tick5);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
@@ -868,8 +868,8 @@ public class FactTemplateTest {
         clock.advanceTime( 6, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick6 = stockTickPrototype.newInstance();
-        tick6.set( "name", "RedHat" );
-        tick6.set( "value", 13 );
+        tick6.put("name", "RedHat" );
+        tick6.put("value", 13 );
         ksession.insert(tick6);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
@@ -892,7 +892,7 @@ public class FactTemplateTest {
                         not( protoPattern(controlVar).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ) ),
                         on(tick1Var).execute((drools, t1) -> {
                             PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
-                            controlEvent.set( "name", t1.get( "name" ) );
+                            controlEvent.put("name", t1.get("name" ) );
                             drools.insert(controlEvent);
                             result.setValue( t1.get( "name" ) + " worth " + t1.get( "value" ));
                         })
@@ -915,8 +915,8 @@ public class FactTemplateTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
-        tick1.set( "name", "RedHat" );
-        tick1.set( "value", 10 );
+        tick1.put("name", "RedHat" );
+        tick1.put("value", 10 );
         ksession.insert(tick1);
         assertThat(ksession.fireAllRules()).isEqualTo(2);
 
@@ -926,14 +926,14 @@ public class FactTemplateTest {
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
-        tick2.set( "name", "RedHat" );
-        tick2.set( "value", 12 );
+        tick2.put("name", "RedHat" );
+        tick2.put("value", 12 );
         ksession.insert(tick2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         PrototypeEventInstance tickTest = stockTickPrototype.newInstance();
-        tickTest.set( "name", "test" );
-        tickTest.set( "value", 42 );
+        tickTest.put("name", "test" );
+        tickTest.put("value", 42 );
         FactHandle fhTest = ksession.insert(tickTest);
         assertThat(ksession.fireAllRules()).isEqualTo(2);
 
@@ -943,8 +943,8 @@ public class FactTemplateTest {
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
-        tick3.set( "name", "RedHat" );
-        tick3.set( "value", 14 );
+        tick3.put("name", "RedHat" );
+        tick3.put("value", 14 );
         ksession.insert(tick3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(result.getValue()).isNull();
@@ -952,8 +952,8 @@ public class FactTemplateTest {
         clock.advanceTime( 5, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick4 = stockTickPrototype.newInstance();
-        tick4.set( "name", "RedHat" );
-        tick4.set( "value", 15 );
+        tick4.put("name", "RedHat" );
+        tick4.put("value", 15 );
         ksession.insert(tick4);
         assertThat(ksession.fireAllRules()).isEqualTo(2);
 
@@ -989,7 +989,7 @@ public class FactTemplateTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         PrototypeEventInstance tick1 = controlPrototype.newInstance();
-        tick1.set( "name", "start_R" );
+        tick1.put("name", "start_R" );
         ksession.insert(tick1);
 
         ksession.fireAllRules();
@@ -1022,8 +1022,8 @@ public class FactTemplateTest {
                         not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "R1" ) ),
                         on(tick1Var).execute((drools, t1) -> {
                             PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
-                            controlEvent.set( "name", "R1" );
-                            controlEvent.set( "event", t1 );
+                            controlEvent.put("name", "R1" );
+                            controlEvent.put("event", t1 );
                             System.out.println("insert: " + controlEvent);
                             drools.insert(controlEvent);
                         })
@@ -1035,8 +1035,8 @@ public class FactTemplateTest {
                         not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "R2" ) ),
                         on(tick1Var).execute((drools, t1) -> {
                             PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
-                            controlEvent.set( "name", "R2" );
-                            controlEvent.set( "event", t1 );
+                            controlEvent.put("name", "R2" );
+                            controlEvent.put("event", t1 );
                             System.out.println("insert: " + controlEvent);
                             drools.insert(controlEvent);
                         })
@@ -1052,7 +1052,7 @@ public class FactTemplateTest {
                         pattern(resultCount).expr(count -> count > 0),
                         on(resultCount).execute((drools, count) -> {
                             PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
-                            controlEvent.set( "name", "start_R" );
+                            controlEvent.put("name", "start_R" );
                             System.out.println("insert: " + controlEvent);
                             drools.insert(controlEvent);
                         })
@@ -1066,7 +1066,7 @@ public class FactTemplateTest {
                         pattern(resultCount).expr(count -> count == 2),
                         on(resultCount).execute((drools, count) -> {
                             PrototypeEventInstance controlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
-                            controlEvent.set( "name", "end_R" );
+                            controlEvent.put("name", "end_R" );
                             System.out.println("insert: " + controlEvent);
                             drools.insert(controlEvent);
                         })
@@ -1113,8 +1113,8 @@ public class FactTemplateTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
-        tick1.set( "name", "RedHat" );
-        tick1.set( "value", 7 );
+        tick1.put("name", "RedHat" );
+        tick1.put("value", 7 );
         ksession.insert(tick1);
 
         ksession.fireAllRules();
@@ -1123,8 +1123,8 @@ public class FactTemplateTest {
         clock.advanceTime( 1, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
-        tick2.set( "name", "RedHat" );
-        tick2.set( "value", 17 );
+        tick2.put("name", "RedHat" );
+        tick2.put("value", 17 );
         ksession.insert(tick2);
 
         ksession.fireAllRules();
@@ -1133,8 +1133,8 @@ public class FactTemplateTest {
         clock.advanceTime( 9, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
-        tick3.set( "name", "RedHat" );
-        tick3.set( "value", 3 );
+        tick3.put("name", "RedHat" );
+        tick3.put("value", 3 );
         ksession.insert(tick3);
 
         ksession.fireAllRules();
@@ -1143,8 +1143,8 @@ public class FactTemplateTest {
         clock.advanceTime( 5, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick4 = stockTickPrototype.newInstance();
-        tick4.set( "name", "RedHat" );
-        tick4.set( "value", 2 );
+        tick4.put("name", "RedHat" );
+        tick4.put("value", 2 );
         ksession.insert(tick4);
 
         ksession.fireAllRules();
@@ -1182,15 +1182,15 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance fact1 = prototype.newInstance();
-        fact1.set( "name", "fact1" );
-        fact1.set( "ids", Arrays.asList(2, 4) );
+        fact1.put("name", "fact1" );
+        fact1.put("ids", Arrays.asList(2, 4) );
         ksession.insert(fact1);
 
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance fact2 = prototype.newInstance();
-        fact2.set( "name", "fact2" );
-        fact2.set( "ids", Arrays.asList(1, 3, 5) );
+        fact2.put("name", "fact2" );
+        fact2.put("ids", Arrays.asList(1, 3, 5) );
         ksession.insert(fact2);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
@@ -1219,9 +1219,9 @@ public class FactTemplateTest {
                         not( protoPattern(controlVar1).expr( "rule_name", Index.ConstraintType.EQUAL, "stock" ).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ) ),
                         on(tick1Var).execute((drools, t1) -> {
                             PrototypeEventInstance controlEvent = controlPrototype.newInstance();
-                            controlEvent.set( "name", t1.get( "name" ) );
-                            controlEvent.set( "event", t1 );
-                            controlEvent.set( "rule_name", "stock" );
+                            controlEvent.put("name", t1.get("name" ) );
+                            controlEvent.put("event", t1 );
+                            controlEvent.put("rule_name", "stock" );
                             drools.insert(controlEvent);
                             drools.delete(t1);
                         })
@@ -1233,11 +1233,11 @@ public class FactTemplateTest {
                         not( protoPattern(controlVar2).expr( "end_once_after", Index.ConstraintType.EQUAL, "stock" ) ),
                         on(controlVar1).execute((drools, c1) -> {
                             PrototypeEventInstance startControlEvent = controlPrototype.newInstance().withExpiration(10, TimeUnit.SECONDS);
-                            startControlEvent.set( "start_once_after", c1.get( "rule_name" ) );
+                            startControlEvent.put("start_once_after", c1.get("rule_name" ) );
                             drools.insert(startControlEvent);
 
                             PrototypeEventInstance endControlEvent = controlPrototype.newInstance();
-                            endControlEvent.set( "end_once_after", c1.get( "rule_name" ) );
+                            endControlEvent.put("end_once_after", c1.get("rule_name" ) );
                             drools.insert(endControlEvent);
                         })
                 );
@@ -1271,23 +1271,23 @@ public class FactTemplateTest {
         SessionPseudoClock clock = ksession.getSessionClock();
 
         PrototypeEventInstance tick1 = stockTickPrototype.newInstance();
-        tick1.set( "name", "RedHat" );
-        tick1.set( "value", 10 );
+        tick1.put("name", "RedHat" );
+        tick1.put("value", 10 );
         ksession.insert(tick1);
         assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         clock.advanceTime( 3, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick2 = stockTickPrototype.newInstance();
-        tick2.set( "name", "RedHat" );
-        tick2.set( "value", 12 );
+        tick2.put("name", "RedHat" );
+        tick2.put("value", 12 );
         ksession.insert(tick2);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(result.getValue()).isNull();
 
         PrototypeEventInstance tickTest = stockTickPrototype.newInstance();
-        tickTest.set( "name", "test" );
-        tickTest.set( "value", 42 );
+        tickTest.put("name", "test" );
+        tickTest.put("value", 42 );
         ksession.insert(tickTest);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(result.getValue()).isNull();
@@ -1295,8 +1295,8 @@ public class FactTemplateTest {
         clock.advanceTime( 4, TimeUnit.SECONDS );
 
         PrototypeEventInstance tick3 = stockTickPrototype.newInstance();
-        tick3.set( "name", "RedHat" );
-        tick3.set( "value", 14 );
+        tick3.put("name", "RedHat" );
+        tick3.put("value", 14 );
         ksession.insert(tick3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(result.getValue()).isNull();
@@ -1342,22 +1342,22 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance testFact1 = testPrototype.newInstance();
-        testFact1.set( "i", 1 );
+        testFact1.put("i", 1 );
         ksession.insert(testFact1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance testFact2 = testPrototype.newInstance();
-        testFact2.set( "i", 2 );
+        testFact2.put("i", 2 );
         ksession.insert(testFact2);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance testFact3 = testPrototype.newInstance();
-        testFact3.set( "i", 3 );
+        testFact3.put("i", 3 );
         ksession.insert(testFact3);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
         PrototypeFactInstance testFact4 = testPrototype.newInstance();
-        testFact4.set( "i", 4 );
+        testFact4.put("i", 4 );
         ksession.insert(testFact4);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -1381,11 +1381,11 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
+        assertThat(hasPrototypeObjectType(ksession, "org.drools.FactPerson")).isTrue();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 18 );
+        mark.put("name", "Mark" );
+        mark.put("age", 18 );
 
         ksession.insert( mark );
 
@@ -1414,11 +1414,11 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
+        assertThat(hasPrototypeObjectType(ksession, "org.drools.FactPerson")).isTrue();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 18 );
+        mark.put("name", "Mark" );
+        mark.put("age", 18 );
 
         ksession.insert( mark );
 
@@ -1447,11 +1447,11 @@ public class FactTemplateTest {
 
         KieSession ksession = kieBase.newKieSession();
 
-        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
+        assertThat(hasPrototypeObjectType(ksession, "org.drools.FactPerson")).isTrue();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", new BigDecimal("18.00") );
+        mark.put("name", "Mark" );
+        mark.put("age", new BigDecimal("18.00") );
 
         ksession.insert( mark );
 
@@ -1501,8 +1501,8 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         PrototypeFactInstance mark = personFact.newInstance();
-        mark.set( "name", "Mark" );
-        mark.set( "age", 40 );
+        mark.put("name", "Mark" );
+        mark.put("age", 40 );
 
         FactHandle fh = ksession.insert( mark );
         assertThat(ksession.fireAllRules()).isEqualTo(2);

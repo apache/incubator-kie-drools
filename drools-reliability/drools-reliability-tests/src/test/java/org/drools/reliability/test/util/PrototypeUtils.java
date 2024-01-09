@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.base.facttemplates.Event;
 import org.kie.api.prototype.PrototypeEvent;
 import org.kie.api.prototype.PrototypeEventInstance;
 import org.kie.api.prototype.PrototypeFact;
@@ -54,7 +53,7 @@ public class PrototypeUtils {
         return prototypeEvents.computeIfAbsent(name, n -> prototype(n).asEvent());
     }
 
-    public static void processResults(List<Object> globalResults, List<Event> controlResults) {
+    public static void processResults(List<Object> globalResults, List<PrototypeEventInstance> controlResults) {
         List<Object> events = controlResults.stream().map(r -> r.get("event")).collect(Collectors.toList());
         globalResults.addAll(events);
     }

@@ -30,7 +30,7 @@ import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
 import org.drools.model.prototype.PrototypeDSL;
 import org.drools.model.prototype.PrototypeVariable;
-import org.drools.model.prototype.facttemplate.HashMapEventImpl;
+import org.drools.model.prototype.impl.HashMapEventImpl;
 import org.drools.reliability.test.util.TimeAmount;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -80,9 +80,9 @@ class ReliabilityCepOnceWithinTest extends ReliabilityTestBasics {
                                   on(originalEventVariable, global).execute((drools, event, globalResults) -> {
                                       PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                               .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                      controlEvent.set("sensu.host", event.get("sensu.host")); // groupByAttributes
-                                      controlEvent.set("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
-                                      controlEvent.set("drools_rule_name", RULE_NAME);
+                                      controlEvent.put("sensu.host", event.get("sensu.host")); // groupByAttributes
+                                      controlEvent.put("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
+                                      controlEvent.put("drools_rule_name", RULE_NAME);
                                       drools.insert(controlEvent);
                                       globalResults.add(event);
                                       drools.delete(event);

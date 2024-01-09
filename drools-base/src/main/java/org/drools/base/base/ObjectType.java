@@ -48,5 +48,5 @@ public interface ObjectType
 
     boolean hasField(String name);
 
-    boolean isTemplate();
+    boolean isPrototype();
 }

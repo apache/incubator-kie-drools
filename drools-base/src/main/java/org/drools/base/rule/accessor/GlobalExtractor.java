@@ -29,8 +29,8 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.extractors.BaseObjectClassFieldReader;
-import org.drools.base.facttemplates.Fact;
 import org.drools.util.ClassUtils;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 /**
  * This is a global variable extractor used to get a global variable value
@@ -91,7 +91,7 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
         if ( this.objectType instanceof ClassObjectType cot ) {
             return cot.getClassType();
         } else {
-            return Fact.class;
+            return PrototypeFactInstance.class;
         }
     }
 
@@ -101,7 +101,7 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
         if ( this.objectType instanceof ClassObjectType cot ) {
             clazz = cot.getClassType();
         } else {
-            clazz = Fact.class;
+            clazz = PrototypeFactInstance.class;
         }
         return ClassUtils.canonicalName( clazz );
     }

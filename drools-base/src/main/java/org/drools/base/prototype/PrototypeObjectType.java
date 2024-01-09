@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.base.facttemplates;
+package org.drools.base.prototype;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -25,51 +25,39 @@ import java.util.Collection;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueType;
+import org.kie.api.prototype.Prototype;
+import org.kie.api.prototype.PrototypeFactInstance;
 
-public class FactTemplateObjectType
-    implements
-    ObjectType {
+public class PrototypeObjectType implements ObjectType {
 
+    protected Prototype prototype;
 
-    private static final long serialVersionUID = 510l;
-
-    /** FieldTemplate. */
-    protected FactTemplate    factTemplate;
-
-    private boolean           isEvent;
+    private boolean isEvent;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public FactTemplateObjectType() {
+    public PrototypeObjectType() {
 
     }
 
-    public FactTemplateObjectType(final FactTemplate factTemplate) {
-        this.factTemplate = factTemplate;
+    public PrototypeObjectType(Prototype prototype) {
+        this.prototype = prototype;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        factTemplate    = (FactTemplate)in.readObject();
-        isEvent         = in.readBoolean();
+        prototype    = (Prototype)in.readObject();
+        isEvent      = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(factTemplate);
+        out.writeObject(prototype);
         out.writeBoolean(isEvent);
 
     }
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
 
-    /**
-     * Return the Fact Template.
-     *
-     * @return The Fact Template
-     */
-    public FactTemplate getFactTemplate() {
-        return this.factTemplate;
+    public Prototype getPrototype() {
+        return prototype;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,8 +75,8 @@ public class FactTemplateObjectType
      *         object type, else <code>false</code>.
      */
     public boolean matches(final Object object) {
-        if ( object instanceof Fact f ) {
-            return this.factTemplate.equals( f.getFactTemplate() );
+        if ( object instanceof PrototypeFactInstance f ) {
+            return this.prototype.equals( f.getPrototype() );
         } else {
             return false;
         }
@@ -106,16 +94,16 @@ public class FactTemplateObjectType
 
     @Override
     public boolean isAssignableFrom(ObjectType objectType) {
-        if ( !(objectType instanceof FactTemplateObjectType) ) {
+        if ( !(objectType instanceof PrototypeObjectType) ) {
             return false;
         } else {
-            return this.factTemplate.equals( ((FactTemplateObjectType) objectType).getFactTemplate() );
+            return this.prototype.equals( ((PrototypeObjectType) objectType).getPrototype() );
         }
     }
 
     @Override
     public ValueType getValueType() {
-        return ValueType.FACTTEMPLATE_TYPE;
+        return ValueType.PROTOTYPE_TYPE;
     }
 
     @Override
@@ -129,31 +117,31 @@ public class FactTemplateObjectType
 
     @Override
     public Object getTypeKey() {
-        return factTemplate.getName();
+        return prototype.getName();
     }
 
     @Override
-    public boolean isTemplate() {
+    public boolean isPrototype() {
         return true;
     }
 
     @Override
     public String getClassName() {
-        return factTemplate.getPackage() + "." + factTemplate.getName();
+        return prototype.getFullName();
     }
 
     @Override
     public boolean hasField(String name) {
-        return factTemplate.getFieldTemplate(name) != null;
+        return prototype.getField(name) != null;
     }
 
     public Collection<String> getFieldNames() {
-        return factTemplate.getFieldNames();
+        return prototype.getFieldNames();
     }
 
     @Override
     public String toString() {
-        return "[FactTemplateObjectType "+( this.isEvent ? "event=" : "template=") + this.factTemplate.getName() + "]";
+        return "[PrototypeObjectType "+( this.isEvent ? "event=" : "template=") + this.prototype.getName() + "]";
     }
 
     @Override
@@ -162,17 +150,17 @@ public class FactTemplateObjectType
             return true;
         }
 
-        if (!(object instanceof FactTemplateObjectType)) {
+        if (!(object instanceof PrototypeObjectType)) {
             return false;
         }
 
-        final FactTemplateObjectType other = (FactTemplateObjectType) object;
+        final PrototypeObjectType other = (PrototypeObjectType) object;
 
-        return this.factTemplate.equals( other.factTemplate );
+        return this.prototype.equals( other.prototype );
     }
 
     @Override
     public int hashCode() {
-        return this.factTemplate.hashCode();
+        return this.prototype.hashCode();
     }
 }

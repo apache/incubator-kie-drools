@@ -20,7 +20,6 @@ package org.drools.model.codegen.execmodel;
 
 import org.drools.model.prototype.PrototypeExpression;
 import org.junit.Test;
-import org.kie.api.prototype.Prototype;
 import org.kie.api.prototype.PrototypeFact;
 import org.kie.api.prototype.PrototypeFactInstance;
 
@@ -38,9 +37,9 @@ public class SegmentPrototypeExpressionTest {
 
         PrototypeFact prototype = prototype("test").asFact();
         PrototypeFactInstance testFact = prototype.newInstance();
-        testFact.set( "fieldA", 12 );
-        testFact.set( "fieldB", 8 );
-        testFact.set( "fieldC", 5 );
+        testFact.put("fieldA", 12 );
+        testFact.put("fieldB", 8 );
+        testFact.put("fieldC", 5 );
 
         assertThat(expr1.asFunction(prototype).apply(testFact)).isEqualTo(expr2.asFunction(prototype).apply(testFact));
         assertThat(expr1.getImpactedFields()).containsExactly("fieldA");

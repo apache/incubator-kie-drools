@@ -16,38 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.prototype.facttemplate;
+package org.drools.model.prototype.impl;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.drools.base.facttemplates.Fact;
-import org.drools.base.facttemplates.FactTemplate;
+import org.kie.api.prototype.Prototype;
 import org.kie.api.prototype.PrototypeFactInstance;
 
-public class HashMapFactImpl implements Fact, PrototypeFactInstance, Serializable {
+public class HashMapFactImpl implements PrototypeFactInstance, Serializable {
 
     protected final UUID uuid;
 
-    protected final FactTemplate factTemplate;
+    protected final Prototype prototype;
 
     protected final Map<String, Object> valuesMap;
 
-    public HashMapFactImpl( FactTemplate factTemplate ) {
-        this( factTemplate, new HashMap<>() );
+    public HashMapFactImpl( Prototype prototype ) {
+        this( prototype, new HashMap<>() );
     }
 
-    public HashMapFactImpl( FactTemplate factTemplate, Map<String, Object> valuesMap ) {
+    public HashMapFactImpl( Prototype prototype, Map<String, Object> valuesMap ) {
         this.uuid = UUID.randomUUID();
-        this.factTemplate = factTemplate;
+        this.prototype = prototype;
         this.valuesMap = valuesMap;
     }
 
-    public HashMapFactImpl( UUID uuid, FactTemplate factTemplate, Map<String, Object> valuesMap ) {
+    public HashMapFactImpl( UUID uuid, Prototype prototype, Map<String, Object> valuesMap ) {
         this.uuid = uuid;
-        this.factTemplate = factTemplate;
+        this.prototype = prototype;
         this.valuesMap = valuesMap;
     }
 
@@ -56,8 +55,8 @@ public class HashMapFactImpl implements Fact, PrototypeFactInstance, Serializabl
     }
 
     @Override
-    public FactTemplate getFactTemplate() {
-        return factTemplate;
+    public Prototype getPrototype() {
+        return prototype;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class HashMapFactImpl implements Fact, PrototypeFactInstance, Serializabl
     }
 
     @Override
-    public void set( String name, Object value ) {
+    public void put(String name, Object value ) {
         valuesMap.put(name, value);
     }
 
@@ -82,7 +81,7 @@ public class HashMapFactImpl implements Fact, PrototypeFactInstance, Serializabl
 
     @Override
     public String toString() {
-        return "Fact " + factTemplate.getName() + " with values = " + valuesMap;
+        return "Fact " + prototype.getFullName() + " with values = " + valuesMap;
     }
 
     @Override
