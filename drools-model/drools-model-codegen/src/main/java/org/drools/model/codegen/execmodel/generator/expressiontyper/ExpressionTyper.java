@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -89,6 +90,8 @@ import org.drools.mvel.parser.ast.expr.OOPathChunk;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.drools.mvelcompiler.CompiledExpressionResult;
+import org.drools.mvelcompiler.ConstraintCompiler;
 import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
 import org.drools.util.MethodUtils;
 import org.drools.util.TypeResolver;
@@ -99,6 +102,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.createConstraintCompiler;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getClassFromType;
@@ -113,6 +117,7 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClass
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.transformDrlNameExprToNameExpr;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
+import static org.drools.model.codegen.execmodel.generator.drlxparse.ConstraintParser.isArithmeticOperator;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.FlattenScope.flattenScope;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
 import static org.drools.mvel.parser.MvelParser.parseType;
@@ -229,7 +234,14 @@ public class ExpressionTyper {
             right = coerced.getCoercedRight();
 
             final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
-            return of(new TypedExpression(combo, left.getType()));
+
+            if (shouldConvertArithmeticBinaryToMethodCall(operator, left.getType(), right.getType())) {
+                Expression expression = convertArithmeticBinaryToMethodCall(combo, of(typeCursor), ruleContext);
+                java.lang.reflect.Type binaryType = getBinaryTypeAfterConversion(left.getType(), right.getType());
+                return of(new TypedExpression(expression, binaryType));
+            } else {
+                return of(new TypedExpression(combo, left.getType()));
+            }
         }
 
         if (drlxExpr instanceof HalfBinaryExpr) {
@@ -800,7 +812,38 @@ public class ExpressionTyper {
         TypedExpression rightTypedExpression = right.getTypedExpression()
                                                     .orElseThrow(() -> new NoSuchElementException("TypedExpressionResult doesn't contain TypedExpression!"));
         binaryExpr.setRight(rightTypedExpression.getExpression());
-        return new TypedExpressionCursor(binaryExpr, getBinaryType(leftTypedExpression, rightTypedExpression, binaryExpr.getOperator()));
+        if (shouldConvertArithmeticBinaryToMethodCall(binaryExpr.getOperator(), leftTypedExpression.getType(), rightTypedExpression.getType())) {
+            Expression compiledExpression = convertArithmeticBinaryToMethodCall(binaryExpr, leftTypedExpression.getOriginalPatternType(), ruleContext);
+            java.lang.reflect.Type binaryType = getBinaryTypeAfterConversion(leftTypedExpression.getType(), rightTypedExpression.getType());
+            return new TypedExpressionCursor(compiledExpression, binaryType);
+        } else {
+            java.lang.reflect.Type binaryType = getBinaryType(leftTypedExpression, rightTypedExpression, binaryExpr.getOperator());
+            return new TypedExpressionCursor(binaryExpr, binaryType);
+        }
+    }
+
+    /*
+     * Converts arithmetic binary expression (including coercion) to method call using ConstraintCompiler.
+     * This method can be generic, so we may centralize the calls in drools-model
+     */
+    public static Expression convertArithmeticBinaryToMethodCall(BinaryExpr binaryExpr,  Optional<Class<?>> originalPatternType, RuleContext ruleContext) {
+        ConstraintCompiler constraintCompiler = createConstraintCompiler(ruleContext, originalPatternType);
+        CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(printNode(binaryExpr));
+        return compiledExpressionResult.getExpression();
+    }
+
+    /*
+     * BigDecimal arithmetic operations should be converted to method calls. We may also apply this to BigInteger.
+     */
+    public static boolean shouldConvertArithmeticBinaryToMethodCall(BinaryExpr.Operator operator, java.lang.reflect.Type leftType, java.lang.reflect.Type rightType) {
+        return isArithmeticOperator(operator) && (leftType.equals(BigDecimal.class) || rightType.equals(BigDecimal.class));
+    }
+
+    /*
+     * After arithmetic to method call conversion, BigDecimal should take precedence regardless of left or right. We may also apply this to BigInteger.
+     */
+    public static java.lang.reflect.Type getBinaryTypeAfterConversion(java.lang.reflect.Type leftType, java.lang.reflect.Type rightType) {
+        return (leftType.equals(BigDecimal.class) || rightType.equals(BigDecimal.class)) ? BigDecimal.class : leftType;
     }
 
     private java.lang.reflect.Type getBinaryType(TypedExpression leftTypedExpression, TypedExpression rightTypedExpression, Operator operator) {
@@ -907,6 +950,9 @@ public class ExpressionTyper {
                 Expression argumentExpression = methodCallExpr.getArgument(i);
 
                 if (argumentType != actualArgumentType) {
+                    // unbind the original argumentExpression first, otherwise setArgument() will remove the argumentExpression from coercedExpression.childrenNodes
+                    // It will result in failing to find DrlNameExpr in AST at DrlsParseUtil.transformDrlNameExprToNameExpr()
+                    methodCallExpr.replace(argumentExpression, new NameExpr("placeholder"));
                     Expression coercedExpression = new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualArgumentType, argumentExpression);
                     methodCallExpr.setArgument(i, coercedExpression);
                 }
