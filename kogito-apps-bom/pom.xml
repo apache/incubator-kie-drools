@@ -114,6 +114,17 @@
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>kogito-addons-quarkus-jobs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>kogito-addons-quarkus-jobs</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
             <!-- Data Audit-->
             <dependency>
                 <groupId>org.kie.kogito</groupId>
