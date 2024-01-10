@@ -32,6 +32,7 @@ import org.drools.model.prototype.PrototypeVariable;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.prototype.PrototypeFact;
 import org.kie.api.prototype.PrototypeFactInstance;
@@ -46,7 +47,7 @@ import static org.drools.model.prototype.PrototypeDSL.variable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
-public class PrototypeDialectTest {
+public class PrototypesAllowedTest {
 
     @Test
     public void testModel() {
@@ -87,7 +88,6 @@ public class PrototypeDialectTest {
     public void testPrototypeDrl() {
         String str =
                 """
-                dialect "prototype"
                 global java.util.List results
                 rule Adult when
                   $p : Person( age >= 18 )
@@ -99,7 +99,7 @@ public class PrototypeDialectTest {
 
         KieSession ksession = new KieHelper()
                 .addContent(str, ResourceType.DRL)
-                .build(ExecutableModelProject.class)
+                .build(ExecutableModelProject.class, PrototypesOption.ALLOWED)
                 .newKieSession();
 
         List<String> results = new ArrayList<>();
@@ -132,7 +132,6 @@ public class PrototypeDialectTest {
         String str =
                 """
                 package org.drools.prototype;
-                dialect "prototype";
                 
                 rule "R1"
                 when
@@ -153,7 +152,7 @@ public class PrototypeDialectTest {
 
         KieSession ksession = new KieHelper()
                 .addContent(str, ResourceType.DRL)
-                .build(ExecutableModelProject.class)
+                .build(ExecutableModelProject.class, PrototypesOption.ALLOWED)
                 .newKieSession();
 
         PrototypeFact personFact = prototype("Person").asFact();

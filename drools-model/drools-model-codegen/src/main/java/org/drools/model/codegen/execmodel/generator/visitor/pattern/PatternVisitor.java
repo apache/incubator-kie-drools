@@ -57,15 +57,14 @@ public class PatternVisitor {
 
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
-        if (context.getRuleDialect() == RuleContext.RuleDialect.PROTOTYPE) {
-            return new PrototypePatternDSL(context, packageModel, pattern, constraintDescrs, className);
-        }
-
         Class<?> patternType;
         try {
             patternType = context.getTypeResolver().resolveType(className);
             packageModel.addOtnsClass(patternType);
         } catch (ClassNotFoundException e) {
+            if (context.arePrototypesAllowed()) {
+                return new PrototypePatternDSL(context, packageModel, pattern, constraintDescrs, className);
+            }
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to find class: " + className ) );
             return () -> { };
         }

@@ -140,7 +140,7 @@ public class Consequence {
     public MethodCallExpr createCall(String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
 
-        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA || context.getRuleDialect() == RuleContext.RuleDialect.PROTOTYPE) {
+        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             // for MVEL, it will be done in createExecuteCallMvel()
             ruleConsequence = rewriteConsequence( consequenceString );
             if ( ruleConsequence != null ) {
@@ -164,9 +164,10 @@ public class Consequence {
 
         MethodCallExpr executeCall;
         switch (context.getRuleDialect()) {
-            case PROTOTYPE:
-                rewriteConsequenceForPrototype(ruleConsequence, usedDeclarationInRHS);
             case JAVA:
+                if (context.arePrototypesAllowed()) {
+                    rewriteConsequenceForPrototype(ruleConsequence, usedDeclarationInRHS);
+                }
                 rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
                 executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
                 break;
@@ -325,9 +326,9 @@ public class Consequence {
             executeLambda.addParameter(new Parameter(toClassOrInterfaceType(org.drools.model.Drools.class), "drools"));
         }
 
-        NodeList<Parameter> parameters = context.getRuleDialect() == RuleContext.RuleDialect.JAVA ?
-                new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence) :
-                new BoxedParameters(context).getParametersForPrototype(verifiedDeclUsedInRHS, ruleConsequence);
+        NodeList<Parameter> parameters = context.arePrototypesAllowed() ?
+                new BoxedParameters(context).getParametersForPrototype(verifiedDeclUsedInRHS, ruleConsequence) :
+                new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
         parameters.forEach(executeLambda::addParameter);
 
         executeLambda.setBody(ruleConsequence);

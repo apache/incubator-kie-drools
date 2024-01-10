@@ -18,6 +18,21 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -50,6 +65,7 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.TypeDeclarationUtils;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -77,24 +93,10 @@ import org.drools.modelcompiler.util.StringUtil;
 import org.drools.util.StringUtils;
 import org.drools.util.TypeResolver;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.ast.Modifier.finalModifier;
@@ -182,6 +184,8 @@ public class PackageModel {
     private final String executableRulesClass;
     private final Collection<String> executableRulesClasses = new HashSet<>();
 
+    private final boolean prototypesAllowed;
+
     private PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
@@ -197,8 +201,9 @@ public class PackageModel {
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
-        executableRulesClass = name + "."  + rulesFileName;
-        executableRulesClasses.add(executableRulesClass);
+        this.executableRulesClass = name + "."  + rulesFileName;
+        this.executableRulesClasses.add(executableRulesClass);
+        this.prototypesAllowed = configuration != null && configuration.as(KnowledgeBuilderRulesConfigurationImpl.KEY).getPrototypesOption() == PrototypesOption.ALLOWED;
     }
 
     public static PackageModel createPackageModel(KnowledgeBuilderConfigurationImpl configuration, PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName, ReleaseId releaseId, DRLIdGenerator exprIdGenerator) {
@@ -940,6 +945,10 @@ public class PackageModel {
     
     public Set<Class<?>> getOtnsClasses() {
         return otnsClasses;
+    }
+
+    public boolean arePrototypesAllowed() {
+        return prototypesAllowed;
     }
 
     public String getDomainClassesMetadataSource() {

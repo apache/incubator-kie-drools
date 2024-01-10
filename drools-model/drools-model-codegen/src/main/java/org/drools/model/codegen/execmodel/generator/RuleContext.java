@@ -115,6 +115,8 @@ public class RuleContext {
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
+    private boolean prototypesAllowed = false;
+
     private int scopeCounter = 1;
     private Scope currentScope = new Scope();
     private final Deque<Scope> scopesStack = new LinkedList<>();
@@ -133,7 +135,7 @@ public class RuleContext {
     private boolean hasCompilationError;
 
     public enum RuleDialect {
-        JAVA, MVEL, PROTOTYPE;
+        JAVA, MVEL;
 
         public static RuleDialect resolveDialect(String dialect) {
             if (dialect == null) {
@@ -144,8 +146,6 @@ public class RuleContext {
                     return JAVA;
                 case "mvel":
                     return MVEL;
-                case "prototype":
-                    return PROTOTYPE;
                 default:
                     throw new IllegalArgumentException("Unknown dialect: " + dialect);
             }
@@ -163,7 +163,7 @@ public class RuleContext {
         this.resultCollector = resultCollector;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
-        exprPointer.push( this.expressions::add );
+        this.exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
         this.ruleDescr = ruleDescr;
         this.ruleUnitDescr = findUnitDescr();
@@ -512,6 +512,10 @@ public class RuleContext {
 
     public RuleDialect getRuleDialect() {
         return ruleDialect;
+    }
+
+    public boolean arePrototypesAllowed() {
+        return packageModel.arePrototypesAllowed();
     }
 
     public void setRuleDialect(RuleDialect ruleDialect) {
