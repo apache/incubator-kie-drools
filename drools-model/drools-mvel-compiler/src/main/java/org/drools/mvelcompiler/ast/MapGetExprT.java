@@ -16,29 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.codegen.execmodel.generator;
+package org.drools.mvelcompiler.ast;
 
+import java.lang.reflect.Type;
 import java.util.Optional;
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import org.drools.model.codegen.execmodel.PackageModel;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public interface DeclarationSpec {
-    String getBindingId();
+public class MapGetExprT implements TypedExpression {
 
-    Optional<String> getVariableName();
+    private final Expression name;
+    private final String key;
 
-    Class<?> getDeclarationClass();
+    public MapGetExprT(TypedExpression name, String key) {
+        this((Expression) name.toJavaExpression(), key);
+    }
 
-    boolean isGlobal();
+    public MapGetExprT(Expression name, String key) {
+        this.name = name;
+        this.key = key;
+    }
 
-    MethodCallExpr getBindingExpr();
-    void setBindingExpr( MethodCallExpr bindingExpr );
+    @Override
+    public Optional<Type> getType() {
+        return Optional.empty();
+    }
 
-    void registerOnPackage(PackageModel packageModel, RuleContext context, BlockStmt ruleBlock);
-
-    default boolean isPrototypeDeclaration() {
-        return false;
+    @Override
+    public Node toJavaExpression() {
+        return new MethodCallExpr(name, "get", NodeList.nodeList(new StringLiteralExpr(key)));
     }
 }

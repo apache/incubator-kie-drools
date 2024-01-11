@@ -23,6 +23,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -266,6 +268,12 @@ public class RuleContext {
 
     public boolean isPrototypeDeclaration(String id) {
         return getDeclarationById(id).map(DeclarationSpec::isPrototypeDeclaration).orElse(false);
+    }
+
+    public Set<String> getPrototypeDeclarations() {
+        return arePrototypesAllowed() ?
+                scopedDeclarations.values().stream().filter(DeclarationSpec::isPrototypeDeclaration).map(DeclarationSpec::getBindingId).collect(Collectors.toSet()) :
+                Collections.emptySet();
     }
 
     public DeclarationSpec getDeclarationByIdWithException(String id) {

@@ -44,14 +44,13 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.Type;
+import org.drools.base.factmodel.ClassDefinition;
 import org.drools.compiler.compiler.MissingDependencyError;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.base.factmodel.ClassDefinition;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -60,10 +59,9 @@ import org.drools.model.codegen.execmodel.errors.ConsequenceRewriteException;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvelcompiler.CompiledBlockResult;
-import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
+import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -165,9 +163,6 @@ public class Consequence {
         MethodCallExpr executeCall;
         switch (context.getRuleDialect()) {
             case JAVA:
-                if (context.arePrototypesAllowed()) {
-                    rewriteConsequenceForPrototype(ruleConsequence, usedDeclarationInRHS);
-                }
                 rewriteReassignedDeclarations(ruleConsequence, usedDeclarationInRHS);
                 executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
                 break;
@@ -182,38 +177,6 @@ public class Consequence {
             executeCall = new MethodCallExpr(executeCall, BREAKING_CALL);
         }
         return executeCall;
-    }
-
-    private void rewriteConsequenceForPrototype(BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS) {
-        for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
-            if (assignExpr.getTarget().isFieldAccessExpr()) {
-                FieldAccessExpr fieldAccessExpr = assignExpr.getTarget().asFieldAccessExpr();
-                String assignedVariable = getAssignedVariable(fieldAccessExpr);
-                if (assignedVariable != null && usedDeclarationInRHS.contains(assignedVariable) && context.isPrototypeDeclaration(assignedVariable)) {
-                    MethodCallExpr setCall = new MethodCallExpr(new NameExpr(assignedVariable), "put");
-                    setCall.addArgument(new StringLiteralExpr(fieldAccessExpr.getNameAsString()));
-                    setCall.addArgument(assignExpr.getValue());
-                    assignExpr.replace(setCall);
-                }
-            }
-        }
-
-        for (FieldAccessExpr fieldAccessExpr : ruleConsequence.findAll(FieldAccessExpr.class)) {
-            String assignedVariable = getAssignedVariable(fieldAccessExpr);
-            if ( assignedVariable != null && usedDeclarationInRHS.contains( assignedVariable ) && context.isPrototypeDeclaration( assignedVariable ) ) {
-                MethodCallExpr getCall = new MethodCallExpr( new NameExpr( assignedVariable ), "get" );
-                getCall.addArgument( new StringLiteralExpr( fieldAccessExpr.getNameAsString() ) );
-                fieldAccessExpr.replace(getCall);
-            }
-        }
-    }
-
-    private static String getAssignedVariable(FieldAccessExpr fieldAccessExpr) {
-        Expression scope = fieldAccessExpr.getScope();
-        if (scope instanceof DrlNameExpr drlName) {
-            return drlName.getName().toString();
-        }
-        return scope instanceof NameExpr ? scope.toString() : null;
     }
 
     private void replaceKcontext(BlockStmt ruleConsequence) {
@@ -254,7 +217,6 @@ public class Consequence {
         replaceKcontext(compile.statementResults());
         rewriteChannels(compile.statementResults());
 
-        rewriteConsequenceForPrototype(compile.statementResults(), usedDeclarationInRHS);
         return executeCall(ruleVariablesBlock,
                                   compile.statementResults(),
                                   usedDeclarationInRHS,
@@ -348,13 +310,14 @@ public class Consequence {
     private String preprocessConsequence(String consequence) {
         int modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify");
         int textBlockPos = StringUtils.indexOfOutOfQuotes(consequence, "\"\"\"");
+        Set<String> prototypes = context.getPrototypeDeclarations();
 
-        if (modifyPos < 0 && textBlockPos < 0) {
+        if (modifyPos < 0 && textBlockPos < 0 && prototypes.isEmpty()) {
             return consequence;
         }
 
         PreprocessCompiler preprocessCompiler = new PreprocessCompiler();
-        CompiledBlockResult compile = preprocessCompiler.compile(addCurlyBracesToBlock(consequence));
+        CompiledBlockResult compile = preprocessCompiler.compile(addCurlyBracesToBlock(consequence), prototypes);
 
         return printNode(compile.statementResults());
     }

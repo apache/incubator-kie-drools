@@ -24,13 +24,19 @@ import java.util.Set;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.mvel.parser.MvelParser;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
+import org.drools.mvelcompiler.ast.MapGetExprT;
+import org.drools.mvelcompiler.ast.MapPutExprT;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -41,7 +47,7 @@ public class PreprocessCompiler {
 
     private static final PreprocessPhase preprocessPhase = new PreprocessPhase();
 
-    public CompiledBlockResult compile(String mvelBlock) {
+    public CompiledBlockResult compile(String mvelBlock, Set<String> prototypes) {
 
         BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);
 
@@ -53,9 +59,9 @@ public class PreprocessCompiler {
             StringLiteralExpr stringLiteralExpr = preprocessPhase.replaceTextBlockWithConcatenatedStrings(e);
 
             parentNode.ifPresent(p -> {
-                if(p instanceof VariableDeclarator) {
+                if (p instanceof VariableDeclarator) {
                     ((VariableDeclarator) p).setInitializer(stringLiteralExpr);
-                } else if(p instanceof MethodCallExpr) {
+                } else if (p instanceof MethodCallExpr) {
                     // """exampleString""".formatted("arg0", 2);
                     ((MethodCallExpr) p).setScope(stringLiteralExpr);
                 }
@@ -77,6 +83,38 @@ public class PreprocessCompiler {
                     s.remove();
                 });
 
+        if (!prototypes.isEmpty()) {
+            rewriteConsequenceForPrototype(mvelExpression, prototypes);
+        }
+
         return new CompiledBlockResult(mvelExpression.getStatements()).setUsedBindings(usedBindings);
+    }
+
+    private void rewriteConsequenceForPrototype(BlockStmt ruleConsequence, Set<String> prototypes) {
+        for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
+            if (assignExpr.getTarget().isFieldAccessExpr()) {
+                FieldAccessExpr fieldAccessExpr = assignExpr.getTarget().asFieldAccessExpr();
+                String assignedVariable = getAssignedVariable(fieldAccessExpr);
+                if (prototypes.contains(assignedVariable)) {
+                    assignExpr.replace(new MapPutExprT(new NameExpr(assignedVariable), new StringLiteralExpr(fieldAccessExpr.getNameAsString()),
+                                                       assignExpr.getValue(), Optional.empty()).toJavaExpression());
+                }
+            }
+        }
+
+        for (FieldAccessExpr fieldAccessExpr : ruleConsequence.findAll(FieldAccessExpr.class)) {
+            String assignedVariable = getAssignedVariable(fieldAccessExpr);
+            if (prototypes.contains(assignedVariable)) {
+                fieldAccessExpr.replace( new MapGetExprT(new NameExpr(assignedVariable), fieldAccessExpr.getNameAsString() ).toJavaExpression() );
+            }
+        }
+    }
+
+    private static String getAssignedVariable(FieldAccessExpr fieldAccessExpr) {
+        Expression scope = fieldAccessExpr.getScope();
+        if (scope instanceof DrlNameExpr drlName) {
+            return drlName.getName().toString();
+        }
+        return scope instanceof NameExpr ? scope.toString() : null;
     }
 }

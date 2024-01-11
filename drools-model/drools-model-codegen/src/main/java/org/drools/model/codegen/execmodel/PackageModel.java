@@ -1057,4 +1057,9 @@ public class PackageModel {
         final Map<String, java.lang.reflect.Type> globals = new HashMap<>();
         final Set<String> entryPoints = new HashSet<>();
     }
+
+    @Override
+    public String toString() {
+        return pkg.toString();
+    }
 }

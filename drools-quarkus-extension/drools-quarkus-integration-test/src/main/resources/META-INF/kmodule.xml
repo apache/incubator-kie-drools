@@ -29,7 +29,7 @@
   <kbase name="canDrinkKBYaml" packages="org.drools.yaml">
     <ksession name="canDrinkKSYaml" />
   </kbase>
-  <kbase name="canDrinkKBPrototype" packages="org.drools.prototype">
+  <kbase name="canDrinkKBPrototype" packages="org.drools.prototype" prototypes="allowed">
     <ksession name="canDrinkKSPrototype" />
   </kbase>
   <kbase name="cepKB" packages="org.drools.cep" eventProcessingMode="stream">

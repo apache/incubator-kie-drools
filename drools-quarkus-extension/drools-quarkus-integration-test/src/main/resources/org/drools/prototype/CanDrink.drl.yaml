@@ -1,5 +1,4 @@
 name: org.drools.prototype
-dialect: prototype
 rules:
     - name: R1
       when:
