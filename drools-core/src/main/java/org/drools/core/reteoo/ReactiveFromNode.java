@@ -55,7 +55,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
                                        this.dataProvider );
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.ReactiveFromNode;
     } 
 
@@ -71,7 +71,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
             stagedLeftTuples = new TupleSetsImpl();
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.ReactiveFromNode;
         }
 

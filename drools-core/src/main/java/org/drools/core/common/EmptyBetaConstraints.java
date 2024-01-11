@@ -116,7 +116,7 @@ public class EmptyBetaConstraints
     }
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                       final short nodeType) {
+                                       final int nodeType) {
         return new BetaMemoryImpl(config.isSequential() ? null : new TupleList(),
                                   new TupleList(),
                                   EMPTY,
@@ -163,8 +163,8 @@ public class EmptyBetaConstraints
         return getEmptyPropertyReactiveMask(settableProperties.size());
     }
 
-    public void init(BuildContext context, short betaNodeType) { }
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) { }
+    public void init(BuildContext context, int betaNodeType)                           { }
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) { }
 
     public boolean isLeftUpdateOptimizationAllowed() {
         return true;

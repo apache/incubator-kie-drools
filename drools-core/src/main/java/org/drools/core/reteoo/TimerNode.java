@@ -20,6 +20,7 @@ package org.drools.core.reteoo;
 
 import java.util.Arrays;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
@@ -126,7 +127,7 @@ public class TimerNode extends LeftTupleSource
             return true;
         }
 
-        if (!(object instanceof TimerNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.TimerConditionNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -211,7 +212,7 @@ public class TimerNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.TimerConditionNode;
     }
 
@@ -276,7 +277,7 @@ public class TimerNode extends LeftTupleSource
             return this.deleteLeftTuples;
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.TimerConditionNode;
         }
 

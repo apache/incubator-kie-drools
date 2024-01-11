@@ -55,16 +55,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 
     // See LeftTuple.getTupleSink() or https://issues.redhat.com/browse/DROOLS-7521
     public LeftTupleSinkNode getFirstLeftTupleSink() {
-        if (sink instanceof AccumulateNode) {
-            return (AccumulateNode) sink;
-        } else if (sink instanceof RuleTerminalNode) {
-            return (RuleTerminalNode) sink;
-        } else if (sink instanceof RightInputAdapterNode) {
-            return (RightInputAdapterNode) sink;
-        } else if (sink instanceof ExistsNode) {
-            return (ExistsNode) sink;
-        }
-        return (LeftTupleSinkNode) sink;
+        return BaseNode.asLeftTupleSink(sink);
     }
 
     public LeftTupleSinkNode getLastLeftTupleSink() {

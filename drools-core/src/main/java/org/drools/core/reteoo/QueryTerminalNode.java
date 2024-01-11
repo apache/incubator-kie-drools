@@ -95,7 +95,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         }
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.QueryTerminalNode;
     }
 

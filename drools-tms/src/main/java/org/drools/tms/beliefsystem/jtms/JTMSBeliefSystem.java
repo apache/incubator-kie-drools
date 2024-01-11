@@ -19,7 +19,7 @@
 package org.drools.tms.beliefsystem.jtms;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.common.BaseNode;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;
@@ -88,7 +88,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
             ep.insert(jtmsBeliefSet.getFactHandle(),
                       payload,
                       rule,
-                      (TerminalNode) (activation != null ? activation.getTuple().getTupleSink() : null),
+                      activation != null ? BaseNode.asTerminalNode(activation.getTuple()) : null,
                       typeConf);
         } else {
             processBeliefSet(rule, activation, payload, context, jtmsBeliefSet, wasDecided,wasNegated, fh);
@@ -145,7 +145,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         if ( beliefSet.isEmpty() && fh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             // the set is empty, so delete form the EP, so things are cleaned up.
             ep.delete(fh, fh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
-                      (TerminalNode) (internalMatch != null ? internalMatch.getTuple().getTupleSink() : null));
+                      internalMatch != null ? BaseNode.asTerminalNode(internalMatch.getTuple()) : null);
         } else  if ( !(processBeliefSet(rule, internalMatch, payload, context, jtmsBeliefSet, wasDecided, wasNegated, fh) && beliefSet.isEmpty())  ) {
             //  The state of the BS did not change, but maybe the prime did
             if ( fh.getObject() == payload ) {
@@ -200,7 +200,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
             ep.insert(jtmsBeliefSet.getFactHandle(),
                       payload,
                       rule,
-                      (TerminalNode) (internalMatch != null ? internalMatch.getTuple().getTupleSink() : null),
+                      internalMatch != null ? BaseNode.asTerminalNode(internalMatch.getTuple()) : null,
                       getObjectTypeConf(jtmsBeliefSet));
             return true;
         } else if ( wasDecided && !jtmsBeliefSet.isDecided() ) {
@@ -211,7 +211,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
 
             // was decided, now is not, so must be removed from the network. Leave in EP though, we only delete from that when the set is empty
             ep.delete(fh, fh.getObject(), getObjectTypeConf(jtmsBeliefSet), pctx.getRuleOrigin(),
-                      (TerminalNode) (internalMatch != null ? internalMatch.getTuple().getTupleSink() : null));
+                      internalMatch != null ? BaseNode.asTerminalNode(internalMatch.getTuple()) : null);
             return true;
         } else if (wasNegated != jtmsBeliefSet.isNegated()) {
             // was decided, still is decided by the negation changed. This must be propagated through the engine

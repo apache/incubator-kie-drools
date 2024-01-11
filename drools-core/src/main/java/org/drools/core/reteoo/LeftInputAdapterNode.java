@@ -31,6 +31,7 @@ import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -130,7 +131,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.objectSource;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.LeftInputAdapterNode;
     }
 
@@ -398,8 +399,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             modifyPreviousTuples.removeLeftTuple(partitionId);
             leftTuple.reAdd();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject(leftTuple, context, reteEvaluator, (LeftInputAdapterNode) leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator ) );
-                if (leftTuple instanceof InternalMatch) {
+                doUpdateObject(leftTuple, context, reteEvaluator, (LeftInputAdapterNode) BaseNode.getLeftTupleSource(leftTuple), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator));
+                if (leftTuple.isFullMatch()) {
                     ((InternalMatch)leftTuple).setActive(true);
                 }
             }
@@ -501,7 +502,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this.objectSource;
         while ( source != null ) {
-            if ( source instanceof ObjectTypeNode ) {
+            if ( source.getType() == NodeTypeEnums.ObjectTypeNode) {
                 return (ObjectTypeNode) source;
             }
             source = source.source;
@@ -576,7 +577,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             segmentMemory.unlinkNodeWithoutRuleNotify(nodePosMaskBit);
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.LeftInputAdapterNode;
         }
 
@@ -637,7 +638,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             throw new UnsupportedOperationException();
         }
 
-        public short getType() {
+        public int getType() {
             return NodeTypeEnums.LeftInputAdapterNode;
         }
 

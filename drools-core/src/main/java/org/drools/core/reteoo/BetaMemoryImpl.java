@@ -35,7 +35,7 @@ public class BetaMemoryImpl<C> extends AbstractLinkedListNode<Memory>
     private              TupleSets stagedRightTuples;
     private              C         context;
     // the node type this memory belongs to
-    private              short     nodeType;
+    private              int     nodeType;
     private SegmentMemory              segmentMemory;
     private long                       nodePosMaskBit;
     private int                        counter;
@@ -47,7 +47,7 @@ public class BetaMemoryImpl<C> extends AbstractLinkedListNode<Memory>
     public BetaMemoryImpl(final TupleMemory tupleMemory,
                           final TupleMemory objectMemory,
                           final C context,
-                          final short nodeType) {
+                          final int nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
         this.stagedRightTuples = new TupleSetsImpl();
@@ -106,7 +106,7 @@ public class BetaMemoryImpl<C> extends AbstractLinkedListNode<Memory>
         return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
     }
 
-    public short getNodeType() {
+    public int getNodeType() {
         return this.nodeType;
     }
 

@@ -63,7 +63,7 @@ public interface BetaConstraints<C>
     boolean isEmpty();
 
     BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                final short nodeType);
+                                final int nodeType);
 
     void resetTuple(final C context);
 
@@ -71,8 +71,8 @@ public interface BetaConstraints<C>
 
     BitMask getListenedPropertyMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties);
 
-    void init(BuildContext context, short betaNodeType);
-    void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config);
+    void init(BuildContext context, int betaNodeType);
+    void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config);
 
     <T> T cloneIfInUse();
 

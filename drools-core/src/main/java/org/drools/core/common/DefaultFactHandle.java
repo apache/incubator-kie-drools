@@ -512,7 +512,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
 
         @Override
         public void addTupleInPosition( TupleImpl tuple ) {
-            boolean          left  = tuple instanceof LeftTuple;
+            boolean          left  = tuple.isLeftTuple();
             ObjectTypeNodeId otnId = tuple.getInputOtnId();
             if (otnId == null) { // can happen only in tests // @FIXME fix this
                 addLastTuple( tuple, left );
@@ -527,7 +527,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
                 setFirstTuple( tuple, left );
                 setLastTuple( tuple, left );
                 return;
-            } else if ( previous.getTupleSink() == null || !otnId.before( previous.getInputOtnId()) ) {
+            } else if (previous.getSink() == null || !otnId.before(previous.getInputOtnId()) ) {
                 // the last LeftTuple comes before the new one so just add it at the end
                 tuple.setHandlePrevious( previous );
                 tuple.setHandleNext( null );
@@ -763,11 +763,11 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         }
 
         private LinkedTuples getPartitionedTuple(Tuple tuple) {
-            return getPartitionedTuple(tuple.getTupleSink().getPartitionId().getParallelEvaluationSlot());
+            return getPartitionedTuple(tuple.getSink().getPartitionId().getParallelEvaluationSlot());
         }
 
         private LinkedTuples getOrCreatePartitionedTuple(Tuple tuple) {
-            return getOrCreatePartitionedTuple(tuple.getTupleSink().getPartitionId().getParallelEvaluationSlot());
+            return getOrCreatePartitionedTuple(tuple.getSink().getPartitionId().getParallelEvaluationSlot());
         }
 
         @Override
@@ -802,7 +802,7 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
 
         @Override
         public void removeRightTuple( TupleImpl rightTuple ) {
-            if (rightTuple.getTupleSink() != null) {
+            if (rightTuple.getSink() != null) {
                 getPartitionedTuple( rightTuple ).removeRightTuple( rightTuple );
             }
         }

@@ -46,11 +46,9 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.WorkItem;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -735,8 +733,8 @@ public class ProtobufOutputMarshaller {
     }
 
     private static boolean hasNodeMemory(TupleImpl agendaItem) {
-        Sink tupleSink = agendaItem.getTupleSink();
-        if (tupleSink instanceof TerminalNode ) {
+        Sink tupleSink = agendaItem.getSink();
+        if (NodeTypeEnums.isTerminalNode(tupleSink)) {
             return PersisterHelper.hasNodeMemory( (TerminalNode) tupleSink );
         }
         return false;

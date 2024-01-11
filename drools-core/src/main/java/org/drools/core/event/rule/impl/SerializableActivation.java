@@ -57,7 +57,7 @@ public class SerializableActivation
         this.factHandles = activation.getFactHandles();
         this.propgationContext = ((InternalMatch)activation).getPropagationContext();
         if ( activation instanceof RuleTerminalNodeLeftTuple) {
-            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((RuleTerminalNodeLeftTuple)activation).getTuple().getTupleSink()).getAllDeclarations();
+            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((RuleTerminalNodeLeftTuple)activation).getTuple().getSink()).getAllDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
             this.declarations = ((SerializableActivation)activation).declarations;
         } else {

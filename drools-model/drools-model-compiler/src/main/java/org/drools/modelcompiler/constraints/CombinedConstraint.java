@@ -56,7 +56,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isIndexable( short nodeType, KieBaseConfiguration config) {
+    public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
         return false;
     }
 

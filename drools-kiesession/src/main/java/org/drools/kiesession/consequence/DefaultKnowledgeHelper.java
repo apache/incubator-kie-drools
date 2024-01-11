@@ -34,6 +34,7 @@ import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.base.rule.Declaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -42,7 +43,6 @@ import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.process.AbstractProcessContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -126,7 +126,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public FactHandle insert(final Object object, final boolean dynamic) {
         return ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
-                .insert(object, dynamic, this.internalMatch.getRule(), (TerminalNode) this.internalMatch.getTuple().getTupleSink());
+                .insert(object, dynamic, this.internalMatch.getRule(), BaseNode.asTerminalNode(this.internalMatch.getTuple()));
     }
 
     @Override
@@ -272,7 +272,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
         ((InternalFactHandle) handle).getEntryPoint(reteEvaluator).delete(handle,
                                                              this.internalMatch.getRule(),
-                                                             (TerminalNode) this.internalMatch.getTuple().getTupleSink(),
+                                                             BaseNode.asTerminalNode(this.internalMatch.getTuple()),
                                                              fhState);
     }
 
@@ -286,7 +286,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     @Override
     public Declaration[] getRequiredDeclarations() {
-        return ((RuleTerminalNode)this.tuple.getTupleSink()).getRequiredDeclarations();
+        return ((RuleTerminalNode)this.tuple.getSink()).getRequiredDeclarations();
     }
 
     public WorkingMemory getWorkingMemory() {

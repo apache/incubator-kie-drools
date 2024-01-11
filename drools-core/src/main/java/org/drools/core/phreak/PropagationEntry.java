@@ -176,7 +176,7 @@ public interface PropagationEntry {
             }
 
             LeftTupleSource lts = tnode.getLeftTupleSource();
-            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            while ( !NodeTypeEnums.isLeftInputAdapterNode(lts)) {
                 lts = lts.getLeftTupleSource();
             }
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;

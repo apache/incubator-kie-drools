@@ -197,7 +197,9 @@ public class PhreakRuleTerminalNode {
         } else {
             if (rtnNode.getRule().isNoLoop()) {
                 pctx = leftTuple.findMostRecentPropagationContext();
-                blocked = rtnNode.equals(pctx.getTerminalNodeOrigin());
+                if (pctx.getTerminalNodeOrigin() != null) {
+                    blocked = rtnNode.equals(pctx.getTerminalNodeOrigin());
+                }
             }
         }
 

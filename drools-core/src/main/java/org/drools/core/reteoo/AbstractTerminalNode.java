@@ -24,8 +24,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.Pattern;
@@ -208,7 +210,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     protected void initDeclaredMask(BuildContext context) {
-        if ( !(unwrapTupleSource() instanceof LeftInputAdapterNode)) {
+        if ( !(NodeTypeEnums.isLeftInputAdapterNode(unwrapTupleSource()))) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
             setDeclaredMask( AllSetBitMask.get() );
             return;
@@ -229,7 +231,8 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public void initInferredMask() {
         LeftTupleSource leftTupleSource = unwrapTupleSource();
-        if ( leftTupleSource instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource() instanceof AlphaNode ) {
+        if ( NodeTypeEnums.isLeftInputAdapterNode(leftTupleSource) &&
+             ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource().getType() == NodeTypeEnums.AlphaNode ) {
             AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource();
             setInferredMask( alphaNode.updateMask( getDeclaredMask() ) );
         } else {
@@ -243,7 +246,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public LeftTupleSource unwrapTupleSource() {
-        return tupleSource instanceof FromNode ? tupleSource.getLeftTupleSource() : tupleSource;
+        return tupleSource.getType() == NodeTypeEnums.FromNode ? tupleSource.getLeftTupleSource() : tupleSource;
     }
 
     public PathMemory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
@@ -412,7 +415,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             return true;
         }
 
-        if (!(object instanceof RuleTerminalNode) || this.hashCode() != object.hashCode()) {
+        if (!NodeTypeEnums.isTerminalNode((NetworkNode) object)|| this.hashCode() != object.hashCode()) {
             return false;
         }
         final TerminalNode other = (TerminalNode) object;

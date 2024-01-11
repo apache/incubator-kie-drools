@@ -20,6 +20,7 @@ package org.drools.core.reteoo;
 
 import java.util.List;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -99,8 +100,8 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     }
 
     @Override
-    public short getType() {
-        return NodeTypeEnums.UnificationNode;
+    public int getType() {
+        return NodeTypeEnums.QueryElementNode;
     }
 
     @Override
@@ -258,7 +259,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         @Override
         public void rowAdded(RuleImpl rule, TupleImpl resultLeftTuple, ReteEvaluator reteEvaluator) {
 
-            QueryTerminalNode queryTerminalNode = (QueryTerminalNode) resultLeftTuple.getTupleSink();
+            QueryTerminalNode queryTerminalNode = (QueryTerminalNode) resultLeftTuple.getSink();
             QueryImpl query = queryTerminalNode.getQuery();
             Declaration[] decls = queryTerminalNode.getRequiredDeclarations();
             DroolsQueryImpl dquery = (DroolsQueryImpl) this.factHandle.getObject();
@@ -362,7 +363,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             resultLeftTuple.setContextObject( null );
 
             // We need to recopy everything back again, as we don't know what has or hasn't changed
-            QueryTerminalNode queryTerminalNode = (QueryTerminalNode) resultLeftTuple.getTupleSink();
+            QueryTerminalNode queryTerminalNode = (QueryTerminalNode) resultLeftTuple.getSink();
             Declaration[] decls = queryTerminalNode.getRequiredDeclarations();
             FactHandle rootHandle = resultLeftTuple.get(0);
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootHandle.getObject();
@@ -469,7 +470,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             return true;
         }
 
-        if ( !(object instanceof QueryElementNode) || this.hashCode() != object.hashCode() ) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.QueryElementNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -523,7 +524,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         }
 
         @Override
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.QueryElementNode;
         }
 

@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
@@ -123,7 +124,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         return typeConfReg;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.EntryPointNode;
     }
 
@@ -222,7 +223,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
         TupleImpl rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         while ( rightTuple != null &&
-                ((BaseNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
+                ((BaseNode) rightTuple.getSink()).getObjectTypeNode() == node ) {
             modifyPreviousTuples.removeRightTuple(partition);
 
             modifyPreviousTuples.doRightDelete(pctx, reteEvaluator, rightTuple);
@@ -235,11 +236,11 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             TupleImpl      leftTuple = modifyPreviousTuples.peekLeftTuple(partition);
             ObjectTypeNode otn       = null;
             if (leftTuple != null) {
-                Sink leftTupleSink = leftTuple.getTupleSink();
-                if (leftTupleSink instanceof LeftTupleSource ) {
-                    otn = ((LeftTupleSource)leftTupleSink).getLeftTupleSource().getObjectTypeNode();
-                } else if (leftTupleSink instanceof RuleTerminalNode ) {
+                Sink leftTupleSink = leftTuple.getSink();
+                if (NodeTypeEnums.isTerminalNode(leftTupleSink)) {
                     otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();
+                } else {
+                    otn = ((LeftTupleSource)leftTupleSink).getLeftTupleSource().getObjectTypeNode();
                 }
             }
 
@@ -384,8 +385,8 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             return true;
         }
 
-        return (object instanceof EntryPointNode && this.hashCode() == object.hashCode() &&
-                 this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint ) );
+        return (((NetworkNode)object).getType() == NodeTypeEnums.EntryPointNode && this.hashCode() == object.hashCode() &&
+                this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint ) );
     }
 
     public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {

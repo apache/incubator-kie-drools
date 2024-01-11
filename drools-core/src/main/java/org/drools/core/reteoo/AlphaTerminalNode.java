@@ -19,6 +19,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.base.common.NetworkNode;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -76,7 +77,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple.setPropagationContext( context );
                     PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, leftTuple );
-                    if (leftTuple instanceof InternalMatch) {
+                    if (leftTuple.isFullMatch()) {
                         ((InternalMatch) leftTuple).setActive(true);
                     }
                 }
@@ -94,7 +95,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     public void retractLeftTuple(TupleImpl leftTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
-        TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();
+        TerminalNode rtn = (TerminalNode) leftTuple.getSink();
         PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), leftTuple );
     }
 
@@ -121,5 +122,9 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     @Override
     public boolean isTerminal() {
         return true;
+    }
+
+    public int getType() {
+        return NodeTypeEnums.AlphaTerminalNode;
     }
 }

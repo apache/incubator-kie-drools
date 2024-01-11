@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.From;
 import org.drools.base.rule.Pattern;
@@ -117,7 +118,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             return true;
         }
 
-        if (!(object instanceof FromNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.FromNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -293,7 +294,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.FromNode;
     } 
 
@@ -315,7 +316,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             this.providerContext = dataProvider.createContext();
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.FromNode;
         }
 

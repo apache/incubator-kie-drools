@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.base.rule.ContextEntry;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MemoryFactory;
@@ -167,24 +167,24 @@ public class NotNodeLeftTuple extends LeftTuple {
 
     @Override
     public Collection<Object> getAccumulatedObjects() {
-        if (NodeTypeEnums.ExistsNode != getTupleSink().getType()) {
+        if (NodeTypeEnums.ExistsNode != this.getSink().getType()) {
             return Collections.emptyList();
         }
 
-        BetaNode betaNode = (BetaNode) getTupleSink();
+        BetaNode betaNode = (BetaNode) this.getSink();
         BetaConstraints constraints = betaNode.getRawConstraints();
         ReteEvaluator reteEvaluator = getFactHandle().getReteEvaluator();
-        BetaMemory bm = (BetaMemory) reteEvaluator.getNodeMemory( (MemoryFactory) getTupleSink() );
+        BetaMemory bm = (BetaMemory) reteEvaluator.getNodeMemory( (MemoryFactory) this.getSink());
         TupleMemory rtm = bm.getRightTupleMemory();
-        FastIterator it = betaNode.getRightIterator( rtm );
+        FastIterator<TupleImpl> it = betaNode.getRightIterator( rtm );
 
         Object contextEntry = bm.getContext();
         constraints.updateFromTuple( contextEntry, reteEvaluator, this );
 
         Collection<Object> result = new ArrayList<>();
-        for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, it); rightTuple != null; ) {
-            RightTuple nextRight = (RightTuple) it.next(rightTuple);
-            if ( !(rightTuple instanceof SubnetworkTuple) ) {
+        for (TupleImpl rightTuple = betaNode.getFirstRightTuple(this, rtm, it); rightTuple != null; ) {
+            TupleImpl nextRight = it.next(rightTuple);
+            if ( !rightTuple.isSubnetworkTuple()) {
                 InternalFactHandle fh = rightTuple.getFactHandleForEvaluation();
                 if ( constraints.isAllowedCachedLeft( contextEntry, fh ) ) {
                     result.add( fh.getObject() );

@@ -18,7 +18,9 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -667,23 +669,6 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         return this.index;
     }
 
-    @Override
-    // It's better to always cast to a concrete or abstract class to avoid
-    // secondary super cache problem. See https://issues.redhat.com/browse/DROOLS-7521
-    public Sink getTupleSink() {
-        Sink sink = getSink();
-//        if (sink instanceof AccumulateNode) {
-//            return (AccumulateNode) sink;
-//        } else if (sink instanceof RuleTerminalNode) {
-//            return (RuleTerminalNode) sink;
-//        } else if (sink instanceof RightInputAdapterNode) {
-//            return (RightInputAdapterNode) sink;
-//        } else if (sink instanceof ExistsNode) {
-//            return (ExistsNode) sink;
-//        }
-        return sink;
-    }
-
     /* Had to add the set method because sink adapters must override
      * the tuple sink set when the tuple was created.
      */
@@ -720,7 +705,7 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         this.expired = true;
     }
 
-    protected Sink getSink() {
+    public Sink getSink() {
         return sink;
     }
 
@@ -756,10 +741,6 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
     @Override
     public abstract ObjectTypeNodeId getInputOtnId();
 
-    @Override
-    public abstract LeftTupleSource getTupleSource();
-
-
 
     public InternalFactHandle getFactHandleForEvaluation() {
         throw new UnsupportedOperationException("Only RightTupleImpl implements this");
@@ -787,10 +768,21 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
                 result.add(child.getContextObject());
             }
         }
-        if ( getFirstChild().getRightParent() instanceof SubnetworkTuple ) {
-            TupleImpl leftParent = (( SubnetworkTuple ) getFirstChild().getRightParent()).getLeftParent();
+
+        if ( getFirstChild().getRightParent().isSubnetworkTuple()) {
+            TupleImpl leftParent = getFirstChild().getRightParent().getLeftParent();
             result.addAll( leftParent.getAccumulatedObjects() );
         }
         return result;
+    }
+
+    public abstract boolean isLeftTuple();
+
+    public boolean isFullMatch() {
+        return false;
+    }
+
+    public boolean isSubnetworkTuple() {
+        return false;
     }
 }

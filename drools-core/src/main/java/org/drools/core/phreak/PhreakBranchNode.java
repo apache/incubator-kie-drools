@@ -116,7 +116,7 @@ public class PhreakBranchNode {
 
             RuleTerminalNode oldRtn = null;
             if (branchTuples.rtnLeftTuple != null) {
-                oldRtn = (RuleTerminalNode) branchTuples.rtnLeftTuple.getTupleSink();
+                oldRtn = (RuleTerminalNode) branchTuples.rtnLeftTuple.getSink();
             }
 
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, activationsManager.getReteEvaluator(), cbm.context);
@@ -226,14 +226,14 @@ public class PhreakBranchNode {
         TupleImpl child = leftTuple.getFirstChild();
         if ( child != null ) {
             // assigns the correct main or rtn LeftTuple based on the identified sink
-            if ( child.getTupleSink() == sink ) {
+            if (child.getSink() == sink ) {
                 branchTuples.mainLeftTuple = child;
             } else {
                 branchTuples.rtnLeftTuple = child;
             }
             child = child.getHandleNext();
             if ( child != null ) {
-                if ( child.getTupleSink() == sink ) {
+                if (child.getSink() == sink ) {
                     branchTuples.mainLeftTuple = child;
                 } else {
                     branchTuples.rtnLeftTuple = child;

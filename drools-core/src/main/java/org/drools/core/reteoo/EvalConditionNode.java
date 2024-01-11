@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EvalCondition;
 import org.drools.base.rule.RuleComponent;
@@ -127,7 +128,7 @@ public class EvalConditionNode extends LeftTupleSource
             return true;
         }
 
-        if (!(object instanceof EvalConditionNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.EvalConditionNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -187,7 +188,7 @@ public class EvalConditionNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.EvalConditionNode;
     }
 
@@ -253,7 +254,7 @@ public class EvalConditionNode extends LeftTupleSource
             out.writeObject( context );
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.EvalConditionNode;
         }
 

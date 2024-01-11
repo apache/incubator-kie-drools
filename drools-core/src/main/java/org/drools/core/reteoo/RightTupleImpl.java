@@ -18,7 +18,9 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
@@ -94,19 +96,6 @@ public class RightTupleImpl extends TupleImpl implements RightTuple {
                            boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
-
-
-    // It's better to always cast to a concrete or abstract class to avoid
-    // secondary super cache problem. See https://issues.redhat.com/browse/DROOLS-7521
-    public RightTupleSink getTupleSink() {
-        Object sink = getSink();
-        if(sink instanceof BetaNode) {
-            return (BetaNode)sink;
-        } else {
-            return (RightTupleSink) sink;
-        }
-    }
-
 
     public void reAdd() {
         getFactHandle().addLastRightTuple( this );
@@ -187,13 +176,13 @@ public class RightTupleImpl extends TupleImpl implements RightTuple {
 
     @Override
     public ObjectTypeNodeId getInputOtnId() {
-        return ((RightTupleSink)getSink()).getRightInputOtnId();
+        return BaseNode.getRightInputOtnId(this);
     }
 
     @Override
     public void retractTuple( PropagationContext context, ReteEvaluator reteEvaluator ) {
         if (!retracted) {
-            getTupleSink().retractRightTuple( this, context, reteEvaluator );
+            BaseNode.getRightTupleSink(this).retractRightTuple(this, context, reteEvaluator);
             retracted = true;
         }
     }
@@ -203,7 +192,7 @@ public class RightTupleImpl extends TupleImpl implements RightTuple {
         super.setExpired();
         // events expired at firing time should have a chance to produce a join (DROOLS-1329)
         // but shouldn't participate to an accumulate (DROOLS-4393)
-        if (getTupleSink().getType() == NodeTypeEnums.AccumulateNode) {
+        if (this.getSink().getType() == NodeTypeEnums.AccumulateNode) {
             retractTuple( pctx, reteEvaluator );
         }
     }
@@ -212,7 +201,7 @@ public class RightTupleImpl extends TupleImpl implements RightTuple {
         return handle;
     }
 
-    public LeftTupleSource getTupleSource() {
-        return getSink() != null ? ((LeftTupleNode) getTupleSink()).getLeftTupleSource() : null;
+    public boolean isLeftTuple() {
+        return false;
     }
 }

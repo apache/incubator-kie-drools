@@ -284,8 +284,8 @@ public abstract class BetaNode extends LeftTupleSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemoryImpl bm = getBetaMemory(rightTuple.getTupleSink(), reteEvaluator);
-            (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, reteEvaluator, bm );
+            BetaMemoryImpl bm = getBetaMemory(rightTuple.getSink(), reteEvaluator);
+            (( BetaNode ) rightTuple.getSink()).doDeleteRightTuple(rightTuple, reteEvaluator, bm);
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
@@ -484,7 +484,7 @@ public abstract class BetaNode extends LeftTupleSource
         if (objectTypeNode == null) {
             ObjectSource source = this.rightInput;
             while ( source != null ) {
-                if ( source instanceof ObjectTypeNode ) {
+                if ( NodeTypeEnums.ObjectTypeNode == source.getType()) {
                     objectTypeNode = (ObjectTypeNode) source;
                     break;
                 }
@@ -554,7 +554,7 @@ public abstract class BetaNode extends LeftTupleSource
             return true;
         }
 
-        if (!(object instanceof BetaNode) || this.hashCode() != object.hashCode()) {
+        if (!NodeTypeEnums.isBetaNode((NetworkNode)object) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

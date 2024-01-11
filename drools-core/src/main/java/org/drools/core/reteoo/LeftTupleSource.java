@@ -94,7 +94,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
         return pathIndex;
     }
 
-    public abstract short getType();
+    public abstract int getType();
 
     public abstract LeftTuple createPeer(TupleImpl original);
 
@@ -240,7 +240,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
             return;
         }
 
-        if ( leftInput.getType() != NodeTypeEnums.LeftInputAdapterNode) {
+        if ( !NodeTypeEnums.isLeftInputAdapterNode(leftInput)) {
             // BetaNode's not after LIANode are not relevant for left mask property specific, so don't block anything.
             leftDeclaredMask = AllSetBitMask.get();
             return;
@@ -287,7 +287,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     protected void initInferredMask(LeftTupleSource leftInput) {
         LeftTupleSource unwrappedLeft = unwrapLeftInput(leftInput);
-        if ( unwrappedLeft.getType() == NodeTypeEnums.LeftInputAdapterNode && ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource().getType() == NodeTypeEnums.AlphaNode ) {
+        if ( NodeTypeEnums.isLeftInputAdapterNode(unwrappedLeft) && ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource().getType() == NodeTypeEnums.AlphaNode ) {
             ObjectSource objectSource = ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource();
             leftInferredMask = objectSource.updateMask( leftDeclaredMask );
         } else {

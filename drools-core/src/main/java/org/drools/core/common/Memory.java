@@ -28,7 +28,7 @@ import org.drools.core.util.DoubleLinkedEntry;
  */
 public interface Memory extends DoubleLinkedEntry<Memory> {
     
-    short getNodeType();
+    int getNodeType();
     
     SegmentMemory getSegmentMemory();
 

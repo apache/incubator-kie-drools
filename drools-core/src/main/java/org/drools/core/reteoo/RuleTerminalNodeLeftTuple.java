@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.common.ActivationGroupNode;
@@ -143,7 +144,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
         super.setSink(sink);
         TerminalNode terminalNode = (TerminalNode) sink;
         this.rule = terminalNode.getRule();
-        if (this.rule != null && terminalNode instanceof RuleTerminalNode) {
+        if (this.rule != null && terminalNode.getType() == NodeTypeEnums.RuleTerminalNode) {
             String consequenceName = ((RuleTerminalNode)terminalNode).getConsequenceName();
             this.consequence = consequenceName.equals(RuleImpl.DEFAULT_CONSEQUENCE_NAME) ? rule.getConsequence() : rule.getNamedConsequence(consequenceName);
         }
@@ -249,7 +250,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public TerminalNode getTerminalNode() {
-        return (AbstractTerminalNode) getTupleSink();
+        return (AbstractTerminalNode) this.getSink();
     }
 
     public List<FactHandle> getFactHandles() {
@@ -277,7 +278,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getTupleSink()).getAllDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.getSink()).getAllDeclarations();
         List<String> declarations = new ArrayList<>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());
@@ -342,5 +343,9 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), ruleAgendaItem.getRule().getName());
+    }
+
+    public boolean isFullMatch() {
+        return true;
     }
 }

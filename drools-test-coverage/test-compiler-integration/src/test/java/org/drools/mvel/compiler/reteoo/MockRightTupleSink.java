@@ -30,8 +30,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectTypeNodeId;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.definition.rule.Rule;
@@ -67,7 +65,7 @@ public class MockRightTupleSink
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.JoinNode;
     }
 

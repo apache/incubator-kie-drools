@@ -29,8 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -1332,8 +1330,8 @@ public class AddRemoveRulesTest {
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
             assertThat(fh1.getFirstRightTuple()).isNotNull();
-            assertThat(fh1.getFirstRightTuple().getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(fh1.getFirstRightTuple().getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(fh1.getFirstRightTuple().getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
         } finally {
             kieSession.dispose();
         }
@@ -1357,8 +1355,8 @@ public class AddRemoveRulesTest {
             final Map<String, Rule> rulesMap = rulestoMap(kieSession.getKieBase());
             final InternalFactHandle  fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
             assertThat(fh1.getFirstRightTuple()).isNotNull();
-            assertThat(fh1.getFirstRightTuple().getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(fh1.getFirstRightTuple().getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(fh1.getFirstRightTuple().getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
         } finally {
             kieSession.dispose();
         }
@@ -1422,8 +1420,8 @@ public class AddRemoveRulesTest {
             final TupleImpl lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
             assertThat(fh1.getFirstLeftTuple().getFirstChild().getLastChild()).isSameAs(lt);
             assertThat(lt.getPeer()).isNull();
-            assertThat(lt.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(lt.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
         } finally {
             kieSession.dispose();
         }
@@ -1449,8 +1447,8 @@ public class AddRemoveRulesTest {
             final TupleImpl lt = fh1.getFirstLeftTuple().getFirstChild().getFirstChild();
             assertThat(fh1.getFirstLeftTuple().getFirstChild().getLastChild()).isSameAs(lt);
             assertThat(lt.getPeer()).isNull();
-            assertThat(lt.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(lt.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
         } finally {
             kieSession.dispose();
         }
@@ -1475,12 +1473,12 @@ public class AddRemoveRulesTest {
             final InternalFactHandle fh1 = (InternalFactHandle) kieSession.getFactHandle(3);
             final TupleImpl          lt  = fh1.getFirstLeftTuple().getFirstChild();
             assertThat(fh1.getFirstLeftTuple().getLastChild()).isSameAs(lt);
-            assertThat(lt.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(lt.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
 
             final TupleImpl peer = lt.getPeer();
-            assertThat(peer.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(peer.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE3_NAME))).isTrue();
+            assertThat(peer.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(peer.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE3_NAME))).isTrue();
         } finally {
             kieSession.dispose();
         }
@@ -1518,16 +1516,16 @@ public class AddRemoveRulesTest {
             assertThat((JoinNodeLeftTuple)lt1_3.getHandlePrevious()).isSameAs(lt1_2);
             assertThat((JoinNodeLeftTuple)lt1_2.getHandlePrevious()).isSameAs(lt1_1);
 
-            assertThat(lt1_1.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(lt1_1.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt1_1.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
             assertThat(lt1_1.getPeer()).isNull();
 
-            assertThat(lt1_2.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(lt1_2.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt1_2.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
             assertThat(lt1_2.getPeer()).isNull();
 
-            assertThat(lt1_3.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(lt1_3.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt1_3.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
             assertThat(lt1_3.getPeer()).isNull();
 
 
@@ -1545,16 +1543,16 @@ public class AddRemoveRulesTest {
             assertThat(rt1_3.getRightParentNext()).isSameAs(rt1_2);
             assertThat(rt1_2.getRightParentNext()).isSameAs(rt1_1);
 
-            assertThat(rt1_1.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(rt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(rt1_1.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(rt1_1.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
             assertThat(rt1_1.getPeer()).isNull();
 
-            assertThat(rt1_2.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(rt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(rt1_2.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(rt1_2.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
             assertThat(rt1_2.getPeer()).isNull();
 
-            assertThat(rt1_3.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(rt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
+            assertThat(rt1_3.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(rt1_3.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
             assertThat(rt1_3.getPeer()).isNull();
         } finally {
             kieSession.dispose();
@@ -1593,16 +1591,16 @@ public class AddRemoveRulesTest {
             assertThat((JoinNodeLeftTuple)lt1_3.getHandlePrevious()).isSameAs(lt1_2);
             assertThat((JoinNodeLeftTuple)lt1_2.getHandlePrevious()).isSameAs(lt1_1);
 
-            assertThat(lt1_1.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(lt1_1.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt1_1.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
             assertThat(lt1_1.getPeer()).isNull();
 
-            assertThat(lt1_2.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(lt1_2.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt1_2.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
             assertThat(lt1_2.getPeer()).isNull();
 
-            assertThat(lt1_3.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(lt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(lt1_3.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(lt1_3.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
             assertThat(lt1_3.getPeer()).isNull();
 
 
@@ -1620,16 +1618,16 @@ public class AddRemoveRulesTest {
             assertThat(rt1_3.getRightParentNext()).isSameAs(rt1_2);
             assertThat(rt1_2.getRightParentNext()).isSameAs(rt1_1);
 
-            assertThat(rt1_1.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(rt1_1.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(rt1_1.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(rt1_1.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
             assertThat(rt1_1.getPeer()).isNull();
 
-            assertThat(rt1_2.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(rt1_2.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(rt1_2.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(rt1_2.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
             assertThat(rt1_2.getPeer()).isNull();
 
-            assertThat(rt1_3.getTupleSink().getAssociatedTerminalsSize()).isEqualTo(1);
-            assertThat(rt1_3.getTupleSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
+            assertThat(rt1_3.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
+            assertThat(rt1_3.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();
             assertThat(rt1_3.getPeer()).isNull();
         } finally {
             kieSession.dispose();

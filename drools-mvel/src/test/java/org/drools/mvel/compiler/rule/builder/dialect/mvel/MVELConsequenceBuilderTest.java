@@ -57,7 +57,6 @@ import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -499,7 +498,7 @@ public class MVELConsequenceBuilderTest {
                                       final ReteEvaluator reteEvaluator) {
         }
 
-        public short getType() {
+        public int getType() {
             return 0;
         }
 

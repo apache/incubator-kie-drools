@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.Pattern;
@@ -160,7 +161,7 @@ public class AsyncReceiveNode extends LeftTupleSource
             return true;
         }
 
-        if ( !(object instanceof AsyncReceiveNode) || this.hashCode() != object.hashCode() ) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.AsyncReceiveNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -229,7 +230,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AsyncReceiveNode;
     }
 
@@ -306,7 +307,7 @@ public class AsyncReceiveNode extends LeftTupleSource
             insertOrUpdateLeftTuples.add( leftTuple );
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.AsyncReceiveNode;
         }
 

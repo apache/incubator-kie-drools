@@ -116,8 +116,8 @@ public class MockLeftTupleSink extends LeftTupleSource
     public void networkUpdated(UpdateContext updateContext) {
     }
 
-    public short getType() {
-        return NodeTypeEnums.RuleTerminalNode;
+    public int getType() {
+        return NodeTypeEnums.MockBetaNode;
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -159,7 +159,7 @@ public class MockLeftTupleSink extends LeftTupleSource
 
         return new MockLeftTupleSink(null) {
             @Override
-            public short getType() {
+            public int getType() {
                 return NodeTypeEnums.LeftInputAdapterNode;
             }
         };

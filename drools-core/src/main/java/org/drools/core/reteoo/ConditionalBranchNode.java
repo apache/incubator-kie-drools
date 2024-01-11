@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
@@ -96,7 +97,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
             return true;
         }
 
-        if (!(object instanceof ConditionalBranchNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.ConditionalBranchNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -157,7 +158,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.ConditionalBranchNode;
     }
 
@@ -221,7 +222,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
             out.writeObject( context );
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.ConditionalBranchNode;
         }
         

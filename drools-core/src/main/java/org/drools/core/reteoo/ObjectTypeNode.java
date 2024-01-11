@@ -30,10 +30,12 @@ import java.util.List;
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.time.JobHandle;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -145,7 +147,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     public static final ObjectTypeNodeId DEFAULT_ID = new ObjectTypeNodeId(-1, 0);
 
     @Override
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.ObjectTypeNode;
     }
 
@@ -267,8 +269,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
     public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachLeftTuple( lt -> {
-            LeftTupleNode sink = (LeftTupleNode) lt.getTupleSink();
-            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
+            ((LeftInputAdapterNode) BaseNode.getLeftTupleSource(lt)).retractLeftTuple(lt, context, reteEvaluator);
         } );
         factHandle.clearLeftTuples();
     }
@@ -276,8 +277,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
         linkedTuples.forEachLeftTuple( partition, lt -> {
-            LeftTupleNode sink = (LeftTupleNode) lt.getTupleSink();
-            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt, context, reteEvaluator);
+            ((LeftInputAdapterNode) BaseNode.getLeftTupleSource(lt)).retractLeftTuple(lt, context, reteEvaluator);
         } );
         linkedTuples.clearLeftTuples(partition);
     }
@@ -354,16 +354,16 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     protected static void updateTupleSinkId(ObjectTypeNode otn,
                                             ObjectSource source) {
         for (ObjectSink sink : source.sink.getSinks()) {
-            if (sink instanceof BetaNode) {
+            if (NodeTypeEnums.isBetaNode(sink)) {
                 ((BetaNode)sink).setRightInputOtnId(otn.nextOtnId());
-            } else if (sink instanceof LeftInputAdapterNode) {
+            } else if (NodeTypeEnums.isLeftInputAdapterNode(sink)) {
                 for (LeftTupleSink liaChildSink : ((LeftInputAdapterNode) sink).getSinkPropagator().getSinks()) {
                     liaChildSink.setLeftInputOtnId(otn.nextOtnId());
                 }
-            } else if (sink instanceof WindowNode) {
+            } else if (sink.getType() == NodeTypeEnums.WindowNode) {
                 ((WindowNode)sink).setRightInputOtnId(otn.nextOtnId());
                 updateTupleSinkId(otn, (WindowNode) sink);
-            } else if (sink instanceof AlphaNode) {
+            } else if (sink.getType() == NodeTypeEnums.AlphaNode) {
                 updateTupleSinkId(otn, (AlphaNode) sink);
             }
         }
@@ -407,7 +407,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             return true;
         }
 
-        if ( !(object instanceof ObjectTypeNode) || this.hashCode() != object.hashCode() ) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.ObjectTypeNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 

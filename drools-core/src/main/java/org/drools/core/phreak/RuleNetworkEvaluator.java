@@ -168,7 +168,7 @@ public class RuleNetworkEvaluator {
         } else {
             lt = (LeftTupleSource) node;
         }
-        while (lt.getType() != NodeTypeEnums.LeftInputAdapterNode) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode(lt)) {
             offset++;
             lt = lt.getLeftTupleSource();
         }

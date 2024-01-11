@@ -65,7 +65,7 @@ public class LambdaConsequence implements Consequence<KnowledgeHelper> {
     @Override
     public void evaluate(KnowledgeHelper knowledgeHelper, ValueResolver valueResolver) throws Exception {
         if ( this.requiredDeclarations == null ) {
-            Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
+            Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getSink()).getRequiredDeclarations();
             if (enabledTupleOptimization) {
                 this.requiredDeclarations = declarations;
             } else {

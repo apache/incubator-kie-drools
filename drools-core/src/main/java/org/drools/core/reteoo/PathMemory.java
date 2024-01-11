@@ -68,7 +68,7 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
     }
 
     public RuleImpl getRule() {
-        return pathEndNode instanceof TerminalNode ? ((TerminalNode) pathEndNode).getRule() : null;
+        return NodeTypeEnums.isTerminalNode(pathEndNode) ? ((TerminalNode) pathEndNode).getRule() : null;
     }
 
     public RuleAgendaItem getRuleAgendaItem() {
@@ -199,7 +199,7 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
         return dataDriven;
     }
 
-    public short getNodeType() {
+    public int getNodeType() {
         return NodeTypeEnums.RuleTerminalNode;
     }
 

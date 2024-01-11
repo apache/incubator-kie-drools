@@ -27,7 +27,7 @@ import org.drools.base.rule.constraint.BetaConstraint;
 
 public interface IndexFactory {
 
-    static BetaMemoryImpl createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaConstraint... constraints) {
+    static BetaMemoryImpl createBetaMemory(RuleBaseConfiguration config, int nodeType, BetaConstraint... constraints) {
         if (config.getCompositeKeyDepth() < 1) {
             return new BetaMemoryImpl(config.isSequential() ? null : new TupleList(),
                                       new TupleList(),

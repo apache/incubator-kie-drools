@@ -20,6 +20,7 @@ package org.drools.core.reteoo;
 
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -72,15 +73,14 @@ public class ModifyPreviousTuples {
     }
 
     public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl leftTuple) {
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) BaseNode.getLeftTupleSource(leftTuple);
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
         if (sm != null) {
             LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, reteEvaluator, liaNode, true, lm );
         } else {
             ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-            TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();
-            PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
+            PathMemory pathMemory = reteEvaluator.getNodeMemory( (TerminalNode) leftTuple.getSink() );
             PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
         }
     }

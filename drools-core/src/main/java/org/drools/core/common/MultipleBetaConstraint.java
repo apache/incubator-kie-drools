@@ -70,7 +70,7 @@ public abstract class MultipleBetaConstraint implements BetaConstraints<ContextE
         out.writeObject(indexPrecedenceOption);
     }
 
-    public final void init(BuildContext context, short betaNodeType) {
+    public final void init(BuildContext context, int betaNodeType) {
         RuleBaseConfiguration config = context.getRuleBase().getRuleBaseConfiguration();
 
         if ( disableIndexing || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
@@ -86,7 +86,7 @@ public abstract class MultipleBetaConstraint implements BetaConstraints<ContextE
         }
     }
 
-    public final void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+    public final void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) {
         indexed = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints, config);
     }
 
@@ -105,7 +105,7 @@ public abstract class MultipleBetaConstraint implements BetaConstraints<ContextE
     }
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                       final short nodeType) {
+                                       final int nodeType) {
         return IndexFactory.createBetaMemory(config, nodeType, constraints);
     }
 

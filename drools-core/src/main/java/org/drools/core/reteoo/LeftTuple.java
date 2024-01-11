@@ -18,6 +18,8 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.common.NetworkNode;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 
@@ -81,12 +83,7 @@ public class LeftTuple
 
     @Override
     public ObjectTypeNodeId getInputOtnId() {
-        return  ((LeftTupleSink) getTupleSink()).getLeftInputOtnId();
-    }
-
-    @Override
-    public LeftTupleSource getTupleSource() {
-        return getSink() != null ? ((LeftTupleNode) getTupleSink()).getLeftTupleSource() : null;
+        return BaseNode.getLeftInputOtnId(this);
     }
 
     @Override
@@ -94,4 +91,7 @@ public class LeftTuple
         getFactHandle().addLastLeftTuple( this );
     }
 
+    public boolean isLeftTuple() {
+        return true;
+    }
 }

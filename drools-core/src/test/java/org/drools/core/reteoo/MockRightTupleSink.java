@@ -54,7 +54,7 @@ public class MockRightTupleSink
         return null;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.JoinNode;
     }
 

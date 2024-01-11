@@ -65,7 +65,7 @@ public class ExistsNode extends BetaNode {
         return "[ExistsNode(" + this.getId() + ") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>") + "]";
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.ExistsNode;
     }
     

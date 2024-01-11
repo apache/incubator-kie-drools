@@ -210,7 +210,7 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType) {
+    public BetaMemory createBetaMemory(RuleBaseConfiguration config, int nodeType) {
 
         if (config.getCompositeKeyDepth() < 1) {
             return new BetaMemoryImpl(config.isSequential() ? null : new TupleList(),
@@ -271,12 +271,12 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public void init(BuildContext context, short betaNodeType) {
+    public void init(BuildContext context, int betaNodeType) {
 
     }
 
     @Override
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) {
         throw new UnsupportedOperationException();
     }
 
@@ -308,7 +308,7 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
+    public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
         return false;
     }
 

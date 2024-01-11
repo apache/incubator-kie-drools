@@ -57,7 +57,7 @@ public class MockTupleSource extends LeftTupleSource {
     public void networkUpdated(UpdateContext updateContext) {
     }
 
-    public short getType() {
+    public int getType() {
         return 0;
     }
 

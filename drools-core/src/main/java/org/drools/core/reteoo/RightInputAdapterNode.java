@@ -255,7 +255,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.RightInputAdapterNode;
     }
 
@@ -269,7 +269,7 @@ public class RightInputAdapterNode extends ObjectSource
             return true;
         }
 
-        return object instanceof RightInputAdapterNode && this.hashCode() == object.hashCode() &&
+        return ((NetworkNode)object).getType() == NodeTypeEnums.RightInputAdapterNode && this.hashCode() == object.hashCode() &&
                this.tupleSource.getId() == ((RightInputAdapterNode)object).tupleSource.getId() &&
                this.tupleMemoryEnabled == ( (RightInputAdapterNode) object ).tupleMemoryEnabled;
     }
@@ -344,7 +344,7 @@ public class RightInputAdapterNode extends ObjectSource
         @Override
         protected boolean initDataDriven( ReteEvaluator reteEvaluator ) {
             for (PathEndNode pnode : getPathEndNode().getPathEndNodes()) {
-                if (pnode instanceof TerminalNode) {
+                if (NodeTypeEnums.isTerminalNode(pnode)) {
                     RuleImpl rule = ( (TerminalNode) pnode ).getRule();
                     if ( isRuleDataDriven( reteEvaluator, rule ) ) {
                         return true;
@@ -412,7 +412,7 @@ public class RightInputAdapterNode extends ObjectSource
         }
 
         @Override
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.RightInputAdapterNode;
         }
 

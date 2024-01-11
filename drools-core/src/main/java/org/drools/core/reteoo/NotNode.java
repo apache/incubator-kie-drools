@@ -73,7 +73,7 @@ public class NotNode extends BetaNode {
         this.emptyBetaConstraints = emptyBetaConstraints;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.NotNode;
     }
     

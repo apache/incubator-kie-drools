@@ -33,7 +33,6 @@ import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TupleImpl;
@@ -125,7 +124,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     public void networkUpdated(UpdateContext updateContext) {
     }
 
-    public short getType() {
+    public int getType() {
         return 0;
     }
 

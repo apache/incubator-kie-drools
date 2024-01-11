@@ -34,7 +34,6 @@ import org.drools.core.reteoo.EvalNodeLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.index.TupleList;
 import org.drools.core.util.index.TupleListWithContext;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -66,7 +65,7 @@ public class MVELGroupByAccumulate extends Accumulate {
     private Object getKey( Tuple tuple, FactHandle handle, ReteEvaluator reteEvaluator ) {
         try {
             Tuple keyTuple = isMvel? tuple : new EvalNodeLeftTuple((InternalFactHandle) handle, (LeftTuple) tuple, tuple
-                    .getTupleSink());
+                    .getSink());
             FieldValue out = groupingFunction.evaluate(handle, keyTuple, groupingDeclarations,
                     getInnerDeclarationCache(), reteEvaluator, groupingFunction.createContext());
             return out.getValue();

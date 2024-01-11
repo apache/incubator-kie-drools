@@ -102,7 +102,7 @@ public class WindowNode extends ObjectSource
         initMemoryId( context );
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.WindowNode;
     }
 
@@ -307,7 +307,7 @@ public class WindowNode extends ObjectSource
     public static class WindowMemory implements Memory {
         public BehaviorContext[] behaviorContext;
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.WindowNode;
         }
 

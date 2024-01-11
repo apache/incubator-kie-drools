@@ -95,12 +95,12 @@ public class PhreakActivationIterator
 
     public static void processLeftTuples(LeftTupleSource node, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         LeftTupleSource node1 = node;
-        while (NodeTypeEnums.LeftInputAdapterNode != node1.getType()) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode((node1))) {
             node1 = node1.getLeftTupleSource();
         }
         int maxShareCount = node1.getAssociationsSize();
 
-        while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode(node)) {
             Memory memory = reteEvaluator.getNodeMemories().peekNodeMemory(node);
             if (memory == null || memory.getSegmentMemory() == null) {
                 // segment has never been initialized, which means the rule has never been linked.
@@ -185,7 +185,7 @@ public class PhreakActivationIterator
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
-                if ( lt.getTupleSink() == firstLiaSink ) {
+                if (lt.getSink() == firstLiaSink ) {
                     collectFromLeftInput(lt, internalMatches, nodeSet, reteEvaluator);
                 }
             });
@@ -200,7 +200,7 @@ public class PhreakActivationIterator
 
     private static void collectFromPeers(TupleImpl peer, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         while (peer != null) {
-            if ( peer.getTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
+            if (peer.getSink().getType() == NodeTypeEnums.AccumulateNode ) {
                 Object accctx = peer.getContextObject();
                 if (accctx instanceof AccumulateContext) {
                     // lefttuple representing an accumulated value now have that value as context object (it was null before) and must be skipped here
@@ -210,9 +210,9 @@ public class PhreakActivationIterator
                 for (TupleImpl childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
                     collectFromLeftInput(childLt, internalMatches, nodeSet, reteEvaluator);
                 }
-            } else if ( peer.getTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
+            } else if (peer.getSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
                 internalMatches.add((InternalMatch) peer);
-                nodeSet.remove(peer.getTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already
+                nodeSet.remove(peer.getSink()); // remove this RuleTerminalNode, as we know we've visited it already
             }
             peer = peer.getPeer();
         }

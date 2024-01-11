@@ -21,7 +21,7 @@ package org.drools.serialization.protobuf.marshalling;
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl ;
 
 import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
 import static org.drools.base.reteoo.NodeTypeEnums.FromNode;
@@ -30,7 +30,7 @@ import static org.drools.core.marshalling.TupleKey.createTupleArray;
 
 public class MarshallingHelper {
 
-    public static ActivationKey createActivationKey( String pkgName, String ruleName, Tuple leftTuple) {
+    public static ActivationKey createActivationKey( String pkgName, String ruleName, TupleImpl  leftTuple) {
         return createActivationKey( pkgName, ruleName, toArrayOfObject(createTupleArray( leftTuple )) );
     }
 

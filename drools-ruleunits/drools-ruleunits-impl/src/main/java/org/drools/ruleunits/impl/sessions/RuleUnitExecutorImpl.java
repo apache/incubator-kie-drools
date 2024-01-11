@@ -36,6 +36,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -403,9 +404,9 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
             if (h instanceof RuleUnitDefaultFactHandle && ((RuleUnitDefaultFactHandle) h).getDataStore() != null) {
                 // This handle has been insert from a datasource, so remove from it
                 ((RuleUnitDefaultFactHandle) h).getDataStore().delete((RuleUnitDefaultFactHandle) h,
-                        knowledgeHelper.getActivation().getRule(),
-                        (TerminalNode) knowledgeHelper.getActivation().getTuple().getTupleSink(),
-                        fhState);
+                                                                      knowledgeHelper.getActivation().getRule(),
+                                                                      BaseNode.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
+                                                                      fhState);
                 return;
             }
 
@@ -416,7 +417,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
             h.getEntryPoint(reteEvaluator).delete(handle,
                     knowledgeHelper.getActivation().getRule(),
-                    (TerminalNode) knowledgeHelper.getActivation().getTuple().getTupleSink(),
+                    BaseNode.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
                     fhState);
         }
 

@@ -78,7 +78,7 @@ public class BaseNodeTest {
         public void networkUpdated(UpdateContext updateContext) {           
         }
 
-        public short getType() {
+        public int getType() {
             return 0;
         }
     }

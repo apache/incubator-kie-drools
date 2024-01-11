@@ -47,7 +47,7 @@ public class JoinNode extends BetaNode {
         this.setObjectCount(leftInput.getObjectCount() + 1); // 'join' node increase the object count
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.JoinNode;
     }
 

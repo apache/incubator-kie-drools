@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.AccumulateContextEntry;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -120,7 +121,7 @@ public class AccumulateNode extends BetaNode {
                leftInput.getParentObjectSource().getObjectTypeNode().getObjectType();
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AccumulateNode;
     }
 
@@ -167,7 +168,7 @@ public class AccumulateNode extends BetaNode {
             return true;
         }
 
-        if (!(object instanceof AccumulateNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.AccumulateNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -209,7 +210,7 @@ public class AccumulateNode extends BetaNode {
             return this.betaMemory;
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.AccumulateNode;
         }
 

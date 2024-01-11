@@ -21,16 +21,19 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
-public class MockObjectSink
+public class MockObjectSink extends ObjectSource
     implements
     ObjectSinkNode,
     RightTupleSink {
@@ -52,6 +55,16 @@ public class MockObjectSink
                               final PropagationContext context,
                               final ReteEvaluator reteEvaluator) {
         this.retracted.add( new Object[]{rightTuple.getFactHandle(), context, reteEvaluator} );
+    }
+
+    @Override
+    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+        return null;
+    }
+
+    @Override
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+
     }
 
     public List getAsserted() {
@@ -117,8 +130,8 @@ public class MockObjectSink
         return null;
     }
 
-    public short getType() {
-        return NodeTypeEnums.JoinNode;
+    public int getType() {
+        return NodeTypeEnums.MockAlphaNode;
     }
 
     public void modifyObject(InternalFactHandle factHandle,
@@ -178,8 +191,6 @@ public class MockObjectSink
     }
 
     public int nodeHashCode() {return this.hashCode();}
-
-    public void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) { }
 
     @Override
     public NetworkNode[] getSinks() {

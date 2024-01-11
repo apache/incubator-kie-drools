@@ -62,11 +62,11 @@ public class SingleNonIndexSkipBetaConstraints
         this.constraint = constraints.getConstraint();
     }
 
-    public void init(BuildContext context, short betaNodeType) {
+    public void init(BuildContext context, int betaNodeType) {
         constraints.init(context, betaNodeType);
     }
 
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) {
         constraints.initIndexes(depth, betaNodeType, config);
     }
 
@@ -111,7 +111,7 @@ public class SingleNonIndexSkipBetaConstraints
     }
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                       final short nodeType) {
+                                       final int nodeType) {
         return constraints.createBetaMemory( config,
                                              nodeType );
     }

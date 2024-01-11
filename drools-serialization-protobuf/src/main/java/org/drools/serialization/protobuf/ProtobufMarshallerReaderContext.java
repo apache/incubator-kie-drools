@@ -39,7 +39,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl ;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller.PBActivationsFilter;
@@ -300,7 +300,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public InternalFactHandle createAsyncNodeHandle( Tuple leftTuple, ReteEvaluator reteEvaluator,
+    public InternalFactHandle createAsyncNodeHandle( TupleImpl  leftTuple, ReteEvaluator reteEvaluator,
                                                      Object object, int nodeId, ObjectTypeConf objectTypeConf ) {
         ProtobufMessages.FactHandle _handle = null;
         Map<TupleKey, List<ProtobufMessages.FactHandle>> map = (Map<TupleKey, List<ProtobufMessages.FactHandle>>) getNodeMemories().get( nodeId );
@@ -330,7 +330,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public QueryElementFactHandle createQueryResultHandle(Tuple leftTuple, Object[] objects, int nodeId ) {
+    public QueryElementFactHandle createQueryResultHandle(TupleImpl  leftTuple, Object[] objects, int nodeId ) {
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {
@@ -348,7 +348,7 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
     }
 
     @Override
-    public InternalFactHandle createQueryHandle(Tuple leftTuple, ReteEvaluator reteEvaluator, int nodeId ) {
+    public InternalFactHandle createQueryHandle(TupleImpl  leftTuple, ReteEvaluator reteEvaluator, int nodeId ) {
         ProtobufMessages.FactHandle handle = null;
         Map<TupleKey, ProtobufInputMarshaller.QueryElementContext> map = (Map<TupleKey, ProtobufInputMarshaller.QueryElementContext>) getNodeMemories().get( nodeId );
         if( map != null ) {

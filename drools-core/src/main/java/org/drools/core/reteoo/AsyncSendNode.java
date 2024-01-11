@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.AsyncSend;
 import org.drools.base.rule.accessor.DataProvider;
@@ -114,7 +115,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
             return true;
         }
 
-        if (!(object instanceof AsyncSendNode) || this.hashCode() != object.hashCode() ) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.AsyncSendNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -147,7 +148,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         this.leftInput.networkUpdated(updateContext);
     }
 
-    public InternalFactHandle createFactHandle(Tuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator, Object object ) {
+    public InternalFactHandle createFactHandle(TupleImpl  leftTuple, PropagationContext context, ReteEvaluator reteEvaluator, Object object ) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
             handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, reteEvaluator, object, getId(), getObjectTypeConf( reteEvaluator ) );
@@ -224,7 +225,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AsyncSendNode;
     } 
 
@@ -246,7 +247,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
             this.providerContext = dataProvider.createContext();
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.AsyncSendNode;
         }
 

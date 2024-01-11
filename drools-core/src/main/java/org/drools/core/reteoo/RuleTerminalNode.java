@@ -158,7 +158,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                Objects.equals(consequenceName, ((RuleTerminalNode)object).consequenceName);
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.RuleTerminalNode;
     }
 

@@ -88,8 +88,8 @@ public class TupleEvaluationUtil {
         List<PathMemory> paths = null;
         if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.RightInputAdapterNode) {
             for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
-                if ( pnode instanceof TerminalNode) {
-                    PathMemory outPmem = reteEvaluator.getNodeMemory((TerminalNode) pnode);
+                if ( NodeTypeEnums.isTerminalNode(pnode)) {
+                    PathMemory outPmem = reteEvaluator.getNodeMemory(pnode);
                     if (outPmem.isDataDriven()) {
                         if (paths == null) {
                             paths = new ArrayList<>();
@@ -115,7 +115,7 @@ public class TupleEvaluationUtil {
         LeftTupleNode node;
         Memory mem;
         long          bit = 1;
-        if ( sm.getRootNode().getType() == NodeTypeEnums.LeftInputAdapterNode && sm.getTipNode().getType() != NodeTypeEnums.LeftInputAdapterNode) {
+        if ( NodeTypeEnums.isLeftInputAdapterNode(sm.getRootNode()) && !NodeTypeEnums.isLeftInputAdapterNode(sm.getTipNode())) {
             // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
             node =  sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
             mem = sm.getNodeMemories()[1];

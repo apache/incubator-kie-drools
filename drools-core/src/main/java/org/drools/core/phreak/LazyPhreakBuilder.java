@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -131,7 +132,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         for (InternalWorkingMemory wm : wms) {
             wm.flushPropagations();
 
-            if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociatedTerminalsSize() == 1) {
+            if (NodeTypeEnums.isLeftInputAdapterNode(firstSplit) && firstSplit.getAssociatedTerminalsSize() == 1) {
                 // rule added with no sharing
                 insertLiaFacts(firstSplit, wm);
             } else {
@@ -191,7 +192,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes);
 
             if ( !tnms.subjectPmems.isEmpty() ) {
-                if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociatedTerminalsSize() == 1) {
+                if (NodeTypeEnums.isLeftInputAdapterNode(firstSplit) && firstSplit.getAssociatedTerminalsSize() == 1) {
                     if (tnms.subjectPmem != null) {
                         flushStagedTuples(firstSplit, tnms.subjectPmem, wm);
                     }
@@ -671,7 +672,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static void correctMemoryOnSplitsChanged(LeftTupleNode splitStart, TerminalNode removingTN, InternalWorkingMemory wm) {
-        if (splitStart.getType() == NodeTypeEnums.UnificationNode) {
+        if (splitStart.getType() == NodeTypeEnums.QueryElementNode) {
             QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart);
             if (mem != null) {
                 mem.correctMemoryOnSinksChanged(removingTN);
@@ -696,7 +697,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static int getSegmentPos(LeftTupleNode lts) {
         int counter = 0;
-        while (lts.getType() != NodeTypeEnums.LeftInputAdapterNode) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode(lts)) {
             lts = lts.getLeftTupleSource();
             if (BuildtimeSegmentUtilities.isTipNode(lts, null)) {
                 counter++;
@@ -773,11 +774,11 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void deleteFactsFromRightInput(BetaNode bn, InternalWorkingMemory wm) {
         ObjectSource source = bn.getRightInput();
-        if (source instanceof WindowNode) {
+        if (source.getType() == NodeTypeEnums.WindowNode) {
             WindowNode.WindowMemory memory = wm.getNodeMemory(((WindowNode) source));
             for (DefaultEventHandle factHandle : memory.getFactHandles()) {
                 factHandle.forEachRightTuple( rt -> {
-                    if (source.equals(rt.getTupleSink())) {
+                    if (source.equals(rt.getSink())) {
                         rt.unlinkFromRightParent();
                     }
                 });
@@ -807,7 +808,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
         // which provide the potential peer of the tuple being added or removed
 
-        if ( node instanceof AlphaTerminalNode ) {
+        if ( node.getType() == NodeTypeEnums.AlphaTerminalNode) {
             processLeftTuplesOnLian( wm, insert, rule, (LeftInputAdapterNode) node );
             return;
         }
@@ -819,7 +820,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
         SegmentMemory sm = memory.getSegmentMemory();
 
-        while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode(node)) {
 
             if (NodeTypeEnums.isBetaNode(node)) {
                 BetaMemory    bm;
@@ -885,7 +886,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 TupleImpl nextLt = lt.getHandleNext();
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
-                if (lt.getTupleSource().isAssociatedWith(rule)) {
+                if (BaseNode.getLeftTupleSource(lt).isAssociatedWith(rule)) {
                     visitChild(lt, insert, wm, rule);
 
                     if (lt.getHandlePrevious() != null && nextLt != null) {
@@ -908,26 +909,26 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void visitChild(TupleImpl lt, boolean insert, InternalWorkingMemory wm, Rule rule) {
         TupleImpl prevLt = null;
-        LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getTupleSink();
+        LeftTupleSinkNode sink = (LeftTupleSinkNode) BaseNode.getSink(lt);
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
 
             if ( lt != null ) {
-                if (lt.getTupleSink().isAssociatedWith(rule)) {
+                if (BaseNode.getSink(lt).isAssociatedWith(rule)) {
 
-                    if (lt.getTupleSink().getAssociatedTerminalsSize() > 1) {
+                    if (BaseNode.getSink(lt).getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
                             for ( TupleImpl child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
                                 visitChild(child, insert, wm, rule);
                             }
-                        } else if (lt.getTupleSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
+                        } else if (BaseNode.getSink(lt).getType() == NodeTypeEnums.RightInputAdapterNode) {
                             insertPeerRightTuple(lt, wm, rule, insert);
                         }
                     } else if (!insert) {
                         iterateLeftTuple( lt, wm );
                         TupleImpl lt2 = null;
                         for ( TupleImpl peerLt = lt.getPeer();
-                              peerLt != null && peerLt.getTupleSink().isAssociatedWith(rule) && peerLt.getTupleSink().getAssociatedTerminalsSize() == 1;
+                              peerLt != null && BaseNode.getSink(peerLt).isAssociatedWith(rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
                               peerLt = peerLt.getPeer() ) {
                             iterateLeftTuple( peerLt, wm );
                             lt2 = peerLt;
@@ -951,7 +952,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static void insertPeerRightTuple( TupleImpl lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
         // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
         TupleImpl prevLt = null;
-        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getTupleSink();
+        RightInputAdapterNode rian = (RightInputAdapterNode) BaseNode.getSink(lt);
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {
@@ -975,7 +976,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static TupleImpl insertPeerLeftTuple(TupleImpl lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
         TupleImpl peer = node.createPeer(lt);
 
-        if ( node.getLeftTupleSource() instanceof AlphaTerminalNode ) {
+        if ( node.getLeftTupleSource().getType() == NodeTypeEnums.AlphaTerminalNode ) {
             if (insert) {
                 TerminalNode rtn = ( TerminalNode ) node;
                 InternalAgenda agenda = wm.getAgenda();
@@ -986,7 +987,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
 
         LeftInputAdapterNode.LiaNodeMemory liaMem = null;
-        if ( node.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+        if ( NodeTypeEnums.isLeftInputAdapterNode(node.getLeftTupleSource())) {
             liaMem = wm.getNodeMemory(((LeftInputAdapterNode) node.getLeftTupleSource()));
         }
 
@@ -1006,8 +1007,8 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static void iterateLeftTuple(TupleImpl lt, InternalWorkingMemory wm) {
-        if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
-            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink() );
+        if (NodeTypeEnums.isTerminalNode(lt.getSink())) {
+            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getSink());
             if (pmem != null) {
                 PhreakRuleTerminalNode.doLeftDelete( pmem.getActualActivationsManager( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
@@ -1030,7 +1031,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static LeftTupleNode getNetworkSplitPoint(LeftTupleNode node) {
-        while (node.getType() != NodeTypeEnums.LeftInputAdapterNode && node.getAssociatedTerminalsSize() == 1) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode(node) && node.getAssociatedTerminalsSize() == 1) {
             node = node.getLeftTupleSource();
         }
 
@@ -1065,7 +1066,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         sm2.setTipNode(sm1.getTipNode());
         sm1.setTipNode(splitNode); // splitNode is now tip of original segment
 
-        if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode) {
+        if (NodeTypeEnums.isLeftInputAdapterNode(sm1.getTipNode())) {
             if (!sm1.getStagedLeftTuples().isEmpty()) {
                 // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
                 sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());
@@ -1085,7 +1086,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
-        if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode && !sm2.getStagedLeftTuples().isEmpty()) {
+        if (NodeTypeEnums.isLeftInputAdapterNode(sm1.getTipNode()) && !sm2.getStagedLeftTuples().isEmpty()) {
             // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
             // these are safe to just move to the parent SegmentMemory
             sm1.getStagedLeftTuples().addAll(sm2.getStagedLeftTuples());
@@ -1393,6 +1394,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             } else {
                 switch (tupleSource.getType()) {
                     case NodeTypeEnums.LeftInputAdapterNode:
+                    case NodeTypeEnums.AlphaTerminalNode:
                         allLinkedTestMask = processLiaNode((LeftInputAdapterNode) tupleSource, reteEvaluator, smem, memories, nodePosMask, allLinkedTestMask);
                         break;
                     case NodeTypeEnums.EvalConditionNode:
@@ -1474,7 +1476,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         LeftTupleSource pathRoot = segmentRoot;
         int ruleSegmentPosMask = 1;
         int counter = 0;
-        while (pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode) {
+        while (!NodeTypeEnums.isLeftInputAdapterNode(pathRoot)) {
             LeftTupleSource leftTupleSource = pathRoot.getLeftTupleSource();
             if (isNonTerminalTipNode(leftTupleSource, null)) {
                 // for each new found segment, increase the mask bit position

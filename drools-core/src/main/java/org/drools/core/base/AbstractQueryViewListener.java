@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
@@ -44,7 +44,7 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
     public abstract FactHandle getHandle(FactHandle originalHandle);
 
     public void rowAdded(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator) {
-        FactHandle[] handles = new FactHandle[((LeftTupleNode)tuple.getTupleSink()).getObjectCount()];
+        FactHandle[] handles = new FactHandle[BaseNode.getLeftTupleNode(tuple).getObjectCount()];
         TupleImpl    entry   = (LeftTuple) tuple.skipEmptyHandles();
 
         // Add all the FactHandles
@@ -55,7 +55,7 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
             entry = entry.getParent();
         }
 
-        QueryTerminalNode node = (QueryTerminalNode) tuple.getTupleSink();
+        QueryTerminalNode node = (QueryTerminalNode) tuple.getSink();
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
 

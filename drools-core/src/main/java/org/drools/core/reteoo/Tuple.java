@@ -96,7 +96,7 @@ public interface Tuple<T extends TupleImpl> extends BaseTuple, Serializable, Dou
 
     void setPropagationContext( PropagationContext propagationContext );
 
-    Sink getTupleSink();
+    Sink getSink();
 
     TupleList getMemory();
 
@@ -125,8 +125,6 @@ public interface Tuple<T extends TupleImpl> extends BaseTuple, Serializable, Dou
     void setHandleNext( T leftParentright );
 
     ObjectTypeNodeId getInputOtnId();
-
-    <N extends NetworkNode> N getTupleSource();
 
     boolean isExpired();
 
