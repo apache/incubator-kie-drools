@@ -32,8 +32,10 @@ import java.util.Arrays;
 public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderResult {
 
     private Resource resource;
+    private String message;
 
-    protected BaseKnowledgeBuilderResultImpl(Resource resource) {
+    protected BaseKnowledgeBuilderResultImpl(Resource resource, String message) {
+        this.message = message != null ? message : "";
         this.resource = resource;
     }
 
@@ -55,7 +57,17 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
      * Classes that extend this must provide a printable message,
      * which summarises the error.
      */
-    public abstract String getMessage();
+    public final String getMessage() {
+        return message;
+    }
+
+    /**
+     * Needed when the message depends on status of mutable classes
+     * @param message
+     */
+    public final void setMessage(String message) {
+        this.message = message;
+    }
 
     /**
      * Returns the lines of the error in the source file
@@ -79,18 +91,18 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
             return false;
         }
 
-        KnowledgeBuilderResult that = (KnowledgeBuilderResult) o;
+        BaseKnowledgeBuilderResultImpl that = (BaseKnowledgeBuilderResultImpl) o;
 
         if (resource != null ? !resource.equals(that.getResource()) : that.getResource() != null) {
             return false;
         }
 
-        return getMessage().equals(that.getMessage()) && Arrays.equals(getLines(), that.getLines());
+        return message.equals(that.message) && Arrays.equals(getLines(), that.getLines());
     }
 
     @Override
     public int hashCode() {
-        int hash = (29 * getMessage().hashCode()) + (31 * Arrays.hashCode(getLines()));
+        int hash = (29 * message.hashCode()) + (31 * Arrays.hashCode(getLines()));
         return resource != null ? hash + (37 * resource.hashCode()) : hash;
     }
 

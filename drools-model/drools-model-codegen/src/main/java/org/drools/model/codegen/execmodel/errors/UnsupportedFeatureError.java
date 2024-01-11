@@ -23,11 +23,9 @@ import org.kie.internal.builder.ResultSeverity;
 
 public class UnsupportedFeatureError extends DroolsError {
 
-    private String message;
 
     public UnsupportedFeatureError(String message) {
-        super();
-        this.message = message;
+        super(message);
     }
 
     @Override
@@ -35,10 +33,6 @@ public class UnsupportedFeatureError extends DroolsError {
         return ResultSeverity.ERROR;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
-    }
 
     @Override
     public int[] getLines() {

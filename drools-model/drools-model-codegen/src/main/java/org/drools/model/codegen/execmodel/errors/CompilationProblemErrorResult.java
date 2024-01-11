@@ -27,18 +27,13 @@ public class CompilationProblemErrorResult extends DroolsError {
     private CompilationProblem compilationProblem;
 
     public CompilationProblemErrorResult(CompilationProblem compilationProblem) {
-        super();
+        super(compilationProblem.getMessage());
         this.compilationProblem = compilationProblem;
     }
 
     @Override
     public ResultSeverity getSeverity() {
         return ResultSeverity.ERROR;
-    }
-
-    @Override
-    public String getMessage() {
-        return compilationProblem.getMessage();
     }
 
     @Override

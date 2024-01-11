@@ -29,13 +29,8 @@ public class DeprecatedResourceTypeWarning extends DroolsWarning {
     }
 
     public DeprecatedResourceTypeWarning(Resource resource, String deprecatedFormat) {
-        super(resource);
+        super(resource, deprecatedFormat + " format usage detected. This format is deprecated and will be removed in future");
         this.deprecatedFormat = deprecatedFormat;
-    }
-
-    @Override
-    public String getMessage() {
-        return deprecatedFormat + " format usage detected. This format is deprecated and will be removed in future";
     }
 
     @Override

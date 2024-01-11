@@ -50,6 +50,7 @@ public class MappingError extends DroolsError {
                         final String token,
                         final String templateText,
                         final int line ) {
+        super(getSpecificMessage(errorCode, offset, token));
         this.errorCode = errorCode;
         this.template = template;
         this.token = token;
@@ -91,23 +92,19 @@ public class MappingError extends DroolsError {
         return this.templateText;
     }
 
-    /**
-     * @inheritDoc 
-     *
-     * @see org.kie.compiler.DroolsError#getMessage()
-     */
-    public String getMessage() {
-        switch ( this.errorCode ) {
+    private static String getSpecificMessage(int errorCode, int offset,
+                                             String token) {
+        switch ( errorCode ) {
             case ERROR_UNUSED_TOKEN :
-                return "Warning, the token " + this.token + " not used in the mapping.";
+                return "Warning, the token " + token + " not used in the mapping.";
             case ERROR_UNDECLARED_TOKEN :
-                return "Warning, the token " + this.token + " not found in the expression. (May not be a problem).";
+                return "Warning, the token " + token + " not found in the expression. (May not be a problem).";
             case ERROR_INVALID_TOKEN :
-                return "Invalid token declaration at offset " + this.offset + ": " + this.token;
+                return "Invalid token declaration at offset " + offset + ": " + token;
             case ERROR_UNMATCHED_BRACES :
-                return "Unexpected } found at offset " + this.offset;
+                return "Unexpected } found at offset " + offset;
             default :
-                return "Unkown error at offset: " + this.offset;
+                return "Unkown error at offset: " + offset;
         }
     }
 }

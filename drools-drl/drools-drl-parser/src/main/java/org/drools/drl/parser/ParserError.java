@@ -23,7 +23,6 @@ import org.kie.api.io.Resource;
 public class ParserError extends DroolsError {
     private final int    row;
     private final int    col;
-    private final String message;
     private final String namespace;
 
     public ParserError(final String message,
@@ -44,15 +43,10 @@ public class ParserError extends DroolsError {
                        final int row,
                        final int col,
                        final String namespace) {
-        super(resource);
-        this.message = message;
+        super(resource, message);
         this.row = row;
         this.col = col;
         this.namespace = namespace;
-    }
-
-    public String getMessage() {
-        return this.message;
     }
 
     @Override
@@ -73,7 +67,7 @@ public class ParserError extends DroolsError {
     }
 
     public String toString() {
-        return "[" + this.row + "," + this.col + "]: " + this.message;
+        return "[" + this.row + "," + this.col + "]: " + getMessage();
     }
 
 }

@@ -26,13 +26,10 @@ import org.kie.internal.builder.ResultSeverity;
 
 public class InvalidExpressionErrorResult extends DroolsError {
 
-    private String message;
-
     private int[] errorLines = new int[1];
 
     public InvalidExpressionErrorResult(String message) {
-        super();
-        this.message = message;
+        super(message);
         this.errorLines[0] = -1;
     }
 
@@ -46,10 +43,6 @@ public class InvalidExpressionErrorResult extends DroolsError {
         return ResultSeverity.ERROR;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
-    }
 
     @Override
     public int[] getLines() {
