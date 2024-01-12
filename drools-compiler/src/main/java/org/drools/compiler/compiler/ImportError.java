@@ -26,7 +26,7 @@ public class ImportError extends DroolsError {
     private int[]  line;
 
     public ImportError(final ImportDescr importDescr, final int line) {
-        super(importDescr.getResource());
+        super(importDescr.getResource(), getSpecificMessage(importDescr));
         this.importDescr = importDescr;
         this.line = new int[] { line };
     }
@@ -43,13 +43,13 @@ public class ImportError extends DroolsError {
     public int[] getLines() {
         return this.line;
     }
-
-    public String getMessage() {
-        return "Error importing : '" + getGlobal() + "'";
-    }
     
     public String toString() {
         return getMessage();
+    }
+
+    private static String getSpecificMessage(ImportDescr importDescr) {
+        return "Error importing : '" + importDescr.getTarget() + "'";
     }
 
 }

@@ -24,18 +24,19 @@ public class DescrBuildWarning extends DroolsWarning {
     private BaseDescr parentDescr;
     private BaseDescr descr;
     private Object    object;
-    private String    message;
+    private String    originalMessage;
     private int[]     errorLines = new int[1];
 
     public DescrBuildWarning( final BaseDescr parentDescr,
                               final BaseDescr descr,
                               final Object object,
                               final String message ) {
-        super( descr.getResource() != null ? descr.getResource() : ( parentDescr != null ? parentDescr.getResource() : null ) );
+        super( descr.getResource() != null ? descr.getResource() : ( parentDescr != null ? parentDescr.getResource() : null ),
+               BuilderResultUtils.getProblemMessage( object, message, "\n" ));
         this.parentDescr = parentDescr;
         this.descr = descr;
         this.object = object;
-        this.message = message;
+        this.originalMessage = message;
         this.errorLines[0] = getLine();
     }
 
@@ -67,13 +68,9 @@ public class DescrBuildWarning extends DroolsWarning {
         return this.descr != null ? this.descr.getColumn() : -1;
     }
 
-    public String getMessage() {
-        return BuilderResultUtils.getProblemMessage( this.object, this.message, "\n" );
-    }
-
     public String toString() {
         final StringBuilder builder = new StringBuilder()
-                .append( this.message )
+                .append( this.originalMessage )
                 .append( " : " )
                 .append( this.parentDescr )
                 .append( "\n" );

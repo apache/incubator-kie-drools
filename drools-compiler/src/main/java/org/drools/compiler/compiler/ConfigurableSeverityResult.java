@@ -31,8 +31,8 @@ import org.kie.internal.builder.conf.KBuilderSeverityOption;
  */
 public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderResultImpl {
     
-    public ConfigurableSeverityResult(Resource resource, KnowledgeBuilderConfiguration config) {
-        super(resource);
+    public ConfigurableSeverityResult(Resource resource, KnowledgeBuilderConfiguration config, String message) {
+        super(resource, message);
         severity = config.getOption(KBuilderSeverityOption.KEY, getOptionKey()).getSeverity();
     }
     

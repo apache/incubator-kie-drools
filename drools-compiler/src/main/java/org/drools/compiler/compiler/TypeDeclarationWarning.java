@@ -22,21 +22,16 @@ import org.drools.drl.parser.BaseKnowledgeBuilderResultImpl;
 import org.kie.internal.builder.ResultSeverity;
 
 public class TypeDeclarationWarning extends BaseKnowledgeBuilderResultImpl {
-    private String message;
+
     private int[]  line;
 
     public TypeDeclarationWarning(final String message, final int line) {
-        super(null);
-        this.message = message;
+        super(null, message);
         this.line = new int[] { line };
     }
 
     public int[] getLines() {
         return this.line;
-    }
-
-    public String getMessage() {
-        return this.message;
     }
 
     public String toString() {

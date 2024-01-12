@@ -25,7 +25,6 @@ public class FactTemplateError extends DroolsError {
     private Package   pkg;
     private BaseDescr descr;
     private Object    object;
-    private String    message;
     private int[]     line;
     private String    namespace;
 
@@ -33,12 +32,11 @@ public class FactTemplateError extends DroolsError {
                              final BaseDescr descr,
                              final Object object,
                              final String message) {
-        super(descr.getResource());
+        super(descr.getResource(), BuilderResultUtils.getProblemMessage( object, message ));
         this.namespace = pkg.getName();
         this.pkg = pkg;
         this.descr = descr;
         this.object = object;
-        this.message = message;
         this.line = new int[] {this.descr.getLine()};
     }
 
@@ -71,8 +69,5 @@ public class FactTemplateError extends DroolsError {
         return this.line[0];
     }
 
-    public String getMessage() {
-        return BuilderResultUtils.getProblemMessage( this.object, this.message );
-    }
 
 }

@@ -24,8 +24,8 @@ import org.kie.internal.builder.ResultSeverity;
 
 public abstract class DroolsWarning extends BaseKnowledgeBuilderResultImpl {
 
-    public DroolsWarning(Resource resource) {
-        super(resource);
+    public DroolsWarning(Resource resource, String message) {
+        super(resource, message);
     }
 
     @Override

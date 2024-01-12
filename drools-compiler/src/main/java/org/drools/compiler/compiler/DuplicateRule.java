@@ -33,17 +33,11 @@ public class DuplicateRule extends ConfigurableSeverityResult {
     private int[] line;
     
     public DuplicateRule(RuleDescr ruleDescr, PackageDescr pkg, KnowledgeBuilderConfiguration config) {
-        super(ruleDescr.getResource(), config);
+        super(ruleDescr.getResource(), config, getSpecificMessage(ruleDescr, pkg));
         rule = ruleDescr.getName();
         pkgDescr = pkg;
         line = new int[1];
         line[0] = ruleDescr.getLine();
-    }
-
-    @Override
-    public String getMessage() {
-        return "Rule name " + rule 
-        + " already exists in package  " + pkgDescr.getName();
     }
 
     @Override
@@ -54,6 +48,10 @@ public class DuplicateRule extends ConfigurableSeverityResult {
     @Override
     protected String getOptionKey() {
         return KEY;
+    }
+    private static String getSpecificMessage(RuleDescr ruleDescr, PackageDescr pkg) {
+        return "Rule name " + ruleDescr.getName()
+        + " already exists in package  " + pkg.getName();
     }
 
 }

@@ -574,7 +574,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
 
         public String getMessage() {
-            return " Imcompatible Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ";
+            return " Incompatible Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ";
         }
 
 
