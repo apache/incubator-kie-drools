@@ -212,12 +212,8 @@ public class QueryGenerator implements RuleFileGenerator {
         private final QueryModel query;
 
         public NoBindingQuery(QueryModel query) {
+            super("Query " + query.getName() + " has no bound variable. At least one binding is required to determine the value returned by this query");
             this.query = query;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Query " + query.getName() + " has no bound variable. At least one binding is required to determine the value returned by this query";
         }
 
         @Override

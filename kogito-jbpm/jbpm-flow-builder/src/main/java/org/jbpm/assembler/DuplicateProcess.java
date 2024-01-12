@@ -28,16 +28,8 @@ public class DuplicateProcess extends ConfigurableSeverityResult {
     public static final String KEY = "duplicateProcess";
     private static final int[] line = new int[0];
 
-    private String processId;
-
     public DuplicateProcess(Process process, KnowledgeBuilderConfiguration config) {
-        super(process.getResource(), config);
-        processId = process.getId();
-    }
-
-    @Override
-    public String getMessage() {
-        return "Process with same id already exists: " + processId;
+        super(process.getResource(), config, "Process with same id already exists: " + process.getId());
     }
 
     @Override
