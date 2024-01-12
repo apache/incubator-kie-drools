@@ -367,11 +367,6 @@
         <version>${version.com.sun.xml.bind}</version>
       </dependency>
       <dependency>
-        <groupId>org.glassfish.jaxb</groupId>
-        <artifactId>jaxb-runtime</artifactId>
-        <version>4.0.3</version>
-      </dependency>
-      <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-xjc</artifactId>
         <version>${version.com.sun.xml.bind}</version>
