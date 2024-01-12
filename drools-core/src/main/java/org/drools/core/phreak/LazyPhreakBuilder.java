@@ -829,9 +829,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
                     bm = am.getBetaMemory();
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                    for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                    for (; lt != null; lt = (TupleImpl) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild( (LeftTuple) accctx.getResultLeftTuple(), insert, wm, rule);
+                        visitChild( (TupleImpl) accctx.getResultLeftTuple(), insert, wm, rule);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType() && !node.isRightInputIsRiaNode()) { // do not process exists with subnetworks
                     // If there is a subnetwork, then there is no populated RTM, but the LTM is populated,
@@ -847,7 +847,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    for (LeftTuple lt = (LeftTuple)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (LeftTuple) it.next(lt)) {
+                    for (TupleImpl lt = (TupleImpl)BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it); lt != null; lt = (TupleImpl) it.next(lt)) {
                         visitLeftTuple(wm, insert, rule, lt);
                     }
                 }
@@ -856,7 +856,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 FromMemory   fm  = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
                 TupleMemory  ltm = fm.getBetaMemory().getLeftTupleMemory();
                 FastIterator it  = ltm.fullFastIterator();
-                for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                for (TupleImpl lt = ltm.getFirst(null); lt != null; lt = (TupleImpl) it.next(lt)) {
                     visitChild(lt, insert, wm, rule);
                 }
                 return;
@@ -898,7 +898,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void visitLeftTuple(InternalWorkingMemory wm, boolean insert, Rule rule, LeftTuple lt) {
+    private static void visitLeftTuple(InternalWorkingMemory wm, boolean insert, Rule rule, TupleImpl lt) {
         TupleImpl childLt = lt.getFirstChild();
         while (childLt != null) {
             TupleImpl nextLt = childLt.getHandleNext();
@@ -1014,7 +1014,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                LeftTuple resultLt = (LeftTuple) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                TupleImpl resultLt = (TupleImpl) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
                     iterateLeftTuple( resultLt, wm );
                 }

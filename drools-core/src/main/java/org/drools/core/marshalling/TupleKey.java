@@ -66,12 +66,10 @@ public class TupleKey {
 
     public static long[] createTupleArray(final TupleImpl  tuple) {
         if( tuple != null ) {
-            LeftTuple leftTuple = (LeftTuple) tuple;
-
             long[] tupleArray = new long[SuperCacheFixer.getLeftTupleSource(tuple).getObjectCount()];
             // tuple iterations happens backwards
             int i = tupleArray.length-1;
-            for( TupleImpl  entry = leftTuple.skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
+            for( TupleImpl  entry = tuple.skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
                 tupleArray[i--] = entry.getFactHandle().getId();
             }
             return tupleArray;

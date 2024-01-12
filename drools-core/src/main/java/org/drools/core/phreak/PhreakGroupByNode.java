@@ -26,11 +26,8 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.index.TupleList;
 import org.drools.core.util.index.TupleListWithContext;
 import org.kie.api.runtime.rule.FactHandle;
 

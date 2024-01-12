@@ -196,11 +196,11 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    public RightTupleImpl createRightTuple( final TupleImpl leftTuple,
-                                        final PropagationContext context,
-                                        final ReteEvaluator reteEvaluator,
-                                        final Object object ) {
-        return new RightTupleImpl( createFactHandle( reteEvaluator, object ) );
+    public RightTuple createRightTuple(final TupleImpl leftTuple,
+                                       final PropagationContext context,
+                                       final ReteEvaluator reteEvaluator,
+                                       final Object object) {
+        return new RightTuple(createFactHandle(reteEvaluator, object) );
     }
 
     public InternalFactHandle createFactHandle( ReteEvaluator reteEvaluator, Object object ) {
@@ -223,12 +223,12 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         if ( rightTuple.getFactHandle().isValid() ) {
             Object object = rightTuple.getFactHandle().getObject();
             // keeping a list of matches
-            RightTuple existingMatch = matches.get( object );
+            RightTuple existingMatch = matches.get(object);
             if ( existingMatch != null ) {
                 // this is for the obscene case where two or more objects returned by "from"
                 // have the same hash code and evaluate equals() to true, so we need to preserve
                 // all of them to avoid leaks
-                rightTuple.setNext((TupleImpl) existingMatch);
+                rightTuple.setNext(existingMatch);
             }
             matches.put( object,
                          rightTuple );

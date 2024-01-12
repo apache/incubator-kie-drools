@@ -36,11 +36,10 @@ import org.drools.core.marshalling.TupleKey;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleImpl ;
-import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.serialization.protobuf.marshalling.ObjectMarshallingStrategyStoreImpl;
@@ -61,8 +60,8 @@ public class ProtobufMarshallerReaderContext extends ObjectInputStream implement
 
     private Map<Long, InternalFactHandle>                                          handles;
 
-    public final Map<RightTupleKey, RightTuple>                                    rightTuples;
-    private final Map<Integer, LeftTuple>                                          terminalTupleMap;
+    public final Map<RightTupleKey, RightTuple> rightTuples;
+    private final Map<Integer, LeftTuple>       terminalTupleMap;
     private final PBActivationsFilter                                              filter;
 
     private final ObjectMarshallingStrategyStore                                   resolverStrategyFactory;

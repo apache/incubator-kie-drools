@@ -24,7 +24,7 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
@@ -62,7 +62,7 @@ public class SuperCacheFixer {
         }
     }
 
-    public static RightTupleSink getRightTupleSink(RightTupleImpl t) {
+    public static RightTupleSink getRightTupleSink(RightTuple t) {
         Sink s = t.getSink();
         switch (((BaseNode) s).getType()) {
             case NodeTypeEnums.AccumulateNode : return (AccumulateNode) s;

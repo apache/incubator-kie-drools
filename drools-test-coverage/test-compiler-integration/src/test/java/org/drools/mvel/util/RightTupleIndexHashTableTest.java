@@ -32,7 +32,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.TupleImpl ;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.ReadAccessor;
@@ -89,9 +89,9 @@ public class RightTupleIndexHashTableTest {
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
-        TupleImpl  stiltonRighTuple = new RightTupleImpl( new DefaultFactHandle( 1,
-                                                                             stilton1 ),
-                                                      null );
+        TupleImpl  stiltonRighTuple = new RightTuple(new DefaultFactHandle(1,
+                                                                           stilton1 ),
+                                                     null );
 
         map.add( stiltonRighTuple );
 
@@ -132,15 +132,15 @@ public class RightTupleIndexHashTableTest {
                                             35 );
         final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                          stilton1 );
-        map.add( new RightTupleImpl( stiltonHandle1,
-                                 null ) );
+        map.add( new RightTuple(stiltonHandle1,
+                                null ) );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             35 );
         final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                          cheddar1 );
-        map.add( new RightTupleImpl( cheddarHandle1,
-                                 null ) );
+        map.add( new RightTuple(cheddarHandle1,
+                                null ) );
 
         assertThat(map.size()).isEqualTo(2);
         assertThat(tablePopulationSize(map)).isEqualTo(2);
@@ -188,22 +188,22 @@ public class RightTupleIndexHashTableTest {
                                             35 );
         final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                          stilton1 );
-        map.add( new RightTupleImpl( stiltonHandle1,
-                                 null ) );
+        map.add( new RightTuple(stiltonHandle1,
+                                null ) );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             35 );
         final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                          cheddar1 );
-        map.add( new RightTupleImpl( cheddarHandle1,
-                                 null ) );
+        map.add( new RightTuple(cheddarHandle1,
+                                null ) );
 
         final Cheese stilton2 = new Cheese( "stilton",
                                             81 );
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
                                                                          stilton2 );
-        map.add( new RightTupleImpl( stiltonHandle2,
-                                 null ) );
+        map.add( new RightTuple(stiltonHandle2,
+                                null ) );
 
         assertThat(map.size()).isEqualTo(3);
         assertThat(tablePopulationSize(map)).isEqualTo(2);
@@ -244,16 +244,16 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle ch1 = new DefaultFactHandle( 1,
                                                               c1 );
 
-        map.add( new RightTupleImpl( ch1,
-                                 null ) );
+        map.add( new RightTuple(ch1,
+                                null ) );
 
         final TestClass c2 = new TestClass( 0,
                                             new TestClass( 20,
                                                            "cheddar" ) );
         final InternalFactHandle ch2 = new DefaultFactHandle( 2,
                                                               c2 );
-        map.add( new RightTupleImpl( ch2,
-                                 null ) );
+        map.add( new RightTuple(ch2,
+                                null ) );
 
         // same hashcode, but different values, so it should result in  a size of 2
         assertThat(map.size()).isEqualTo(2);
@@ -295,24 +295,24 @@ public class RightTupleIndexHashTableTest {
                                             35 );
         final InternalFactHandle stiltonHandle1 = new DefaultFactHandle( 1,
                                                                          stilton1 );
-        TupleImpl  stiltonRightTuple1 = new RightTupleImpl( stiltonHandle1,
-                                                        null );
+        TupleImpl  stiltonRightTuple1 = new RightTuple(stiltonHandle1,
+                                                       null );
         map.add( stiltonRightTuple1 );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             35 );
         final InternalFactHandle cheddarHandle1 = new DefaultFactHandle( 2,
                                                                          cheddar1 );
-        TupleImpl  cheddarRightTuple1 = new RightTupleImpl( cheddarHandle1,
-                                                        null );
+        TupleImpl  cheddarRightTuple1 = new RightTuple(cheddarHandle1,
+                                                       null );
         map.add( cheddarRightTuple1 );
 
         final Cheese stilton2 = new Cheese( "stilton",
                                             81 );
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 3,
                                                                          stilton2 );
-        TupleImpl  stiltonRightTuple2 = new RightTupleImpl( stiltonHandle2,
-                                                        null );
+        TupleImpl  stiltonRightTuple2 = new RightTuple(stiltonHandle2,
+                                                       null );
         map.add( stiltonRightTuple2 );
 
         assertThat(map.size()).isEqualTo(3);
@@ -467,9 +467,9 @@ public class RightTupleIndexHashTableTest {
 
     private TupleImpl  newRightTuple(int id,
                                      Object object) {
-        return new RightTupleImpl( new DefaultFactHandle( id,
-                                                      object ),
-                               null );
+        return new RightTuple(new DefaultFactHandle(id,
+                                                    object ),
+                              null );
 
     }
 

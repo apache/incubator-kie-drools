@@ -30,7 +30,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.MockRightTupleSink;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.FastIterator;
@@ -44,7 +44,6 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RightTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashTableIteratorTest {
 
@@ -84,25 +83,25 @@ public class RightTupleIndexHashTableIteratorTest extends AbstractTupleIndexHash
         InternalFactHandle fh12 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
         InternalFactHandle fh13 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
 
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh1, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh2, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh3, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh4, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh5, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh6, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh7, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh8, new MockRightTupleSink()));
-        betaMemory.getRightTupleMemory().add(new RightTupleImpl(fh9, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh1, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh2, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh3, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh4, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh5, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh6, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh7, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh8, new MockRightTupleSink()));
+        betaMemory.getRightTupleMemory().add(new RightTuple(fh9, new MockRightTupleSink()));
 
         TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getRightTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList rightTupleList = new TupleList();
-        rightTupleList.add(new RightTupleImpl(fh10, null));
+        rightTupleList.add(new RightTuple(fh10, null));
         hashTable.getTable()[0] = rightTupleList;
         rightTupleList = new TupleList();
-        rightTupleList.add(new RightTupleImpl(fh11, null));
-        rightTupleList.add(new RightTupleImpl(fh12, null));
-        rightTupleList.add(new RightTupleImpl(fh13, null));
+        rightTupleList.add(new RightTuple(fh11, null));
+        rightTupleList.add(new RightTuple(fh12, null));
+        rightTupleList.add(new RightTuple(fh13, null));
         hashTable.getTable()[0].setNext(rightTupleList);
 
         List tableIndexList = createTableIndexListForAssertion(hashTable);
@@ -128,7 +127,7 @@ public class RightTupleIndexHashTableIteratorTest extends AbstractTupleIndexHash
         entries[5] = new TupleList();
         entries[9] = new TupleList();
 
-        RightTupleImpl[] tuples = new RightTupleImpl[]{new RightTupleImpl(), new RightTupleImpl(), new RightTupleImpl()};
+        RightTuple[] tuples = new RightTuple[]{new RightTuple(), new RightTuple(), new RightTuple()};
 
         // set return values for methods
         entries[0].addFirst(tuples[0]);

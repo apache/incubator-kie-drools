@@ -18,9 +18,7 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -314,11 +312,11 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         throw new UnsupportedOperationException();
     }
 
-    public void setBlocker(RightTupleImpl blocker) {
+    public void setBlocker(RightTuple blocker) {
         throw new UnsupportedOperationException();
     }
 
-    public RightTupleImpl getBlocker() {
+    public RightTuple getBlocker() {
         throw new UnsupportedOperationException();
     }
 
@@ -634,6 +632,10 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
 
     @Override
     public void unlinkFromRightParent() {
+        doUnlinkFromRightParent();
+    }
+
+    public void doUnlinkFromRightParent() {
         if ( this.rightParent == null ) {
             // no right parent;
             return;

@@ -136,7 +136,7 @@ public class WindowNode extends ObjectSource
             }
         }
 
-        RightTuple rightTuple = new RightTupleImpl( evFh, this );
+        RightTuple rightTuple = new RightTuple(evFh, this );
         rightTuple.setPropagationContext( pctx );
 
         InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
@@ -201,7 +201,7 @@ public class WindowNode extends ObjectSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            ((RightTupleImpl)rightTuple).retractTuple( context, reteEvaluator );
+            ((RightTuple)rightTuple).retractTuple(context, reteEvaluator);
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 

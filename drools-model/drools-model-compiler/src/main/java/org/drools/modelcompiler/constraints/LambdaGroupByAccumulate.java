@@ -26,10 +26,8 @@ import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.Accumulator;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.index.TupleList;
 import org.drools.core.util.index.TupleListWithContext;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.FunctionN;
@@ -114,7 +112,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     public Object accumulate(Object workingMemoryContext, Object context,
                              BaseTuple match, FactHandle handle, ValueResolver valueResolver) {
         GroupByContext groupByContext = ( GroupByContext ) context;
-        LeftTuple leftTupleMatch = (LeftTuple) match;
+        TupleImpl leftTupleMatch = (TupleImpl) match;
         TupleListWithContext<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
                                                                                          leftTupleMatch, getKey(leftTupleMatch, handle, (ReteEvaluator) valueResolver), (ReteEvaluator) valueResolver);
 

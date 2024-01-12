@@ -97,7 +97,7 @@ public class PhreakQueryTerminalNode {
 
             // qtnNode.modifyLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
             // find the DroolsQuery object
-            LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
+            TupleImpl rootEntry = leftTuple.getRootTuple();
 
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());

@@ -29,7 +29,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 
@@ -97,7 +97,7 @@ public class ReactiveObjectUtil {
 
                 propagate( sink,
                            leftTuple,
-                           new RightTupleImpl( factHandle ),
+                           new RightTuple(factHandle ),
                            betaConstraints,
                            propagationContext,
                            context,

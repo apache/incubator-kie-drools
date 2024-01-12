@@ -295,8 +295,8 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             return size;
         }
 
-        protected RightTupleImpl createResultRightTuple(QueryElementFactHandle resultHandle, LeftTuple resultLeftTuple, boolean open ) {
-            RightTupleImpl rightTuple = new RightTupleImpl( resultHandle );
+        protected RightTuple createResultRightTuple(QueryElementFactHandle resultHandle, LeftTuple resultLeftTuple, boolean open) {
+            RightTuple rightTuple = new RightTuple(resultHandle );
             if ( open ) {
                 rightTuple.setBlocked( resultLeftTuple );
                 resultLeftTuple.setContextObject( rightTuple );

@@ -47,7 +47,7 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
 
             long                    handles = 0;
             FastIterator<TupleImpl> it      = memory.getBetaMemory().getLeftTupleMemory().fullFastIterator();
-            for ( TupleImpl leftTuple = memory.getBetaMemory().getLeftTupleMemory().getFirst((LeftTuple)null); leftTuple != null; leftTuple = it.next(leftTuple) ) {
+            for ( TupleImpl leftTuple = memory.getBetaMemory().getLeftTupleMemory().getFirst(null); leftTuple != null; leftTuple = it.next(leftTuple) ) {
                 TupleImpl child = leftTuple.getFirstChild();
                 while( child != null ) {
                     handles++;

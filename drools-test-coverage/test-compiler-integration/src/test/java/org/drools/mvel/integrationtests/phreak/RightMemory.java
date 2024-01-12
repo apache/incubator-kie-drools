@@ -24,7 +24,6 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
@@ -54,7 +53,7 @@ public class RightMemory {
         List<TupleImpl> rightTuples = new ArrayList<>();
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            TupleImpl expectedRightTuple = new RightTupleImpl( fh, node ); //node.createLeftTuple( fh, node, true );
+            TupleImpl expectedRightTuple = new RightTuple(fh, node ); //node.createLeftTuple( fh, node, true );
             expectedRightTuple.setPropagationContext( new PhreakPropagationContext() );
             rightTuples.add( expectedRightTuple );
         }

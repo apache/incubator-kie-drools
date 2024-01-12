@@ -62,7 +62,7 @@ public class NotNode extends BetaNode {
     
     @Override
     protected void reorderRightTuple(ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
-        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, this, (RightTupleImpl) rightTuple);
+        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, this, (RightTuple) rightTuple);
     }
 
     public boolean isEmptyBetaConstraints() {

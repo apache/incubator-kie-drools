@@ -31,7 +31,6 @@ import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 
 @XmlAccessorType(XmlAccessType.NONE)

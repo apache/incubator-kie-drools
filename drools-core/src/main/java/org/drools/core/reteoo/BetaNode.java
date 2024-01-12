@@ -253,7 +253,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void assertObject( InternalFactHandle factHandle, PropagationContext pctx, ReteEvaluator reteEvaluator ) {
         final BetaMemoryImpl memory = (BetaMemoryImpl) getBetaMemoryFromRightInput(this, reteEvaluator);
 
-        RightTupleImpl rightTuple = createRightTuple( factHandle, this, pctx );
+        RightTuple rightTuple = createRightTuple(factHandle, this, pctx);
 
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         if ( isLogTraceEnabled ) {
@@ -380,13 +380,13 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public RightTupleImpl getFirstRightTuple(final TupleImpl leftTuple,
+    public RightTuple getFirstRightTuple(final TupleImpl leftTuple,
                                          final TupleMemory memory,
                                          final FastIterator<TupleImpl> it) {
         if ( this.indexedUnificationJoin ) {
-            return (RightTupleImpl) it.next( null );
+            return (RightTuple) it.next(null);
         } else {
-            return (RightTupleImpl) memory.getFirst(leftTuple);
+            return (RightTuple) memory.getFirst(leftTuple);
         }
     }
 
@@ -640,10 +640,10 @@ public abstract class BetaNode extends LeftTupleSource
         this.previousObjectSinkNode = previous;
     }
 
-    public RightTupleImpl createRightTuple(InternalFactHandle handle,
+    public RightTuple createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink,
                                        PropagationContext context) {
-        RightTupleImpl rightTuple = new RightTupleImpl( handle, sink );
+        RightTuple rightTuple = new RightTuple(handle, sink );
         rightTuple.setPropagationContext( context );
         return rightTuple;
     }

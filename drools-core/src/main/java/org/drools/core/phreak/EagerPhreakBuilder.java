@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -63,7 +62,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.MemoryPrototype;
@@ -1070,9 +1068,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         bm = am.getBetaMemory();
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                         Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                        for (; lt != null; lt = (TupleImpl) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                            visitChild((LeftTuple) accctx.getResultLeftTuple(), insert, wm, tn);
+                            visitChild((TupleImpl) accctx.getResultLeftTuple(), insert, wm, tn);
                         }
                     } else if (NodeTypeEnums.ExistsNode == node.getType() &&
                                !((BetaNode) node).isRightInputIsRiaNode()) { // do not process exists with subnetworks
@@ -1081,9 +1079,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
                         bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(node);
                         if (bm != null) {
-                            FastIterator   it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                            RightTupleImpl rt = (RightTupleImpl) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
-                            for (; rt != null; rt = (RightTupleImpl) it.next(rt)) {
+                            FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
+                            RightTuple   rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
+                            for (; rt != null; rt = (RightTuple) it.next(rt)) {
                                 for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
                                     visitChild(wm, insert, tn, it, lt);
                                 }
@@ -1103,7 +1101,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     if (fm != null) {
                         TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                         FastIterator it = ltm.fullFastIterator();
-                        for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                        for (TupleImpl lt = (TupleImpl) ltm.getFirst(null); lt != null; lt = (TupleImpl) it.next(lt)) {
                             visitChild(lt, insert, wm, tn);
                         }
                     }
@@ -1266,7 +1264,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                LeftTuple resultLt = (LeftTuple) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                TupleImpl resultLt = (TupleImpl) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
                     iterateLeftTuple( resultLt, wm );
                 }

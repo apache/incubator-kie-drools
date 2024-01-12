@@ -40,7 +40,6 @@ import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 

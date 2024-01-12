@@ -20,7 +20,6 @@ package org.drools.core.reteoo;
 
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -88,6 +87,6 @@ public class ModifyPreviousTuples {
 
     public void doRightDelete(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        ((RightTupleImpl)rightTuple).retractTuple( pctx, reteEvaluator );
+        ((RightTuple)rightTuple).retractTuple(pctx, reteEvaluator);
     }
 }

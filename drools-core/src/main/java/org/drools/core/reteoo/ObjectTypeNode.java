@@ -35,7 +35,6 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.time.JobHandle;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -284,13 +283,13 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     }
 
     public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
-        factHandle.forEachRightTuple( rt -> ((RightTupleImpl)rt).retractTuple( context, reteEvaluator) );
+        factHandle.forEachRightTuple( rt -> ((RightTuple)rt).retractTuple(context, reteEvaluator));
         factHandle.clearRightTuples();
     }
 
     public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
-        linkedTuples.forEachRightTuple( partition, rt -> ((RightTupleImpl)rt).retractTuple( context, reteEvaluator) );
+        linkedTuples.forEachRightTuple( partition, rt -> ((RightTuple)rt).retractTuple(context, reteEvaluator));
         linkedTuples.clearRightTuples(partition);
     }
 

@@ -24,7 +24,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleImpl;
 
 public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
@@ -75,7 +75,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
                 LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2        = wm.getFactHandle(p.getO2());
-                TupleImpl          leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink);
+                TupleImpl          leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTuple(fh2 ), sink);
 
                 leftTuples.addInsert( leftTuple2 );                
             }
@@ -103,7 +103,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
                 LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                TupleImpl leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
+                TupleImpl leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTuple(fh2 ), sink);
 
                 leftTuples.addDelete( leftTuple2 );                
             }
@@ -131,7 +131,7 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
                 LeftTuple leftTuple1 = new JoinNodeLeftTuple(fh1, sink, true );
                 
                 InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
-                TupleImpl leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTupleImpl(fh2 ), sink );
+                TupleImpl leftTuple2 = sink.createLeftTuple(leftTuple1, new RightTuple(fh2 ), sink);
 
                 leftTuples.addUpdate( leftTuple2 );                
             }

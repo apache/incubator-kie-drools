@@ -25,17 +25,10 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 
-public class SubnetworkTuple extends LeftTuple implements RightTuple {
+public class SubnetworkTuple extends RightTuple {
 
     private static final AtomicInteger      idGenerator             = new AtomicInteger(0);
     private              InternalFactHandle factHandleForEvaluation = new DefaultFactHandle(idGenerator.decrementAndGet(), this);
-
-    private LeftTuple blocked;
-
-    private RightTupleImpl tempNextRightTuple;
-    private LeftTuple      tempBlocked;
-
-    private boolean retracted;
 
     private boolean   stagedOnRight;
     private short     stagedTypeOnRight;
@@ -83,6 +76,11 @@ public class SubnetworkTuple extends LeftTuple implements RightTuple {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
 
+    @Override
+    public void unlinkFromRightParent() {
+        doUnlinkFromRightParent();
+    }
+
     public InternalFactHandle getFactHandleForEvaluation() {
         return factHandleForEvaluation;
     }
@@ -102,85 +100,17 @@ public class SubnetworkTuple extends LeftTuple implements RightTuple {
     }
 
 
-    public void unlinkFromRightParent() {
-        super.unlinkFromRightParent();
-//        getFactHandle().removeRightTuple( this );
-//        setFactHandle( null );
-//        this.handlePrevious = null;
-//        this.handleNext = null;
-        this.blocked = null;
-//        setPrevious( null );
-//        setNext( null );
-//        setSink(null);
-    }
-
-    public LeftTuple getBlocked() {
-        return this.blocked;
-    }
-
-    public void setBlocked(LeftTuple leftTuple) {
-        this.blocked = leftTuple;
-    }
-
-    public void addBlocked(LeftTuple leftTuple) {
-        if (this.blocked != null && leftTuple != null) {
-            leftTuple.setBlockedNext(this.blocked);
-            this.blocked.setBlockedPrevious(leftTuple);
-        }
-        this.blocked = leftTuple;
-    }
-
-    public void removeBlocked(LeftTuple leftTuple) {
-        LeftTuple previous = leftTuple.getBlockedPrevious();
-        LeftTuple next     = leftTuple.getBlockedNext();
-        if (previous != null && next != null) {
-            //remove  from middle
-            previous.setBlockedNext(next);
-            next.setBlockedPrevious(previous);
-        } else if (next != null) {
-            //remove from first
-            this.blocked = next;
-            next.setBlockedPrevious(null);
-        } else if (previous != null) {
-            //remove from end
-            previous.setBlockedNext(null);
-        } else {
-            this.blocked = null;
-        }
-        leftTuple.clearBlocker();
-    }
-
-    public LeftTuple getTempBlocked() {
-        return tempBlocked;
-    }
-
-    public void setTempBlocked(LeftTuple tempBlocked) {
-        this.tempBlocked = tempBlocked;
-    }
-
-    public RightTupleImpl getTempNextRightTuple() {
-        return tempNextRightTuple;
-    }
-
-    public void setTempNextRightTuple(RightTupleImpl tempNextRightTuple) {
-        this.tempNextRightTuple = tempNextRightTuple;
-    }
-
 
     @Override
     public void clearStaged() {
         super.clearStaged();
         stagedOnRight           = false;
-        this.tempNextRightTuple = null;
-        this.tempBlocked        = null;
     }
 
-    @Override
     public void retractTuple(PropagationContext context, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void setExpired(ReteEvaluator reteEvaluator, PropagationContext pctx) {
         super.setExpired();
     }

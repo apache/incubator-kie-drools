@@ -23,7 +23,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleImpl;
@@ -44,7 +43,7 @@ public class RightBuilder {
     public RightBuilder insert(Object... objects) {
         for (Object object : objects) {
             InternalFactHandle fh         = (InternalFactHandle) wm.insert(object);
-            TupleImpl          rightTuple = new RightTupleImpl(fh, sink );
+            TupleImpl          rightTuple = new RightTuple(fh, sink );
             rightTuple.setPropagationContext( new PhreakPropagationContext() );
             rightTuples.addInsert( rightTuple );
         }

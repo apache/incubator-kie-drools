@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MemoryFactory;
@@ -34,8 +33,8 @@ import org.drools.core.util.FastIterator;
 public class NotNodeLeftTuple extends LeftTuple {
     private static final long serialVersionUID = 540l;
 
-    private RightTupleImpl blocker;
-    private LeftTuple blockedPrevious;
+    private RightTuple blocker;
+    private LeftTuple  blockedPrevious;
     private LeftTuple blockedNext;
 
     public NotNodeLeftTuple() {
@@ -126,14 +125,14 @@ public class NotNodeLeftTuple extends LeftTuple {
     /* (non-Javadoc)
          * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
          */
-    public void setBlocker(RightTupleImpl blocker) {
+    public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#getBlocker()
      */
-    public RightTupleImpl getBlocker() {
+    public RightTuple getBlocker() {
         return this.blocker;
     }
 

@@ -26,7 +26,6 @@ import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.AbstractHashTable;
@@ -149,7 +148,7 @@ public class PhreakJoinNode {
                                                   reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
-                for ( TupleImpl leftTuple = joinNode.getFirstLeftTuple(rightTuple, ltm, it ); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple ) ) {
+                for ( TupleImpl leftTuple = joinNode.getFirstLeftTuple(rightTuple, ltm, it ); leftTuple != null; leftTuple = (TupleImpl) it.next(leftTuple ) ) {
                     if ( leftTuple.getStagedType() == LeftTuple.UPDATE ) {
                         // ignore, as it will get processed via left iteration. Children cannot be processed twice
                         continue;
@@ -335,7 +334,7 @@ public class PhreakJoinNode {
         if (childLeftTuple == null) {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
-            for (; leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple)) {
+            for (; leftTuple != null; leftTuple = (TupleImpl) it.next(leftTuple)) {
                 if (leftTuple.getStagedType() == LeftTuple.UPDATE) {
                     // ignore, as it will get processed via left iteration. Children cannot be processed twice
                     continue;
@@ -354,7 +353,7 @@ public class PhreakJoinNode {
             }
         } else {
             // in the same bucket, so iterate and compare
-            for (; leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple)) {
+            for (; leftTuple != null; leftTuple = (TupleImpl) it.next(leftTuple)) {
                 if (leftTuple.getStagedType() == LeftTuple.UPDATE) {
                     // ignore, as it will get processed via left iteration. Children cannot be processed twice
                     continue;

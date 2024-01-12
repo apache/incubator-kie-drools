@@ -155,8 +155,8 @@ public class PhreakTimerNode {
         TupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
         TupleList deletes = tm.getDeleteLeftTuples();
         if ( !deletes.isEmpty() ) {
-            for ( LeftTuple leftTuple = (LeftTuple) deletes.getFirst(); leftTuple != null; ) {
-                LeftTuple next = (LeftTuple) leftTuple.getNext();
+            for ( TupleImpl leftTuple = deletes.getFirst(); leftTuple != null; ) {
+                TupleImpl next = leftTuple.getNext();
                 srcLeftTuples.addDelete( leftTuple );
                 if ( log.isTraceEnabled() ) {
                     log.trace( "Timer Add Postponed Delete {}", leftTuple );
@@ -318,8 +318,8 @@ public class PhreakTimerNode {
                                                    TupleSets trgLeftTuples,
                                                    TupleSets stagedLeftTuples) {
         TupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
-        for ( LeftTuple leftTuple = (LeftTuple) leftTuples.getFirst(); leftTuple != null; ) {
-            LeftTuple next = (LeftTuple) leftTuple.getNext();
+        for ( TupleImpl leftTuple = leftTuples.getFirst(); leftTuple != null; ) {
+            TupleImpl next = leftTuple.getNext();
 
             doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
 

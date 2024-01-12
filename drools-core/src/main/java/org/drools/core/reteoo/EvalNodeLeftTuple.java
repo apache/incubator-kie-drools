@@ -25,7 +25,7 @@ public class EvalNodeLeftTuple extends LeftTuple {
 
     private static final long serialVersionUID = 540l;
 
-    private RightTupleImpl blocker;
+    private RightTuple blocker;
 
     private LeftTuple blockedPrevious;
 
@@ -121,14 +121,14 @@ public class EvalNodeLeftTuple extends LeftTuple {
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
      */
-    public void setBlocker(RightTupleImpl blocker) {
+    public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }
 
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#getBlocker()
      */
-    public RightTupleImpl getBlocker() {
+    public RightTuple getBlocker() {
         return this.blocker;
     }
 

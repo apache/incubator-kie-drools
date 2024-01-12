@@ -28,7 +28,6 @@ import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
@@ -152,8 +151,8 @@ public class PhreakExistsNode {
         Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
 
-        for (RightTupleImpl rightTuple = (RightTupleImpl) srcRightTuples.getInsertFirst(); rightTuple != null; ) {
-            RightTupleImpl next = (RightTupleImpl) rightTuple.getStagedNext();
+        for (RightTuple rightTuple = (RightTuple) srcRightTuples.getInsertFirst(); rightTuple != null; ) {
+            RightTuple next = (RightTuple) rightTuple.getStagedNext();
             rtm.add(rightTuple);
 
             if ( ltm != null && ltm.size() > 0 ) {
@@ -163,7 +162,7 @@ public class PhreakExistsNode {
                                                   reteEvaluator,
                                                   rightTuple.getFactHandleForEvaluation() );
 
-                for ( LeftTuple leftTuple = (LeftTuple) existsNode.getFirstLeftTuple(rightTuple, ltm, it ); leftTuple != null; ) {
+                for ( LeftTuple leftTuple =  (LeftTuple) existsNode.getFirstLeftTuple(rightTuple, ltm, it ); leftTuple != null; ) {
                     // preserve next now, in case we remove this leftTuple
                     LeftTuple temp = (LeftTuple) it.next(leftTuple );
 
@@ -211,10 +210,10 @@ public class PhreakExistsNode {
 
             FastIterator<TupleImpl> rightIt = existsNode.getRightIterator(rtm);
 
-            RightTupleImpl firstRightTuple = existsNode.getFirstRightTuple(leftTuple, rtm, rightIt);
+            RightTuple firstRightTuple = existsNode.getFirstRightTuple(leftTuple, rtm, rightIt);
 
             // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
-            RightTupleImpl blocker = leftTuple.getBlocker();
+            RightTuple blocker = leftTuple.getBlocker();
             if (blocker == null) {
                 if (leftTuple.getMemory() != null) { // memory can be null, if blocker was deleted in same do loop
                     ltm.remove(leftTuple);
@@ -250,7 +249,7 @@ public class PhreakExistsNode {
                 }
 
                 // find first blocker, because it's a modify, we need to start from the beginning again
-                for (RightTupleImpl newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTupleImpl) rightIt.next(newBlocker)) {
+                for (RightTuple newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker)) {
                     if (constraints.isAllowedCachedLeft( contextEntry,
                                                          newBlocker.getFactHandleForEvaluation() )) {
                         leftTuple.setBlocker( newBlocker );
@@ -306,8 +305,8 @@ public class PhreakExistsNode {
 
         boolean iterateFromStart = existsNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison();
 
-        for (RightTupleImpl rightTuple = (RightTupleImpl) srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
-            RightTupleImpl next = (RightTupleImpl) rightTuple.getStagedNext();
+        for (RightTuple rightTuple = (RightTuple) srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
+            RightTuple next = (RightTuple) rightTuple.getStagedNext();
 
             if ( ltm != null && ltm.size() > 0 ) {
                 FastIterator leftIt = existsNode.getLeftIterator( ltm );
@@ -349,7 +348,7 @@ public class PhreakExistsNode {
 
             LeftTuple firstBlocked = rightTuple.getTempBlocked();
             if ( firstBlocked != null ) {
-                RightTupleImpl rootBlocker = rightTuple.getTempNextRightTuple();
+                RightTuple rootBlocker = rightTuple.getTempNextRightTuple();
                 if ( rootBlocker == null ) {
                     iterateFromStart = true;
                 }
@@ -381,7 +380,7 @@ public class PhreakExistsNode {
                     }
 
                     // we know that older tuples have been checked so continue next
-                    for ( RightTupleImpl newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTupleImpl) rightIt.next( newBlocker ) ) {
+                    for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker) ) {
                         // cannot select a RightTuple queued in the delete list
                         // There may be UPDATE RightTuples too, but that's ok. They've already been re-added to the correct bucket, safe to be reprocessed.
                         if ( leftTuple.getStagedType() != LeftTuple.DELETE && newBlocker.getStagedType() != LeftTuple.DELETE &&
@@ -422,7 +421,7 @@ public class PhreakExistsNode {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         for (LeftTuple leftTuple = (LeftTuple) srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
-            LeftTuple next = (LeftTuple) leftTuple.getStagedNext();
+            LeftTuple  next    = (LeftTuple) leftTuple.getStagedNext();
             RightTuple blocker = leftTuple.getBlocker();
             if (blocker == null) {
                 if (leftTuple.getMemory() != null) {
@@ -453,8 +452,8 @@ public class PhreakExistsNode {
         Object contextEntry = bm.getContext();
         BetaConstraints constraints = existsNode.getRawConstraints();
 
-        for (RightTupleImpl rightTuple = (RightTupleImpl) srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
-            RightTupleImpl next = (RightTupleImpl) rightTuple.getStagedNext();
+        for (RightTuple rightTuple = (RightTuple) srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
+            RightTuple next = (RightTuple) rightTuple.getStagedNext();
 
             if (rightTuple.getMemory() != null) {
                 // it may have been staged and never actually added
@@ -476,10 +475,10 @@ public class PhreakExistsNode {
                     }
 
                     constraints.updateFromTuple(contextEntry, reteEvaluator, leftTuple);
-                    RightTupleImpl rootBlocker = (RightTupleImpl) rtm.getFirst(leftTuple);
+                    RightTuple rootBlocker = (RightTuple) rtm.getFirst(leftTuple);
 
                     // we know that older tuples have been checked so continue previously
-                    for (RightTupleImpl newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTupleImpl) it.next(newBlocker)) {
+                    for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next(newBlocker)) {
                         if (!newBlocker.isDeleted() && constraints.isAllowedCachedLeft(contextEntry,
                                                                                        newBlocker.getFactHandleForEvaluation())) {
                             leftTuple.setBlocker(newBlocker);

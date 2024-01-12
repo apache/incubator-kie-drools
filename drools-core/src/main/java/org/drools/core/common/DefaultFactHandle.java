@@ -34,7 +34,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNodeId;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.AbstractLinkedListNode;
@@ -633,8 +633,8 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
 
         @Override
         public void removeRightTuple( TupleImpl rightTuple ) {
-            RightTupleImpl previous = (RightTupleImpl) rightTuple.getHandlePrevious();
-            RightTupleImpl next = (RightTupleImpl) rightTuple.getHandleNext();
+            RightTuple previous = (RightTuple) rightTuple.getHandlePrevious();
+            RightTuple next     = (RightTuple) rightTuple.getHandleNext();
 
             if ( previous != null && next != null ) {
                 // remove from middle

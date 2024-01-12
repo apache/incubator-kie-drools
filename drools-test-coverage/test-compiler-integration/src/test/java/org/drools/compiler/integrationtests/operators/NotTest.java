@@ -30,10 +30,9 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.AFact;
@@ -219,7 +218,7 @@ public class NotTest {
         TupleImpl          rt = BetaNode.getFirstTuple(rightTupleMemory, it);
 
         for (; rt != null; rt = it.next(rt)) {
-            if (((RightTupleImpl)rt).getBlocked() != null) {
+            if (((RightTuple)rt).getBlocked() != null) {
                 return rt.getFactHandle();
             }
         }

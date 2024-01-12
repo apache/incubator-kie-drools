@@ -47,7 +47,7 @@ public class MockObjectSink extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final ReteEvaluator reteEvaluator) {
-        new RightTupleImpl( factHandle, this );
+        new RightTuple(factHandle, this );
         this.asserted.add( new Object[]{factHandle, context, reteEvaluator} );
     }
 
