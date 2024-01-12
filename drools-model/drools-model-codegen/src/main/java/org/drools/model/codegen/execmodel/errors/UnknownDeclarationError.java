@@ -21,11 +21,9 @@ import org.kie.internal.builder.ResultSeverity;
 
 public class UnknownDeclarationError extends DroolsError {
 
-    private String declaration;
 
     public UnknownDeclarationError(String declaration) {
-        super();
-        this.declaration = declaration;
+        super("Unknown declaration: " + declaration);
     }
 
     @Override
@@ -33,10 +31,6 @@ public class UnknownDeclarationError extends DroolsError {
         return ResultSeverity.ERROR;
     }
 
-    @Override
-    public String getMessage() {
-        return "Unknown declaration: " + declaration;
-    }
 
     @Override
     public int[] getLines() {

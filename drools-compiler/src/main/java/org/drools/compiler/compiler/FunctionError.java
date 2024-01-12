@@ -23,16 +23,16 @@ import org.kie.internal.jci.CompilationProblem;
 public class FunctionError extends DroolsError {
     final private FunctionDescr functionDescr;
     final private Object        object;
-    final private String        message;
     private int[]               errorLines;
 
     public FunctionError(final FunctionDescr functionDescr,
                          final Object object,
                          final String message) {
-        super(functionDescr.getResource());
+        super(functionDescr.getResource(), "");
         this.functionDescr = functionDescr;
         this.object = object;
-        this.message = createMessage( message );
+        setErrorLines();
+        setMessage(createMessage(message));
     }
 
     @Override
@@ -52,21 +52,26 @@ public class FunctionError extends DroolsError {
         return errorLines;
     }
 
-    public String getMessage() {
-        return this.message;
-    }
-    
     public String toString() {
-        return this.message;
+        return getMessage();
+    }
+
+    private void setErrorLines() {
+        if( object instanceof CompilationProblem[] cp) {
+            this.errorLines = new int[cp.length];
+            for( int i = 0; i < cp.length ; i ++ ) {
+                this.errorLines[i] = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1;
+            }
+        } else {
+            this.errorLines = new int[1];
+            this.errorLines[0] = functionDescr.getLine();
+        }
     }
     
     private String createMessage( String message ) {
         StringBuilder detail = new StringBuilder();
-        if( object instanceof CompilationProblem[] ) {
-            CompilationProblem[] cp = (CompilationProblem[]) object;
-            this.errorLines = new int[cp.length];
+        if( object instanceof CompilationProblem[] cp) {
             for( int i = 0; i < cp.length ; i ++ ) {
-               this.errorLines[i] = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1;
                detail.append( this.functionDescr.getName() );
                detail.append( " (line:" );
                detail.append( this.errorLines[i] );
@@ -74,10 +79,7 @@ public class FunctionError extends DroolsError {
                detail.append( cp[i].getMessage() );
                detail.append( "\n" );
             }
-        } else if( object instanceof Exception) {
-            Exception ex = (Exception) object;
-            this.errorLines = new int[1];
-            this.errorLines[0] = functionDescr.getLine();
+        } else if( object instanceof Exception ex) {
             detail.append( " (line:" );
             detail.append( this.errorLines[0] );
             detail.append( "): " );
@@ -88,11 +90,8 @@ public class FunctionError extends DroolsError {
                 detail.append( ": " );
                 detail.append( ex.getMessage() );
             }
-        } else {
-            this.errorLines = new int[1];
-            this.errorLines[0] = functionDescr.getLine();
         }
-        return "[ function "+functionDescr.getName() + detail.toString()+" ]";
+        return "[ function "+ functionDescr.getName() + detail +" ]";
     }
 
 }

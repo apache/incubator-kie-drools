@@ -212,8 +212,7 @@ public class AccumulateVisitor {
         } else if (accumulateFunctionParameter instanceof LiteralExpr) {
             literalExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameter);
         } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr, Optional.of(context.getRuleDescr())));
-            throw new AccumulateParsingFailedException();
+            throw new AccumulateParsingFailedException("Invalid expression " + accumulateFunctionParameterStr);
         }
 
         return Optional.empty();
@@ -644,9 +643,6 @@ public class AccumulateVisitor {
     }
 
     private class AccumulateParsingFailedException extends RuntimeException {
-
-        AccumulateParsingFailedException() {
-        }
 
         AccumulateParsingFailedException(String message) {
             super(message);
