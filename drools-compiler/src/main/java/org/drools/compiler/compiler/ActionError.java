@@ -24,15 +24,17 @@ import org.drools.drl.parser.DroolsError;
 public class ActionError extends DroolsError {
     private BaseDescr descr;
     private Object    object;
-    private String    message;
     private int[]     errorLines = new int[0];
+
+    private String originalMessage;
 
     public ActionError(final BaseDescr descr,
                      final Object object,
                      final String message) {
+        super(BuilderResultUtils.getProblemMessage( object, message, "\n" ));
         this.descr = descr;
         this.object = object;
-        this.message = message;
+        this.originalMessage = message;
     }
 
     @Override
@@ -60,13 +62,9 @@ public class ActionError extends DroolsError {
         return this.descr != null ? this.descr.getLine() : -1;
     }
 
-    public String getMessage() {
-        return BuilderResultUtils.getProblemMessage( this.object, this.message, "\n" );
-    }
-
     public String toString() {
         final StringBuilder builder = new StringBuilder()
-                .append( this.message )
+                .append( originalMessage )
                 .append( " : " )
                 .append( "\n" );
         return BuilderResultUtils.appendProblems( this.object, builder ).toString();

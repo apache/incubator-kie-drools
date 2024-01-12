@@ -28,7 +28,7 @@ public class IncompatibleGetterOverloadException extends RuntimeException {
     private Class<?> newType;
 
     public IncompatibleGetterOverloadException(Class<?> klass, String oldName, Class<?> oldType, String newName, Class<?> newType) {
-        super(" Imcompatible Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ");
+        super(" Incompatible Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ");
         this.klass = klass;
         this.oldName = oldName;
         this.oldType = oldType;

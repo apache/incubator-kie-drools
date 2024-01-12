@@ -23,12 +23,10 @@ import org.drools.drl.parser.DroolsError;
 
 public class GlobalError extends DroolsError {
     private final GlobalDescr globalDescr;
-    private String message;
 
     public GlobalError(final GlobalDescr globalDescr, final String message) {
-        super(globalDescr.getResource());
+        super(globalDescr.getResource(), message);
         this.globalDescr = globalDescr;
-        this.message = message;
     }
 
     @Override
@@ -44,12 +42,8 @@ public class GlobalError extends DroolsError {
         return new int[] { globalDescr.getLine() };
     }
 
-    public String getMessage() {
-        return message;
-    }
-    
     public String toString() {
-        return "GlobalError: " + getGlobal() + " : " + message;
+        return "GlobalError: " + getGlobal() + " : " + getMessage();
     }
 
 }

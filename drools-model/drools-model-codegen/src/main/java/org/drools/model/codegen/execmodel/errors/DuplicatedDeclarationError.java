@@ -26,18 +26,13 @@ public class DuplicatedDeclarationError extends DroolsError {
     private String declaration;
 
     public DuplicatedDeclarationError( String declaration) {
-        super();
+        super("Duplicated declaration: " + declaration);
         this.declaration = declaration;
     }
 
     @Override
     public ResultSeverity getSeverity() {
         return ResultSeverity.ERROR;
-    }
-
-    @Override
-    public String getMessage() {
-        return "Duplicated declaration: " + declaration;
     }
 
     @Override
