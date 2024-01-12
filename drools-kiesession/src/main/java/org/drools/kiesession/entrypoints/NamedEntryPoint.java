@@ -39,6 +39,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
@@ -373,7 +374,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
                 final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                    internalMatch == null ? null : internalMatch.getRule(),
-                                                                                                   internalMatch == null ? null : BaseNode.asTerminalNode(internalMatch.getTuple()),
+                                                                                                   internalMatch == null ? null : SuperCacheFixer.asTerminalNode(internalMatch.getTuple()),
                                                                                                    handle, entryPoint, mask, modifiedClass, null);
 
                 if (typeConf.isTMSEnabled()) {

@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TupleImpl;
@@ -44,7 +45,7 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
     public abstract FactHandle getHandle(FactHandle originalHandle);
 
     public void rowAdded(RuleImpl rule, TupleImpl tuple, ReteEvaluator reteEvaluator) {
-        FactHandle[] handles = new FactHandle[BaseNode.getLeftTupleNode(tuple).getObjectCount()];
+        FactHandle[] handles = new FactHandle[SuperCacheFixer.getLeftTupleNode(tuple).getObjectCount()];
         TupleImpl    entry   = (LeftTuple) tuple.skipEmptyHandles();
 
         // Add all the FactHandles

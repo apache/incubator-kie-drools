@@ -22,6 +22,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.common.SuperCacheFixer;
 
 /**
  * A parent class for all specific LeftTuple specializations
@@ -83,7 +84,7 @@ public class LeftTuple
 
     @Override
     public ObjectTypeNodeId getInputOtnId() {
-        return BaseNode.getLeftInputOtnId(this);
+        return SuperCacheFixer.getLeftInputOtnId(this);
     }
 
     @Override

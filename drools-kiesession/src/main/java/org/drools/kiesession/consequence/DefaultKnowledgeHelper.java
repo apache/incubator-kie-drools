@@ -39,6 +39,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.process.AbstractProcessContext;
 import org.drools.core.reteoo.LeftTuple;
@@ -126,7 +127,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public FactHandle insert(final Object object, final boolean dynamic) {
         return ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
-                .insert(object, dynamic, this.internalMatch.getRule(), BaseNode.asTerminalNode(this.internalMatch.getTuple()));
+                .insert(object, dynamic, this.internalMatch.getRule(), SuperCacheFixer.asTerminalNode(this.internalMatch.getTuple()));
     }
 
     @Override
@@ -272,7 +273,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
         ((InternalFactHandle) handle).getEntryPoint(reteEvaluator).delete(handle,
                                                              this.internalMatch.getRule(),
-                                                             BaseNode.asTerminalNode(this.internalMatch.getTuple()),
+                                                             SuperCacheFixer.asTerminalNode(this.internalMatch.getTuple()),
                                                              fhState);
     }
 

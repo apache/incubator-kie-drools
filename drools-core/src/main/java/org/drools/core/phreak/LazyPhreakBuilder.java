@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -40,6 +39,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
@@ -886,7 +886,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 TupleImpl nextLt = lt.getHandleNext();
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
-                if (BaseNode.getLeftTupleSource(lt).isAssociatedWith(rule)) {
+                if (SuperCacheFixer.getLeftTupleSource(lt).isAssociatedWith(rule)) {
                     visitChild(lt, insert, wm, rule);
 
                     if (lt.getHandlePrevious() != null && nextLt != null) {
@@ -909,26 +909,26 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void visitChild(TupleImpl lt, boolean insert, InternalWorkingMemory wm, Rule rule) {
         TupleImpl prevLt = null;
-        LeftTupleSinkNode sink = (LeftTupleSinkNode) BaseNode.getSink(lt);
+        LeftTupleSinkNode sink = (LeftTupleSinkNode) SuperCacheFixer.getSink(lt);
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
 
             if ( lt != null ) {
-                if (BaseNode.getSink(lt).isAssociatedWith(rule)) {
+                if (SuperCacheFixer.getSink(lt).isAssociatedWith(rule)) {
 
-                    if (BaseNode.getSink(lt).getAssociatedTerminalsSize() > 1) {
+                    if (SuperCacheFixer.getSink(lt).getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
                             for ( TupleImpl child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
                                 visitChild(child, insert, wm, rule);
                             }
-                        } else if (BaseNode.getSink(lt).getType() == NodeTypeEnums.RightInputAdapterNode) {
+                        } else if (SuperCacheFixer.getSink(lt).getType() == NodeTypeEnums.RightInputAdapterNode) {
                             insertPeerRightTuple(lt, wm, rule, insert);
                         }
                     } else if (!insert) {
                         iterateLeftTuple( lt, wm );
                         TupleImpl lt2 = null;
                         for ( TupleImpl peerLt = lt.getPeer();
-                              peerLt != null && BaseNode.getSink(peerLt).isAssociatedWith(rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
+                              peerLt != null && SuperCacheFixer.getSink(peerLt).isAssociatedWith(rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
                               peerLt = peerLt.getPeer() ) {
                             iterateLeftTuple( peerLt, wm );
                             lt2 = peerLt;
@@ -952,7 +952,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static void insertPeerRightTuple( TupleImpl lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
         // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
         TupleImpl prevLt = null;
-        RightInputAdapterNode rian = (RightInputAdapterNode) BaseNode.getSink(lt);
+        RightInputAdapterNode rian = (RightInputAdapterNode) SuperCacheFixer.getSink(lt);
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {

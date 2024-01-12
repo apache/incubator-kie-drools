@@ -21,6 +21,7 @@ package org.drools.core.marshalling;
 import java.util.Arrays;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.TupleImpl ;
@@ -67,7 +68,7 @@ public class TupleKey {
         if( tuple != null ) {
             LeftTuple leftTuple = (LeftTuple) tuple;
 
-            long[] tupleArray = new long[BaseNode.getLeftTupleSource(tuple).getObjectCount()];
+            long[] tupleArray = new long[SuperCacheFixer.getLeftTupleSource(tuple).getObjectCount()];
             // tuple iterations happens backwards
             int i = tupleArray.length-1;
             for( TupleImpl  entry = leftTuple.skipEmptyHandles(); entry != null; entry = entry.getParent() ) {

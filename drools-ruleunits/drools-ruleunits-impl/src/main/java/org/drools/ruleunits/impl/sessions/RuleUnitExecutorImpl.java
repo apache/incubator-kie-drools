@@ -47,6 +47,7 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
@@ -405,7 +406,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
                 // This handle has been insert from a datasource, so remove from it
                 ((RuleUnitDefaultFactHandle) h).getDataStore().delete((RuleUnitDefaultFactHandle) h,
                                                                       knowledgeHelper.getActivation().getRule(),
-                                                                      BaseNode.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
+                                                                      SuperCacheFixer.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
                                                                       fhState);
                 return;
             }
@@ -417,7 +418,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
             h.getEntryPoint(reteEvaluator).delete(handle,
                     knowledgeHelper.getActivation().getRule(),
-                    BaseNode.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
+                    SuperCacheFixer.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
                     fhState);
         }
 

@@ -37,6 +37,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
@@ -399,7 +400,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             modifyPreviousTuples.removeLeftTuple(partitionId);
             leftTuple.reAdd();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject(leftTuple, context, reteEvaluator, (LeftInputAdapterNode) BaseNode.getLeftTupleSource(leftTuple), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator));
+                doUpdateObject(leftTuple, context, reteEvaluator, (LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(leftTuple), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator));
                 if (leftTuple.isFullMatch()) {
                     ((InternalMatch)leftTuple).setActive(true);
                 }

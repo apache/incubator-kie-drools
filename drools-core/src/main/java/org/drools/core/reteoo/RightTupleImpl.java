@@ -24,6 +24,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 
 public class RightTupleImpl extends TupleImpl implements RightTuple {
 
@@ -176,13 +177,13 @@ public class RightTupleImpl extends TupleImpl implements RightTuple {
 
     @Override
     public ObjectTypeNodeId getInputOtnId() {
-        return BaseNode.getRightInputOtnId(this);
+        return SuperCacheFixer.getRightInputOtnId(this);
     }
 
     @Override
     public void retractTuple( PropagationContext context, ReteEvaluator reteEvaluator ) {
         if (!retracted) {
-            BaseNode.getRightTupleSink(this).retractRightTuple(this, context, reteEvaluator);
+            SuperCacheFixer.getRightTupleSink(this).retractRightTuple(this, context, reteEvaluator);
             retracted = true;
         }
     }

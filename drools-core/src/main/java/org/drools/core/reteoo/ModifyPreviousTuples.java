@@ -25,6 +25,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 
 public class ModifyPreviousTuples {
@@ -73,7 +74,7 @@ public class ModifyPreviousTuples {
     }
 
     public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl leftTuple) {
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) BaseNode.getLeftTupleSource(leftTuple);
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(leftTuple);
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
         if (sm != null) {

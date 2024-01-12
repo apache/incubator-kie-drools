@@ -41,6 +41,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
@@ -269,7 +270,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
 
     public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         factHandle.forEachLeftTuple( lt -> {
-            ((LeftInputAdapterNode) BaseNode.getLeftTupleSource(lt)).retractLeftTuple(lt, context, reteEvaluator);
+            ((LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(lt)).retractLeftTuple(lt, context, reteEvaluator);
         } );
         factHandle.clearLeftTuples();
     }
@@ -277,7 +278,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator, int partition ) {
         DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
         linkedTuples.forEachLeftTuple( partition, lt -> {
-            ((LeftInputAdapterNode) BaseNode.getLeftTupleSource(lt)).retractLeftTuple(lt, context, reteEvaluator);
+            ((LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(lt)).retractLeftTuple(lt, context, reteEvaluator);
         } );
         linkedTuples.clearLeftTuples(partition);
     }

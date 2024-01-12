@@ -56,6 +56,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
@@ -739,7 +740,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
-            LeftInputAdapterNode lian = (LeftInputAdapterNode) BaseNode.getLeftTupleSource(factHandle.getFirstLeftTuple());
+            LeftInputAdapterNode lian = (LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(factHandle.getFirstLeftTuple());
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 

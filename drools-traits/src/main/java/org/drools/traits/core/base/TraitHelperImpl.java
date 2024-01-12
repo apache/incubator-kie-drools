@@ -36,6 +36,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
@@ -152,7 +153,7 @@ public class TraitHelperImpl implements Externalizable,
                     PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext(nep.getReteEvaluator().getNextPropagationIdCounter(),
                                                                                                           PropagationContext.Type.MODIFICATION,
                                                                                                           internalMatch != null ? internalMatch.getRule() : null,
-                                                                                                          internalMatch != null ? BaseNode.asTerminalNode(internalMatch.getTuple()) : null,
+                                                                                                          internalMatch != null ? SuperCacheFixer.asTerminalNode(internalMatch.getTuple()) : null,
                                                                                                           h,
                                                                                                           nep.getEntryPoint(),
                                                                                                           mask,
@@ -308,7 +309,7 @@ public class TraitHelperImpl implements Externalizable,
             PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext(nep.getReteEvaluator().getNextPropagationIdCounter(),
                                                                                                   PropagationContext.Type.MODIFICATION,
                                                                                                   internalMatch.getRule(),
-                                                                                                  BaseNode.asTerminalNode(internalMatch.getTuple()),
+                                                                                                  SuperCacheFixer.asTerminalNode(internalMatch.getTuple()),
                                                                                                   h,
                                                                                                   nep.getEntryPoint(),
                                                                                                   mask,
@@ -323,7 +324,7 @@ public class TraitHelperImpl implements Externalizable,
             handle = this.workingMemory.insert(inner,
                                                false,
                                                internalMatch.getRule(),
-                                               BaseNode.asTerminalNode(internalMatch.getTuple()));
+                                               SuperCacheFixer.asTerminalNode(internalMatch.getTuple()));
         }
 
     }
@@ -451,7 +452,7 @@ public class TraitHelperImpl implements Externalizable,
                 h = (InternalFactHandle) this.workingMemory.insert(core,
                                                                    false,
                                                                    internalMatch.getRule(),
-                                                                   BaseNode.asTerminalNode(internalMatch.getTuple()));
+                                                                   SuperCacheFixer.asTerminalNode(internalMatch.getTuple()));
             }
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
@@ -490,7 +491,7 @@ public class TraitHelperImpl implements Externalizable,
                     handle = this.workingMemory.insert(inner,
                                                        false,
                                                        internalMatch.getRule(),
-                                                       BaseNode.asTerminalNode(internalMatch.getTuple()));
+                                                       SuperCacheFixer.asTerminalNode(internalMatch.getTuple()));
                 }
                 if ( ftms.needsInit() ) {
                     ftms.init( workingMemory );
@@ -603,7 +604,7 @@ public class TraitHelperImpl implements Externalizable,
     public void delete( final FactHandle handle, InternalMatch internalMatch) {
         ((InternalFactHandle) handle).getEntryPoint(workingMemory).delete(handle,
                                                                           internalMatch.getRule(),
-                                                                          BaseNode.asTerminalNode(internalMatch.getTuple()));
+                                                                          SuperCacheFixer.asTerminalNode(internalMatch.getTuple()));
     }
 
     public FactHandle insert(final Object object,
@@ -611,7 +612,7 @@ public class TraitHelperImpl implements Externalizable,
         FactHandle handle = this.workingMemory.insert(object,
                                                       false,
                                                       internalMatch.getRule(),
-                                                      BaseNode.asTerminalNode(internalMatch.getTuple()));
+                                                      SuperCacheFixer.asTerminalNode(internalMatch.getTuple()));
         return handle;
     }
 
