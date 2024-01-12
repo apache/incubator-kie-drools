@@ -24,31 +24,16 @@ import org.drools.drl.ast.descr.FunctionDescr;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 
-
-
 public class DuplicateFunction extends ConfigurableSeverityResult {
     public static final String KEY = "duplicateFunction";
-    
-    private String functionName;
-    private String functionNamespace;
+
     
     public DuplicateFunction(FunctionDescr func, KnowledgeBuilderConfiguration config) {
-        super(func.getResource(), config);
-        functionName = func.getName();
-        functionNamespace = func.getNamespace();
+        super(func.getResource(), config, getSpecificMessage(func));
     }
     
     public DuplicateFunction(Function func, KnowledgeBuilderConfiguration config) {
-        super(func.getResource(), config);
-        functionName = func.getName();
-        functionName = func.getNamespace();
-    }
-
-    @Override
-    public String getMessage() {
-        return functionName 
-        + " in namespace " + functionNamespace 
-        + " is about to be redefined";
+        super(func.getResource(), config, getSpecificMessage(func));
     }
 
     @Override
@@ -61,4 +46,15 @@ public class DuplicateFunction extends ConfigurableSeverityResult {
         return KEY;
     }
 
+    private static String getSpecificMessage(FunctionDescr func) {
+        return func.getName()
+                + " in namespace " + func.getNamespace()
+                + " is about to be redefined";
+    }
+
+    private static String getSpecificMessage(Function func) {
+        return func.getName()
+                + " in namespace " + func.getNamespace()
+                + " is about to be redefined";
+    }
 }

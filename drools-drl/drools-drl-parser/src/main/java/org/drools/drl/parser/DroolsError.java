@@ -24,12 +24,12 @@ import org.kie.api.io.Resource;
 
 public abstract class DroolsError extends BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderError {
 
-    public DroolsError() {
-        this(null);
+    public DroolsError(String message) {
+        this(null, message);
     }
 
-    public DroolsError(Resource resource) {
-        super(resource);
+    public DroolsError(Resource resource, String message) {
+        super(resource, message);
     }
 
     public ResultSeverity getSeverity() {

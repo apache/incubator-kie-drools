@@ -30,6 +30,7 @@ public class GetterOverloadWarning extends DroolsError {
     private Class newType;
 
     public GetterOverloadWarning( Class klass, String oldName, Class oldType, String newName, Class newType ) {
+        super( " Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ");
         this.klass = klass;
         this.oldName = oldName;
         this.oldType = oldType;
@@ -40,12 +41,6 @@ public class GetterOverloadWarning extends DroolsError {
     @Override
     public ResultSeverity getSeverity() {
         return ResultSeverity.WARNING;
-    }
-
-
-    @Override
-    public String getMessage() {
-        return " Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ";
     }
 
 

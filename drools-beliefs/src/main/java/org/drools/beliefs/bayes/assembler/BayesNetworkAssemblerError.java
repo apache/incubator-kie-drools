@@ -22,18 +22,11 @@ import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 
 public class BayesNetworkAssemblerError extends DroolsError {
-    private String    message;
+
 
     public BayesNetworkAssemblerError(Resource resource,
                                       final String message) {
-        super( resource );
-        this.message = message;
-    }
-
-
-    @Override
-    public String getMessage() {
-        return message;
+        super( resource, message );
     }
 
     @Override

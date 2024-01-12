@@ -19,6 +19,7 @@
 package org.drools.compiler.compiler;
 
 
+import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 
@@ -27,21 +28,20 @@ import org.kie.api.io.Resource;
  */
 public class ProcessLoadError extends DroolsError {
 
-    private String message;
     private Exception exception;
     private static final int[] lines = new int[0];
 
     public ProcessLoadError(Resource resource, String message, Exception nested) {
-        super(resource);
-        this.message = message;
+        super(resource, getSpecificMessage(message, nested));
         this.exception = nested;
     }
     
     public int[] getLines() {
         return this.lines;
     }
-    
-    public String getMessage() {
+
+
+    private static String getSpecificMessage(String message, Exception exception) {
         if (exception != null) {
             return message + " : Exception " + exception.getClass() + " : "+ exception.getMessage();
         } else {
