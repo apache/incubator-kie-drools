@@ -20,6 +20,7 @@ package org.kie.kogito.quarkus.workflows;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.junit.DisabledOnIntegrationTest;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
@@ -27,6 +28,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusIntegrationTest
+@DisabledOnIntegrationTest(
+        value = "Temporarily disabling test since python cannot be properly initialized inside the native image",
+        forArtifactTypes = DisabledOnIntegrationTest.ArtifactType.NATIVE_BINARY)
 class PythonFlowIT {
 
     @Test
