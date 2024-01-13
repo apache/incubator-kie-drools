@@ -33,7 +33,7 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -118,7 +118,7 @@ public class MVELEvalBuilderTest {
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
 
-        final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0, sink, true );
+        final LeftTuple tuple = new LeftTuple( f0, sink, true );
         f0.removeLeftTuple(tuple);
         
         Object evalContext = eval.createContext();

@@ -28,7 +28,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
 
-public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
+public class ReactiveFromNodeLeftTuple extends LeftTuple {
 
     private Map<Object, ModificationType> modificationTypeMap = new HashMap<>(); 
 
@@ -72,7 +72,7 @@ public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
     }
 
     @Override
-    public void initPeer(TupleImpl original, LeftTupleSink sink) {
+    public void initPeer(TupleImpl original, Sink sink) {
         super.initPeer( original, sink );
         if ( original instanceof ReactiveFromNodeLeftTuple ) {
             ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );

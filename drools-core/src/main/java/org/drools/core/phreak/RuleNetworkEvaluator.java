@@ -30,6 +30,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AbstractTerminalNode;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -691,7 +692,8 @@ public class RuleNetworkEvaluator {
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    subnetworkTuple = riaNode.createPeer( subnetworkTuple );
+                    subnetworkTuple = (SubnetworkTuple) TupleFactory.createPeer(riaNode,
+                                                                                subnetworkTuple);
                     bms[i].getStagedRightTuples().addInsert(subnetworkTuple);
                 }
             }

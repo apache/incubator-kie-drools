@@ -25,6 +25,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 
@@ -53,7 +54,7 @@ public class LeftMemory {
         List<TupleImpl> list = new ArrayList<>();
         for ( Object object : objects ) {
             InternalFactHandle fh                = (InternalFactHandle) wm.insert( object );
-            TupleImpl          expectedLeftTuple = node.createLeftTuple(fh, true);
+            TupleImpl          expectedLeftTuple = TupleFactory.createLeftTuple(node, fh, true);
             expectedLeftTuple.setPropagationContext( new PhreakPropagationContext() );
             list.add( expectedLeftTuple );
            

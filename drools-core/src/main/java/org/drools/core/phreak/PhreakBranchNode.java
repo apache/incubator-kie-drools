@@ -27,6 +27,7 @@ import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
@@ -78,18 +79,18 @@ public class PhreakBranchNode {
 
             if (conditionalExecution != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) conditionalExecution.getSink().getFirstLeftTupleSink();
-                LeftTuple branchedLeftTuple = rtn.createLeftTuple(leftTuple,
-                                                                  rtn,
-                                                                  leftTuple.getPropagationContext(), useLeftMemory);
+                TupleImpl branchedLeftTuple = TupleFactory.createLeftTuple(leftTuple,
+                                                                           rtn,
+                                                                           leftTuple.getPropagationContext(), useLeftMemory);
                 PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager,
                                                           executor.getRuleAgendaItem(), branchedLeftTuple) ;
                 breaking = conditionalExecution.isBreaking();
             }
 
             if (!breaking) {
-                trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                             sink,
-                                                             leftTuple.getPropagationContext(), useLeftMemory));
+                trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
+                                                                     sink,
+                                                                     leftTuple.getPropagationContext(), useLeftMemory));
             }
 
             leftTuple.clearStaged();
@@ -148,17 +149,17 @@ public class PhreakBranchNode {
                     }
                     PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);
 
-                    branchTuples.rtnLeftTuple = newRtn.createLeftTuple(leftTuple,
-                                                                       newRtn,
-                                                                       leftTuple.getPropagationContext(), true);
+                    branchTuples.rtnLeftTuple = TupleFactory.createLeftTuple(leftTuple,
+                                                                             newRtn,
+                                                                             leftTuple.getPropagationContext(), true);
                     PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, activationsManager,
                                                               executor.getRuleAgendaItem(), branchTuples.rtnLeftTuple) ;
                 }
 
             } else if (newRtn != null) {
                 // old does not exist, new exists, so insert
-                branchTuples.rtnLeftTuple = newRtn.createLeftTuple(leftTuple, newRtn,
-                                                                   leftTuple.getPropagationContext(), true);
+                branchTuples.rtnLeftTuple = TupleFactory.createLeftTuple(leftTuple, newRtn,
+                                                                         leftTuple.getPropagationContext(), true);
                 PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, activationsManager,
                                                           executor.getRuleAgendaItem(), branchTuples.rtnLeftTuple) ;
             }
@@ -176,9 +177,9 @@ public class PhreakBranchNode {
                 }
             } else if (!breaking) {
                 // child didn't exist, new one does, so insert
-                trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                             sink,
-                                                             leftTuple.getPropagationContext(), true));
+                trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
+                                                                     sink,
+                                                                     leftTuple.getPropagationContext(), true));
             }
 
             leftTuple.clearStaged();

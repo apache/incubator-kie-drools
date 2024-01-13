@@ -99,38 +99,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         return NodeTypeEnums.QueryTerminalNode;
     }
 
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return AgendaComponentFactory.get().createTerminalTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink) {
-        return AgendaComponentFactory.get().createTerminalTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx,
-                                     boolean leftTupleMemoryEnabled) {
-        return AgendaComponentFactory.get().createTerminalTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink) {
-        return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
-    }    
 
     public ObjectTypeNodeId getLeftInputOtnId() {
         return leftInputOtnId;
@@ -138,10 +106,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
-    }
-
-    public LeftTuple createPeer(TupleImpl original) {
-        return null;
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.index.TupleList;
@@ -97,7 +98,7 @@ public class PhreakSubnetworkNotExistsNode {
                         childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                         RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                     } else if (!leftTuple.isExpired()) { // else !exists
-                        trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true));
+                        trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true));
                     }
                 }
                 rightTuple.clearStaged();
@@ -132,7 +133,7 @@ public class PhreakSubnetworkNotExistsNode {
                 TupleList matches = (TupleList) leftTuple.getContextObject();
                 if (matches == null && !leftTuple.isExpired()) {
                     // By adding the child now, it avoid iterating again to find all leftTuples that have no matches
-                    trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useTupleMemory));
+                    trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useTupleMemory));
                 }
             }
 
@@ -161,7 +162,7 @@ public class PhreakSubnetworkNotExistsNode {
                     if (node.getType() == NodeTypeEnums.ExistsNode) {
                         if (!leftTuple.isExpired()) {
                             boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(node, rightTuple);
-                            trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useTupleMemory));
+                            trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), useTupleMemory));
                         }
                     } else { // else !exists
                         TupleImpl childLeftTuple = leftTuple.getFirstChild();

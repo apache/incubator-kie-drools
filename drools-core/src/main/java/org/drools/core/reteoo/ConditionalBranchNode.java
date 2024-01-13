@@ -110,14 +110,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return new ConditionalBranchMemory( branchEvaluator.createContext() );
     }
 
-    @Override
-    public LeftTuple createPeer(TupleImpl original) {
-        EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
-    }
-
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
@@ -160,38 +152,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     public int getType() {
         return NodeTypeEnums.ConditionalBranchNode;
-    }
-
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink) {
-        return new EvalNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink) {
-        return new EvalNodeLeftTuple(leftTuple, rightTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
     public static class ConditionalBranchMemory extends AbstractLinkedListNode<Memory>

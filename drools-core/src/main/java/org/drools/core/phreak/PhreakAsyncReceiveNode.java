@@ -27,6 +27,7 @@ import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.index.TupleList;
 import org.slf4j.Logger;
@@ -82,7 +83,7 @@ public class PhreakAsyncReceiveNode {
                 InternalFactHandle factHandle = reteEvaluator.getFactHandleFactory().newFactHandle( message, node.getObjectTypeConf( reteEvaluator ), reteEvaluator, null );
                 if ( isAllowed( factHandle, node.getAlphaConstraints(), reteEvaluator ) ) {
                     if (betaConstraints.isAllowedCachedLeft(context, factHandle)) {
-                        TupleImpl childLeftTuple = sink.createLeftTuple(factHandle, leftTuple, sink );
+                        TupleImpl childLeftTuple = TupleFactory.createLeftTuple(factHandle, leftTuple, sink);
                         childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
                         trgLeftTuples.addInsert( childLeftTuple );
                     }

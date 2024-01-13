@@ -26,7 +26,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
@@ -348,7 +348,7 @@ public class FastUtilTreeMemoryTest {
     }
 
     public static TupleImpl getLeftTuple(int number) {
-        TupleImpl tuple = new JoinNodeLeftTuple();
+        TupleImpl tuple = new LeftTuple();
         tuple.setFactHandle(getFactHandle(number));
         return tuple;
     };

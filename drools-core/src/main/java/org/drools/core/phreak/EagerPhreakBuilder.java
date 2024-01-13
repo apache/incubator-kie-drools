@@ -69,6 +69,7 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.WindowNode;
@@ -1212,7 +1213,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             } else if (insert) {
                 BetaMemoryImpl bm = (BetaMemoryImpl) wm.getNodeMemories().peekNodeMemory(sink);
                 if (bm != null) {
-                    prevLt = rian.createPeer(prevLt);
+                    prevLt = TupleFactory.createPeer(rian, prevLt);
                     bm.linkNode((BetaNode) sink, wm);
                     bm.getStagedRightTuples().addInsert(prevLt);
                 }
@@ -1224,7 +1225,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
      * Create all missing peers
      */
     private static TupleImpl insertPeerLeftTuple(TupleImpl lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
-        TupleImpl peer = node.createPeer(lt);
+        TupleImpl peer = TupleFactory.createPeer(node, lt);
 
         if ( node.getLeftTupleSource().getType() == NodeTypeEnums.AlphaTerminalNode ) {
             if (insert) {

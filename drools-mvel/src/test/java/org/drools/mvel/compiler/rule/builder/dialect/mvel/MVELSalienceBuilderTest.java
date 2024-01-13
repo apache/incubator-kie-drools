@@ -31,12 +31,13 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
@@ -126,13 +127,13 @@ public class MVELSalienceBuilderTest {
 
         RuleTerminalNode rtn = new RuleTerminalNode(0, source, context.getRule(), new GroupElement(), 0, buildContext);
 
-        final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
+        final LeftTuple tuple = new LeftTuple( f0,
                                                                rtn,
                                                        true );
 
         rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
 
-        final RuleTerminalNodeLeftTuple item = (RuleTerminalNodeLeftTuple) rtn.createLeftTuple(tuple, rtn, null, true);
+        final RuleTerminalNodeLeftTuple item = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple(tuple, rtn, null, true);
         item.init(0, 0, item.getPropagationContext(), null, null);
 
         assertThat(context.getRule().getSalience().getValue(item, context.getRule(), ksession)).isEqualTo(25);
@@ -206,7 +207,7 @@ public class MVELSalienceBuilderTest {
             source.setObjectCount(1);
             sink.setLeftTupleSource(source);
 
-            tuple = new JoinNodeLeftTuple(f0,
+            tuple = new LeftTuple(f0,
                                           sink,
                                           true );
             this.salience = salience;
@@ -217,7 +218,7 @@ public class MVELSalienceBuilderTest {
             RuleTerminalNode rtn = new RuleTerminalNode(0, source, context.getRule(), new GroupElement(), 0, buildContext);
             rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
 
-            item = (RuleTerminalNodeLeftTuple) rtn.createLeftTuple(tuple, rtn, null, true);
+            item = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple(tuple, rtn, null, true);
             item.init(0, 0, item.getPropagationContext(), null, null);
         }
 

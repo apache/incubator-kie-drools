@@ -197,7 +197,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-        TupleImpl leftTuple = sink.createLeftTuple(factHandle, useLeftMemory );
+        TupleImpl leftTuple = TupleFactory.createLeftTuple( sink, factHandle, useLeftMemory );
         leftTuple.setPropagationContext( context );
 
         if ( sm.getRootNode() == liaNode ) {
@@ -209,7 +209,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             SegmentMemory originaSm = sm;
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 sink =  sm.getSinkFactory();
-                peer = sink.createPeer( peer ); // pctx is set during peer cloning
+                peer = TupleFactory.createPeer( sink, peer ); // pctx is set during peer cloning
             }
 
             sm = originaSm;

@@ -37,6 +37,7 @@ import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.AbstractHashTable;
@@ -656,7 +657,7 @@ public class PhreakAccumulateNode {
         if ( accPropCtx.getResultFactHandle() == null) {
             InternalFactHandle handle = accNode.createResultFactHandle(context, reteEvaluator, leftTuple, createResult(accNode, key, result ));
             accPropCtx.setResultFactHandle(handle);
-            accPropCtx.setResultLeftTuple( sink.createLeftTuple(handle, leftTuple, sink ));
+            accPropCtx.setResultLeftTuple(TupleFactory.createLeftTuple(handle, leftTuple, sink));
         } else {
             ((InternalFactHandle)accPropCtx.getResultFactHandle()).setObject( createResult(accNode, key, result) );
         }
@@ -738,9 +739,9 @@ public class PhreakAccumulateNode {
         // in sequential mode, we don't need to keep record of matched tuples
         if (useLeftMemory) {
             // linking left and right by creating a new left tuple
-            TupleImpl  match = accNode.createLeftTuple(leftTuple, rightTuple,
-                                                      currentLeftChild, currentRightChild,
-                                                      accNode,true);
+            TupleImpl  match = TupleFactory.createLeftTuple(leftTuple, rightTuple,
+                                                            currentLeftChild, currentRightChild,
+                                                            accNode,true);
 
             postAccumulate(accNode, accctx, match);
 

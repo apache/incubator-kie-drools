@@ -30,7 +30,7 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TupleImpl ;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.base.rule.Declaration;
@@ -83,7 +83,7 @@ public class RightTupleIndexHashTableTest {
                                                                          cheddar );
 
         assertThat(map.size()).isEqualTo(0);
-        assertThat(map.getFirst(new JoinNodeLeftTuple( cheddarHandle1,
+        assertThat(map.getFirst(new LeftTuple( cheddarHandle1,
                                                        new MockLeftTupleSink(0),
                 true ))).isNull();
 
@@ -103,7 +103,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
 
-        final Tuple tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle2,
+        final Tuple tuple = map.getFirst( new LeftTuple( stiltonHandle2,
                                                                  new MockLeftTupleSink(0),
                                                              true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonRighTuple.getFactHandle());
@@ -149,7 +149,7 @@ public class RightTupleIndexHashTableTest {
                                             77 );
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
-        Tuple tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle2,
+        Tuple tuple = map.getFirst( new LeftTuple( stiltonHandle2,
                                                            new MockLeftTupleSink(0),
                                                        true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
@@ -159,7 +159,7 @@ public class RightTupleIndexHashTableTest {
                                             5 );
         final InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
                                                                          cheddar2 );
-        tuple = map.getFirst( new JoinNodeLeftTuple( cheddarHandle2,
+        tuple = map.getFirst( new LeftTuple( cheddarHandle2,
                                                      new MockLeftTupleSink(0),
                                                  true ) );
         assertThat(tuple.getFactHandle()).isSameAs(cheddarHandle1);
@@ -214,7 +214,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
                                                                          stilton2 );
 
-        final TupleImpl tuple = map.getFirst( new JoinNodeLeftTuple( stiltonHandle3,
+        final TupleImpl tuple = map.getFirst( new LeftTuple( stiltonHandle3,
                                                                      new MockLeftTupleSink(0),
                                                            true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
@@ -574,7 +574,7 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle = new DefaultFactHandle( 2,
                                                                         stilton );
 
-        assertThat(map.getFirst(new JoinNodeLeftTuple(stiltonHandle, new MockLeftTupleSink(0), true ))).isNull();
+        assertThat(map.getFirst(new LeftTuple(stiltonHandle, new MockLeftTupleSink(0), true ))).isNull();
     }
 
 }

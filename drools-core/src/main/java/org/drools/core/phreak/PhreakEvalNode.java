@@ -25,6 +25,7 @@ import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
@@ -78,9 +79,9 @@ public class PhreakEvalNode {
             if (allowed) {
                 boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(evalNode, leftTuple);
 
-                trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                             sink,
-                                                             leftTuple.getPropagationContext(), useLeftMemory));
+                trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
+                                                                     sink,
+                                                                     leftTuple.getPropagationContext(), useLeftMemory));
             }
 
             leftTuple.clearStaged();
@@ -113,9 +114,9 @@ public class PhreakEvalNode {
                     trgLeftTuples.addUpdate(childLeftTuple);
                 } else {
                     // assert
-                    trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                                 sink,
-                                                                 leftTuple.getPropagationContext(), true));
+                    trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
+                                                                         sink,
+                                                                         leftTuple.getPropagationContext(), true));
                 }
             } else {
                 if (wasPropagated) {

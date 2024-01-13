@@ -40,6 +40,7 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -340,7 +341,7 @@ public class PhreakTimerNode {
                                                        TupleImpl leftTuple) {
         TupleImpl childLeftTuple = leftTuple.getFirstChild();
         if ( childLeftTuple == null ) {
-            childLeftTuple = sink.createLeftTuple( leftTuple, sink, leftTuple.getPropagationContext(), true );
+            childLeftTuple = TupleFactory.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true);
             trgLeftTuples.addInsert(childLeftTuple);
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Insert {}", childLeftTuple );

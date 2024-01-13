@@ -120,38 +120,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         return NodeTypeEnums.MockBetaNode;
     }
 
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }
-
     public LeftTupleSource getLeftTupleSource() {
         if ( super.getLeftTupleSource() != null) {
             return super.getLeftTupleSource();
@@ -170,8 +138,4 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
-    @Override
-    public LeftTuple createPeer(TupleImpl original) {
-        return null;
-    }
 }

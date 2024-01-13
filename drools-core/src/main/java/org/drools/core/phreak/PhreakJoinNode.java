@@ -26,6 +26,7 @@ import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.AbstractHashTable;
@@ -475,12 +476,12 @@ public class PhreakJoinNode {
                                               LeftTupleSink sink,
                                               boolean leftTupleMemoryEnabled ) {
         if (!leftTuple.isExpired() && !rightTuple.isExpired()) {
-            trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                         rightTuple,
-                                                         currentLeftChild,
-                                                         currentRightChild,
-                                                         sink,
-                                                         leftTupleMemoryEnabled));
+            trgLeftTuples.addInsert(TupleFactory.createLeftTuple(leftTuple,
+                                                                 rightTuple,
+                                                                 currentLeftChild,
+                                                                 currentRightChild,
+                                                                 sink,
+                                                                 leftTupleMemoryEnabled));
         }
     }
 }

@@ -33,31 +33,6 @@ public interface LeftTupleSink extends LeftTupleNode, Sink {
 
     boolean isLeftTupleMemoryEnabled();
 
-    TupleImpl createPeer(TupleImpl original);
-
-    TupleImpl createLeftTuple(final InternalFactHandle factHandle,
-                              boolean leftTupleMemoryEnabled);
-
-    TupleImpl createLeftTuple(final InternalFactHandle factHandle,
-                              final TupleImpl leftTuple,
-                              final Sink sink);
-
-    TupleImpl createLeftTuple(TupleImpl leftTuple,
-                              Sink sink,
-                              PropagationContext pctx,
-                              boolean leftTupleMemoryEnabled);
-
-    TupleImpl createLeftTuple(TupleImpl leftTuple,
-                              TupleImpl rightTuple,
-                              Sink sink);
-
-    TupleImpl createLeftTuple(TupleImpl leftTuple,
-                              TupleImpl rightTuple,
-                              TupleImpl currentLeftChild,
-                              TupleImpl currentRightChild,
-                              Sink sink,
-                              boolean leftTupleMemoryEnabled);
-
     ObjectTypeNodeId getLeftInputOtnId();
 
     void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId);

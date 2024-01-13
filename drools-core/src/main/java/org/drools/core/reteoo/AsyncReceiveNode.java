@@ -173,14 +173,6 @@ public class AsyncReceiveNode extends LeftTupleSource
         return new AsyncReceiveMemory(this, reteEvaluator);
     }
 
-    @Override
-    public LeftTuple createPeer(TupleImpl original ) {
-        EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
-    }
-
     protected boolean doRemove( final RuleRemovalContext context,
                                 final ReteooBuilder builder ) {
         if ( !this.isInUse() ) {
@@ -232,37 +224,6 @@ public class AsyncReceiveNode extends LeftTupleSource
 
     public int getType() {
         return NodeTypeEnums.AsyncReceiveNode;
-    }
-
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled ) {
-        return new EvalNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink ) {
-        return new EvalNodeLeftTuple( factHandle, leftTuple, sink );
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(TupleImpl leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
-        return new EvalNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink ) {
-        return new EvalNodeLeftTuple( leftTuple, rightTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled ) {
-        return new EvalNodeLeftTuple( leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
     @Override

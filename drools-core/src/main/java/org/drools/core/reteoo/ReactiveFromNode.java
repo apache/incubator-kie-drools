@@ -80,49 +80,9 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
         }
     }
 
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new ReactiveFromNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink) {
-        return new ReactiveFromNodeLeftTuple(factHandle, leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
-        throw new UnsupportedOperationException();
-    }
-
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new ReactiveFromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
-    }
-
     @Override
     public String toString() {
         return "[ReactiveFromNode(" + id + ") :: " + dataProvider + "]";
     }
 
-    @Override
-    public LeftTuple createPeer(TupleImpl original) {
-        ReactiveFromNodeLeftTuple peer = new ReactiveFromNodeLeftTuple();
-        peer.initPeer((LeftTuple) original, this);
-        original.setPeer( peer );
-        return peer;
-    }
 }

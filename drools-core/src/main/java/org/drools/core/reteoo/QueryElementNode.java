@@ -279,7 +279,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
 
             if ( query.processAbduction((InternalMatch) resultLeftTuple, dquery, objects, reteEvaluator) ) {
                 LeftTupleSink sink = dquery.getLeftTupleSink();
-                TupleImpl childLeftTuple = sink.createLeftTuple(this.leftTuple, rightTuple, sink );
+                TupleImpl childLeftTuple = TupleFactory.createLeftTuple(this.leftTuple, rightTuple, sink );
                 boolean stagedInsertWasEmpty = dquery.getResultLeftTupleSets().addInsert(childLeftTuple);
                 if ( stagedInsertWasEmpty ) {
                     dquery.getQueryNodeMemory().setNodeDirtyWithoutNotify();
@@ -406,53 +406,6 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             return leftTuple;
         }
 
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple( leftTuple,
-                                              sink,
-                                              pctx,
-                                              leftTupleMemoryEnabled );
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink) {
-        return new JoinNodeLeftTuple( leftTuple,
-                                      rightTuple,
-                                      sink );
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple( leftTuple,
-                                              rightTuple,
-                                              currentLeftChild,
-                                              currentRightChild,
-                                              sink,
-                                              leftTupleMemoryEnabled );
     }
 
     private int calculateHashCode() {
@@ -675,14 +628,6 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     @Override
     public ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
-    }
-
-    @Override
-    public LeftTuple createPeer(TupleImpl original) {
-        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer((LeftTuple) original, this);
-        original.setPeer(peer);
-        return peer;
     }
 
     @Override

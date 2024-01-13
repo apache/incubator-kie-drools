@@ -28,6 +28,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.FromNode;
@@ -241,12 +242,12 @@ public class PhreakFromNode {
 
             if (rightTuple.getFirstChild() == null) {
                 // this is a new match, so propagate as assert
-                TupleImpl childLeftTuple = sink.createLeftTuple(leftTuple,
-                                                                rightTuple,
-                                                                null,
-                                                                null,
-                                                                sink,
-                                                                useLeftMemory);
+                TupleImpl childLeftTuple = TupleFactory.createLeftTuple(leftTuple,
+                                                                        rightTuple,
+                                                                        null,
+                                                                        null,
+                                                                        sink,
+                                                                        useLeftMemory);
                 childLeftTuple.setPropagationContext(propagationContext);
                 trgLeftTuples.addInsert(childLeftTuple);
             } else {

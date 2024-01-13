@@ -25,6 +25,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
 public class LeftBuilder {
@@ -45,7 +46,7 @@ public class LeftBuilder {
     public LeftBuilder insert(Object... objects) {
         for ( Object object : objects ) {
             InternalFactHandle fh        = (InternalFactHandle) wm.insert( object );
-            TupleImpl          leftTuple = sink.createLeftTuple(fh, true);
+            TupleImpl          leftTuple = TupleFactory.createLeftTuple(sink, fh, true);
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addInsert( leftTuple );
         }

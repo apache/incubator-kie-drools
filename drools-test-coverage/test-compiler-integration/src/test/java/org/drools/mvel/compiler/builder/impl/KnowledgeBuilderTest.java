@@ -43,7 +43,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -1431,7 +1431,7 @@ public class KnowledgeBuilderTest {
 
     class MockTuple
         extends
-        JoinNodeLeftTuple {
+        LeftTuple {
         private Map declarations;
 
         public MockTuple(final Map declarations) {

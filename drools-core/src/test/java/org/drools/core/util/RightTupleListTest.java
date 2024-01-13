@@ -20,7 +20,7 @@ package org.drools.core.util;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.test.model.Cheese;
@@ -38,6 +38,6 @@ public class RightTupleListTest {
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
                                                              stilton1 );
 
-        assertThat(map.getFirst(new JoinNodeLeftTuple(h1, new MockLeftTupleSink(0), true ))).isNull();
+        assertThat(map.getFirst(new LeftTuple(h1, new MockLeftTupleSink(0), true ))).isNull();
     }
 }

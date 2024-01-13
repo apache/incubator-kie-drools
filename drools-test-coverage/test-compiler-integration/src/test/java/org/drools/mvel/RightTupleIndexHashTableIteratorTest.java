@@ -27,7 +27,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.MockRightTupleSink;
 import org.drools.core.reteoo.RightTuple;
@@ -107,7 +107,7 @@ public class RightTupleIndexHashTableIteratorTest extends AbstractTupleIndexHash
         List tableIndexList = createTableIndexListForAssertion(hashTable);
         assertThat(tableIndexList.size()).isEqualTo(5);
 
-        List resultList = new ArrayList<JoinNodeLeftTuple>();
+        List resultList = new ArrayList<LeftTuple>();
         FastIterator<TupleImpl> it = betaMemory.getRightTupleMemory().fullFastIterator();
         for (TupleImpl rightTuple = it.next(null); rightTuple != null; rightTuple =  it.next(rightTuple)) {
             resultList.add(rightTuple);

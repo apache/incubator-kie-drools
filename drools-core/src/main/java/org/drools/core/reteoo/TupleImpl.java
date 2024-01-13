@@ -725,7 +725,7 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         this.memory = memory;
     }
 
-    public void initPeer(TupleImpl original, LeftTupleSink sink) {
+    public void initPeer(TupleImpl original, Sink sink) {
         this.index = original.index;
         this.parent = original.parent;
         this.leftParent = original.leftParent;

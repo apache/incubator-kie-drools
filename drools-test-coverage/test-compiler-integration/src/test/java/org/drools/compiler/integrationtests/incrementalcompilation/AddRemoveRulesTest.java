@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -1513,8 +1513,8 @@ public class AddRemoveRulesTest {
             assertThat(lt1_3).isNotNull();
             assertThat(lt1.getLastChild()).isSameAs(lt1_3);
 
-            assertThat((JoinNodeLeftTuple)lt1_3.getHandlePrevious()).isSameAs(lt1_2);
-            assertThat((JoinNodeLeftTuple)lt1_2.getHandlePrevious()).isSameAs(lt1_1);
+            assertThat((LeftTuple)lt1_3.getHandlePrevious()).isSameAs(lt1_2);
+            assertThat((LeftTuple)lt1_2.getHandlePrevious()).isSameAs(lt1_1);
 
             assertThat(lt1_1.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
             assertThat(lt1_1.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE2_NAME))).isTrue();
@@ -1588,8 +1588,8 @@ public class AddRemoveRulesTest {
             assertThat(lt1_3).isNotNull();
             assertThat(lt1.getLastChild()).isSameAs(lt1_3);
 
-            assertThat((JoinNodeLeftTuple)lt1_3.getHandlePrevious()).isSameAs(lt1_2);
-            assertThat((JoinNodeLeftTuple)lt1_2.getHandlePrevious()).isSameAs(lt1_1);
+            assertThat((LeftTuple)lt1_3.getHandlePrevious()).isSameAs(lt1_2);
+            assertThat((LeftTuple)lt1_2.getHandlePrevious()).isSameAs(lt1_1);
 
             assertThat(lt1_1.getSink().getAssociatedTerminalsSize()).isEqualTo(1);
             assertThat(lt1_1.getSink().isAssociatedWith(rulesMap.get(TestUtil.RULE1_NAME))).isTrue();

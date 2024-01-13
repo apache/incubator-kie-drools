@@ -260,13 +260,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return pmem;
     }
 
-    public LeftTuple createPeer(TupleImpl original) {
-        LeftTuple peer = AgendaComponentFactory.get().createTerminalTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
-    }
-
     protected boolean doRemove(final RuleRemovalContext context,
                                final ReteooBuilder builder) {
         getLeftTupleSource().removeTupleSink(this);

@@ -29,6 +29,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 
 import static org.drools.base.reteoo.NodeTypeEnums.AccumulateNode;
@@ -89,7 +90,7 @@ public class SegmentPropagator {
                     // peers do not exist, so create and add them.
                     for (; smem != null; smem = smem.getNext()) {
                         LeftTupleSink sink = smem.getSinkFactory();
-                        peer = sink.createPeer(peer); // pctx is set during peer cloning
+                        peer = TupleFactory.createPeer(sink, peer); // pctx is set during peer cloning
                         smem.getStagedLeftTuples().addInsert( peer );
                     }
                 } else {

@@ -189,13 +189,6 @@ public class RightInputAdapterNode extends ObjectSource
     public RiaPathMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return (RiaPathMemory) AbstractTerminalNode.initPathMemory( this, new RiaPathMemory(this, reteEvaluator) );
     }
-    
-    public SubnetworkTuple createPeer(TupleImpl original) {
-        SubnetworkTuple peer = new SubnetworkTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
-    }     
 
     public void doAttach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
@@ -278,39 +271,6 @@ public class RightInputAdapterNode extends ObjectSource
     public String toString() {
         return "RightInputAdapterNode(" + id + ")[ tupleMemoryEnabled=" + tupleMemoryEnabled + ", tupleSource=" + tupleSource + ", source="
                + source + ", associations=" + associations + ", partitionId=" + partitionId + "]";
-    }
-    
-    public TupleImpl createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new SubnetworkTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public TupleImpl createLeftTuple(final InternalFactHandle factHandle,
-                                     final TupleImpl leftTuple,
-                                     final Sink sink) {
-        return new SubnetworkTuple(factHandle,leftTuple, sink );
-    }
-
-    public TupleImpl createLeftTuple(TupleImpl leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx,
-                                     boolean leftTupleMemoryEnabled) {
-        return new SubnetworkTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public TupleImpl createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     Sink sink) {
-        return new SubnetworkTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public TupleImpl createLeftTuple(TupleImpl leftTuple,
-                                     TupleImpl rightTuple,
-                                     TupleImpl currentLeftChild,
-                                     TupleImpl currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new SubnetworkTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTupleSource getLeftTupleSource() {

@@ -96,8 +96,6 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     public abstract int getType();
 
-    public abstract LeftTuple createPeer(TupleImpl original);
-
     public ObjectTypeNodeId getLeftInputOtnId() {
         return leftInputOtnId;
     }
