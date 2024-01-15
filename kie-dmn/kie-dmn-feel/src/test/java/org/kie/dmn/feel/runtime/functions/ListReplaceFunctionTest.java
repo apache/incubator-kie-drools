@@ -68,12 +68,29 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
+    public void invokeReplaceByNegativePositionWithNotNull() {
+        List list = getList();
+        List expected = new ArrayList<>(list);
+        expected.set(2, "test");
+        FunctionTestUtil.assertResult(listReplaceFunction.invoke(list, BigDecimal.valueOf(-1), "test"), expected);
+    }
+
+    @Test
+    public void invokeReplaceByNegativePositionWithNull() {
+        List list = getList();
+        List expected = new ArrayList<>(list);
+        expected.set(2, null);
+        FunctionTestUtil.assertResult(listReplaceFunction.invoke(list, BigDecimal.valueOf(-1), null), expected);
+    }
+
+    @Test
     public void invokeReplaceByPositionWithNotNull() {
         List list = getList();
         List expected = new ArrayList<>(list);
         expected.set(1, "test");
         FunctionTestUtil.assertResult(listReplaceFunction.invoke(list, BigDecimal.valueOf(2), "test"), expected);
     }
+
 
     @Test
     public void invokeMatchNull() {

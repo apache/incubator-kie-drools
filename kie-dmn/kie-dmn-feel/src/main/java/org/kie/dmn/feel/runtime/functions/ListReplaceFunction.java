@@ -31,6 +31,8 @@ public class ListReplaceFunction
 
     public static final ListReplaceFunction INSTANCE = new ListReplaceFunction();
 
+    private static final String CANNOT_BE_NULL = "cannot be null"
+
     private ListReplaceFunction() {
         super("list replace");
     }
@@ -38,19 +40,20 @@ public class ListReplaceFunction
     public FEELFnResult<List> invoke(@ParameterName("list") List list, @ParameterName("position") BigDecimal position,
                                      @ParameterName("newItem") Object newItem) {
         if (list == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", CANNOT_BE_NULL));
         }
         if (position == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", CANNOT_BE_NULL));
         }
         int intPosition = position.intValue();
-        if (intPosition < 1 || intPosition > list.size()) {
+        if (intPosition == 0 || Math.abs(intPosition) > list.size()) {
             String paramProblem = String.format("%s outside valid boundaries (1-%s)", intPosition, list.size());
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", paramProblem));
         }
         Object e = EvalHelper.coerceNumber(newItem);
         List toReturn = new ArrayList(list);
-        toReturn.set(intPosition - 1, e);
+        int replacementPosition = intPosition > 0 ? intPosition -1 : list.size() - Math.abs(intPosition);
+        toReturn.set(replacementPosition, e);
         return FEELFnResult.ofResult(toReturn);
     }
 
@@ -58,10 +61,10 @@ public class ListReplaceFunction
                                      @ParameterName("match") AbstractCustomFEELFunction match,
                                      @ParameterName("newItem") Object newItem) {
         if (list == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", CANNOT_BE_NULL));
         }
         if (match == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "match", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "match", CANNOT_BE_NULL));
         }
         Object e = EvalHelper.coerceNumber(newItem);
         List toReturn = new ArrayList();

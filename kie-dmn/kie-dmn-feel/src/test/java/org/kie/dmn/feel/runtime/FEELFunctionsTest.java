@@ -240,6 +240,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 {"list replace ( null, 3, 6)", null , FEELEvent.Severity.ERROR},
                 {"list replace ( [2, 4, 7, 8], null, 6)", null , FEELEvent.Severity.ERROR},
                 {"list replace ( [2, 4, 7, 8], 3, 6)", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.valueOf(6), BigDecimal.valueOf(8)), null},
+                {"list replace ( [2, 4, 7, 8], -3, 6)", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(6), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null},
                 {"list replace ( [2, 4, 7, 8], function(item, newItem) item + newItem, 6)", null , FEELEvent.Severity.ERROR},
                 {"list replace ( [\"El-1\", \"El-2\", \"El-3\", \"El-4\"], function(item, newItem) item = \"El-2\", null)", Arrays.asList("El-1", null, "El-3", "El-4"), null},
                 {"list replace ( [2, 4, 7, 8], function(item, newItem) item < newItem, 5)", Arrays.asList(BigDecimal.valueOf(5), BigDecimal.valueOf(5), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null}
