@@ -297,6 +297,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "org.kie.dmn.feel.runtime.functions.ListReplaceFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "org.kie.dmn.feel.runtime.functions.LogFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
