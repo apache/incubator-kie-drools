@@ -29,6 +29,7 @@
   {
     "name": "java.util.Map$Entry[]"
   },
+  {"name":"java.lang.reflect.AnnotatedElement", "allPublicMethods": true},
   {"name":"java.lang.IllegalStateException","allPublicMethods":true},
   {"name":"java.lang.NoSuchMethodError","allPublicMethods":true,"allPublicConstructors":true, "allPublicClasses": true},
   {"name":"java.lang.IllegalStateException[]","allPublicMethods":true},
@@ -238,6 +239,10 @@
     "name": "jep.MainInterpreter"
   },
   {
+  	"name": "jep.PyMethod",
+  	"allPublicMethods": true
+  },
+  {
     "name": "jep.NDArray",
     "allPublicMethods": true,
     "allPublicConstructors": true
@@ -245,5 +250,9 @@
   {
     "name": "jep.ClassList",
     "allPublicMethods": true
+  },
+  {
+  	"name": "java.lang.reflect.Executable",
+  	"allPublicMethods": true
   }
 ]
