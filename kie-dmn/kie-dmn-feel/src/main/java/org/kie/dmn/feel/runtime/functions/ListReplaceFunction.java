@@ -31,7 +31,7 @@ public class ListReplaceFunction
 
     public static final ListReplaceFunction INSTANCE = new ListReplaceFunction();
 
-    private static final String CANNOT_BE_NULL = "cannot be null"
+    private static final String CANNOT_BE_NULL = "cannot be null";
 
     private ListReplaceFunction() {
         super("list replace");
