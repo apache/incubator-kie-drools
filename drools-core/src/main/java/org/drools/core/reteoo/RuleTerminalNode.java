@@ -48,7 +48,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     protected boolean                       fireDirect;
 
-    protected transient ObjectTypeNodeId leftInputOtnId;
+    protected transient ObjectTypeNodeId leftInputOtnId = ObjectTypeNodeId.DEFAULT_ID;
 
     protected String                        consequenceName;
 

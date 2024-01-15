@@ -46,9 +46,10 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.BetaNode.RightTupleSinkAdapter;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
+import org.drools.core.reteoo.LeftInputAdapterNode.LeftTupleSinkAdapter;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSinkNode;
@@ -268,9 +269,24 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             LeftInputAdapterNode      lian        = (LeftInputAdapterNode) startNode;
             if (allBranches && visited.add(lian.getId()) || lian.getAssociatedTerminalsSize() == 1 ) {
-                RightTupleSinkAdapter liaAdapter = new RightTupleSinkAdapter(lian);
-                lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
+                attachAdapterAndPropagate(wm, lian, pctx);
             }
+        }
+
+        public static void attachAdapterAndPropagate(InternalWorkingMemory wm, LeftInputAdapterNode lian, PropagationContext pctx) {
+            List<DetachedTuple>  detachedTuples = new ArrayList<>();
+            LeftTupleSinkAdapter liaAdapter     = new LeftTupleSinkAdapter(lian, detachedTuples);
+            lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
+            detachedTuples.forEach(d -> d.reattachToLeft());
+        }
+
+        public static void attachAdapterAndPropagate(InternalWorkingMemory wm, BetaNode bn) {
+            PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
+            final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
+            List<DetachedTuple> detachedTuples = new ArrayList<>();
+            RightTupleSinkAdapter bnAdapter = new RightTupleSinkAdapter(bn, detachedTuples);
+            bn.getRightInput().updateSink(bnAdapter, pctx, wm);
+            detachedTuples.forEach(d -> d.reattachToRight());
         }
 
         public static SegmentPrototype processSplit(LeftTupleNode splitNode, InternalRuleBase kbase, Collection<InternalWorkingMemory> wms, Set<SegmentMemoryPair> smemsToNotify) {
@@ -326,9 +342,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         BetaNode bn = (BetaNode) node;
 
                         if (!bn.isRightInputIsRiaNode()) {
-                            PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
-                            final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
-                            bn.getRightInput().updateSink(bn, pctx, wm);
+                            attachAdapterAndPropagate(wm, bn);
                         }
                     }
                 }

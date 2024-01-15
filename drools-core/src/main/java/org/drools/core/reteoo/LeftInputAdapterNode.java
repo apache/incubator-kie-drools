@@ -31,7 +31,7 @@ import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.BaseNode;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -40,6 +40,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.DetachedTuple;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -595,25 +596,33 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
      */
-    public static class RightTupleSinkAdapter
+    public static class LeftTupleSinkAdapter
             implements
             ObjectSink {
-        private LeftTupleSink sink;
         private LeftInputAdapterNode liaNode;
 
-        public RightTupleSinkAdapter(LeftInputAdapterNode liaNode) {
+        private List<DetachedTuple> detachedTuples;
+
+        public LeftTupleSinkAdapter(LeftInputAdapterNode liaNode, List<DetachedTuple> detachedTuples) {
             this.liaNode = liaNode;
+            this.detachedTuples = detachedTuples;
         }
 
         /**
          * Do not use this constructor. It should be used just by deserialization.
          */
-        public RightTupleSinkAdapter() {
+        public LeftTupleSinkAdapter() {
         }
 
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final ReteEvaluator reteEvaluator) {
+            ObjectTypeNodeId otnId = liaNode.getSinkPropagator().getFirstLeftTupleSink().getLeftInputOtnId();
+            TupleImpl detached = factHandle.getLinkedTuples().detachLeftTupleAfter(getPartitionId(), otnId);
+            if (detached != null) {
+                detachedTuples.add(new DetachedTuple((DefaultFactHandle) factHandle, detached));
+            }
+
             liaNode.assertObject(factHandle, context, reteEvaluator);
         }
 
@@ -629,7 +638,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         public RuleBasePartitionId getPartitionId() {
-            return sink.getPartitionId();
+            return liaNode.getPartitionId();
         }
 
         public void byPassModifyToBetaNode(InternalFactHandle factHandle,
@@ -644,11 +653,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         @Override public Rule[] getAssociatedRules() {
-            return sink.getAssociatedRules();
+            return liaNode.getAssociatedRules();
         }
 
         public boolean isAssociatedWith(Rule rule) {
-            return sink.isAssociatedWith( rule );
+            return liaNode.isAssociatedWith( rule );
         }
 
         @Override
@@ -658,22 +667,22 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         @Override
         public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
-            sink.addAssociatedTerminal(terminalNode);
+            liaNode.addAssociatedTerminal(terminalNode);
         }
 
         @Override
         public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
-            sink.removeAssociatedTerminal(terminalNode);
+            liaNode.removeAssociatedTerminal(terminalNode);
         }
 
         @Override
         public int getAssociatedTerminalsSize() {
-            return sink.getAssociatedTerminalsSize();
+            return liaNode.getAssociatedTerminalsSize();
         }
 
         @Override
         public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
-            return sink.hasAssociatedTerminal(terminalNode);
+            return liaNode.hasAssociatedTerminal(terminalNode);
         }
     }
 

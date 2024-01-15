@@ -26,6 +26,7 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.reteoo.ObjectTypeNodeId;
 import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -112,8 +113,6 @@ public interface InternalFactHandle
 
     void removeRightTuple( TupleImpl rightTuple);
 
-    void addTupleInPosition( TupleImpl tuple);
-
     boolean isNegated();
     void setNegated(boolean negated);
 
@@ -142,9 +141,7 @@ public interface InternalFactHandle
 
         void addFirstLeftTuple( TupleImpl leftTuple);
         void addLastLeftTuple( TupleImpl leftTuple);
-
-        void addTupleInPosition( TupleImpl tuple);
-
+        
         void removeLeftTuple( TupleImpl leftTuple);
 
         void addFirstRightTuple( TupleImpl rightTuple);
@@ -170,6 +167,22 @@ public interface InternalFactHandle
 
         default TupleImpl getFirstRightTuple(RuleBasePartitionId partitionId) {
             return getFirstRightTuple( partitionId.getParallelEvaluationSlot() );
+        }
+
+        default TupleImpl detachLeftTupleAfter(RuleBasePartitionId partitionId, ObjectTypeNodeId otnId) {
+            throw new UnsupportedOperationException();
+        }
+
+        default TupleImpl detachRightTupleAfter(RuleBasePartitionId partitionId, ObjectTypeNodeId otnId) {
+            throw new UnsupportedOperationException();
+        }
+
+        default void reattachToLeft(TupleImpl tuple) {
+            throw new UnsupportedOperationException();
+        }
+
+        default void reattachToRight(TupleImpl tuple) {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -342,11 +355,6 @@ public interface InternalFactHandle
 
         @Override
         public void removeRightTuple( TupleImpl rightTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void addTupleInPosition( TupleImpl tuple) {
             throw new UnsupportedOperationException();
         }
 
