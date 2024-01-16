@@ -174,7 +174,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>${jandex.group-id}</groupId>
+      <groupId>io.smallrye</groupId>
       <artifactId>jandex</artifactId>
       <scope>test</scope>
     </dependency>
