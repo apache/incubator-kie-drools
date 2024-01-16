@@ -144,7 +144,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>${jandex-maven-plugin.group-id}</groupId>
+                <groupId>io.smallrye</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
             </plugin>
         </plugins>
