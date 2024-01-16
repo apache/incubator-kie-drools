@@ -24,8 +24,6 @@ import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -47,10 +45,10 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     }
 
     public ReactiveFromMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemoryImpl beta = new BetaMemoryImpl(new TupleList(),
-                                                 null,
-                                                 this.betaConstraints.createContext(),
-                                                 NodeTypeEnums.FromNode );
+        BetaMemory beta = new BetaMemory(new TupleList(),
+                                         null,
+                                         this.betaConstraints.createContext(),
+                                         NodeTypeEnums.FromNode );
         return new ReactiveFromMemory( beta,
                                        this.dataProvider );
     }
@@ -65,7 +63,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
 
         private final TupleSets stagedLeftTuples;
 
-        public ReactiveFromMemory(BetaMemoryImpl betaMemory,
+        public ReactiveFromMemory(BetaMemory betaMemory,
                                   DataProvider dataProvider) {
             super(betaMemory, dataProvider);
             stagedLeftTuples = new TupleSetsImpl();

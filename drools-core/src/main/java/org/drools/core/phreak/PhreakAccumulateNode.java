@@ -33,7 +33,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.BaseAccumulation;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
@@ -56,7 +55,7 @@ public class PhreakAccumulateNode {
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
 
-        BetaMemoryImpl        bm             = am.getBetaMemory();
+        BetaMemory bm             = am.getBetaMemory();
         TupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
 
 

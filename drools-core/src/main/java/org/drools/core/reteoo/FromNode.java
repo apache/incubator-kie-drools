@@ -237,10 +237,10 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
 
     public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemoryImpl beta = new BetaMemoryImpl(new TupleList(),
-                                                 null,
-                                                 this.betaConstraints.createContext(),
-                                                 NodeTypeEnums.FromNode );
+        BetaMemory beta = new BetaMemory(new TupleList(),
+                                         null,
+                                         this.betaConstraints.createContext(),
+                                         NodeTypeEnums.FromNode );
         return (T) new FromMemory( beta,
                                    this.dataProvider );
     }
@@ -297,10 +297,10 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
         private DataProvider      dataProvider;
 
-        private final BetaMemoryImpl betaMemory;
+        private final BetaMemory betaMemory;
         public        Object         providerContext;
 
-        public FromMemory(BetaMemoryImpl betaMemory,
+        public FromMemory(BetaMemory betaMemory,
                           DataProvider dataProvider) {
             this.betaMemory = betaMemory;
             this.dataProvider = dataProvider;
@@ -319,7 +319,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             betaMemory.setSegmentMemory(segmentMemory);
         }
 
-        public BetaMemoryImpl<Object> getBetaMemory() {
+        public BetaMemory<Object> getBetaMemory() {
             return betaMemory;
         }
 

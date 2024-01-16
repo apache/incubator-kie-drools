@@ -45,7 +45,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -956,11 +955,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
         private static void deleteRightInputData(LeftTupleNode node, Memory m, InternalWorkingMemory wm) {
             BetaNode       bn = (BetaNode) node;
-            BetaMemoryImpl bm;
+            BetaMemory bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
                 bm = ((AccumulateMemory) m).getBetaMemory();
             } else {
-                bm = (BetaMemoryImpl) m;
+                bm = (BetaMemory) m;
             }
 
             TupleMemory  rtm = bm.getRightTupleMemory();
@@ -1159,25 +1158,25 @@ public class EagerPhreakBuilder implements PhreakBuilder {
     private static void visitChild(TupleImpl lt, boolean insert, InternalWorkingMemory wm, TerminalNode tn) {
         TupleImpl prevLt = null;
 
-        LeftTupleSinkNode sink = (LeftTupleSinkNode) SuperCacheFixer.getSink(lt);
+        LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getSink();
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             if ( lt != null ) {
-                if (isAssociatedWith(SuperCacheFixer.getSink(lt), tn)) {
+                if (isAssociatedWith(lt.getSink(), tn)) {
 
-                    if (SuperCacheFixer.getSink(lt).getAssociatedTerminalsSize() > 1) {
+                    if (lt.getSink().getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
                             for ( TupleImpl child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
                                 visitChild(child, insert, wm, tn);
                             }
-                        } else if (SuperCacheFixer.getSink(lt).getType() == NodeTypeEnums.RightInputAdapterNode) {
+                        } else if (lt.getSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
                             insertPeerRightTuple(lt, wm, tn, insert);
                         }
                     } else if (!insert) {
                         iterateLeftTuple( lt, wm );
                         TupleImpl lt2 = null;
                         for ( TupleImpl peerLt = lt.getPeer();
-                              peerLt != null && isAssociatedWith(SuperCacheFixer.getSink(peerLt), tn) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
+                              peerLt != null && isAssociatedWith(peerLt.getSink(), tn) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
                               peerLt = peerLt.getPeer() ) {
                             iterateLeftTuple( peerLt, wm );
                             lt2 = peerLt;
@@ -1201,7 +1200,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
     private static void insertPeerRightTuple(TupleImpl lt, InternalWorkingMemory wm, TerminalNode tn, boolean insert ) {
         // There's a shared RightInputAdapterNode, so check if one of its sinks is associated only to the new rule
         TupleImpl prevLt = null;
-        RightInputAdapterNode rian = (RightInputAdapterNode) SuperCacheFixer.getSink(lt);
+        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getSink();
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {
@@ -1211,7 +1210,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 prevLt = lt;
                 lt = lt.getPeer();
             } else if (insert) {
-                BetaMemoryImpl bm = (BetaMemoryImpl) wm.getNodeMemories().peekNodeMemory(sink);
+                BetaMemory bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(sink);
                 if (bm != null) {
                     prevLt = TupleFactory.createPeer(rian, prevLt);
                     bm.linkNode((BetaNode) sink, wm);

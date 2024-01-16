@@ -37,7 +37,7 @@ import org.drools.core.phreak.EagerPhreakBuilder;
 import org.drools.core.phreak.EagerPhreakBuilder.Add;
 import org.drools.core.phreak.EagerPhreakBuilder.Pair;
 import org.drools.core.phreak.PhreakBuilder;
-import org.drools.core.reteoo.BetaMemoryImpl;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -663,12 +663,12 @@ public class AddRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemoryImpl c1Mem = (BetaMemoryImpl) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemoryImpl c2Mem  = (BetaMemoryImpl) wm.getNodeMemory(c2Node);
+        BetaMemory c2Mem  = (BetaMemory) wm.getNodeMemory(c2Node);
         SegmentMemory  c2Smem =  sm.getFirst().getNext();
         assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
         assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(0);
@@ -727,12 +727,12 @@ public class AddRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemoryImpl c1Mem = (BetaMemoryImpl) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemoryImpl c2Mem  = (BetaMemoryImpl) wm.getNodeMemory(c2Node);
+        BetaMemory c2Mem  = (BetaMemory) wm.getNodeMemory(c2Node);
         SegmentMemory  c2Smem =  sm.getFirst().getNext();
         assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
         assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(0);
@@ -785,7 +785,7 @@ public class AddRuleTest {
         JoinNode bNode1 = (JoinNode) liaNode.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode bNode2 = (JoinNode) liaNode.getSinkPropagator().getLastLeftTupleSink();
 
-        BetaMemoryImpl bm = (BetaMemoryImpl) wm.getNodeMemory(bNode2);
+        BetaMemory bm = (BetaMemory) wm.getNodeMemory(bNode2);
         SegmentMemory  sm = bm.getSegmentMemory();
         assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
         assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();

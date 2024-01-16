@@ -27,7 +27,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.PhreakJoinNode;
-import org.drools.core.reteoo.BetaMemoryImpl;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -50,10 +50,10 @@ public class PhreakJoinNodeTest {
     JoinNode              joinNode;
     JoinNode              sinkNode;
     InternalWorkingMemory wm;
-    BetaMemoryImpl        bm;
+    BetaMemory bm;
     SegmentMemory         smem;
     
-    BetaMemoryImpl bm0;
+    BetaMemory bm0;
     SegmentMemory  smem0;
 
     public void setupJoinNode() {
@@ -78,9 +78,9 @@ public class PhreakJoinNodeTest {
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
 
-        bm = (BetaMemoryImpl)  wm.getNodeMemory(joinNode);
+        bm = (BetaMemory)  wm.getNodeMemory(joinNode);
         
-        bm0 =(BetaMemoryImpl)  wm.getNodeMemory(sinkNode);
+        bm0 =(BetaMemory)  wm.getNodeMemory(sinkNode);
         
         smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );
@@ -227,7 +227,7 @@ public class PhreakJoinNodeTest {
     private Scenario test(Class phreakNode,
                           JoinNode joinNode,
                           LeftTupleSink sinkNode,
-                          BetaMemoryImpl bm,
+                          BetaMemory bm,
                           InternalWorkingMemory wm) {
         return new Scenario( phreakNode, joinNode, sinkNode, bm, wm );
     }

@@ -85,7 +85,7 @@ public class NotNode extends BetaNode {
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext pctx,
                               final ReteEvaluator reteEvaluator ) {
-        final BetaMemoryImpl memory = (BetaMemoryImpl) getBetaMemoryFromRightInput(this, reteEvaluator);
+        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, reteEvaluator);
 
         TupleImpl rightTuple = createRightTuple( factHandle,
                                                   this,
@@ -116,14 +116,14 @@ public class NotNode extends BetaNode {
     public void retractRightTuple(final TupleImpl rightTuple,
                                   final PropagationContext pctx,
                                   final ReteEvaluator reteEvaluator) {
-        final BetaMemoryImpl memory = (BetaMemoryImpl) reteEvaluator.getNodeMemory(this);
+        final BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory(this);
         rightTuple.setPropagationContext( pctx );
         doDeleteRightTuple( rightTuple, reteEvaluator, memory );
     }
 
     public void doDeleteRightTuple(final TupleImpl rightTuple,
                                    final ReteEvaluator reteEvaluator,
-                                   final BetaMemoryImpl memory) {
+                                   final BetaMemory memory) {
         TupleSets stagedRightTuples = memory.getStagedRightTuples();
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
 

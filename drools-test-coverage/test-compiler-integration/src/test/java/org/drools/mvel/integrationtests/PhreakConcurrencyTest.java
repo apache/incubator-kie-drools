@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.drools.core.reteoo.BetaMemoryImpl;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.AlphaNode;
@@ -400,7 +400,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
             ObjectTypeNode otn = ((NamedEntryPoint)ep).getEntryPointNode().getObjectTypeNodes().values().iterator().next();
             AlphaNode alpha = (AlphaNode)otn.getObjectSinkPropagator().getSinks()[0];
             BetaNode       beta   = (BetaNode)alpha.getObjectSinkPropagator().getSinks()[0];
-            BetaMemoryImpl memory = (BetaMemoryImpl) reteEvaluator.getNodeMemory(beta);
+            BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory(beta);
             memory.getSegmentMemory();
 
             for (int i = 0; i < 100; i++) {

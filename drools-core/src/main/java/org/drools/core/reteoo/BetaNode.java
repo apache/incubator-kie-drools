@@ -251,7 +251,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     @Override
     public void assertObject( InternalFactHandle factHandle, PropagationContext pctx, ReteEvaluator reteEvaluator ) {
-        final BetaMemoryImpl memory = (BetaMemoryImpl) getBetaMemoryFromRightInput(this, reteEvaluator);
+        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, reteEvaluator);
 
         RightTuple rightTuple = createRightTuple(factHandle, this, pctx);
 
@@ -284,7 +284,7 @@ public abstract class BetaNode extends LeftTupleSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemoryImpl bm = getBetaMemory(rightTuple.getSink(), reteEvaluator);
+            BetaMemory bm = getBetaMemory(rightTuple.getSink(), reteEvaluator);
             (( BetaNode ) rightTuple.getSink()).doDeleteRightTuple(rightTuple, reteEvaluator, bm);
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
@@ -296,7 +296,7 @@ public abstract class BetaNode extends LeftTupleSource
                 // RightTuple previously existed, so continue as modify
                 rightTuple.setPropagationContext( context );  // only update, if the mask intersects
 
-                BetaMemoryImpl bm = getBetaMemory(this, reteEvaluator);
+                BetaMemory bm = getBetaMemory(this, reteEvaluator);
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, reteEvaluator, bm);
             } else if (rightTuple.getMemory() != null) {
@@ -317,7 +317,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void doDeleteRightTuple(final TupleImpl rightTuple,
                                    final ReteEvaluator reteEvaluator,
-                                   final BetaMemoryImpl memory) {
+                                   final BetaMemory memory) {
         TupleSets stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
@@ -340,7 +340,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void doUpdateRightTuple(final TupleImpl rightTuple,
                                     final ReteEvaluator reteEvaluator,
-                                    final BetaMemoryImpl memory) {
+                                    final BetaMemory memory) {
         TupleSets stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
@@ -510,12 +510,12 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
 
-    public static BetaMemoryImpl getBetaMemory(NetworkNode node, ReteEvaluator reteEvaluator) {
-        BetaMemoryImpl bm;
+    public static BetaMemory getBetaMemory(NetworkNode node, ReteEvaluator reteEvaluator) {
+        BetaMemory bm;
         if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
             bm = ((AccumulateMemory)reteEvaluator.getNodeMemory((AccumulateNode)node)).getBetaMemory();
         } else {
-            bm = ((BetaMemoryImpl)reteEvaluator.getNodeMemory((BetaNode)node));
+            bm = ((BetaMemory)reteEvaluator.getNodeMemory((BetaNode)node));
         }
         return bm;
     }

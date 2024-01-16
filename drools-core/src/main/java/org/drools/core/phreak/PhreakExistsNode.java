@@ -23,7 +23,6 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -38,7 +37,7 @@ import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 public class PhreakExistsNode {
     public void doNode(ExistsNode existsNode,
                        LeftTupleSink sink,
-                       BetaMemoryImpl bm,
+                       BetaMemory bm,
                        ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
@@ -53,7 +52,7 @@ public class PhreakExistsNode {
 
     public void doNormalNode(ExistsNode existsNode,
                              LeftTupleSink sink,
-                             BetaMemoryImpl bm,
+                             BetaMemory bm,
                              ReteEvaluator reteEvaluator,
                              TupleSets srcLeftTuples,
                              TupleSets trgLeftTuples,

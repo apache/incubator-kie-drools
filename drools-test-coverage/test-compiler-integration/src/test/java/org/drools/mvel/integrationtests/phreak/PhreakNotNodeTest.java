@@ -26,7 +26,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.PhreakNotNode;
-import org.drools.core.reteoo.BetaMemoryImpl;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -52,7 +52,7 @@ public class PhreakNotNodeTest {
     NotNode               notNode;
     JoinNode              sinkNode;
     InternalWorkingMemory wm;
-    BetaMemoryImpl        bm;
+    BetaMemory bm;
 
     private void setupNotNode(String operator) {
         buildContext = createContext();
@@ -76,9 +76,9 @@ public class PhreakNotNodeTest {
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
         
-        bm =(BetaMemoryImpl)  wm.getNodeMemory(notNode);
+        bm =(BetaMemory)  wm.getNodeMemory(notNode);
         
-        BetaMemoryImpl bm1 =(BetaMemoryImpl)  wm.getNodeMemory(sinkNode);
+        BetaMemory bm1 =(BetaMemory)  wm.getNodeMemory(sinkNode);
         
         SegmentMemory smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );
@@ -151,7 +151,7 @@ public class PhreakNotNodeTest {
 
     private Scenario test(NotNode notNode,
                              LeftTupleSink sinkNode,
-                             BetaMemoryImpl bm,
+                             BetaMemory bm,
                              InternalWorkingMemory wm) {
         return new Scenario( PhreakNotNode.class, notNode, sinkNode, bm, wm ) ;
     }

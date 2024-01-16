@@ -20,9 +20,7 @@ package org.drools.core.phreak;
 
 import java.util.Iterator;
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -138,7 +136,7 @@ public class SegmentPropagator {
                 break;
             default:
                 // no clash, so just add
-                if (SuperCacheFixer.getSink(childLeftTuple).getType() == AccumulateNode ) {
+                if (childLeftTuple.getSink().getType() == AccumulateNode ) {
                     trgLeftTuples.addInsert(childLeftTuple);
                 } else {
                     trgLeftTuples.addUpdate(childLeftTuple);

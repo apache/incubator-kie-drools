@@ -24,7 +24,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -188,12 +187,12 @@ public class RemoveRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemoryImpl c1Mem = (BetaMemoryImpl) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemoryImpl c2Mem  = (BetaMemoryImpl) wm.getNodeMemory(c2Node);
+        BetaMemory c2Mem  = (BetaMemory) wm.getNodeMemory(c2Node);
         SegmentMemory  c2Smem =  sm.getFirst().getNext();
         assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
         assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(3);
@@ -251,12 +250,12 @@ public class RemoveRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemoryImpl c1Mem = (BetaMemoryImpl) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemoryImpl c2Mem  = (BetaMemoryImpl) wm.getNodeMemory(c2Node);
+        BetaMemory c2Mem  = (BetaMemory) wm.getNodeMemory(c2Node);
         SegmentMemory  c2Smem =  sm.getFirst().getNext();
         assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
         assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(3);
@@ -311,19 +310,19 @@ public class RemoveRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemoryImpl b1Mem = (BetaMemoryImpl) wm.getNodeMemory(b1Node);
+        BetaMemory b1Mem = (BetaMemory) wm.getNodeMemory(b1Node);
         assertThat(b1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(b1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(b1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemoryImpl b2Mem  = (BetaMemoryImpl) wm.getNodeMemory(b2Node);
+        BetaMemory b2Mem  = (BetaMemory) wm.getNodeMemory(b2Node);
         SegmentMemory  b2Smem =  sm.getFirst().getNext();
         assertThat(b2Mem.getSegmentMemory()).isSameAs(b2Smem);
         assertThat(b2Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(b2Mem.getRightTupleMemory().size()).isEqualTo(1);
         assertThat(list.size()).isEqualTo(6);
 
-        BetaMemoryImpl c1Mem = (BetaMemoryImpl) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(b1Mem.getSegmentMemory());
         assertThat(b2Mem.getSegmentMemory()).isNotSameAs(b1Mem.getSegmentMemory());
 

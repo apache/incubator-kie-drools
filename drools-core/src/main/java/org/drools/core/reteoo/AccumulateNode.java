@@ -184,7 +184,7 @@ public class AccumulateNode extends BetaNode {
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemoryImpl betaMemory = (BetaMemoryImpl) this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
+        BetaMemory betaMemory = (BetaMemory) this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
         AccumulateMemory memory = this.accumulate.isMultiFunction() ?
                                   new MultiAccumulateMemory(betaMemory, this.accumulate.getAccumulators()) :
                                   new SingleAccumulateMemory(betaMemory, this.accumulate.getAccumulators()[0]);
@@ -199,14 +199,14 @@ public class AccumulateNode extends BetaNode {
         SegmentNodeMemory {
 
         public        Object            workingMemoryContext;
-        private final BetaMemoryImpl<?> betaMemory;
+        private final BetaMemory<?> betaMemory;
         public        Object            resultsContext;
 
-        protected AccumulateMemory( BetaMemoryImpl betaMemory) {
+        protected AccumulateMemory( BetaMemory betaMemory) {
             this.betaMemory = betaMemory;
         }
 
-        public BetaMemoryImpl getBetaMemory() {
+        public BetaMemory getBetaMemory() {
             return this.betaMemory;
         }
 
@@ -249,7 +249,7 @@ public class AccumulateNode extends BetaNode {
 
         private final Accumulator accumulator;
 
-        public SingleAccumulateMemory(BetaMemoryImpl betaMemory, Accumulator accumulator) {
+        public SingleAccumulateMemory(BetaMemory betaMemory, Accumulator accumulator) {
             super( betaMemory );
             this.accumulator = accumulator;
         }
@@ -264,7 +264,7 @@ public class AccumulateNode extends BetaNode {
 
         private final Accumulator[] accumulators;
 
-        public MultiAccumulateMemory(BetaMemoryImpl betaMemory, Accumulator[] accumulators) {
+        public MultiAccumulateMemory(BetaMemory betaMemory, Accumulator[] accumulators) {
             super( betaMemory );
             this.accumulators = accumulators;
         }
@@ -381,7 +381,7 @@ public class AccumulateNode extends BetaNode {
                                    final ReteEvaluator reteEvaluator ) {
         final AccumulateMemory memory = (AccumulateMemory) reteEvaluator.getNodeMemory( this );
 
-        BetaMemoryImpl bm = memory.getBetaMemory();
+        BetaMemory bm = memory.getBetaMemory();
         rightTuple.setPropagationContext( pctx );
         doDeleteRightTuple( rightTuple, reteEvaluator, bm );
     }

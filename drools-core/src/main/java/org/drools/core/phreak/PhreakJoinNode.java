@@ -22,7 +22,6 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -35,7 +34,7 @@ import org.drools.core.util.FastIterator;
 public class PhreakJoinNode {
     public void doNode(JoinNode joinNode,
                        LeftTupleSink sink,
-                       BetaMemoryImpl bm,
+                       BetaMemory bm,
                        ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,

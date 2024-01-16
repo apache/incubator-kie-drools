@@ -50,7 +50,6 @@ import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -744,11 +743,11 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static void deleteRightInputData(LeftTupleSink node, InternalWorkingMemory wm) {
         if (wm.getNodeMemories().peekNodeMemory(node) != null) {
             BetaNode       bn = (BetaNode) node;
-            BetaMemoryImpl bm;
+            BetaMemory bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
                 bm = ((AccumulateMemory) wm.getNodeMemory(bn)).getBetaMemory();
             } else {
-                bm = (BetaMemoryImpl) wm.getNodeMemory(bn);
+                bm = (BetaMemory) wm.getNodeMemory(bn);
             }
 
             TupleMemory  rtm = bm.getRightTupleMemory();
@@ -910,26 +909,26 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
     private static void visitChild(TupleImpl lt, boolean insert, InternalWorkingMemory wm, Rule rule) {
         TupleImpl prevLt = null;
-        LeftTupleSinkNode sink = (LeftTupleSinkNode) SuperCacheFixer.getSink(lt);
+        LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getSink();
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
 
             if ( lt != null ) {
-                if (SuperCacheFixer.getSink(lt).isAssociatedWith(rule)) {
+                if (lt.getSink().isAssociatedWith(rule)) {
 
-                    if (SuperCacheFixer.getSink(lt).getAssociatedTerminalsSize() > 1) {
+                    if (lt.getSink().getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
                             for ( TupleImpl child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
                                 visitChild(child, insert, wm, rule);
                             }
-                        } else if (SuperCacheFixer.getSink(lt).getType() == NodeTypeEnums.RightInputAdapterNode) {
+                        } else if (lt.getSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
                             insertPeerRightTuple(lt, wm, rule, insert);
                         }
                     } else if (!insert) {
                         iterateLeftTuple( lt, wm );
                         TupleImpl lt2 = null;
                         for ( TupleImpl peerLt = lt.getPeer();
-                              peerLt != null && SuperCacheFixer.getSink(peerLt).isAssociatedWith(rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
+                              peerLt != null && peerLt.getSink().isAssociatedWith(rule) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
                               peerLt = peerLt.getPeer() ) {
                             iterateLeftTuple( peerLt, wm );
                             lt2 = peerLt;
@@ -953,7 +952,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     private static void insertPeerRightTuple( TupleImpl lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
         // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
         TupleImpl prevLt = null;
-        RightInputAdapterNode rian = (RightInputAdapterNode) SuperCacheFixer.getSink(lt);
+        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getSink();
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {
@@ -963,7 +962,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 prevLt = lt;
                 lt = lt.getPeer();
             } else if (insert) {
-                BetaMemoryImpl bm = (BetaMemoryImpl) wm.getNodeMemory((BetaNode) sink);
+                BetaMemory bm = (BetaMemory) wm.getNodeMemory((BetaNode) sink);
                 prevLt = TupleFactory.createPeer(rian, prevLt);
                 bm.linkNode( (BetaNode) sink, wm );
                 bm.getStagedRightTuples().addInsert(prevLt);
@@ -1564,7 +1563,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static long processBetaNode(BetaNode betaNode, ReteEvaluator reteEvaluator, SegmentMemory smem, List<Memory> memories, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {
-        BetaMemoryImpl bm;
+        BetaMemory bm;
         if (NodeTypeEnums.AccumulateNode == betaNode.getType()) {
             AccumulateNode.AccumulateMemory accMemory = ((AccumulateNode.AccumulateMemory) smem.createNodeMemory(betaNode, reteEvaluator));
             memories.add(accMemory);
@@ -1572,7 +1571,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
             bm = accMemory.getBetaMemory();
         } else {
-            bm = (BetaMemoryImpl) smem.createNodeMemory(betaNode, reteEvaluator);
+            bm = (BetaMemory) smem.createNodeMemory(betaNode, reteEvaluator);
             memories.add(bm);
         }
 

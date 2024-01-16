@@ -23,7 +23,6 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaMemoryImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
@@ -38,7 +37,7 @@ import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 public class PhreakNotNode {
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
-                       BetaMemoryImpl bm,
+                       BetaMemory bm,
                        ReteEvaluator reteEvaluator,
                        TupleSets srcLeftTuples,
                        TupleSets trgLeftTuples,
@@ -54,7 +53,7 @@ public class PhreakNotNode {
 
     public void doNormalNode(NotNode notNode,
                              LeftTupleSink sink,
-                             BetaMemoryImpl bm,
+                             BetaMemory bm,
                              ReteEvaluator reteEvaluator,
                              TupleSets srcLeftTuples,
                              TupleSets trgLeftTuples,
@@ -142,7 +141,7 @@ public class PhreakNotNode {
     }
 
     public void doRightInserts(NotNode notNode,
-                               BetaMemoryImpl bm,
+                               BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets srcRightTuples,
                                TupleSets trgLeftTuples,
@@ -207,7 +206,7 @@ public class PhreakNotNode {
     }
 
     public static void unlinkNotNodeOnRightInsert(NotNode notNode,
-                                                  BetaMemoryImpl bm,
+                                                  BetaMemory bm,
                                                   ReteEvaluator reteEvaluator) {
         if (bm.getSegmentMemory().isSegmentLinked() && notNode.isEmptyBetaConstraints()) {
             // this must be processed here, rather than initial insert, as we need to link the blocker
