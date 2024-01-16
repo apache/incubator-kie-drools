@@ -215,7 +215,7 @@ setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
 
 // Weekly deploy job
-setupProjectWeeklyJob()
+setupWeeklyDeployJob()
 
 // Tools job
 if (isMainStream()) {
