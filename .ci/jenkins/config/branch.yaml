@@ -1,5 +1,25 @@
 generation_config:
   missing_environment: ignore
+
+job_types:
+  setup-branch:
+    disabled: true
+  nightly:
+    disabled: false
+  other:
+    disabled: false
+  pullrequest:
+    disabled: true
+  release:
+    disabled: true
+  tools:
+    disabled: true
+
+disable:
+  triggers: true
+  deploy: true
+  pr_check: true
+
 environments:
   default:
     env_vars:
@@ -23,14 +43,6 @@ environments:
 repositories:
 - name: incubator-kie-drools
   job_display_name: drools
-# Not yet migrated to Apache
-# - name: incubator-kie-drools-website
-#   job_display_name: drools-website
-- name: incubator-kie-benchmarks
-  job_display_name: kie-benchmarks
-## TODO to check if should be enabled
-# - name: incubator-kie-jpmml-integration
-#   job_display_name: kie-jpmml-integration
 git:
   author:
     name: apache

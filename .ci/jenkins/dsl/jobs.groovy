@@ -214,6 +214,9 @@ setupSpecificBuildChainNightlyJob('sonarcloud', setupSonarProjectKeyEnv(nightlyJ
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
 
+// Weekly deploy job
+setupProjectWeeklyJob()
+
 // Tools job
 if (isMainStream()) {
     KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
@@ -332,6 +335,38 @@ void setupPromoteJob(JobType jobType) {
             // Release information which can override `deployment.properties`
             stringParam('PROJECT_VERSION', '', 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
+        }
+    }
+}
+
+void setupWeeklyDeployJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps-weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Drools Weekly Deploy')
+    jobParams.env.putAll([
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
+        MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
+
+        DROOLS_STREAM: Utils.getStream(this),
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+
+            booleanParam('SKIP_TESTS', false, 'Skip tests')
+
+            stringParam('PROJECT_VERSION', '', 'Project Version to deploy')
+
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
