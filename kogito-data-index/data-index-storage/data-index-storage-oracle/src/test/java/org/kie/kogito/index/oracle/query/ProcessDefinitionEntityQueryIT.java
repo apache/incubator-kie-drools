@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.index.oracle.query;
 
+import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.oracle.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.index.test.query.AbstractProcessDefinitionQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.testcontainers.quarkus.OracleSqlQuarkusTestResource;

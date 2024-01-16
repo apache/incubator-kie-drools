@@ -40,6 +40,8 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 
 public abstract class AbstractProcessIdQueryIT extends QueryTestBase<String, String> {
 
+    public abstract Storage<String, String> getStorage();
+
     @Test
     void testProcessIdQuery() {
         String processId = "travels";

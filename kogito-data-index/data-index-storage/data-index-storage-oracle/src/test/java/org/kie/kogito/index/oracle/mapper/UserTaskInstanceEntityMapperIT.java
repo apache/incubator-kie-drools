@@ -25,12 +25,13 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.jpa.mapper.UserTaskInstanceEntityMapper;
+import org.kie.kogito.index.jpa.model.AttachmentEntity;
+import org.kie.kogito.index.jpa.model.CommentEntity;
+import org.kie.kogito.index.jpa.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.model.Attachment;
 import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.oracle.model.AttachmentEntity;
-import org.kie.kogito.index.oracle.model.CommentEntity;
-import org.kie.kogito.index.oracle.model.UserTaskInstanceEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

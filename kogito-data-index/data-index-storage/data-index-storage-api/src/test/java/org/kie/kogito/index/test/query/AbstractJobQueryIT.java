@@ -48,6 +48,8 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 
 public abstract class AbstractJobQueryIT extends QueryTestBase<String, Job> {
 
+    public abstract Storage<String, Job> getStorage();
+
     @Test
     void testJobQuery() {
         String jobId1 = UUID.randomUUID().toString();

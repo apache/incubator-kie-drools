@@ -44,18 +44,18 @@ public abstract class AbstractMessagingConsumerIT {
 
     @BeforeEach
     void setup() {
-        cacheService.getJobsCache().clear();
-        cacheService.getProcessDefinitionsCache().clear();
-        cacheService.getProcessInstancesCache().clear();
-        cacheService.getUserTaskInstancesCache().clear();
+        cacheService.getJobsStorage().clear();
+        cacheService.getProcessDefinitionStorage().clear();
+        cacheService.getProcessInstanceStorage().clear();
+        cacheService.getUserTaskInstanceStorage().clear();
     }
 
     @AfterEach
     void close() {
-        cacheService.getJobsCache().clear();
-        cacheService.getProcessDefinitionsCache().clear();
-        cacheService.getProcessInstancesCache().clear();
-        cacheService.getUserTaskInstancesCache().clear();
+        cacheService.getJobsStorage().clear();
+        cacheService.getProcessDefinitionStorage().clear();
+        cacheService.getProcessInstanceStorage().clear();
+        cacheService.getUserTaskInstanceStorage().clear();
     }
 
     @Test

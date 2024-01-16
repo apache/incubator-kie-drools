@@ -36,10 +36,10 @@ public class InfinispanCacheStartup {
     @PostConstruct
     public void init() {
         //Force caches to be initialized at start up
-        storageService.getProcessDefinitionsCache();
-        storageService.getProcessInstancesCache();
-        storageService.getUserTaskInstancesCache();
-        storageService.getJobsCache();
+        storageService.getProcessDefinitionStorage();
+        storageService.getProcessInstanceStorage();
+        storageService.getUserTaskInstanceStorage();
+        storageService.getJobsStorage();
         storageService.getProcessIdModelCache();
     }
 }

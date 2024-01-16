@@ -49,9 +49,9 @@ public abstract class AbstractDomainMessagingConsumerIT {
     @BeforeEach
     void setup() throws Exception {
         protobufService.registerProtoBufferType(getTestProtobufFileContent());
-        cacheService.getProcessDefinitionsCache().clear();
-        cacheService.getProcessInstancesCache().clear();
-        cacheService.getUserTaskInstancesCache().clear();
+        cacheService.getProcessDefinitionStorage().clear();
+        cacheService.getProcessInstanceStorage().clear();
+        cacheService.getUserTaskInstanceStorage().clear();
         if (cacheService.getDomainModelCache("travels") != null) {
             cacheService.getDomainModelCache("travels").clear();
         }
@@ -59,9 +59,9 @@ public abstract class AbstractDomainMessagingConsumerIT {
 
     @AfterEach
     void close() {
-        cacheService.getProcessDefinitionsCache().clear();
-        cacheService.getProcessInstancesCache().clear();
-        cacheService.getUserTaskInstancesCache().clear();
+        cacheService.getProcessDefinitionStorage().clear();
+        cacheService.getProcessInstanceStorage().clear();
+        cacheService.getUserTaskInstanceStorage().clear();
         if (cacheService.getDomainModelCache("travels") != null) {
             cacheService.getDomainModelCache("travels").clear();
         }

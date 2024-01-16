@@ -22,8 +22,9 @@ import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.jpa.mapper.JobEntityMapper;
+import org.kie.kogito.index.jpa.model.JobEntity;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.oracle.model.JobEntity;
 
 import io.quarkus.test.junit.QuarkusTest;
 

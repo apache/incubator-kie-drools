@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.index.postgresql.query;
 
+import org.kie.kogito.index.jpa.storage.JobEntityStorage;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.postgresql.storage.JobEntityStorage;
 import org.kie.kogito.index.test.query.AbstractJobQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;

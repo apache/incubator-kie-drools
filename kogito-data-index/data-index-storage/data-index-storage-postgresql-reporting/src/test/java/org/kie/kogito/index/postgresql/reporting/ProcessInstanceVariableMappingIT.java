@@ -20,13 +20,11 @@ package org.kie.kogito.index.postgresql.reporting;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.postgresql.model.ProcessInstanceEntityRepository;
-import org.kie.kogito.index.postgresql.storage.PostgreSqlStorageService;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
+import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
 import org.kie.kogito.index.test.TestUtils;
-import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -48,9 +46,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessInstanceVariableMappingIT {
 
-    private static final String CACHE_NAME = "processes";
-    private static final Class<ProcessInstance> CACHE_TYPE = ProcessInstance.class;
-
     private static final String SQL = "SELECT " +
             "id, " +
             "firstName," +
@@ -59,99 +54,47 @@ class ProcessInstanceVariableMappingIT {
             "ProcessInstanceVariableExtract";
 
     @Inject
-    PostgreSqlStorageService storageService;
-
-    @Inject
     ProcessInstanceEntityRepository repository;
-
-    @BeforeEach
-    @Transactional
-    public void setup() {
-        storageService.getCache(CACHE_NAME, CACHE_TYPE).clear();
-    }
+    @Inject
+    ProcessInstanceEntityStorage storage;
 
     @Test
     @Transactional
     void testProcessInstanceVariableMapping() {
-        final Storage<String, ProcessInstance> cache = storageService.getCache(CACHE_NAME, CACHE_TYPE);
 
-        //Insert 2 process instances for the same process
-        final ProcessInstance pi0 = TestUtils.createProcessInstance("pi0",
+        ProcessInstanceVariableDataEvent event1 = TestUtils.createProcessInstanceVariableEvent("pi0",
                 "process0",
-                "rootProcessInstanceId",
-                "rootProcessId",
-                1,
-                0,
                 "Michael",
                 "Anstis");
-        final ProcessInstance pi1 = TestUtils.createProcessInstance("pi1",
+        ProcessInstanceVariableDataEvent event2 = TestUtils.createProcessInstanceVariableEvent("pi1",
                 "process0",
-                "rootProcessInstanceId",
-                "rootProcessId",
-                1,
-                0,
                 "Keith",
                 "Flint");
+        ProcessInstanceVariableDataEvent event3 = TestUtils.createProcessInstanceVariableEvent("pi2",
+                "process1",
+                "Javier",
+                "Ito");
 
-        cache.put(pi0.getId(), pi0);
-        cache.put(pi1.getId(), pi1);
+        storage.indexVariable(event1);
+        storage.indexVariable(event2);
+        storage.indexVariable(event3);
 
         @SuppressWarnings("unchecked")
-        final List<ProcessInstanceVariableExtract> results = repository
+        List<ProcessInstanceVariableExtract> results = repository
                 .getEntityManager()
                 .createNativeQuery(SQL, "ProcessInstanceVariableMappingMapping")
                 .getResultList();
 
         assertThat(results).hasSize(2);
         final ProcessInstanceVariableExtract row0 = results.get(0);
-        assertEquals(pi0.getId(), row0.id);
+        assertEquals("pi0", row0.id);
         assertEquals("Michael", row0.firstName);
         assertEquals("Anstis", row0.lastName);
 
         final ProcessInstanceVariableExtract row1 = results.get(1);
-        assertEquals(pi1.getId(), row1.id);
+        assertEquals("pi1", row1.id);
         assertEquals("Keith", row1.firstName);
         assertEquals("Flint", row1.lastName);
-    }
-
-    @Test
-    @Transactional
-    void testProcessInstanceVariableMapping_Partitioned() {
-        final Storage<String, ProcessInstance> cache = storageService.getCache(CACHE_NAME, CACHE_TYPE);
-
-        //Insert 2 process instances, however only 1 relates process0 that has mappings defined
-        final ProcessInstance pi0 = TestUtils.createProcessInstance("pi0",
-                "process0",
-                "rootProcessInstanceId",
-                "rootProcessId",
-                1,
-                0,
-                "Michael",
-                "Anstis");
-        final ProcessInstance pi1 = TestUtils.createProcessInstance("pi1",
-                "process1",
-                "rootProcessInstanceId",
-                "rootProcessId",
-                1,
-                0,
-                "Keith",
-                "Flint");
-
-        cache.put(pi0.getId(), pi0);
-        cache.put(pi1.getId(), pi1);
-
-        @SuppressWarnings("unchecked")
-        final List<ProcessInstanceVariableExtract> results = repository
-                .getEntityManager()
-                .createNativeQuery(SQL, "ProcessInstanceVariableMappingMapping")
-                .getResultList();
-
-        //... Consequentially we only expect there to be one entry in the extracts table
-        assertThat(results).hasSize(1);
-        final ProcessInstanceVariableExtract row0 = results.get(0);
-        assertEquals(pi0.getId(), row0.id);
-        assertEquals("Michael", row0.firstName);
-        assertEquals("Anstis", row0.lastName);
     }
 
     @Entity

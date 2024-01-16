@@ -24,19 +24,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.StorageFetcher;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.AttributeSort;
 
 public abstract class QueryTestBase<K, V> {
 
-    public abstract Storage<K, V> getStorage();
-
     protected Boolean isDateTimeAsLong() {
         return true;
     }
 
-    public void queryAndAssert(BiConsumer<List<V>, String[]> assertConsumer, Storage<K, V> storage, List<AttributeFilter<?>> filters, List<AttributeSort> sort, Integer offset, Integer limit,
+    public void queryAndAssert(BiConsumer<List<V>, String[]> assertConsumer, StorageFetcher<K, V> storage, List<AttributeFilter<?>> filters, List<AttributeSort> sort, Integer offset, Integer limit,
             String... ids) {
         assertConsumer.accept(storage.query().filter(filters).sort(sort).offset(offset).limit(limit).execute(), ids);
     }

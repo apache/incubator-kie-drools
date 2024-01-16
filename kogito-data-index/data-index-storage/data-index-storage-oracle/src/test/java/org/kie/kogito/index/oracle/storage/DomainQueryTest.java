@@ -24,8 +24,9 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
+import org.kie.kogito.index.jpa.storage.JPAQuery;
 import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.oracle.model.ProcessInstanceEntity;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -83,7 +84,7 @@ class DomainQueryTest {
 
     @Test
     void testNoParameters() {
-        OracleQuery query = new OracleQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
 
         query.execute();
 
@@ -96,7 +97,7 @@ class DomainQueryTest {
 
     @Test
     void testEmptyParameters() {
-        OracleQuery query = new OracleQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
         query.filter(emptyList());
         query.sort(emptyList());
 
@@ -111,7 +112,7 @@ class DomainQueryTest {
 
     @Test
     void testPagination() {
-        OracleQuery query = new OracleQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
         query.limit(10);
         query.offset(0);
 
@@ -148,7 +149,7 @@ class DomainQueryTest {
             return order;
         });
 
-        OracleQuery query = new OracleQuery(repository, Function.identity(), rootType);
+        JPAQuery query = new JPAQuery(repository, Function.identity(), rootType);
         query.sort(asList(orderBy("name", DESC), orderBy("date", ASC)));
 
         query.execute();

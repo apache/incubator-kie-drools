@@ -38,7 +38,7 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.storage.DataIndexStorageService;
-import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.StorageFetcher;
 import org.kie.kogito.persistence.api.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +137,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public ProcessDefinition getProcessDefinition(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
-        return cacheService.getProcessDefinitionsCache().get(ProcessDefinition.toKey(source.getProcessId(), source.getVersion()));
+        return cacheService.getProcessDefinitionStorage().get(ProcessDefinition.toKey(source.getProcessId(), source.getVersion()));
     }
 
     protected String getServiceUrl(String endpoint, String processId) {
@@ -164,7 +164,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     protected Collection<ProcessInstance> getChildProcessInstancesValues(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
-        Query<ProcessInstance> query = cacheService.getProcessInstancesCache().query();
+        Query<ProcessInstance> query = cacheService.getProcessInstanceStorage().query();
         query.filter(singletonList(equalTo("parentProcessInstanceId", source.getId())));
         return query.execute();
     }
@@ -174,21 +174,21 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         if (source.getParentProcessInstanceId() == null) {
             return null;
         }
-        Query<ProcessInstance> query = cacheService.getProcessInstancesCache().query();
+        Query<ProcessInstance> query = cacheService.getProcessInstanceStorage().query();
         query.filter(singletonList(equalTo("id", source.getParentProcessInstanceId())));
         List<ProcessInstance> execute = query.execute();
         return !execute.isEmpty() ? execute.get(0) : null;
     }
 
     protected Collection<ProcessDefinition> getProcessDefinitionsValues(DataFetchingEnvironment env) {
-        return executeAdvancedQueryForCache(cacheService.getProcessDefinitionsCache(), env);
+        return executeAdvancedQueryForCache(cacheService.getProcessDefinitionStorage(), env);
     }
 
     protected Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {
-        return executeAdvancedQueryForCache(cacheService.getProcessInstancesCache(), env);
+        return executeAdvancedQueryForCache(cacheService.getProcessInstanceStorage(), env);
     }
 
-    protected <T> List<T> executeAdvancedQueryForCache(Storage<String, T> cache, DataFetchingEnvironment env) {
+    protected <T> List<T> executeAdvancedQueryForCache(StorageFetcher<String, T> cache, DataFetchingEnvironment env) {
         Objects.requireNonNull(cache, "Cache not found");
 
         String inputTypeName = ((GraphQLNamedType) env.getFieldDefinition().getArgument("where").getType()).getName();
@@ -216,11 +216,11 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected Collection<UserTaskInstance> getUserTaskInstancesValues(DataFetchingEnvironment env) {
-        return executeAdvancedQueryForCache(cacheService.getUserTaskInstancesCache(), env);
+        return executeAdvancedQueryForCache(cacheService.getUserTaskInstanceStorage(), env);
     }
 
     protected Collection<Job> getJobsValues(DataFetchingEnvironment env) {
-        return executeAdvancedQueryForCache(getCacheService().getJobsCache(), env);
+        return executeAdvancedQueryForCache(getCacheService().getJobsStorage(), env);
     }
 
     public CompletableFuture<String> getProcessInstanceDiagram(DataFetchingEnvironment env) {
@@ -231,7 +231,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> getProcessInstanceSource(DataFetchingEnvironment env) {
         ProcessInstance pi = env.getSource();
-        ProcessDefinition pd = cacheService.getProcessDefinitionsCache().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
+        ProcessDefinition pd = cacheService.getProcessDefinitionStorage().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
         if (pd == null) {
             return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
         } else {
@@ -241,7 +241,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<List<Node>> getProcessInstanceNodes(DataFetchingEnvironment env) {
         ProcessInstance pi = env.getSource();
-        ProcessDefinition pd = cacheService.getProcessDefinitionsCache().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
+        ProcessDefinition pd = cacheService.getProcessDefinitionStorage().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
         if (pd == null) {
             return dataIndexApiExecutor.getProcessDefinitionNodes(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
         } else {
@@ -274,13 +274,14 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         return schema;
     }
 
+    @Override
     public void transform(Consumer<GraphQLSchema.Builder> builder) {
         schema = schema.transform(builder);
     }
 
     public CompletableFuture<String> abortProcessInstance(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().abortProcessInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
         }
@@ -289,7 +290,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> retryProcessInstance(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().retryProcessInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
         }
@@ -298,7 +299,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> skipProcessInstance(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().skipProcessInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
         }
@@ -307,7 +308,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> updateProcessInstanceVariables(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().updateProcessInstanceVariables(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance,
                     env.getArgument("variables"));
@@ -318,7 +319,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> triggerNodeInstance(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().triggerNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
                     processInstance,
@@ -329,7 +330,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> retriggerNodeInstance(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().retriggerNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
                     processInstance,
@@ -340,7 +341,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> cancelNodeInstance(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        ProcessInstance processInstance = getCacheService().getProcessInstancesCache().get(id);
+        ProcessInstance processInstance = getCacheService().getProcessInstanceStorage().get(id);
         if (processInstance != null) {
             return getDataIndexApiExecutor().cancelNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
                     processInstance,
@@ -351,7 +352,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> cancelJob(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        Job job = getCacheService().getJobsCache().get(id);
+        Job job = getCacheService().getJobsStorage().get(id);
         if (job != null) {
             return getDataIndexApiExecutor().cancelJob(job.getEndpoint(), job);
         }
@@ -360,7 +361,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> rescheduleJob(DataFetchingEnvironment env) {
         String id = env.getArgument("id");
-        Job job = getCacheService().getJobsCache().get(id);
+        Job job = getCacheService().getJobsStorage().get(id);
         if (job != null) {
             return getDataIndexApiExecutor().rescheduleJob(job.getEndpoint(), job, env.getArgument("data"));
         }
@@ -376,7 +377,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> updateUserTaskInstance(DataFetchingEnvironment env) {
-        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstancesCache().get(env.getArgument(TASK_ID));
+        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstanceStorage().get(env.getArgument(TASK_ID));
         return getDataIndexApiExecutor().updateUserTaskInstance(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
                 userTaskInstance,
                 env.getArgument(USER),
@@ -385,7 +386,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> createTaskInstanceComment(DataFetchingEnvironment env) {
-        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstancesCache().get(env.getArgument(TASK_ID));
+        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstanceStorage().get(env.getArgument(TASK_ID));
         return getDataIndexApiExecutor().createUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
                 userTaskInstance,
                 env.getArgument(USER),
@@ -394,7 +395,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> createTaskInstanceAttachment(DataFetchingEnvironment env) {
-        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstancesCache().get(env.getArgument(TASK_ID));
+        UserTaskInstance userTaskInstance = getCacheService().getUserTaskInstanceStorage().get(env.getArgument(TASK_ID));
         return getDataIndexApiExecutor().createUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
                 userTaskInstance,
                 env.getArgument(USER),
@@ -404,7 +405,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> updateUserTaskComment(DataFetchingEnvironment env) {
-        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstanceStorage().query();
         query.filter(singletonList(equalTo("comments.id", env.getArgument(COMMENT_ID))));
         UserTaskInstance userTaskInstance = query.execute().get(0);
         return getDataIndexApiExecutor().updateUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
@@ -416,7 +417,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> deleteUserTaskComment(DataFetchingEnvironment env) {
-        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstanceStorage().query();
         query.filter(singletonList(equalTo("comments.id", env.getArgument(COMMENT_ID))));
         UserTaskInstance userTaskInstance = query.execute().get(0);
         return getDataIndexApiExecutor().deleteUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
@@ -427,7 +428,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> updateUserTaskAttachment(DataFetchingEnvironment env) {
-        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstanceStorage().query();
         query.filter(singletonList(equalTo("attachments.id", env.getArgument(ATTACHMENT_ID))));
         UserTaskInstance userTaskInstance = query.execute().get(0);
         return getDataIndexApiExecutor().updateUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
@@ -440,7 +441,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     }
 
     protected CompletableFuture<String> deleteUserTaskAttachment(DataFetchingEnvironment env) {
-        Query<UserTaskInstance> query = getCacheService().getUserTaskInstancesCache().query();
+        Query<UserTaskInstance> query = getCacheService().getUserTaskInstanceStorage().query();
         query.filter(singletonList(equalTo("attachments.id", env.getArgument(ATTACHMENT_ID))));
         UserTaskInstance userTaskInstance = query.execute().get(0);
         return getDataIndexApiExecutor().deleteUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),

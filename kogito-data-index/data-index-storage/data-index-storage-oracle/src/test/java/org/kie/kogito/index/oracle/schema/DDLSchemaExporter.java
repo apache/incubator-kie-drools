@@ -29,16 +29,16 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
-import org.kie.kogito.index.oracle.model.AttachmentEntity;
-import org.kie.kogito.index.oracle.model.CommentEntity;
-import org.kie.kogito.index.oracle.model.JobEntity;
-import org.kie.kogito.index.oracle.model.MilestoneEntity;
-import org.kie.kogito.index.oracle.model.NodeEntity;
-import org.kie.kogito.index.oracle.model.NodeInstanceEntity;
-import org.kie.kogito.index.oracle.model.ProcessDefinitionEntity;
-import org.kie.kogito.index.oracle.model.ProcessInstanceEntity;
-import org.kie.kogito.index.oracle.model.ProcessInstanceErrorEntity;
-import org.kie.kogito.index.oracle.model.UserTaskInstanceEntity;
+import org.kie.kogito.index.jpa.model.AttachmentEntity;
+import org.kie.kogito.index.jpa.model.CommentEntity;
+import org.kie.kogito.index.jpa.model.JobEntity;
+import org.kie.kogito.index.jpa.model.MilestoneEntity;
+import org.kie.kogito.index.jpa.model.NodeEntity;
+import org.kie.kogito.index.jpa.model.NodeInstanceEntity;
+import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
+import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
+import org.kie.kogito.index.jpa.model.ProcessInstanceErrorEntity;
+import org.kie.kogito.index.jpa.model.UserTaskInstanceEntity;
 import org.kie.kogito.testcontainers.KogitoOracleSqlContainer;
 
 public class DDLSchemaExporter {

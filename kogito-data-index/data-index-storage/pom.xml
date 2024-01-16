@@ -32,11 +32,11 @@
   <artifactId>data-index-storage</artifactId>
   <packaging>pom</packaging>
   <name>Kogito Apps :: Data Index Storage</name>
-
   <modules>
     <module>data-index-storage-api</module>
     <module>data-index-storage-protobuf</module>
     <module>data-index-storage-postgresql</module>
+    <module>data-index-storage-jpa</module>
   </modules>
 
   <profiles>
@@ -48,6 +48,7 @@
         </property>
       </activation>
       <modules>
+        <module>data-index-storage-common</module>
         <module>data-index-storage-infinispan</module>
         <module>data-index-storage-mongodb</module>
         <module>data-index-storage-postgresql-reporting</module>

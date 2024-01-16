@@ -39,6 +39,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-storage-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>persistence-commons-mongodb</artifactId>
     </dependency>
 

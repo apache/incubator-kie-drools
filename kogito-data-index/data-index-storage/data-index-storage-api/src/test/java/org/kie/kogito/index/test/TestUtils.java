@@ -29,6 +29,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
 import org.kie.kogito.index.model.Attachment;
 import org.kie.kogito.index.model.Comment;
 import org.kie.kogito.index.model.Job;
@@ -40,6 +44,7 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -59,6 +64,28 @@ public class TestUtils {
         pd.setAddons(singleton("kogito-events"));
         pd.setRoles(roles);
         return pd;
+    }
+
+    public static ProcessInstanceStateDataEvent createProcessInstanceEvent(String processInstance,
+            String processId, String rootProcessInstanceId, String rootProcessId, Integer status) {
+        ProcessInstanceStateDataEvent event = new ProcessInstanceStateDataEvent();
+        event.setKogitoProcessId(processId);
+        event.setKogitoRootProcessId(rootProcessId);
+        event.setKogitoRootProcessInstanceId(rootProcessInstanceId);
+        event.setKogitoProcessInstanceId(processInstance);
+        event.setData(ProcessInstanceStateEventBody.create().processId(processId).rootProcessId(rootProcessId).rootProcessInstanceId(rootProcessInstanceId).processInstanceId(processInstance)
+                .state(status).build());
+        return event;
+    }
+
+    public static ProcessInstanceVariableDataEvent createProcessInstanceVariableEvent(String processInstance,
+            String processId, String firstName, String lastName) {
+        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent();
+        event.setKogitoProcessId(processId);
+        event.setKogitoProcessInstanceId(processInstance);
+        event.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstance)
+                .variableName("traveller").variableValue(ObjectMapperFactory.get().createObjectNode().put("firstName", firstName).put("lastName", lastName)).build());
+        return event;
     }
 
     public static ProcessInstance createProcessInstance(String processInstanceId,

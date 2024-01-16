@@ -57,7 +57,7 @@ public class ProcessDefinitionRegister {
                     .map(mapProcessDefinition(app.config().addons().availableAddons(), kogitoServiceUrl.orElse(null), client))
                     .forEach(process -> {
                         LOGGER.debug("Registering process definition with id: {}", process.getId());
-                        storage.getProcessDefinitionsCache().put(process.getKey(), process);
+                        storage.getProcessDefinitionStorage().put(process.getKey(), process);
                     });
         } else {
             LOGGER.info("No process definitions to register.");

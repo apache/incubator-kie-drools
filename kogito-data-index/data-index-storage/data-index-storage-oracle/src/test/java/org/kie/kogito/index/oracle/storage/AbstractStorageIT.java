@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.index.oracle.storage;
 
-import org.kie.kogito.index.oracle.model.AbstractEntity;
+import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.StorageService;
 

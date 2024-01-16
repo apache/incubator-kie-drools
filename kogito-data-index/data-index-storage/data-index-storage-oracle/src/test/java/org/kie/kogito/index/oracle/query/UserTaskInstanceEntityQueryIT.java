@@ -18,10 +18,8 @@
  */
 package org.kie.kogito.index.oracle.query;
 
-import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.oracle.storage.UserTaskInstanceEntityStorage;
+import org.kie.kogito.index.jpa.storage.UserTaskInstanceEntityStorage;
 import org.kie.kogito.index.test.query.AbstractUserTaskInstanceQueryIT;
-import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.testcontainers.quarkus.OracleSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -37,7 +35,7 @@ class UserTaskInstanceEntityQueryIT extends AbstractUserTaskInstanceQueryIT {
     UserTaskInstanceEntityStorage storage;
 
     @Override
-    public Storage<String, UserTaskInstance> getStorage() {
+    public UserTaskInstanceEntityStorage getStorage() {
         return storage;
     }
 

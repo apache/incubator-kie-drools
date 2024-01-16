@@ -28,10 +28,12 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.StorageService;
 
 import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_STORAGE;
 import static org.kie.kogito.index.test.TestUtils.getProcessInstance;
 
 public abstract class AbstractStorageIT {
@@ -39,13 +41,16 @@ public abstract class AbstractStorageIT {
     @Inject
     public DataIndexStorageService cacheService;
 
+    @Inject
+    public StorageService storageService;
+
     @Test
     void testObjectCreatedListener() throws Exception {
         String processId = "travels";
         String processInstanceId = UUID.randomUUID().toString();
 
         CompletableFuture<ProcessInstance> cf = new CompletableFuture<>();
-        Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
+        Storage<String, ProcessInstance> cache = storageService.getCache(PROCESS_INSTANCES_STORAGE, ProcessInstance.class);
         cache.objectCreatedListener().subscribe().with(pi -> cf.complete(pi));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.ACTIVE.ordinal(), null, null));
 
@@ -59,7 +64,7 @@ public abstract class AbstractStorageIT {
         String processInstanceId = UUID.randomUUID().toString();
 
         CompletableFuture<ProcessInstance> cf = new CompletableFuture<>();
-        Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
+        Storage<String, ProcessInstance> cache = storageService.getCache(PROCESS_INSTANCES_STORAGE, ProcessInstance.class);
         cache.objectUpdatedListener().subscribe().with(pi -> cf.complete(pi));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.ACTIVE.ordinal(), null, null));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.COMPLETED.ordinal(), null, null));
@@ -74,7 +79,7 @@ public abstract class AbstractStorageIT {
         String processInstanceId = UUID.randomUUID().toString();
 
         CompletableFuture<String> cf = new CompletableFuture<>();
-        Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
+        Storage<String, ProcessInstance> cache = storageService.getCache(PROCESS_INSTANCES_STORAGE, ProcessInstance.class);
         cache.objectRemovedListener().subscribe().with(id -> cf.complete(id));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.ACTIVE.ordinal(), null, null));
         cache.remove(processInstanceId);
@@ -85,7 +90,7 @@ public abstract class AbstractStorageIT {
 
     @AfterEach
     void tearDown() {
-        cacheService.getProcessDefinitionsCache().clear();
-        cacheService.getProcessInstancesCache().clear();
+        cacheService.getProcessDefinitionStorage().clear();
+        cacheService.getProcessInstanceStorage().clear();
     }
 }

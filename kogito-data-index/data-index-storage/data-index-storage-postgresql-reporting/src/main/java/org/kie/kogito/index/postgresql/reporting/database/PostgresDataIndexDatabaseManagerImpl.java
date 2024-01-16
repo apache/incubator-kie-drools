@@ -21,9 +21,9 @@ package org.kie.kogito.index.postgresql.reporting.database;
 import java.util.Locale;
 import java.util.Objects;
 
-import org.kie.kogito.index.postgresql.model.JobEntityRepository;
-import org.kie.kogito.index.postgresql.model.ProcessInstanceEntityRepository;
-import org.kie.kogito.index.postgresql.model.UserTaskInstanceEntityRepository;
+import org.kie.kogito.index.jpa.model.JobEntityRepository;
+import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
+import org.kie.kogito.index.jpa.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.persistence.postgresql.reporting.database.BasePostgresDatabaseManagerImpl;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresApplyMappingSqlBuilder;
 import org.kie.kogito.persistence.postgresql.reporting.database.sqlbuilders.PostgresIndexesSqlBuilder;

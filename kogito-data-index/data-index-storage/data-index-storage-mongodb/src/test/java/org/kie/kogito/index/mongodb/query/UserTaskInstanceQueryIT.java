@@ -22,8 +22,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntityMapper;
+import org.kie.kogito.index.storage.ModelUserTaskInstanceStorage;
+import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.index.test.query.AbstractUserTaskInstanceQueryIT;
-import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
@@ -42,16 +43,16 @@ class UserTaskInstanceQueryIT extends AbstractUserTaskInstanceQueryIT {
     @Inject
     MongoClientManager mongoClientManager;
 
-    Storage<String, UserTaskInstance> storage;
+    UserTaskInstanceStorage storage;
 
     @BeforeEach
     void setUp() {
-        this.storage = new MongoStorage<>(mongoClientManager.getCollection(USER_TASK_INSTANCES_STORAGE, UserTaskInstanceEntity.class),
-                UserTaskInstance.class.getName(), new UserTaskInstanceEntityMapper());
+        this.storage = new ModelUserTaskInstanceStorage(new MongoStorage<>(mongoClientManager.getCollection(USER_TASK_INSTANCES_STORAGE, UserTaskInstanceEntity.class),
+                UserTaskInstance.class.getName(), new UserTaskInstanceEntityMapper()));
     }
 
     @Override
-    public Storage<String, UserTaskInstance> getStorage() {
+    public UserTaskInstanceStorage getStorage() {
         return storage;
     }
 

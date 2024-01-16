@@ -22,9 +22,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
+import org.kie.kogito.index.jpa.model.ProcessDefinitionEntityRepository;
+import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.postgresql.model.ProcessDefinitionEntity;
-import org.kie.kogito.index.postgresql.model.ProcessDefinitionEntityRepository;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.StorageService;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
@@ -59,7 +60,7 @@ class ProcessDefinitionStorageIT extends AbstractStorageIT<ProcessDefinitionEnti
     }
 
     @Test
-    void testProcessInstanceEntity() {
+    void testProcessDefinitionEntity() {
         String processId = RandomStringUtils.randomAlphabetic(10);
         String version = "1.0";
         ProcessDefinition pdv1 = TestUtils.createProcessDefinition(processId, version, Set.of("admin", "kogito"));

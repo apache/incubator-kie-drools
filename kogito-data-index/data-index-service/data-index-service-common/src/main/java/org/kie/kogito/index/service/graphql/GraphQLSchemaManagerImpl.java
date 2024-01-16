@@ -29,7 +29,7 @@ import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.json.DataIndexParsingException;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.index.service.DataIndexServiceException;
-import org.kie.kogito.persistence.api.Storage;
+import org.kie.kogito.persistence.api.StorageFetcher;
 import org.reactivestreams.Publisher;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -160,34 +160,34 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
-        return objectCreatedPublisher(() -> getCacheService().getProcessInstancesCache());
+        return objectCreatedPublisher(() -> getCacheService().getProcessInstanceStorage());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceUpdatedDataFetcher() {
-        return objectUpdatedPublisher(() -> getCacheService().getProcessInstancesCache());
+        return objectUpdatedPublisher(() -> getCacheService().getProcessInstanceStorage());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceAddedDataFetcher() {
-        return objectCreatedPublisher(() -> getCacheService().getUserTaskInstancesCache());
+        return objectCreatedPublisher(() -> getCacheService().getUserTaskInstanceStorage());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceUpdatedDataFetcher() {
-        return objectUpdatedPublisher(() -> getCacheService().getUserTaskInstancesCache());
+        return objectUpdatedPublisher(() -> getCacheService().getUserTaskInstanceStorage());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getJobUpdatedDataFetcher() {
-        return objectUpdatedPublisher(() -> getCacheService().getJobsCache());
+        return objectUpdatedPublisher(() -> getCacheService().getJobsStorage());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getJobAddedDataFetcher() {
-        return objectCreatedPublisher(() -> getCacheService().getJobsCache());
+        return objectCreatedPublisher(() -> getCacheService().getJobsStorage());
     }
 
-    private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(Supplier<Storage> cache) {
+    private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(Supplier<StorageFetcher> cache) {
         return env -> publisher(cache.get().objectCreatedListener());
     }
 
-    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(Supplier<Storage> cache) {
+    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(Supplier<StorageFetcher> cache) {
         return env -> publisher(cache.get().objectUpdatedListener());
     }
 

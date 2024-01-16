@@ -22,10 +22,11 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.jpa.mapper.ProcessDefinitionEntityMapper;
+import org.kie.kogito.index.jpa.model.NodeEntity;
+import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.postgresql.model.NodeEntity;
-import org.kie.kogito.index.postgresql.model.ProcessDefinitionEntity;
 
 import io.quarkus.test.junit.QuarkusTest;
 

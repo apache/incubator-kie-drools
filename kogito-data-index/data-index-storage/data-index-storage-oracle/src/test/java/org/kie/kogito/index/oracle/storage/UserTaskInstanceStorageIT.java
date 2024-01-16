@@ -22,11 +22,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.jpa.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.oracle.model.UserTaskInstanceEntity;
-import org.kie.kogito.index.oracle.model.UserTaskInstanceEntityRepository;
 import org.kie.kogito.index.test.TestUtils;
-import org.kie.kogito.persistence.api.StorageService;
 import org.kie.kogito.testcontainers.quarkus.OracleSqlQuarkusTestResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,27 +37,10 @@ import jakarta.inject.Inject;
 
 @QuarkusTest
 @QuarkusTestResource(OracleSqlQuarkusTestResource.class)
-public class UserTaskInstanceStorageIT extends AbstractStorageIT<UserTaskInstanceEntity, UserTaskInstance> {
+public class UserTaskInstanceStorageIT {
 
     @Inject
     UserTaskInstanceEntityRepository repository;
-
-    @Inject
-    StorageService storage;
-
-    public UserTaskInstanceStorageIT() {
-        super(UserTaskInstance.class);
-    }
-
-    @Override
-    public StorageService getStorage() {
-        return storage;
-    }
-
-    @Override
-    public UserTaskInstanceEntityRepository getRepository() {
-        return repository;
-    }
 
     @Test
     public void testUserTaskInstanceEntity() {
@@ -69,15 +50,10 @@ public class UserTaskInstanceStorageIT extends AbstractStorageIT<UserTaskInstanc
                 .createUserTaskInstance(taskId, processInstanceId, RandomStringUtils.randomAlphabetic(5),
                         UUID.randomUUID().toString(),
                         RandomStringUtils.randomAlphabetic(10), "InProgress", 0L);
-        UserTaskInstance userTaskInstance2 = TestUtils
-                .createUserTaskInstance(taskId, processInstanceId, RandomStringUtils.randomAlphabetic(5),
-                        UUID.randomUUID().toString(),
-                        RandomStringUtils.randomAlphabetic(10), "Completed", 1000L);
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode node = objectMapper.createObjectNode();
         node.put("test", "test");
         userTaskInstance1.setInputs(node);
-        testStorage(taskId, userTaskInstance1, userTaskInstance2);
     }
 
 }

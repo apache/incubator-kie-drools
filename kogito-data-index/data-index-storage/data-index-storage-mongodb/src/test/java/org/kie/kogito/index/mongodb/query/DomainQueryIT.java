@@ -75,7 +75,6 @@ class DomainQueryIT extends QueryTestBase<String, ObjectNode> {
                 "org.acme.travels.travels.Travels", new DomainEntityMapper());
     }
 
-    @Override
     public Storage<String, ObjectNode> getStorage() {
         return storage;
     }

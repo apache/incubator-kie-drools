@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.index.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -29,15 +28,23 @@ import java.util.Optional;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceSLADataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
-import org.kie.kogito.index.event.mapper.ProcessDefinitionEventMerger;
-import org.kie.kogito.index.event.mapper.ProcessInstanceEventMerger;
-import org.kie.kogito.index.event.mapper.UserTaskInstanceEventMerger;
+import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceVariableDataEvent;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.DataIndexStorageService;
+import org.kie.kogito.index.storage.ProcessInstanceStorage;
+import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.persistence.api.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +54,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
@@ -66,76 +72,52 @@ public class IndexingService {
     @Inject
     DataIndexStorageService manager;
 
-    @Inject
-    Instance<ProcessInstanceEventMerger> processInstanceMergers;
-
-    @Inject
-    Instance<UserTaskInstanceEventMerger> userTaskInstanceMergers;
-
-    @Inject
-    ProcessDefinitionEventMerger processDefinitionEventMerger;
-
     //retry in case of rare but possible race condition during the insert for the first registry
     @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
-        handleProcessInstanceEvent(event);
-    }
-
-    private ProcessInstance handleProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
-        Optional<ProcessInstance> found = Optional.ofNullable(manager.getProcessInstancesCache().get(event.getKogitoProcessInstanceId()));
-        ProcessInstance pi;
-        if (found.isEmpty()) {
-            pi = new ProcessInstance();
-            pi.setId(event.getKogitoProcessInstanceId());
-            pi.setProcessId(event.getKogitoProcessId());
-            pi.setMilestones(new ArrayList<>());
-            pi.setNodes(new ArrayList<>());
-        } else {
-            pi = found.get();
-
+        ProcessInstanceStorage storage = manager.getProcessInstanceStorage();
+        if (event instanceof ProcessInstanceErrorDataEvent) {
+            storage.indexError((ProcessInstanceErrorDataEvent) event);
+        } else if (event instanceof ProcessInstanceNodeDataEvent) {
+            storage.indexNode((ProcessInstanceNodeDataEvent) event);
+        } else if (event instanceof ProcessInstanceSLADataEvent) {
+            storage.indexSLA((ProcessInstanceSLADataEvent) event);
+        } else if (event instanceof ProcessInstanceStateDataEvent) {
+            storage.indexState((ProcessInstanceStateDataEvent) event);
+        } else if (event instanceof ProcessInstanceVariableDataEvent) {
+            storage.indexVariable((ProcessInstanceVariableDataEvent) event);
         }
-        processInstanceMergers.stream().filter(e -> e.accept(event)).findAny().ifPresent(e -> e.merge(pi, event));
-
-        manager.getProcessInstancesCache().put(pi.getId(), pi);
-
-        LOGGER.debug("Stored Process Instance: {}", pi);
-
-        return pi;
     }
 
     //retry in case of rare but possible race condition during the insert for the first registry
     @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessDefinition(ProcessDefinitionDataEvent definitionDataEvent) {
-        if (!processDefinitionEventMerger.accept(definitionDataEvent)) {
-            return;
-        }
-        ProcessDefinition current = manager.getProcessDefinitionsCache().get(ProcessDefinition.toKey(definitionDataEvent.getKogitoProcessId(), definitionDataEvent.getData().getVersion()));
-        ProcessDefinition definition = processDefinitionEventMerger.merge(current, definitionDataEvent);
-        manager.getProcessDefinitionsCache().put(definition.getKey(), definition);
+        ProcessDefinition definition = ProcessDefinitionHelper
+                .merge(manager.getProcessDefinitionStorage().get(ProcessDefinition.toKey(definitionDataEvent.getKogitoProcessId(), definitionDataEvent.getData().getVersion())), definitionDataEvent);
+        manager.getProcessDefinitionStorage().put(definition.getKey(), definition);
     }
 
     //retry in case of rare but possible race condition during the insert for the first registry
     @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public <T> void indexUserTaskInstanceEvent(UserTaskInstanceDataEvent<T> event) {
-        Optional<UserTaskInstance> found = Optional.ofNullable(manager.getUserTaskInstancesCache().get(event.getKogitoUserTaskInstanceId()));
-        UserTaskInstance ut;
-        if (found.isEmpty()) {
-            ut = new UserTaskInstance();
-            ut.setId(event.getKogitoUserTaskInstanceId());
-            ut.setAttachments(new ArrayList<>());
-            ut.setComments(new ArrayList<>());
-        } else {
-            ut = found.get();
+        UserTaskInstanceStorage storage = manager.getUserTaskInstanceStorage();
+        if (event instanceof UserTaskInstanceAssignmentDataEvent) {
+            storage.indexAssignment((UserTaskInstanceAssignmentDataEvent) event);
+        } else if (event instanceof UserTaskInstanceAttachmentDataEvent) {
+            storage.indexAttachment((UserTaskInstanceAttachmentDataEvent) event);
+        } else if (event instanceof UserTaskInstanceDeadlineDataEvent) {
+            storage.indexDeadline((UserTaskInstanceDeadlineDataEvent) event);
+        } else if (event instanceof UserTaskInstanceStateDataEvent) {
+            storage.indexState((UserTaskInstanceStateDataEvent) event);
+        } else if (event instanceof UserTaskInstanceCommentDataEvent) {
+            storage.indexComment((UserTaskInstanceCommentDataEvent) event);
+        } else if (event instanceof UserTaskInstanceVariableDataEvent) {
+            storage.indexVariable((UserTaskInstanceVariableDataEvent) event);
         }
-
-        userTaskInstanceMergers.stream().filter(e -> e.accept(event)).findAny().ifPresent(e -> e.merge(ut, event));
-        LOGGER.debug("Stored User Task Instance: {}", ut);
-
-        manager.getUserTaskInstancesCache().put(ut.getId(), ut);
     }
 
     public void indexJob(Job job) {
-        manager.getJobsCache().put(job.getId(), job);
+        manager.getJobsStorage().put(job.getId(), job);
     }
 
     public void indexModel(ObjectNode updateData) {

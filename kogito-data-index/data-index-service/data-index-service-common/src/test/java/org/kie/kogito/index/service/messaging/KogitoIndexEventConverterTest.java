@@ -19,8 +19,10 @@
 package org.kie.kogito.index.service.messaging;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,16 +39,10 @@ import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.event.mapper.ProcessDefinitionDataEventMerger;
-import org.kie.kogito.index.event.mapper.ProcessInstanceStateDataEventMerger;
-import org.kie.kogito.index.event.mapper.UserTaskInstanceStateEventMerger;
 import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.json.ObjectMapperProducer;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
-import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -152,12 +148,10 @@ class KogitoIndexEventConverterTest {
         assertThat(cloudEvent.getDataSchema()).isEqualTo(EVENT_DATA_SCHEMA);
         assertThat(cloudEvent.getDataContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
         assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
-
-        assertProcessDefinitionWithEvent(cloudEvent);
     }
 
     private static Map<String, String> getMetadata() {
-        return ProcessDefinitionDataEventMerger.toStringMap(
+        return toStringMap(
                 Map.of("Description", "JSON based greeting workflow",
                         "annotations", getAnnotations(),
                         "Tags", getAnnotations()));
@@ -174,7 +168,7 @@ class KogitoIndexEventConverterTest {
                 node.setName(definition.getName());
                 node.setUniqueId(definition.getUniqueId());
                 node.setType(definition.getType());
-                node.setMetadata(ProcessDefinitionDataEventMerger.toStringMap(definition.getMetadata()));
+                node.setMetadata(toStringMap(definition.getMetadata()));
                 return node;
             }).collect(Collectors.toList());
         } catch (IOException e) {
@@ -184,6 +178,25 @@ class KogitoIndexEventConverterTest {
 
     private static List<String> getAnnotations() {
         return List.of("test1", "test2", "test3");
+    }
+
+    private static Map<String, String> toStringMap(Map<String, ?> input) {
+        if (input == null) {
+            return null;
+        }
+        return input.entrySet().stream()
+                .map(entry -> {
+                    if (String.class.isInstance(entry.getValue())) {
+                        return entry;
+                    }
+                    String value = null;
+                    try {
+                        value = JsonUtils.getObjectMapper().writeValueAsString(entry.getValue());
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                    return new AbstractMap.SimpleEntry<>(entry.getKey(), value);
+                }).collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
     }
 
     @Test
@@ -203,22 +216,6 @@ class KogitoIndexEventConverterTest {
         assertThat(cloudEvent.getSource().toString()).isEqualTo("http://localhost:8080/jsongreet");
         assertThat(cloudEvent.getType()).isEqualTo(ProcessDefinitionDataEvent.PROCESS_DEFINITION_EVENT);
         assertThat(cloudEvent.getTime()).isEqualTo("2023-10-19T10:18:01.540311-03:00");
-
-        assertProcessDefinitionWithEvent(cloudEvent);
-    }
-
-    private void assertProcessDefinitionWithEvent(ProcessDefinitionDataEvent cloudEvent) {
-        ProcessDefinition definition = new ProcessDefinitionDataEventMerger().merge(null, cloudEvent);
-        assertThat(definition.getId()).isEqualTo("jsongreet");
-        assertThat(definition.getVersion()).isEqualTo("1.0");
-        assertThat(definition.getName()).isEqualTo("Greeting workflow");
-        assertThat(definition.getDescription()).isEqualTo("JSON based greeting workflow");
-        assertThat(definition.getEndpoint()).isEqualTo("http://localhost:8080/jsongreet");
-        assertThat(definition.getAnnotations()).containsAll(getAnnotations());
-        assertThat(definition.getNodes()).containsAll(getNodes());
-        assertThat(definition.getMetadata().entrySet()).containsAll(getMetadata().entrySet());
-        assertThat(definition.getType()).isEqualTo("ProcessDefinitionEvent");
-        assertThat(definition.getSource()).isNull();
     }
 
     @Test
@@ -248,22 +245,6 @@ class KogitoIndexEventConverterTest {
         assertThat(cloudEvent.getDataSchema()).isEqualTo(EVENT_DATA_SCHEMA);
         assertThat(cloudEvent.getDataContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
         assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
-
-        ProcessInstance pi = new ProcessInstance();
-        new ProcessInstanceStateDataEventMerger().merge(pi, cloudEvent);
-        assertThat(pi.getId()).isEqualTo("5f8b1a48-4d37-4bd2-a1a6-9b8f6097cfdd");
-        assertThat(pi.getVersion()).isEqualTo("1.0");
-        assertThat(pi.getProcessId()).isEqualTo("subscription_flow");
-        assertThat(pi.getProcessName()).isEqualTo("subscription workflow");
-
-        assertThat(pi.getRootProcessInstanceId()).isEqualTo("root_process_instance_id");
-        assertThat(pi.getRootProcessId()).isEqualTo("root_process_id");
-        assertThat(pi.getParentProcessInstanceId()).isEqualTo("parent_instance_id");
-
-        assertThat(pi.getRoles()).containsExactly("admin", "user");
-        assertThat(pi.getState()).isEqualTo(1);
-        assertThat(pi.getEnd()).isNull();
-        assertThat(pi.getBusinessKey()).isEqualTo("business_key");
     }
 
     @Test
@@ -283,17 +264,6 @@ class KogitoIndexEventConverterTest {
         assertThat(cloudEvent.getSource().toString()).isEqualTo(EVENT_SOURCE.toString());
         assertThat(cloudEvent.getType()).isEqualTo(PROCESS_INSTANCE_STATE_EVENT_TYPE);
         assertThat(cloudEvent.getTime()).isEqualTo(EVENT_TIME);
-
-        ProcessInstance pi = new ProcessInstance();
-        new ProcessInstanceStateDataEventMerger().merge(pi, cloudEvent);
-        assertThat(pi.getId()).isEqualTo("2308e23d-9998-47e9-a772-a078cf5b891b");
-        assertThat(pi.getVersion()).isEqualTo("1.0");
-        assertThat(pi.getProcessId()).isEqualTo("travels");
-        assertThat(pi.getProcessName()).isEqualTo("travels");
-        assertThat(pi.getState()).isEqualTo(1);
-        assertThat(pi.getBusinessKey()).isEqualTo("F7RTPS");
-        assertThat(pi.getStart()).isEqualTo("2022-03-18T05:32:21.887Z");
-        assertThat(pi.getEnd()).isNull();
     }
 
     @Test
@@ -369,16 +339,6 @@ class KogitoIndexEventConverterTest {
         assertThat(cloudEvent.getDataSchema()).isEqualTo(EVENT_DATA_SCHEMA);
         assertThat(cloudEvent.getDataContentType()).isEqualTo(EVENT_DATA_CONTENT_TYPE);
         assertThat(cloudEvent.getSubject()).isEqualTo(EVENT_SUBJECT);
-
-        UserTaskInstance userTaskInstance = new UserTaskInstance();
-        new UserTaskInstanceStateEventMerger().merge(userTaskInstance, cloudEvent);
-        assertThat(userTaskInstance.getId()).isEqualTo("45fae435-b098-4f27-97cf-a0c107072e8b");
-        assertThat(userTaskInstance.getProcessInstanceId()).isEqualTo("67fb3435-b098-4f27-97cf-a0c107072e8b");
-        assertThat(userTaskInstance.getName()).isEqualTo("VisaApplication");
-        assertThat(userTaskInstance.getDescription()).isEqualTo("This task is for applying to a visa");
-        assertThat(userTaskInstance.getReferenceName()).isEqualTo("Apply for visa");
-        assertThat(userTaskInstance.getPriority()).isEqualTo("1");
-        assertThat(userTaskInstance.getState()).isEqualTo("Completed");
     }
 
     @Test
