@@ -46,9 +46,6 @@ public interface NodeMemories {
     Memory peekNodeMemory( int memoryId );
 
     default Memory peekNodeMemory(NetworkNode node) {
-        if (!NodeTypeEnums.isMemoryFactory(node) ) {
-            System.out.println("pause");
-        }
         return NodeTypeEnums.isMemoryFactory(node) ? peekNodeMemory(((MemoryFactory)node).getMemoryId()) : null;
     }
 
