@@ -27,12 +27,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "Process_Instance_Variable_Log")
+@Table(name = "Process_Instance_Variable_Log",
+        indexes = {
+                @Index(name = "ix_pivl_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_pivl_key", columnList = "business_key"),
+                @Index(name = "ix_pivl_event_date", columnList = "event_date"),
+                @Index(name = "ix_pivl_var_id", columnList = "variable_id")
+        })
 @SequenceGenerator(name = "processInstanceVariableLogIdSeq", sequenceName = "PROCESS_INSTANCE_VARIABLE_LOG_ID_SEQ")
 public class ProcessInstanceVariableLog extends AbstractProcessInstanceLog {
 

@@ -26,11 +26,18 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Task_Instance_Variable_Log")
+@Table(name = "Task_Instance_Variable_Log",
+        indexes = {
+                @Index(name = "ix_tavl_utid", columnList = "user_task_instance_id"),
+                @Index(name = "ix_tavl_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_tavl_key", columnList = "business_key"),
+                @Index(name = "ix_tavl_event_date", columnList = "event_date")
+        })
 @SequenceGenerator(name = "taskInstanceVariableLogIdSeq", sequenceName = "TASK_INSTANCE_VARIABLE_LOG_ID_SEQ")
 public class UserTaskInstanceVariableLog extends AbstractUserTaskInstanceLog {
 

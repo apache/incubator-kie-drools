@@ -633,7 +633,7 @@
 	               notification.property_name as propertyName,
 	               notification.property_value as propertyValue 
 	          FROM Task_Instance_Deadline_Log log
-	     LEFT JOIN TaskInstanceDeadlineNotificationLog notification ON log.id = notification.task_instance_deadline_log_id
+	     LEFT JOIN Task_Instance_Deadline_Notification_Log notification ON log.id = notification.task_instance_deadline_log_id
 	         WHERE log.user_task_instance_id = :userTaskInstanceId
 	    </query>
 		<!-- hint name="org.hibernate.timeout" value="200"/ -->

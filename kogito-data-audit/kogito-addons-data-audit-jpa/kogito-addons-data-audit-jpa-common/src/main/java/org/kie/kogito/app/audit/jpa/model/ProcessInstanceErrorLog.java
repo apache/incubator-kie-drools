@@ -27,6 +27,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -34,7 +35,12 @@ import jakarta.persistence.Transient;
 import static org.kie.kogito.app.audit.jpa.model.ModelConstants.ERROR_LOG_LENGTH;
 
 @Entity
-@Table(name = "Process_Instance_Error_Log")
+@Table(name = "Process_Instance_Error_Log",
+        indexes = {
+                @Index(name = "ix_piel_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_piel_key", columnList = "business_key"),
+                @Index(name = "ix_piel_event_date", columnList = "event_date")
+        })
 @SequenceGenerator(name = "processInstanceErrorHistorySeq", sequenceName = "PROCESS_INSTANCE_ERROR_LOG_SEQ_ID")
 public class ProcessInstanceErrorLog extends AbstractProcessInstanceLog {
 

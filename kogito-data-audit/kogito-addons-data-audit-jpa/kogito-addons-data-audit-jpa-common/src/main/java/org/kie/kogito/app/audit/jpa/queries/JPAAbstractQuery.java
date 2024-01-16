@@ -56,10 +56,16 @@ public abstract class JPAAbstractQuery<R> {
         if (pagination != null) {
             if (pagination.get("limit") != null) {
                 jpaQuery.setMaxResults((Integer) pagination.get("limit"));
+            } else {
+                jpaQuery.setMaxResults(10);
             }
             if (pagination.get("offset") != null) {
                 jpaQuery.setFirstResult((Integer) pagination.get("offset"));
+                jpaQuery.setFirstResult(0);
             }
+        } else {
+            jpaQuery.setFirstResult(0);
+            jpaQuery.setMaxResults(10);
         }
 
         return jpaQuery.getResultList();

@@ -26,13 +26,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-@Table(name = "Job_Execution_Log")
+@Table(name = "Job_Execution_Log",
+        indexes = {
+                @Index(name = "ix_jel_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_jel_jid", columnList = "job_id"),
+                @Index(name = "ix_jel_status", columnList = "status")
+        })
 @SequenceGenerator(name = "jobExecutionHistoryIdSeq", sequenceName = "JOB_EXECUTION_HISTORY_ID_SEQ")
 public class JobExecutionLog {
 

@@ -29,24 +29,25 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Task_Instance_Assignment_Log")
+@Table(name = "Task_Instance_Assignment_Log",
+        indexes = {
+                @Index(name = "ix_utasl_utid", columnList = "user_task_instance_id"),
+                @Index(name = "ix_utasl_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_utasl_key", columnList = "business_key"),
+                @Index(name = "ix_utasl_event_date", columnList = "event_date")
+        })
 @SequenceGenerator(name = "taskInstanceAssignmentLogIdSeq", sequenceName = "TASK_INSTANCE_ASSIGNMENT_LOG_ID_SEQ")
 public class UserTaskInstanceAssignmentLog extends AbstractUserTaskInstanceLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskInstanceAssignmentLogIdSeq")
     private Long id;
-
-    @Column(name = "task_definition_id")
-    private String userTaskDefinitionId;
-
-    @Column(name = "task_instance_id")
-    private String userTaskInstanceId;
 
     @Column(name = "task_name")
     private String userTaskName;
@@ -66,22 +67,6 @@ public class UserTaskInstanceAssignmentLog extends AbstractUserTaskInstanceLog {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUserTaskDefinitionId() {
-        return userTaskDefinitionId;
-    }
-
-    public void setUserTaskDefinitionId(String userTaskDefinitionId) {
-        this.userTaskDefinitionId = userTaskDefinitionId;
-    }
-
-    public String getUserTaskInstanceId() {
-        return userTaskInstanceId;
-    }
-
-    public void setUserTaskInstanceId(String userTaskInstanceId) {
-        this.userTaskInstanceId = userTaskInstanceId;
     }
 
     public String getUserTaskName() {

@@ -24,11 +24,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Task_Instance_Comment_Log")
+@Table(name = "Task_Instance_Comment_Log",
+        indexes = {
+                @Index(name = "ix_utcl_utid", columnList = "user_task_instance_id"),
+                @Index(name = "ix_utcl_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_utcl_key", columnList = "business_key"),
+                @Index(name = "ix_utcl_event_date", columnList = "event_date")
+        })
 @SequenceGenerator(name = "taskInstanceCommentLogIdSeq", sequenceName = "TASK_INSTANCE_COMMENT_LOG_ID_SEQ")
 public class UserTaskInstanceCommentLog extends AbstractUserTaskInstanceLog {
 

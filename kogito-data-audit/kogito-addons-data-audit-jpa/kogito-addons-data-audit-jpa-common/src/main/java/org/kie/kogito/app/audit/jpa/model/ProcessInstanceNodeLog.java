@@ -28,13 +28,19 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-@Table(name = "Process_Instance_Node_Log")
+@Table(name = "Process_Instance_Node_Log",
+        indexes = {
+                @Index(name = "ix_pinl_pid", columnList = "process_instance_id"),
+                @Index(name = "ix_pinl_key", columnList = "business_key"),
+                @Index(name = "ix_pinl_event_date", columnList = "event_date")
+        })
 @SequenceGenerator(name = "processInstanceNodeLogIdSeq", sequenceName = "PROCESS_INSTANCE_NODE_LOG_ID_SEQ")
 public class ProcessInstanceNodeLog extends AbstractProcessInstanceLog {
 
