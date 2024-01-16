@@ -21,7 +21,7 @@ package org.drools.persistence.jpa.marshaller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public class EntityPersister {
 

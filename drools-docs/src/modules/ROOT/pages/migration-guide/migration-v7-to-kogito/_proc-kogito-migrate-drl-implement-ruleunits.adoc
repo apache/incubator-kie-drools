@@ -127,7 +127,7 @@ The following is an example of a REST endpoint that takes a rule unit as input a
 @Path("/find-approved")
 public class LoanUnitQueryFindApprovedEndpoint {
 
-   @javax.inject.Inject
+   @jakarta.inject.Inject
    RuleUnit<org.kie.kogito.queries.LoanUnit> ruleUnit;
 
    public LoanUnitQueryFindApprovedEndpoint() {

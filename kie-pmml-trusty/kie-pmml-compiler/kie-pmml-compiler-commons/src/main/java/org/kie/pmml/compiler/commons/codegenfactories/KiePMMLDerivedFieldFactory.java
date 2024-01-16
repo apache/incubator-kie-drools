@@ -84,7 +84,7 @@ public class KiePMMLDerivedFieldFactory {
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
         final Expression dataTypeExpression = getExpressionForDataType(derivedField.getDataType());
         final Expression opTypeExpression = getExpressionForOpType(derivedField.getOpType());
-        builder.setArgument(0, new StringLiteralExpr(derivedField.getName().getValue()));
+        builder.setArgument(0, new StringLiteralExpr(derivedField.getName()));
         builder.setArgument(2, dataTypeExpression);
         builder.setArgument(3, opTypeExpression);
         builder.setArgument(4, new NameExpr(nestedVariableName));

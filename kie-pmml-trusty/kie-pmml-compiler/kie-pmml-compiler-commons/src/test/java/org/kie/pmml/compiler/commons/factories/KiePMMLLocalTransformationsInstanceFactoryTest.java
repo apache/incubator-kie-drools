@@ -47,7 +47,7 @@ public class KiePMMLLocalTransformationsInstanceFactoryTest {
         assertThat(derivedFieldsToVerify).hasSameSizeAs(derivedFields);
         derivedFields.forEach(derivedFieldSource -> {
             Optional<KiePMMLDerivedField> derivedFieldToVerify =
-                    derivedFieldsToVerify.stream().filter(param -> param.getName().equals(derivedFieldSource.getName().getValue()))
+                    derivedFieldsToVerify.stream().filter(param -> param.getName().equals(derivedFieldSource.getName()))
                             .findFirst();
             assertThat(derivedFieldToVerify).isPresent();
             commonVerifyKiePMMLDerivedField(derivedFieldToVerify.get(), derivedFieldSource);

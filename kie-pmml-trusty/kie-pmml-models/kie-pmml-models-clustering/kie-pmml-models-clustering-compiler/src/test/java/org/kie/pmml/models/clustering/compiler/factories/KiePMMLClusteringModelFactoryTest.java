@@ -38,7 +38,6 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Euclidean;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
@@ -108,7 +107,7 @@ public class KiePMMLClusteringModelFactoryTest {
         IntStream.range(0, 3).forEach(i -> {
             ClusteringField clusteringField = getRandomClusteringField();
             clusteringFields.add(clusteringField);
-            fieldNames.add(clusteringField.getField().getValue());
+            fieldNames.add(clusteringField.getField());
             clusters.add(getRandomCluster());
         });
 
@@ -193,7 +192,7 @@ public class KiePMMLClusteringModelFactoryTest {
     void getKiePMMLClusteringField() {
         ClusteringField clusteringField = new ClusteringField();
         final Random random = new Random();
-        clusteringField.setField(FieldName.create("TEXT"));
+        clusteringField.setField("TEXT");
         clusteringField.setFieldWeight(random.nextDouble());
         clusteringField.setCenterField(getRandomEnum(ClusteringField.CenterField.values()));
         clusteringField.setCompareFunction(getRandomEnum(CompareFunction.values()));
@@ -256,7 +255,7 @@ public class KiePMMLClusteringModelFactoryTest {
 
         String expectedCompareFunction =
                 KiePMMLCompareFunction.class.getCanonicalName() + "." + comparisonMeasure.getCompareFunction().name();
-        String expectedTargetField = targetMiningField.getName().getValue();
+        String expectedTargetField =targetMiningField.getName();
 
         KiePMMLClusteringModelFactory.setStaticGetter(compilationDTO,
                 modelTemplate);
@@ -285,7 +284,7 @@ public class KiePMMLClusteringModelFactoryTest {
                                                       ClusteringField clusteringField) {
         assertThat(retrieved).isNotNull();
         boolean isCenterField = clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
-        assertThat(retrieved.getField()).isEqualTo(clusteringField.getField().getValue());
+        assertThat(retrieved.getField()).isEqualTo(clusteringField.getField());
         assertThat(retrieved.getFieldWeight()).isEqualTo(clusteringField.getFieldWeight());
         assertThat(retrieved.getCenterField()).isEqualTo(isCenterField);
         assertThat(retrieved.getCompareFunction()).isPresent();

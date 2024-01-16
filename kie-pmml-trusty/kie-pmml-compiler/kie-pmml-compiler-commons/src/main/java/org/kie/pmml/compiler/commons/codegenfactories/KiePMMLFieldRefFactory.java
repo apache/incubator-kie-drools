@@ -73,7 +73,7 @@ public class KiePMMLFieldRefFactory {
                                                                       FIELD_REF, toReturn)))
                 .asObjectCreationExpr();
 
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(fieldRef.getField().getValue());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(fieldRef.getField());
         final Expression mapMissingToExpr = getExpressionForObject(fieldRef.getMapMissingTo());
         objectCreationExpr.getArguments().set(0, nameExpr);
         objectCreationExpr.getArguments().set(2, mapMissingToExpr);

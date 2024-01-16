@@ -18,7 +18,7 @@
  */
  package org.drools.persistence.jpa;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.drools.persistence.api.PersistenceContext;
 import org.drools.persistence.api.PersistenceContextManager;

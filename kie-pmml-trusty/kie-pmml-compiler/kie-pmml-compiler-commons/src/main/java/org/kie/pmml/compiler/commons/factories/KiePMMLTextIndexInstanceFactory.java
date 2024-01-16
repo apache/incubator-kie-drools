@@ -45,7 +45,7 @@ public class KiePMMLTextIndexInstanceFactory {
                 COUNT_HITS.byName(textIndex.getCountHits().value()) : null;
         final String wordSeparatorCharacterRE = textIndex.getWordSeparatorCharacterRE() != null ?
                 StringEscapeUtils.escapeJava(textIndex.getWordSeparatorCharacterRE()) : null;
-        return KiePMMLTextIndex.builder(textIndex.getTextField().getValue(),
+        return KiePMMLTextIndex.builder(textIndex.getTextField(),
                                         getKiePMMLExtensions(textIndex.getExtensions()),
                                         getKiePMMLExpression(textIndex.getExpression()))
                 .withTextIndexNormalizations(getKiePMMLTextIndexNormalizations(textIndex.getTextIndexNormalizations()))

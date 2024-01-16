@@ -30,7 +30,6 @@ import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
@@ -73,8 +72,7 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
         BlockStmt retrieved = KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration(variableName,
                                                                                                         simpleSetPredicate);
         String text = getFileContent(TEST_01_SOURCE);
-        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
-                                                                      simpleSetPredicate.getField().getValue(),
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,simpleSetPredicate.getField(),
                                                                       arrayTypeString,
                                                                       booleanOperatorString,
                                                                       valuesString));
@@ -87,7 +85,7 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
                                                            final SimpleSetPredicate.BooleanOperator inNotIn) {
         Array array = getArray(arrayType, values);
         SimpleSetPredicate toReturn = new SimpleSetPredicate();
-        toReturn.setField(FieldName.create(SIMPLE_SET_PREDICATE_NAME));
+        toReturn.setField(SIMPLE_SET_PREDICATE_NAME);
         toReturn.setBooleanOperator(inNotIn);
         toReturn.setArray(array);
         return toReturn;
