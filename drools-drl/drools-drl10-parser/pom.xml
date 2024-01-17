@@ -18,12 +18,17 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-drl-ast</artifactId>
-      <version>${version.drools-drl-ast}</version>
+      <version>${version.org.drools}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-util</artifactId>
-      <version>${version.drools-drl-ast}</version>
+      <version>${version.org.drools}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-drl-parser</artifactId>
+      <version>${version.org.drools}</version>
     </dependency>
 
     <!-- External dependencies -->
