@@ -31,6 +31,10 @@
   <artifactId>kogito-codegen-processes</artifactId>
   <name>Kogito :: Codegen Processes</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.codegen.process</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

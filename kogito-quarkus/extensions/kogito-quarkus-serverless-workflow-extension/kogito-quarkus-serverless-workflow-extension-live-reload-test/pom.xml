@@ -32,6 +32,10 @@
     <artifactId>kogito-quarkus-serverless-workflow-extension-live-reload-test</artifactId>
     <name>Kogito :: Quarkus Serverless Workflow Extension :: Live Reload Tests</name>
 
+  <properties>
+        <java.module.name>org.kie.kogito.quarkus.serverless.workflow.deployment.livereload</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

@@ -31,6 +31,10 @@
   <artifactId>kogito-addons-quarkus-monitoring-core</artifactId>
   <name>Kogito Add-On Monitoring Core</name>
 
+    <properties>
+       <java.module.name>org.kie.kogito.monitoring.core.quarkus</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

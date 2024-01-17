@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-task-management</artifactId>
   <name>Kogito :: Add-Ons :: Task Management :: Common</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.task.management.service</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

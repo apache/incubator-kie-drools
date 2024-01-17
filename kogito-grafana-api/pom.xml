@@ -32,6 +32,10 @@
   <artifactId>grafana-api</artifactId>
   <name>Kogito :: Grafana API</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.grafana</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

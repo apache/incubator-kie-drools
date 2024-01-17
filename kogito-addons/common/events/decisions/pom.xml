@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: Events :: Event-Driven Decisions</name>
   <description>Trigger evaluation of decision models via events</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.eventdriven.decision</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

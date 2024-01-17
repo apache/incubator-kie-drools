@@ -32,11 +32,15 @@
     <artifactId>kogito-quarkus-predictions-deployment</artifactId>
     <name>Kogito :: Quarkus Predictions Extension :: Deployment</name>
 
+    <properties>
+        <java.module.name>org.kie.kogito.quarkus.predictions.deployment</java.module.name>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-quarkus-common-deployment</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>

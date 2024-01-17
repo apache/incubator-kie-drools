@@ -35,6 +35,10 @@
   <name>Kogito :: Test Utilities :: Quarkus</name>
   <description>Kogito Test Utilities for Quarkus</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.test.quarkus</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

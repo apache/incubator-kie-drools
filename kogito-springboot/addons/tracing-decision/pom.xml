@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-springboot-tracing-decision</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: Spring Boot</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.task.tracing.decision</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

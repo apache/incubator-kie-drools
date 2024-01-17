@@ -32,6 +32,11 @@
   <artifactId>kogito-addons-springboot-kubernetes</artifactId>
   <name>Kogito :: Add-Ons :: Spring Boot :: Kubernetes</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.addons.springboot.k8s</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

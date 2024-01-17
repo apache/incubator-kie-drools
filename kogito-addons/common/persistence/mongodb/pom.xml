@@ -32,7 +32,11 @@
   <artifactId>kogito-addons-persistence-mongodb</artifactId>
   <name>Kogito :: Add-Ons :: Persistence :: MongoDB</name>
   <description>MongoDB based persistence for Kogito</description>
-  
+
+  <properties>
+    <java.module.name>org.kie.kogito.mongodb</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

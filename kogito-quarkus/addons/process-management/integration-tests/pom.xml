@@ -28,6 +28,12 @@
   <artifactId>kogito-addons-quarkus-process-management-integration-tests</artifactId>
   <name>Kogito:: Addons :: Quarkus:: Process Management :: Integration Test</name>
   <description>Process Management addon testing Testing</description>
+
+    <properties>
+       <java.module.name>org.kie.kogito.process.quarkus.management.test</java.module.name>
+    </properties>
+
+
   <dependencies>
 	<dependency>
       <groupId>io.quarkus</groupId>

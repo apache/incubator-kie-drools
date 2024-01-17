@@ -33,7 +33,7 @@
   <name>Kogito :: Add-Ons :: Tracing :: API</name>
 
   <properties>
-    <version.org.mockito>3.4.6</version.org.mockito>
+    <java.module.name>org.kie.kogito.tracing</java.module.name>
   </properties>
 
   <dependencies>
@@ -66,7 +66,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-inline</artifactId>
-      <version>${version.org.mockito}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -32,6 +32,10 @@
     <artifactId>kogito-addons-quarkus-knative-serving-deployment</artifactId>
     <name>Kogito Add-On Knative Serving - Deployment</name>
 
+    <properties>
+       <java.module.name>org.kie.kogito.addons.quarkus.knative.serving.deployment</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

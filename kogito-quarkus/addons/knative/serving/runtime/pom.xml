@@ -33,6 +33,10 @@
     <name>Kogito Add-On Knative Serving</name>
     <description>Knative Serving Kogito Add-On. Adds Knative Serverless Workflow custom functions.</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.addons.quarkus.knative.serving.customfunctions</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

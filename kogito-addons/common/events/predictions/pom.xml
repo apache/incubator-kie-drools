@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: Events :: Event-Driven Predictions</name>
   <description>Trigger evaluation of PMML models via events</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.eventdriven.predictions</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -46,7 +50,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId>
-      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

@@ -32,6 +32,10 @@
   <name>Kogito :: Add-Ons :: Quarkus :: Marshallers :: Avro :: Deployment</name>
   <description>Kogito Quarkus Marshallers Unmarshaller for Avro deployment</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addon.avro.quarkus.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -31,6 +31,10 @@
   <name>Kogito Add-On Process Management</name>
   <description>Management of process instances for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.process.quarkus.management</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

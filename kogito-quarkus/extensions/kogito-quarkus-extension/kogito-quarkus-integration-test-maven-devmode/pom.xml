@@ -36,6 +36,7 @@
   <properties>
     <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5656 -->
     <quarkus.test.list.include>false</quarkus.test.list.include>
+    <java.module.name>io.quarkus.it.kogito.devmode</java.module.name>
   </properties>
 
   <dependencyManagement>

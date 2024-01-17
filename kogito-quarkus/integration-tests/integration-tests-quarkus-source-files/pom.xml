@@ -30,6 +30,11 @@
   <artifactId>integration-tests-quarkus-source-files</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Source Files</name>
 
+
+  <properties>
+    <java.module.name>org.kie.kogito.test.quarkus.source.files</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

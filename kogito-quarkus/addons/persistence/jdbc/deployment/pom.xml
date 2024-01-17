@@ -29,6 +29,11 @@
   </parent>
   <artifactId>kogito-addons-quarkus-persistence-jdbc-deployment</artifactId>
   <name>Kogito Add-On Persistence JDBC - Deployment</name>
+
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.jdbc.deployment</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

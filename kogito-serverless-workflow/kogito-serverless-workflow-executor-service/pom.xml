@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Executor:: Service</name>
   <description>Classes for execution of a Java service within a workflow without code generation</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.serverless.workflow.executor.service</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

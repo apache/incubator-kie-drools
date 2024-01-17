@@ -29,6 +29,11 @@
   </parent>
   <artifactId>kogito-addons-quarkus-mail-deployment</artifactId>
   <name>Kogito Add-On Mail - Deployment</name>
+
+  <properties>
+     <java.module.name>org.kie.kogito.quarkus.mail.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -41,8 +46,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-mailer-deployment</artifactId>
-      <!-- ask for Quarkus team to add this to their BOM -->
-      <version>${version.io.quarkus}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

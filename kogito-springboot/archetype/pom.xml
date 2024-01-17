@@ -32,6 +32,9 @@
   <name>Kogito :: Spring Boot :: Maven Archetype</name>
   <description>Kogito based on Spring Boot runtime Archetype</description>
 
+
+
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -49,7 +52,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-maven-plugin</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

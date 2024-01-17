@@ -33,6 +33,11 @@
   <description>Kogito Quarkus Camel Integration with Serverless Workflow</description>
   <artifactId>kogito-addons-quarkus-camel</artifactId>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addons.quarkus.camel.runtime</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

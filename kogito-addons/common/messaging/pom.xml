@@ -32,6 +32,10 @@
   <name>Kogito :: Add-Ons :: Messaging</name>
   <description>Messaging Add-On Common Interfaces</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.addon.cloudevents</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

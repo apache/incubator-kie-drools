@@ -33,6 +33,10 @@
   <name>Kogito Add-On Source Files</name>
   <description>Provides access to source files for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.quarkus.addon.source.files</java.module.name>
+    </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -31,6 +31,11 @@
   <artifactId>kogito-addons-quarkus-rest-exception-handler</artifactId>
   <name>Kogito :: Rest Exception Handler :: Quarkus</name>
   <description>Kogito exception handling for Quarkus</description>
+
+    <properties>
+       <java.module.name>org.kie.kogito.process.quarkus.rest.exception.handler</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

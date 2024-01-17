@@ -18,7 +18,9 @@
     that we also want to use for testing them executing. -->
     <shared.test.resources.dir>${project.root.dir}/kogito-serverless-workflow/kogito-serverless-workflow-builder/src/test/resources</shared.test.resources.dir>
     <callback.test.resources.dir>${project.root.dir}/kogito-serverless-workflow/kogito-serverless-workflow-openapi-parser/src/test/resources</callback.test.resources.dir>
+    <java.module.name>org.kie.kogito.quarkus.workflows.tests</java.module.name>
   </properties>
+
 
   <dependencies>
     <dependency>

@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: Knative :: Eventing</name>
   <description>Common library for Kogito Knative Eventing Addons implementations</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.addons.knative.eventing</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

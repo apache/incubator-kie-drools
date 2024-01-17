@@ -33,6 +33,10 @@
   <description>Infinispan persistence for Springboot</description>
   <artifactId>kogito-addons-springboot-persistence-infinispan</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.persistence.infinispan</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

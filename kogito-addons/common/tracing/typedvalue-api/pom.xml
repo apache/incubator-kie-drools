@@ -32,6 +32,11 @@
   <artifactId>kogito-addons-tracing-typedvalue-api</artifactId>
   <name>Kogito :: Add-Ons :: TypedValue API</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.tracing.typedvalue</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

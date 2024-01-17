@@ -33,6 +33,10 @@
     <name>Kogito :: Add-Ons :: Kubernetes Service Catalog</name>
     <description>Common Library for Kubernetes Service Discovery implementations</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.addons.k8s.resource.catalog</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

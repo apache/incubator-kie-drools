@@ -30,6 +30,10 @@
   <artifactId>kogito-addons-quarkus-explainability-it</artifactId>
   <name>Kogito Add-On Explainability - Integration tests</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.explainability.test</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

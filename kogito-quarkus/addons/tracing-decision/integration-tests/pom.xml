@@ -30,6 +30,11 @@
   <artifactId>kogito-addons-quarkus-tracing-decision-it</artifactId>
   <name>Kogito Add-On Tracing Decision - Integration tests</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.quarkus.tracing.decision.tests</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

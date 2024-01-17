@@ -30,6 +30,11 @@
   <artifactId>kogito-addons-quarkus-kubernetes</artifactId>
   <name>Kogito Add-On Kubernetes</name>
   <description>Kubernetes Kogito Add-On. Adds support Kubernetes service discovery.</description>
+
+    <properties>
+       <java.module.name>org.kie.kogito.addons.quarkus.k8s</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

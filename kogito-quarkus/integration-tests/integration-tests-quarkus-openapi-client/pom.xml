@@ -31,6 +31,10 @@
   <name>Kogito :: Integration Tests :: Quarkus :: OpenAPI Client Codegen</name>
   <artifactId>integration-tests-quarkus-openapi-client</artifactId>
 
+  <properties>
+        <java.module.name>org.kie.kogito.test.quarkus.openapi</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

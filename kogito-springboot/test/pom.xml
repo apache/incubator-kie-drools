@@ -35,6 +35,10 @@
   <name>Kogito :: Test Utilities :: Spring Boot</name>
   <description>Kogito Test Utilities for Spring Boot</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.springboot.test.resources</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

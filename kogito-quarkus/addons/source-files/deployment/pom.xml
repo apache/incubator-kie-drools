@@ -31,6 +31,10 @@
     <artifactId>kogito-addons-quarkus-source-files-deployment</artifactId>
     <name>Kogito Add-On Source Files - Deployment</name>
 
+    <properties>
+       <java.module.name>org.kie.kogito.quarkus.addon.source.files.deployment</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

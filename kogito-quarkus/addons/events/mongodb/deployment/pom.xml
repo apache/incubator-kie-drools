@@ -29,6 +29,11 @@
   </parent>
   <artifactId>kogito-addons-quarkus-events-mongodb-deployment</artifactId>
   <name>Kogito Add-On Events MongoDB - Deployment</name>
+
+  <properties>
+     <java.module.name>org.kie.kogito.events.mongodb.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

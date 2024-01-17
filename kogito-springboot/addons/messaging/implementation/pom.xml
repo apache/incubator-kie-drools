@@ -31,6 +31,10 @@
   <name>Kogito :: Add-Ons :: Messaging :: Spring Boot</name>
   <description>Kogito Events handling for Messaging Add-On (Spring Boot)</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.addon.cloudevents</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

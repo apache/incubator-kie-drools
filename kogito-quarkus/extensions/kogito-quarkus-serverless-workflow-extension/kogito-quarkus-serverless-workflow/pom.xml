@@ -13,6 +13,11 @@
   <name>Kogito :: Quarkus Serverless Workflow Extension :: Runtime</name>
   <description>Add Kogito Serverless Workflows (SW) capabilities - Includes the Process engine capability</description>
 
+  <properties>
+        <java.module.name>org.kie.kogito.serverless.workflow</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

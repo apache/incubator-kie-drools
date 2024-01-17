@@ -31,6 +31,10 @@
   <name>Kogito Add-On Events Process</name>
   <description>Kogito Add-On for runtime process events</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.events</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

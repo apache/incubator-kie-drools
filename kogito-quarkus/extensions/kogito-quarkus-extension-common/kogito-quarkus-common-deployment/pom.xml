@@ -32,6 +32,10 @@
   <artifactId>kogito-quarkus-common-deployment</artifactId>
   <name>Kogito :: Quarkus Extension Common :: Deployment</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.quarkus.common.deployment</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

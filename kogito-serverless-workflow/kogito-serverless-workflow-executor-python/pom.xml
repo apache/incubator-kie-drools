@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Executor:: Python</name>
   <description>Classes for execution of a Python scripts within a workflow without code generation</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.serverless.workflow.executor.python</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

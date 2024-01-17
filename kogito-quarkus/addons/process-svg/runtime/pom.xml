@@ -32,6 +32,10 @@
 
   <description>Quarkus Addon to interact with Process SVG Service</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.process.quarkus.svg</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

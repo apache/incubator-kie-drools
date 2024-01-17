@@ -35,7 +35,9 @@
 
   <properties>
     <version.org.apache.tomcat>6.0.53</version.org.apache.tomcat>
+    <java.module.name>org.kie.kogito.serverless.workflow.executor.test</java.module.name>
   </properties>
+
 
   <dependencies>
     <dependency>

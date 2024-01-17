@@ -34,6 +34,10 @@
   <name>Kogito :: Quarkus Extension :: Runtime</name>
   <description>Add business automation capabilities - processes and rules with Kogito (a toolkit that originates from projects Drools and jBPM)</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.quarkus.extension.runtime</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

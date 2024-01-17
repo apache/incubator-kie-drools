@@ -32,6 +32,11 @@
   <artifactId>kogito-addons-springboot-explainability</artifactId>
   <name>Kogito :: Add-Ons :: Explainability :: Spring Boot Addon</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.events.explainability</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

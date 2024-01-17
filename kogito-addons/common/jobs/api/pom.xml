@@ -31,6 +31,10 @@
   <name>Kogito :: Add-Ons :: Jobs :: API</name>
   <description>Jobs API used by both service and client</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.jobs.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.cloudevents</groupId>

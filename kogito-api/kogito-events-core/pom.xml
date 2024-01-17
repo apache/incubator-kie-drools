@@ -35,9 +35,11 @@
   <name>Kogito :: API :: Events</name>
   <description>Core events for Kogito that depends on jackson</description>
 
-  
+  <properties>
+    <java.module.name>org.kie.kogito.event</java.module.name>
+  </properties>
+
   <dependencies>
-  
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>

@@ -34,6 +34,7 @@
     <!-- skip evaluation if skipITs is set -->
     <exec.skip>${skipITs}</exec.skip>
     <gradle.project.dir>${basedir}/integration-tests-quarkus-gradle-project</gradle.project.dir>
+    <java.module.name>org.kie.kogito.test.quarkus.gradle</java.module.name>
   </properties>
 
   <dependencyManagement>

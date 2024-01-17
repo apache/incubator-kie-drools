@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: E-Mail :: Spring Boot Addon</name>
   <description>Sending e-mail on Springboot</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.mail</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

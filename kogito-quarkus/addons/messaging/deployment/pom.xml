@@ -29,6 +29,11 @@
   </parent>
   <artifactId>kogito-addons-quarkus-messaging-deployment</artifactId>
   <name>Kogito Add-On Messaging - Deployment</name>
+
+  <properties>
+     <java.module.name>org.kie.kogito.addon.cloudevents.quarkus.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

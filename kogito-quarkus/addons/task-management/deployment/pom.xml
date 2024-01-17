@@ -29,6 +29,12 @@
   </parent>
   <artifactId>kogito-addons-quarkus-task-management-deployment</artifactId>
   <name>Kogito Add-On Task Management - Deployment</name>
+
+
+    <properties>
+       <java.module.name>org.kie.kogito.quarkus.task.management.deployment</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

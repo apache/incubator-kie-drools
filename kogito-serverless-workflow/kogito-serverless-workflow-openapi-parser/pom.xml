@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: OpenAPI :: Parser</name>
   <description>Kogito Serverless Workflow OpenAPI parser</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.openapi.parser</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

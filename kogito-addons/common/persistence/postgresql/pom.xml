@@ -34,6 +34,7 @@
     <path.to.script.folder>src/main/resources/db</path.to.script.folder>
     <path.to.migration.scripts.from>${path.to.jdbc.addon}/${path.to.script.folder}/postgresql</path.to.migration.scripts.from>
     <path.to.migration.scripts.to>${path.to.script.folder}/migration</path.to.migration.scripts.to>
+    <java.module.name>org.kie.kogito.persistence.postgresql</java.module.name>
   </properties>
 
   <dependencies>

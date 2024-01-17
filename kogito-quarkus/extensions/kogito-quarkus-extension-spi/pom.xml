@@ -32,6 +32,12 @@
   <artifactId>kogito-quarkus-extension-spi</artifactId>
   <name>Kogito :: Quarkus Extension SPI</name>
 
+
+    <properties>
+        <java.module.name>org.kie.kogito.quarkus.extensions.spi.deployment</java.module.name>
+    </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

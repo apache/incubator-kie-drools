@@ -33,6 +33,10 @@
   <description>PostgreSQL persistence for Springboot</description>
   <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.persistence.postgresql</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

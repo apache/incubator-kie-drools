@@ -36,6 +36,10 @@
   <name>Kogito :: Test Utilities :: Common</name>
   <description>Test Utilities for Kogito</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.test.resources</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.testcontainers</groupId>

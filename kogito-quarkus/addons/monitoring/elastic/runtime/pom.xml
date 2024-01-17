@@ -33,6 +33,10 @@
   <name>Kogito Add-On Monitoring Elastic</name>
   <description>Monitoring Elastic Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.monitoring.elastic.quarkus</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

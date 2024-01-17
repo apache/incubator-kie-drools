@@ -32,6 +32,7 @@
 
   <properties>
     <version.org.kie.kogito.trusty-service-postgresql>1.17.0</version.org.kie.kogito.trusty-service-postgresql>
+    <java.module.name>org.kie.kogito.quarkus.tracing.decision.deployment</java.module.name>
   </properties>
 
   <dependencies>

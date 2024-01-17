@@ -29,6 +29,12 @@
   </parent>
   <artifactId>kogito-addons-quarkus-persistence-filesystem-deployment</artifactId>
   <name>Kogito Add-On Persistence FileSystem - Deployment</name>
+
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.filesystem.deployment</java.module.name>
+    </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

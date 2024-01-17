@@ -34,6 +34,7 @@
 
   <properties>
     <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral-nightly:latest</data-index-ephemeral.image>
+    <java.module.name>org.kie.kogito.quarkus.workflow.deployment</java.module.name>
   </properties>
 
   <dependencies>

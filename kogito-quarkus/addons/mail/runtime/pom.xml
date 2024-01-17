@@ -32,6 +32,10 @@
   <name>Kogito Add-On Mail</name>
   <description>E-Mail addon for for Quarkus</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.quarkus.mail</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -31,6 +31,10 @@
   <name>Kogito :: Add-Ons :: Jobs :: Management SprintBoot Addon</name>
   <description>Jobs Management SprintBoot Addon to interact with Jobs Service</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.jobs.management.springboot</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

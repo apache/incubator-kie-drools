@@ -32,6 +32,10 @@
   <artifactId>kogito-quarkus-processes-deployment</artifactId>
   <name>Kogito :: Quarkus Processes Extension :: Deployment</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.quarkus.processes.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

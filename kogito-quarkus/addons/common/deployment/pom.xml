@@ -33,6 +33,11 @@
   <name>Kogito Add-On Common - Deployment</name>
   <description>Common libraries meant to be used with Kogito Quarkus Add-Ons deployment modules</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.quarkus.addons.common.deployment</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

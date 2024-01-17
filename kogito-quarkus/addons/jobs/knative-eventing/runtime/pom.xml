@@ -32,6 +32,10 @@
 
   <description>Jobs Quarkus Add-On to interact with the Jobs Service using events via the knative eventing system</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.jobs.knative.eventing.quarkus</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

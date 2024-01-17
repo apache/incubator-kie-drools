@@ -36,6 +36,7 @@
     <properties>
         <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5831 -->
         <quarkus.test.list.include>false</quarkus.test.list.include>
+        <java.module.name>org.kie.kogito.quarkus.processes.hotreload.tests</java.module.name>
     </properties>
 
     <dependencyManagement>

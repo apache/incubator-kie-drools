@@ -31,6 +31,10 @@
   <name>Kogito :: Add-Ons :: Monitoring Core Springboot</name>
   <artifactId>kogito-addons-springboot-monitoring-core</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.monitoring.core</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

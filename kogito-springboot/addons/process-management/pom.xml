@@ -33,6 +33,11 @@
   <name>Kogito :: Add-Ons :: Process Management :: Spring Boot Addon</name>
   <description>Management of process instances for Spring Boot</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.process.management</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -31,6 +31,7 @@
 
   <properties>
     <sonar.exclusions>**/*</sonar.exclusions>
+    <java.module.name>org.kie.kogito.springboot.starter.tests</java.module.name>
   </properties>
 
   <dependencyManagement>

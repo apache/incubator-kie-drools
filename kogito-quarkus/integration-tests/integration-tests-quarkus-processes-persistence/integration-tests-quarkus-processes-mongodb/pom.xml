@@ -35,6 +35,7 @@
   <properties>
     <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5654 -->
     <quarkus.test.list.include>false</quarkus.test.list.include>
+    <java.module.name>org.kie.kogito.test.quarkus.processes.mongodb</java.module.name>
   </properties>
 
   <dependencies>

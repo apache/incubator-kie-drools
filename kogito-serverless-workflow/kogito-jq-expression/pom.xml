@@ -33,6 +33,11 @@
   <name>Kogito :: Serverless Workflow :: Expression :: JQ</name>
 
   <description>Kogito jq expression implementation</description>
+
+  <properties>
+    <java.module.name>org.kie.kogito.expr.jq</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

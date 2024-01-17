@@ -34,6 +34,10 @@
   <name>Kogito :: Add-Ons :: Monitoring Elastic Common</name>
   <description>Monitoring Elastic Core</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.monitoring.elastic.common</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

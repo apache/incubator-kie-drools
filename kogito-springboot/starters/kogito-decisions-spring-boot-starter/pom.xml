@@ -33,6 +33,10 @@
   <name>Kogito :: Spring Boot :: Starter :: Decisions</name>
   <description>Spring Boot Starter for Kogito Decisions (DMN). Contains everything you need to get started with Kogito Decisions!</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.springboot.starter.decision</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

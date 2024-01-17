@@ -30,6 +30,11 @@
     <artifactId>kogito-quarkus-decisions</artifactId>
     <name>Kogito :: Quarkus Decisions Extension :: Runtime</name>
     <description>Add Kogito decision (DMN) capabilities - Include Drools DMN engine</description>
+    
+  <properties>
+    <java.module.name>org.kie.kogito.quarkus.decisions</java.module.name>
+  </properties>
+  
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

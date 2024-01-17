@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: Kubernetes</name>
   <description>Common library for Kogito Kubernetes Addons implementations</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.addons.k8s</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

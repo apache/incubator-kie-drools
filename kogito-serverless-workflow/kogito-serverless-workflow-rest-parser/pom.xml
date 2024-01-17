@@ -33,6 +33,11 @@
   <name>Kogito :: Serverless Workflow :: REST :: Parser</name>
   <description>Kogito Serverless Workflow REST parser</description>
 
+
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.rest.parser</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

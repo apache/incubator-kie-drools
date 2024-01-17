@@ -32,6 +32,10 @@
     <artifactId>kogito-addons-source-files</artifactId>
     <name>Kogito :: Add-Ons :: Source Files :: Common</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.addon.source.files</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

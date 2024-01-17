@@ -32,6 +32,10 @@
   <artifactId>kogito-quarkus-incubation-common</artifactId>
   <name>Kogito :: Quarkus :: Incubation Common</name>
 
+    <properties>
+        <java.module.name>org.kie.kogito.incubation.application.quarkus</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

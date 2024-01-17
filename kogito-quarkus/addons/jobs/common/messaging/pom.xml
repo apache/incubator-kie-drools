@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-quarkus-jobs-common-messaging</artifactId>
   <name>Kogito Add-Ons Quarkus Jobs Common - Messaging</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.jobs.messaging.quarkus</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>jakarta.ws.rs</groupId>

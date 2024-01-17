@@ -32,6 +32,10 @@
     <artifactId>kogito-addons-quarkus-knative-eventing-integration-tests</artifactId>
     <name>Kogito Add-On Knative Eventing - Integration Tests</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addons.quarkus.knative.eventing.test</java.module.name>
+  </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

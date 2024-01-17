@@ -32,6 +32,11 @@
   <name>Kogito Add-On Task Notification</name>
   <description>Task notification addon for for Quarkus</description>
 
+
+    <properties>
+       <java.module.name>org.kie.kogito.quarkus.task.notification</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -30,6 +30,10 @@
 
   <description>File System based persistence for Kogito</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.filesystem</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

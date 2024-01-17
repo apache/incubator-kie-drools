@@ -33,6 +33,10 @@
   <name>Kogito :: API :: Timer</name>
   <description>Timer API to schedule jobs</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.timer</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

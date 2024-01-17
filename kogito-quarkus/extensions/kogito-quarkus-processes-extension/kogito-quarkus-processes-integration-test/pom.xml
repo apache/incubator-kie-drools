@@ -33,6 +33,11 @@
     <artifactId>kogito-quarkus-processes-integration-test</artifactId>
     <name>Kogito :: Quarkus Processes Extension :: Integration Tests</name>
 
+  <properties>
+      <java.module.name>org.kie.kogito.quarkus.processes.tests</java.module.name>
+  </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

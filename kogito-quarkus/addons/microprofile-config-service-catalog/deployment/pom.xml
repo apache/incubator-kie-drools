@@ -32,6 +32,10 @@
     <artifactId>kogito-addons-quarkus-microprofile-config-service-catalog-deployment</artifactId>
     <name>Kogito Add-On MicroProfile Config Service Catalog - Deployment</name>
 
+    <properties>
+       <java.module.name>org.kie.kogito.addons.quarkus.microprofile.config.service.catalog.deployment</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

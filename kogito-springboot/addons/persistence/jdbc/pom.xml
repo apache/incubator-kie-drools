@@ -33,6 +33,10 @@
   <description>JDBC persistence for Springboot</description>
   <artifactId>kogito-addons-springboot-persistence-jdbc</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.persistence.jdbc</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -45,7 +49,6 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>${version.org.flywaydb}</version>
     </dependency>
   </dependencies>
 

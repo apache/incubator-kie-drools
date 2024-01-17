@@ -34,6 +34,12 @@
 
   <description>JDBC Persistence support for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.jdbc</java.module.name>
+    </properties>
+
+
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

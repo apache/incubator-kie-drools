@@ -32,6 +32,10 @@
   <name>Kogito :: Add-Ons :: Marshallers :: Avro</name>
   <description>Kogito Marshallers Unmarshaller for Avro</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.event.avro</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

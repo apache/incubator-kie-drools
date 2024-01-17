@@ -36,6 +36,7 @@
   <description>Kogito Process Protobuf Serialization</description>
   <properties>
     <sonar.exclusions>**/org/kie/kogito/serialization/process/protobuf/*</sonar.exclusions>
+    <java.module.name>org.kie.kogito.serialization.process</java.module.name>
   </properties>
 
   <dependencyManagement>

@@ -33,6 +33,10 @@
     <name>Kogito Add-On Knative Serving - Integration Tests</name>
     <description>Knative Serving Kogito Add-On Integration Tests.</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.addons.quarkus.knative.serving.test</java.module.name>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

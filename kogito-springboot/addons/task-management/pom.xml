@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: Task Management :: Spring Boot Addon</name>
   <description>Management of human tasks for Spring Boot</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.task.management</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

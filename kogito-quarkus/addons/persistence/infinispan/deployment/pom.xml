@@ -29,6 +29,12 @@
   </parent>
   <artifactId>kogito-addons-quarkus-persistence-infinispan-deployment</artifactId>
   <name>Kogito Add-On Persistence Infinispan - Deployment</name>
+
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.infinispan.deployment</java.module.name>
+    </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Executor:: Rest</name>
   <description>Classes that add rest capability to serverless workflow executor</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.serverless.workflow.executor.rest</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

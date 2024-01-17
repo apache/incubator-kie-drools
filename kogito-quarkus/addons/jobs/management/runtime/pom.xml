@@ -32,6 +32,10 @@
 
   <description>Jobs Management Quarkus Add-On to interact with Jobs Service</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.jobs.management.quarkus</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

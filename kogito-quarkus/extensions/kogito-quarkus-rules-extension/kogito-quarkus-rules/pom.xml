@@ -33,6 +33,11 @@
     <name>Kogito :: Quarkus Rules Extension :: Runtime</name>
     <description>Add Kogito rules (DRL) capabilities - Include Drools engine</description>
 
+
+  <properties>
+      <java.module.name>org.kie.kogito.core.rules.incubation.quarkus.support</java.module.name>
+  </properties>
+
     <dependencies>
 
         <dependency>

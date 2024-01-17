@@ -34,6 +34,10 @@
     <name>Kogito :: Add-Ons :: Events ::  MongoDB :: SprintBoot</name>
     <description>Kogito Events based on MongoDB and SpringBoot Add-On</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.events.mongodb</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

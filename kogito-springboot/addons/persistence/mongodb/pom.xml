@@ -33,6 +33,10 @@
   <description>MongoDB persistence for Springboot</description>
   <artifactId>kogito-addons-springboot-persistence-mongodb</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.persistence.mongodb</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -33,6 +33,11 @@
   <name>Kogito :: Quarkus Processes Extension :: Runtime</name>
   <description>Add Kogito Processes capabilities - Includes Process (jBPM) Engine</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.core.process.incubation.quarkus.support</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -32,6 +32,11 @@
   <name>Kogito :: Workitems :: Jackson utils</name>
 
   <description>Jackson utilities</description>
+
+  <properties>
+    <java.module.name>org.kie.kogito.jackson.utils</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

@@ -33,6 +33,11 @@
   <name>Kogito :: Serverless Workflow :: Utils</name>
 
   <description>Kogito serverless workflow utils</description>
+
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.utils</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

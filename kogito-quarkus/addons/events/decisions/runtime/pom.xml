@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-quarkus-events-decisions</artifactId>
   <name>Kogito Add-On Events Decisions</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.eventdriven.decision</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-quarkus-events-predictions</artifactId>
   <name>Kogito Add-On Events Predictions</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.eventdriven.predictions</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

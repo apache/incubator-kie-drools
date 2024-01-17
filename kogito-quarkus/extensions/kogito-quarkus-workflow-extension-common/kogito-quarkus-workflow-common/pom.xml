@@ -32,6 +32,10 @@
   <artifactId>kogito-quarkus-workflow-common</artifactId>
   <name>Kogito :: Quarkus Workflow Extension Common :: Runtime</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.quarkus.workflow</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

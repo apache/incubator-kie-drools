@@ -32,7 +32,11 @@
   <artifactId>kogito-addons-quarkus-persistence-kafka</artifactId>
   <name>Kogito Add-On Persistence Kafka Streams</name>
   <description>Kafka Streams based persistence for Kogito</description>
-  
+
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.kafka</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Runtime</name>
   <description>Kogito Serverless Workflow Runtime</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.runtime</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

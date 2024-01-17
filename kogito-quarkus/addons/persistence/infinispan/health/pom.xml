@@ -34,6 +34,10 @@
 
   <description>Infinispan Health Check support for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.infinispan.health</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

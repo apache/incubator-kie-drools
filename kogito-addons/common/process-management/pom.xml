@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-process-management</artifactId>
   <name>Kogito :: Add-Ons :: Process Management :: Common</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.process.management</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

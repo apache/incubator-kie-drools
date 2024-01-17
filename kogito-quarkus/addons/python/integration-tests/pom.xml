@@ -28,6 +28,12 @@
   <artifactId>kogito-addons-quarkus-serverless-workflow-python-integration-tests</artifactId>
   <name>Kogito:: Addons :: Quarkus:: Serverless Workflow:: Python:: Integration Test</name>
   <description>Serverless Workflow Python Quarkus Addons Testing</description>
+
+
+    <properties>
+       <java.module.name>org.kie.kogito.quarkus.serverless.workflow.python.tests</java.module.name>
+    </properties>
+
   <dependencies>
 	<dependency>
       <groupId>io.quarkus</groupId>

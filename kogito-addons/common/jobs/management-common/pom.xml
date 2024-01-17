@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-jobs-management-common</artifactId>
   <name>Kogito :: Add-Ons :: Jobs :: Management Common</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.jobs.management</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -33,11 +33,14 @@
   <artifactId>kogito-quarkus-deployment</artifactId>
   <name>Kogito :: Quarkus Extension :: Deployment</name>
 
+    <properties>
+        <java.module.name>org.kie.kogito.quarkus.extension.deployment</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-common-deployment</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- kogito -->
@@ -49,7 +52,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-processes-deployment</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
   </dependencies>

@@ -34,6 +34,10 @@
   <name>Kogito Add-On Events MongoDB</name>
   <description>Kogito Events based on MongoDB and Quarkus Add-On</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.events.mongodb</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

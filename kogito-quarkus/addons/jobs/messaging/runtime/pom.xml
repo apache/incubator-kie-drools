@@ -32,6 +32,10 @@
 
   <description>Jobs Quarkus Add-On to interact with the Jobs Service using events via the reactive messaging api</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.jobs.messaging.quarkus</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

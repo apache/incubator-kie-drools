@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Executor:: Kafka event implementation</name>
   <description>Classes for kafka event support of a workflow without code generation</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.serverless.workflow.kafka</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

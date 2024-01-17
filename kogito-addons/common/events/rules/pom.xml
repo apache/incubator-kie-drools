@@ -33,6 +33,12 @@
   <name>Kogito :: Add-Ons :: Events :: Event-Driven Rules</name>
   <description>Trigger evaluation of rule models via events</description>
 
+
+  <properties>
+    <java.module.name>org.kie.kogito.eventdriven.rules</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

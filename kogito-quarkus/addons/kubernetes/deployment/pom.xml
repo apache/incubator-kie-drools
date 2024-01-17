@@ -29,6 +29,12 @@
   </parent>
   <artifactId>kogito-addons-quarkus-kubernetes-deployment</artifactId>
   <name>Kogito Add-On Kubernetes - Deployment</name>
+
+  <properties>
+     <java.module.name>org.kie.kogito.addons.quarkus.kubernetes</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

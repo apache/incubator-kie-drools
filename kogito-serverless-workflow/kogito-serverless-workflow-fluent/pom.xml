@@ -33,6 +33,12 @@
   <name>Kogito :: Serverless Workflow :: Fluent</name>
   <description>Classes for fluent definition of a serverless workflow</description>
 
+
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.fluent</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

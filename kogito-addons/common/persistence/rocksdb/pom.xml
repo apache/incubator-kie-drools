@@ -31,6 +31,10 @@
   <name>Kogito :: Add-Ons :: Persistence :: RocksDB</name>
   <description>RocksDB persistence add-on for Kogito</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.persistence.rocksdb</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -33,6 +33,10 @@
   <name>Kogito :: Spring Boot :: Starter :: Predictions</name>
   <description>Spring Boot Starter for Kogito Predictions (PMML). Contains everything you need to get started with Kogito Predictions!</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.springboot.starter.predictions</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

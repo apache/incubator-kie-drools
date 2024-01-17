@@ -33,6 +33,10 @@
   <name>Kogito Add-On Monitoring Prometheus</name>
   <description>Prometheus monitoring for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.monitoring.prometheus.quarkus</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

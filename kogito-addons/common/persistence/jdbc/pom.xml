@@ -30,6 +30,10 @@
 
   <description>JDBC based persistence for Kogito</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.jdbc</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

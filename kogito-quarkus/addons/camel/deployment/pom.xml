@@ -29,6 +29,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addons.quarkus.camel.deployment</java.module.name>
+  </properties>
+
   <name>Kogito :: Add-Ons :: Quarkus :: Camel :: Deployment</name>
   <description>Kogito Quarkus Camel Integration with Serverless Workflow</description>
   <artifactId>kogito-addons-quarkus-camel-deployment</artifactId>

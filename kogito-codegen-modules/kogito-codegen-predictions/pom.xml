@@ -31,6 +31,11 @@
   <artifactId>kogito-codegen-predictions</artifactId>
   <name>Kogito :: Codegen Predictions</name>
 
+
+  <properties>
+     <java.module.name>org.kie.kogito.codegen.prediction</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

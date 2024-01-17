@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: gRPC :: Parser</name>
   <description>Kogito Serverless Workflow gRPC parser</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.grpc.parser</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

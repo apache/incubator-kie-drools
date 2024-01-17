@@ -32,6 +32,11 @@
     <artifactId>kogito-quarkus-predictions</artifactId>
     <name>Kogito :: Quarkus Predictions Extension :: Runtime</name>
     <description>Add Kogito predictions (PMML) capabilities - Include Drools PMML engine</description>
+
+    <properties>
+        <java.module.name>org.kie.kogito.core.prediction.incubation.quarkus.support</java.module.name>
+    </properties>
+
     <dependencies>
 
       <dependency>

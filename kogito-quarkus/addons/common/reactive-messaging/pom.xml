@@ -32,6 +32,10 @@
     <artifactId>kogito-addons-quarkus-common-reactive-messaging</artifactId>
     <name>Kogito Add-On Common - Reactive Messaging</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addon.quarkus.common.reactive.messaging</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.smallrye.reactive</groupId>

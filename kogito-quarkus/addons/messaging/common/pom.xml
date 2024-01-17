@@ -31,6 +31,10 @@
   <name>Kogito Add-On Messaging - Common</name>
   <description>Common classes for Kogito messaging Add-On (Quarkus)</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addon.quarkus.messaging.common</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

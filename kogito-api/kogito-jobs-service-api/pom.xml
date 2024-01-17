@@ -35,6 +35,10 @@
     <name>Kogito :: API :: Jobs Service</name>
     <description>The common events API for Kogito Jobs Service</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.jobs.service.api</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.cloudevents</groupId>

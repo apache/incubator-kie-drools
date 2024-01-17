@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: OpenAPI :: Common</name>
   <description>Kogito Serverless Workflow OpenAPI Common</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.openapi.common</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

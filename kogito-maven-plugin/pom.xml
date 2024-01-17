@@ -36,6 +36,10 @@
 
   <name>Kogito :: Maven Plugin</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.maven.plugin</java.module.name>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

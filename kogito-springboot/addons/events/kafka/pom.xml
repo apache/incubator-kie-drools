@@ -31,6 +31,10 @@
   <name>Kogito :: Add-Ons :: Events :: SprintBoot :: Process :: Kafka</name>
   <description>Kogito Kafka Events for process based on Spring Boot Add-On</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.events.kafka</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

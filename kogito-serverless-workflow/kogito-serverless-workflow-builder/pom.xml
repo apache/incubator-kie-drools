@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Builder</name>
   <description>Kogito Serverless Workflow Builder</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.serverless.workflow.builder</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

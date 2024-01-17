@@ -33,6 +33,10 @@
   <name>Kogito :: Rest Exception Handler:: Spring Boot</name>
   <description>Kogito exception handling for Spring Boot</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.resource.exceptions</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

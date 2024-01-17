@@ -35,6 +35,7 @@
 
     <properties>
         <quarkus.test.list.include>true</quarkus.test.list.include>
+        <java.module.name>io.quarkus.it.kogito.jbpm</java.module.name>
     </properties>
 
      <dependencies>

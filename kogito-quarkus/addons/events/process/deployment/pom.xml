@@ -29,6 +29,11 @@
   </parent>
   <artifactId>kogito-addons-quarkus-events-process-deployment</artifactId>
   <name>Kogito Add-On Events Process - Deployment</name>
+
+  <properties>
+     <java.module.name>org.kie.kogito.events.process.deployment</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

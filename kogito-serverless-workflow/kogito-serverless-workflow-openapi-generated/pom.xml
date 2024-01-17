@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: OpenAPI :: Generated</name>
   <description>Kogito Serverless Workflow OpenAPI generated</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.openapi.generated</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

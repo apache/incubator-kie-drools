@@ -34,6 +34,10 @@
 
   <description>Infinispan Persistence support for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.persistence.quarkus.infinispan</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

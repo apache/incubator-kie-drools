@@ -31,6 +31,10 @@
     <artifactId>kogito-codegen-sample-runtime</artifactId>
     <name>Kogito :: Codegen Sample Runtime</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.codegen.sample.core</java.module.name>
+  </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

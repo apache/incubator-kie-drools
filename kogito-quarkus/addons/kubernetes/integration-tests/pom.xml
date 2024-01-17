@@ -12,6 +12,10 @@
     <artifactId>kogito-addons-quarkus-kubernetes-integration-tests</artifactId>
     <name>Kogito Add-On Kubernetes - Integration Tests</name>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addons.quarkus.kubernetes.tests</java.module.name>
+  </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

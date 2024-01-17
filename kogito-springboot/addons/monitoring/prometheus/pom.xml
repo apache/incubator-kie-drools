@@ -33,6 +33,10 @@
   <description>Prometheus monitoring for Springboot</description>
   <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.monitoring.prometheus</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

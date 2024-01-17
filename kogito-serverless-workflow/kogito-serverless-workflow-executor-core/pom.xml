@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: Executor:: Core</name>
   <description>Core classes for execution of a workflow without code generation</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.serverless.workflow.core</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

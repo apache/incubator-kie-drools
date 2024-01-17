@@ -32,6 +32,12 @@
   <name>Kogito :: Workitems :: RestWorkItem</name>
 
   <description>Rest task workitem handler</description>
+
+  <properties>
+    <java.module.name>org.kogito.workitem.rest</java.module.name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

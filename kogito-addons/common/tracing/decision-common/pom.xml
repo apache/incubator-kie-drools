@@ -32,6 +32,10 @@
   <artifactId>kogito-addons-tracing-decision-common</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: Common</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.tracing.decision</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -56,7 +60,6 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId>
-      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

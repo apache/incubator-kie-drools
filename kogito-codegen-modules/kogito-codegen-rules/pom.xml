@@ -31,6 +31,10 @@
     <artifactId>kogito-codegen-rules</artifactId>
     <name>Kogito :: Codegen Rules</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.codegen.rules</java.module.name>
+  </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

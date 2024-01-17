@@ -33,6 +33,10 @@
     <name>Kogito Add-On Microprofile Config Service Catalog - Integration Tests</name>
     <description>Microprofile Config Service Catalog Kogito Add-On Integration Tests.</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.addons.quarkus.microprofile.config.service.catalog.it</java.module.name>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

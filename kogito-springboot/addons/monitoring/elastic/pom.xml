@@ -33,6 +33,10 @@
   <name>Kogito :: Add-Ons :: Monitoring Elastic Springboot</name>
   <description>Monitoring Elastic Springboot</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.monitoring.elastic</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

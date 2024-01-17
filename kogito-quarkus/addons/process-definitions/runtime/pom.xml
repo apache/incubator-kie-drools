@@ -31,6 +31,10 @@
   <name>Kogito Add-On Process Definitions</name>
   <description>Allow deploying process definitions for Quarkus</description>
 
+    <properties>
+       <java.module.name>org.kie.kogito.process.quarkus.definitions</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

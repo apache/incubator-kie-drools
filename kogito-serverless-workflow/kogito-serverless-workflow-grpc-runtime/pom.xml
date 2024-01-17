@@ -33,6 +33,10 @@
   <name>Kogito :: Serverless Workflow :: gRPC :: Runtime</name>
   <description>Kogito Serverless Workflow gRPC runtimes</description>
 
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.grpc.runtime</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

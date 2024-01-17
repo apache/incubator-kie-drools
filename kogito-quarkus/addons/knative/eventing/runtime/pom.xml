@@ -33,6 +33,10 @@
   <name>Kogito Add-On Knative Eventing</name>
   <description>Knative Eventing Kogito Add-On. Adds support for CloudEvents on top of HTTP and Knative env vars configuration.</description>
 
+  <properties>
+     <java.module.name>org.kie.kogito.addons.quarkus.knative.eventing</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

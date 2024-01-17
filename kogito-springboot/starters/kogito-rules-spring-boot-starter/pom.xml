@@ -33,6 +33,10 @@
   <name>Kogito :: Spring Boot :: Starter :: Rules</name>
   <description>Spring Boot Starter for Kogito Rules (DRLs). Contains everything you need to get started with Kogito Rules!</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.springboot.starter.rules</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -32,6 +32,11 @@
   <artifactId>kogito-addons-quarkus-rest-callback</artifactId>
   <name>Kogito Add-Ons Quarkus - Rest Callback</name>
 
+
+    <properties>
+       <java.module.name>org.kie.kogito.process.quarkus.rest.callback</java.module.name>
+    </properties>
+
   <dependencies>
     <dependency>
       <groupId>jakarta.ws.rs</groupId>

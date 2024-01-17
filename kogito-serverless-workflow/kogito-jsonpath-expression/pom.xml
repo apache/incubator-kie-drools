@@ -33,6 +33,11 @@
   <name>Kogito :: Serverless Workflow :: Expression :: Jsonpath</name>
 
   <description>Kogito jsonpath expression implementation</description>
+
+  <properties>
+    <java.module.name>org.kie.kogito.expr.jsonpath</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

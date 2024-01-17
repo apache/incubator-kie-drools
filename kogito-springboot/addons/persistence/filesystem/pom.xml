@@ -33,6 +33,10 @@
   <description>File System persistence for Springboot</description>
   <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
 
+  <properties>
+      <java.module.name>org.kie.kogito.springboot.persistence.filesystem</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
