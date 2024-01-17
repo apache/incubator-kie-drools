@@ -29,8 +29,8 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.extractors.BaseObjectClassFieldReader;
-import org.drools.base.facttemplates.Fact;
 import org.drools.util.ClassUtils;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 public class PatternExtractor extends BaseObjectClassFieldReader
     implements
@@ -85,14 +85,14 @@ public class PatternExtractor extends BaseObjectClassFieldReader
         if ( this.objectType instanceof ClassObjectType ) {
             return ((ClassObjectType) this.objectType).getClassType();
         } else {
-            return Fact.class;
+            return PrototypeFactInstance.class;
         }
     }
 
     public String getExtractToClassName() {
         Class<?> clazz = this.objectType instanceof ClassObjectType ?
                          ((ClassObjectType) this.objectType).getClassType() :
-                         Fact.class;
+                         PrototypeFactInstance.class;
         return ClassUtils.canonicalName( clazz );
     }
 

@@ -83,33 +83,35 @@ public class ProgrammaticProjectTest {
     }
 
     private String getDrlRule() {
-        return "package org.drools.drlonyaml.integration.tests\n" +
-                "\n" +
-                "global java.util.List result;\n" +
-                "\n" +
-                "rule R when\n" +
-                "    $i : Integer()\n" +
-                "    $m : Message( size == $i )\n" +
-                "then\n" +
-                "    result.add( $m.getText() );\n" +
-                "end";
+        return """
+                package org.drools.drlonyaml.integration.tests
+
+                global java.util.List result;
+
+                rule R when
+                    $i : Integer()
+                    $m : Message( size == $i )
+                then
+                    result.add( $m.getText() );
+                end""";
     }
 
     private String getYamlRule() {
-        return "name: org.drools.drlonyaml.integration.tests\n" +
-                "globals:\n" +
-                "- type: java.util.List\n" +
-                "  id: result\n" +
-                "rules:\n" +
-                "- name: R\n" +
-                "  when:\n" +
-                "  - given: Integer\n" +
-                "    as: $i\n" +
-                "  - given: Message\n" +
-                "    as: $m\n" +
-                "    having:\n" +
-                "    - size == $i\n" +
-                "  then: |\n" +
-                "    result.add( $m.getText() );";
+        return """
+                name: org.drools.drlonyaml.integration.tests
+                globals:
+                - type: java.util.List
+                  id: result
+                rules:
+                - name: R
+                  when:
+                  - given: Integer
+                    as: $i
+                  - given: Message
+                    as: $m
+                    having:
+                    - size == $i
+                  then: |
+                    result.add( $m.getText() );""";
     }
 }

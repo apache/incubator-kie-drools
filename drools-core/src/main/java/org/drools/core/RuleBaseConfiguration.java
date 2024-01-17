@@ -37,6 +37,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.MultiValueKieBaseOption;
 import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
@@ -141,6 +142,8 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
 
     private EventProcessingOption eventProcessingMode;
 
+    private PrototypesOption prototypesOption;
+
     private IndexPrecedenceOption indexPrecedenceOption;
 
     // if parallelism is enabled, rulebase builder will try to split
@@ -202,17 +205,15 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
 
         setSequential(Boolean.parseBoolean(getPropertyValue(SequentialOption.PROPERTY_NAME, "false")));
 
-        setParallelExecution(ParallelExecutionOption.determineParallelExecution(getPropertyValue(ParallelExecutionOption.PROPERTY_NAME,
-                "sequential")));
+        setParallelExecution(ParallelExecutionOption.determineParallelExecution(getPropertyValue(ParallelExecutionOption.PROPERTY_NAME, "sequential")));
 
-        setMaxThreads( Integer.parseInt( getPropertyValue( MaxThreadsOption.PROPERTY_NAME,
-                                                                             "3" ) ) );
+        setMaxThreads( Integer.parseInt( getPropertyValue( MaxThreadsOption.PROPERTY_NAME, "3" ) ) );
 
-        setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( getPropertyValue( EventProcessingOption.PROPERTY_NAME,
-                                                                                                                        "cloud" ) ) );
+        setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( getPropertyValue( EventProcessingOption.PROPERTY_NAME, "cloud" ) ) );
 
-        setDeclarativeAgendaEnabled( Boolean.parseBoolean(getPropertyValue(DeclarativeAgendaOption.PROPERTY_NAME,
-                                                                                             "false")) );
+        setPrototypesOption( PrototypesOption.determinePrototypesOption( getPropertyValue( PrototypesOption.PROPERTY_NAME, "disabled" ) ) );
+
+        setDeclarativeAgendaEnabled( Boolean.parseBoolean(getPropertyValue(DeclarativeAgendaOption.PROPERTY_NAME, "false")) );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -333,6 +334,9 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
             case EventProcessingOption.PROPERTY_NAME: {
                 return (T) getEventProcessingMode();
             }
+            case PrototypesOption.PROPERTY_NAME: {
+                return (T) getPrototypesOption();
+            }
             case MaxThreadsOption.PROPERTY_NAME: {
                 return (T) MaxThreadsOption.get(getMaxThreads());
             }
@@ -415,6 +419,10 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
             }
             case EventProcessingOption.PROPERTY_NAME: {
                 setEventProcessingMode( (EventProcessingOption) option);
+                break;
+            }
+            case PrototypesOption.PROPERTY_NAME: {
+                setPrototypesOption( (PrototypesOption) option);
                 break;
             }
             case MaxThreadsOption.PROPERTY_NAME: {
@@ -516,6 +524,10 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
                 setEventProcessingMode(EventProcessingOption.determineEventProcessingMode(StringUtils.isEmpty(value) ? "cloud" : value));
                 break;
             }
+            case PrototypesOption.PROPERTY_NAME: {
+                setPrototypesOption(PrototypesOption.determinePrototypesOption(StringUtils.isEmpty(value) ? "disabled" : value));
+                break;
+            }
             default : {
                 return false;
             }
@@ -585,6 +597,9 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
             }
             case EventProcessingOption.PROPERTY_NAME: {
                 return getEventProcessingMode().getMode();
+            }
+            case PrototypesOption.PROPERTY_NAME: {
+                return getPrototypesOption().toString().toLowerCase();
             }
         }
 
@@ -696,6 +711,15 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
     public void setEventProcessingMode(final EventProcessingOption mode) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.eventProcessingMode = mode;
+    }
+
+    public PrototypesOption getPrototypesOption() {
+        return this.prototypesOption;
+    }
+
+    public void setPrototypesOption(final PrototypesOption prototypesOption) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.prototypesOption = prototypesOption;
     }
 
     public int getCompositeKeyDepth() {

@@ -18,21 +18,21 @@
  */
 package org.drools.quarkus.test;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Response;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -100,7 +100,7 @@ public class TestableResource {
 
         List<String> pkgNames = kBase.getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
         assertThat(pkgNames)
-            .containsExactlyInAnyOrder("org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.tms","org.drools.probe","org.drools.yaml");
+            .containsExactlyInAnyOrder("defaultpkg","org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.tms","org.drools.probe","org.drools.yaml","org.drools.prototype");
         
         return Response.ok().build();
     }

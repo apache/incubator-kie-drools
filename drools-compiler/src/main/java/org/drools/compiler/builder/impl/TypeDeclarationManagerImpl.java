@@ -64,7 +64,7 @@ public class TypeDeclarationManagerImpl implements TypeDeclarationManager {
 
     @Override
     public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
-        return objectType.isTemplate() ?
+        return objectType.isPrototype() ?
                 typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) :
                 typeBuilder.getTypeDeclaration(((ClassObjectType) objectType).getClassType());
     }

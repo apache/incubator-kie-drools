@@ -67,7 +67,7 @@ public class ConstraintExpression {
     private static String parseConstraintExpression( RuleContext context, Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
         if (isPositional) {
             String expr = constraint.toString();
-            boolean isConstraint = !isIdentifier(expr) || context.getDeclarationById( expr ).isPresent();
+            boolean isConstraint = !isIdentifier(expr) || context.getTypedDeclarationById(expr ).isPresent();
             int position = ((ExprConstraintDescr ) constraint).getPosition();
             Optional<String> field = getFieldAtPosition(context, patternType, position);
 

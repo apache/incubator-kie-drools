@@ -42,9 +42,8 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.factmodel.AnnotationDefinition;
 import org.drools.base.factmodel.ClassDefinition;
 import org.drools.base.factmodel.FieldDefinition;
-import org.drools.base.facttemplates.FactTemplate;
-import org.drools.base.facttemplates.FactTemplateFieldExtractor;
-import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.prototype.PrototypeFieldExtractor;
+import org.drools.base.prototype.PrototypeObjectType;
 import org.drools.base.reteoo.SortDeclarations;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
@@ -105,6 +104,7 @@ import org.drools.util.StringUtils;
 import org.drools.util.TypeResolver;
 import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
+import org.kie.api.prototype.Prototype;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -321,9 +321,9 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
     }
 
     private ObjectType getObjectType(RuleBuildContext context, PatternDescr patternDescr, String objectType) {
-        final FactTemplate factTemplate = context.getPkg().getFactTemplate(objectType);
-        if (factTemplate != null) {
-            return new FactTemplateObjectType(factTemplate);
+        Prototype prototype = context.getPkg().getPrototype(objectType);
+        if (prototype != null) {
+            return new PrototypeObjectType(prototype);
         } else {
             try {
                 final Class<?> userProvidedClass = context.getDialect().getTypeResolver().resolveType(objectType);
@@ -558,8 +558,8 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
     protected Collection<String> getSettableProperties(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
         ObjectType patternType = pattern.getObjectType();
-        if (patternType.isTemplate()) {
-            return ((FactTemplateObjectType) patternType).getFieldNames();
+        if (patternType.isPrototype()) {
+            return ((PrototypeObjectType) patternType).getFieldNames();
         }
 
         Class<?> patternClass = ((ClassObjectType) patternType).getClassType();
@@ -843,7 +843,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         XpathConstraint xpathConstraint = new XpathConstraint();
         ObjectType objectType = pattern.getObjectType();
 
-        if (objectType.isTemplate()) {
+        if (objectType.isPrototype()) {
             throw new UnsupportedOperationException("xpath is not supported with fact templates");
         }
 
@@ -1086,8 +1086,8 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         }
 
         ObjectType objectType = pattern.getObjectType();
-        if (objectType.isTemplate()) {
-            return ((FactTemplateObjectType) objectType).getFactTemplate().getFieldTemplate(leftValue).getValueType();
+        if (objectType.isPrototype()) {
+            return ValueType.determineValueType( ( (PrototypeObjectType) objectType).getPrototype().getField(leftValue).getType() );
         }
 
         Class<?> clazz = ((ClassObjectType) objectType).getClassType();
@@ -1121,7 +1121,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         ConstraintBuilder.get().setExprInputs( context, valueExpr,
                                                (pattern.getObjectType() instanceof ClassObjectType) ?
                                                        ((ClassObjectType) pattern.getObjectType()).getClassType() :
-                                                       FactTemplate.class,
+                                                       Prototype.class,
                                                value);
         if (!isIdentifierLiteral(value)) {
             String identifier = StringUtils.extractFirstIdentifier(value, 0);
@@ -1533,7 +1533,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             mvelDeclarations[i++] = context.getDeclarationResolver().getDeclaration(global);
         }
 
-        boolean isDynamic = pattern.getObjectType().isTemplate() ||
+        boolean isDynamic = pattern.getObjectType().isPrototype() ||
                 ( !((ClassObjectType) pattern.getObjectType()).getClassType().isArray() &&
                         !context.getKnowledgeBuilder().getTypeDeclaration(pattern.getObjectType()).isTypesafe() );
 
@@ -1721,7 +1721,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                             final ObjectType objectType,
                                             final String fieldName,
                                             final AcceptsReadAccessor target) {
-        if (!ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
+        if (!ValueType.PROTOTYPE_TYPE.equals(objectType.getValueType())) {
             context.getPkg().getReader(objectType.getClassName(), fieldName, target);
         }
     }
@@ -1745,10 +1745,9 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
         // reportError is needed as some times failure to build accessor is not a failure, just an indication that building is not possible so try something else.
         ReadAccessor reader;
 
-        if (ValueType.FACTTEMPLATE_TYPE.equals(objectType.getValueType())) {
+        if (ValueType.PROTOTYPE_TYPE.equals(objectType.getValueType())) {
             //@todo use accessor cache            
-            final FactTemplate factTemplate = ((FactTemplateObjectType) objectType).getFactTemplate();
-            reader = new FactTemplateFieldExtractor(factTemplate, fieldName);
+            reader = new PrototypeFieldExtractor(((PrototypeObjectType) objectType).getPrototype(), fieldName);
             if (target != null) {
                 target.setReadAccessor(reader);
             }

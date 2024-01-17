@@ -34,6 +34,7 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseMutabilityOption;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 
@@ -53,6 +54,9 @@ public class KBaseConverter extends AbstractXStreamConverter {
         writer.addAttribute( "default", Boolean.toString(kBase.isDefault()) );
         if ( kBase.getEventProcessingMode() != null ) {
             writer.addAttribute( "eventProcessingMode", kBase.getEventProcessingMode().getMode() );
+        }
+        if ( kBase.getPrototypes() != null ) {
+            writer.addAttribute( "prototypes", kBase.getPrototypes().toString().toLowerCase() );
         }
         if ( kBase.getEqualsBehavior() != null ) {
             writer.addAttribute( "equalsBehavior", kBase.getEqualsBehavior().toString().toLowerCase() );
@@ -131,6 +135,11 @@ public class KBaseConverter extends AbstractXStreamConverter {
         String eventMode = reader.getAttribute( "eventProcessingMode" );
         if ( eventMode != null ) {
             kBase.setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( eventMode ) );
+        }
+
+        String prototypes = reader.getAttribute( "prototypes" );
+        if ( prototypes != null ) {
+            kBase.setPrototypes( PrototypesOption.determinePrototypesOption(prototypes) );
         }
 
         String equalsBehavior = reader.getAttribute( "equalsBehavior" );

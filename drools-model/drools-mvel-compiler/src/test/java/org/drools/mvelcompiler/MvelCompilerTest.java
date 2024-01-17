@@ -1162,4 +1162,25 @@ public class MvelCompilerTest implements CompilerTest {
         test(" { java.lang.String s = \"\"\"\n string content\n \"\"\"; }",
              " { java.lang.String s = \"\"\"\n string content\n \"\"\"; }");
     }
+
+    @Test
+    public void testReadMapField() {
+        test(ctx -> ctx.addDeclaration("$p", Map.class),
+             " { String name = $p.name; }",
+             " { java.lang.String name = (java.lang.String) ($p.get(\"name\")); }");
+    }
+
+    @Test
+    public void testWriteMapField() {
+        test(ctx -> ctx.addDeclaration("$p", Map.class),
+             " { $p.name = \"Mario\"; }",
+             " { $p.put(\"name\", \"Mario\"); }");
+    }
+
+    @Test
+    public void testReadAndWriteMapField() {
+        test(ctx -> ctx.addDeclaration("$a", Map.class).addDeclaration("$b", Map.class),
+             " { $a.name = $b.name; }",
+             " { $a.put(\"name\", $b.get(\"name\")); }");
+    }
 }

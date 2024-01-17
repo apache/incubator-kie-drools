@@ -21,15 +21,14 @@ package org.drools.reliability.test.proto;
 import java.util.Map;
 import java.util.UUID;
 
-import org.drools.modelcompiler.facttemplate.HashMapEventImpl;
+import org.drools.model.prototype.impl.HashMapEventImpl;
 import org.drools.reliability.infinispan.proto.ProtoStreamUtils;
 import org.infinispan.protostream.annotations.ProtoAdapter;
 import org.infinispan.protostream.annotations.ProtoFactory;
 import org.infinispan.protostream.annotations.ProtoField;
 import org.infinispan.protostream.types.protobuf.AnySchema;
 
-import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
-import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
+import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 
 /**
  * This adopter resides in test module, because main drools-reliability-infinispan module does not have dependency on drools-model-compiler module.
@@ -40,7 +39,7 @@ public class HashMapEventImplAdaptor {
     @ProtoFactory
     HashMapEventImpl create(String uuid, String factTemplate, AnySchema.Any valuesMapObject, long timestamp, long expiration) {
         Map<String, Object> valuesMap = (Map<String, Object>) ProtoStreamUtils.fromAnySchema(valuesMapObject);
-        return new HashMapEventImpl(UUID.fromString(uuid), prototypeToFactTemplate(getPrototype(factTemplate)), valuesMap, timestamp, expiration);
+        return new HashMapEventImpl(UUID.fromString(uuid), getPrototypeEvent(factTemplate), valuesMap, timestamp, expiration);
     }
 
     @ProtoField(1)
@@ -50,13 +49,12 @@ public class HashMapEventImplAdaptor {
 
     @ProtoField(2)
     String getFactTemplate(HashMapEventImpl event) {
-        return event.getFactTemplate().getName();
+        return event.getPrototype().getName();
     }
 
     @ProtoField(number = 3, required = true)
     AnySchema.Any getValuesMapObject(HashMapEventImpl event) {
-        Map<String, Object> map = event.asMap();
-        return ProtoStreamUtils.toAnySchema(map);
+        return ProtoStreamUtils.toAnySchema(event);
     }
 
     @ProtoField(number = 4, defaultValue = "-1")

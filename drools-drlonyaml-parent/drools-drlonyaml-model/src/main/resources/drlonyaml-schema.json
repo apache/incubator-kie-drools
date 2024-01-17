@@ -163,6 +163,9 @@
     "name" : {
       "type" : "string"
     },
+    "dialect" : {
+      "type" : "string"
+    },
     "imports" : {
       "type" : "array",
       "items" : {

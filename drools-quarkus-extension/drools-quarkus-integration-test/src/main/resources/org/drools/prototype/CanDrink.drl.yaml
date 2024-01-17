@@ -1,0 +1,22 @@
+name: org.drools.prototype
+rules:
+    - name: R1
+      when:
+          - given: Result
+            as: $r
+          - given: Person
+            as: $p
+            having:
+                - age >= 18
+      then: |
+          $r.value = $p.name + " can drink";
+    - name: R2
+      when:
+          - given: Result
+            as: $r
+          - given: Person
+            as: $p
+            having:
+                - age < 18
+      then: |
+          $r.value = $p.name + " can NOT drink";

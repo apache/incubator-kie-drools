@@ -18,10 +18,15 @@
  */
 package org.drools.mvelcompiler.util;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import com.github.javaparser.StaticJavaParser;
+import org.kie.api.prototype.PrototypeFactInstance;
+
 import static org.drools.util.ClassUtils.classFromType;
+import static org.drools.util.ClassUtils.rawType;
 
 public class TypeUtils {
 
@@ -35,5 +40,19 @@ public class TypeUtils {
 
     public static com.github.javaparser.ast.type.Type toJPType(Class<?> c) {
         return StaticJavaParser.parseType(c.getCanonicalName());
+    }
+
+    public static boolean isMapAccessField(Type type) {
+        if (type instanceof Class c) {
+            return Map.class.isAssignableFrom(c);
+        }
+        if (type instanceof ParameterizedType p) {
+            if (!Map.class.isAssignableFrom(rawType(p.getRawType()))) {
+                return false;
+            }
+            Class<?> valueType = rawType(p.getActualTypeArguments()[1]);
+            return valueType == Object.class || Map.class.isAssignableFrom(valueType) || PrototypeFactInstance.class.isAssignableFrom(valueType);
+        }
+        return false;
     }
 }

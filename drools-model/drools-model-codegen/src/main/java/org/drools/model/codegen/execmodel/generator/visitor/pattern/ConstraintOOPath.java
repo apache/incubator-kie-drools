@@ -43,7 +43,7 @@ class ConstraintOOPath implements DSLNode {
         this.pattern = pattern;
         this.patternType = patternType;
         this.patternConstraintParseResult = patternConstraintParseResult;
-        this.expression = patternConstraintParseResult.getExpression();
+        this.expression = patternConstraintParseResult.expression();
         this.drlxParseResult = drlxParseResult;
     }
 
@@ -51,8 +51,8 @@ class ConstraintOOPath implements DSLNode {
     public void buildPattern() {
         final String patternIdentifierGenerated;
         // If the  outer pattern does not have a binding we generate it
-        if (patternConstraintParseResult.getPatternIdentifier() != null) {
-            patternIdentifierGenerated = patternConstraintParseResult.getPatternIdentifier();
+        if (patternConstraintParseResult.patternIdentifier() != null) {
+            patternIdentifierGenerated = patternConstraintParseResult.patternIdentifier();
         } else {
             patternIdentifierGenerated = context.getExprId(patternType, expression);
             context.addDeclaration(patternIdentifierGenerated, patternType, Optional.of(pattern), Optional.empty());

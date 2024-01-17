@@ -55,7 +55,7 @@ import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
-import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
+import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.modelcompiler.util.StringUtil;
@@ -86,7 +86,7 @@ public class AccumulateInline {
     private ClassOrInterfaceDeclaration contextData;
     private String accumulateInlineClassName;
 
-    private final List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
+    private final List<TypedDeclarationSpec> accumulateDeclarations = new ArrayList<>();
     private final List<String> contextFieldNames = new ArrayList<>();
     private Set<String> usedExternalDeclarations = new HashSet<>();
     private Type singleAccumulateType;
@@ -130,7 +130,7 @@ public class AccumulateInline {
             throw new UnsupportedInlineAccumulate();
         }
 
-        for (DeclarationSpec d : accumulateDeclarations) {
+        for (TypedDeclarationSpec d : accumulateDeclarations) {
             context.addDeclaration(d);
         }
 
@@ -202,7 +202,7 @@ public class AccumulateInline {
                         initMethodBody.addStatement(initStmt);
                         initStmt.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExternalDeclarations::add);
                     });
-                    accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString())));
+                    accumulateDeclarations.add(new TypedDeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString())));
                 }
             }
         }
@@ -237,7 +237,7 @@ public class AccumulateInline {
             String nameExpr = allNamesInActionBlock.iterator().next();
             accumulateMethod.getParameter(1).setName(nameExpr);
             singleAccumulateType =
-                    context.getDeclarationById(nameExpr)
+                    context.getTypedDeclarationById(nameExpr)
                             .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
                             .getBoxedType();
 

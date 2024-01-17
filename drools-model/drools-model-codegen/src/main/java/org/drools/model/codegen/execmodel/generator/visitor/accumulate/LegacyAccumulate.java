@@ -230,7 +230,7 @@ public class LegacyAccumulate {
         public Map<String, Declaration> getDeclarations( RuleImpl rule ) {
             Map<String, Declaration> declarationMap = new HashMap<>();
             for (String externalDeclr : externalDeclrs) {
-                context.getDeclarationById( externalDeclr ).ifPresent( dSpec -> declarationMap.put(externalDeclr, dSpec.asDeclaration()) );
+                context.getTypedDeclarationById(externalDeclr ).ifPresent(dSpec -> declarationMap.put(externalDeclr, dSpec.asDeclaration()) );
             }
             declarationMap.putAll( delegate.getDeclarations( rule ) );
             return declarationMap;

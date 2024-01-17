@@ -91,6 +91,7 @@ import static org.drools.model.codegen.execmodel.generator.DslMethodNames.SUPPLY
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.UNIT_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.WINDOW_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createDslTopLevelMethod;
+import static org.drools.model.codegen.execmodel.generator.RuleContext.DIALECT_ATTRIBUTE;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 import static org.drools.modelcompiler.util.TimerUtil.validateTimer;
@@ -178,7 +179,7 @@ public class ModelGenerator {
             if (context.getRuleUnitDescr() != null) {
                 ruleUnitDescrs.add(context.getRuleUnitDescr());
             }
-            context.setDialectFromAttributes(packageDescr.getAttributes());
+            context.setDialectFromAttribute(packageDescr.getAttribute( DIALECT_ATTRIBUTE ));
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQueryDef(packageModel, context);
             }
@@ -213,7 +214,7 @@ public class ModelGenerator {
             QueryGenerator.processQuery(context.getPackageModel(), (QueryDescr) context.getRuleDescr());
             return;
         }
-        context.setDialectFromAttributes(packageDescr.getAttributes());
+        context.setDialectFromAttribute(packageDescr.getAttribute( DIALECT_ATTRIBUTE ));
         processRule(packageDescr, context);
     }
 
@@ -221,7 +222,7 @@ public class ModelGenerator {
         PackageModel packageModel = context.getPackageModel();
         RuleDescr ruleDescr = context.getRuleDescr();
         context.addGlobalDeclarations();
-        context.setDialectFromAttributes(ruleDescr.getAttributes().values());
+        context.setDialectFromAttribute(ruleDescr.getAttributes().get( DIALECT_ATTRIBUTE ));
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
@@ -492,58 +493,8 @@ public class ModelGenerator {
 
     public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
-            boolean domainClass = packageModel.registerDomainClass( decl.getDeclarationClass() );
-            if (!context.getGlobals().containsKey(decl.getBindingId()) && context.getQueryParameterByName(decl.getBindingId()).isEmpty()) {
-                addVariable(block, decl, context, domainClass);
-            }
+            decl.registerOnPackage(packageModel, context, block);
         }
     }
 
-    private static void addVariable(BlockStmt ruleBlock, DeclarationSpec declaration, RuleContext context, boolean domainClass) {
-        if (declaration.getDeclarationClass() == null) {
-            context.addCompilationError( new UnknownDeclarationError( declaration.getBindingId() ) );
-            return;
-        }
-        Type declType = classToReferenceType( declaration );
-
-        ClassOrInterfaceType varType = toClassOrInterfaceType(Variable.class);
-        varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(declaration.getBindingId()), Modifier.finalModifier());
-
-        MethodCallExpr declarationOfCall = createDslTopLevelMethod(DECLARATION_OF_CALL);
-
-        declarationOfCall.addArgument(new ClassExpr( declaration.getBoxedType() ));
-
-        if (domainClass) {
-            String domainClassSourceName = asJavaSourceName( declaration.getDeclarationClass() );
-            declarationOfCall.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + context.getPackageModel().getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
-        }
-
-        declarationOfCall.addArgument(toStringLiteral(declaration.getVariableName().orElse(declaration.getBindingId())));
-
-        declaration.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
-
-        declaration.getEntryPoint().ifPresent( ep -> {
-            MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
-            entryPointCall.addArgument( toStringLiteral(ep ) );
-            declarationOfCall.addArgument( entryPointCall );
-        } );
-        for ( BehaviorDescr behaviorDescr : declaration.getBehaviors() ) {
-            MethodCallExpr windowCall = createDslTopLevelMethod(WINDOW_CALL);
-            if ( BehaviorRuntime.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType()) ) {
-                windowCall.addArgument( "org.drools.model.Window.Type.TIME" );
-                windowCall.addArgument( "" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0 ) ) );
-            }
-            if ( BehaviorRuntime.BehaviorType.LENGTH_WINDOW.matches(behaviorDescr.getSubType()) ) {
-                windowCall.addArgument( "org.drools.model.Window.Type.LENGTH" );
-                windowCall.addArgument( "" + Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
-            }
-            declarationOfCall.addArgument( windowCall );
-        }
-
-        AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
-        if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, var_assign)) {
-            ruleBlock.addStatement(var_assign);
-        }
-    }
 }
