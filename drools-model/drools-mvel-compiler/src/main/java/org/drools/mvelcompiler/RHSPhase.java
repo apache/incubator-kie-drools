@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -57,7 +56,6 @@ import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpression;
-import org.drools.mvel.parser.ast.expr.ListCreationLiteralExpressionElement;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
@@ -76,6 +74,7 @@ import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.ListExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MapExprT;
+import org.drools.mvelcompiler.ast.MapGetExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
@@ -84,6 +83,7 @@ import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.MethodResolutionUtils;
+import org.drools.mvelcompiler.util.TypeUtils;
 import org.drools.mvelcompiler.util.VisitorContext;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils.NullType;
@@ -236,6 +236,17 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
     @Override
     public TypedExpression visit(FieldAccessExpr n, VisitorContext arg) {
         TypedExpression scope = n.getScope().accept(this, arg);
+        if (scope.getType().map(TypeUtils::isMapAccessField).orElse(false)) {
+            String key = n.getName().toString();
+
+            // "size" is an edge case and could mean both the size of the map and the value of the key "size".
+            // To keep backward compatibility it is necessary to assume that it is the size of the map,
+            // but this implies that at the moment it is not possible to read the value of the "size" key
+            // using the field access notation
+            if (!"size".equals(key)) {
+                return new MapGetExprT(scope, key);
+            }
+        }
         return n.getName().accept(this, new VisitorContext(scope));
     }
 

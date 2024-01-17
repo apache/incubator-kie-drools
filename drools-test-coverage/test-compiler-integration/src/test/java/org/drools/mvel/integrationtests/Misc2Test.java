@@ -57,10 +57,6 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.facttemplates.FactTemplate;
-import org.drools.base.facttemplates.FactTemplateImpl;
-import org.drools.base.facttemplates.FieldTemplate;
-import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -6554,31 +6550,6 @@ public class Misc2Test {
 
         kieSession.fireAllRules();
         assertThat(list).isEqualTo(Arrays.asList(42, 99));
-    }
-
-    @Test
-    public void testFactTemplates() {
-        // DROOLS-600
-        String drl = "package com.testfacttemplate;" +
-                     " rule \"test rule\" " +
-                     " dialect \"mvel\" " +
-                     " when " +
-                     " $test : TestFactTemplate( status == 1 ) " +
-                     " then " +
-                     " System.out.println( \"Hello World\" ); " +
-                     " end ";
-
-        InternalKnowledgePackage kPackage = CoreComponentFactory.get().createKnowledgePackage( "com.testfacttemplate" );
-        FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", Integer.class );
-        FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", fieldTemplate);
-
-        KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl(kPackage );
-        StringReader rule = new StringReader( drl );
-        try {
-            kBuilder.addPackageFromDrl(rule);
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }
     }
 
     @Test

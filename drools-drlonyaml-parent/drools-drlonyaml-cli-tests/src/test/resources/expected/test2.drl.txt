@@ -1,5 +1,6 @@
 // This file was automatically generated from a YAML representation.
 package mypkg;
+dialect "java";
 import java.lang.Number;
 import java.lang.Long;
 rule "R1"

@@ -44,7 +44,6 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.facttemplates.FactTemplateObjectType;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.AsyncSend;
@@ -100,8 +99,6 @@ import org.drools.model.Global;
 import org.drools.model.GroupByPattern;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeVariable;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.SingleConstraint;
@@ -161,7 +158,6 @@ import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
-import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.TimerUtil.buildTimerExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
@@ -1204,18 +1200,9 @@ public class KiePackagesBuilder {
     }
 
     ObjectType getObjectType( Variable patternVariable ) {
-        return patternVariable instanceof PrototypeVariable ?
-                getPrototypeObjectType( (( PrototypeVariable ) patternVariable).getPrototype() ) :
+        return patternVariable.isPrototype() ?
+                PrototypeService.get().getPrototypeObjectType( objectTypeCache, packages, this::createKiePackage, patternVariable ) :
                 getClassObjectType( patternVariable.getType() );
-    }
-
-    private ObjectType getPrototypeObjectType( Prototype prototype ) {
-        return objectTypeCache.computeIfAbsent( prototype.getFullName(), name -> {
-            KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( prototype.getPackage(), this::createKiePackage );
-            FactTemplateObjectType objectType = new FactTemplateObjectType(prototypeToFactTemplate( prototype, pkg ));
-            objectType.setEvent(prototype.isEvent());
-            return objectType;
-        } );
     }
 
     private ObjectType getClassObjectType( Class<?> patternClass ) {

@@ -27,8 +27,8 @@ import java.util.function.Function;
 
 import org.drools.base.factmodel.traits.Thing;
 import org.drools.base.factmodel.traits.Trait;
-import org.drools.base.facttemplates.FactTemplate;
 import org.drools.util.CoercionUtil;
+import org.kie.api.prototype.Prototype;
 import org.kie.api.runtime.rule.EventHandle;
 
 public enum ValueType {
@@ -65,7 +65,7 @@ public enum ValueType {
     ARRAY_TYPE( "Array", Object[].class, SimpleValueType.LIST ),
     STRING_TYPE( "String", String.class, SimpleValueType.STRING, CoercionUtil::coerceToString ),
     OBJECT_TYPE( "Object", Object.class, SimpleValueType.OBJECT ),
-    FACTTEMPLATE_TYPE( "FactTemplate", FactTemplate.class, SimpleValueType.UNKNOWN ),
+    PROTOTYPE_TYPE("Prototype", Prototype.class, SimpleValueType.UNKNOWN ),
 
     EVENT_TYPE("Event", EventHandle.class, SimpleValueType.OBJECT ),
     QUERY_TYPE("Query", DroolsQuery.class, SimpleValueType.OBJECT ),
@@ -141,8 +141,8 @@ public enum ValueType {
         }
 
         // primitives
-        if ( clazz == FactTemplate.class ) {
-            return ValueType.FACTTEMPLATE_TYPE;
+        if ( clazz == Prototype.class ) {
+            return ValueType.PROTOTYPE_TYPE;
         } else if ( clazz == DroolsQuery.class ) {
             return ValueType.QUERY_TYPE;
         } else if ( clazz == Character.TYPE ) {

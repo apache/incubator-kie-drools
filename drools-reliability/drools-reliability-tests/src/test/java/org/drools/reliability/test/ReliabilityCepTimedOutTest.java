@@ -22,20 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.base.facttemplates.Event;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.prototype.PrototypeVariable;
 import org.drools.reliability.test.util.TimeAmount;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeEventInstance;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.rule.RuleContext;
@@ -50,14 +50,13 @@ import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PrototypeDSL.protoPattern;
-import static org.drools.model.PrototypeDSL.variable;
-import static org.drools.model.PrototypeExpression.prototypeField;
-import static org.drools.model.PrototypeExpression.thisPrototype;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
+import static org.drools.model.prototype.PrototypeDSL.protoPattern;
+import static org.drools.model.prototype.PrototypeDSL.variable;
+import static org.drools.model.prototype.PrototypeExpression.prototypeField;
+import static org.drools.model.prototype.PrototypeExpression.thisPrototype;
 import static org.drools.reliability.test.util.PrototypeUtils.DEFAULT_PROTOTYPE_NAME;
 import static org.drools.reliability.test.util.PrototypeUtils.SYNTHETIC_PROTOTYPE_NAME;
-import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
+import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
@@ -69,11 +68,11 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
      * These rules are created in the same way as TimedOutDefinition in drools-ansible-rulebook-integration
      */
     private Model ruleModel() {
-        Prototype controlPrototype = getPrototype(SYNTHETIC_PROTOTYPE_NAME);
+        PrototypeEvent controlPrototype = getPrototypeEvent(SYNTHETIC_PROTOTYPE_NAME);
         PrototypeVariable controlVar1 = variable(controlPrototype, "c1");
         PrototypeVariable controlVar2 = variable(controlPrototype, "c2");
         PrototypeVariable controlVar3 = variable(controlPrototype, "c3");
-        PrototypeVariable eventVar = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "e");
+        PrototypeVariable eventVar = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "e");
         Variable<Long> resultCount = declarationOf( Long.class, "count" );
         Global<List> global = globalOf(List.class, "defaultpkg", "results");
 
@@ -102,7 +101,7 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
 
         // sub-rule 0
         String subRuleName0 = rulePrefix + "0";
-        PrototypeVariable patternVariable0 = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m_0");
+        PrototypeVariable patternVariable0 = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m_0");
         rules.add(
                   rule( subRuleName0 ).metadata(SYNTHETIC_RULE_TAG, true)
                      .build(
@@ -111,11 +110,11 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                              not( protoPattern(controlVar1)
                                      .expr( "rulename", Index.ConstraintType.EQUAL, subRuleName0 ) ),
                              on(patternVariable0).execute((drools, t1) -> {
-                                 Event controlEvent = createMapBasedEvent( controlPrototype )
+                                 PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                          .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                 controlEvent.set( "rulename", subRuleName0 );
-                                 controlEvent.set( "event", t1 );
-                                 controlEvent.set( "binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
+                                 controlEvent.put("rulename", subRuleName0 );
+                                 controlEvent.put("event", t1 );
+                                 controlEvent.put("binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
                                  drools.insert(controlEvent);
                              })
                      )
@@ -123,7 +122,7 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
 
         // sub-rule 1
         String subRuleName1 = rulePrefix + "1";
-        PrototypeVariable patternVariable1 = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m_1");
+        PrototypeVariable patternVariable1 = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m_1");
         rules.add(
                   rule( subRuleName1 ).metadata(SYNTHETIC_RULE_TAG, true)
                      .build(
@@ -132,11 +131,11 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                              not( protoPattern(controlVar1)
                                      .expr( "rulename", Index.ConstraintType.EQUAL, subRuleName1 ) ),
                              on(patternVariable1).execute((drools, t1) -> {
-                                 Event controlEvent = createMapBasedEvent( controlPrototype )
+                                 PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                          .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                 controlEvent.set( "rulename", subRuleName1 );
-                                 controlEvent.set( "event", t1 );
-                                 controlEvent.set( "binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
+                                 controlEvent.put("rulename", subRuleName1 );
+                                 controlEvent.put("event", t1 );
+                                 controlEvent.put("binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
                                  drools.insert(controlEvent);
                              })
                      )
@@ -144,7 +143,7 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
 
         // sub-rule 2
         String subRuleName2 = rulePrefix + "2";
-        PrototypeVariable patternVariable2 = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m_2");
+        PrototypeVariable patternVariable2 = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m_2");
         rules.add(
                   rule( subRuleName2 ).metadata(SYNTHETIC_RULE_TAG, true)
                      .build(
@@ -153,11 +152,11 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                              not( protoPattern(controlVar1)
                                      .expr( "rulename", Index.ConstraintType.EQUAL, subRuleName2 ) ),
                              on(patternVariable2).execute((drools, t1) -> {
-                                 Event controlEvent = createMapBasedEvent( controlPrototype )
+                                 PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                          .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                 controlEvent.set( "rulename", subRuleName2 );
-                                 controlEvent.set( "event", t1 );
-                                 controlEvent.set( "binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
+                                 controlEvent.put("rulename", subRuleName2 );
+                                 controlEvent.put("event", t1 );
+                                 controlEvent.put("binding", ((RuleContext) drools).getMatch().getDeclarationIds().get(0) );
                                  drools.insert(controlEvent);
                              })
                       )
@@ -170,11 +169,11 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                               not( protoPattern(controlVar1).expr( "rulename", Index.ConstraintType.EQUAL, startTag ) ),
                               protoPattern(controlVar2).expr( p -> ((String)p.get("rulename")).startsWith(rulePrefix) ),
                               on(controlVar2).execute((drools, firstEvent) -> {
-                                  Event controlEvent = createMapBasedEvent( controlPrototype )
+                                  PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                           .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                  controlEvent.set( "rulename", startTag );
-                                  controlEvent.set( "event", firstEvent.get("event") );
-                                  controlEvent.set( "binding", firstEvent.get("binding") );
+                                  controlEvent.put("rulename", startTag );
+                                  controlEvent.put("event", firstEvent.get("event") );
+                                  controlEvent.put("binding", firstEvent.get("binding") );
                                   drools.insert(controlEvent);
                               })
                       )
@@ -189,9 +188,9 @@ class ReliabilityCepTimedOutTest extends ReliabilityTestBasics {
                                       accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(resultCount)),
                               pattern(resultCount).expr(count -> count == 3),
                               on(resultCount).execute((drools, count) -> {
-                                  Event controlEvent = createMapBasedEvent( controlPrototype )
+                                  PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                           .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                  controlEvent.set( "rulename", endTag );
+                                  controlEvent.put("rulename", endTag );
                                   drools.insert(controlEvent);
                               })
                       )

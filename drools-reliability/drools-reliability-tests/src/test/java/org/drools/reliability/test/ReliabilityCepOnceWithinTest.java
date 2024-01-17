@@ -22,22 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.base.facttemplates.Event;
 import org.drools.model.DroolsEntryPoint;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeDSL;
-import org.drools.model.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.facttemplate.HashMapEventImpl;
+import org.drools.model.prototype.PrototypeDSL;
+import org.drools.model.prototype.PrototypeVariable;
+import org.drools.model.prototype.impl.HashMapEventImpl;
 import org.drools.reliability.test.util.TimeAmount;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeEventInstance;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
@@ -47,14 +47,13 @@ import static org.drools.model.DSL.globalOf;
 import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PrototypeDSL.protoPattern;
-import static org.drools.model.PrototypeDSL.variable;
-import static org.drools.model.PrototypeExpression.fixedValue;
-import static org.drools.model.PrototypeExpression.prototypeField;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
+import static org.drools.model.prototype.PrototypeDSL.protoPattern;
+import static org.drools.model.prototype.PrototypeDSL.variable;
+import static org.drools.model.prototype.PrototypeExpression.fixedValue;
+import static org.drools.model.prototype.PrototypeExpression.prototypeField;
 import static org.drools.reliability.test.util.PrototypeUtils.DEFAULT_PROTOTYPE_NAME;
 import static org.drools.reliability.test.util.PrototypeUtils.SYNTHETIC_PROTOTYPE_NAME;
-import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
+import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepOnceWithinTest extends ReliabilityTestBasics {
@@ -66,24 +65,24 @@ class ReliabilityCepOnceWithinTest extends ReliabilityTestBasics {
      * These rules are created in the same way as OnceWithinDefinition in drools-ansible-rulebook-integration
      */
     private Model ruleModel() {
-        Prototype controlPrototype = getPrototype(SYNTHETIC_PROTOTYPE_NAME);
+        PrototypeEvent controlPrototype = getPrototypeEvent(SYNTHETIC_PROTOTYPE_NAME);
         Global<List> global = globalOf(List.class, "defaultpkg", "results");
 
         List<Rule> rules = new ArrayList<>();
 
         // main rule (match only once for grouped events within 10 minutes)
         TimeAmount timeAmount = TimeAmount.parseTimeAmount("10 minutes");
-        PrototypeVariable originalEventVariable = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m");
+        PrototypeVariable originalEventVariable = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m");
         rules.add(rule(RULE_NAME).metadata(RULE_TYPE_TAG, KEYWORD)
                           .build(
                                   guardedPattern(originalEventVariable),
                                   not(duplicateControlPattern(originalEventVariable)),
                                   on(originalEventVariable, global).execute((drools, event, globalResults) -> {
-                                      Event controlEvent = createMapBasedEvent(controlPrototype)
+                                      PrototypeEventInstance controlEvent = controlPrototype.newInstance()
                                               .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                      controlEvent.set("sensu.host", event.get("sensu.host")); // groupByAttributes
-                                      controlEvent.set("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
-                                      controlEvent.set("drools_rule_name", RULE_NAME);
+                                      controlEvent.put("sensu.host", event.get("sensu.host")); // groupByAttributes
+                                      controlEvent.put("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
+                                      controlEvent.put("drools_rule_name", RULE_NAME);
                                       drools.insert(controlEvent);
                                       globalResults.add(event);
                                       drools.delete(event);
@@ -110,7 +109,7 @@ class ReliabilityCepOnceWithinTest extends ReliabilityTestBasics {
 
     // We group-by sensu.host and sensu.process.type
     private static PrototypeDSL.PrototypePatternDef duplicateControlPattern(PrototypeVariable originalEventVariable) {
-        return protoPattern(variable(getPrototype(SYNTHETIC_PROTOTYPE_NAME)))
+        return protoPattern(variable(getPrototypeEvent(SYNTHETIC_PROTOTYPE_NAME)))
                 .expr(prototypeField("sensu.host"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.host")) // groupByAttributes
                 .expr(prototypeField("sensu.process.type"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.process.type")) // groupByAttributes
                 .expr(prototypeField("drools_rule_name"), Index.ConstraintType.EQUAL, fixedValue(RULE_NAME));

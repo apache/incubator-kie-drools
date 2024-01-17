@@ -31,12 +31,16 @@ import static org.drools.mvelcompiler.util.CoercionUtils.coerceMapValueToString;
 
 public class MapPutExprT implements TypedExpression {
 
-    private final TypedExpression name;
+    private final Expression name;
     private final Expression key;
-    private final TypedExpression value;
+    private final Expression value;
     private final Optional<Type> type;
 
     public MapPutExprT(TypedExpression name, Expression key, TypedExpression value, Optional<Type> type) {
+        this((Expression) name.toJavaExpression(), key, (Expression) value.toJavaExpression(), type);
+    }
+
+    public MapPutExprT(Expression name, Expression key, Expression value, Optional<Type> type) {
         this.name = name;
         this.key = key;
         this.value = value;
@@ -50,11 +54,7 @@ public class MapPutExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        final Expression originalValue = (Expression) this.value.toJavaExpression();
-        final Expression coercedValue = coerceMapValueToString(type, originalValue);
-
-        return new MethodCallExpr((Expression) name.toJavaExpression(),
-                                  PUT_CALL,
-                                  NodeList.nodeList(key, coercedValue));
+        final Expression coercedValue = coerceMapValueToString(type, value);
+        return new MethodCallExpr(name, PUT_CALL, NodeList.nodeList(key, coercedValue));
     }
 }

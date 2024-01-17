@@ -18,6 +18,7 @@
  */
 package org.drools.mvelcompiler;
 
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.drools.Person;
@@ -114,7 +115,7 @@ public class PreprocessCompilerTest implements CompilerTest {
                       String inputExpression,
                       String expectedResult,
                       Consumer<CompiledBlockResult> resultAssert) {
-        CompiledBlockResult compiled = new PreprocessCompiler().compile(inputExpression);
+        CompiledBlockResult compiled = new PreprocessCompiler().compile(inputExpression, Collections.emptySet());
         assertThat(compiled.resultAsString()).isEqualToIgnoringWhitespace(expectedResult);
         resultAssert.accept(compiled);
     }

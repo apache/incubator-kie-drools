@@ -26,7 +26,7 @@ import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
-import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
+import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper;
@@ -65,7 +65,7 @@ public class GroupByVisitor extends AccumulateVisitor {
         TypedExpression typedExpression = optResult.get();
 
         String groupingKey = groupByDescr.getGroupingKey() != null ? groupByDescr.getGroupingKey() : generateUUID();
-        context.addDeclarationReplacing(new DeclarationSpec(groupingKey, typedExpression.getRawClass()));
+        context.addDeclarationReplacing(new TypedDeclarationSpec(groupingKey, typedExpression.getRawClass()));
 
         accumulateDSL.addArgument(toVar(groupingKey));
 

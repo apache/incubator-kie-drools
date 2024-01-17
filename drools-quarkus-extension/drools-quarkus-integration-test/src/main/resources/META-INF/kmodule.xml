@@ -26,8 +26,11 @@
   <kbase name="canDrinkKBDTable" packages="org.drools.dtable">
     <ksession name="canDrinkKSDTable" />
   </kbase>
-  <kbase name="canDrinkKBDYaml" packages="org.drools.yaml">
-    <ksession name="canDrinkKSDYaml" />
+  <kbase name="canDrinkKBYaml" packages="org.drools.yaml">
+    <ksession name="canDrinkKSYaml" />
+  </kbase>
+  <kbase name="canDrinkKBPrototype" packages="org.drools.prototype" prototypes="allowed">
+    <ksession name="canDrinkKSPrototype" />
   </kbase>
   <kbase name="cepKB" packages="org.drools.cep" eventProcessingMode="stream">
     <ksession name="cepKS" clockType="pseudo"/>

@@ -45,7 +45,6 @@ import org.drools.base.definitions.ProcessPackage;
 import org.drools.base.definitions.ResourceTypePackageRegistry;
 import org.drools.base.definitions.rule.impl.GlobalImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.facttemplates.FactTemplate;
 import org.drools.base.rule.DialectRuntimeData;
 import org.drools.base.rule.DialectRuntimeRegistry;
 import org.drools.base.rule.DuplicateRuleNameException;
@@ -68,6 +67,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.prototype.Prototype;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 public class KnowledgePackageImpl
@@ -103,7 +103,7 @@ public class KnowledgePackageImpl
 
     protected Map<String, Type> globals;
 
-    protected Map<String, FactTemplate> factTemplates;
+    protected Map<String, Prototype> prototypes;
 
     protected DialectRuntimeRegistry dialectRuntimeRegistry;
 
@@ -151,7 +151,7 @@ public class KnowledgePackageImpl
         this.accumulateFunctions = Collections.emptyMap();
         this.staticImports = Collections.emptySet();
         this.globals = Collections.emptyMap();
-        this.factTemplates = Collections.emptyMap();
+        this.prototypes = Collections.emptyMap();
         this.functions = Collections.emptyMap();
         this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
         this.entryPointsIds = Collections.emptySet();
@@ -243,7 +243,7 @@ public class KnowledgePackageImpl
             out.writeObject(this.staticImports);
             out.writeObject(this.functions);
             out.writeObject(this.accumulateFunctions);
-            out.writeObject(this.factTemplates);
+            out.writeObject(this.prototypes);
             out.writeObject(this.globals);
             out.writeBoolean(this.valid);
             out.writeBoolean(this.needStreamMode);
@@ -289,7 +289,7 @@ public class KnowledgePackageImpl
         this.staticImports = (Set) in.readObject();
         this.functions = (Map<String, Function>) in.readObject();
         this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
-        this.factTemplates = (Map) in.readObject();
+        this.prototypes = (Map) in.readObject();
         this.globals = (Map<String, Type>) in.readObject();
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();
@@ -445,17 +445,16 @@ public class KnowledgePackageImpl
     }
 
     @Override
-    public FactTemplate getFactTemplate(final String name) {
-        return this.factTemplates.get(name);
+    public Prototype getPrototype(final String name) {
+        return this.prototypes.get(name);
     }
 
     @Override
-    public void addFactTemplate(final FactTemplate factTemplate) {
-        if (this.factTemplates == Collections.EMPTY_MAP) {
-            this.factTemplates = new HashMap<>(1);
+    public void addPrototype(final Prototype prototype) {
+        if (this.prototypes == Collections.EMPTY_MAP) {
+            this.prototypes = new HashMap<>(1);
         }
-        this.factTemplates.put(factTemplate.getName(),
-                               factTemplate);
+        this.prototypes.put(prototype.getName(), prototype);
     }
 
     /**
@@ -586,7 +585,7 @@ public class KnowledgePackageImpl
         this.accumulateFunctions.clear();
         this.staticImports.clear();
         this.globals.clear();
-        this.factTemplates.clear();
+        this.prototypes.clear();
         this.typeDeclarations.clear();
         this.windowDeclarations.clear();
     }

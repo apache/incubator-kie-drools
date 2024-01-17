@@ -1,5 +1,6 @@
 // This file was automatically generated from a YAML representation.
 <#if name?has_content>package ${name};</#if>
+<#if dialect?has_content>dialect "${dialect}";</#if>
 <#--
 
 ## DRL imports

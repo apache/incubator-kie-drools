@@ -185,7 +185,7 @@ public class ClassObjectType
     }
 
     @Override
-    public boolean isTemplate() {
+    public boolean isPrototype() {
         return false;
     }
 

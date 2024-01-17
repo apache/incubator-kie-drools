@@ -26,13 +26,13 @@ import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
-import org.drools.base.facttemplates.Fact;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.XpathBackReference;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 import static org.drools.util.ClassUtils.rawType;
 
@@ -62,7 +62,7 @@ public class BoundIdentifiers {
                             PackageBuildContext context,
                             Map<String, EvaluatorWrapper> operators,
                             ObjectType objectType) {
-        this(getDeclarationsMap( pattern, context ), context, operators, objectType.isTemplate() ? Fact.class : ((ClassObjectType) objectType).getClassType());
+        this(getDeclarationsMap( pattern, context ), context, operators, objectType.isPrototype() ? PrototypeFactInstance.class : ((ClassObjectType) objectType).getClassType());
     }
 
     public BoundIdentifiers(Map<String, Class< ? >> declarations,

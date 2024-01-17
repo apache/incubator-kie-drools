@@ -31,6 +31,7 @@ import org.drools.core.BaseConfiguration;
 import org.drools.drl.parser.DrlParser;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
@@ -106,6 +107,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
 
+    private PrototypesOption                  prototypesOption  = PrototypesOption.DISABLED;
+
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
     private CompilationCache                  compilationCache        = null;
@@ -165,9 +168,12 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
         return getClassLoader();
     }
 
-    public boolean setInternalProperty(String name,
-                                       String value) {
+    public boolean setInternalProperty(String name, String value) {
         switch (name) {
+            case PrototypesOption.PROPERTY_NAME: {
+                setPrototypesOption(PrototypesOption.determinePrototypesOption(value));
+                break;
+            }
             case ProcessStringEscapesOption.PROPERTY_NAME: {
                 setProcessStringEscapes(Boolean.parseBoolean(value));
                 break;
@@ -380,6 +386,14 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
 
     public void setPropertySpecificOption(PropertySpecificOption propertySpecificOption) {
         this.propertySpecificOption = propertySpecificOption;
+    }
+
+    public PrototypesOption getPrototypesOption() {
+        return prototypesOption;
+    }
+
+    public void setPrototypesOption(PrototypesOption prototypesOption) {
+        this.prototypesOption = prototypesOption;
     }
 
     public boolean isExternaliseCanonicalModelLambda() {

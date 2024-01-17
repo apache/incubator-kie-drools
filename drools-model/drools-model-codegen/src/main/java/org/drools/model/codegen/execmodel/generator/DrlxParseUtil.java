@@ -295,7 +295,7 @@ public class DrlxParseUtil {
         if (usedDeclarations != null) {
             usedDeclarations.add(name);
         }
-        Optional<java.lang.reflect.Type> type = context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass);
+        Optional<java.lang.reflect.Type> type = context.getTypedDeclarationById(name ).map(TypedDeclarationSpec::getDeclarationClass);
         return type.orElseThrow(() -> new NoSuchElementException("Cannot get expression type by name " + name + "!"));
     }
 
@@ -587,7 +587,7 @@ public class DrlxParseUtil {
         return classNameToReferenceTypeWithBoxing(declarationClass).parsedType;
     }
 
-    public static Type classToReferenceType(DeclarationSpec declaration) {
+    public static Type classToReferenceType(TypedDeclarationSpec declaration) {
         if (declaration.isParametrizedType()) {
             return StaticJavaParser.parseClassOrInterfaceType(declaration.getDeclarationType().getTypeName());
         }
@@ -947,7 +947,7 @@ public class DrlxParseUtil {
 
         List<DeclarationSpec> allDeclarations = new ArrayList<>(context.getAllDeclarations());
         originalPatternType.ifPresent(pt -> {
-            allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt));
+            allDeclarations.add(new TypedDeclarationSpec(THIS_PLACEHOLDER, pt));
             mvelCompilerContext.setRootPatternPrefix(pt, THIS_PLACEHOLDER);
         });
 
