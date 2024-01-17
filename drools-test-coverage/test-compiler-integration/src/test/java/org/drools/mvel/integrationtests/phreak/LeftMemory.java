@@ -25,6 +25,8 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleFactory;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class LeftMemory {
         scenario.getLeftMemory().addAll( getLeftTuples( objects ) );
     }
 
-    public List<LeftTuple> getLeftTuples(Object... objects) {
+    public List<TupleImpl> getLeftTuples(Object... objects) {
         BetaNode node = scenario.getBetaNode();
         BetaMemory bm = scenario.getBm();
         TupleMemory ltm = bm.getLeftTupleMemory();
@@ -49,10 +51,10 @@ public class LeftMemory {
             objects = new Object[0];
         }
 
-        List<LeftTuple> list = new ArrayList<LeftTuple>();
+        List<TupleImpl> list = new ArrayList<>();
         for ( Object object : objects ) {
-            InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            LeftTuple expectedLeftTuple = node.createLeftTuple(fh, true );
+            InternalFactHandle fh                = (InternalFactHandle) wm.insert( object );
+            TupleImpl          expectedLeftTuple = TupleFactory.createLeftTuple(node, fh, true);
             expectedLeftTuple.setPropagationContext( new PhreakPropagationContext() );
             list.add( expectedLeftTuple );
            

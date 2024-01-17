@@ -38,9 +38,9 @@ public class PhreakTimerNodeMetric extends PhreakTimerNode {
                        SegmentMemory smem,
                        LeftTupleSink sink,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       TupleSets srcLeftTuples,
+                       TupleSets trgLeftTuples,
+                       TupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(timerNode);

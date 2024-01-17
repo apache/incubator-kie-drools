@@ -22,6 +22,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -66,7 +67,7 @@ public class BetaMemoryLeakOnDeleteTest {
         for (int i = 0; i < nodeMemories.length(); i++) {
             final Memory memory = nodeMemories.peekNodeMemory(i);
             if (memory != null && memory.getSegmentMemory() != null) {
-                final LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                final TupleImpl deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 assertThat(deleteFirst).isNull();
             }
         }

@@ -91,9 +91,7 @@ public class ReteComparator {
         Arrays.sort(sinks2, NODE_SORTER);
 
         for (int i = 0; i < sinks1.length; i++) {
-            if (sinks1[i] instanceof BaseNode) {
-                compareNodes( (BaseNode) sinks1[i], (BaseNode) sinks2[i] );
-            }
+            compareNodes( (BaseNode) sinks1[i], (BaseNode) sinks2[i] );
         }
     }
 

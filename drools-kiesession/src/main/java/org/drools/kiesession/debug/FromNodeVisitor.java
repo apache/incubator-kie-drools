@@ -22,6 +22,8 @@ import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TupleImpl;
+import org.drools.core.util.FastIterator;
 
 import java.util.Collection;
 
@@ -43,10 +45,10 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
         if( fn.isLeftTupleMemoryEnabled() ) {
             ni.setTupleMemorySize( memory.getBetaMemory().getLeftTupleMemory().size() );
 
-            long handles = 0;
-            org.drools.core.util.Iterator it = memory.getBetaMemory().getLeftTupleMemory().iterator();
-            for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                LeftTuple child = leftTuple.getFirstChild();
+            long                    handles = 0;
+            FastIterator<TupleImpl> it      = memory.getBetaMemory().getLeftTupleMemory().fullFastIterator();
+            for ( TupleImpl leftTuple = memory.getBetaMemory().getLeftTupleMemory().getFirst(null); leftTuple != null; leftTuple = it.next(leftTuple) ) {
+                TupleImpl child = leftTuple.getFirstChild();
                 while( child != null ) {
                     handles++;
                     child = child.getHandleNext();

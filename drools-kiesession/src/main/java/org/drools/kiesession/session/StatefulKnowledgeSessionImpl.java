@@ -39,6 +39,7 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -55,6 +56,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
@@ -74,6 +76,7 @@ import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -737,11 +740,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public void internalExecute(ReteEvaluator reteEvaluator ) {
-            LeftInputAdapterNode lian = (LeftInputAdapterNode) factHandle.getFirstLeftTuple().getTupleSource();
+            LeftInputAdapterNode lian = (LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(factHandle.getFirstLeftTuple());
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 
-            LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
+            TupleImpl childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
             LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, StatefulKnowledgeSessionImpl.this, lian, false, lmem );
 
             for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {

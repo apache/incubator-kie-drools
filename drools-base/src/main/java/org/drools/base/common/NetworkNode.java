@@ -39,7 +39,7 @@ public interface NetworkNode extends Serializable {
      */
     RuleBasePartitionId getPartitionId();
     
-    short getType();
+    int getType();
 
     Rule[] getAssociatedRules();
 

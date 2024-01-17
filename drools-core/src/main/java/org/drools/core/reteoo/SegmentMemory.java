@@ -37,7 +37,7 @@ import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListNode;
+import org.drools.core.util.DoubleLinkedEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemo
 
 public class SegmentMemory extends LinkedList<SegmentMemory>
         implements
-        LinkedListNode<SegmentMemory> {
+        DoubleLinkedEntry<SegmentMemory> {
 
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean IS_LOG_TRACE_ENABLED = log.isTraceEnabled();
@@ -53,7 +53,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private SegmentPrototype   proto;
     private Memory[]       nodeMemories;
     private final List<PathMemory>   pathMemories = new ArrayList<>(1);;
-    private final TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
+    private final TupleSets stagedLeftTuples = new TupleSetsImpl();
     private long linkedNodeMask;
     private long dirtyNodeMask;
     private long allLinkedMaskTest;
@@ -350,7 +350,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.pos = pos;
     }
 
-    public TupleSets<LeftTuple> getStagedLeftTuples() {
+    public TupleSets getStagedLeftTuples() {
         return stagedLeftTuples;
     }
 
@@ -399,7 +399,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.previous = previous;
     }
 
-    public void nullPrevNext() {
+    public void clear() {
         previous = null;
         next = null;
     }

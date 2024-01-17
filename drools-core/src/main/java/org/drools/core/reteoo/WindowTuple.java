@@ -25,7 +25,7 @@ import org.drools.core.common.InternalFactHandle;
  * 
  *
  */
-public class WindowTuple extends RightTupleImpl {
+public class WindowTuple extends RightTuple {
     private WindowTupleList       windowList;
     
     private WindowTuple           windowPrevious;

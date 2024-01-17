@@ -18,10 +18,10 @@
  */
 package org.drools.traits.core.factmodel;
 
-import org.drools.core.util.Entry;
+import org.drools.core.util.SingleLinkedEntry;
 
 public class TripleImpl extends AbstractTriple {
-    private Entry next;
+    private SingleLinkedEntry next;
     
     private Object instance;
     private Object property;
@@ -45,11 +45,11 @@ public class TripleImpl extends AbstractTriple {
         this.value = value;
     }
 
-    public void setNext(Entry next) {
+    public void setNext(SingleLinkedEntry next) {
         this.next = next;
     }
 
-    public Entry getNext() {
+    public SingleLinkedEntry getNext() {
         return this.next;
     }
 

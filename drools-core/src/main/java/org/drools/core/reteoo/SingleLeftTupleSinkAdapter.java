@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.SuperCacheFixer;
 
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected LeftTupleSink sink;
@@ -55,16 +56,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 
     // See LeftTuple.getTupleSink() or https://issues.redhat.com/browse/DROOLS-7521
     public LeftTupleSinkNode getFirstLeftTupleSink() {
-        if (sink instanceof AccumulateNode) {
-            return (AccumulateNode) sink;
-        } else if (sink instanceof RuleTerminalNode) {
-            return (RuleTerminalNode) sink;
-        } else if (sink instanceof RightInputAdapterNode) {
-            return (RightInputAdapterNode) sink;
-        } else if (sink instanceof ExistsNode) {
-            return (ExistsNode) sink;
-        }
-        return (LeftTupleSinkNode) sink;
+        return SuperCacheFixer.asLeftTupleSink(sink);
     }
 
     public LeftTupleSinkNode getLastLeftTupleSink() {

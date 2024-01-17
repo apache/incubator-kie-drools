@@ -32,7 +32,7 @@ public class PhreakQueryTerminalNodeMetric extends PhreakQueryTerminalNode {
     @Override
     public void doNode(QueryTerminalNode qtnNode,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets srcLeftTuples,
                        LinkedList<StackEntry> stack) {
 
         try {

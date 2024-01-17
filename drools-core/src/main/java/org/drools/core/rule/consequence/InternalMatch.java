@@ -39,6 +39,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.Queue.QueueEntry;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
@@ -83,7 +84,7 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
      * 
      * @return The tuple.
      */
-    Tuple getTuple();
+    TupleImpl getTuple();
 
     /**
      * Retrieve the <code>PropagationContext</code> for the <code>Activation</code>
@@ -137,7 +138,7 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
         return Collections.unmodifiableList( list );
     }
 
-    default List<Object> getObjectsDeep(LeftTuple entry) {
+    default List<Object> getObjectsDeep(TupleImpl entry) {
         List<Object> list = new ArrayList<>();
         while ( entry != null ) {
             if ( entry.getFactHandle() != null ) {

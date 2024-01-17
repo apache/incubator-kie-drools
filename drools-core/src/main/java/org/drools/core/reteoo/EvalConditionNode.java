@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EvalCondition;
 import org.drools.base.rule.RuleComponent;
@@ -36,7 +37,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.kie.api.definition.rule.Rule;
 
 public class EvalConditionNode extends LeftTupleSource
@@ -127,7 +128,7 @@ public class EvalConditionNode extends LeftTupleSource
             return true;
         }
 
-        if (!(object instanceof EvalConditionNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.EvalConditionNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -137,14 +138,6 @@ public class EvalConditionNode extends LeftTupleSource
 
     public EvalMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return new EvalMemory( this.condition.createContext() );
-    }
-
-    @Override
-    public LeftTuple createPeer(LeftTuple original) {
-        EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
     }
 
     public boolean isLeftTupleMemoryEnabled() {
@@ -187,45 +180,11 @@ public class EvalConditionNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.EvalConditionNode;
     }
 
-
-
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return new EvalNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return new EvalNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }        
-    
-    public static class EvalMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class EvalMemory extends AbstractLinkedListNode<Memory>
         implements
         Externalizable,
         Memory {
@@ -253,7 +212,7 @@ public class EvalConditionNode extends LeftTupleSource
             out.writeObject( context );
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.EvalConditionNode;
         }
 

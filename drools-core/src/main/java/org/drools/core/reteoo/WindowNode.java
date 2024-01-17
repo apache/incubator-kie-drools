@@ -63,8 +63,9 @@ public class WindowNode extends ObjectSource
     protected BehaviorManager              behavior;
     private EntryPointId                   entryPoint;
     private ObjectSinkNode                 previousRightTupleSinkNode;
-    private ObjectSinkNode                 nextRightTupleSinkNode;
-    private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
+    private           ObjectSinkNode   nextRightTupleSinkNode;
+
+    private ObjectTypeNodeId rightInputOtnId = ObjectTypeNodeId.DEFAULT_ID;
 
     public WindowNode() {
     }
@@ -101,7 +102,7 @@ public class WindowNode extends ObjectSource
         initMemoryId( context );
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.WindowNode;
     }
 
@@ -135,7 +136,7 @@ public class WindowNode extends ObjectSource
             }
         }
 
-        RightTuple rightTuple = new RightTupleImpl( evFh, this );
+        RightTuple rightTuple = new RightTuple(evFh, this );
         rightTuple.setPropagationContext( pctx );
 
         InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
@@ -151,7 +152,7 @@ public class WindowNode extends ObjectSource
     }
 
     @Override
-    public void retractRightTuple(RightTuple rightTuple, PropagationContext pctx, ReteEvaluator reteEvaluator) {
+    public void retractRightTuple(TupleImpl rightTuple, PropagationContext pctx, ReteEvaluator reteEvaluator) {
         if (isInUse()) {
             // This retraction could be the effect of an event expiration, but this node could be no
             // longer in use since an incremental update could have concurrently removed it
@@ -164,7 +165,7 @@ public class WindowNode extends ObjectSource
     }
 
     @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
+    public void modifyRightTuple(TupleImpl rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         DefaultEventHandle originalFactHandle = (DefaultEventHandle) rightTuple.getFactHandle();
         DefaultEventHandle cloneFactHandle  = (DefaultEventHandle) rightTuple.getContextObject();
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
@@ -192,19 +193,19 @@ public class WindowNode extends ObjectSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              ReteEvaluator reteEvaluator) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
+        TupleImpl rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
-        while ( rightTuple != null && rightTuple.getInputOtnId().before( getRightInputOtnId() ) ) {
+        while ( rightTuple != null && rightTuple.getInputOtnId().before(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple(partitionId);
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            rightTuple.retractTuple( context, reteEvaluator );
+            ((RightTuple)rightTuple).retractTuple(context, reteEvaluator);
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
-        if ( rightTuple != null && rightTuple.getInputOtnId().equals( getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple(partitionId);
             rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, reteEvaluator );
@@ -303,18 +304,10 @@ public class WindowNode extends ObjectSource
         throw new UnsupportedOperationException();
     }
 
-    public ObjectTypeNode.Id getRightInputOtnId() {
-        return rightInputOtnId;
-    }
-
-    public void setRightInputOtnId(ObjectTypeNode.Id rightInputOtnId) {
-        this.rightInputOtnId = rightInputOtnId;
-    }
-
     public static class WindowMemory implements Memory {
         public BehaviorContext[] behaviorContext;
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.WindowNode;
         }
 
@@ -342,7 +335,7 @@ public class WindowNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
-        public void nullPrevNext() {
+        public void clear() {
             throw new UnsupportedOperationException();
         }
 
@@ -358,5 +351,13 @@ public class WindowNode extends ObjectSource
             }
             return eventFactHandles;
         }
+    }
+
+    public ObjectTypeNodeId getRightInputOtnId() {
+        return rightInputOtnId;
+    }
+
+    public void setRightInputOtnId(ObjectTypeNodeId rightInputOtnId) {
+        this.rightInputOtnId = rightInputOtnId;
     }
 }

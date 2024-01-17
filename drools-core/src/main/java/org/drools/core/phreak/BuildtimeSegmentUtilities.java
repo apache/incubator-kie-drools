@@ -178,7 +178,7 @@ public class BuildtimeSegmentUtilities {
 
     static LeftTupleNode getFirstConditionalBranchNode(LeftTupleNode tupleSource) {
         LeftTupleNode conditionalBranch = null;
-        while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+        while (  !NodeTypeEnums.isLeftInputAdapterNode(tupleSource)) {
             if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
                 conditionalBranch = tupleSource;
             }
@@ -212,6 +212,7 @@ public class BuildtimeSegmentUtilities {
             } else {
                 switch (node.getType()) {
                     case NodeTypeEnums.LeftInputAdapterNode:
+                    case NodeTypeEnums.AlphaTerminalNode:
                         allLinkedTestMask = processLiaNode((LeftInputAdapterNode) node, memories, nodes, nodePosMask, allLinkedTestMask);
                         break;
                     case NodeTypeEnums.ConditionalBranchNode:
@@ -250,7 +251,7 @@ public class BuildtimeSegmentUtilities {
 
             nodePosMask = nextNodePosMask(nodePosMask);
 
-            if (node == segmentTip || !(node instanceof LeftTupleSource)) {
+            if (node == segmentTip || !(NodeTypeEnums.isLeftTupleSource(node))) {
                 break;
             }
 
@@ -405,7 +406,7 @@ public class BuildtimeSegmentUtilities {
      * if the rule had already been removed from the network.
      */
     public static boolean isRootNode(LeftTupleNode node, TerminalNode ignoreTn) {
-        return node.getType() == NodeTypeEnums.LeftInputAdapterNode || isTipNode( node.getLeftTupleSource(), ignoreTn );
+        return NodeTypeEnums.isLeftInputAdapterNode(node) || isTipNode( node.getLeftTupleSource(), ignoreTn );
     }
 
     /**

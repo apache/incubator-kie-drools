@@ -30,9 +30,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
+import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink
@@ -41,7 +40,7 @@ public class MockRightTupleSink
     
     private final List        retracted        = new ArrayList();
 
-    public void retractRightTuple(RightTuple rightTuple,
+    public void retractRightTuple(TupleImpl rightTuple,
                                   PropagationContext context,
                                   ReteEvaluator reteEvaluator) {
         this.retracted.add( new Object[]{rightTuple, context, reteEvaluator} );
@@ -66,11 +65,11 @@ public class MockRightTupleSink
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.JoinNode;
     }
 
-    public void modifyRightTuple(RightTuple rightTuple,
+    public void modifyRightTuple(TupleImpl rightTuple,
                                  PropagationContext context,
                                  ReteEvaluator reteEvaluator) {
     }
@@ -99,10 +98,6 @@ public class MockRightTupleSink
     @Override
     public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
         return false;
-    }
-
-    public ObjectTypeNode.Id getRightInputOtnId() {
-        return null;
     }
 
     public boolean thisNodeEquals(final Object object) {

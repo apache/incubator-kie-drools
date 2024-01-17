@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
@@ -76,13 +77,13 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final ReteEvaluator reteEvaluator,
+                                final ValueResolver valueResolver,
                                 final Tuple tuple) {
-        context[0].updateFromTuple(reteEvaluator,
+        context[0].updateFromTuple(valueResolver,
                 tuple);
-        context[1].updateFromTuple(reteEvaluator,
+        context[1].updateFromTuple(valueResolver,
                 tuple);
-        context[2].updateFromTuple(reteEvaluator,
+        context[2].updateFromTuple(valueResolver,
                 tuple);
     }
 
@@ -90,13 +91,13 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.FactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final ReteEvaluator reteEvaluator,
+                                     final ValueResolver valueResolver,
                                      final FactHandle handle) {
-        context[0].updateFromFactHandle(reteEvaluator,
+        context[0].updateFromFactHandle(valueResolver,
                 handle);
-        context[1].updateFromFactHandle(reteEvaluator,
+        context[1].updateFromFactHandle(valueResolver,
                 handle);
-        context[2].updateFromFactHandle(reteEvaluator,
+        context[2].updateFromFactHandle(valueResolver,
                 handle);
     }
 

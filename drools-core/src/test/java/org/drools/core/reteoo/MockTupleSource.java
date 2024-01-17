@@ -57,7 +57,7 @@ public class MockTupleSource extends LeftTupleSource {
     public void networkUpdated(UpdateContext updateContext) {
     }
 
-    public short getType() {
+    public int getType() {
         return 0;
     }
 
@@ -68,10 +68,5 @@ public class MockTupleSource extends LeftTupleSource {
     @Override
     public boolean isLeftTupleMemoryEnabled() {
         return true;
-    }
-
-    @Override
-    public LeftTuple createPeer(LeftTuple original) {
-        return null;
     }
 }

@@ -34,7 +34,7 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
     private static final String FIXED_PART = "" +
 
             "\n" +
-            "    public short getType() {\n" +
+            "    public int getType() {\n" +
             "        return objectTypeNode.getType();\n" +
             "    }\n" +
             "\n" +

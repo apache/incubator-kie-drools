@@ -20,9 +20,9 @@ package org.drools.core.reteoo;
 
 public class TupleIterator {
     public interface OnLeaf {
-        public void execute(LeftTuple leafLeftTuple);
+        public void execute(TupleImpl leafLeftTuple);
     }
-    public static void  traverse(LeftTuple rootLeftTuple, LeftTuple leftTuple, OnLeaf onLeaf) {
+    public static void  traverse(TupleImpl rootLeftTuple, TupleImpl leftTuple, OnLeaf onLeaf) {
         boolean down = true;
         while ( leftTuple != null ) {
             while ( down ) {

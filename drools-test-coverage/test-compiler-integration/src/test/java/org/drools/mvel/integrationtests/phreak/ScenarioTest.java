@@ -52,11 +52,11 @@ public class ScenarioTest {
     JoinNode              joinNode;
     JoinNode              sinkNode;
     InternalWorkingMemory wm;
-    BetaMemory            bm;
+    BetaMemory bm;
     SegmentMemory         smem;
     
-    BetaMemory            bm0;
-    SegmentMemory         smem0;
+    BetaMemory bm0;
+    SegmentMemory  smem0;
 
     public void setupJoinNode() {
         buildContext = createContext();
@@ -80,9 +80,9 @@ public class ScenarioTest {
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
         
-        bm =(BetaMemory)  wm.getNodeMemory( joinNode );
+        bm =(BetaMemory)  wm.getNodeMemory(joinNode);
         
-        bm0 =(BetaMemory)  wm.getNodeMemory( sinkNode );
+        bm0 =(BetaMemory)  wm.getNodeMemory(sinkNode);
         
         smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );

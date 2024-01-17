@@ -85,7 +85,7 @@ public class MockObjectSource extends ObjectSource {
     }
 
    
-    public short getType() {
+    public int getType() {
         return 0;
     }
     

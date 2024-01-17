@@ -30,4 +30,6 @@ public interface LeftTupleNode extends NetworkNode {
     int getObjectCount();
 
     void setObjectCount(int count);
+
+
 }

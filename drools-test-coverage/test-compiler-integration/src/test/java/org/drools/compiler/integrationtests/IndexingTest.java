@@ -45,10 +45,8 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Cheese;
@@ -476,7 +474,7 @@ public class IndexingTest {
             }
 
             final List<RightTuple> list = new ArrayList<>(100);
-            FastIterator it = n.getRightIterator(bm.getRightTupleMemory());
+            FastIterator           it   = n.getRightIterator(bm.getRightTupleMemory());
             for (RightTuple rt = n.getFirstRightTuple(null, bm.getRightTupleMemory(), it); rt != null; rt = (RightTuple) it.next(rt)) {
                 list.add(rt);
             }
@@ -484,8 +482,8 @@ public class IndexingTest {
 
             // check we can resume from each entry in the list above.
             for (int i = 0; i < 100; i++) {
-                final RightTupleImpl rightTuple = (RightTupleImpl) list.get(i);
-                TupleMemory rightTupleMemory = bm.getRightTupleMemory();
+                final RightTuple rightTuple       = list.get(i);
+                TupleMemory      rightTupleMemory = bm.getRightTupleMemory();
                 it = (rightTupleMemory).fullFastIterator(rightTuple); // resumes from the current rightTuple
                 int j = i + 1;
                 for (RightTuple rt = (RightTuple) it.next(rightTuple); rt != null; rt = (RightTuple) it.next(rt)) {

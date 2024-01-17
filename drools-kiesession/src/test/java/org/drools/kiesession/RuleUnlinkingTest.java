@@ -30,11 +30,11 @@ import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
-import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -333,7 +333,7 @@ public class RuleUnlinkingTest {
         assertThat(rtn3Rs.isRuleLinked()).isFalse();
 
         // Link in Rule1
-        bm = (BetaMemory) wm.getNodeMemory( n2 );
+        bm = (BetaMemory) wm.getNodeMemory(n2);
         assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         DefaultFactHandle f2 = (DefaultFactHandle) wm.insert( "test2" );
@@ -345,7 +345,7 @@ public class RuleUnlinkingTest {
         assertThat(rtn3Rs.isRuleLinked()).isFalse();
 
         // Link in Rule2
-        bm = (BetaMemory) wm.getNodeMemory( n5 );
+        bm = (BetaMemory) wm.getNodeMemory(n5);
         assertThat(bm.getSegmentMemory().isSegmentLinked()).isFalse();
 
         n5.assertObject( f1, context, wm );
@@ -380,7 +380,7 @@ public class RuleUnlinkingTest {
 
     private static BetaMemory createSegmentMemory(BetaNode node,
                                                   InternalWorkingMemory wm) {
-        BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory( node );
+        BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory(node);
         if ( betaMemory.getSegmentMemory() == null ) {
             RuntimeSegmentUtilities.getOrCreateSegmentMemory(node, wm);
         }

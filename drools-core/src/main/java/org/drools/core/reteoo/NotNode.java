@@ -61,8 +61,8 @@ public class NotNode extends BetaNode {
     }
     
     @Override
-    protected void reorderRightTuple(ReteEvaluator reteEvaluator, RightTuple rightTuple) {
-        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, this, rightTuple);
+    protected void reorderRightTuple(ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
+        doExistentialUpdatesReorderChildLeftTuple(reteEvaluator, this, (RightTuple) rightTuple);
     }
 
     public boolean isEmptyBetaConstraints() {
@@ -73,48 +73,9 @@ public class NotNode extends BetaNode {
         this.emptyBetaConstraints = emptyBetaConstraints;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.NotNode;
     }
-    
-    public LeftTuple createPeer(LeftTuple original) {
-        NotNodeLeftTuple peer = new NotNodeLeftTuple();
-        peer.initPeer((LeftTuple) original, this);
-        original.setPeer( peer );
-        return peer;
-    }    
-
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new NotNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return new NotNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new NotNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }       
 
     public String toString() {
         ObjectTypeNode source = getObjectTypeNode();
@@ -124,9 +85,9 @@ public class NotNode extends BetaNode {
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext pctx,
                               final ReteEvaluator reteEvaluator ) {
-        final BetaMemory memory = getBetaMemoryFromRightInput(this, reteEvaluator);
+        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, reteEvaluator);
 
-        RightTuple rightTuple = createRightTuple( factHandle,
+        TupleImpl rightTuple = createRightTuple( factHandle,
                                                   this,
                                                   pctx);
 
@@ -152,18 +113,18 @@ public class NotNode extends BetaNode {
         flushLeftTupleIfNecessary( reteEvaluator, memory.getOrCreateSegmentMemory( this, reteEvaluator ), isStreamMode() );
     }
 
-    public void retractRightTuple(final RightTuple rightTuple,
+    public void retractRightTuple(final TupleImpl rightTuple,
                                   final PropagationContext pctx,
                                   final ReteEvaluator reteEvaluator) {
-        final BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory( this );
+        final BetaMemory memory = (BetaMemory) reteEvaluator.getNodeMemory(this);
         rightTuple.setPropagationContext( pctx );
         doDeleteRightTuple( rightTuple, reteEvaluator, memory );
     }
 
-    public void doDeleteRightTuple(final RightTuple rightTuple,
+    public void doDeleteRightTuple(final TupleImpl rightTuple,
                                    final ReteEvaluator reteEvaluator,
                                    final BetaMemory memory) {
-        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
+        TupleSets stagedRightTuples = memory.getStagedRightTuples();
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
 
         if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
@@ -181,7 +142,7 @@ public class NotNode extends BetaNode {
     }
 
     @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
+    public void modifyRightTuple(TupleImpl rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 

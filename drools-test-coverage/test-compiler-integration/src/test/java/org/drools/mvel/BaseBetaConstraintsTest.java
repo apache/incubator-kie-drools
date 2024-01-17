@@ -114,7 +114,7 @@ public abstract class BaseBetaConstraintsTest {
 
     protected void checkBetaConstraints(BetaConstraint[] constraints,
                                         Class cls,
-                                        short betaNodeType) {
+                                        int betaNodeType) {
         RuleBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration().as(RuleBaseConfiguration.KEY);
         int depth = config.getCompositeKeyDepth();
 

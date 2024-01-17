@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.IndexableConstraint;
@@ -97,7 +98,7 @@ public class DefaultBetaConstraints
         return this;
     }
 
-    public void init(BuildContext context, short betaNodeType) {
+    public void init(BuildContext context, int betaNodeType) {
         RuleBaseConfiguration config = context.getRuleBase().getRuleBaseConfiguration();
 
         if ( disableIndexing || (!config.isIndexLeftBetaMemory() && !config.isIndexRightBetaMemory()) ) {
@@ -113,7 +114,7 @@ public class DefaultBetaConstraints
         }
     }
 
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) {
         indexed = 0;
         boolean[] indexable = isIndexableForNode(indexPrecedenceOption, betaNodeType, depth, constraints, config);
         for (boolean i : indexable) {
@@ -149,10 +150,10 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final ReteEvaluator reteEvaluator,
+                                final ValueResolver valueResolver,
                                 final Tuple tuple) {
         for (ContextEntry aContext : context) {
-            aContext.updateFromTuple(reteEvaluator, tuple);
+            aContext.updateFromTuple(valueResolver, tuple);
         }
     }
 
@@ -160,10 +161,10 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final ReteEvaluator reteEvaluator,
+                                     final ValueResolver valueResolver,
                                      final FactHandle handle) {
         for (ContextEntry aContext : context) {
-            aContext.updateFromFactHandle(reteEvaluator, handle);
+            aContext.updateFromFactHandle(valueResolver, handle);
         }
     }
 
@@ -218,7 +219,7 @@ public class DefaultBetaConstraints
     }
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                       final short nodeType ) {
+                                       final int nodeType) {
         return IndexFactory.createBetaMemory(config, nodeType, constraints);
     }
 

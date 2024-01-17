@@ -38,11 +38,10 @@ import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -119,9 +118,9 @@ public class MemoryLeakTest {
         }
 
         assertThat(joinNode).isNotNull();
-        InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
-        BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
-        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
+        InternalWorkingMemory wm                = (InternalWorkingMemory) ksession;
+        BetaMemory memory            = (BetaMemory) wm.getNodeMemory(joinNode);
+        TupleSets stagedRightTuples = memory.getStagedRightTuples();
         assertThat(stagedRightTuples.getDeleteFirst()).isNull();
         assertThat(stagedRightTuples.getInsertFirst()).isNull();
 
@@ -165,7 +164,7 @@ public class MemoryLeakTest {
         assertThat(liaNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = wm.getNodeMemory(liaNode);
-        TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
+        TupleSets stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
         assertThat(stagedLeftTuples.getDeleteFirst()).isNull();
         assertThat(stagedLeftTuples.getInsertFirst()).isNull();
     }
@@ -206,7 +205,7 @@ public class MemoryLeakTest {
             if ( memory != null && memory.getSegmentMemory() != null ) {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
                 System.out.println( memory );
-                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                TupleImpl deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 if ( segmentMemory.getRootNode() instanceof JoinNode ) {
                     BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories()[0];
                     assertThat(bm.getLeftTupleMemory().size()).isEqualTo(0);
