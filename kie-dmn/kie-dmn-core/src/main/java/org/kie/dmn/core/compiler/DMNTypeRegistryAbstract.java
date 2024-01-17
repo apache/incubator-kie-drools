@@ -114,14 +114,18 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
 
     @Override
     public DMNType registerType( DMNType type ) {
-        if( type.getNamespace() == null && type.getName() == null ) {
+        return registerTypeInNamespace(type, type.getNamespace());
+    }
+
+    @Override
+    public DMNType registerTypeInNamespace(DMNType type, String targetNamespace) {
+        if( targetNamespace== null && type.getName() == null ) {
             throw new IllegalArgumentException( "Unknown namespace or name. Unable to register type "+type );
         }
-
-        Map<String, DMNType> typesMap = this.types.get( type.getNamespace() );
+        Map<String, DMNType> typesMap = this.types.get( targetNamespace );
         if( typesMap == null ) {
             typesMap = new HashMap<>(  );
-            this.types.put( type.getNamespace(), typesMap );
+            this.types.put( targetNamespace, typesMap );
         }
         if( typesMap.containsKey( type.getName() ) ) {
             return typesMap.get( type.getName() );

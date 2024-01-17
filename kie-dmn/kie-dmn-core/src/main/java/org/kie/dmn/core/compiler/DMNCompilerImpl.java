@@ -341,12 +341,19 @@ public class DMNCompilerImpl implements DMNCompiler {
         model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
         for (ItemDefNode idn : m.getItemDefinitions()) {
             model.getTypeRegistry().registerType(idn.getType());
+            if (iAlias != null && iAlias.isEmpty()) {
+                model.getTypeRegistry().registerTypeInNamespace(idn.getType(), model.getNamespace());
+            }
         }
         for (InputDataNode idn : m.getInputs()) {
             model.addInput(idn);
         }
         for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
-            model.addBusinessKnowledgeModel(bkm);
+//            if (iAlias != null && iAlias.isEmpty()) {
+//                model.addBusinessKnowledgeModelInNamespace(bkm);
+//            } else {
+                model.addBusinessKnowledgeModel(bkm);
+//            }
         }
         for (DecisionNode dn : m.getDecisions()) {
             model.addDecision(dn);

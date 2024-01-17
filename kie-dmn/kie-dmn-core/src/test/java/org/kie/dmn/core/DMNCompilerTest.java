@@ -273,6 +273,43 @@ public class DMNCompilerTest extends BaseVariantTest {
     }
 
     @Test
+    public void testEmptyNamedModelImport() {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Importing_EmptyNamed_Model.dmn",
+                                                                        this.getClass(),
+                                                                        "Imported_Model.dmn");
+
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+                                                        "Imported Model");
+        assertThat(importedModel).isNotNull();
+        for (final DMNMessage message : importedModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
+                                                   "Importing empty-named Model");
+        assertThat(dmnModel).isNotNull();
+        for (final DMNMessage message : dmnModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNContext context = runtime.newContext();
+        context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
+
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
+        for (final DMNMessage message : evaluateAll.getMessages()) {
+            LOG.debug("{}", message);
+        }
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult()).isEqualTo("Hello John!");
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties.get("Greeting")).isEqualTo("Hello John!");
+        }
+    }
+
+    @Test
     public void testWrongComparisonOps() {
         final DMNRuntime runtime = createRuntime("WrongComparisonOps.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a937d093-86d3-4306-8db8-1e7a33588b68", "Drawing 1");

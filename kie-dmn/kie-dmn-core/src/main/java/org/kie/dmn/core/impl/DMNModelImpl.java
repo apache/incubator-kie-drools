@@ -277,6 +277,10 @@ public class DMNModelImpl
         return this.decisionServices.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+
+    public void addBusinessKnowledgeModelInNamespace(BusinessKnowledgeModelNode bkm) {
+        bkms.put(bkm.getId(), bkm);
+    }
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
         bkms.put(computeDRGElementModelLocalId(bkm), bkm);
     }
