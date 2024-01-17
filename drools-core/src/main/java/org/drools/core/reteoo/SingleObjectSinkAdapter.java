@@ -99,7 +99,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
             bm = accMem.getBetaMemory();
         } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
             BetaNode betaNode = ( BetaNode ) sink;
-            bm = BetaNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
+            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
         } else {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
@@ -125,7 +125,7 @@ public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
             bm = accMem.getBetaMemory();
         } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
             BetaNode betaNode = ( BetaNode ) sink;
-            bm = BetaNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
+            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, reteEvaluator);
         } else {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }

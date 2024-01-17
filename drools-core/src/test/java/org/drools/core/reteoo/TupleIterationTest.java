@@ -32,46 +32,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TupleIterationTest {
     @Test
     public void testRootTraversal() {
-        JoinNodeLeftTuple t0 = new JoinNodeLeftTuple();
-        JoinNodeLeftTuple t1 = new JoinNodeLeftTuple(t0, null, (PropagationContext) null, true);
-        JoinNodeLeftTuple t2 = new JoinNodeLeftTuple(t0, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t3 = new JoinNodeLeftTuple(t0, null, (PropagationContext) null,true);
+        LeftTuple t0 = new LeftTuple();
+        LeftTuple t1 = new LeftTuple(t0, null, (PropagationContext) null, true);
+        LeftTuple t2 = new LeftTuple(t0, null, (PropagationContext) null,true);
+        LeftTuple t3 = new LeftTuple(t0, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_1 = new JoinNodeLeftTuple(t1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_2 = new JoinNodeLeftTuple(t1, null, (PropagationContext) null,true);
+        LeftTuple t1_1 = new LeftTuple(t1, null, (PropagationContext) null,true);
+        LeftTuple t1_2 = new LeftTuple(t1, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_1_1 = new JoinNodeLeftTuple(t1_1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_1_1_1 = new JoinNodeLeftTuple(t1_1_1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_1_1_2 = new JoinNodeLeftTuple(t1_1_1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_1_1_3 = new JoinNodeLeftTuple(t1_1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1 = new LeftTuple(t1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1_1 = new LeftTuple(t1_1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1_2 = new LeftTuple(t1_1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1_3 = new LeftTuple(t1_1_1, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_2_1 = new JoinNodeLeftTuple(t1_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_1 = new LeftTuple(t1_2, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_2_2 = new JoinNodeLeftTuple(t1_2, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_2_2_1 = new JoinNodeLeftTuple(t1_2_2, null,(PropagationContext) null, true);
+        LeftTuple t1_2_2 = new LeftTuple(t1_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_2_1 = new LeftTuple(t1_2_2, null,(PropagationContext) null, true);
 
-        JoinNodeLeftTuple t1_2_3 = new JoinNodeLeftTuple(t1_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, (PropagationContext) null,true);
 
-        JoinNodeLeftTuple t2_1 = new JoinNodeLeftTuple(t2, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t2_2 = new JoinNodeLeftTuple(t2, null,(PropagationContext) null, true);
-        JoinNodeLeftTuple t2_3 = new JoinNodeLeftTuple(t2, null, (PropagationContext) null,true);
+        LeftTuple t2_1 = new LeftTuple(t2, null, (PropagationContext) null,true);
+        LeftTuple t2_2 = new LeftTuple(t2, null,(PropagationContext) null, true);
+        LeftTuple t2_3 = new LeftTuple(t2, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t2_3_1 = new JoinNodeLeftTuple(t2_3, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t2_3_1_1 = new JoinNodeLeftTuple(t2_3_1, null, (PropagationContext) null,true);
+        LeftTuple t2_3_1 = new LeftTuple(t2_3, null, (PropagationContext) null,true);
+        LeftTuple t2_3_1_1 = new LeftTuple(t2_3_1, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t2_3_2 = new JoinNodeLeftTuple(t2_3, null, (PropagationContext) null,true);
+        LeftTuple t2_3_2 = new LeftTuple(t2_3, null, (PropagationContext) null,true);
 
         
-        JoinNodeLeftTuple[] leafs = new JoinNodeLeftTuple[] {
+        LeftTuple[] leafs = new LeftTuple[] {
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
-        final List<LeftTuple> foundLeafs = new ArrayList<LeftTuple>();
+        final List<TupleImpl> foundLeafs = new ArrayList<TupleImpl>();
         
         TupleIterator iterator = new TupleIterator();
         OnLeaf onLeaf = new OnLeaf() {
 
-            public void execute(LeftTuple leafLeftTuple) {
+            public void execute(TupleImpl leafLeftTuple) {
                 foundLeafs.add( leafLeftTuple );
             }
             
@@ -85,52 +85,52 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
     
     @Test
     public void testMidTraversal() {
-        JoinNodeLeftTuple tm2 = new JoinNodeLeftTuple();
-        JoinNodeLeftTuple tm1 = new JoinNodeLeftTuple(tm2, null, (PropagationContext) null,true);
-        LeftTuple tm1_1 = new JoinNodeLeftTuple(tm1, null, (PropagationContext) null, true); // this leaf will not be included
+        LeftTuple tm2 = new LeftTuple();
+        LeftTuple tm1 = new LeftTuple(tm2, null, (PropagationContext) null,true);
+        LeftTuple tm1_1 = new LeftTuple(tm1, null, (PropagationContext) null, true); // this leaf will not be included
         
-        JoinNodeLeftTuple t0 = new JoinNodeLeftTuple(tm1, null, (PropagationContext) null,true); // insert two nodes before our root traversal position
+        LeftTuple t0 = new LeftTuple(tm1, null, (PropagationContext) null,true); // insert two nodes before our root traversal position
         
         
-        JoinNodeLeftTuple t1 = new JoinNodeLeftTuple(t0, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t2 = new JoinNodeLeftTuple(t0, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t3 = new JoinNodeLeftTuple(t0, null, (PropagationContext) null,true);
+        LeftTuple t1 = new LeftTuple(t0, null, (PropagationContext) null,true);
+        LeftTuple t2 = new LeftTuple(t0, null, (PropagationContext) null,true);
+        LeftTuple t3 = new LeftTuple(t0, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_1 = new JoinNodeLeftTuple(t1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_2 = new JoinNodeLeftTuple(t1, null, (PropagationContext) null,true);
+        LeftTuple t1_1 = new LeftTuple(t1, null, (PropagationContext) null,true);
+        LeftTuple t1_2 = new LeftTuple(t1, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_1_1 = new JoinNodeLeftTuple(t1_1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_1_1_1 = new JoinNodeLeftTuple(t1_1_1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_1_1_2 = new JoinNodeLeftTuple(t1_1_1, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_1_1_3 = new JoinNodeLeftTuple(t1_1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1 = new LeftTuple(t1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1_1 = new LeftTuple(t1_1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1_2 = new LeftTuple(t1_1_1, null, (PropagationContext) null,true);
+        LeftTuple t1_1_1_3 = new LeftTuple(t1_1_1, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_2_1 = new JoinNodeLeftTuple(t1_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_1 = new LeftTuple(t1_2, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t1_2_2 = new JoinNodeLeftTuple(t1_2, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t1_2_2_1 = new JoinNodeLeftTuple(t1_2_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_2 = new LeftTuple(t1_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_2_1 = new LeftTuple(t1_2_2, null, (PropagationContext) null,true);
 
-        JoinNodeLeftTuple t1_2_3 = new JoinNodeLeftTuple(t1_2, null, (PropagationContext) null,true);
+        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, (PropagationContext) null,true);
 
-        JoinNodeLeftTuple t2_1 = new JoinNodeLeftTuple(t2, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t2_2 = new JoinNodeLeftTuple(t2, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t2_3 = new JoinNodeLeftTuple(t2, null, (PropagationContext) null,true);
+        LeftTuple t2_1 = new LeftTuple(t2, null, (PropagationContext) null,true);
+        LeftTuple t2_2 = new LeftTuple(t2, null, (PropagationContext) null,true);
+        LeftTuple t2_3 = new LeftTuple(t2, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t2_3_1 = new JoinNodeLeftTuple(t2_3, null, (PropagationContext) null,true);
-        JoinNodeLeftTuple t2_3_1_1 = new JoinNodeLeftTuple(t2_3_1, null, (PropagationContext) null,true);
+        LeftTuple t2_3_1 = new LeftTuple(t2_3, null, (PropagationContext) null,true);
+        LeftTuple t2_3_1_1 = new LeftTuple(t2_3_1, null, (PropagationContext) null,true);
         
-        JoinNodeLeftTuple t2_3_2 = new JoinNodeLeftTuple(t2_3, null, (PropagationContext) null,true);
+        LeftTuple t2_3_2 = new LeftTuple(t2_3, null, (PropagationContext) null,true);
 
         
-        JoinNodeLeftTuple[] leafs = new JoinNodeLeftTuple[] {
+        LeftTuple[] leafs = new LeftTuple[] {
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
-        final List<LeftTuple> foundLeafs = new ArrayList<LeftTuple>();
+        final List<TupleImpl> foundLeafs = new ArrayList<>();
         
         TupleIterator iterator = new TupleIterator();
         OnLeaf onLeaf = new OnLeaf() {
 
-            public void execute(LeftTuple leafLeftTuple) {
+            public void execute(TupleImpl leafLeftTuple) {
                 foundLeafs.add( leafLeftTuple );
             }
             

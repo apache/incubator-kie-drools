@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.AsyncSend;
 import org.drools.base.rule.accessor.DataProvider;
@@ -36,7 +37,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
 
 public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends LeftTupleSource
@@ -114,7 +115,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
             return true;
         }
 
-        if (!(object instanceof AsyncSendNode) || this.hashCode() != object.hashCode() ) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.AsyncSendNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -147,7 +148,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         this.leftInput.networkUpdated(updateContext);
     }
 
-    public InternalFactHandle createFactHandle(Tuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator, Object object ) {
+    public InternalFactHandle createFactHandle(TupleImpl  leftTuple, PropagationContext context, ReteEvaluator reteEvaluator, Object object ) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
             handle = context.getReaderContext().createAsyncNodeHandle( leftTuple, reteEvaluator, object, getId(), getObjectTypeConf( reteEvaluator ) );
@@ -168,21 +169,12 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
     }
 
     public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory beta = new BetaMemory( new TupleList(),
-                                          null,
-                                          this.betaConstraints.createContext(),
-                                          NodeTypeEnums.FromNode );
+        BetaMemory beta = new BetaMemory(new TupleList(),
+                                         null,
+                                         this.betaConstraints.createContext(),
+                                         NodeTypeEnums.FromNode );
         return (T) new AsyncSendMemory( beta, this.dataProvider );
     }
-   
-
-    @Override
-    public LeftTuple createPeer(LeftTuple original) {
-        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
-    }    
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
@@ -224,11 +216,11 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AsyncSendNode;
     } 
 
-    public static class AsyncSendMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class AsyncSendMemory extends AbstractLinkedListNode<Memory>
         implements
         Serializable,
         SegmentNodeMemory {
@@ -236,8 +228,8 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
 
         private DataProvider      dataProvider;
 
-        private final BetaMemory         betaMemory;
-        public Object                    providerContext;
+        private final BetaMemory betaMemory;
+        public        Object         providerContext;
 
         public AsyncSendMemory( BetaMemory betaMemory,
                                 DataProvider dataProvider) {
@@ -246,7 +238,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
             this.providerContext = dataProvider.createContext();
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.AsyncSendNode;
         }
 
@@ -286,39 +278,6 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         public void setNodeCleanWithoutNotify() {
             betaMemory.setNodeCleanWithoutNotify();
         }
-    }
-    
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, sink, pctx,
-                                     leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
 
     @Override

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.MutableTypeConstraint;
@@ -62,11 +63,11 @@ public class DoubleNonIndexSkipBetaConstraints
         return this;
     }
 
-    public void init(BuildContext context, short betaNodeType) {
+    public void init(BuildContext context, int betaNodeType) {
         constraints.init(context, betaNodeType);
     }
 
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) {
         constraints.initIndexes(depth, betaNodeType, config);
     }
 
@@ -87,15 +88,15 @@ public class DoubleNonIndexSkipBetaConstraints
     }
 
     public void updateFromTuple(ContextEntry[] context,
-                                ReteEvaluator reteEvaluator,
+                                ValueResolver reteEvaluator,
                                 Tuple tuple) {
         constraints.updateFromTuple( context, reteEvaluator, tuple );
     }
 
     public void updateFromFactHandle(ContextEntry[] context,
-                                     ReteEvaluator reteEvaluator,
+                                     ValueResolver valueResolver,
                                      FactHandle handle) {
-        constraints.updateFromFactHandle( context, reteEvaluator, handle );
+        constraints.updateFromFactHandle( context, valueResolver, handle );
     }
 
     public boolean isIndexed() {
@@ -110,8 +111,8 @@ public class DoubleNonIndexSkipBetaConstraints
         return constraints.isEmpty();
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
-                                       final short nodeType) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
+                                       final int nodeType) {
         return constraints.createBetaMemory( config,
                                              nodeType );
     }

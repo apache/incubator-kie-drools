@@ -30,7 +30,7 @@ public interface IndexableConstraint extends Constraint {
 
     boolean isUnification();
 
-    boolean isIndexable(short nodeType, KieBaseConfiguration config);
+    boolean isIndexable(int nodeType, KieBaseConfiguration config);
 
     ConstraintTypeOperator getConstraintType();
 

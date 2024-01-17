@@ -20,6 +20,7 @@ package org.drools.core.common;
 
 
 import org.drools.base.common.NetworkNode;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
@@ -45,7 +46,7 @@ public interface NodeMemories {
     Memory peekNodeMemory( int memoryId );
 
     default Memory peekNodeMemory(NetworkNode node) {
-        return node instanceof MemoryFactory ? peekNodeMemory(((MemoryFactory)node).getMemoryId()) : null;
+        return NodeTypeEnums.isMemoryFactory(node) ? peekNodeMemory(((MemoryFactory)node).getMemoryId()) : null;
     }
 
     /**

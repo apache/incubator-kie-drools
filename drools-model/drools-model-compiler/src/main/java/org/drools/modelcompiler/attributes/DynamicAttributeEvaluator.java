@@ -32,7 +32,7 @@ public class DynamicAttributeEvaluator<T> {
 
     protected Declaration[] getDeclarations(Tuple tuple) {
         Declaration[] declarations = new Declaration[supplier.getVariables().length];
-        Declaration[] allDeclarations = ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations();
+        Declaration[] allDeclarations = ((RuleTerminalNode) tuple.getSink()).getAllDeclarations();
         for (int i = 0; i < supplier.getVariables().length; i++) {
             for (Declaration d : allDeclarations) {
                 if (d.getIdentifier().equals(supplier.getVariables()[i].getName())) {

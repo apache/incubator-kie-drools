@@ -26,9 +26,7 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalFactHandle
@@ -79,10 +77,10 @@ public interface InternalFactHandle
     boolean isTraiting();
 
     TraitTypeEnum getTraitType();
-    
-    RightTuple getFirstRightTuple();
 
-    LeftTuple getFirstLeftTuple();
+    TupleImpl getFirstRightTuple();
+
+    TupleImpl getFirstLeftTuple();
 
     default ReteEvaluator getReteEvaluator() {
         return null;
@@ -100,21 +98,21 @@ public interface InternalFactHandle
     
     void disconnect();
 
-    void addFirstLeftTuple(LeftTuple leftTuple);
+    void addFirstLeftTuple(TupleImpl leftTuple);
 
-    void addLastLeftTuple( LeftTuple leftTuple );
+    void addLastLeftTuple( TupleImpl leftTuple);
 
-    void removeLeftTuple( LeftTuple leftTuple );
+    void removeLeftTuple( TupleImpl leftTuple);
 
     void clearLeftTuples();
 
     void clearRightTuples();
 
-    void addLastRightTuple( RightTuple rightTuple );
+    void addLastRightTuple( TupleImpl rightTuple);
 
-    void removeRightTuple( RightTuple rightTuple );
+    void removeRightTuple( TupleImpl rightTuple);
 
-    void addTupleInPosition( Tuple tuple );
+    void addTupleInPosition( TupleImpl tuple);
 
     boolean isNegated();
     void setNegated(boolean negated);
@@ -122,10 +120,10 @@ public interface InternalFactHandle
     boolean isExpired();
     boolean isPendingRemoveFromStore();
 
-    void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer );
-    void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
+    void forEachRightTuple(Consumer<TupleImpl> rightTupleConsumer);
+    void forEachLeftTuple(Consumer<TupleImpl> leftTupleConsumer);
 
-    LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate );
+    TupleImpl findFirstLeftTuple(Predicate<TupleImpl> lefttTuplePredicate);
 
     LinkedTuples detachLinkedTuples();
     LinkedTuples detachLinkedTuplesForPartition(int i);
@@ -142,35 +140,35 @@ public interface InternalFactHandle
 
         boolean hasTuples();
 
-        void addFirstLeftTuple( LeftTuple leftTuple );
-        void addLastLeftTuple( LeftTuple leftTuple );
+        void addFirstLeftTuple( TupleImpl leftTuple);
+        void addLastLeftTuple( TupleImpl leftTuple);
 
-        void addTupleInPosition( Tuple tuple );
+        void addTupleInPosition( TupleImpl tuple);
 
-        void removeLeftTuple( LeftTuple leftTuple );
+        void removeLeftTuple( TupleImpl leftTuple);
 
-        void addFirstRightTuple( RightTuple rightTuple );
-        void addLastRightTuple( RightTuple rightTuple );
+        void addFirstRightTuple( TupleImpl rightTuple);
+        void addLastRightTuple( TupleImpl rightTuple);
 
-        void removeRightTuple( RightTuple rightTuple );
+        void removeRightTuple( TupleImpl rightTuple);
 
         void clearLeftTuples();
         void clearRightTuples();
 
-        void forEachRightTuple(Consumer<RightTuple> rightTupleConsumer);
+        void forEachRightTuple(Consumer<TupleImpl> rightTupleConsumer);
 
-        void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
-        LeftTuple findFirstLeftTuple(Predicate<LeftTuple> leftTuplePredicate );
+        void forEachLeftTuple(Consumer<TupleImpl> leftTupleConsumer);
+        TupleImpl findFirstLeftTuple(Predicate<TupleImpl> leftTuplePredicate);
 
-        LeftTuple getFirstLeftTuple(int partition);
+        TupleImpl getFirstLeftTuple(int partition);
 
-        default LeftTuple getFirstLeftTuple(RuleBasePartitionId partitionId) {
+        default TupleImpl getFirstLeftTuple(RuleBasePartitionId partitionId) {
             return getFirstLeftTuple( partitionId.getParallelEvaluationSlot() );
         }
 
-        RightTuple getFirstRightTuple(int partition);
+        TupleImpl getFirstRightTuple(int partition);
 
-        default RightTuple getFirstRightTuple(RuleBasePartitionId partitionId) {
+        default TupleImpl getFirstRightTuple(RuleBasePartitionId partitionId) {
             return getFirstRightTuple( partitionId.getParallelEvaluationSlot() );
         }
     }
@@ -278,12 +276,12 @@ public interface InternalFactHandle
         }
 
         @Override
-        public RightTuple getFirstRightTuple() {
+        public TupleImpl getFirstRightTuple() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public LeftTuple getFirstLeftTuple() {
+        public TupleImpl getFirstLeftTuple() {
             throw new UnsupportedOperationException();
         }
 
@@ -313,17 +311,17 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void addFirstLeftTuple( LeftTuple leftTuple ) {
+        public void addFirstLeftTuple( TupleImpl leftTuple) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void addLastLeftTuple( LeftTuple leftTuple ) {
+        public void addLastLeftTuple( TupleImpl leftTuple) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void removeLeftTuple( LeftTuple leftTuple ) {
+        public void removeLeftTuple( TupleImpl leftTuple) {
             throw new UnsupportedOperationException();
         }
 
@@ -338,17 +336,17 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void addLastRightTuple( RightTuple rightTuple ) {
+        public void addLastRightTuple( TupleImpl rightTuple) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void removeRightTuple( RightTuple rightTuple ) {
+        public void removeRightTuple( TupleImpl rightTuple) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void addTupleInPosition( Tuple tuple ) {
+        public void addTupleInPosition( TupleImpl tuple) {
             throw new UnsupportedOperationException();
         }
 
@@ -378,17 +376,17 @@ public interface InternalFactHandle
         }
 
         @Override
-        public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) {
+        public void forEachRightTuple( Consumer<TupleImpl> rightTupleConsumer) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) {
+        public void forEachLeftTuple( Consumer<TupleImpl> leftTupleConsumer) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate ) {
+        public TupleImpl findFirstLeftTuple(Predicate<TupleImpl> lefttTuplePredicate) {
             throw new UnsupportedOperationException();
         }
 

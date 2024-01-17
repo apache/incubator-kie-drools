@@ -116,40 +116,8 @@ public class MockLeftTupleSink extends LeftTupleSource
     public void networkUpdated(UpdateContext updateContext) {
     }
 
-    public short getType() {
-        return NodeTypeEnums.RuleTerminalNode;
-    }
-
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    public int getType() {
+        return NodeTypeEnums.MockBetaNode;
     }
 
     public LeftTupleSource getLeftTupleSource() {
@@ -159,7 +127,7 @@ public class MockLeftTupleSink extends LeftTupleSource
 
         return new MockLeftTupleSink(null) {
             @Override
-            public short getType() {
+            public int getType() {
                 return NodeTypeEnums.LeftInputAdapterNode;
             }
         };
@@ -170,8 +138,4 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
-    @Override
-    public LeftTuple createPeer(LeftTuple original) {
-        return null;
-    }
 }

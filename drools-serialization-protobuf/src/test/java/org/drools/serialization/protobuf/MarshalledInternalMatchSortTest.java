@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Lists;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.reteoo.Tuple;
 import org.junit.Test;
@@ -108,7 +109,7 @@ public class MarshalledInternalMatchSortTest {
         when(a.getRule()).thenReturn(rule);
         when(a.toString()).thenReturn(line.toString());
 
-        Tuple tuple1 = null, tuple2 = null, tuple3 = null, tuple4;
+        TupleImpl tuple1 = null, tuple2 = null, tuple3 = null, tuple4;
         if (line.ids.size() >= 1) {
             tuple1 = mockTuple(line.ids.get(0));
             when(a.getTuple()).thenReturn(tuple1);
@@ -133,8 +134,8 @@ public class MarshalledInternalMatchSortTest {
 
     }
 
-    private Tuple mockTuple(final Long handleId) {
-        Tuple t = mock(Tuple.class);
+    private TupleImpl mockTuple(final Long handleId) {
+        TupleImpl t = mock(TupleImpl.class);
         if (handleId == null) {
             return t;
         }

@@ -239,8 +239,7 @@ public class AgendaGroupQueueImpl
         if (this == object) {
             return true;
         }
-        return object instanceof AgendaGroupQueueImpl &&
-               ((AgendaGroupQueueImpl) object).name.equals( this.name );
+        return ((AgendaGroupQueueImpl) object).name.equals( this.name );
     }
 
     public int hashCode() {

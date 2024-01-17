@@ -24,6 +24,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 
 public class ModifyPreviousTuples {
@@ -33,19 +34,19 @@ public class ModifyPreviousTuples {
         this.linkedTuples = linkedTuples;
     }
     
-    public LeftTuple peekLeftTuple(int partition) {
+    public TupleImpl peekLeftTuple(int partition) {
         return linkedTuples.getFirstLeftTuple(partition);
     }
 
-    public LeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
+    public TupleImpl peekLeftTuple(RuleBasePartitionId partitionId) {
         return linkedTuples.getFirstLeftTuple(partitionId);
     }
 
-    public RightTuple peekRightTuple(int partition) {
+    public TupleImpl peekRightTuple(int partition) {
         return linkedTuples.getFirstRightTuple(partition);
     }
 
-    public RightTuple peekRightTuple(RuleBasePartitionId partitionId) {
+    public TupleImpl peekRightTuple(RuleBasePartitionId partitionId) {
         return linkedTuples.getFirstRightTuple(partitionId);
     }
 
@@ -71,22 +72,21 @@ public class ModifyPreviousTuples {
         linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, reteEvaluator, rt) );
     }
 
-    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, LeftTuple leftTuple) {
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
+    public void doDeleteObject(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl leftTuple) {
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) SuperCacheFixer.getLeftTupleSource(leftTuple);
         LeftInputAdapterNode.LiaNodeMemory lm = reteEvaluator.getNodeMemory( liaNode );
         SegmentMemory sm = lm.getSegmentMemory();
         if (sm != null) {
             LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, reteEvaluator, liaNode, true, lm );
         } else {
             ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
-            TerminalNode rtn = (TerminalNode) leftTuple.getTupleSink();
-            PathMemory pathMemory = reteEvaluator.getNodeMemory( rtn );
+            PathMemory pathMemory = reteEvaluator.getNodeMemory( (TerminalNode) leftTuple.getSink() );
             PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
         }
     }
 
-    public void doRightDelete(PropagationContext pctx, ReteEvaluator reteEvaluator, RightTuple rightTuple) {
+    public void doRightDelete(PropagationContext pctx, ReteEvaluator reteEvaluator, TupleImpl rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        rightTuple.retractTuple( pctx, reteEvaluator );
+        ((RightTuple)rightTuple).retractTuple(pctx, reteEvaluator);
     }
 }

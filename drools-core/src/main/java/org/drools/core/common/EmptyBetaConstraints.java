@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Pattern;
@@ -67,7 +68,7 @@ public class EmptyBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
      */
     public void updateFromTuple(final ContextEntry[] context,
-                                final ReteEvaluator reteEvaluator,
+                                final ValueResolver valueResolver,
                                 final Tuple tuple) {
     }
 
@@ -75,7 +76,7 @@ public class EmptyBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#updateFromFactHandle(org.kie.common.InternalFactHandle)
      */
     public void updateFromFactHandle(final ContextEntry[] context,
-                                     final ReteEvaluator reteEvaluator,
+                                     final ValueResolver valueResolver,
                                      final FactHandle handle) {
     }
 
@@ -114,11 +115,11 @@ public class EmptyBetaConstraints
     }
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                       final short nodeType) {
-        return new BetaMemory( config.isSequential() ? null : new TupleList(),
-                               new TupleList(),
-                               EMPTY,
-                               nodeType );
+                                       final int nodeType) {
+        return new BetaMemory(config.isSequential() ? null : new TupleList(),
+                              new TupleList(),
+                              EMPTY,
+                              nodeType );
     }
 
     public int hashCode() {
@@ -161,8 +162,8 @@ public class EmptyBetaConstraints
         return getEmptyPropertyReactiveMask(settableProperties.size());
     }
 
-    public void init(BuildContext context, short betaNodeType) { }
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) { }
+    public void init(BuildContext context, int betaNodeType)                           { }
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) { }
 
     public boolean isLeftUpdateOptimizationAllowed() {
         return true;

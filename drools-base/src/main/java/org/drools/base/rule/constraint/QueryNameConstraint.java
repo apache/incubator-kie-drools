@@ -62,7 +62,7 @@ public class QueryNameConstraint implements
         return false;
     }
 
-    public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
+    public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
         return true;
     }
 

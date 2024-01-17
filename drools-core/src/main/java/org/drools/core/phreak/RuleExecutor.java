@@ -34,6 +34,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.Queue;
@@ -49,13 +50,13 @@ public class RuleExecutor {
 
     protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
-    private final PathMemory pmem;
-    private final RuleAgendaItem ruleAgendaItem;
-    private final TupleList tupleList;
+    private final PathMemory           pmem;
+    private final RuleAgendaItem       ruleAgendaItem;
+    private final TupleList            tupleList;
     private final Queue<InternalMatch> queue;
-    private volatile boolean dirty;
-    private final boolean declarativeAgendaEnabled;
-    private boolean fireExitedEarly;
+    private volatile boolean           dirty;
+    private final boolean              declarativeAgendaEnabled;
+    private boolean                    fireExitedEarly;
 
     public RuleExecutor(final PathMemory pmem,
             RuleAgendaItem ruleAgendaItem,
@@ -90,7 +91,7 @@ public class RuleExecutor {
         RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
         int directFirings = tupleList.size();
 
-        for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
+        for (TupleImpl tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
             if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                 directFirings--;
             } else {
@@ -185,13 +186,13 @@ public class RuleExecutor {
         return localFireCount;
     }
 
-    private Tuple getNextTuple() {
+    private TupleImpl getNextTuple() {
         if (tupleList.isEmpty()) {
             return null;
         }
-        Tuple leftTuple;
+        TupleImpl leftTuple;
         if (queue != null) {
-            leftTuple = (Tuple) queue.dequeue();
+            leftTuple = (TupleImpl) queue.dequeue();
             tupleList.remove(leftTuple);
         } else {
             leftTuple = tupleList.removeFirst();
@@ -285,8 +286,8 @@ public class RuleExecutor {
         return tupleList;
     }
 
-    public void addLeftTuple(Tuple tuple) {
-        ((InternalMatch) tuple).setQueued(true);
+    public void addLeftTuple(TupleImpl tuple) {
+        ((RuleTerminalNodeLeftTuple) tuple).setQueued(true);
         this.tupleList.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
@@ -299,8 +300,8 @@ public class RuleExecutor {
         updateSalience(currentSalience);
     }
 
-    public void removeLeftTuple(Tuple tuple) {
-        ((InternalMatch) tuple).setQueued(false);
+    public void removeLeftTuple(TupleImpl tuple) {
+        ((RuleTerminalNodeLeftTuple) tuple).setQueued(false);
         this.tupleList.remove(tuple);
         if (queue != null) {
             removeQueuedLeftTuple(tuple);

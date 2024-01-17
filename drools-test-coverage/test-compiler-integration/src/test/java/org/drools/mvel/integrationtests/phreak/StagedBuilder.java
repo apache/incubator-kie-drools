@@ -26,7 +26,7 @@ public class StagedBuilder extends BaseLeftTuplesBuilder<StagedBuilder> {
     private SegmentMemory sm;
     
     public StagedBuilder(Scenario scenario, SegmentMemory sm ) {
-        super(scenario, new TupleSetsImpl<LeftTuple>() );
+        super(scenario, new TupleSetsImpl() );
         this.sm = sm;
     }
     

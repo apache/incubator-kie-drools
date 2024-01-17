@@ -24,8 +24,8 @@ import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.TupleImpl ;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.test.model.Cheese;
@@ -57,7 +57,7 @@ public class FieldIndexEntryTest {
         final SingleIndex singleIndex = new SingleIndex( new IndexedValueReader[]{fieldIndex},
                                                          1 );
 
-        Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
+        Tuple tuple = new RightTuple(new DefaultFactHandle(1, new Cheese("stilton", 10) ) );
         final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         // Test initial construction
@@ -69,7 +69,7 @@ public class FieldIndexEntryTest {
                                                              stilton1 );
 
         // test add
-        RightTuple h1RightTuple = new RightTupleImpl( h1, null );
+        TupleImpl  h1RightTuple = new RightTuple(h1, null );
         index.add( h1RightTuple );
 
         final Tuple entry1 = index.getFirst();
@@ -78,7 +78,7 @@ public class FieldIndexEntryTest {
         assertThat(index.get(h1)).isSameAs(entry1);
 
         // test get
-        final Tuple entry2 = index.get( new RightTupleImpl( h1, null ) );
+        final Tuple entry2 = index.get( new RightTuple(h1, null ));
         assertThat(entry2).isSameAs(entry1);
 
         // test remove
@@ -94,7 +94,7 @@ public class FieldIndexEntryTest {
         final SingleIndex singleIndex = new SingleIndex( new IndexedValueReader[]{fieldIndex},
                                                          1 );
 
-        Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
+        Tuple tuple = new RightTuple(new DefaultFactHandle(1, new Cheese("stilton", 10) ) );
         final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         final Cheese stilton1 = new Cheese( "stilton",
@@ -106,8 +106,8 @@ public class FieldIndexEntryTest {
         final InternalFactHandle h2 = new DefaultFactHandle( 2,
                                                              stilton2 );
         
-        RightTuple h1RightTuple = new RightTupleImpl( h1, null );
-        RightTuple h2RightTuple = new RightTupleImpl( h2, null );
+        TupleImpl  h1RightTuple = new RightTuple(h1, null );
+        TupleImpl  h2RightTuple = new RightTuple(h2, null );
 
         // test add
         index.add( h1RightTuple );
@@ -141,7 +141,7 @@ public class FieldIndexEntryTest {
         final SingleIndex singleIndex = new SingleIndex( new IndexedValueReader[]{fieldIndex},
                                                          1 );
 
-        Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
+        Tuple tuple = new RightTuple(new DefaultFactHandle(1, new Cheese("stilton", 10) ) );
         final TupleList index = new AbstractHashTable.IndexTupleList( singleIndex, new AbstractHashTable.SingleHashEntry("stilton".hashCode(), "stilton") );
 
         final Cheese stilton1 = new Cheese( "stilton",
@@ -157,9 +157,9 @@ public class FieldIndexEntryTest {
         final InternalFactHandle h3 = new DefaultFactHandle( 3,
                                                              stilton3 );
 
-        RightTuple h1RightTuple = new RightTupleImpl( h1, null );
-        RightTuple h2RightTuple = new RightTupleImpl( h2, null );
-        RightTuple h3RightTuple = new RightTupleImpl( h3, null );
+        TupleImpl  h1RightTuple = new RightTuple(h1, null );
+        TupleImpl  h2RightTuple = new RightTuple(h2, null );
+        TupleImpl  h3RightTuple = new RightTuple(h3, null );
         
         // test add
         index.add( h1RightTuple );

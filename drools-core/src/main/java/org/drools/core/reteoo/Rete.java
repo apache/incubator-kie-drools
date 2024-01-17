@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
@@ -79,7 +80,7 @@ public class Rete extends ObjectSource implements ObjectSink {
         hashcode = calculateHashCode();
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.ReteNode;
     }  
 
@@ -197,7 +198,7 @@ public class Rete extends ObjectSource implements ObjectSink {
             return true;
         }
 
-        if (!(object instanceof Rete) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.ReteNode || this.hashCode() != object.hashCode()) {
             return false;
         }
         return this.entryPoints.equals( ((Rete)object).entryPoints );

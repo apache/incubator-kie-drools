@@ -19,6 +19,8 @@
 package org.drools.tms.beliefsystem.simple;
 
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.EqualityKey;
@@ -74,11 +76,11 @@ public class SimpleBeliefSystem
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
         if ( empty && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
-            ep.insert( bfh,
-                       bfh.getObject(),
-                       node.getJustifier().getRule(),
-                       node.getJustifier().getTuple().getTupleSink(),
-                       typeConf );
+            ep.insert(bfh,
+                      bfh.getObject(),
+                      node.getJustifier().getRule(),
+                      SuperCacheFixer.asTerminalNode(node.getJustifier().getTuple()),
+                      typeConf);
         }
         return beliefSet;
     }
@@ -99,7 +101,7 @@ public class SimpleBeliefSystem
             ep.insert( bfh,
                        bfh.getObject(),
                        rule,
-                       activation != null ? activation.getTuple().getTupleSink() : null,
+                       activation != null ? SuperCacheFixer.asTerminalNode(activation.getTuple()) : null,
                        typeConf );
         }
         return beliefSet;
@@ -128,7 +130,7 @@ public class SimpleBeliefSystem
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             ep.immediateDelete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
-                               internalMatch != null ? internalMatch.getTuple().getTupleSink() : null);
+                               internalMatch != null ? SuperCacheFixer.asTerminalNode(internalMatch.getTuple()) : null);
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in

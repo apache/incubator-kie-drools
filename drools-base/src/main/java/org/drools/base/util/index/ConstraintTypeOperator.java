@@ -69,7 +69,7 @@ public enum ConstraintTypeOperator {
         return this.operator;
     }
 
-    public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {
+    public boolean isIndexableForNode(int nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {
         switch (this) {
             case EQUAL:
                 return true;

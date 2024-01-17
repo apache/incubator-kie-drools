@@ -45,4 +45,6 @@ public interface ObjectSink
                                  ModifyPreviousTuples modifyPreviousTuples,
                                  PropagationContext context,
                                  ReteEvaluator reteEvaluator);
+
+
 }

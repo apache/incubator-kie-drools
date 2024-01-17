@@ -52,7 +52,7 @@ public class PhreakNotNodeTest {
     NotNode               notNode;
     JoinNode              sinkNode;
     InternalWorkingMemory wm;
-    BetaMemory            bm;
+    BetaMemory bm;
 
     private void setupNotNode(String operator) {
         buildContext = createContext();
@@ -76,9 +76,9 @@ public class PhreakNotNodeTest {
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
         
-        bm =(BetaMemory)  wm.getNodeMemory( notNode );
+        bm =(BetaMemory)  wm.getNodeMemory(notNode);
         
-        BetaMemory bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode );
+        BetaMemory bm1 =(BetaMemory)  wm.getNodeMemory(sinkNode);
         
         SegmentMemory smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );

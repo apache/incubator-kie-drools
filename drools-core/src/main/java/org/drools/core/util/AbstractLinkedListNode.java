@@ -29,9 +29,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="linked-list")
-public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
+public abstract class AbstractLinkedListNode<T extends DoubleLinkedEntry<T>>
     implements
-    LinkedListNode<T> {
+    DoubleLinkedEntry<T> {
 
     private static final long serialVersionUID = 510l;
 
@@ -42,7 +42,7 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     /**
      * Empty Constructor
      */
-    public AbstractBaseLinkedListNode() {
+    public AbstractLinkedListNode() {
     }
 
     /* (non-Javadoc)
@@ -73,7 +73,7 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
         this.previous = previous;
     }
 
-    public void nullPrevNext() {
+    public void clear() {
         previous = null;
         next = null;
     }

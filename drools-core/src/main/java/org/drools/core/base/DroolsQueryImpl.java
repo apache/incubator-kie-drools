@@ -47,7 +47,7 @@ public final class DroolsQueryImpl extends ArrayElements implements DroolsQuery{
 
     private WorkingMemoryAction action;
 
-    private final TupleSets<LeftTuple> resultLeftTuples;
+    private final TupleSets resultLeftTuples;
 
     private QueryElementNodeMemory qmem;
 
@@ -67,7 +67,7 @@ public final class DroolsQueryImpl extends ArrayElements implements DroolsQuery{
                            final boolean open,
                            final StackEntry stackEntry,
                            final List<PathMemory> pmems,
-                           final TupleSets<LeftTuple> resultLeftTuples,
+                           final TupleSets resultLeftTuples,
                            final QueryElementNodeMemory qmem,
                            final LeftTupleSink sink) {
         setParameters(params);
@@ -103,7 +103,7 @@ public final class DroolsQueryImpl extends ArrayElements implements DroolsQuery{
         return this.vars;
     }  
     
-    public TupleSets<LeftTuple> getResultLeftTupleSets() {
+    public TupleSets getResultLeftTupleSets() {
         return resultLeftTuples;
     }
 

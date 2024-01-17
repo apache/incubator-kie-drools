@@ -27,19 +27,19 @@ import org.drools.base.rule.constraint.BetaConstraint;
 
 public interface IndexFactory {
 
-    static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaConstraint... constraints) {
+    static BetaMemory createBetaMemory(RuleBaseConfiguration config, int nodeType, BetaConstraint... constraints) {
         if (config.getCompositeKeyDepth() < 1) {
-            return new BetaMemory( config.isSequential() ? null : new TupleList(),
-                    new TupleList(),
-                    createContext(constraints),
-                    nodeType );
+            return new BetaMemory(config.isSequential() ? null : new TupleList(),
+                                  new TupleList(),
+                                  createContext(constraints),
+                                  nodeType );
         }
 
         IndexSpec indexSpec = new IndexSpec(nodeType, constraints, config);
-        return new BetaMemory( createLeftMemory(config, indexSpec),
-                createRightMemory(config, indexSpec),
-                createContext(constraints),
-                nodeType );
+        return new BetaMemory(createLeftMemory(config, indexSpec),
+                              createRightMemory(config, indexSpec),
+                              createContext(constraints),
+                              nodeType );
     }
 
     private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {

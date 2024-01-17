@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.util.List;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.BetaConstraint;
@@ -39,11 +40,11 @@ public interface BetaConstraints<C>
     C createContext();
 
     void updateFromTuple(C context,
-                         ReteEvaluator reteEvaluator,
+                         ValueResolver valueResolver,
                          Tuple tuple);
 
     void updateFromFactHandle(C context,
-                              ReteEvaluator reteEvaluator,
+                              ValueResolver valueResolver,
                               FactHandle handle);
 
     boolean isAllowedCachedLeft(C context,
@@ -62,7 +63,7 @@ public interface BetaConstraints<C>
     boolean isEmpty();
 
     BetaMemory createBetaMemory(final RuleBaseConfiguration config,
-                                final short nodeType );
+                                final int nodeType);
 
     void resetTuple(final C context);
 
@@ -70,8 +71,8 @@ public interface BetaConstraints<C>
 
     BitMask getListenedPropertyMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties);
 
-    void init(BuildContext context, short betaNodeType);
-    void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config);
+    void init(BuildContext context, int betaNodeType);
+    void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config);
 
     <T> T cloneIfInUse();
 

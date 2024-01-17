@@ -18,25 +18,21 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 
-public class BetaMemory<C> extends AbstractBaseLinkedListNode<Memory>
-        implements
-        SegmentNodeMemory {
+public class BetaMemory<C> extends AbstractLinkedListNode<Memory> implements SegmentNodeMemory {
 
-    private static final long serialVersionUID = 510l;
-    private TupleMemory                leftTupleMemory;
-    private TupleMemory                rightTupleMemory;
-    private TupleSets<RightTuple>      stagedRightTuples;
-    private C                          context;
+    private              TupleMemory leftTupleMemory;
+    private              TupleMemory rightTupleMemory;
+    private              TupleSets stagedRightTuples;
+    private              C         context;
     // the node type this memory belongs to
-    private short                      nodeType;
+    private              int     nodeType;
     private SegmentMemory              segmentMemory;
     private long                       nodePosMaskBit;
     private int                        counter;
@@ -48,19 +44,19 @@ public class BetaMemory<C> extends AbstractBaseLinkedListNode<Memory>
     public BetaMemory(final TupleMemory tupleMemory,
                       final TupleMemory objectMemory,
                       final C context,
-                      final short nodeType) {
+                      final int nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new TupleSetsImpl<>();
+        this.stagedRightTuples = new TupleSetsImpl();
         this.context = context;
         this.nodeType = nodeType;
     }
 
-    public TupleSets<RightTuple> getStagedRightTuples() {
+    public TupleSets getStagedRightTuples() {
         return stagedRightTuples;
     }
 
-    public void setStagedRightTuples(TupleSets<RightTuple> stagedRightTuples) {
+    public void setStagedRightTuples(TupleSets stagedRightTuples) {
         this.stagedRightTuples = stagedRightTuples;
     }
 
@@ -104,7 +100,7 @@ public class BetaMemory<C> extends AbstractBaseLinkedListNode<Memory>
         return segmentMemory.unlinkNode(nodePosMaskBit, reteEvaluator);
     }
 
-    public short getNodeType() {
+    public int getNodeType() {
         return this.nodeType;
     }
 
@@ -165,6 +161,7 @@ public class BetaMemory<C> extends AbstractBaseLinkedListNode<Memory>
         }
     }
 
+    @Override
     public void reset() {
         if (leftTupleMemory != null) {
             leftTupleMemory.clear();

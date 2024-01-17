@@ -25,10 +25,11 @@ import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.AccumulateContextEntry;
+import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Accumulate;
-import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.TypeDeclaration;
@@ -43,17 +44,16 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakAccumulateNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
+import org.drools.core.util.index.TupleListWithContext;
 import org.drools.util.bitmask.BitMask;
 
 /**
  * AccumulateNode
  * A beta node capable of doing accumulate logic.
  *
- * Created: 04/06/2006
  *
- * @version $Id$
  */
 public class AccumulateNode extends BetaNode {
 
@@ -64,6 +64,7 @@ public class AccumulateNode extends BetaNode {
     protected BetaConstraints            resultBinder;
 
     public AccumulateNode() {
+
     }
 
     public AccumulateNode(final int id,
@@ -120,7 +121,7 @@ public class AccumulateNode extends BetaNode {
                leftInput.getParentObjectSource().getObjectTypeNode().getObjectType();
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AccumulateNode;
     }
 
@@ -138,7 +139,7 @@ public class AccumulateNode extends BetaNode {
 
     public InternalFactHandle createResultFactHandle(final PropagationContext context,
                                                      final ReteEvaluator reteEvaluator,
-                                                     final LeftTuple leftTuple,
+                                                     final TupleImpl leftTuple,
                                                      final Object result) {
         InternalFactHandle handle = null;
         if ( context.getReaderContext() != null ) {
@@ -167,7 +168,7 @@ public class AccumulateNode extends BetaNode {
             return true;
         }
 
-        if (!(object instanceof AccumulateNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.AccumulateNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -183,8 +184,7 @@ public class AccumulateNode extends BetaNode {
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory betaMemory = this.constraints.createBetaMemory(config,
-                                                                  NodeTypeEnums.AccumulateNode);
+        BetaMemory betaMemory = (BetaMemory) this.constraints.createBetaMemory(config, NodeTypeEnums.AccumulateNode);
         AccumulateMemory memory = this.accumulate.isMultiFunction() ?
                                   new MultiAccumulateMemory(betaMemory, this.accumulate.getAccumulators()) :
                                   new SingleAccumulateMemory(betaMemory, this.accumulate.getAccumulators()[0]);
@@ -194,15 +194,15 @@ public class AccumulateNode extends BetaNode {
         return memory;
     }
 
-    public static abstract class AccumulateMemory extends AbstractBaseLinkedListNode<Memory>
+    public static abstract class AccumulateMemory extends AbstractLinkedListNode<Memory>
         implements
         SegmentNodeMemory {
 
-        public Object             workingMemoryContext;
-        private final BetaMemory<?>  betaMemory;
-        public Object     resultsContext;
+        public        Object            workingMemoryContext;
+        private final BetaMemory<?> betaMemory;
+        public        Object            resultsContext;
 
-        protected AccumulateMemory( BetaMemory betaMemory ) {
+        protected AccumulateMemory( BetaMemory betaMemory) {
             this.betaMemory = betaMemory;
         }
 
@@ -210,7 +210,7 @@ public class AccumulateNode extends BetaNode {
             return this.betaMemory;
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.AccumulateNode;
         }
 
@@ -302,10 +302,10 @@ public class AccumulateNode extends BetaNode {
     }
 
     public static class GroupByContext implements BaseAccumulation {
-        private PropagationContext                              propagationContext;
-        private Map<Object, TupleList<AccumulateContextEntry> > groupsMap = new HashMap<>();
-        private TupleList<AccumulateContextEntry>               lastTupleList;
-        private TupleList<AccumulateContextEntry>               toPropagateList;
+        private PropagationContext                                        propagationContext;
+        private Map<Object, TupleListWithContext<AccumulateContextEntry>> groupsMap = new HashMap<>();
+        private TupleListWithContext<AccumulateContextEntry>              lastTupleList;
+        private TupleListWithContext<AccumulateContextEntry>              toPropagateList;
 
         public PropagationContext getPropagationContext() {
             return propagationContext;
@@ -315,17 +315,17 @@ public class AccumulateNode extends BetaNode {
             this.propagationContext = propagationContext;
         }
 
-        public Map<Object, TupleList<AccumulateContextEntry>> getGroups() {
+        public Map<Object, TupleListWithContext<AccumulateContextEntry>> getGroups() {
             return groupsMap;
         }
 
-        public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
+        public TupleListWithContext<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, BaseTuple leftTuple,
                                                           Object key, ReteEvaluator reteEvaluator) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
                 entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, reteEvaluator) );
                 PhreakAccumulateNode.initContext(workingMemoryContext, reteEvaluator, accumulate, leftTuple, entry);
-                return new TupleList<>(entry);
+                return new TupleListWithContext(entry);
             });
         }
 
@@ -333,7 +333,7 @@ public class AccumulateNode extends BetaNode {
             groupsMap.remove(key);
         }
 
-        public void moveToPropagateTupleList(TupleList<AccumulateContextEntry> list) {
+        public void moveToPropagateTupleList(TupleListWithContext<AccumulateContextEntry> list) {
             this.lastTupleList = list;
             if ( list.getContext().isToPropagate()) {
                 return;
@@ -346,20 +346,20 @@ public class AccumulateNode extends BetaNode {
             list.getContext().setToPropagate(true);
         }
 
-        public TupleList<AccumulateContextEntry> takeToPropagateList() {
-            TupleList<AccumulateContextEntry> list = toPropagateList;
+        public TupleListWithContext<AccumulateContextEntry> takeToPropagateList() {
+            TupleListWithContext<AccumulateContextEntry> list = toPropagateList;
             toPropagateList = null;
             return list;
         }
 
-        public void addMatchOnLastTupleList(LeftTuple match) {
+        public void addMatchOnLastTupleList(TupleImpl match) {
             lastTupleList.add(match);
             lastTupleList.getContext().setEmpty( false );
         }
 
         public void clear() {
-            for (TupleList<AccumulateContextEntry> list : groupsMap.values()) {
-                for ( Tuple tuple = list.getFirst(); list.getFirst() != null; tuple = list.getFirst()) {
+            for (TupleList list : groupsMap.values()) {
+                for ( TupleImpl tuple = list.getFirst(); list.getFirst() != null; tuple = list.getFirst()) {
                     list.remove(tuple);
                     tuple.setContextObject(null);
                 }
@@ -370,54 +370,13 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled);
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle, leftTuple, sink);
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink);
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
-    }
-
-
-    public LeftTuple createPeer(LeftTuple original) {
-        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer(peer);
-        return peer;
-    }
-
     /**
      *  @inheritDoc
      *
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
-    public void retractRightTuple( final RightTuple rightTuple,
+    public void retractRightTuple( final TupleImpl rightTuple,
                                    final PropagationContext pctx,
                                    final ReteEvaluator reteEvaluator ) {
         final AccumulateMemory memory = (AccumulateMemory) reteEvaluator.getNodeMemory( this );
@@ -428,7 +387,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
+    public void modifyRightTuple(TupleImpl rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 
