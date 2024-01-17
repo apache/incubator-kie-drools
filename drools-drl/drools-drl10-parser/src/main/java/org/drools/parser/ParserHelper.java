@@ -39,11 +39,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.RecognitionException;
+import org.antlr.v4.runtime.CommonToken;
 import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.dsl.AbstractClassTypeDeclarationBuilder;
@@ -78,6 +78,12 @@ import org.drools.drl.ast.dsl.TypeDeclarationDescrBuilder;
 import org.drools.drl.ast.dsl.UnitDescrBuilder;
 import org.drools.drl.ast.dsl.WindowDeclarationDescrBuilder;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.lang.DroolsEditorType;
+import org.drools.drl.parser.lang.DroolsParaphraseTypes;
+import org.drools.drl.parser.lang.DroolsSentence;
+import org.drools.drl.parser.lang.DroolsSentenceType;
+import org.drools.drl.parser.lang.DroolsSoftKeywords;
+import org.drools.drl.parser.lang.DroolsToken;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
