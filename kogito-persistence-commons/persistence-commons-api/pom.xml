@@ -31,6 +31,10 @@
   <name>Kogito Apps :: Persistence Commons API</name>
   <artifactId>persistence-commons-api</artifactId>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

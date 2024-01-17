@@ -32,6 +32,10 @@
   <artifactId>data-index-storage-jpa</artifactId>
   <name>Kogito Apps :: Data Index Storage JPA</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.jpa</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

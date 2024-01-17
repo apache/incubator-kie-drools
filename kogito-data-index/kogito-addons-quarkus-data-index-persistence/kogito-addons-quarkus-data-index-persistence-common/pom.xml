@@ -32,6 +32,10 @@
 
   <name>Kogito Apps :: Kogito Addons Quarkus Data Index Persistence Common</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.quarkus.data.index.persistence</java.module.name>
+  </properties>
+
   <modules>
     <module>deployment</module>
     <module>runtime</module>

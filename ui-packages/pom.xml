@@ -35,6 +35,7 @@
   <name>Kogito Apps :: UI Packages</name>
 
   <properties>
+    <java.module.name>org.kie.kogito.apps.ui</java.module.name>
     <sonar.sources>${project.basedir}/packages</sonar.sources>
     <sonar.inclusions>packages/*/src/**</sonar.inclusions>
     <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/*.stories.tsx,**/graphql/types.tsx,**/graphql/graphql.schema.json,**/index.tsx,*.js,**/resources/**</sonar.exclusions>

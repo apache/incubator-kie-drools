@@ -32,6 +32,10 @@
   <artifactId>trusty-service-infinispan</artifactId>
   <name>Kogito Apps :: Trusty Service Infinispan</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.trusty.service.infinispan</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

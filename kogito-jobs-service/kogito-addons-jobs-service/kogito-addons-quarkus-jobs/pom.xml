@@ -15,6 +15,7 @@
     <description>Run Jobs Service embedded with the application.</description>
 
     <properties>
+        <java.module.name>org.kie.kogito.addons.quarkus.jobs.embedded</java.module.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

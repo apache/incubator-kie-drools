@@ -30,6 +30,10 @@
   <name>Kogito Apps :: Integration Tests</name>
   <packaging>pom</packaging>
 
+  <properties>
+    <java.module.name>org.kie.kogito.apps.it</java.module.name>
+  </properties>
+
   <modules>
     <module>integration-tests-data-index-service</module>
   </modules>

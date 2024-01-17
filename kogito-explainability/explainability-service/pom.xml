@@ -32,6 +32,10 @@
   <artifactId>explainability-service</artifactId>
   <name>Kogito Apps :: Explainability Service</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.explainability</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

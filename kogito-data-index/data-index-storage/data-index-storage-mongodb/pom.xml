@@ -32,6 +32,10 @@
   <artifactId>data-index-storage-mongodb</artifactId>
   <name>Kogito Apps :: Data Index Storage MongoDB</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.mongodb</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

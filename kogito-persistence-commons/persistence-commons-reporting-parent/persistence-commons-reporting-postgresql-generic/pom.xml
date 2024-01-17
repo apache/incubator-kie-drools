@@ -32,6 +32,10 @@
   <artifactId>persistence-commons-reporting-postgresql-generic</artifactId>
   <name>Kogito Apps :: Persistence Commons :: Reporting :: PostgreSQL (Generic)</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.postgresql.reporting</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

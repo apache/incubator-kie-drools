@@ -32,6 +32,10 @@
   <artifactId>persistence-commons-mongodb</artifactId>
   <name>Kogito Apps :: Persistence Commons MongoDB</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.mongodb</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

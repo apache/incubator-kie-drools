@@ -32,6 +32,10 @@
   <artifactId>data-index-storage-postgresql-reporting</artifactId>
   <name>Kogito Apps :: Data Index Storage PostgreSQL :: Reporting</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.postgresql.reporting</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

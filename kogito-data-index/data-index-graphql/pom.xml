@@ -32,6 +32,10 @@
   <artifactId>data-index-graphql</artifactId>
   <name>Kogito Apps :: Data Index GraphQL</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.graphql</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

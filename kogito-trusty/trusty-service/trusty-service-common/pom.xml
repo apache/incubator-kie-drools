@@ -32,6 +32,10 @@
   <artifactId>trusty-service-common</artifactId>
   <name>Kogito Apps :: Trusty Service Common</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.trusty.service.common</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

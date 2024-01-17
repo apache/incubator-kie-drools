@@ -32,6 +32,10 @@
   <name>Kogito Apps :: Jobs Service :: Common</name>
   <description>Jobs Service (Timers and Async Jobs) Common</description>
 
+  <properties>
+    <java.module.name>org.kie.kogito.job.service</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

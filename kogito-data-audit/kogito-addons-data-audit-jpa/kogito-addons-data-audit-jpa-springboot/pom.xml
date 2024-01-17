@@ -13,8 +13,8 @@
     <artifactId>kogito-addons-data-audit-jpa-springboot</artifactId>
     <name>Kogito Apps :: Data Audit :: JPA :: SpringBoot</name>
 
-
     <properties>
+        <java.module.name>org.kie.kogito.app.audit.jpa.springboot</java.module.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

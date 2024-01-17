@@ -32,6 +32,10 @@
 
   <name>Kogito Apps :: Kogito Addons Quarkus Data Index PostgreSQL</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.addons.quarkus.data.index.postgresql</java.module.name>
+  </properties>
+
   <modules>
     <module>deployment</module>
     <module>runtime</module>

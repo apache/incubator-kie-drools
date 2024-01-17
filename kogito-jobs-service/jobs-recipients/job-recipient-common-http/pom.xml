@@ -32,6 +32,10 @@
     <artifactId>job-recipient-common-http</artifactId>
     <name>Kogito Apps :: Jobs Service :: Job Recipient Common Http</name>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.recipient.http</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

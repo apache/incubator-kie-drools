@@ -10,6 +10,11 @@
 	</parent>
 	<artifactId>kogito-addons-data-audit-jpa-common</artifactId>
 	<name>Kogito Apps :: Data Audit :: JPA :: Common</name>
+
+	<properties>
+		<java.module.name>org.kie.kogito.app.audit.jpa</java.module.name>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.kie.kogito</groupId>

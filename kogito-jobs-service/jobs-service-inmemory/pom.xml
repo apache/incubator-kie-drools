@@ -33,6 +33,10 @@
     <name>Kogito Apps :: Jobs Service :: In-memory</name>
     <description>Jobs Service (Timers and Async Jobs) with In-memory Persistence</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service.repository.inmemory</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

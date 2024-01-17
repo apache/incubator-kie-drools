@@ -32,6 +32,10 @@
   <artifactId>trusty-storage-api</artifactId>
   <name>Kogito Apps :: Trusty Storage API</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.trusty.storage.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

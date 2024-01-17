@@ -32,6 +32,10 @@
   <artifactId>data-index-service-oracle</artifactId>
   <name>Kogito Apps :: Data Index Service with Oracle</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.service.oracle</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -10,9 +10,12 @@
     </parent>
     <artifactId>data-audit-common</artifactId>
     <name>Kogito Apps :: Data Audit :: Common</name>
+
     <properties>
+        <java.module.name>org.kie.kogito.app.audit</java.module.name>
         <graphql-maven-plugin.version>1.18</graphql-maven-plugin.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.graphql-java</groupId>

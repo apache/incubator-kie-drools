@@ -32,6 +32,10 @@
   <artifactId>trusty-service-postgresql</artifactId>
   <name>Kogito Apps :: Trusty Service PostgreSQL</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.trusty.service.postgresql</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

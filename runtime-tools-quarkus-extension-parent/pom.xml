@@ -33,6 +33,10 @@
   <artifactId>runtime-tools-quarkus-extension-parent</artifactId>
   <packaging>pom</packaging>
 
+  <properties>
+    <java.module.name>org.kie.kogito.quarkus.runtime.tools.dev.ui</java.module.name>
+  </properties>
+
   <modules>
     <module>runtime-tools-quarkus-extension-deployment</module>
     <module>runtime-tools-quarkus-extension</module>

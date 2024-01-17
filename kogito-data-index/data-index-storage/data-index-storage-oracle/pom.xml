@@ -32,6 +32,10 @@
   <artifactId>data-index-storage-oracle</artifactId>
   <name>Kogito Apps :: Data Index Storage Oracle DB</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.oracle</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

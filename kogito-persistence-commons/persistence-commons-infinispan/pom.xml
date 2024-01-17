@@ -32,6 +32,10 @@
   <artifactId>persistence-commons-infinispan</artifactId>
   <name>Kogito Apps :: Persistence Commons Infinispan</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.infinispan</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

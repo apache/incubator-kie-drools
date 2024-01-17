@@ -34,6 +34,7 @@
   <name>Kogito Apps :: Trusty UI</name>
 
   <properties>
+    <java.module.name>org.kie.kogito.trusty.ui</java.module.name>
     <path.to.frontend.app>../ui-packages/packages/trusty</path.to.frontend.app>
   </properties>
 

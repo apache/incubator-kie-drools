@@ -31,6 +31,10 @@
   <packaging>pom</packaging>
   <name>Kogito Apps :: Jobs Service :: Job Http Recipient - Parent</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.job.recipient.http.extension</java.module.name>
+  </properties>
+
   <modules>
     <module>runtime</module>
     <module>deployment</module>

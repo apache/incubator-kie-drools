@@ -32,6 +32,10 @@
   <artifactId>data-index-storage-postgresql</artifactId>
   <name>Kogito Apps :: Data Index Storage PostgreSQL</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.postgresql</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

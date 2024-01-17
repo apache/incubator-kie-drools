@@ -32,6 +32,10 @@
     <artifactId>jobs-service-messaging-kafka</artifactId>
     <name>Kogito Apps :: Jobs Service :: Messaging Kafka</name>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service.messaging.kafka</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

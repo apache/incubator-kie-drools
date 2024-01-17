@@ -32,6 +32,10 @@
     <artifactId>jobs-service-messaging-http</artifactId>
     <name>Kogito Apps :: Jobs Service :: Messaging Http</name>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service.messaging.http</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

@@ -32,6 +32,10 @@
   <artifactId>persistence-commons-jpa</artifactId>
   <name>Kogito Apps :: Persistence Commons JPA</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.jpa</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

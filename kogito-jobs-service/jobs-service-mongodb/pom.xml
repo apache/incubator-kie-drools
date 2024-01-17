@@ -33,6 +33,10 @@
     <name>Kogito Apps :: Jobs Service :: MongoDB</name>
     <description>Jobs Service (Timers and Async Jobs) with MongoDB</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service.repository.mongodb</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.smallrye.reactive</groupId>

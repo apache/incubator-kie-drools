@@ -32,6 +32,10 @@
   <artifactId>persistence-commons-postgresql</artifactId>
   <name>Kogito Apps :: Persistence Commons PostgreSQL</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.postgresql</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

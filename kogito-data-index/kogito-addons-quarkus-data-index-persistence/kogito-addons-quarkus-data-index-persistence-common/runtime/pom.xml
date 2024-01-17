@@ -30,6 +30,11 @@
     </parent>
     <artifactId>kogito-addons-quarkus-data-index-persistence-common-runtime</artifactId>
     <name>Kogito Apps :: Kogito Addons Quarkus Data Index Persistence Common :: Runtime</name>
+
+    <properties>
+        <java.module.name>org.kie.kogito.index.quarkus.data.index.persistence</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

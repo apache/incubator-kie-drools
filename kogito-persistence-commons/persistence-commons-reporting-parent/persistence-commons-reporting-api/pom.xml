@@ -32,6 +32,10 @@
   <artifactId>persistence-commons-reporting-api</artifactId>
   <name>Kogito Apps :: Persistence Commons :: Reporting :: API</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.persistence.reporting.api</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Use the same JSON ObjectMapper that is set-up and configured centrally -->
     <dependency>

@@ -32,6 +32,10 @@
   <name>Kogito Apps :: Explainability Service Messaging</name>
   <artifactId>explainability-service-messaging</artifactId>
 
+  <properties>
+    <java.module.name>org.kie.kogito.explainability.messaging</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

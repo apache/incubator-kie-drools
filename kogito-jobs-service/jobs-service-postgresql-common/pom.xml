@@ -33,6 +33,10 @@
     <name>Kogito Apps :: Jobs Service :: PostgreSQL</name>
     <description>Jobs Service (Timers and Async Jobs) PostgreSQL Common</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service.repository.postgresql</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.smallrye.reactive</groupId>

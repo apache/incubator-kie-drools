@@ -32,6 +32,10 @@
   <artifactId>trusty-service-redis</artifactId>
   <name>Kogito Apps :: Trusty Service Redis</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.trusty.service.redis</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>

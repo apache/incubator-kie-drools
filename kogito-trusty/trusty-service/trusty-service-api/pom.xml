@@ -32,6 +32,10 @@
   <artifactId>trusty-service-api</artifactId>
   <name>Kogito Apps :: Trusty Service :: API</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.trusty.service</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

@@ -33,6 +33,10 @@
     <name>Kogito Apps :: Jobs Service :: Internal :: API</name>
     <description>Jobs Service Internal API</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

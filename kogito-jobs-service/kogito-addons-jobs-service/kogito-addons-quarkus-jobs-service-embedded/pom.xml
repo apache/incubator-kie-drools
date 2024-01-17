@@ -30,6 +30,11 @@
   <artifactId>kogito-addons-quarkus-jobs-service-embedded-parent</artifactId>
   <packaging>pom</packaging>
   <name>Jobs Service Embedded Quarkus Addon - Parent</name>
+
+  <properties>
+    <java.module.name>org.kie.kogito.addons.quarkus.job.service.embedded</java.module.name>
+  </properties>
+
   <modules>
     <module>deployment</module>
     <module>runtime</module>

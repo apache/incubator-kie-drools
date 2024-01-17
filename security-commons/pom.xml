@@ -33,6 +33,10 @@
   <name>Kogito Apps :: Security Commons</name>
   <artifactId>security-commons</artifactId>
 
+  <properties>
+    <java.module.name>org.kie.kogito.security</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

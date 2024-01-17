@@ -33,6 +33,10 @@
   <artifactId>kogito-quarkus-serverless-workflow-devui-parent</artifactId>
   <packaging>pom</packaging>
 
+  <properties>
+    <java.module.name>org.kie.kogito.quarkus.swf.dev.ui</java.module.name>
+  </properties>
+
   <modules>
     <module>kogito-quarkus-serverless-workflow-devui-deployment</module>
     <module>kogito-quarkus-serverless-workflow-devui</module>

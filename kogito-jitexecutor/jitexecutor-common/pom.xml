@@ -30,9 +30,12 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.kie.kogito</groupId>
   <artifactId>jitexecutor-common</artifactId>
   <name>Kogito Apps :: JIT Executor :: Common</name>
+
+  <properties>
+    <java.module.name>org.kie.kogito.jitexecutor.common</java.module.name>
+  </properties>
 
   <dependencies>
     <dependency>

@@ -33,6 +33,10 @@
     <name>Kogito Apps :: Jobs Service :: Infinispan</name>
     <description>Jobs Service (Timers and Async Jobs) with Infinispan</description>
 
+    <properties>
+        <java.module.name>org.kie.kogito.job.service.repository.infinispan</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

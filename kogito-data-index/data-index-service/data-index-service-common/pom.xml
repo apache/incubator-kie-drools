@@ -32,6 +32,10 @@
   <artifactId>data-index-service-common</artifactId>
   <name>Kogito Apps :: Data Index Service Common</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.service</java.module.name>
+  </properties>
+
   <dependencies>
 	<dependency>
       <groupId>org.kie.kogito</groupId>

@@ -34,6 +34,7 @@
   <name>Kogito Apps :: Task Console</name>
 
   <properties>
+    <java.module.name>org.kie.kogito.task.console</java.module.name>
     <path.to.frontend.app>../ui-packages/packages/task-console-webapp</path.to.frontend.app>
   </properties>
 

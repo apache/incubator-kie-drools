@@ -33,6 +33,10 @@
   <artifactId>data-index-storage-protobuf</artifactId>
   <name>Kogito Apps :: Data Index Storage Protobuf</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.index.protobuf</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
