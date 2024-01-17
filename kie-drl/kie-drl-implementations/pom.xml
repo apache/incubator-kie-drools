@@ -27,7 +27,7 @@
     <parent>
         <artifactId>kie-drl</artifactId>
         <groupId>org.kie</groupId>
-        <version>8.45.0-SNAPSHOT</version>
+        <version>999-SNAPSHOT</version>
     </parent>
 
     <name>KIE :: DRL :: Implementations</name>
@@ -38,21 +38,7 @@
 
     <modules>
         <module>kie-drl-map-input</module>
+        <module>kie-drl-kiesession-local</module>
     </modules>
 
-    <profiles>
-        <profile>
-        <id>default</id>
-        <activation>
-            <property>
-            <name>!productized</name>
-            </property>
-        </activation>
-        <modules>
-            <module>kie-drl-kiesession-local</module>
-        </modules>
-        </profile>
-    </profiles>
-
-    
 </project>

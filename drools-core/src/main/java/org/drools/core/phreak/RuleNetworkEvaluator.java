@@ -761,7 +761,7 @@ public class RuleNetworkEvaluator {
     }
 
     public static void findLeftTupleBlocker(BetaNode betaNode, TupleMemory rtm,
-                                            ContextEntry[] contextEntry, BetaConstraints constraints,
+                                            Object contextEntry, BetaConstraints constraints,
                                             LeftTuple leftTuple, boolean useLeftMemory) {
         // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
         FastIterator it = betaNode.getRightIterator(rtm);

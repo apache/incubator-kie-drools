@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-build-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,6 +42,8 @@
     <module>kie-drl-compilation-common</module>
     <module>kie-drl-implementations</module>
     <module>kie-drl-runtime-common</module>
+    <module>kie-drl-tests</module>
+    <module>kie-drl-tests-without-index-file</module>
   </modules>
 
   <dependencyManagement>
@@ -122,21 +124,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kie-drl-tests</module>
-        <module>kie-drl-tests-without-index-file</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>
 

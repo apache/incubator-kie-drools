@@ -173,7 +173,7 @@ public class KiePMMLClusteringModelFactory {
         boolean isCenterField =
                 clusteringField.getCenterField() == null || clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
         KiePMMLCompareFunction kiePMMLCompareFunction = clusteringField.getCompareFunction() != null ? compareFunctionFrom(clusteringField.getCompareFunction()) : null;
-        return new KiePMMLClusteringField(clusteringField.getField().getValue(), fieldWeight, isCenterField,
+        return new KiePMMLClusteringField(clusteringField.getField(), fieldWeight, isCenterField,
                                           kiePMMLCompareFunction, null);
     }
 
@@ -253,7 +253,7 @@ public class KiePMMLClusteringModelFactory {
                 clusteringField.getCenterField() == null || clusteringField.getCenterField() == ClusteringField.CenterField.TRUE;
 
         NodeList<Expression> arguments = new NodeList<>();
-        arguments.add(literalExprFrom(clusteringField.getField().getValue()));
+        arguments.add(literalExprFrom(clusteringField.getField()));
         arguments.add(new DoubleLiteralExpr(fieldWeight));
         arguments.add(new BooleanLiteralExpr(isCenterField));
         arguments.add(clusteringField.getCompareFunction() == null ? new NullLiteralExpr() :

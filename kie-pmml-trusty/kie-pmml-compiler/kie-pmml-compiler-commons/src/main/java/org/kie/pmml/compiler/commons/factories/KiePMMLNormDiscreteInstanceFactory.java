@@ -38,7 +38,7 @@ public class KiePMMLNormDiscreteInstanceFactory {
 
     static KiePMMLNormDiscrete getKiePMMLNormDiscrete(final NormDiscrete normDiscrete) {
         List<KiePMMLExtension> extensions = getKiePMMLExtensions(normDiscrete.getExtensions());
-        return new KiePMMLNormDiscrete(normDiscrete.getField().getValue(),
+        return new KiePMMLNormDiscrete(normDiscrete.getField(),
                                        extensions,
                                        normDiscrete.getValue().toString(),
                                        normDiscrete.getMapMissingTo());

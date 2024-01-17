@@ -87,8 +87,8 @@ public class FactTemplateObjectType
      *         object type, else <code>false</code>.
      */
     public boolean matches(final Object object) {
-        if ( object instanceof Fact ) {
-            return this.factTemplate.equals( ((Fact) object).getFactTemplate() );
+        if ( object instanceof Fact f ) {
+            return this.factTemplate.equals( f.getFactTemplate() );
         } else {
             return false;
         }

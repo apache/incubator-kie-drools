@@ -19,8 +19,8 @@
 package org.drools.persistence.jta;
 
 import java.util.HashMap;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 import com.arjuna.ats.jta.TransactionManager;
 import org.drools.core.base.MapGlobalResolver;

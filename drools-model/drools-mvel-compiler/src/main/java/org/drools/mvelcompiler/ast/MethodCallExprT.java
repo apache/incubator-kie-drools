@@ -63,7 +63,7 @@ public class MethodCallExprT implements TypedExpression {
 
         List<Expression> methodArguments;
         // MVEL forces a to string on each String value in map
-        if(PUT_CALL.equals(name) && arguments.size() == 2) {
+        if (PUT_CALL.equals(name) && arguments.size() == 2) {
             methodArguments = coercedMapArguments();
         } else {
             methodArguments = toJavaExpressionArgument();

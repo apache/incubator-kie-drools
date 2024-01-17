@@ -53,7 +53,7 @@ public class KiePMMLDescrTypesFactory {
 
     /**
      * Create type out of original <code>DataField</code>;
-     * <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      * @param type
      */
     protected void declareType(final KiePMMLDroolsType type) {

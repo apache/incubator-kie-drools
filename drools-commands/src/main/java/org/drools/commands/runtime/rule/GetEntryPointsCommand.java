@@ -20,7 +20,7 @@ package org.drools.commands.runtime.rule;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.drools.commands.EntryPointCreator;
 import org.kie.api.command.ExecutableCommand;

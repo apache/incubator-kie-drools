@@ -85,9 +85,9 @@ public class KiePMMLSimplePredicateFactory {
                 .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, SIMPLE_PREDICATE, simplePredicateBody)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
-        builder.setArgument(0, new StringLiteralExpr(simplePredicate.getField().getValue()));
+        builder.setArgument(0, new StringLiteralExpr(simplePredicate.getField()));
         builder.setArgument(2, operatorExpr);
-        DataType dataType = getDataType(fields, simplePredicate.getField().getValue());
+        DataType dataType = getDataType(fields,simplePredicate.getField());
         Object actualValue = DATA_TYPE.byName(dataType.value()).getActualValue(simplePredicate.getValue());
         getChainedMethodCallExprFrom("withValue", initializer).setArgument(0, getExpressionForObject(actualValue));
         simplePredicateBody.getStatements().forEach(toReturn::addStatement);

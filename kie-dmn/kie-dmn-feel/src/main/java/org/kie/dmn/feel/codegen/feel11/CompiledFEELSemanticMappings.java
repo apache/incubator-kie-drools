@@ -18,18 +18,9 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.math.MathContext;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
-
-import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -38,6 +29,12 @@ import org.kie.dmn.feel.runtime.functions.ListContainsFunction;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
+
+import java.time.Period;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The purpose of this class is to offer import .* methods to compiled FEEL classes compiling expressions.
@@ -265,12 +262,13 @@ public class CompiledFEELSemanticMappings {
 
     /**
      * FEEL spec Table 38
-     * Delegates to {@link InfixOpNode} except evaluationcontext
+     * Delegates to {@link InfixOperator} except evaluationcontext
+     *
      * @deprecated does not support short-circuit of the operator
      */
     @Deprecated
     public static Boolean and(Object left, Object right) {
-        return (Boolean) InfixOpNode.and(left, right, null);
+        return (Boolean) InfixOperator.AND.evaluate(left, right, null);
     }
 
     public static Boolean and(Boolean left, Supplier<Boolean> right) {
@@ -300,14 +298,15 @@ public class CompiledFEELSemanticMappings {
 
     /**
      * FEEL spec Table 38
-     * Delegates to {@link InfixOpNode} except evaluationcontext
+     * Delegates to {@link InfixOperator} except evaluationcontext
+     *
      * @deprecated does not support short-circuit of the operator
      */
     @Deprecated
     public static Boolean or(Object left, Object right) {
-        return (Boolean) InfixOpNode.or(left, right, null);
+        return (Boolean) InfixOperator.OR.evaluate(left, right, null);
     }
-    
+
     public static Boolean or(Boolean left, Supplier<Boolean> right) {
         if (left != null) {
             if (!left.booleanValue()) {
@@ -335,38 +334,38 @@ public class CompiledFEELSemanticMappings {
 
     /**
      * FEEL spec Table 45
-     * Delegates to {@link InfixOpNode} except evaluationcontext
+     * Delegates to {@link InfixOperator} except evaluationcontext
      */
     public static Object add(final Object left, final Object right, final EvaluationContext context) {
-        return InfixOpNode.add(left, right, context);
+        return InfixOperator.ADD.evaluate(left, right, context);
     }
 
     /**
      * FEEL spec Table 45
-     * Delegates to {@link InfixOpNode} except evaluationcontext
+     * Delegates to {@link InfixOperator} except evaluationcontext
      */
     public static Object sub(final Object left, final Object right, final EvaluationContext context) {
-        return InfixOpNode.sub(left, right, context);
+        return InfixOperator.SUB.evaluate(left, right, context);
     }
 
     /**
      * FEEL spec Table 45
-     * Delegates to {@link InfixOpNode} except evaluationcontext
+     * Delegates to {@link InfixOperator} except evaluationcontext
      */
     public static Object mult(final Object left, final Object right, final EvaluationContext context) {
-        return InfixOpNode.mult(left, right, context);
+        return InfixOperator.MULT.evaluate(left, right, context);
     }
 
     /**
      * FEEL spec Table 45
-     * Delegates to {@link InfixOpNode} except evaluationcontext
+     * Delegates to {@link InfixOperator} except evaluationcontext
      */
     public static Object div(final Object left, final Object right, final EvaluationContext context) {
-        return InfixOpNode.div(left, right, context);
+        return InfixOperator.DIV.evaluate(left, right, context);
     }
 
     public static Object pow(final Object left, final Object right, final EvaluationContext context) {
-        return InfixOpNode.math(left, right, context, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
+        return InfixOperator.POW.evaluate(left, right, context);
     }
 
     /**
@@ -375,7 +374,7 @@ public class CompiledFEELSemanticMappings {
      */
     public static Boolean lte(Object left, Object right) {
         return or(lt(left, right),
-                  eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+                eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
@@ -392,7 +391,7 @@ public class CompiledFEELSemanticMappings {
      */
     public static Boolean gte(Object left, Object right) {
         return or(gt(left, right),
-                  eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+                eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**

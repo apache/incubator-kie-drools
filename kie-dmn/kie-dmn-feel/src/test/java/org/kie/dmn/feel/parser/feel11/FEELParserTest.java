@@ -26,35 +26,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.ASTNode;
-import org.kie.dmn.feel.lang.ast.AtLiteralNode;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.BetweenNode;
-import org.kie.dmn.feel.lang.ast.BooleanNode;
-import org.kie.dmn.feel.lang.ast.ContextEntryNode;
-import org.kie.dmn.feel.lang.ast.ContextNode;
-import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
-import org.kie.dmn.feel.lang.ast.ForExpressionNode;
-import org.kie.dmn.feel.lang.ast.FunctionDefNode;
-import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
-import org.kie.dmn.feel.lang.ast.IfExpressionNode;
-import org.kie.dmn.feel.lang.ast.InNode;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.ast.InstanceOfNode;
-import org.kie.dmn.feel.lang.ast.IterationContextNode;
-import org.kie.dmn.feel.lang.ast.ListNode;
-import org.kie.dmn.feel.lang.ast.NameDefNode;
-import org.kie.dmn.feel.lang.ast.NameRefNode;
-import org.kie.dmn.feel.lang.ast.NamedParameterNode;
-import org.kie.dmn.feel.lang.ast.NullNode;
-import org.kie.dmn.feel.lang.ast.NumberNode;
-import org.kie.dmn.feel.lang.ast.PathExpressionNode;
-import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
-import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
-import org.kie.dmn.feel.lang.ast.RangeNode;
-import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
-import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.lang.ast.TypeNode;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
@@ -294,7 +266,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(NumberNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo("10");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(NameRefNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("x");
@@ -317,12 +289,12 @@ public class FEELParserTest {
         assertThat( div.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( div.getLeft().getText()).isEqualTo("y");
 
-        assertThat( div.getOperator()).isEqualTo(InfixOpNode.InfixOperator.DIV);
+        assertThat( div.getOperator()).isEqualTo(InfixOperator.DIV);
 
         assertThat( div.getRight()).isInstanceOf(NumberNode.class);
         assertThat( div.getRight().getText()).isEqualTo("5");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(NameRefNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("x");
@@ -341,7 +313,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo("y");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(InfixOpNode.class);
         assertThat( mult.getRight().getText()).isEqualTo( "5 ** 3");
@@ -350,7 +322,7 @@ public class FEELParserTest {
         assertThat( exp.getLeft()).isInstanceOf(NumberNode.class);
         assertThat( exp.getLeft().getText()).isEqualTo("5");
 
-        assertThat( exp.getOperator()).isEqualTo(InfixOpNode.InfixOperator.POW);
+        assertThat( exp.getOperator()).isEqualTo(InfixOperator.POW);
 
         assertThat( exp.getRight()).isInstanceOf(NumberNode.class);
         assertThat( exp.getRight().getText()).isEqualTo("3");
@@ -369,7 +341,7 @@ public class FEELParserTest {
         assertThat( exp.getLeft()).isInstanceOf(InfixOpNode.class);
         assertThat( exp.getLeft().getText()).isEqualTo( "y * 5");
 
-        assertThat( exp.getOperator()).isEqualTo(InfixOpNode.InfixOperator.POW);
+        assertThat( exp.getOperator()).isEqualTo(InfixOperator.POW);
 
         assertThat( exp.getRight()).isInstanceOf(NumberNode.class);
         assertThat( exp.getRight().getText()).isEqualTo("3");
@@ -378,7 +350,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo("y");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(NumberNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("5");
@@ -397,7 +369,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(InfixOpNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo( "y ** 5");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(NumberNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("3");
@@ -406,7 +378,7 @@ public class FEELParserTest {
         assertThat( exp.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( exp.getLeft().getText()).isEqualTo("y");
 
-        assertThat( exp.getOperator()).isEqualTo(InfixOpNode.InfixOperator.POW);
+        assertThat( exp.getOperator()).isEqualTo(InfixOperator.POW);
 
         assertThat( exp.getRight()).isInstanceOf(NumberNode.class);
         assertThat( exp.getRight().getText()).isEqualTo("5");
@@ -425,7 +397,7 @@ public class FEELParserTest {
         assertThat( exp.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( exp.getLeft().getText()).isEqualTo("y");
 
-        assertThat( exp.getOperator()).isEqualTo(InfixOpNode.InfixOperator.POW);
+        assertThat( exp.getOperator()).isEqualTo(InfixOperator.POW);
 
         assertThat( exp.getRight()).isInstanceOf(InfixOpNode.class);
         assertThat( exp.getRight().getText()).isEqualTo( "5 * 3");
@@ -434,7 +406,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(NumberNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo("5");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(NumberNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("3");
@@ -453,7 +425,7 @@ public class FEELParserTest {
         assertThat( add.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( add.getLeft().getText()).isEqualTo("y");
 
-        assertThat( add.getOperator()).isEqualTo(InfixOpNode.InfixOperator.ADD);
+        assertThat( add.getOperator()).isEqualTo(InfixOperator.ADD);
 
         assertThat( add.getRight()).isInstanceOf(InfixOpNode.class);
         assertThat( add.getRight().getText()).isEqualTo( "5 * 3");
@@ -462,7 +434,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(NumberNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo("5");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.MULT);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.MULT);
 
         assertThat( mult.getRight()).isInstanceOf(NumberNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("3");
@@ -481,7 +453,7 @@ public class FEELParserTest {
         assertThat( sub.getLeft()).isInstanceOf(InfixOpNode.class);
         assertThat( sub.getLeft().getText()).isEqualTo( "y - 5");
 
-        assertThat( sub.getOperator()).isEqualTo(InfixOpNode.InfixOperator.POW);
+        assertThat( sub.getOperator()).isEqualTo(InfixOperator.POW);
 
         assertThat( sub.getRight()).isInstanceOf(NumberNode.class);
         assertThat( sub.getRight().getText()).isEqualTo("3");
@@ -490,7 +462,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft()).isInstanceOf(NameRefNode.class);
         assertThat( mult.getLeft().getText()).isEqualTo("y");
 
-        assertThat( mult.getOperator()).isEqualTo(InfixOpNode.InfixOperator.SUB);
+        assertThat( mult.getOperator()).isEqualTo(InfixOperator.SUB);
 
         assertThat( mult.getRight()).isInstanceOf(NumberNode.class);
         assertThat( mult.getRight().getText()).isEqualTo("5");
@@ -655,7 +627,7 @@ public class FEELParserTest {
         assertThat( or.getLeft()).isInstanceOf(InfixOpNode.class);
         assertThat( or.getLeft().getText()).isEqualTo( "foo < 10 and bar = \"x\"");
 
-        assertThat( or.getOperator()).isEqualTo(InfixOpNode.InfixOperator.OR);
+        assertThat( or.getOperator()).isEqualTo(InfixOperator.OR);
 
         assertThat( or.getRight()).isInstanceOf(NameRefNode.class);
         assertThat( or.getRight().getText()).isEqualTo("baz");
@@ -664,7 +636,7 @@ public class FEELParserTest {
         assertThat( and.getLeft()).isInstanceOf(InfixOpNode.class);
         assertThat( and.getLeft().getText()).isEqualTo( "foo < 10");
 
-        assertThat( and.getOperator()).isEqualTo(InfixOpNode.InfixOperator.AND);
+        assertThat( and.getOperator()).isEqualTo(InfixOperator.AND);
 
         assertThat( and.getRight()).isInstanceOf(InfixOpNode.class);
         assertThat( and.getRight().getText()).isEqualTo( "bar = \"x\"");
@@ -1052,7 +1024,7 @@ public class FEELParserTest {
         assertThat( andExpr.getResultType()).isEqualTo(BuiltInType.BOOLEAN);
 
         InfixOpNode and = (InfixOpNode) andExpr;
-        assertThat( and.getOperator()).isEqualTo(InfixOpNode.InfixOperator.AND);
+        assertThat( and.getOperator()).isEqualTo(InfixOperator.AND);
         assertThat( and.getLeft()).isInstanceOf(InstanceOfNode.class);
         assertThat( and.getRight()).isInstanceOf(InstanceOfNode.class);
         assertThat( and.getLeft().getText()).isEqualTo( "\"foo\" instance of string");

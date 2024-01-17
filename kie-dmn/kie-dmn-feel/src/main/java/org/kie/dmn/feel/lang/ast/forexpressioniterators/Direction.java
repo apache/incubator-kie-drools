@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,26 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.base.rule.constraint;
+package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.base.rule.ContextEntry;
-import org.kie.api.runtime.rule.FactHandle;
-
-public interface BetaNodeFieldConstraint
-    extends
-    Constraint {
-
-    boolean isAllowedCachedLeft(ContextEntry context,
-                                FactHandle handle);
-
-    boolean isAllowedCachedRight(BaseTuple tuple,
-                                 ContextEntry context);
-
-    ContextEntry createContextEntry();
-
-    /**
-     * Clone this constraints only if it is already used by a different node, otherwise returns this
-     */
-    BetaNodeFieldConstraint cloneIfInUse();
+enum Direction {
+    ASCENDANT,
+    DESCENDANT;
 }

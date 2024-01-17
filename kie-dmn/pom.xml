@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>drools-build-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -44,6 +44,16 @@
     <module>kie-dmn-backend</module>
     <module>kie-dmn-validation-bootstrap</module>
     <module>kie-dmn-validation</module>
+    <module>kie-dmn-openapi</module>
+    <module>kie-dmn-tck</module>
+    <module>kie-dmn-legacy-tests</module>
+    <module>kie-dmn-trisotech</module>
+    <module>kie-dmn-signavio</module>
+    <module>kie-dmn-pmml-tests-parent</module>
+    <module>kie-dmn-xls2dmn-cli</module>
+    <module>kie-dmn-core-jsr223-jq</module>
+    <module>kie-dmn-core-jsr223</module>
+    <module>kie-dmn-ruleset2dmn-parent</module>
   </modules>
 
   <dependencyManagement>
@@ -57,28 +67,5 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kie-dmn-openapi</module>
-        <module>kie-dmn-tck</module>
-        <module>kie-dmn-legacy-tests</module>
-        <module>kie-dmn-trisotech</module>
-        <module>kie-dmn-signavio</module>
-        <module>kie-dmn-pmml-tests-parent</module>
-        <module>kie-dmn-xls2dmn-cli</module>
-        <module>kie-dmn-core-jsr223-jq</module>
-        <module>kie-dmn-core-jsr223</module>
-        <module>kie-dmn-ruleset2dmn-parent</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

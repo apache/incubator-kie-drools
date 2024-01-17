@@ -18,46 +18,46 @@
  */
 package org.drools.core.reteoo.builder;
 
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
+import org.drools.base.rule.constraint.BetaConstraint;
 
 public class BetaNodeConstraintFactoryImpl implements BetaNodeConstraintFactory {
 
     @Override
-    public SingleBetaConstraints createSingleBetaConstraints(final BetaNodeFieldConstraint constraint,
+    public SingleBetaConstraints createSingleBetaConstraints(final BetaConstraint constraint,
                                                              final RuleBaseConfiguration conf,
                                                              final boolean disableIndex) {
         return new SingleBetaConstraints(constraint, conf, disableIndex);
     }
 
     @Override
-    public DoubleBetaConstraints createDoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public DoubleBetaConstraints createDoubleBetaConstraints(final BetaConstraint[] constraints,
                                                              final RuleBaseConfiguration conf,
                                                              final boolean disableIndexing) {
         return new DoubleBetaConstraints(constraints, conf, disableIndexing);
     }
 
     @Override
-    public TripleBetaConstraints createTripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public TripleBetaConstraints createTripleBetaConstraints(final BetaConstraint[] constraints,
                                                              final RuleBaseConfiguration conf,
                                                              final boolean disableIndexing) {
         return new TripleBetaConstraints(constraints, conf, disableIndexing);
     }
 
     @Override
-    public QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public QuadroupleBetaConstraints createQuadroupleBetaConstraints(final BetaConstraint[] constraints,
                                                                      final RuleBaseConfiguration conf,
                                                                      final boolean disableIndexing) {
         return new QuadroupleBetaConstraints(constraints, conf, disableIndexing);
     }
 
     @Override
-    public DefaultBetaConstraints createDefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+    public DefaultBetaConstraints createDefaultBetaConstraints(final BetaConstraint[] constraints,
                                                                final RuleBaseConfiguration conf,
                                                                final boolean disableIndexing) {
         return new DefaultBetaConstraints(constraints, conf, disableIndexing);

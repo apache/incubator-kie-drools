@@ -56,7 +56,7 @@ import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.base.ObjectType;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntime;
@@ -453,9 +453,9 @@ public class ReteDiagram {
         } else if (node instanceof RightInputAdapterNode ) {
             return "[shape=house orientation=90]";
         } else if (node instanceof JoinNode ) {
-            BetaNode n = (BetaNode) node;
-            BetaNodeFieldConstraint[] constraints = n.getConstraints();
-            String label = "\u22C8";
+            BetaNode         n           = (BetaNode) node;
+            BetaConstraint[] constraints = n.getConstraints();
+            String           label       = "\u22C8";
             if (constraints.length > 0) {
                 label = strObjectType(n.getObjectType(), false);
                 label = label + "( "+ Arrays.stream(constraints).map(Object::toString).collect(joining(", ")) + " )";

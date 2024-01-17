@@ -16,17 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.utils;
+package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import org.junit.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.util.EvalHelper;
 
-public class KieMetaTest {
+public class LtExecutor implements InfixExecutor {
 
-    @Test
-    public void isProductized() {
-        // Check if the class static constructor behaves correctly.
-        // Both return types are valid (otherwise we break productized tests)
-        KieMeta.isProductized();
+    private static final LtExecutor INSTANCE = new LtExecutor();
+
+    private LtExecutor() {
+    }
+
+    public static LtExecutor instance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public Object evaluate(Object left, Object right, EvaluationContext ctx) {
+        return EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) < 0);
+    }
+
+    @Override
+    public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
 }

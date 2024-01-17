@@ -57,7 +57,7 @@ public class KiePMMLInlineTableFactoryTest {
         DerivedField mapValued = pmmlModel.getTransformationDictionary()
                 .getDerivedFields()
                 .stream()
-                .filter(derivedField -> MAPVALUED.equals(derivedField.getName().getValue()))
+                .filter(derivedField -> MAPVALUED.equals(derivedField.getName()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Missing derived field " + MAPVALUED));
         INLINETABLE = ((MapValues) mapValued.getExpression()).getInlineTable();

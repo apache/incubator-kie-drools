@@ -22,7 +22,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class NameRefNode
@@ -43,12 +42,11 @@ public class NameRefNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        String varName = EvalHelper.normalizeVariableName( getText() );
-        if( ! ctx.isDefined( varName ) ) {
+        Object result = ctx.getValue( getText() );
+        if ( result == null && !ctx.isDefined( getText() ) ) {
             ctx.notifyEvt( astEvent( FEELEvent.Severity.ERROR, Msg.createMessage( Msg.UNKNOWN_VARIABLE_REFERENCE, getText()), null) );
-            return null;
         }
-        return ctx.getValue( varName );
+        return result;
     }
 
     @Override

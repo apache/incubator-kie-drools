@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Class to represent a <b>original type/generated type</b> tupla
+ * Class to represent a <b>original type/generated type</b> tuple
  */
 public class KiePMMLOriginalTypeGeneratedType implements Serializable {
 

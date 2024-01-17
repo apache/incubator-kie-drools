@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-drlonyaml-parent</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>drools-drlonyaml-cli-tests</artifactId>
   <name>Drools :: DRL on YAML :: CLI tests</name>
@@ -82,7 +82,7 @@
                         <argument>${project.basedir}/src/test/resources/given/test1.drl.txt</argument>
                         <argument>--output=${project.build.outputDirectory}/converted.test1.yml</argument>
                     </arguments>
-                    <classpathFilenameExclusions>logback-classic-1.2.9.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
+                    <classpathFilenameExclusions>logback-classic-1.2.13.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
                 </configuration>
             </execution>
             <execution>
@@ -100,7 +100,7 @@
                         <argument>${project.basedir}/src/test/resources/given/test2.yml</argument>
                         <argument>--output=${project.build.outputDirectory}/converted.test2.drl</argument>
                     </arguments>
-                    <classpathFilenameExclusions>logback-classic-1.2.9.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
+                    <classpathFilenameExclusions>logback-classic-1.2.13.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
                 </configuration>
             </execution>
             <execution>
@@ -117,7 +117,7 @@
                         <argument>batch2yaml</argument>
                         <argument>${project.basedir}/src/test/resources/batch_drl_files</argument>
                     </arguments>
-                    <classpathFilenameExclusions>logback-classic-1.2.9.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
+                    <classpathFilenameExclusions>logback-classic-1.2.13.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
                 </configuration>
             </execution>
             <execution>
@@ -134,7 +134,7 @@
                         <argument>batch2drl</argument>
                         <argument>${project.basedir}/src/test/resources/batch_yml_files</argument>
                     </arguments>
-                    <classpathFilenameExclusions>logback-classic-1.2.9.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
+                    <classpathFilenameExclusions>logback-classic-1.2.13.jar,slf4j-jboss-logmanager-1.2.0.Final.jar</classpathFilenameExclusions>
                 </configuration>
             </execution>
         </executions>

@@ -42,7 +42,7 @@ public class KiePMMLDataDictionaryASTFactory {
 
     /**
      * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with
-     * mapping between original field' name and <b>original type/generated type</b> tupla
+     * mapping between original field' name and <b>original type/generated type</b> tuple
      * @return
      */
     public static KiePMMLDataDictionaryASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
@@ -52,7 +52,7 @@ public class KiePMMLDataDictionaryASTFactory {
     /**
      * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>Field</code>s,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original
-     * type/generated type</b> tupla
+     * type/generated type</b> tuple
      * @param fields
      */
     public List<KiePMMLDroolsType> declareTypes(final List<Field<?>> fields) {
@@ -62,12 +62,12 @@ public class KiePMMLDataDictionaryASTFactory {
     /**
      * Create a <code>KiePMMLDroolsType</code> out of original <code>DataField</code>,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original
-     * type/generated type</b> tupla
+     * type/generated type</b> tuple
      * @param field
      */
     public KiePMMLDroolsType declareType(Field field) {
-        String generatedType = getGeneratedClassName(field.getName().getValue());
-        String fieldName = field.getName().getValue();
+        String generatedType = getGeneratedClassName(field.getName());
+        String fieldName =field.getName();
         String fieldType = field.getDataType().value();
         fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));
         return new KiePMMLDroolsType(generatedType, DATA_TYPE.byName(fieldType).getMappedClass().getSimpleName());

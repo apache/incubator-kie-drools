@@ -166,7 +166,7 @@ public class KiePMMLRegressionModelFactoryTest {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.getName()).isEqualTo(regressionModel.getModelName());
         assertThat(retrieved.getMiningFunction()).isEqualTo(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()));
-        assertThat(retrieved.getTargetField()).isEqualTo(miningFields.get(0).getName().getValue());
+        assertThat(retrieved.getTargetField()).isEqualTo(miningFields.get(0).getName());
         final AbstractKiePMMLTable regressionTable = retrieved.getRegressionTable();
         assertThat(regressionTable).isNotNull();
         assertThat(regressionTable).isInstanceOf(KiePMMLClassificationTable.class);
@@ -227,7 +227,7 @@ public class KiePMMLRegressionModelFactoryTest {
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
-        assignExpressionMap.put("targetField", new StringLiteralExpr(targetMiningField.getName().getValue()));
+        assignExpressionMap.put("targetField", new StringLiteralExpr(targetMiningField.getName()));
         assignExpressionMap.put("miningFunction",
                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL",
@@ -260,17 +260,17 @@ public class KiePMMLRegressionModelFactoryTest {
         final Map<String, SerializableFunction<Double, Double>> numericFunctionMap =
                 regressionTable.getNumericFunctionMap();
         for (NumericPredictor numericPredictor : originalRegressionTable.getNumericPredictors()) {
-            assertThat(numericFunctionMap).containsKey(numericPredictor.getName().getValue());
+            assertThat(numericFunctionMap).containsKey(numericPredictor.getField());
         }
         final Map<String, SerializableFunction<String, Double>> categoricalFunctionMap =
                 regressionTable.getCategoricalFunctionMap();
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
-        	assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getName().getValue());
+		assertThat(categoricalFunctionMap).containsKey(categoricalPredictor.getField());
         }
         final Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap =
                 regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
-        	assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName().getValue());
+		assertThat(predictorTermsFunctionMap).containsKey(predictorTerm.getName());
         }
     }
 }

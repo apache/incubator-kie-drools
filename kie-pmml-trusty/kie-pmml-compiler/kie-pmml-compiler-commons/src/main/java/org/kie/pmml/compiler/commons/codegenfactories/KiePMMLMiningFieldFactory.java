@@ -88,7 +88,7 @@ public class KiePMMLMiningFieldFactory {
                                                                       MININGFIELD, toReturn)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(miningField.getName().getValue());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(miningField.getName());
         Expression fieldUsageTypeExpr;
         if (miningField.getUsageType() != null) {
             final FIELD_USAGE_TYPE fieldUsageType = FIELD_USAGE_TYPE.byName(miningField.getUsageType().value());
@@ -103,8 +103,8 @@ public class KiePMMLMiningFieldFactory {
         } else {
             opTypeExpr = new NullLiteralExpr();
         }
-        final List<Field<?>> mappedFields = getMappedFields(fields, miningField.getName().getValue());
-        final DataType dataType = getDataType(mappedFields, miningField.getName().getValue());
+        final List<Field<?>> mappedFields = getMappedFields(fields,miningField.getName());
+        final DataType dataType = getDataType(mappedFields,miningField.getName());
         final DATA_TYPE data_TYPE = DATA_TYPE.byName(dataType.value());
         Expression dataTypeExpr = new NameExpr(DATA_TYPE.class.getName() + "." + data_TYPE.name());
         Expression missingValueTreatmentMethodExpr;
@@ -172,7 +172,7 @@ public class KiePMMLMiningFieldFactory {
     private static List<Field<?>> getMappedFields(final List<Field<?>> fields,
                                                   final String fieldName) {
         return fields.stream()
-                .filter(fld -> Objects.equals(fieldName, fld.getName().getValue()))
+                .filter(fld -> Objects.equals(fieldName,fld.getName()))
                 .collect(Collectors.toList());
     }
 

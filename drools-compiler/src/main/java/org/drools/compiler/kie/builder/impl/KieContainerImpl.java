@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 
+import org.drools.base.RuleBase;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.MaterializedLambda;
@@ -41,7 +42,6 @@ import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.InternalKieContainer;
-import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -735,10 +735,10 @@ public class KieContainerImpl
         Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<>();
         if ( isMBeanOptionEnabled() ) {
             for (Entry<String, KieSession> kv : kSessions.entrySet()) {
-                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalRuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
+                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((RuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
             }
             for (Entry<String, StatelessKieSession> kv : statelessKSessions.entrySet()) {
-                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalRuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
+                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((RuleBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
             }
         }
 
@@ -753,7 +753,7 @@ public class KieContainerImpl
                 DroolsManagementAgent.getInstance().unregisterKnowledgeSessionBean(c);
             }
             for (KieBase kb : kBases.values()) {
-                DroolsManagementAgent.getInstance().unregisterKnowledgeBase((InternalRuleBase) kb);
+                DroolsManagementAgent.getInstance().unregisterKnowledgeBase((RuleBase) kb);
             }
             DroolsManagementAgent.getInstance().unregisterMBeansFromOwner(this);
         }

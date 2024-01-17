@@ -26,7 +26,6 @@ import java.util.List;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ public class KiePMMLParameterFieldFactoryTest {
     @Test
     void getParameterFieldVariableDeclaration() throws IOException {
         String variableName = "variableName";
-        ParameterField parameterField = new ParameterField(FieldName.create(variableName));
+        ParameterField parameterField = new ParameterField(variableName);
         parameterField.setDataType(DataType.DOUBLE);
         parameterField.setOpType(OpType.CONTINUOUS);
         parameterField.setDisplayName("displayName");

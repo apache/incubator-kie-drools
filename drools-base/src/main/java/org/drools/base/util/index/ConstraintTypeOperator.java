@@ -142,6 +142,6 @@ public enum ConstraintTypeOperator {
     }
 
     public static ConstraintTypeOperator getType(Constraint constraint) {
-        return constraint instanceof IndexableConstraint ? ((IndexableConstraint) constraint).getConstraintType() : UNKNOWN;
+        return constraint instanceof IndexableConstraint ic ? ic.getConstraintType() : UNKNOWN;
     }
 }

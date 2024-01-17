@@ -19,9 +19,9 @@
 package org.drools.kiesession.rulebase;
 
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.conf.CompositeBaseConfiguration;
+import org.drools.base.RuleBase;
 
 public class KnowledgeBaseFactory {
 
@@ -37,7 +37,7 @@ public class KnowledgeBaseFactory {
         return newKnowledgeBase(new KnowledgeBaseImpl(kbaseId, (CompositeBaseConfiguration) conf));
     }
 
-    public static InternalKnowledgeBase newKnowledgeBase(InternalRuleBase delegate) {
+    public static InternalKnowledgeBase newKnowledgeBase(RuleBase delegate) {
         return new SessionsAwareKnowledgeBase(delegate);
     }
 }

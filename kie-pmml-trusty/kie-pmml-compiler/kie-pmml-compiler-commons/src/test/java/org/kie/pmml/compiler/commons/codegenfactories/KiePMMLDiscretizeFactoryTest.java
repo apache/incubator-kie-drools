@@ -28,7 +28,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Discretize;
 import org.dmg.pmml.DiscretizeBin;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Interval;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -66,7 +65,7 @@ public class KiePMMLDiscretizeFactoryTest {
     void getDiscretizeVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Discretize discretize = new Discretize();
-        discretize.setField(FieldName.create(NAME));
+        discretize.setField(NAME);
         discretize.setDataType(dataType);
         discretize.setMapMissingTo(MAP_MISSING_TO);
         discretize.setDefaultValue(DEFAULTVALUE);

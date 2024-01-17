@@ -16,29 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.utils;
+package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.util.EvalHelper;
 
-public class KieMeta {
+public class EqExecutor implements InfixExecutor {
 
-    private final static boolean productized;
+    private static final EqExecutor INSTANCE = new EqExecutor();
 
-    static {
-        Properties properties = new Properties();
-        try {
-            InputStream in = KieMeta.class.getResourceAsStream("kieMeta.properties");
-            properties.load(in);
-        } catch (IOException e) {
-            throw new IllegalStateException("The classpath file kieMeta.properties is missing.");
-        }
-        productized = Boolean.valueOf(properties.getProperty("productized"));
+    private EqExecutor() {
     }
 
-    public static boolean isProductized() {
-        return productized;
+    public static EqExecutor instance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public Object evaluate(Object left, Object right, EvaluationContext ctx) {
+        return EvalHelper.isEqual(left, right, ctx);
+    }
+
+    @Override
+    public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
+        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
     }
 
 }

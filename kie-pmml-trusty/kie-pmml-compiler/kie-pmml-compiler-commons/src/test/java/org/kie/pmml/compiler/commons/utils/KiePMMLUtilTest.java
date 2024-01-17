@@ -32,12 +32,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
@@ -142,7 +141,7 @@ public class KiePMMLUtilTest {
         assertThat(optionalDataField).isPresent();
         DataField retrieved = optionalDataField.get();
         String expected = String.format(TARGETFIELD_TEMPLATE, "golfing");
-        assertThat(retrieved.getName().getValue()).isEqualTo(expected);
+        assertThat(retrieved.getName()).isEqualTo(expected);
     }
 
     @Test
@@ -190,23 +189,23 @@ public class KiePMMLUtilTest {
     @Test
     void getTargetMiningField() {
         final DataField dataField = new DataField();
-        dataField.setName(FieldName.create("FIELD_NAME"));
+        dataField.setName("FIELD_NAME");
         final MiningField retrieved = KiePMMLUtil.getTargetMiningField(dataField);
-        assertThat(retrieved.getName().getValue()).isEqualTo(dataField.getName().getValue());
+        assertThat(retrieved.getName()).isEqualTo(dataField.getName());
         assertThat(retrieved.getUsageType()).isEqualTo(MiningField.UsageType.TARGET);
     }
 
     @Test
     void correctTargetFields() {
-        final MiningField miningField = new MiningField(FieldName.create("FIELD_NAME"));
+        final MiningField miningField = new MiningField("FIELD_NAME");
         final Targets targets = new Targets();
         final Target namedTarget = new Target();
         String targetName = "TARGET_NAME";
-        namedTarget.setField(FieldName.create(targetName));
+        namedTarget.setField(targetName);
         final Target unnamedTarget = new Target();
         targets.addTargets(namedTarget, unnamedTarget);
         KiePMMLUtil.correctTargetFields(miningField, targets);
-        assertThat(namedTarget.getField().getValue()).isEqualTo(targetName);
+        assertThat(namedTarget.getField()).isEqualTo(targetName);
         assertThat(unnamedTarget.getField()).isEqualTo(miningField.getName());
     }
 
@@ -292,7 +291,7 @@ public class KiePMMLUtilTest {
         List<DataField> dataFields = fieldNames.stream()
                 .map(fieldName -> {
                     DataField toReturn = new DataField();
-                    toReturn.setName(FieldName.create(fieldName));
+                    toReturn.setName(fieldName);
                     DataType dataType = DataType.values()[random.nextInt(DataType.values().length)];
                     toReturn.setDataType(dataType);
                     return toReturn;
@@ -302,40 +301,40 @@ public class KiePMMLUtilTest {
                 .mapToObj(dataFields::get)
                 .map(dataField -> {
                     MiningField toReturn = new MiningField();
-                    toReturn.setName(FieldName.create(dataField.getName().getValue()));
+                    toReturn.setName(dataField.getName());
                     toReturn.setUsageType(MiningField.UsageType.ACTIVE);
                     return toReturn;
                 })
                 .collect(Collectors.toList());
         DataField lastDataField = dataFields.get(dataFields.size() - 1);
         MiningField targetMiningField = new MiningField();
-        targetMiningField.setName(FieldName.create(lastDataField.getName().getValue()));
+        targetMiningField.setName(lastDataField.getName());
         targetMiningField.setUsageType(MiningField.UsageType.TARGET);
         miningFields.add(targetMiningField);
         // Following OutputFields should be populated based on "ResultFeature.PROBABILITY"
         List<OutputField> outputFields = IntStream.range(0, 3)
                 .mapToObj(i -> {
                     OutputField toReturn = new OutputField();
-                    toReturn.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
+                    toReturn.setName(RandomStringUtils.random(6, true, false));
                     toReturn.setResultFeature(ResultFeature.PROBABILITY);
                     return toReturn;
                 })
                 .collect(Collectors.toList());
         // Following OutputField should be populated based on "ResultFeature.PREDICTED_VALUE"
         OutputField targetOutputField = new OutputField();
-        targetOutputField.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
+        targetOutputField.setName(RandomStringUtils.random(6, true, false));
         targetOutputField.setResultFeature(ResultFeature.PREDICTED_VALUE);
         outputFields.add(targetOutputField);
         // Following OutputField should be populated based on "TargetField" property
         OutputField targetingOutputField = new OutputField();
-        targetingOutputField.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
-        targetingOutputField.setTargetField(FieldName.create(targetMiningField.getName().getValue()));
+        targetingOutputField.setName(RandomStringUtils.random(6, true, false));
+        targetingOutputField.setTargetField(targetMiningField.getName());
         outputFields.add(targetingOutputField);
         outputFields.forEach(outputField -> assertThat(outputField.getDataType()).isNull());
         IntStream.range(0, 2)
                 .forEach(i -> {
                     OutputField toAdd = new OutputField();
-                    toAdd.setName(FieldName.create(RandomStringUtils.random(6, true, false)));
+                    toAdd.setName(RandomStringUtils.random(6, true, false));
                     DataType dataType = DataType.values()[random.nextInt(DataType.values().length)];
                     toAdd.setDataType(dataType);
                     outputFields.add(toAdd);
@@ -370,7 +369,7 @@ public class KiePMMLUtilTest {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(1);
         MiningField targetField = retrieved.get(0);
-        assertThat(targetField.getName().getValue()).isEqualTo("car_location");
+        assertThat(targetField.getName()).isEqualTo("car_location");
         assertThat(targetField.getUsageType().value()).isEqualTo("target");
     }
 
@@ -383,7 +382,7 @@ public class KiePMMLUtilTest {
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).hasSize(1);
         MiningField targetField = retrieved.get(0);
-        assertThat(targetField.getName().getValue()).isEqualTo("car_location");
+        assertThat(targetField.getName()).isEqualTo("car_location");
         assertThat(targetField.getUsageType().value()).isEqualTo("target");
     }
 

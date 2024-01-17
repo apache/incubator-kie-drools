@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-quarkus-extension</artifactId>
-        <version>8.45.0-SNAPSHOT</version>
+        <version>999-SNAPSHOT</version>
     </parent>
 
     <name>Drools :: Quarkus Extension :: Runtime</name>
@@ -85,6 +85,16 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5-internal</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-xml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven</groupId>
+                    <artifactId>maven-xml-impl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -103,7 +113,7 @@
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
+                <artifactId>quarkus-extension-maven-plugin</artifactId>
                 <version>${version.io.quarkus}</version>
                 <executions>
                     <execution>
@@ -134,7 +144,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>${jandex-maven-plugin.group-id}</groupId>
+                <groupId>io.smallrye</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
             </plugin>
         </plugins>

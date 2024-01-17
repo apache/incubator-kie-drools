@@ -32,10 +32,11 @@ import org.drools.base.rule.Declaration;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
+import org.drools.base.rule.accessor.RightTupleValueExtractor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.Constraint;
-import org.drools.base.util.FieldIndex;
+import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.base.util.index.IndexUtil;
 import org.drools.core.RuleBaseConfiguration;
@@ -99,17 +100,17 @@ public class IndexUtilTest {
         assertThat(betaMemory.getLeftTupleMemory()).isInstanceOf(TupleIndexHashTable.class);
         Index leftIndex = ((TupleIndexHashTable) betaMemory.getLeftTupleMemory()).getIndex();
         assertThat(leftIndex).isInstanceOf(DoubleCompositeIndex.class);
-        FieldIndex leftFieldIndex0 = leftIndex.getFieldIndex(0);
+        IndexedValueReader leftFieldIndex0 = leftIndex.getFieldIndex(0);
         assertThat(leftFieldIndex0.getLeftExtractor().getValueType()).isEqualTo(ValueType.PINTEGER_TYPE);
-        FieldIndex leftFieldIndex1 = leftIndex.getFieldIndex(1);
+        IndexedValueReader leftFieldIndex1 = leftIndex.getFieldIndex(1);
         assertThat(leftFieldIndex1.getLeftExtractor().getValueType()).isEqualTo(ValueType.STRING_TYPE);
 
         assertThat(betaMemory.getRightTupleMemory()).isInstanceOf(TupleIndexHashTable.class);
         Index rightIndex = ((TupleIndexHashTable) betaMemory.getRightTupleMemory()).getIndex();
         assertThat(rightIndex).isInstanceOf(DoubleCompositeIndex.class);
-        FieldIndex rightFieldIndex0 = rightIndex.getFieldIndex(0);
+        IndexedValueReader rightFieldIndex0 = rightIndex.getFieldIndex(0);
         assertThat(rightFieldIndex0.getRightExtractor().getValueType()).isEqualTo(ValueType.PINTEGER_TYPE);
-        FieldIndex rightFieldIndex1 = rightIndex.getFieldIndex(1);
+        IndexedValueReader rightFieldIndex1 = rightIndex.getFieldIndex(1);
         assertThat(rightFieldIndex1.getRightExtractor().getValueType()).isEqualTo(ValueType.STRING_TYPE);
     }
 
@@ -118,8 +119,8 @@ public class IndexUtilTest {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
         FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
         FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
-        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, stringEqualsConstraint};
-        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
+        BetaConstraint[]            constraints            = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, stringEqualsConstraint};
+        boolean[]                   indexed                = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).containsExactly(true, true);
     }
 
@@ -129,21 +130,39 @@ public class IndexUtilTest {
         FakeBetaNodeFieldConstraint intEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.PINTEGER_TYPE));
         FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
         FakeBetaNodeFieldConstraint stringEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.STRING_TYPE));
-        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, bigDecimalEqualsConstraint, stringEqualsConstraint};
-        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
+        BetaConstraint[]            constraints            = new FakeBetaNodeFieldConstraint[]{intEqualsConstraint, bigDecimalEqualsConstraint, stringEqualsConstraint};
+        boolean[]                   indexed                = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).as("BigDecimal is sorted to the last").containsExactly(true, true, false);
     }
 
     @Test
-    public void isIndexableForNodeWithBigDecimal() {
+    public void isIndexableForJoinNodeWithBigDecimal() {
         RuleBaseConfiguration config = getRuleBaseConfiguration();
         FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
-        BetaNodeFieldConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
-        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
+        BetaConstraint[]            constraints                = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
+        boolean[]                   indexed                    = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.JoinNode, config.getCompositeKeyDepth(), constraints, config);
         assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
     }
 
-    static class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint,
+    @Test
+    public void isIndexableForExistsNodeWithBigDecimal() {
+        RuleBaseConfiguration config = getRuleBaseConfiguration();
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        BetaConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
+        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.ExistsNode, config.getCompositeKeyDepth(), constraints, config);
+        assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
+    }
+
+    @Test
+    public void isIndexableForNotNodeWithBigDecimal() {
+        RuleBaseConfiguration config = getRuleBaseConfiguration();
+        FakeBetaNodeFieldConstraint bigDecimalEqualsConstraint = new FakeBetaNodeFieldConstraint(ConstraintTypeOperator.EQUAL, new FakeReadAccessor(ValueType.BIG_DECIMAL_TYPE));
+        BetaConstraint[] constraints = new FakeBetaNodeFieldConstraint[]{bigDecimalEqualsConstraint};
+        boolean[] indexed = IndexUtil.isIndexableForNode(IndexPrecedenceOption.EQUALITY_PRIORITY, NodeTypeEnums.NotNode, config.getCompositeKeyDepth(), constraints, config);
+        assertThat(indexed).as("BigDecimal is not indexed").containsExactly(false);
+    }
+
+    static class FakeBetaNodeFieldConstraint implements BetaConstraint<ContextEntry>,
                                                         IndexableConstraint {
 
         private ConstraintTypeOperator constraintType;
@@ -163,7 +182,7 @@ public class IndexUtilTest {
 
         @Override
         public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
-            return false;
+            return constraintType.isIndexableForNode(nodeType, this, config);
         }
 
         @Override
@@ -177,8 +196,8 @@ public class IndexUtilTest {
         }
 
         @Override
-        public FieldIndex getFieldIndex() {
-            return new FieldIndex(fieldExtractor, new Declaration("$p1", fieldExtractor, null));
+        public IndexedValueReader getFieldIndex() {
+            return new IndexedValueReader(new Declaration("$p1", fieldExtractor, null), new RightTupleValueExtractor(fieldExtractor));
         }
 
         @Override
@@ -187,7 +206,12 @@ public class IndexUtilTest {
         }
 
         @Override
-        public TupleValueExtractor getIndexExtractor() {
+        public TupleValueExtractor getRightIndexExtractor() {
+            return null;
+        }
+
+        @Override
+        public TupleValueExtractor getLeftIndexExtractor() {
             return null;
         }
 
@@ -202,12 +226,12 @@ public class IndexUtilTest {
         }
 
         @Override
-        public ContextEntry createContextEntry() {
+        public ContextEntry createContext() {
             return null;
         }
 
         @Override
-        public BetaNodeFieldConstraint cloneIfInUse() {
+        public BetaConstraint cloneIfInUse() {
             return null;
         }
 

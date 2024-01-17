@@ -25,12 +25,12 @@ import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.base.rule.constraint.BetaConstraint;
 
 public class AccumulateBuilder
         implements
@@ -45,7 +45,7 @@ public class AccumulateBuilder
         final Accumulate accumulate = (Accumulate) rce;
         context.pushRuleComponent( accumulate );
 
-        final List<BetaNodeFieldConstraint> resultBetaConstraints = context.getBetaconstraints();
+        final List<BetaConstraint>           resultBetaConstraints  = context.getBetaconstraints();
         final List<AlphaNodeFieldConstraint> resultAlphaConstraints = context.getAlphaConstraints();
 
         RuleConditionElement source = accumulate.getSource();
@@ -82,7 +82,7 @@ public class AccumulateBuilder
             context.setTupleSource( tupleSource );
 
             // create a tuple start equals constraint and set it in the context
-            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+            final List<BetaConstraint> betaConstraints = new ArrayList<>();
             context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
         }
 

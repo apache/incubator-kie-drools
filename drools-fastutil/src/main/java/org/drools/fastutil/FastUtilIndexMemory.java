@@ -19,8 +19,8 @@
 package org.drools.fastutil;
 
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.util.index.IndexMemory;
 import org.drools.core.util.index.IndexSpec;
+import org.drools.core.util.index.IndexMemory;
 
 public class FastUtilIndexMemory {
 
@@ -28,14 +28,14 @@ public class FastUtilIndexMemory {
 
         @Override
         public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
-            return new FastUtilHashTupleMemory(indexSpec.getIndexes(), isLeft);
+            return new FastUtilHashTupleMemory(indexSpec.getIndex(), isLeft);
         }
     }
 
     public static class FastUtilComparisonMemoryFactory implements IndexMemory.Factory {
 
         @Override
-        public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
+            public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
             return new FastUtilTreeMemory(indexSpec.getConstraintType(), indexSpec.getIndex(0), isLeft);
         }
     }

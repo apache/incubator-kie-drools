@@ -817,7 +817,7 @@ class JPMMLVisitorTest {
     }
 
     @Test
-    public void getRemovedListTupla_present() {
+    public void getRemovedListTuple_present() {
         String classTested = "package com.yourorg;\n" +
                 "import java.util.List;\n" +
                 "import org.dmg.pmml.DataDictionary;\n" +
@@ -832,12 +832,12 @@ class JPMMLVisitorTest {
                 .orElseThrow(() -> new RuntimeException("Failed to find J.NewClass org.dmg.pmml.DataDictionary"));
         assertThat(toTest)
                 .isNotNull();
-        assertThat(jpmmlVisitor.getRemovedListTupla(toTest))
+        assertThat(jpmmlVisitor.getRemovedListTuple(toTest))
                 .isPresent();
     }
 
     @Test
-    public void getRemovedListTupla_notPresent() {
+    public void getRemovedListTuple_notPresent() {
         String classTested = "package com.yourorg;\n" +
                 "import org.dmg.pmml.ScoreDistribution;\n" +
                 "class FooBar {\n" +
@@ -850,7 +850,7 @@ class JPMMLVisitorTest {
                 .orElseThrow(() -> new RuntimeException("Failed to find J.NewClass org.dmg.pmml.ScoreDistribution"));
         assertThat(toTest)
                 .isNotNull();
-        assertThat(jpmmlVisitor.getRemovedListTupla(toTest))
+        assertThat(jpmmlVisitor.getRemovedListTuple(toTest))
                 .isNotPresent();
     }
 
@@ -1124,8 +1124,8 @@ class JPMMLVisitorTest {
     }
 
     @Test
-    public void removedListaTupla_getJMethod() {
-        JPMMLVisitor.RemovedListTupla removedListTupla = new JPMMLVisitor.RemovedListTupla("addDataFields", JavaType.buildType("org.dmg.pmml.DataField"));
+    public void removedListaTuple_getJMethod() {
+        JPMMLVisitor.RemovedListTuple removedListTuple = new JPMMLVisitor.RemovedListTuple("addDataFields", JavaType.buildType("org.dmg.pmml.DataField"));
         String classTested = "package com.yourorg;\n" +
                 "import java.util.List;\n" +
                 "import org.dmg.pmml.DataDictionary;\n" +
@@ -1138,7 +1138,7 @@ class JPMMLVisitorTest {
         String classInstantiated = "org.dmg.pmml.DataDictionary";
         J.NewClass toTest = getNewClassFromClassSource(classTested, classInstantiated)
                 .orElseThrow(() -> new RuntimeException("Failed to find J.NewClass org.dmg.pmml.DataDictionary"));
-       J.MethodInvocation retrieved = removedListTupla.getJMethod(toTest);
+       J.MethodInvocation retrieved = removedListTuple.getJMethod(toTest);
        String expected = "new DataDictionary().addDataFields(dataFields.toArray(new org.dmg.pmml.DataField[0]))";
        assertThat(retrieved)
                .isNotNull()

@@ -118,7 +118,8 @@ public class BuiltInFunctions {
             OverlapsBeforeFunction.INSTANCE,
             OverlapsAfterFunction.INSTANCE,
             MeetsFunction.INSTANCE,
-            MetByFunction.INSTANCE
+            MetByFunction.INSTANCE,
+            ListReplaceFunction.INSTANCE
     };
 
     public static FEELFunction[] getFunctions() {

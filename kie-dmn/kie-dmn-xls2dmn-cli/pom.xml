@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>8.45.0-SNAPSHOT</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-xls2dmn-cli</artifactId>
   <packaging>jar</packaging>
@@ -116,7 +116,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -124,6 +123,8 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>runner</shadedClassifierName>
               <filters> <!-- https://issues.redhat.com/browse/DROOLS-7524 https://stackoverflow.com/a/64063529/4206 -->
                 <filter>
                   <artifact>*:*</artifact>

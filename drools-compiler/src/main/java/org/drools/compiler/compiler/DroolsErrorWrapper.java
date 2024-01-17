@@ -31,16 +31,11 @@ public class DroolsErrorWrapper extends DroolsError {
     private String namespace = "";
     
     public DroolsErrorWrapper (KnowledgeBuilderResult problem) {
-        super(problem.getResource());
+        super(problem.getResource(), problem.getMessage());
         this.backingProblem = problem;
         if (problem instanceof DroolsError) {
             namespace = ((DroolsError)problem).getNamespace();
         }
-    }
-    
-    @Override
-    public String getMessage() {
-        return backingProblem.getMessage();
     }
 
     @Override

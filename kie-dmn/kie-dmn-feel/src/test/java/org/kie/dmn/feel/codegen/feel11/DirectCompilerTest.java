@@ -21,44 +21,30 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Map;
 
-import com.github.javaparser.ast.expr.Expression;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
-import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEELParserTest;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.CompilerUtils.parse;
+import static org.kie.dmn.feel.util.CompilerUtils.parseCompileEvaluate;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class DirectCompilerTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerTest.class);
-    
-    private Object parseCompileEvaluate(String feelLiteralExpression) {
-        CompiledFEELExpression compiledExpression = parse( feelLiteralExpression );
-        LOG.debug("{}", compiledExpression);
-        
-        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
-        Object result = compiledExpression.apply(emptyContext);
-        LOG.debug("{}", result);
-        return result;
-    }
+
 
     @Test
     public void test_FEEL_number() {
@@ -470,24 +456,6 @@ public class DirectCompilerTest {
         assertThat(result).isEqualTo(BigDecimal.valueOf(2016));
     }
 
-    private CompiledFEELExpression parse(String input) {
-        return parse( input, Collections.emptyMap() );
-    }
-
-    private CompiledFEELExpression parse(String input, Map<String, Type> inputTypes) {
-        FEEL_1_1Parser parser = FEELParser.parse(null, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
-
-        ParseTree tree = parser.compilation_unit();
-
-        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
-        BaseNode node = v.visit(tree);
-        DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
-        
-        Expression expr = directResult.getExpression();
-        CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
-
-        return cu;
-    }
     
 
 }

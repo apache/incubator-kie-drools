@@ -25,16 +25,16 @@ import java.io.ObjectOutput;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
+import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.Constraint;
 
 /**
  * A base class for constraints
  */
-public abstract class MutableTypeConstraint
+public abstract class MutableTypeConstraint<C>
     implements
         AlphaNodeFieldConstraint,
-        BetaNodeFieldConstraint,
+        BetaConstraint<C>,
     Externalizable {
 
     private ConstraintType type = Constraint.ConstraintType.UNKNOWN;

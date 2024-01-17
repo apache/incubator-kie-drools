@@ -178,7 +178,7 @@ public class NotNodeLeftTuple extends LeftTuple {
         TupleMemory rtm = bm.getRightTupleMemory();
         FastIterator it = betaNode.getRightIterator( rtm );
 
-        ContextEntry[] contextEntry = bm.getContext();
+        Object contextEntry = bm.getContext();
         constraints.updateFromTuple( contextEntry, reteEvaluator, this );
 
         Collection<Object> result = new ArrayList<>();

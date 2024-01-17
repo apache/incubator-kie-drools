@@ -23,20 +23,12 @@ import org.drools.drl.parser.DroolsError;
 import org.kie.api.io.Resource;
 
 public class MissingDependencyError extends DroolsError {
-    private final String message;
-
     public MissingDependencyError(String message) {
-        this.message = message;
+        super(message);
     }
 
     public MissingDependencyError(Resource resource, MissingDependencyException ex) {
-        super(resource);
-        message = ex.getMessage();
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+        super(resource, ex.getMessage());
     }
 
     @Override

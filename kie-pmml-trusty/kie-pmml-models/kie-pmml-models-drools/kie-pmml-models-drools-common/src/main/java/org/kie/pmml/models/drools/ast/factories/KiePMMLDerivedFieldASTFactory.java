@@ -41,7 +41,7 @@ public class KiePMMLDerivedFieldASTFactory {
     }
 
     /**
-     * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with mapping between original field' name and <b>original type/generated type</b> tupla
+     * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with mapping between original field' name and <b>original type/generated type</b> tuple
      * @return
      */
     public static KiePMMLDerivedFieldASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
@@ -50,7 +50,7 @@ public class KiePMMLDerivedFieldASTFactory {
 
     /**
      * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>List&lt;DerivedField&gt;</code>s,
-     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      * @param derivedFields
      */
     public List<KiePMMLDroolsType> declareTypes(final List<DerivedField> derivedFields) {
@@ -59,12 +59,12 @@ public class KiePMMLDerivedFieldASTFactory {
 
     /**
      * Create a <code>KiePMMLDroolsType</code> out of original <code>DerivedField</code>,
-     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tuple
      * @param derivedField
      */
     public KiePMMLDroolsType declareType(DerivedField derivedField) {
-        String generatedType = getSanitizedClassName(derivedField.getName().getValue().toUpperCase());
-        String fieldName = derivedField.getName().getValue();
+        String generatedType = getSanitizedClassName(derivedField.getName().toUpperCase());
+        String fieldName =derivedField.getName();
         String fieldType = derivedField.getDataType().value();
         fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));
         return new KiePMMLDroolsType(generatedType, DATA_TYPE.byName(fieldType).getMappedClass().getSimpleName());

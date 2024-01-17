@@ -22,9 +22,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.commons.math3.util.Precision;
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,23 +88,27 @@ class PMMLRuntimeContextImplTest {
         AtomicReference<Double> totalReference = new AtomicReference<>(initialTotalProbability);
         Random rand = new Random();
         List<Double> doubles = IntStream.range(0, 3).mapToDouble(value -> {
-                    double currentTotal = totalReference.get();
-                    int nextInt = Math.abs(rand.nextInt((int) (currentTotal * 100)));
-                    double toReturn = (double) nextInt / 100;
-                    totalReference.set(currentTotal - toReturn);
-                    return toReturn;
-                }).boxed().sorted((f1, f2) -> Double.compare(f2, f1))
-                .collect(Collectors.toList());
+            double remainingProbability = totalReference.get();
+            double toReturn = invalidBound(remainingProbability) ? 0.00 :
+                    Precision.round(rand.nextDouble(remainingProbability), 2);
+            totalReference.set(Precision.round((remainingProbability - toReturn), 2));
+            return toReturn;
+        }).boxed().sorted((f1, f2) -> Double.compare(f2, f1)).toList();
         LinkedHashMap<String, Double> probabilityResultMap = new LinkedHashMap<>();
         int counter = 0;
         for (Double toPut : doubles) {
             probabilityResultMap.put("Element-" + counter, toPut);
             counter++;
         }
-        double initialProbability = probabilityResultMap.values().stream().mapToDouble(x -> x).sum();
+        double initialProbability = Precision.round(probabilityResultMap.values().stream().mapToDouble(x -> x).sum(),
+                                                    2);
         assertThat(initialProbability).isLessThanOrEqualTo(initialTotalProbability);
         LinkedHashMap<String, Double> retrieved = PMMLRuntimeContextImpl.getFixedProbabilityMap(probabilityResultMap);
         double totalProbability = retrieved.values().stream().mapToDouble(x -> x).sum();
         assertThat(totalProbability).isCloseTo(1.0, Percentage.withPercentage(0.01));
+    }
+
+    private static boolean invalidBound(double bound) {
+        return (!(0.0 < bound && bound < Double.POSITIVE_INFINITY));
     }
 }

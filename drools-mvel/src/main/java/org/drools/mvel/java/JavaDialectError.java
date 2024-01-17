@@ -25,15 +25,12 @@ public class JavaDialectError extends DroolsError {
     private static final int[] line = new int[0];
 
     public JavaDialectError(final String message) {
+        super(message);
         this.message = message;
     }
 
     public int[] getLines() {
         return line;
-    }
-    
-    public String getMessage() {
-        return this.message;
     }
 
     public String toString() {

@@ -596,17 +596,16 @@ public class RuleImpl implements Externalizable,
     }
 
     public void wire(Object object) {
-        if ( object instanceof Consequence ) {
-            Consequence c = (Consequence) object;
+        if ( object instanceof Consequence c ) {
             if ( DEFAULT_CONSEQUENCE_NAME.equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
                 addNamedConsequence(c.getName(), c);
             }
-        } else if ( object instanceof Salience ) {
-            setSalience( (Salience) object );
-        } else if ( object instanceof Enabled ) {
-            setEnabled( (Enabled) object );
+        } else if ( object instanceof Salience s ) {
+            setSalience( s );
+        } else if ( object instanceof Enabled e ) {
+            setEnabled( e );
         }
     }
 

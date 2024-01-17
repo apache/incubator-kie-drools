@@ -44,9 +44,9 @@ public class KiePMMLSimplePredicateInstanceFactory {
     static KiePMMLSimplePredicate getKiePMMLSimplePredicate(final SimplePredicate simplePredicate,
                                                             final List<Field<?>> fields) {
         final List<KiePMMLExtension> kiePMMLExtensions = getKiePMMLExtensions(simplePredicate.getExtensions());
-        DataType dataType = getDataType(fields, simplePredicate.getField().getValue());
+        DataType dataType = getDataType(fields,simplePredicate.getField());
         Object value = DATA_TYPE.byName(dataType.value()).getActualValue(simplePredicate.getValue());
-        return KiePMMLSimplePredicate.builder(simplePredicate.getField().getValue(),
+        return KiePMMLSimplePredicate.builder(simplePredicate.getField(),
                                               kiePMMLExtensions,
                                               OPERATOR.byName(simplePredicate.getOperator().value()))
                 .withValue(value)

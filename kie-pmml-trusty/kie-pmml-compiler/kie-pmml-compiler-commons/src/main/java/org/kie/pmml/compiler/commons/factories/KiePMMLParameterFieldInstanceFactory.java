@@ -47,7 +47,7 @@ public class KiePMMLParameterFieldInstanceFactory {
         DATA_TYPE dataType = parameterField.getDataType() != null ?
                 DATA_TYPE.byName(parameterField.getDataType().value()) : null;
         OP_TYPE opType = parameterField.getOpType() != null ? OP_TYPE.byName(parameterField.getOpType().value()) : null;
-        return KiePMMLParameterField.builder(parameterField.getName().getValue(),
+        return KiePMMLParameterField.builder(parameterField.getName(),
                                              Collections.emptyList())
                 .withDataType(dataType)
                 .withOpType(opType)

@@ -587,15 +587,15 @@ public class CommonCodegenUtilsTest {
         assertThat(nullExprs).isNotNull();
         assertThat(nullExprs).isEmpty();
 
-        final List<CommonCodegenUtils.ReplacementTupla> replacementTuplas =
+        final List<CommonCodegenUtils.ReplacementTuple> replacementTuples =
                 retrieved.stream()
                         .map(nameExpr -> {
                             NullLiteralExpr toAdd = new NullLiteralExpr();
                             nullExprs.add(toAdd);
-                            return new CommonCodegenUtils.ReplacementTupla(nameExpr, toAdd);
+                            return new CommonCodegenUtils.ReplacementTuple(nameExpr, toAdd);
                         })
                         .collect(Collectors.toList());
-        CommonCodegenUtils.replaceNodesInStatement(toRead, replacementTuplas);
+        CommonCodegenUtils.replaceNodesInStatement(toRead, replacementTuples);
         final List<NameExpr> newRetrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
         assertThat(newRetrieved).isEmpty();
 

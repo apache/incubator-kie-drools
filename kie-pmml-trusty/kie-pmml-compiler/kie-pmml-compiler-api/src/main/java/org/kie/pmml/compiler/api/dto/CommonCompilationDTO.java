@@ -119,7 +119,7 @@ public class CommonCompilationDTO<T extends Model> implements CompilationDTO<T> 
             targetDataField = this.fields.stream()
                     .filter(DataField.class::isInstance)
                     .map(DataField.class::cast)
-                    .filter(field -> Objects.equals(getTargetFieldName(), field.getName().getValue()))
+                    .filter(field -> Objects.equals(getTargetFieldName(),field.getName()))
                     .findFirst().orElse(null);
         } else {
             targetDataField = null;

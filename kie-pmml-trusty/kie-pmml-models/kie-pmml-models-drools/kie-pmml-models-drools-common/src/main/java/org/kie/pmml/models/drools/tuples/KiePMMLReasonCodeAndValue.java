@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
- * Tupla representing the <b>Reason Code</b> and its computed <b>value</b> as used inside <b>Scorecard</b>
+ * Tuple representing the <b>Reason Code</b> and its computed <b>value</b> as used inside <b>Scorecard</b>
  *
  * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#rankinReasongCodes>Ranking Reason Codes</a>
  */

@@ -18,6 +18,9 @@
  */
 package org.drools.mvel;
 
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.Pattern;
+import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalFactHandle;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.base.base.AccessorKey.AccessorType.ClassObjectType;
 
 @RunWith(Parameterized.class)
 public class FieldConstraintTest {

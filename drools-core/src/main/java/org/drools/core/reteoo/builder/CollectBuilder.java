@@ -27,7 +27,6 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.SingleAccumulate;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
@@ -35,6 +34,7 @@ import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.base.rule.constraint.BetaConstraint;
 
 public class CollectBuilder
     implements
@@ -51,7 +51,7 @@ public class CollectBuilder
         final Collect collect = (Collect) rce;
         context.pushRuleComponent( collect );
 
-        final List<BetaNodeFieldConstraint> resultBetaConstraints = context.getBetaconstraints();
+        final List<BetaConstraint>           resultBetaConstraints  = context.getBetaconstraints();
         final List<AlphaNodeFieldConstraint> resultAlphaConstraints = context.getAlphaConstraints();
 
         final Pattern sourcePattern = collect.getSourcePattern();
@@ -81,8 +81,8 @@ public class CollectBuilder
             context.setTupleSource( tupleSource );
 
             // create a tuple start equals constraint and set it in the context
-            final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+            final TupleStartEqualsConstraint constraint      = TupleStartEqualsConstraint.getInstance();
+            final List<BetaConstraint>       betaConstraints = new ArrayList<>();
             betaConstraints.add( constraint );
             context.setBetaconstraints( betaConstraints );
             existSubNetwort = true;

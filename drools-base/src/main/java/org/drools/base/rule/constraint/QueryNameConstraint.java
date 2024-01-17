@@ -25,14 +25,15 @@ import java.io.ObjectOutput;
 
 import org.drools.base.base.DroolsQuery;
 import org.drools.base.base.ValueResolver;
+import org.drools.base.rule.accessor.FieldValue;
+import org.drools.base.rule.accessor.TupleValueExtractor;
+import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.base.base.field.ObjectFieldImpl;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.accessor.AcceptsReadAccessor;
-import org.drools.base.rule.accessor.FieldValue;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.drools.base.util.FieldIndex;
-import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.base.util.IndexedValueReader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -76,7 +77,7 @@ public class QueryNameConstraint implements
         return fieldValue;
     }
 
-    public FieldIndex getFieldIndex() {
+    public IndexedValueReader getFieldIndex() {
         return null;
     }
 
@@ -89,7 +90,12 @@ public class QueryNameConstraint implements
     }
 
     @Override
-    public Declaration getIndexExtractor() {
+    public TupleValueExtractor getRightIndexExtractor() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Declaration getLeftIndexExtractor() {
         throw new UnsupportedOperationException();
     }
 
@@ -137,7 +143,7 @@ public class QueryNameConstraint implements
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof QueryNameConstraint && queryName.equals(((QueryNameConstraint)obj).queryName);
+        return obj instanceof QueryNameConstraint qnc && queryName.equals(qnc.queryName);
     }
 
     @Override

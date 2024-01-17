@@ -28,16 +28,14 @@ import org.kie.internal.builder.ResultSeverity;
 public class DMNKnowledgeBuilderError extends DroolsError {
 
     private int[] lines = new int[0];
-    private String message;
     private String namespace;
     private ResultSeverity severity;
     private DMNMessage dmnMessage;
     
     public DMNKnowledgeBuilderError(ResultSeverity severity, Resource resource, String namespace, String message) {
-        super(resource);
+        super(resource, message);
         this.severity = severity;
         this.namespace = namespace;
-        this.message = message;
     }
     
     public DMNKnowledgeBuilderError(ResultSeverity severity, Resource resource, String message) {
@@ -79,11 +77,6 @@ public class DMNKnowledgeBuilderError extends DroolsError {
     }
 
     @Override
-    public String getMessage() {
-        return this.message;
-    }
-
-    @Override
     public int[] getLines() {
         return lines;
     }
@@ -101,7 +94,7 @@ public class DMNKnowledgeBuilderError extends DroolsError {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("DMNKnowledgeBuilderError [message=");
-        sb.append(message);
+        sb.append(getMessage());
         sb.append(", namespace=");
         sb.append(namespace);
         sb.append(", dmnMessage=");

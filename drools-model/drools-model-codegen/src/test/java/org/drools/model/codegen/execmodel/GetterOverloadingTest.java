@@ -61,7 +61,7 @@ public class GetterOverloadingTest extends BaseModelTest {
 
         KieBuilder kieBuilder = createKieBuilder(str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages(Level.ERROR);
-        assertThat(messages.get(0).getText()).contains("Imcompatible Getter overloading detected");
+        assertThat(messages.get(0).getText()).contains("Incompatible Getter overloading detected");
     }
 
     public static class ClassA {
