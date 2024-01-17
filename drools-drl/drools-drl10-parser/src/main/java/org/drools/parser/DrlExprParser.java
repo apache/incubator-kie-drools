@@ -21,13 +21,12 @@ package org.drools.parser;
 import java.util.Collections;
 import java.util.List;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-import org.drools.drl.parser.lang.ParserHelper;
+import org.drools.drl.parser.DroolsParserException;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
@@ -45,23 +44,22 @@ public class DrlExprParser {
     }
 
     /** Parse an expression from text */
-    public ConstraintConnectiveDescr parse( final String text ) {
+    public ConstraintConnectiveDescr parse(final String text) {
         ConstraintConnectiveDescr constraint = null;
         try {
-            DRLLexer lexer = DRLFactory.getDRLLexer(new ANTLRStringStream(text), languageLevel);
-            CommonTokenStream input = new CommonTokenStream( lexer );
-            RecognizerSharedState state = new RecognizerSharedState();
-            helper = new ParserHelper( input, state, languageLevel );
-            DRLExpressions parser = DRLFactory.getDRLExpressions(input, state, helper, languageLevel);
-            parser.setBuildDescr( true );
-            parser.setLeftMostExpr( null ); // setting initial value just in case
-            BaseDescr expr = parser.conditionalOrExpression();
-            if ( expr != null && !parser.hasErrors() ) {
+            DRLLexer lexer = new DRLLexer(CharStreams.fromString(text));
+            CommonTokenStream input = new CommonTokenStream(lexer);
+            helper = new ParserHelper(input, null, languageLevel);
+            DRLExpressions parser = new DRL6Expressions(input, helper);
+            parser.setBuildDescr(true);
+            parser.setLeftMostExpr(null); // setting initial value just in case
+            BaseDescr expr = parser.conditionalOrExpressionDescr();
+            if (expr != null && !parser.hasErrors()) {
                 constraint = ConstraintConnectiveDescr.newAnd();
-                constraint.addOrMerge( expr );
+                constraint.addOrMerge(expr);
             }
-        } catch ( RecognitionException e ) {
-            helper.reportError( e );
+        } catch (RecognitionException e) {
+            helper.reportError(e);
         }
         return constraint;
     }
