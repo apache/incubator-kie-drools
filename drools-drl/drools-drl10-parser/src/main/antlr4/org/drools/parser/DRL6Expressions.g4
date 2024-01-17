@@ -1,40 +1,38 @@
 parser grammar DRL6Expressions;
-              
-options { 
+
+options {
     language = Java;
-    tokenVocab = DRL6Lexer;
+    tokenVocab = DRLLexer;
     superClass=DRLExpressions;
 }
-  
-@header {
-    package org.drools.drl.parser.lang;
 
+@header {
     import java.util.LinkedList;
     import org.drools.drl.parser.DroolsParserException;
-    import org.drools.drl.parser.lang.ParserHelper;
+    import org.drools.drl.parser.lang.DroolsEditorType;
     import org.drools.drl.parser.lang.DroolsParserExceptionFactory;
+    import org.drools.drl.parser.lang.DroolsSentence;
+    import org.drools.drl.parser.lang.DroolsSoftKeywords;
     import org.drools.drl.parser.lang.Location;
 
     import org.drools.drl.ast.dsl.AnnotatedDescrBuilder;
     import org.drools.drl.ast.dsl.AnnotationDescrBuilder;
 
-    import org.drools.drl.ast.descr.AtomicExprDescr;
     import org.drools.drl.ast.descr.AnnotatedBaseDescr;
     import org.drools.drl.ast.descr.AnnotationDescr;
+    import org.drools.drl.ast.descr.AtomicExprDescr;
     import org.drools.drl.ast.descr.BaseDescr;
+    import org.drools.drl.ast.descr.BindingDescr;
     import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
     import org.drools.drl.ast.descr.RelationalExprDescr;
-    import org.drools.drl.ast.descr.BindingDescr;
 }
 
 @members {
     private ParserHelper helper;
 
     public DRL6Expressions(TokenStream input,
-                          RecognizerSharedState state,
                           ParserHelper helper ) {
-        this( input,
-              state );
+        this( input );
         this.helper = helper;
     }
 
@@ -61,22 +59,28 @@ options {
     public void setHasBindings( boolean value ) { this.hasBindings = value; }
     public boolean hasBindings() { return this.hasBindings; }
 
+    @Override
+    public final BaseDescr conditionalOrExpressionDescr() throws RecognitionException {
+        return conditionalOrExpression().result;
+    }
+
     private boolean isNotEOF() {
-        if (state.backtracking != 0){
+        // TODO verify that we can omit the backtracking check
+        /*if (state.backtracking != 0){
             return false;
-        }
-        if (input.get( input.index() - 1 ).getType() == DRL6Lexer.WS){
+        }*/
+        if (_input.get( _input.index() - 1 ).getType() == DRLLexer.WS){
             return true;
         }
-        if (input.LA(-1) == DRL6Lexer.LEFT_PAREN){
+        if (_input.LA(-1) == DRLLexer.LPAREN){
             return true;
         }
-        return input.get( input.index() ).getType() != DRL6Lexer.EOF;
+        return _input.get( _input.index() ).getType() != DRLLexer.EOF;
     }
 
     private boolean notStartWithNewline() {
-        int currentTokenIndex = input.index(); // current position in input stream
-        Token previousHiddenToken = input.get(currentTokenIndex - 1);
+        int currentTokenIndex = _input.index(); // current position in input stream
+        Token previousHiddenToken = _input.get(currentTokenIndex - 1);
         String previousHiddenTokenText = previousHiddenToken.getText();
         return !previousHiddenTokenText.contains("\n");
     }
@@ -94,22 +98,23 @@ catch (RecognitionException re) {
 //                      GENERAL RULES
 // --------------------------------------------------------
 literal
-    :	STRING        {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
-    |	DECIMAL       {	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
-    |	HEX           {	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
-    |	FLOAT         {	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
-    |	BOOL          {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
-    |	NULL          {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
+    :	STRING_LITERAL  {	helper.emit($STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
+    |	DECIMAL_LITERAL {	helper.emit($DECIMAL_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	HEX_LITERAL     {	helper.emit($HEX_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	FLOAT_LITERAL   {	helper.emit($FLOAT_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	BOOL_LITERAL    {	helper.emit($BOOL_LITERAL, DroolsEditorType.BOOLEAN_CONST);	}
+    |	NULL_LITERAL    {	helper.emit($NULL_LITERAL, DroolsEditorType.NULL_CONST);	}
     |   TIME_INTERVAL {	helper.emit($TIME_INTERVAL, DroolsEditorType.NULL_CONST); }
-    |   STAR          { helper.emit($STAR, DroolsEditorType.NUMERIC_CONST); } // this means "infinity" in Drools
+    |   MUL           { helper.emit($MUL, DroolsEditorType.NUMERIC_CONST); } // this means "infinity" in Drools
     ;
 
 operator returns [boolean negated, String opr]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
-@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRL6Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+// TODO verify that we can omit the backtracking check
+@after{ if( /*state.backtracking == 0 &&*/ _input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : x=TILDE?
-    ( op=EQUALS        { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
-    | op=NOT_EQUALS    { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
+    ( op=EQUAL         { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
+    | op=NOTEQUAL      { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
     | rop=relationalOp { $negated = $rop.negated; $opr=($x != null ? $x.text : "")+$rop.opr; }
     )
     ;
@@ -118,11 +123,12 @@ operator returns [boolean negated, String opr]
 
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
-@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRL6Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
-  : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
-    | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
-    | op=LESS            { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
-    | op=GREATER         { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+// TODO verify that we can omit the backtracking check
+@after{ if( /*state.backtracking == 0 &&*/ _input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+  : ( op=LE              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=GE              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=LT              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
+    | op=GT              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | xop=complexOp      { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | not_key nop=neg_operator_key { $negated = true; $opr=$nop.text;}
     | cop=operator_key  { $negated = false; $opr=$cop.text;}
@@ -130,7 +136,7 @@ relationalOp returns [boolean negated, String opr, java.util.List<String> params
     ;
 
 complexOp returns [String opr]
-    : t=TILDE e=EQUALS_ASSIGN   { $opr=$t.text+$e.text; }
+    : t=TILDE e=ASSIGN   { $opr=$t.text+$e.text; }
     ;
 
 typeList
@@ -142,12 +148,12 @@ type
     ;
 
 typeMatch
-    : 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
-    |	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
+    : primitiveType (LBRACK RBRACK)*
+    |	IDENTIFIER (typeArguments)? (DOT IDENTIFIER (typeArguments)? )* (LBRACK RBRACK)*
     ;
 
 typeArguments
-    :	LESS typeArgument (COMMA typeArgument)* GREATER
+    :	LT typeArgument (COMMA typeArgument)* GT
     ;
 
 typeArgument
@@ -161,7 +167,7 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-    :	expression ( AT | SEMICOLON | EOF | ID | RIGHT_PAREN ) ;
+    :	expression ( AT | SEMI | EOF | IDENTIFIER | RPAREN ) ;
 
 dummy2
     :  relationalExpression EOF;
@@ -169,7 +175,7 @@ dummy2
 // top level entry point for arbitrary expression parsing
 expression returns [BaseDescr result]
     :	left=conditionalExpression { if( buildDescr  ) { $result = $left.result; } }
-        ((assignmentOperator) => op=assignmentOperator right=expression)?
+        (op=assignmentOperator right=expression)?
     ;
 
 conditionalExpression returns [BaseDescr result]
@@ -186,7 +192,7 @@ finally { ternOp--; }
 
 fullAnnotation [AnnotatedDescrBuilder inDescrBuilder] returns [AnnotationDescr result]
 @init{ String n = ""; AnnotationDescrBuilder annoBuilder = null; }
-  : AT name=ID { n = $name.text; } ( DOT x=ID { n += "." + $x.text; } )*
+  : AT name=IDENTIFIER { n = $name.text; } ( DOT x=IDENTIFIER { n += "." + $x.text; } )*
         { if( buildDescr ) {
                 if ( inDescrBuilder == null ) {
                     $result = new AnnotationDescr( n );
@@ -197,16 +203,16 @@ fullAnnotation [AnnotatedDescrBuilder inDescrBuilder] returns [AnnotationDescr r
                 }
             }
         }
-    annotationArgs[result, annoBuilder]
+    annotationArgs[$result, annoBuilder]
   ;
 
 annotationArgs [AnnotationDescr descr, AnnotatedDescrBuilder inDescrBuilder]
-  : LEFT_PAREN
+  : LPAREN
     (
-       (ID EQUALS_ASSIGN) => annotationElementValuePairs[descr, inDescrBuilder]
+       annotationElementValuePairs[descr, inDescrBuilder]
        | value=annotationValue[inDescrBuilder] { if ( buildDescr ) { $descr.setValue( $value.result ); } }
     )?
-    RIGHT_PAREN
+    RPAREN
   ;
 
 annotationElementValuePairs [AnnotationDescr descr, AnnotatedDescrBuilder inDescrBuilder]
@@ -214,7 +220,7 @@ annotationElementValuePairs [AnnotationDescr descr, AnnotatedDescrBuilder inDesc
   ;
 
 annotationElementValuePair [AnnotationDescr descr, AnnotatedDescrBuilder inDescrBuilder]
-  : key=ID EQUALS_ASSIGN val=annotationValue[inDescrBuilder] { if ( buildDescr ) { $descr.setKeyValue( $key.text, $val.result ); } }
+  : key=IDENTIFIER ASSIGN val=annotationValue[inDescrBuilder] { if ( buildDescr ) { $descr.setKeyValue( $key.text, $val.result ); } }
   ;
 
 annotationValue[AnnotatedDescrBuilder inDescrBuilder] returns [Object result]
@@ -225,23 +231,23 @@ annotationValue[AnnotatedDescrBuilder inDescrBuilder] returns [Object result]
 
 annotationArray[AnnotatedDescrBuilder inDescrBuilder] returns [java.util.List result]
 @init { $result = new java.util.ArrayList();}
-  :  LEFT_CURLY ( anno=annotationValue[inDescrBuilder] { $result.add( $anno.result ); }
+  :  LBRACE ( anno=annotationValue[inDescrBuilder] { $result.add( $anno.result ); }
                 ( COMMA anno=annotationValue[inDescrBuilder] { $result.add( $anno.result ); } )* )?
-     RIGHT_CURLY
+     RBRACE
   ;
 
 
 
 conditionalOrExpression returns [BaseDescr result]
   : left=conditionalAndExpression  { if( buildDescr ) { $result = $left.result; } }
-  ( DOUBLE_PIPE
+  ( OR
         {  if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );  }
         args=fullAnnotation[null]? right=conditionalAndExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr();
                descr.addOrMerge( $result );
                descr.addOrMerge( $right.result );
-               if ( args != null ) { descr.addAnnotation( $args.result ); }
+               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
                $result = descr;
            }
          }
@@ -250,14 +256,14 @@ conditionalOrExpression returns [BaseDescr result]
 
 conditionalAndExpression returns [BaseDescr result]
   : left=inclusiveOrExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( DOUBLE_AMPER
+  ( AND
          { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
         args=fullAnnotation[null]? right=inclusiveOrExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
                descr.addOrMerge( $result );
                descr.addOrMerge( $right.result );
-               if ( args != null ) { descr.addAnnotation( $args.result ); }
+               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
                $result = descr;
            }
          }
@@ -266,7 +272,7 @@ conditionalAndExpression returns [BaseDescr result]
 
 inclusiveOrExpression returns [BaseDescr result]
   : left=exclusiveOrExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( PIPE right=exclusiveOrExpression
+  ( BITOR right=exclusiveOrExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newIncOr();
                descr.addOrMerge( $result );
@@ -279,7 +285,7 @@ inclusiveOrExpression returns [BaseDescr result]
 
 exclusiveOrExpression returns [BaseDescr result]
   : left=andExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( XOR right=andExpression
+  ( CARET right=andExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newXor();
                descr.addOrMerge( $result );
@@ -292,7 +298,7 @@ exclusiveOrExpression returns [BaseDescr result]
 
 andExpression returns [BaseDescr result]
   : left=equalityExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( AMPER right=equalityExpression
+  ( BITAND right=equalityExpression
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newIncAnd();
                descr.addOrMerge( $result );
@@ -305,9 +311,9 @@ andExpression returns [BaseDescr result]
 
 equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( ( op=EQUALS | op=NOT_EQUALS )
+  ( ( op=EQUAL | op=NOTEQUAL )
     {  helper.setHasOperator( true );
-       if( input.LA( 1 ) != DRL6Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+       if( _input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=instanceOfExpression
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, $right.result );
@@ -320,7 +326,7 @@ instanceOfExpression returns [BaseDescr result]
   : left=inExpression { if( buildDescr  ) { $result = $left.result; } }
   ( op=instanceof_key
     {  helper.setHasOperator( true );
-       if( input.LA( 1 ) != DRL6Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+       if( _input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=type
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, new AtomicExprDescr($right.text) );
@@ -341,39 +347,40 @@ inExpression returns [BaseDescr result]
           leftDescr = $left.result;
       }
     }
-    ((not_key in_key)=> not_key in=in_key LEFT_PAREN
+    (not_key in=in_key LPAREN
         {   helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
         e1=expression
         {   descr = ConstraintConnectiveDescr.newAnd();
-            RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, leftDescr, $e1.result );
-            descr.addOrMerge( rel );
+            RelationalExprDescr rel1 = new RelationalExprDescr( "!=", false, null, leftDescr, $e1.result );
+            descr.addOrMerge( rel1 );
             $result = descr;
         }
       (COMMA e2=expression
-        {   RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, leftDescr, $e2.result );
-            descr.addOrMerge( rel );
+        {   RelationalExprDescr rel2 = new RelationalExprDescr( "!=", false, null, leftDescr, $e2.result );
+            descr.addOrMerge( rel2 );
         }
-      )* RIGHT_PAREN
+      )* RPAREN
     { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END ); }
-    | in=in_key LEFT_PAREN
+    | in=in_key LPAREN
         {   helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
         e1=expression
         {   descr = ConstraintConnectiveDescr.newOr();
-            RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, leftDescr, $e1.result );
-            descr.addOrMerge( rel );
+            RelationalExprDescr rel1 = new RelationalExprDescr( "==", false, null, leftDescr, $e1.result );
+            descr.addOrMerge( rel1 );
             $result = descr;
         }
       (COMMA e2=expression
-        {   RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, leftDescr, $e2.result );
-            descr.addOrMerge( rel );
+        {   RelationalExprDescr rel2 = new RelationalExprDescr( "==", false, null, leftDescr, $e2.result );
+            descr.addOrMerge( rel2 );
         }
-      )* RIGHT_PAREN
+      )* RPAREN
     { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END ); }
     )?
   ;
 
 relationalExpression returns [BaseDescr result]
-scope { BaseDescr lsd; }
+locals [ BaseDescr lsd ]
+// TODO access lsd directly instead of through dynamic context here
 @init { $relationalExpression::lsd = null; }
   : left=shiftExpression
     { if( buildDescr  ) {
@@ -397,12 +404,14 @@ scope { BaseDescr lsd; }
           } else {
               $result = $left.result;
           }
+          // TODO access lsd directly instead of through dynamic context here
           $relationalExpression::lsd = $result;
       }
     }
-  ( ( operator | LEFT_PAREN )=> right=orRestriction
+  ( right=orRestriction
          { if( buildDescr  ) {
                $result = $right.result;
+               // TODO access lsd directly instead of through dynamic context here
                $relationalExpression::lsd = $result;
            }
          }
@@ -411,12 +420,12 @@ scope { BaseDescr lsd; }
 
 orRestriction returns [BaseDescr result]
   : left=andRestriction { if( buildDescr  ) { $result = $left.result; } }
-    ( (DOUBLE_PIPE fullAnnotation[null]? andRestriction)=>lop=DOUBLE_PIPE args=fullAnnotation[null]? right=andRestriction
+    ( lop=OR args=fullAnnotation[null]? right=andRestriction
          { if( buildDescr ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr();
                descr.addOrMerge( $result );
                descr.addOrMerge( $right.result );
-               if ( args != null ) { descr.addAnnotation( $args.result ); }
+               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
                $result = descr;
            }
          }
@@ -425,14 +434,14 @@ orRestriction returns [BaseDescr result]
 
 andRestriction returns [BaseDescr result]
   : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
-  ( (DOUBLE_AMPER fullAnnotation[null]? operator)=>lop=DOUBLE_AMPER
+  ( lop=AND
   	    { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
         args=fullAnnotation[null]?right=singleRestriction
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
                descr.addOrMerge( $result );
                descr.addOrMerge( $right.result );
-               if ( args != null ) { descr.addAnnotation( $args.result ); }
+               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
                $result = descr;
            }
          }
@@ -442,7 +451,7 @@ andRestriction returns [BaseDescr result]
 singleRestriction returns [BaseDescr result]
   :  op=operator
          { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
-     ( (squareArguments shiftExpression)=> sa=squareArguments value=shiftExpression
+     ( sa=squareArguments value=shiftExpression
        | value=shiftExpression
      )
          { if( buildDescr  ) {
@@ -451,85 +460,85 @@ singleRestriction returns [BaseDescr result]
                                    ($value.text.equals(((AtomicExprDescr)$value.result).getExpression())) )) ?
 		                    $value.result :
 		                    new AtomicExprDescr( $value.text ) ;
-               $result = new RelationalExprDescr( $op.opr, $op.negated, $sa.args, $relationalExpression::lsd, descr );
+               $result = new RelationalExprDescr( $op.opr, $op.negated, $ctx.sa != null ? $sa.args : null, $relationalExpression::lsd, descr );
 	       if( $relationalExpression::lsd instanceof BindingDescr ) {
 	           $relationalExpression::lsd = new AtomicExprDescr( ((BindingDescr)$relationalExpression::lsd).getExpression() );
 	       }
            }
            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
          }
-  |  LEFT_PAREN or=orRestriction RIGHT_PAREN  { $result = $or.result; }
+  |  LPAREN or=orRestriction RPAREN  { $result = $or.result; }
   ;
 
 
 
 shiftExpression returns [BaseDescr result]
   : left=additiveExpression { if( buildDescr  ) { $result = $left.result; } }
-    ( (shiftOp)=>shiftOp additiveExpression )*
+    ( shiftOp additiveExpression )*
   ;
 
 shiftOp
-    :	( LESS LESS
-        | GREATER GREATER GREATER
-        | GREATER GREATER  )
+    :	( LT LT
+        | GT GT GT
+        | GT GT  )
     ;
 
 additiveExpression returns [BaseDescr result]
     :   left=multiplicativeExpression { if( buildDescr  ) { $result = $left.result; } }
-        ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
+        ( (ADD | SUB) multiplicativeExpression )*
     ;
 
 multiplicativeExpression returns [BaseDescr result]
     :   left=unaryExpression { if( buildDescr  ) { $result = $left.result; } }
-      ( ( STAR | DIV | MOD ) unaryExpression )*
+      ( ( MUL | DIV | MOD ) unaryExpression )*
     ;
 
 unaryExpression returns [BaseDescr result]
-    :   PLUS ue=unaryExpression
+    :   ADD ue=unaryExpression
         { if( buildDescr ) {
             $result = $ue.result;
             if( $result instanceof AtomicExprDescr ) {
                 ((AtomicExprDescr)$result).setExpression( "+" + ((AtomicExprDescr)$result).getExpression() );
             }
         } }
-    |	MINUS ue=unaryExpression
+    |	SUB ue=unaryExpression
         { if( buildDescr ) {
             $result = $ue.result;
             if( $result instanceof AtomicExprDescr ) {
                 ((AtomicExprDescr)$result).setExpression( "-" + ((AtomicExprDescr)$result).getExpression() );
             }
         } }
-    |   INCR primary
-    |   DECR primary
+    |   INC primary
+    |   DEC primary
     |   left=unaryExpressionNotPlusMinus { if( buildDescr ) { $result = $left.result; } }
     ;
 
 unaryExpressionNotPlusMinus returns [BaseDescr result]
 @init { boolean isLeft = false; BindingDescr bind = null;}
     :   TILDE unaryExpression
-    | 	NEGATION ue=unaryExpression
+    | 	BANG ue=unaryExpression
         {
-            if( buildDescr && ue != null ) {
-                $result = ue.negate();
+            if( buildDescr && $ue.result != null ) {
+                $result = $ue.result.negate();
             }
         }
-    |   (castExpression)=>castExpression
-    |   (backReferenceExpression)=>backReferenceExpression
+    |   castExpression
+    |   backReferenceExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
-        ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.COLON}? (var=ID COLON
+        ( ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.COLON}? (var=IDENTIFIER COLON
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
-        | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.UNIFY}? (var=ID UNIFY 
-                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
+        | ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.DRL_UNIFY}? (var=IDENTIFIER DRL_UNIFY
+                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($DRL_UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
 
-        ( (xpathSeparator ID)=>left2=xpathPrimary { if( buildDescr ) { $result = $left2.result; } }
+        ( left2=xpathPrimary { if( buildDescr ) { $result = $left2.result; } }
           | left1=primary { if( buildDescr ) { $result = $left1.result; } }
         )
 
-        ((selector)=>selector)*
+        (selector)*
         {
             if( buildDescr ) {
-                String expr = $unaryExpressionNotPlusMinus.text;
+                String expr = $text;
                 if( isLeft ) {
                     helper.setLeftMostExpr( expr );
                 }
@@ -545,16 +554,16 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
                 }
             }
         }
-        ((INCR|DECR)=> (INCR|DECR))?
+        ((INC|DEC))?
     ;
 
 castExpression
-    :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN expr=unaryExpression
-    |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
+    :  LPAREN primitiveType RPAREN expr=unaryExpression
+    |  LPAREN type RPAREN unaryExpressionNotPlusMinus
     ;
 
 backReferenceExpression
-    :  (DOT DOT DIV) => (DOT DOT DIV)+ unaryExpressionNotPlusMinus
+    :  (DOT DOT DIV)+ unaryExpressionNotPlusMinus
     ;
 
 primitiveType
@@ -578,7 +587,7 @@ xpathPrimary returns [BaseDescr result]
     ;
 
 xpathChunk returns [BaseDescr result]
-    : (xpathSeparator ID)=> xpathSeparator ID (DOT ID)* (HASH ID)? (LEFT_SQUARE xpathExpressionList RIGHT_SQUARE)?
+    : xpathSeparator IDENTIFIER (DOT IDENTIFIER)* (HASH IDENTIFIER)? (LBRACK xpathExpressionList RBRACK)?
     ;
 
 xpathExpressionList returns [java.util.List<String> exprs]
@@ -588,38 +597,38 @@ xpathExpressionList returns [java.util.List<String> exprs]
   ;
 
 primary returns [BaseDescr result]
-    :	(LEFT_PAREN)=> expr=parExpression {  if( buildDescr  ) { $result = $expr.result; }  }
-    |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
-    |   (literal)=> literal { if( buildDescr  ) { $result = new AtomicExprDescr( $literal.text, true ); }  }
-    //|   this_key ({!helper.validateSpecialID(2)}?=> DOT ID)* ({helper.validateIdentifierSufix()}?=> identifierSuffix)?
-    |   (super_key)=> super_key superSuffix
-    |   (new_key)=> new_key creator
-    |   (primitiveType)=> primitiveType (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key
+    :	expr=parExpression {  if( buildDescr  ) { $result = $expr.result; }  }
+    |   nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
+    |   literal { if( buildDescr  ) { $result = new AtomicExprDescr( $literal.text, true ); }  }
+    //|   this_key ({!helper.validateSpecialID(2)}? DOT IDENTIFIER)* ({helper.validateIdentifierSufix()}? identifierSuffix)?
+    |   super_key superSuffix
+    |   new_key creator
+    |   primitiveType (LBRACK RBRACK)* DOT class_key
     //|   void_key DOT class_key
-    |   (inlineMapExpression)=> inlineMapExpression
-    |   (inlineListExpression)=> inlineListExpression
-    |   (ID)=>i1=ID { helper.emit($i1, DroolsEditorType.IDENTIFIER); }
+    |   inlineMapExpression
+    |   inlineListExpression
+    |   i1=IDENTIFIER { helper.emit($i1, DroolsEditorType.IDENTIFIER); }
         (
-            ( (DOT ID)=>d=DOT i2=ID { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            ( d=DOT i2=IDENTIFIER { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
-            ( ((DOT|NULL_SAFE_DOT) LEFT_PAREN)=>d=(DOT|NULL_SAFE_DOT) LEFT_PAREN { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
+            ( d=(DOT|NULL_SAFE_DOT) LPAREN { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($LPAREN, DroolsEditorType.SYMBOL); }
                                     expression (COMMA { helper.emit($COMMA, DroolsEditorType.SYMBOL); } expression)*
-                                    RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
+                                    RPAREN { helper.emit($RPAREN, DroolsEditorType.SYMBOL); }
             )
             |
-            ( (HASH ID)=>h=HASH i2=ID { helper.emit($h, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            ( h=HASH i2=IDENTIFIER { helper.emit($h, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
-            ( (NULL_SAFE_DOT ID)=>n=NULL_SAFE_DOT i2=ID { helper.emit($n, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
-        )* ((identifierSuffix)=>identifierSuffix)?
+            ( n=NULL_SAFE_DOT i2=IDENTIFIER { helper.emit($n, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+        )* (identifierSuffix)?
     ;
 
 inlineListExpression
-    :   LEFT_SQUARE expressionList? RIGHT_SQUARE
+    :   LBRACK expressionList? RBRACK
     ;
 
 inlineMapExpression
 @init{ inMap++; }
-    :	LEFT_SQUARE mapExpressionList RIGHT_SQUARE
+    :	LBRACK mapExpressionList RBRACK
     ;
 finally { inMap--; }
 
@@ -632,7 +641,7 @@ mapEntry
     ;
 
 parExpression returns [BaseDescr result]
-    :	LEFT_PAREN expr=expression RIGHT_PAREN
+    :	LPAREN expr=expression RPAREN
         {  if( buildDescr  ) {
                $result = $expr.result;
                if( $result instanceof AtomicExprDescr ) {
@@ -643,12 +652,12 @@ parExpression returns [BaseDescr result]
     ;
 
 identifierSuffix
-    :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); }
-                                     RIGHT_SQUARE { helper.emit($RIGHT_SQUARE, DroolsEditorType.SYMBOL); } )+
+    :	(LBRACK { helper.emit($LBRACK, DroolsEditorType.SYMBOL); }
+                                     RBRACK { helper.emit($RBRACK, DroolsEditorType.SYMBOL); } )+
                                      DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } class_key
-    |	((LEFT_SQUARE) => LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); }
+    |	(LBRACK { helper.emit($LBRACK, DroolsEditorType.SYMBOL); }
                           expression
-                          RIGHT_SQUARE { helper.emit($RIGHT_SQUARE, DroolsEditorType.SYMBOL); } )+ // can also be matched by selector, but do here
+                          RBRACK { helper.emit($RBRACK, DroolsEditorType.SYMBOL); } )+ // can also be matched by selector, but do here
     |   arguments
 //    |   DOT class_key
 //    |   DOT explicitGenericInvocation
@@ -663,19 +672,19 @@ creator
     ;
 
 createdName
-    :	ID typeArguments?
-        ( DOT ID typeArguments?)*
+    :	IDENTIFIER typeArguments?
+        ( DOT IDENTIFIER typeArguments?)*
         |	primitiveType
     ;
 
 innerCreator
-    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> ID classCreatorRest
+    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? IDENTIFIER classCreatorRest
     ;
 
 arrayCreatorRest
-    :   LEFT_SQUARE
-    (   RIGHT_SQUARE (LEFT_SQUARE RIGHT_SQUARE)* arrayInitializer
-        |   expression RIGHT_SQUARE ({!helper.validateLT(2,"]")}?=>LEFT_SQUARE expression RIGHT_SQUARE)* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)*
+    :   LBRACK
+    (   RBRACK (LBRACK RBRACK)* arrayInitializer
+        |   expression RBRACK ({!helper.validateLT(2,"]")}? LBRACK expression RBRACK)* (LBRACK RBRACK)*
         )
     ;
 
@@ -685,7 +694,7 @@ variableInitializer
     ;
 
 arrayInitializer
-    :	LEFT_CURLY (variableInitializer (COMMA variableInitializer)* (COMMA)? )? RIGHT_CURLY
+    :	LBRACE (variableInitializer (COMMA variableInitializer)* (COMMA)? )? RBRACE
     ;
 
 classCreatorRest
@@ -697,42 +706,45 @@ explicitGenericInvocation
     ;
 
 nonWildcardTypeArguments
-    :	LESS typeList GREATER
+    :	LT typeList GT
     ;
 
 explicitGenericInvocationSuffix
     :	super_key superSuffix
-    |   	ID arguments
+    |   	IDENTIFIER arguments
     ;
 
 selector
-    :   (DOT super_key)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } super_key superSuffix
-    |   (DOT new_key)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } new_key (nonWildcardTypeArguments)? innerCreator
-    |   (DOT ID)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); }
-                  ID { helper.emit($ID, DroolsEditorType.IDENTIFIER); }
-                  ((LEFT_PAREN) => arguments)?
-    |   (NULL_SAFE_DOT ID)=>NULL_SAFE_DOT { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); }
-                  ID { helper.emit($ID, DroolsEditorType.IDENTIFIER); }
-                  ((LEFT_PAREN) => arguments)?
+    :   DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } super_key superSuffix
+    |   DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } new_key (nonWildcardTypeArguments)? innerCreator
+    |   DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); }
+                  IDENTIFIER { helper.emit($IDENTIFIER, DroolsEditorType.IDENTIFIER); }
+                  (arguments)?
+    |   NULL_SAFE_DOT { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); }
+                  IDENTIFIER { helper.emit($IDENTIFIER, DroolsEditorType.IDENTIFIER); }
+                  (arguments)?
     //|   DOT this_key
-    |   (LEFT_SQUARE)=>LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); }
+    |   LBRACK { helper.emit($LBRACK, DroolsEditorType.SYMBOL); }
                        expression
-                       RIGHT_SQUARE { helper.emit($RIGHT_SQUARE, DroolsEditorType.SYMBOL); }
+                       RBRACK { helper.emit($RBRACK, DroolsEditorType.SYMBOL); }
     ;
 
 superSuffix
     :	arguments
-    |   	DOT ID ((LEFT_PAREN) => arguments)?
+    // TODO syntactic predicates in the form of `(x) => x` can be safely removed but
+    //  there was originally `DOT ID ((LEFT_PAREN) => arguments)?`.
+    //  Not sure if removing `(LEFT_PAREN) =>` is correct.
+    |   	DOT IDENTIFIER (arguments)?
     ;
 
 squareArguments returns [java.util.List<String> args]
-    : LEFT_SQUARE (el=expressionList { $args = $el.exprs; })? RIGHT_SQUARE
+    : LBRACK (el=expressionList { $args = $el.exprs; })? RBRACK
     ;
 
 arguments
-    :	LEFT_PAREN { helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
+    :	LPAREN { helper.emit($LPAREN, DroolsEditorType.SYMBOL); }
         expressionList?
-        RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
+        RPAREN { helper.emit($RPAREN, DroolsEditorType.SYMBOL); }
     ;
 
 expressionList returns [java.util.List<String> exprs]
@@ -742,95 +754,95 @@ expressionList returns [java.util.List<String> exprs]
   ;
 
 assignmentOperator
-    :   EQUALS_ASSIGN
-  |   PLUS_ASSIGN
-  |   MINUS_ASSIGN
-  |   MULT_ASSIGN
+    :   ASSIGN
+  |   ADD_ASSIGN
+  |   SUB_ASSIGN
+  |   MUL_ASSIGN
   |   DIV_ASSIGN
   |   AND_ASSIGN
   |   OR_ASSIGN
   |   XOR_ASSIGN
   |   MOD_ASSIGN
-  |   LESS LESS EQUALS_ASSIGN
-  |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
-  |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
+  |   LT LT ASSIGN
+  |   GT GT GT ASSIGN
+  |   GT GT ASSIGN
     ;
 
 // --------------------------------------------------------
 //                      KEYWORDS
 // --------------------------------------------------------
 extends_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 super_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 instanceof_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 boolean_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 char_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 byte_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 short_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 int_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 float_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 long_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 double_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 void_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 this_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 class_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}?=> id=ID  { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}? id=IDENTIFIER  { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 new_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 not_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 in_key
-  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
 
 operator_key
-  :      {(helper.isPluggableEvaluator(false))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(false))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(true))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;

@@ -21,24 +21,18 @@ package org.drools.parser;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.FailedPredicateException;
-import org.antlr.runtime.MismatchedNotSetException;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.MismatchedTokenException;
-import org.antlr.runtime.MismatchedTreeNodeException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
+import org.antlr.v4.runtime.FailedPredicateException;
+import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Token;
 import org.drools.drl.parser.DRLFactory;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.lang.DroolsParaphraseTypes;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
@@ -48,14 +42,7 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
  * @see DroolsParserException
  */
 public class DroolsParserExceptionFactory {
-    public final static String                        MISMATCHED_TOKEN_MESSAGE_COMPLETE       = "Line %1$d:%2$d mismatched input '%3$s' expecting '%4$s'%5$s";
-    public final static String                        MISMATCHED_TOKEN_MESSAGE_PART           = "Line %1$d:%2$d mismatched input '%3$s'%4$s";
-    public final static String                        MISMATCHED_TREE_NODE_MESSAGE_COMPLETE   = "Line %1$d:%2$d mismatched tree node '%3$s' expecting '%4$s'%5$s";
-    public final static String                        MISMATCHED_TREE_NODE_MESSAGE_PART       = "Line %1$d:%2$d mismatched tree node '%3$s'%4$s";
     public final static String                        NO_VIABLE_ALT_MESSAGE                   = "Line %1$d:%2$d no viable alternative at input '%3$s'%4$s";
-    public final static String                        EARLY_EXIT_MESSAGE                      = "Line %1$d:%2$d required (...)+ loop did not match anything at input '%3$s'%4$s";
-    public final static String                        MISMATCHED_SET_MESSAGE                  = "Line %1$d:%2$d mismatched input '%3$s' expecting one of the following tokens: '%4$s'%5$s.";
-    public final static String                        MISMATCHED_NOT_SET_MESSAGE              = "Line %1$d:%2$d mismatched input '%3$s' not expecting any of the following tokens: '%4$s'%5$s";
     public final static String                        FAILED_PREDICATE_MESSAGE                = "Line %1$d:%2$d rule '%3$s' failed predicate: {%4$s}?%5$s";
     public final static String                        TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE = "Line %1$d:%2$d trailing semi-colon not allowed%3$s";
     public final static String                        PARSER_LOCATION_MESSAGE_COMPLETE        = " in %1$s %2$s";
@@ -125,9 +112,10 @@ public class DroolsParserExceptionFactory {
         return new DroolsParserException( codeAndMessage.get( 1 ),
                                           codeAndMessage
                                                   .get( 0 ),
-                                          e.line,
-                                          e.charPositionInLine,
-                                          e.index,
+                                          // TODO verify this is correct
+                                          e.getOffendingToken().getLine(),
+                                          e.getOffendingToken().getCharPositionInLine(),
+                                          e.getOffendingToken().getStartIndex(),
                                           e );
     }
 
@@ -138,119 +126,27 @@ public class DroolsParserExceptionFactory {
     private List<String> createErrorMessage( RecognitionException e ) {
         List<String> codeAndMessage = new ArrayList<>( 2 );
         String message;
-        if ( e instanceof MismatchedTokenException ) {
-            MismatchedTokenException mte = (MismatchedTokenException) e;
-            String expecting = mte instanceof DroolsMismatchedTokenException ? ((DroolsMismatchedTokenException)mte).getTokenText() : getBetterToken( mte.expecting );
-            if ( tokenNames != null && mte.expecting >= 0 && mte.expecting < tokenNames.length ) {
-                message = String
-                        .format(
-                                 MISMATCHED_TOKEN_MESSAGE_COMPLETE,
-                                 e.line,
-                                 e.charPositionInLine,
-                                 getBetterToken( e.token ),
-                                 expecting,
-                                 formatParserLocation() );
-                codeAndMessage.add( message );
-                codeAndMessage.add( "ERR 102" );
-            } else {
-                message = String
-                        .format(
-                                 MISMATCHED_TOKEN_MESSAGE_PART,
-                                 e.line,
-                                 e.charPositionInLine,
-                                 getBetterToken( e.token ),
-                                 formatParserLocation() );
-                codeAndMessage.add( message );
-                codeAndMessage.add( "ERR 102" );
-            }
-        } else if ( e instanceof MismatchedTreeNodeException ) {
-            MismatchedTreeNodeException mtne = (MismatchedTreeNodeException) e;
-            if ( mtne.expecting >= 0 && mtne.expecting < tokenNames.length ) {
-                message = String
-                        .format(
-                                 MISMATCHED_TREE_NODE_MESSAGE_COMPLETE,
-                                 e.line,
-                                 e.charPositionInLine,
-                                 getBetterToken( e.token ),
-                                 getBetterToken( mtne.expecting ),
-                                 formatParserLocation() );
-                codeAndMessage.add( message );
-                codeAndMessage.add( "ERR 106" );
-            } else {
-                message = String
-                        .format(
-                                 MISMATCHED_TREE_NODE_MESSAGE_PART,
-                                 e.line,
-                                 e.charPositionInLine,
-                                 getBetterToken( e.token ),
-                                 formatParserLocation() );
-                codeAndMessage.add( message );
-                codeAndMessage.add( "ERR 106" );
-            }
-        } else if ( e instanceof NoViableAltException ) {
+        if ( e instanceof NoViableAltException ) {
             // NoViableAltException nvae = (NoViableAltException) e;
             message = String.format(
                                      NO_VIABLE_ALT_MESSAGE,
-                                     e.line,
-                                     e.charPositionInLine,
-                                     getBetterToken( e.token ),
+                                    // TODO verify this is correct
+                                     e.getOffendingToken().getLine(),
+                                     e.getOffendingToken().getCharPositionInLine(),
+                                     getBetterToken( e.getOffendingToken() ),
                                      formatParserLocation() );
             codeAndMessage.add( message );
             codeAndMessage.add( "ERR 101" );
-        } else if ( e instanceof EarlyExitException ) {
-            // EarlyExitException eee = (EarlyExitException) e;
-            message = String.format(
-                                     EARLY_EXIT_MESSAGE,
-                                     e.line,
-                                     e.charPositionInLine,
-                                     getBetterToken( e.token ),
-                                     formatParserLocation() );
-            codeAndMessage.add( message );
-            codeAndMessage.add( "ERR 105" );
-        } else if ( e instanceof MismatchedSetException ) {
-            MismatchedSetException mse = (MismatchedSetException) e;
-            String expected = expectedTokensAsString( mse.expecting );
-            message = String.format(
-                                     MISMATCHED_SET_MESSAGE,
-                                     e.line,
-                                     e.charPositionInLine,
-                                     getBetterToken( e.token ),
-                                     expected,
-                                     formatParserLocation() );
-            codeAndMessage.add( message );
-            codeAndMessage.add( "ERR 107" );
-        } else if ( e instanceof DroolsMismatchedSetException ) {
-            DroolsMismatchedSetException mse = (DroolsMismatchedSetException) e;
-            String expected = Arrays.asList( mse.getTokenText() ).toString();
-            message = String.format(
-                                     MISMATCHED_SET_MESSAGE,
-                                     e.line,
-                                     e.charPositionInLine,
-                                     getBetterToken( e.token ),
-                                     expected,
-                                     formatParserLocation() );
-            codeAndMessage.add( message );
-            codeAndMessage.add( "ERR 107" );
-        } else if ( e instanceof MismatchedNotSetException ) {
-            MismatchedNotSetException mse = (MismatchedNotSetException) e;
-            String expected = expectedTokensAsString( mse.expecting );
-            message = String.format(
-                                     MISMATCHED_NOT_SET_MESSAGE,
-                                     e.line,
-                                     e.charPositionInLine,
-                                     getBetterToken( e.token ),
-                                     expected,
-                                     formatParserLocation() );
-            codeAndMessage.add( message );
-            codeAndMessage.add( "ERR 108" );
         } else if ( e instanceof FailedPredicateException ) {
             FailedPredicateException fpe = (FailedPredicateException) e;
+            String ruleName = fpe.getRecognizer().getRuleNames()[fpe.getRuleIndex()];
             message = String.format(
                                      FAILED_PREDICATE_MESSAGE,
-                                     e.line,
-                                     e.charPositionInLine,
-                                     fpe.ruleName,
-                                     fpe.predicateText,
+                                     // TODO verify this is correct
+                                     e.getOffendingToken().getLine(),
+                                     e.getOffendingToken().getCharPositionInLine(),
+                                     ruleName,
+                                     fpe.getPredicate(),
                                      formatParserLocation() );
             codeAndMessage.add( message );
             codeAndMessage.add( "ERR 103" );
@@ -274,19 +170,6 @@ public class DroolsParserExceptionFactory {
                                                          sw.toString() ),
                                           e );
 
-    }
-
-    private String expectedTokensAsString( BitSet set ) {
-        StringBuilder buf = new StringBuilder();
-        buf.append( "{ " );
-        int i = 0;
-        for ( int token : set.toArray() ) {
-            if ( i > 0 ) buf.append( ", " );
-            buf.append( getBetterToken( token ) );
-            i++;
-        }
-        buf.append( " }" );
-        return buf.toString();
     }
 
     /**
@@ -364,17 +247,4 @@ public class DroolsParserExceptionFactory {
         }
         return DRLFactory.getBetterToken(token.getType(), token.getText(), languageLevel);
     }
-
-    /**
-     * Helper method that creates a user friendly token definition
-     *
-     * @param tokenType
-     *            token type
-     * @return user friendly token definition
-     */
-    private String getBetterToken( int tokenType ) {
-        return DRLFactory.getBetterToken( tokenType, null, languageLevel );
-    }
-
-
 }
