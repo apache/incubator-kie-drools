@@ -60,6 +60,7 @@ import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
+import org.kie.kogito.codegen.process.events.ProcessCloudEventMeta;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
@@ -279,7 +280,7 @@ public class ProcessCodegen extends AbstractGenerator {
         List<ProcessInstanceGenerator> pis = new ArrayList<>();
         List<ProcessExecutableModelGenerator> processExecutableModelGenerators = new ArrayList<>();
         List<ProcessResourceGenerator> rgs = new ArrayList<>(); // REST resources
-        List<MessageConsumerGenerator> megs = new ArrayList<>(); // message endpoints/consumers
+        Map<ProcessCloudEventMeta, MessageConsumerGenerator> megs = new HashMap<>(); // message endpoints/consumers
         List<MessageProducerGenerator> mpgs = new ArrayList<>(); // message producers
 
         Map<String, ModelClassGenerator> processIdToModelGenerator = new HashMap<>();
@@ -372,14 +373,14 @@ public class ProcessCodegen extends AbstractGenerator {
 
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-                        MessageConsumerGenerator messageConsumerGenerator = new MessageConsumerGenerator(
-                                context(),
-                                workFlowProcess,
-                                modelClassGenerator.className(),
-                                execModelGen.className(),
-                                applicationCanonicalName(),
-                                trigger);
-                        megs.add(messageConsumerGenerator);
+                        MessageConsumerGenerator messageConsumerGenerator =
+                                megs.computeIfAbsent(new ProcessCloudEventMeta(workFlowProcess.getId(), trigger), k -> new MessageConsumerGenerator(
+                                        context(),
+                                        workFlowProcess,
+                                        modelClassGenerator.className(),
+                                        execModelGen.className(),
+                                        applicationCanonicalName(),
+                                        trigger));
                         metaData.addConsumer(trigger.getName(), messageConsumerGenerator.compilationUnit());
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
                         MessageProducerGenerator messageProducerGenerator = new MessageProducerGenerator(
@@ -441,7 +442,7 @@ public class ProcessCodegen extends AbstractGenerator {
             }
         }
 
-        for (MessageConsumerGenerator messageConsumerGenerator : megs) {
+        for (MessageConsumerGenerator messageConsumerGenerator : megs.values()) {
             storeFile(MESSAGE_CONSUMER_TYPE, messageConsumerGenerator.generatedFilePath(),
                     messageConsumerGenerator.generate());
         }
