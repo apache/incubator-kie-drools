@@ -52,6 +52,10 @@
                     <groupId>io.quarkus</groupId>
                     <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-container-image-jib</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!-- Testing dependencies -->
