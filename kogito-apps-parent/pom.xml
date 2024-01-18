@@ -36,6 +36,26 @@
   <name>Kogito Apps</name>
   <description>Kogito Apps</description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
+    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+  </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-artifact-plugin</artifactId>
+          <version>${version.maven.artifact.plugin}</version>
+          <configuration>
+            <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
