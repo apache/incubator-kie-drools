@@ -35,7 +35,7 @@ import static org.kie.kogito.index.test.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { KogitoApplication.class })
 @ContextConfiguration(initializers = { KogitoServiceRandomPortSpringTestResource.class, DataIndexPostgreSqlSpringTestResource.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ProcessDataIndexPostgreSqlIT extends AbstractProcessDataIndexIT {
+public class ProcessDataIndexPostgreSqlIT extends SpringBootAbstractProcessInstanceIT {
 
     @LocalServerPort
     private int httpPort;

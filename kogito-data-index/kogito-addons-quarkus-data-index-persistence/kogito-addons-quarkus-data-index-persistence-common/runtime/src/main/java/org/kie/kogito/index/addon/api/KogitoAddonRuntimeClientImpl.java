@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.Application;
-import org.kie.kogito.addon.source.files.SourceFilesProvider;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Node;
@@ -42,6 +41,7 @@ import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.source.files.SourceFilesProvider;
 import org.kie.kogito.svg.ProcessSvgService;
 
 import jakarta.enterprise.context.ApplicationScoped;
