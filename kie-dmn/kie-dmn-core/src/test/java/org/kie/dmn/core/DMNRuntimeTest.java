@@ -634,6 +634,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(ctx.get("Date-Time")).isEqualTo( ZonedDateTime.of( 2016, 12, 24, 23, 59, 0, 0, ZoneOffset.ofHours( -5 )));
         assertThat(ctx.get("Date")).isEqualTo( new HashMap<String, Object>(  ) {{
             put( "fromString", LocalDate.of( 2015, 12, 24 ) );
+            put( "fromStringToDateTime", ZonedDateTime.of( 2015, 12, 24, 0, 0, 0, 0, ZoneOffset.UTC) );
             put( "fromDateTime", LocalDate.of( 2016, 12, 24 ) );
             put( "fromYearMonthDay", LocalDate.of( 1999, 11, 22 ) );
         }});

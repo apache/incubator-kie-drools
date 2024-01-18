@@ -72,6 +72,12 @@
                <semantic:text>date(dateString)</semantic:text>
             </semantic:literalExpression>
          </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable name="fromStringToDateTime" typeRef="date and time"/>
+          <semantic:literalExpression>
+            <semantic:text>date(dateString)</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
          <semantic:contextEntry>
             <semantic:variable name="fromDateTime" typeRef="date"/>
             <semantic:literalExpression>

@@ -18,6 +18,9 @@
  */
 package org.kie.dmn.core.ast;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +40,7 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.Context;
@@ -99,12 +103,8 @@ public class DMNContextEvaluator
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
                         Object value = er.getResult();
-                        if( ! ed.getType().isCollection() && value instanceof Collection &&
-                            ((Collection)value).size()==1 ) {
-                            // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-                            // and vice-versa
-                            value = ((Collection)value).toArray()[0];
-                        }
+                        value = optionallyConvertCollectionToArray(value, ed.getType());
+                        value = optionallyConvertDateToDateTime(value, ed.getType());
                         
                         if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
                             if (!(ed.getContextEntry().getExpression() instanceof FunctionDefinition)) {
@@ -170,6 +170,28 @@ public class DMNContextEvaluator
         } else {
             return new EvaluatorResultImpl( results, ResultType.SUCCESS );
         }
+    }
+
+    static Object optionallyConvertCollectionToArray(Object originalValue, DMNType requiredType) {
+        Object toReturn = originalValue;
+        if( ! requiredType.isCollection() &&
+                originalValue instanceof Collection collection &&
+                collection.size()==1 ) {
+            // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+            // and vice-versa
+            toReturn = collection.toArray()[0];
+        }
+        return toReturn;
+    }
+
+    static Object optionallyConvertDateToDateTime(Object originalValue, DMNType requiredType) {
+        Object toReturn = originalValue;
+        if (originalValue instanceof LocalDate localDate &&
+                requiredType instanceof SimpleTypeImpl simpleType &&
+                simpleType.getFeelType().getName().equals("date and time")) {
+                toReturn = ZonedDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), 0, 0, 0, 0, ZoneOffset.UTC);
+            }
+        return toReturn;
     }
 
     private String getEntryExprId(ContextEntryDef ed) {
