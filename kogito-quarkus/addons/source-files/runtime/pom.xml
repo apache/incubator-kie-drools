@@ -54,13 +54,9 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-source-files</artifactId>
-    </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-api</artifactId>
+            <artifactId>kogito-services</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>

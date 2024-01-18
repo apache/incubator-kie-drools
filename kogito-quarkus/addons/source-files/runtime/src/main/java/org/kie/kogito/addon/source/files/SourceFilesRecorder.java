@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.addon.source.files;
 
+import org.kie.kogito.source.files.SourceFile;
+import org.kie.kogito.source.files.SourceFilesProviderImpl;
+
 import io.quarkus.runtime.annotations.Recorder;
 
 import jakarta.enterprise.inject.spi.CDI;

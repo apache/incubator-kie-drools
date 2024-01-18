@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.addon.source.files;
 
+import org.kie.kogito.source.files.SourceFilesProviderImpl;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Produces;

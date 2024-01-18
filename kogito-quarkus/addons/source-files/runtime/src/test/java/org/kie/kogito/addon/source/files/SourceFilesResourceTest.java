@@ -22,6 +22,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.source.files.SourceFile;
+import org.kie.kogito.source.files.SourceFilesProvider;
 import org.mockito.Mock;
 
 import io.quarkus.test.junit.QuarkusTest;

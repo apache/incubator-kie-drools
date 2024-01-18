@@ -18,9 +18,11 @@
  */
 package org.kie.kogito.services.registry;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,9 +34,12 @@ import org.kie.kogito.event.impl.ProcessEventBatch;
 import org.kie.kogito.event.process.NodeDefinition;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionEventBody;
+import org.kie.kogito.event.process.ProcessDefinitionEventBody.ProcessDefinitionEventBodyBuilder;
 import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.source.files.SourceFile;
+import org.kie.kogito.source.files.SourceFilesProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,12 +50,18 @@ public class ProcessDefinitionEventRegistry {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionEventRegistry.class);
 
-    private Application app;
-    private String serviceUrl;
+    private final Application app;
+    private final String serviceUrl;
+    private final Optional<SourceFilesProvider> sourceFilesProvider;
 
     public ProcessDefinitionEventRegistry(Application app, String serviceUrl) {
+        this(app, serviceUrl, Optional.empty());
+    }
+
+    public ProcessDefinitionEventRegistry(Application app, String serviceUrl, Optional<SourceFilesProvider> sourceFilesProvider) {
         this.app = app;
         this.serviceUrl = serviceUrl;
+        this.sourceFilesProvider = sourceFilesProvider;
     }
 
     public void register(Processes processes) {
@@ -78,8 +89,8 @@ public class ProcessDefinitionEventRegistry {
             }
             Set<String> annotations = ((List<String>) metadata.getOrDefault("annotations", emptyList())).stream().collect(toSet());
             String description = (String) metadata.get("Description");
-            ProcessDefinitionDataEvent definitionDataEvent = new ProcessDefinitionDataEvent(ProcessDefinitionEventBody.builder()
-                    .setId(p.id())
+
+            ProcessDefinitionEventBodyBuilder builder = ProcessDefinitionEventBody.builder().setId(p.id())
                     .setName(p.name())
                     .setVersion(p.version())
                     .setType(p.type())
@@ -88,10 +99,20 @@ public class ProcessDefinitionEventRegistry {
                     .setNodes(getNodesDefinitions(p))
                     .setAnnotations(annotations)
                     .setDescription(description)
-                    .setMetadata(metadata)
-                    .build());
-            return definitionDataEvent;
+                    .setMetadata(metadata);
+            sourceFilesProvider.flatMap(provider -> provider.getProcessSourceFile(p.id())).map(this::readSourceFile).ifPresentOrElse(builder::setSource,
+                    () -> LOGGER.warn("Not source found for process id {}", p.id()));
+            return new ProcessDefinitionDataEvent(builder.build());
         };
+    }
+
+    private String readSourceFile(SourceFile s) {
+        try {
+            return new String(s.readContents());
+        } catch (IOException e) {
+            LOGGER.warn("Error reading content for source file {}", s, e);
+            return null;
+        }
     }
 
     private static String getEndpoint(String endpoint, Process<?> p) {

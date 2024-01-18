@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.kogito.addon.source.files.SourceFile;
 import org.kie.kogito.addon.source.files.SourceFilesRecorder;
+import org.kie.kogito.source.files.SourceFile;
 
 final class FakeSourceFilesRecorder extends SourceFilesRecorder {
 

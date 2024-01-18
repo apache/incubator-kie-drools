@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addon.source.files;
+package org.kie.kogito.source.files;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

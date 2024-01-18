@@ -22,10 +22,10 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.kie.kogito.addon.source.files.SourceFile;
 import org.kie.kogito.addon.source.files.SourceFilesRecorder;
 import org.kie.kogito.codegen.api.SourceFileCodegenBindEvent;
 import org.kie.kogito.codegen.api.SourceFileCodegenBindListener;
+import org.kie.kogito.source.files.SourceFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

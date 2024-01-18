@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addon.source.files;
+package org.kie.kogito.source.files;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public final class SourceFilesProviderImpl implements SourceFilesProvider {
     }
 
     @Override
-    public Optional<SourceFile> getProcessSourceFile(String processId) throws SourceFilesException {
+    public Optional<SourceFile> getProcessSourceFile(String processId) {
         return getProcessSourceFiles(processId).stream()
                 .filter(this::isValidDefinitionSource)
                 .findFirst();

@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.kie.kogito.resource.exceptions.ExceptionsHandler;
+import org.kie.kogito.source.files.SourceFile;
+import org.kie.kogito.source.files.SourceFilesProvider;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
