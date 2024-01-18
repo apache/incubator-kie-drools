@@ -31,6 +31,10 @@
 
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-container-image-jib</artifactId>
         </dependency>
     </dependencies>
@@ -40,14 +44,31 @@
             <plugin>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
-                <configuration>
-                    <skipOriginalJarRename>true</skipOriginalJarRename>
-                </configuration>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
+                        <id>h2</id>
                         <goals>
                             <goal>build</goal>
                         </goals>
+                        <configuration>
+                            <properties>
+                                <quarkus.profile>h2</quarkus.profile>
+                                <quarkus.package.output-directory>h2-quarkus-app</quarkus.package.output-directory>
+                            </properties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>postgresql</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <quarkus.profile>postgresql</quarkus.profile>
+                                <quarkus.package.output-directory>postgresql-quarkus-app</quarkus.package.output-directory>
+                            </properties>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
