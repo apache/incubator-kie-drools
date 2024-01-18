@@ -341,7 +341,7 @@ void setupPromoteJob(JobType jobType) {
 }
 
 void setupWeeklyDeployJob() {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Drools Weekly Deploy')
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools.weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Drools Weekly Deploy')
     jobParams.env.putAll([
         PROPERTIES_FILE_NAME: 'deployment.properties',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -365,7 +365,7 @@ void setupWeeklyDeployJob() {
 
             booleanParam('SKIP_TESTS', false, 'Skip tests')
 
-            stringParam('PROJECT_VERSION', '', 'Project Version to deploy')
+            stringParam('GIT_CHECKOUT_DATETIME', '', 'Git checkout date and time - (Y-m-d H:i)')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
