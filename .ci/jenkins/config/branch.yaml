@@ -23,24 +23,16 @@ environments:
 repositories:
 - name: incubator-kie-drools
   job_display_name: drools
-# Not yet migrated to Apache
-# - name: incubator-kie-drools-website
-#   job_display_name: drools-website
-- name: incubator-kie-benchmarks
-  job_display_name: kie-benchmarks
-## TODO to check if should be enabled
-# - name: incubator-kie-jpmml-integration
-#   job_display_name: kie-jpmml-integration
+  branch: 9.9.x
+  is_branch_config_repo: true
 git:
   author:
     name: apache
-    # Taken from https://ci-builds.apache.org/credentials/
-    # Need to be verified
     credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
     token_credentials_id: kie-ci3-token
     push:
-      credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2 # CI Push Access for KIE
-      token_credentials_id: 41128c14-bb63-4708-9074-d20a318ee630 # GitHub Personal Access Token for KIE
+      credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2
+      token_credentials_id: 41128c14-bb63-4708-9074-d20a318ee630
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
@@ -71,7 +63,7 @@ maven:
     creds_id: apache-nexus-kie-deploy-credentials
 cloud:
   image:
-    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
+    registry_credentials: tradisso_registry_token
     registry: quay.io
     namespace: tradisso
     latest_git_branch: main
