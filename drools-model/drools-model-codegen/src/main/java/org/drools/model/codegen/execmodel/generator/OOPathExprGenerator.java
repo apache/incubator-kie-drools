@@ -137,7 +137,7 @@ public class OOPathExprGenerator {
             bindingId = context.getOOPathId(fieldType, originalBind + fieldName + pos);
         }
 
-        DeclarationSpec newDeclaration = context.addDeclaration(bindingId, fieldType, reactiveFrom);
+        TypedDeclarationSpec newDeclaration = context.addDeclaration(bindingId, fieldType, reactiveFrom);
         context.addOOPathDeclaration(newDeclaration);
 
         final List<DrlxExpression> conditions = chunk.getConditions();

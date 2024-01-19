@@ -18,13 +18,24 @@
  */
 package org.drools.kiesession.entrypoints;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.facttemplates.Fact;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.EqualityKey;
@@ -38,6 +49,7 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.EntryPointNode;
@@ -50,21 +62,10 @@ import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.conf.KieBaseMutabilityOption;
+import org.kie.api.prototype.PrototypeFactInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetBitMask;
@@ -301,9 +302,9 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         List<String> accessibleProperties;
         boolean isPropertyReactive;
 
-        if (object instanceof Fact) {
-            accessibleProperties = new ArrayList<>(((Fact) object).getFactTemplate().getFieldNames());
-            modifiedTypeName = ((Fact) object).getFactTemplate().getName();
+        if (object instanceof PrototypeFactInstance p) {
+            accessibleProperties = new ArrayList<>(p.getPrototype().getFieldNames());
+            modifiedTypeName = p.getPrototype().getFullName();
             isPropertyReactive = !accessibleProperties.isEmpty();
         } else {
             Class<?> modifiedClass = object.getClass();
@@ -372,7 +373,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
                 final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                    internalMatch == null ? null : internalMatch.getRule(),
-                                                                                                   internalMatch == null ? null : internalMatch.getTuple().getTupleSink(),
+                                                                                                   internalMatch == null ? null : SuperCacheFixer.asTerminalNode(internalMatch.getTuple()),
                                                                                                    handle, entryPoint, mask, modifiedClass, null);
 
                 if (typeConf.isTMSEnabled()) {

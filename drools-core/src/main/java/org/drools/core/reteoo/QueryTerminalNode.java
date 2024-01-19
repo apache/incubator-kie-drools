@@ -43,7 +43,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     public static final short type             = 8;
     
-    private transient ObjectTypeNode.Id leftInputOtnId;
+    private transient ObjectTypeNodeId leftInputOtnId;
 
     // ------------------------------------------------------------
     // Constructors
@@ -95,53 +95,17 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         }
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.QueryTerminalNode;
     }
 
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return AgendaComponentFactory.get().createTerminalTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
 
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return AgendaComponentFactory.get().createTerminalTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx,
-                                     boolean leftTupleMemoryEnabled) {
-        return AgendaComponentFactory.get().createTerminalTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
-    }    
-
-    public ObjectTypeNode.Id getLeftInputOtnId() {
+    public ObjectTypeNodeId getLeftInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
+    public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
-    }
-
-    public LeftTuple createPeer(LeftTuple original) {
-        return null;
     }
 
     @Override

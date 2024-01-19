@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.Pattern;
@@ -37,7 +38,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
 
 public class AsyncReceiveNode extends LeftTupleSource
@@ -160,7 +161,7 @@ public class AsyncReceiveNode extends LeftTupleSource
             return true;
         }
 
-        if ( !(object instanceof AsyncReceiveNode) || this.hashCode() != object.hashCode() ) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.AsyncReceiveNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -170,14 +171,6 @@ public class AsyncReceiveNode extends LeftTupleSource
 
     public AsyncReceiveMemory createMemory( final RuleBaseConfiguration config, ReteEvaluator reteEvaluator ) {
         return new AsyncReceiveMemory(this, reteEvaluator);
-    }
-
-    @Override
-    public LeftTuple createPeer(LeftTuple original ) {
-        EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
     }
 
     protected boolean doRemove( final RuleRemovalContext context,
@@ -229,39 +222,8 @@ public class AsyncReceiveNode extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AsyncReceiveNode;
-    }
-
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled ) {
-        return new EvalNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink ) {
-        return new EvalNodeLeftTuple( factHandle, leftTuple, sink );
-    }
-
-    @Override
-    public LeftTuple createLeftTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
-        return new EvalNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink ) {
-        return new EvalNodeLeftTuple( leftTuple, rightTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled ) {
-        return new EvalNodeLeftTuple( leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
     @Override
@@ -269,7 +231,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         return leftInput.getObjectTypeNode();
     }
 
-    public static class AsyncReceiveMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class AsyncReceiveMemory extends AbstractLinkedListNode<Memory>
             implements
             SegmentNodeMemory {
 
@@ -302,11 +264,11 @@ public class AsyncReceiveNode extends LeftTupleSource
             return insertOrUpdateLeftTuples;
         }
 
-        public void addInsertOrUpdateLeftTuple(LeftTuple leftTuple) {
+        public void addInsertOrUpdateLeftTuple(TupleImpl leftTuple) {
             insertOrUpdateLeftTuples.add( leftTuple );
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.AsyncReceiveNode;
         }
 

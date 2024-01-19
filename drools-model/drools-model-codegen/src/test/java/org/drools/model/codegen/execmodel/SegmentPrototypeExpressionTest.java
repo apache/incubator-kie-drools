@@ -18,16 +18,15 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeExpression;
-import org.drools.model.PrototypeFact;
+import org.drools.model.prototype.PrototypeExpression;
 import org.junit.Test;
+import org.kie.api.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.model.PrototypeDSL.prototype;
-import static org.drools.model.PrototypeExpression.fixedValue;
-import static org.drools.model.PrototypeExpression.prototypeField;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
+import static org.drools.model.prototype.PrototypeExpression.fixedValue;
+import static org.drools.model.prototype.PrototypeExpression.prototypeField;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 public class SegmentPrototypeExpressionTest {
 
@@ -36,11 +35,11 @@ public class SegmentPrototypeExpressionTest {
         PrototypeExpression expr1 = prototypeField("fieldA");
         PrototypeExpression expr2 = prototypeField("fieldB").add(prototypeField("fieldC")).sub(fixedValue(1));
 
-        Prototype prototype = prototype("test");
-        PrototypeFact testFact = (PrototypeFact) createMapBasedFact(prototype);
-        testFact.set( "fieldA", 12 );
-        testFact.set( "fieldB", 8 );
-        testFact.set( "fieldC", 5 );
+        PrototypeFact prototype = prototype("test").asFact();
+        PrototypeFactInstance testFact = prototype.newInstance();
+        testFact.put("fieldA", 12 );
+        testFact.put("fieldB", 8 );
+        testFact.put("fieldC", 5 );
 
         assertThat(expr1.asFunction(prototype).apply(testFact)).isEqualTo(expr2.asFunction(prototype).apply(testFact));
         assertThat(expr1.getImpactedFields()).containsExactly("fieldA");

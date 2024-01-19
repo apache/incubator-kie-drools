@@ -19,7 +19,7 @@
 package org.drools.tms.beliefsystem.simple;
 
 import org.drools.tms.beliefsystem.ModedAssertion;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.tms.LogicalDependency;
 import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 
@@ -27,7 +27,7 @@ import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
  * LogicalDependency is a special node for LinkedLists that maintains
  * references for the Activation justifier and the justified FactHandle.
  */
-public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends AbstractBaseLinkedListNode<LogicalDependency<T>>
+public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends AbstractLinkedListNode<LogicalDependency<T>>
         implements
         LogicalDependency<T> {
     private final TruthMaintenanceSystemInternalMatch<T> justifier;

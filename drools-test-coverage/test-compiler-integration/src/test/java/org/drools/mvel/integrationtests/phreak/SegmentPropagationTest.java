@@ -53,12 +53,12 @@ public class SegmentPropagationTest {
     JoinNode              sinkNode2;    
     InternalWorkingMemory wm;
     
-    BetaMemory            bm;
-    SegmentMemory         smem;
+    BetaMemory bm;
+    SegmentMemory  smem;
     
-    BetaMemory            bm0;
-    BetaMemory            bm1;
-    BetaMemory            bm2;
+    BetaMemory bm0;
+    BetaMemory bm1;
+    BetaMemory bm2;
     
     SegmentMemory smem0;
     SegmentMemory smem1;
@@ -98,11 +98,11 @@ public class SegmentPropagationTest {
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();;
         
-        bm =(BetaMemory)  wm.getNodeMemory( joinNode );
+        bm =(BetaMemory)  wm.getNodeMemory(joinNode);
         
-        bm0 =(BetaMemory)  wm.getNodeMemory( sinkNode0 );
-        bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode1 );
-        bm2 =(BetaMemory)  wm.getNodeMemory( sinkNode2 );
+        bm0 =(BetaMemory)  wm.getNodeMemory(sinkNode0);
+        bm1 =(BetaMemory)  wm.getNodeMemory(sinkNode1);
+        bm2 =(BetaMemory)  wm.getNodeMemory(sinkNode2);
         
         smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );

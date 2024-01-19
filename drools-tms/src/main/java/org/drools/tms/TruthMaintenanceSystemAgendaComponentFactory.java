@@ -24,10 +24,10 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
 
 public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaComponentFactory {
@@ -49,13 +49,13 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
 
     @Override
     public LeftTuple createTerminalTuple(final InternalFactHandle factHandle,
-                                         final LeftTuple leftTuple,
+                                         final TupleImpl leftTuple,
                                          final Sink sink) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     @Override
-    public LeftTuple createTerminalTuple(LeftTuple leftTuple,
+    public LeftTuple createTerminalTuple(TupleImpl leftTuple,
                                          Sink sink,
                                          PropagationContext pctx,
                                          boolean leftTupleMemoryEnabled) {
@@ -63,17 +63,17 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
     }
 
     @Override
-    public LeftTuple createTerminalTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
+    public LeftTuple createTerminalTuple(TupleImpl leftTuple,
+                                         TupleImpl rightTuple,
                                          Sink sink) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
     }
 
     @Override
-    public LeftTuple createTerminalTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTuple currentLeftChild,
-                                         LeftTuple currentRightChild,
+    public LeftTuple createTerminalTuple(TupleImpl leftTuple,
+                                         TupleImpl rightTuple,
+                                         TupleImpl currentLeftChild,
+                                         TupleImpl currentRightChild,
                                          Sink sink,
                                          boolean leftTupleMemoryEnabled) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);

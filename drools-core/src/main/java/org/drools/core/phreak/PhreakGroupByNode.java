@@ -26,16 +26,15 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.util.index.TupleList;
+import org.drools.core.reteoo.TupleImpl;
+import org.drools.core.util.index.TupleListWithContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {
 
     @Override
-    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, ReteEvaluator reteEvaluator, Accumulate accumulate, LeftTuple leftTuple) {
+    AccumulateNode.BaseAccumulation initAccumulationContext(AccumulateMemory am, ReteEvaluator reteEvaluator, Accumulate accumulate, TupleImpl leftTuple) {
         GroupByContext accContext = new GroupByContext();
         leftTuple.setContextObject( accContext );
         // A lot less is done here, compared to super, as it needs to be done on demand during the Group creation.
@@ -58,20 +57,20 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     protected void evaluateResultConstraints(final AccumulateNode accNode,
                                              final LeftTupleSink sink,
                                              final Accumulate accumulate,
-                                             final LeftTuple leftTuple,
+                                             final TupleImpl leftTuple,
                                              final PropagationContext context,
                                              final ReteEvaluator reteEvaluator,
                                              final AccumulateMemory memory,
                                              final AccumulateNode.BaseAccumulation accctx,
-                                             final TupleSets<LeftTuple> trgLeftTuples,
-                                             final TupleSets<LeftTuple> stagedLeftTuples) {
+                                             final TupleSets trgLeftTuples,
+                                             final TupleSets stagedLeftTuples) {
 
         PropagationContext propagationContext = accctx.getPropagationContext();
         accctx.setPropagationContext( null );
 
         GroupByContext groupByContext = (GroupByContext)accctx;
 
-        for (TupleList<AccumulateContextEntry> tupleList = groupByContext.takeToPropagateList(); tupleList != null; tupleList = tupleList.getNext()) {
+        for (TupleListWithContext<AccumulateContextEntry> tupleList = groupByContext.takeToPropagateList(); tupleList != null; tupleList = (TupleListWithContext<AccumulateContextEntry>) tupleList.getNext()) {
             AccumulateContextEntry contextEntry = tupleList.getContext();
 
             Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, reteEvaluator);
@@ -86,9 +85,9 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     @Override
     protected void reaccumulateForLeftTuple(final AccumulateNode accNode,
                                             final Accumulate accumulate,
-                                            final LeftTuple leftTuple,
-                                            final RightTuple rightParent,
-                                            final LeftTuple match,
+                                            final TupleImpl leftTuple,
+                                            final TupleImpl rightParent,
+                                            final TupleImpl match,
                                             final ReteEvaluator reteEvaluator,
                                             final AccumulateMemory am,
                                             final AccumulateNode.BaseAccumulation accctx,
@@ -97,7 +96,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
 
         if (match != null) {
             // re-accumulate just for the sub group
-            TupleList<AccumulateContextEntry> tupleList = match.getMemory();
+            TupleListWithContext<AccumulateContextEntry> tupleList = (TupleListWithContext<AccumulateContextEntry>) match.getMemory();
             tupleList.remove(match);
 
             if (reaccumulate) {
@@ -105,13 +104,13 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                 Object functionContext = accumulate.createFunctionContext();
                 tupleList.getContext().setFunctionContext(functionContext);
 
-                for (LeftTuple childMatch = (LeftTuple) tupleList.getFirst(); childMatch != null; childMatch = (LeftTuple) childMatch.getNext()) {
-                    RightTuple         rightTuple  = childMatch.getRightParent();
+                for (TupleImpl childMatch = tupleList.getFirst(); childMatch != null; childMatch = childMatch.getNext()) {
+                    TupleImpl         rightTuple  = childMatch.getRightParent();
                     FactHandle childHandle = rightTuple.getFactHandle();
-                    LeftTuple tuple       = leftTuple;
+                    TupleImpl tuple       = leftTuple;
                     if (accNode.isRightInputIsRiaNode()) {
                         // if there is a subnetwork, handle must be unwrapped
-                        tuple = (LeftTuple) rightTuple;
+                        tuple = rightTuple;
                         childHandle = rightTuple.getFactHandleForEvaluation();
                     }
 
@@ -137,14 +136,14 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     @Override
-    protected void propagateDelete(TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, Object accctx ) {
+    protected void propagateDelete(TupleSets trgLeftTuples, TupleSets stagedLeftTuples, Object accctx ) {
         GroupByContext groupByContext = (GroupByContext)accctx;
-        for ( TupleList<AccumulateContextEntry> tupleList : groupByContext.getGroups().values()) {
+        for ( TupleListWithContext<AccumulateContextEntry> tupleList : groupByContext.getGroups().values()) {
             super.propagateDelete(trgLeftTuples, stagedLeftTuples, tupleList.getContext());
         }
     }
 
-    void postAccumulate(AccumulateNode accNode, Object accctx, LeftTuple match) {
+    void postAccumulate(AccumulateNode accNode, Object accctx, TupleImpl match) {
         ((GroupByContext)accctx).addMatchOnLastTupleList(match);
     }
 

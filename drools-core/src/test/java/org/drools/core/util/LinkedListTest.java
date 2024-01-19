@@ -26,10 +26,10 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class LinkedListTest {
 
-    LinkedList     list  = null;
-    LinkedListNode node1 = null;
-    LinkedListNode node2 = null;
-    LinkedListNode node3 = null;
+    LinkedList        list  = null;
+    DoubleLinkedEntry node1 = null;
+    DoubleLinkedEntry node2 = null;
+    DoubleLinkedEntry node3 = null;
 
     @Before
     public void setUp() throws Exception {
@@ -40,7 +40,7 @@ public class LinkedListTest {
     }
 
     private static class AbstractBaseLinkedListNodeMock
-            extends AbstractBaseLinkedListNode<AbstractBaseLinkedListNodeMock> {
+            extends AbstractLinkedListNode<AbstractBaseLinkedListNodeMock> {
 
     }
 

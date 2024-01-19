@@ -18,18 +18,21 @@
  */
 package org.drools.quarkus.test;
 
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.runtime.KieRuntimeBuilder;
-import org.kie.api.runtime.KieSession;
-
-import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.Test;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.prototype.PrototypeFact;
+import org.kie.api.prototype.PrototypeFactInstance;
+import org.kie.api.runtime.KieRuntimeBuilder;
+import org.kie.api.runtime.KieSession;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 @QuarkusTest
 public class RuntimeTest {
@@ -50,7 +53,7 @@ public class RuntimeTest {
 
     @Test
     public void testYamlEvaluation() {
-        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDYaml"), "org.drools.yaml");
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSYaml"), "org.drools.yaml");
     }
 
     private void testSimpleDrl(KieSession ksession, String assetPackage) {
@@ -65,5 +68,24 @@ public class RuntimeTest {
         ksession.fireAllRules();
 
         assertEquals("Mark can NOT drink", result.toString());
+    }
+
+    @Test
+    public void testPrototypeEvaluation() {
+        KieSession ksession = runtimeBuilder.newKieSession("canDrinkKSPrototype");
+
+        PrototypeFact personFact = prototype("Person" ).asFact();
+        PrototypeFactInstance mark = personFact.newInstance();
+        mark.put("name", "Mark" );
+        mark.put("age", 17 );
+        ksession.insert(mark);
+
+        PrototypeFact resultFact = prototype( "Result" ).asFact();
+        PrototypeFactInstance result = resultFact.newInstance();
+        ksession.insert(result);
+
+        ksession.fireAllRules();
+
+        assertEquals("Mark can NOT drink", result.get("value"));
     }
 }

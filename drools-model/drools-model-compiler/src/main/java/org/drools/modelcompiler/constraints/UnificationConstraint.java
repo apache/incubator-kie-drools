@@ -70,7 +70,7 @@ public class UnificationConstraint extends MutableTypeConstraint<ContextEntry> i
     }
 
     @Override
-    public boolean isIndexable( short nodeType, KieBaseConfiguration config) {
+    public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
         return true;
     }
 

@@ -28,8 +28,12 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.KieBaseOption;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.definition.KieDescr;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -38,7 +42,6 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
-import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 
 import static org.kie.api.io.ResourceType.determineResourceType;
 
@@ -60,7 +63,7 @@ public class KieHelper {
 
     public KieHelper( KnowledgeBuilderOption... options ) {
         if ( options.length > 0 ) {
-            KieModuleModel kmm = KieServices.Factory.get().newKieModuleModel();
+            KieModuleModel kmm = ks.newKieModuleModel();
             for ( KnowledgeBuilderOption opt : options ) {
                 if ( opt instanceof EvaluatorOption) {
                     kmm.setConfigurationProperty( EvaluatorOption.PROPERTY_NAME + opt.getPropertyName(), ( (EvaluatorOption) opt ).getEvaluatorDefinition().getClass().getName() );
@@ -86,8 +89,23 @@ public class KieHelper {
             return getKieContainer(projectType).getKieBase();
         }
         KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
-        for (KieBaseOption option : options) {
-            kieBaseConf.setOption(option);
+        if ( options.length > 0 ) {
+            if (kieModuleModel == null) {
+                kieModuleModel = ks.newKieModuleModel();
+            }
+            KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel("KBase").setDefault(true);
+            for (KieBaseOption option : options) {
+                kieBaseConf.setOption(option);
+                if ( option instanceof PrototypesOption o ) {
+                    kieBaseModel.setPrototypes( o );
+                }
+                if ( option instanceof EqualityBehaviorOption o ) {
+                    kieBaseModel.setEqualsBehavior( o );
+                }
+                if ( option instanceof KieBaseMutabilityOption o ) {
+                    kieBaseModel.setMutability( o );
+                }
+            }
         }
         return build(projectType, kieBaseConf);
     }

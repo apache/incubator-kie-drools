@@ -28,11 +28,11 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PathMemory extends AbstractBaseLinkedListNode<Memory>
+public class PathMemory extends AbstractLinkedListNode<Memory>
         implements
         Serializable, Memory {
 
@@ -68,7 +68,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public RuleImpl getRule() {
-        return pathEndNode instanceof TerminalNode ? ((TerminalNode) pathEndNode).getRule() : null;
+        return NodeTypeEnums.isTerminalNode(pathEndNode) ? ((TerminalNode) pathEndNode).getRule() : null;
     }
 
     public RuleAgendaItem getRuleAgendaItem() {
@@ -199,7 +199,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return dataDriven;
     }
 
-    public short getNodeType() {
+    public int getNodeType() {
         return NodeTypeEnums.RuleTerminalNode;
     }
 

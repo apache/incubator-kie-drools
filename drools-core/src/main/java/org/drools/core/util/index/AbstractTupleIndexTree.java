@@ -21,6 +21,7 @@ package org.drools.core.util.index;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.base.util.IndexedValueReader;
+import org.drools.core.reteoo.TupleImpl;
 
 public abstract class AbstractTupleIndexTree {
     protected IndexedValueReader index;
@@ -36,21 +37,21 @@ public abstract class AbstractTupleIndexTree {
         return true;
     }
 
-    protected Comparable getLeftIndexedValue(Tuple tuple) {
+    protected Comparable getLeftIndexedValue(TupleImpl tuple) {
         return getIndexedValue( tuple, left );
     }
 
-    protected Comparable getRightIndexedValue(Tuple tuple) {
+    protected Comparable getRightIndexedValue(TupleImpl tuple) {
         return getIndexedValue( tuple, !left );
     }
 
-    protected Comparable getIndexedValue(Tuple tuple, boolean left) {
+    protected Comparable getIndexedValue(TupleImpl tuple, boolean left) {
         return left ?
                (Comparable) index.getLeftExtractor().getValue( null, tuple ) :
                (Comparable) index.getRightExtractor().getValue( null, tuple );
     }
 
-    public static class IndexTupleList extends TupleList<Tuple> {
+    public static class IndexTupleList extends TupleList {
         private Comparable key;
 
         public IndexTupleList(Comparable key) {

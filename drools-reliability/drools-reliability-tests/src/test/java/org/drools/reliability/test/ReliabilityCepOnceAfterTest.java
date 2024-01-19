@@ -22,21 +22,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.base.facttemplates.Event;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.Prototype;
-import org.drools.model.PrototypeDSL;
-import org.drools.model.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.prototype.PrototypeDSL;
+import org.drools.model.prototype.PrototypeVariable;
 import org.drools.reliability.test.util.TimeAmount;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.prototype.PrototypeEvent;
+import org.kie.api.prototype.PrototypeEventInstance;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
@@ -48,14 +48,13 @@ import static org.drools.model.DSL.globalOf;
 import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PrototypeDSL.protoPattern;
-import static org.drools.model.PrototypeDSL.variable;
-import static org.drools.model.PrototypeExpression.fixedValue;
-import static org.drools.model.PrototypeExpression.prototypeField;
-import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
+import static org.drools.model.prototype.PrototypeDSL.protoPattern;
+import static org.drools.model.prototype.PrototypeDSL.variable;
+import static org.drools.model.prototype.PrototypeExpression.fixedValue;
+import static org.drools.model.prototype.PrototypeExpression.prototypeField;
 import static org.drools.reliability.test.util.PrototypeUtils.DEFAULT_PROTOTYPE_NAME;
 import static org.drools.reliability.test.util.PrototypeUtils.SYNTHETIC_PROTOTYPE_NAME;
-import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
+import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 import static org.drools.reliability.test.util.PrototypeUtils.processResults;
 
 @ExtendWith(BeforeAllMethodExtension.class)
@@ -68,7 +67,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
      * These rules are created in the same way as OnceAfterDefinition in drools-ansible-rulebook-integration
      */
     private Model ruleModel() {
-        Prototype controlPrototype = getPrototype(SYNTHETIC_PROTOTYPE_NAME);
+        PrototypeEvent controlPrototype = getPrototypeEvent(SYNTHETIC_PROTOTYPE_NAME);
         PrototypeVariable controlVar1 = variable(controlPrototype, "c1");
         PrototypeVariable controlVar2 = variable(controlPrototype, "c2");
         PrototypeVariable controlVar3 = variable(controlPrototype, "c3");
@@ -94,20 +93,20 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
         );
 
         // control rule (wrapping original event)
-        PrototypeVariable originalEventVariable = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m");
+        PrototypeVariable originalEventVariable = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m");
         rules.add(
                   rule(RULE_NAME + "_control").metadata(SYNTHETIC_RULE_TAG, true)
                           .build(
                                   guardedPattern(originalEventVariable),
                                   not(duplicateControlPattern(originalEventVariable)),
                                   on(originalEventVariable).execute((drools, event) -> {
-                                      Event controlEvent = createMapBasedEvent(controlPrototype);
-                                      controlEvent.set("sensu.host", event.get("sensu.host")); // groupByAttributes
-                                      controlEvent.set("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
-                                      controlEvent.set("drools_rule_name", RULE_NAME);
-                                      controlEvent.set("event", event);
-                                      controlEvent.set("once_after_time_window", "10 minutes");
-                                      controlEvent.set("events_in_window", 1);
+                                      PrototypeEventInstance controlEvent = controlPrototype.newInstance();
+                                      controlEvent.put("sensu.host", event.get("sensu.host")); // groupByAttributes
+                                      controlEvent.put("sensu.process.type", event.get("sensu.process.type")); // groupByAttributes
+                                      controlEvent.put("drools_rule_name", RULE_NAME);
+                                      controlEvent.put("event", event);
+                                      controlEvent.put("once_after_time_window", "10 minutes");
+                                      controlEvent.put("events_in_window", 1);
                                       drools.insert(controlEvent);
                                       drools.delete(event);
                                   })
@@ -122,13 +121,13 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
                                   protoPattern(controlVar1).expr("drools_rule_name", Index.ConstraintType.EQUAL, RULE_NAME),
                                   not(protoPattern(controlVar2).expr("end_once_after", Index.ConstraintType.EQUAL, RULE_NAME)),
                                   on(controlVar1).execute((drools, c1) -> {
-                                      Event startControlEvent = createMapBasedEvent(controlPrototype)
+                                      PrototypeEventInstance startControlEvent = controlPrototype.newInstance()
                                               .withExpiration(timeAmount.getAmount(), timeAmount.getTimeUnit());
-                                      startControlEvent.set("start_once_after", RULE_NAME);
+                                      startControlEvent.put("start_once_after", RULE_NAME);
                                       drools.insert(startControlEvent);
 
-                                      Event endControlEvent = createMapBasedEvent(controlPrototype);
-                                      endControlEvent.set("end_once_after", RULE_NAME);
+                                      PrototypeEventInstance endControlEvent = controlPrototype.newInstance();
+                                      endControlEvent.put("end_once_after", RULE_NAME);
                                       drools.insert(endControlEvent);
                                   })
                           )
@@ -142,7 +141,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
                                   guardedPattern(originalEventVariable),
                                   duplicateControlPattern,
                                   on(originalEventVariable, duplicateControlPattern.getFirstVariable()).execute((drools, event, control) -> {
-                                      control.set("events_in_window", ((int) control.get("events_in_window")) + 1);
+                                      control.put("events_in_window", ((int) control.get("events_in_window")) + 1);
                                       drools.delete(event);
                                   })
                           )
@@ -158,7 +157,7 @@ class ReliabilityCepOnceAfterTest extends ReliabilityTestBasics {
 
     // We group-by sensu.host and sensu.process.type
     private static PrototypeDSL.PrototypePatternDef duplicateControlPattern(PrototypeVariable originalEventVariable) {
-        return protoPattern(variable(getPrototype(SYNTHETIC_PROTOTYPE_NAME)))
+        return protoPattern(variable(getPrototypeEvent(SYNTHETIC_PROTOTYPE_NAME)))
                 .expr(prototypeField("sensu.host"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.host")) // groupByAttributes
                 .expr(prototypeField("sensu.process.type"), Index.ConstraintType.EQUAL, originalEventVariable, prototypeField("sensu.process.type")) // groupByAttributes
                 .expr(prototypeField("drools_rule_name"), Index.ConstraintType.EQUAL, fixedValue(RULE_NAME));

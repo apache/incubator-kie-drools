@@ -33,6 +33,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.io.ByteArrayResource;
 import org.drools.io.ClassPathResource;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
@@ -3199,53 +3200,57 @@ public class TraitTest extends CommonTraitTest {
     public void testNodePartitioningByProxiesAfterShed(  ) {
         String source = "package t.x  " +
                         "import java.util.*;  " +
-                        "import org.drools.base.factmodel.traits.Thing  " +
-                        "import org.drools.base.factmodel.traits.Traitable  " +
+                        "import org.drools.base.factmodel.traits.Thing  \n" +
+                        "import org.drools.base.factmodel.traits.Traitable  \n" +
                         " " +
-                        "global java.util.List list;  " +
+                        "global java.util.List list;  \n" +
                         " " +
                         "" +
-                        "declare trait A end " +
-                        "declare trait B extends A end " +
-                        "declare trait C extends B end " +
-                        "declare trait D extends A end " +
-                        "declare trait E extends C, D end " +
-                        "declare trait F extends E end " +
-                        "declare trait G extends A end " +
+                        "declare trait A end \n" +
+                        "declare trait B extends A end \n" +
+                        "declare trait C extends B end \n" +
+                        "declare trait D extends A end \n" +
+                        "declare trait E extends C, D end \n" +
+                        "declare trait F extends E end \n" +
+                        "declare trait G extends A end \n" +
                         "" +
-                        "declare Kore " +
-                        "   @Traitable " +
-                        "end " +
+                        "declare Kore \n" +
+                        "   @Traitable \n" +
+                        "end \n" +
                         "" +
-                        "rule Init when " +
+                        "rule Init when \n" +
 
-                        "then " +
-                        "   Kore k = new Kore(); " +
-                        "   don( k, C.class );  " +
-                        "   don( k, D.class );  " +
-                        "   don( k, B.class );  " +
-                        "   don( k, A.class );  " +
-                        "   don( k, F.class );  " +
-                        "   don( k, E.class );  " +
-                        "   don( k, G.class );  " +
-                        "   shed( k, B.class );  " +
-                        "end ";
+                        "then \n" +
+                        "   Kore k = new Kore(); \n" +
+                        "   don( k, C.class );  \n" +
+                        "   don( k, D.class );  \n" +
+                        "   don( k, B.class );  \n" +
+                        "   don( k, A.class );  \n" +
+                        "   don( k, F.class );  \n" +
+                        "   don( k, E.class );  \n" +
+                        "   don( k, G.class );  \n" +
+                        "   shed( k, B.class );  \n" +
+                        "end \n";
 
         for ( char c = 'A'; c <= 'G'; c++ ) {
             String C = "" + c;
             source += "rule Rule" + C +
-                      " when " + C + "() then list.add( '"+ C + "' ); end ";
+                      " when \n" + C + "() \nthen\n" +
+                      " System.out.println(\"Rule " + C + "\");\n" +
+                      " list.add( '"+ C + "' ); \n" +
+                      "end \n";
         }
 
-            source += "rule RuleAll " +
-                        "when  " +
-                        "   A() D() G() " +
-                        "then  " +
-                        "   list.add( 'Z' ); " +
-                        "end " +
+            source += "rule RuleAll \n" +
+                        "when  \n" +
+                        "   A() D() G() \n" +
+                        "then  \n" +
+                        "   list.add( 'Z' ); \n" +
+                        "end \n" +
                         "";
 
 
+        System.out.println(source);
         KieSession ks = getSessionFromString( source );
         TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
@@ -5436,7 +5441,7 @@ public class TraitTest extends CommonTraitTest {
 
         for ( final Object o : ksession.getObjects(object -> object.getClass().getName().contains( "test.A" )) ) {
             InternalFactHandle handle = (InternalFactHandle) ksession.getFactHandle( o );
-            LeftTuple first = handle.getFirstLeftTuple();
+            TupleImpl          first  = handle.getFirstLeftTuple();
             assertThat(first instanceof RuleTerminalNodeLeftTuple).isTrue();
             assertThat(((RuleTerminalNodeLeftTuple) first).getRule().getName()).isEqualTo("Check");
         }

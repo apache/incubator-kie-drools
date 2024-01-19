@@ -181,7 +181,7 @@ public class IndexUtilTest {
         }
 
         @Override
-        public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
+        public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
             return constraintType.isIndexableForNode(nodeType, this, config);
         }
 

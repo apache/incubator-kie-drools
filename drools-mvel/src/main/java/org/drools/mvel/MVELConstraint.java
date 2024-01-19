@@ -227,7 +227,7 @@ public class MVELConstraint extends MutableTypeConstraint<ContextEntry> implemen
         isUnification = false;
     }
 
-    public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
+    public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
         return getConstraintType().isIndexableForNode(nodeType, this, config);
     }
 

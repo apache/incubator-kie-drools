@@ -21,7 +21,6 @@ package org.drools.base.util.index;
 import org.drools.base.base.ValueType;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
-import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.kie.api.KieBaseConfiguration;
@@ -34,7 +33,7 @@ public class IndexUtil {
     static boolean USE_COMPARISON_INDEX = true;
     static boolean USE_COMPARISON_INDEX_JOIN = true;
 
-    public static boolean compositeAllowed(BetaConstraint[] constraints, short betaNodeType, KieBaseConfiguration config) {
+    public static boolean compositeAllowed(BetaConstraint[] constraints, int betaNodeType, KieBaseConfiguration config) {
         // 1) If there is 1 or more unification restrictions it cannot be composite
         // 2) Ensures any non unification restrictions are first
         int firstUnification = -1;
@@ -61,15 +60,15 @@ public class IndexUtil {
         return (firstUnification == -1);
     }
 
-    public static boolean isIndexable(BetaConstraint constraint, short nodeType, KieBaseConfiguration config) {
+    public static boolean isIndexable(BetaConstraint constraint, int nodeType, KieBaseConfiguration config) {
         return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config) && !isBigDecimalEqualityConstraint((IndexableConstraint)constraint);
     }
 
-    public static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {
+    public static boolean canHaveRangeIndex(int nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {
         return canHaveRangeIndexForNodeType(nodeType, config) && areRangeIndexCompatibleOperands(constraint);
     }
 
-    private static boolean canHaveRangeIndexForNodeType(short nodeType, KieBaseConfiguration config) {
+    private static boolean canHaveRangeIndexForNodeType(int nodeType, KieBaseConfiguration config) {
         if (USE_COMPARISON_INDEX_JOIN && config.getOption(BetaRangeIndexOption.KEY).isBetaRangeIndexEnabled()) {
             boolean b = USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
@@ -105,7 +104,7 @@ public class IndexUtil {
         return false;
     }
 
-    public static boolean isIndexableForNode(short nodeType, BetaConstraint constraint, KieBaseConfiguration config) {
+    public static boolean isIndexableForNode(int nodeType, BetaConstraint constraint, KieBaseConfiguration config) {
         if ( !(constraint instanceof IndexableConstraint) ) {
             return false;
         }
@@ -133,7 +132,7 @@ public class IndexUtil {
         return tupleValueExtractor != null && tupleValueExtractor.getValueType()  == ValueType.BIG_DECIMAL_TYPE;
     }
 
-    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, short nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
+    public static boolean[] isIndexableForNode(IndexPrecedenceOption indexPrecedenceOption, int nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
         if (keyDepth < 1) {
             return new boolean[constraints.length];
         }
@@ -143,7 +142,7 @@ public class IndexUtil {
                 findIndexableWithPatternOrder(nodeType, keyDepth, constraints, config);
     }
 
-    private static boolean[] findIndexableWithEqualityPriority(short nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
+    private static boolean[] findIndexableWithEqualityPriority(int nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         if (hasEqualIndexable(keyDepth, indexable, constraints)) {
             return indexable;
@@ -163,7 +162,7 @@ public class IndexUtil {
         return indexable;
     }
 
-    private static boolean[] findIndexableWithPatternOrder(short nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
+    private static boolean[] findIndexableWithPatternOrder(int nodeType, int keyDepth, BetaConstraint[] constraints, KieBaseConfiguration config) {
         boolean[] indexable = new boolean[constraints.length];
         for (int i = 0; i < constraints.length; i++) {
             if (isIndexable(constraints[i], nodeType, config)) {

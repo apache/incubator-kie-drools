@@ -30,6 +30,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.common.PropagationContext;
@@ -56,7 +57,7 @@ public class MockInternalMatch implements InternalMatch {
         return 0;
     }
 
-    public Tuple getTuple() {
+    public TupleImpl getTuple() {
         return null;
     }
 

@@ -27,11 +27,12 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.constraint.BetaConstraint;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.Iterator;
+import org.drools.core.reteoo.MockLeftTupleSink;
+import org.drools.core.reteoo.TupleImpl;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.TupleList;
@@ -41,8 +42,6 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class LeftTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashTableIteratorTest {
 
@@ -82,33 +81,33 @@ public class LeftTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashT
         InternalFactHandle fh12 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
         InternalFactHandle fh13 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
 
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh1, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh2, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh3, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh4, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh5, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh6, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh7, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh8, null, true));
-        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh9, null, true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh1, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh2, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh3, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh4, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh5, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh6, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh7, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh8, new MockLeftTupleSink(0), true));
+        betaMemory.getLeftTupleMemory().add(new LeftTuple(fh9, new MockLeftTupleSink(0), true));
 
         TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList leftTupleList = new TupleList();
-        leftTupleList.add(new JoinNodeLeftTuple(fh10, null, true));
+        leftTupleList.add(new LeftTuple(fh10, new MockLeftTupleSink(0), true));
         hashTable.getTable()[0] = leftTupleList;
         leftTupleList = new TupleList();
-        leftTupleList.add(new JoinNodeLeftTuple(fh11, null, true));
-        leftTupleList.add(new JoinNodeLeftTuple(fh12, null, true));
-        leftTupleList.add(new JoinNodeLeftTuple(fh13, null, true));
+        leftTupleList.add(new LeftTuple(fh11, new MockLeftTupleSink(0), true));
+        leftTupleList.add(new LeftTuple(fh12, new MockLeftTupleSink(0), true));
+        leftTupleList.add(new LeftTuple(fh13, new MockLeftTupleSink(0), true));
         hashTable.getTable()[0].setNext(leftTupleList);
 
         List tableIndexList = createTableIndexListForAssertion(hashTable);
         assertThat(tableIndexList.size()).isEqualTo(5);
 
-        List resultList = new ArrayList<JoinNodeLeftTuple>();
-        Iterator it = betaMemory.getLeftTupleMemory().iterator();
-        for (JoinNodeLeftTuple leftTuple = (JoinNodeLeftTuple) it.next(); leftTuple != null; leftTuple = (JoinNodeLeftTuple) it.next()) {
+        List                    resultList = new ArrayList<LeftTuple>();
+        FastIterator<TupleImpl> it         = betaMemory.getLeftTupleMemory().fullFastIterator();
+        for (TupleImpl leftTuple = it.next(null); leftTuple != null; leftTuple = it.next(leftTuple)) {
             resultList.add(leftTuple);
         }
 
@@ -120,29 +119,21 @@ public class LeftTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashT
         // JBRULES-2574
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
-        TupleList[] entries = new TupleList[10];
-        entries[0] = mock(TupleList.class);
-        entries[5] = mock(TupleList.class);
-        entries[9] = mock(TupleList.class);
+        TupleIndexHashTable hashIndex = new TupleIndexHashTable();
+        TupleList[] entries = hashIndex.getTable();
+        entries[0] = new TupleList();
+        entries[5] = new TupleList();
+        entries[9] = new TupleList();
 
-        JoinNodeLeftTuple[] tuples = new JoinNodeLeftTuple[]{mock(JoinNodeLeftTuple.class), mock(JoinNodeLeftTuple.class), mock(JoinNodeLeftTuple.class)};
+        LeftTuple[] tuples = new LeftTuple[]{new LeftTuple(), new LeftTuple(), new LeftTuple()};
 
         // set return values for methods
-        when(entries[0].getNext()).thenReturn(null);
-        when((entries[0]).getFirst()).thenReturn(tuples[0]);
-
-        when(entries[5].getNext()).thenReturn(null);
-        when((entries[5]).getFirst()).thenReturn(tuples[1]);
-
-        when(entries[9].getNext()).thenReturn(null);
-        when((entries[9]).getFirst()).thenReturn(tuples[2]);
-
-        // create the mock table for the iterator
-        AbstractHashTable table = mock(AbstractHashTable.class);
-        when(table.getTable()).thenReturn(entries);
+        entries[0].addFirst(tuples[0]);
+        entries[5].addFirst(tuples[1]);
+        entries[9].addFirst(tuples[2]);
 
         // create the iterator
-        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator(table);
+        FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator(hashIndex);
 
         // test it
         assertThat(iterator.next()).isSameAs(tuples[0]);

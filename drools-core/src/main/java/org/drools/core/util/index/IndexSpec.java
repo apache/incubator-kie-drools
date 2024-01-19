@@ -30,7 +30,6 @@ import org.drools.core.util.AbstractHashTable.TripleCompositeIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static org.drools.base.util.index.IndexUtil.isEqualIndexable;
 
@@ -38,7 +37,7 @@ public class IndexSpec {
     private ConstraintTypeOperator constraintType = ConstraintTypeOperator.UNKNOWN;
     private IndexedValueReader[]   indexes;
 
-    public IndexSpec(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
+    public IndexSpec(int nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         init(nodeType, constraints, config);
     }
 
@@ -96,7 +95,7 @@ public class IndexSpec {
         return indexes[pos];
     }
 
-    public void init(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
+    public void init(int nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         int keyDepth = config.getCompositeKeyDepth();
         IndexPrecedenceOption indexPrecedenceOption = config.getIndexPrecedenceOption();
         int firstIndexableConstraint = indexPrecedenceOption == IndexPrecedenceOption.EQUALITY_PRIORITY ?
@@ -123,7 +122,7 @@ public class IndexSpec {
         }
     }
 
-    public int determineTypeWithEqualityPriority(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
+    public int determineTypeWithEqualityPriority(int nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         int indexedConstraintPos = 0;
         for (int i = 0; i < constraints.length; i++) {
             if (constraints[i] instanceof IndexableConstraint) {
@@ -141,7 +140,7 @@ public class IndexSpec {
         return indexedConstraintPos;
     }
 
-    public int determineTypeWithPatternOrder(short nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
+    public int determineTypeWithPatternOrder(int nodeType, BetaConstraint[] constraints, RuleBaseConfiguration config) {
         for (int i = 0; i < constraints.length; i++) {
             ConstraintTypeOperator type = ConstraintTypeOperator.getType(constraints[i]);
             if ( type.isIndexableForNode(nodeType, (IndexableConstraint) constraints[i], config) ) {

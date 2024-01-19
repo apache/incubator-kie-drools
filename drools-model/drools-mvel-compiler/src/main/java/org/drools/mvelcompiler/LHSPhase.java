@@ -35,6 +35,7 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -54,6 +55,7 @@ import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.mvelcompiler.util.TypeUtils;
 import org.drools.util.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +134,9 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
             // a part of a larger FieldAccessExpr. e.g. [$p.address] of [$p.address.city]
             return tryParseItAsGetter(n, fieldAccessScope)
                     .orElse(new UnalteredTypedExpression(n));
-        } else if(parentIsArrayAccessExpr(n)) {
+        } else if (fieldAccessScope.getType().map(TypeUtils::isMapAccessField).orElse(false) && parentIsAssignExpr(n)) {
+            return new MapPutExprT(fieldAccessScope, new StringLiteralExpr(n.getName().toString()), rhsOrNull(), fieldAccessScope.getType());
+        } else if (parentIsArrayAccessExpr(n)) {
             return tryParseItAsMap(n, fieldAccessScope)
                     .map(Optional::of)
                     .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
@@ -376,6 +380,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     private boolean parentIsArrayAccessExpr(Node n) {
         return n.getParentNode().filter(p -> p instanceof ArrayAccessExpr).isPresent();
+    }
+
+    private boolean parentIsAssignExpr(Node n) {
+        return n.getParentNode().filter(p -> p instanceof AssignExpr).isPresent();
     }
 
     private Class<?> getRHSType() {

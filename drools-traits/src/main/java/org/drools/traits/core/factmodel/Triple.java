@@ -20,9 +20,9 @@ package org.drools.traits.core.factmodel;
 
 import java.io.Serializable;
 
-import org.drools.core.util.Entry;
+import org.drools.core.util.SingleLinkedEntry;
 
-public interface Triple extends Entry, Serializable {
+public interface Triple extends SingleLinkedEntry, Serializable {
 
     Object getInstance();
 

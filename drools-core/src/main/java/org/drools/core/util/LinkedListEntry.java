@@ -28,7 +28,7 @@ import java.io.ObjectOutput;
  * the same <code>LinkedListNode</code> to multiple <code>LinkedList</code>s
  * where the node can have different previous and next nodes in each list.
  */
-public class LinkedListEntry<T1 extends LinkedListNode<T1>, T2> extends AbstractBaseLinkedListNode<T1> implements Externalizable {
+public class LinkedListEntry<T1 extends DoubleLinkedEntry<T1>, T2> extends AbstractLinkedListNode<T1> implements Externalizable {
 
     private static final long serialVersionUID = 510l;
     private T2 object;
@@ -63,4 +63,5 @@ public class LinkedListEntry<T1 extends LinkedListNode<T1>, T2> extends Abstract
     public boolean equals(final Object other) {
         return this.object.equals(other);
     }
+
 }

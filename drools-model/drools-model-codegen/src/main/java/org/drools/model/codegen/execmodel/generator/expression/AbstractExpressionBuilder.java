@@ -184,7 +184,7 @@ public abstract class AbstractExpressionBuilder {
             return false;
         }
         return usedDeclarations.stream()
-                .map( context::getDeclarationById )
+                .map( context::getTypedDeclarationById)
                 .noneMatch(optDecl -> optDecl.isPresent() && optDecl.get().isGlobal() );
     }
 

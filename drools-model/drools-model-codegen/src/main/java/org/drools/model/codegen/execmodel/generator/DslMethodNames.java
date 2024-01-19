@@ -22,6 +22,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import org.drools.model.prototype.PrototypeDSL;
 
 public class DslMethodNames {
 
@@ -70,6 +71,13 @@ public class DslMethodNames {
     public static final String EVAL_CALL = "eval";
     public static final String NO_OP_EXPR = "NO_OP_EXPR";
 
+    // prototypes
+    public static final NameExpr PROTO_DSL_NAMESPACE = new NameExpr(PrototypeDSL.class.getCanonicalName());
+    public static final String PROTO_PATTERN_CALL = "protoPattern";
+    public static final String PROTO_EXPR_CALL = "expr";
+    public static final String PROTOTYPE_FACT_CALL = "prototypeFact";
+    public static final String PROTOTYPE_VARIABLE_CALL = "variable";
+
     // expressions
     public static final String EVAL_EXPR_CALL = "expr";
     public static final String EXPR_CALL = "expr";
@@ -108,5 +116,9 @@ public class DslMethodNames {
 
     public static boolean isDslTopLevelNamespace(Expression expr) {
         return DSL_NAMESPACE.equals(expr);
+    }
+
+    public static MethodCallExpr createProtoDslTopLevelMethod(String name) {
+        return new MethodCallExpr(PROTO_DSL_NAMESPACE.clone(), name);
     }
 }

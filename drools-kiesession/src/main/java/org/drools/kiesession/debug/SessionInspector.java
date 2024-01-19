@@ -43,7 +43,7 @@ import org.kie.api.runtime.KieSession;
 public class SessionInspector {
 
     private StatefulKnowledgeSessionImpl   session;
-    private Map<Short, NetworkNodeVisitor> visitors;
+    private Map<Integer, NetworkNodeVisitor> visitors;
 
     // default initializer
     {
@@ -85,6 +85,8 @@ public class SessionInspector {
         this.visitors.put( NodeTypeEnums.FromNode,
                            FromNodeVisitor.INSTANCE );
         this.visitors.put( NodeTypeEnums.LeftInputAdapterNode,
+                           LeftInputAdapterNodeVisitor.INSTANCE );
+        this.visitors.put( NodeTypeEnums.AlphaTerminalNode,
                            LeftInputAdapterNodeVisitor.INSTANCE );
     }
     

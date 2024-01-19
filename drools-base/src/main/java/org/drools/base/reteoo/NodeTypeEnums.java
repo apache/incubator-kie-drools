@@ -21,93 +21,113 @@ package org.drools.base.reteoo;
 import org.drools.base.common.NetworkNode;
 
 /**
- * 
- * ObjectSource   : < NodeTypeEnums.ObjectSource * 
- * LeftTupleSource: > LeftTupleSource
- * BetaNode       : > BetaNode
- * 
- * ObjectSink     : % 2 == 0
- * LeftSource     : % 2 != 0
  *
  */
 public class NodeTypeEnums {
-    // ObjectSource, ObjectSink
-    public static final short EntryPointNode          = 10;
-    public static final short ReteNode                = 20;
-    public static final short ObjectTypeNode          = 30;
-    public static final short AlphaNode               = 40;
+    public static final int ObjectSourceMask = 1;
+    public static final int TupleSourceMask = 1 << 2;
+    public static final int ObjectSinkMask = 1 << 3;
+    public static final int TupleSinkMask        = 1 << 4;
+    public static final int TupleNodeMask        = 1 << 5;
+    public static final int LeftInputAdapterMask = 1 << 6;
+    public static final int TerminalNodeMask = 1 << 7;
+    public static final int EndNodeMask = 1 << 8;
+    public static final int BetaMask    = 1 << 9;
 
-    public static final short WindowNode              = 60;
+    public static final int MemoryFactoryMask = 1 << 10;
+    
+    public static final int shift = 15; // This must shift the node IDs, enough so their bits are not mutated by the masks.
+
+    // ObjectSource, ObjectSink
+    public static final int EntryPointNode          = (100 << shift) | ObjectSourceMask | ObjectSinkMask;
+    public static final int ReteNode                = (120 << shift) | ObjectSourceMask | ObjectSinkMask;
+    public static final int ObjectTypeNode          = (130 << shift) | ObjectSourceMask | ObjectSinkMask;
+    public static final int AlphaNode               = (140 << shift) | ObjectSourceMask | ObjectSinkMask;
+    public static final int WindowNode              = (150 << shift) | ObjectSourceMask | ObjectSinkMask | MemoryFactoryMask;
 
     // ObjectSource, LeftTupleSink
-    public static final short RightInputAdapterNode   = 71; // also ObjectSource %2 != 0
+    public static final int RightInputAdapterNode   = (160 << shift) | ObjectSourceMask | TupleSinkMask |
+                                                      TupleNodeMask | EndNodeMask | MemoryFactoryMask;
+    // LefTTupleSink, LeftTupleNode
+    public static final int RuleTerminalNode        = (180 << shift) | TupleSinkMask | TerminalNodeMask |
+                                                      TupleNodeMask | EndNodeMask | MemoryFactoryMask;
+    public static final int QueryTerminalNode       = (190 << shift) | TupleSinkMask | TerminalNodeMask |
+                                                      TupleNodeMask | EndNodeMask | MemoryFactoryMask;
 
-    public static final short ObjectSource            = 80;
+    // LeftTupleSource, LeftTupleNode
+    public static final int LeftInputAdapterNode    = (210 << shift) | ObjectSinkMask | TupleSourceMask |
+                                                      TupleNodeMask | LeftInputAdapterMask | MemoryFactoryMask;
+    public static final int AlphaTerminalNode       = (220 << shift) | ObjectSinkMask | TupleSourceMask | TupleNodeMask | LeftInputAdapterMask | MemoryFactoryMask;
 
-    // LefTTupleSink
-    public static final short QueryTerminalNode       = 91;
-    public static final short RuleTerminalNode        = 101;
+    // LeftTupleSource, LefTTupleSink, LeftTupleNode
+    public static final int EvalConditionNode       = (230 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int TimerConditionNode      = (240 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int AsyncSendNode           = (250 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int AsyncReceiveNode        = (260 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int FromNode                = (270 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int ReactiveFromNode        = (280 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
 
-    // LeftTupleSource, LefTTupleSink
-    public static final short LeftTupleSource         = 111;
-    public static final short LeftInputAdapterNode    = 120; // also ObjectSink %2 == 0
-    public static final short EvalConditionNode       = 131;
-    public static final short TimerConditionNode      = 133;
-    public static final short AsyncSendNode           = 135;
-    public static final short AsyncReceiveNode        = 137;
-    public static final short QueryRiaFixerNode       = 141;
-    public static final short FromNode                = 151;
-    public static final short ReactiveFromNode        = 153;
-    public static final short UnificationNode         = 165; // these two need to be merged
-    public static final short QueryElementNode        = 165;
-    public static final short ConditionalBranchNode   = 167;
+    public static final int QueryElementNode        = (300 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int ConditionalBranchNode   = (310 << shift) | TupleSourceMask | TupleSinkMask | TupleNodeMask | MemoryFactoryMask;
 
-    // LeftTupleSource, LefTTupleSink, BetaNode
-    public static final short BetaNode                = 171;
-    public static final short JoinNode                = 181;
-    public static final short NotNode                 = 191;
-    public static final short ExistsNode              = 201;
-    public static final short AccumulateNode          = 211;
-    public static final short ForallNotNode           = 221;
-    public static final short ElseNode                = 231;
-    //public static final short CollectNode          = 5;   // no longer used, since accumulate nodes execute collect logic now
+    // LeftTupleSource, LefTTupleSink, LeftTupleNode, BetaNode
+    public static final int BetaNode                = (320 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int JoinNode                = (330 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int NotNode                 = (340 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int ExistsNode              = (350 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
+    public static final int AccumulateNode          = (360 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask | MemoryFactoryMask;
 
-    // mdp not sure what number this should be yet
-    public static final short OperatorNode            = 19;
+    public static final int MockBetaNode             = (400 << shift) | TupleSourceMask | TupleSinkMask | BetaMask | TupleNodeMask;
+    public static final int MockAlphaNode            = (500 << shift) | ObjectSourceMask | ObjectSinkMask;
+
 
     public static boolean isObjectSource(NetworkNode node) {
-        return node.getType() < NodeTypeEnums.ObjectSource;
+        return (node.getType() & ObjectSourceMask) != 0;
     }
 
     public static boolean isObjectSink(NetworkNode node) {
-        return node.getType() % 2 == 0;
+        return (node.getType() & ObjectSinkMask) != 0;
     }
 
     public static boolean isLeftTupleSource(NetworkNode node) {
-        return node.getType() > NodeTypeEnums.LeftTupleSource;
+        return (node.getType() & TupleSourceMask) != 0;
     }
 
     public static boolean isBetaNode(NetworkNode node) {
-        return node.getType() > NodeTypeEnums.BetaNode;
+        return (node.getType() & BetaMask) != 0;
     }
 
     public static boolean isBetaNodeWithRian(NetworkNode node) {
-        return node.getType() > NodeTypeEnums.BetaNode && node.isRightInputIsRiaNode();
+        return isBetaNode(node) && node.isRightInputIsRiaNode();
     }
 
     public static boolean isTerminalNode(NetworkNode node) {
-        return node.getType() == QueryTerminalNode || node.getType() == RuleTerminalNode;
+        return (node.getType() & TerminalNodeMask) != 0;
     }
 
     public static boolean isLeftTupleSink(NetworkNode node) {
-        return node.getType() % 2 != 0;
+        return (node.getType() & TupleSinkMask) != 0;
     }
 
     public static boolean isEndNode(NetworkNode node) {
-        return NodeTypeEnums.isTerminalNode(node) || NodeTypeEnums.RightInputAdapterNode == node.getType();
+        return (node.getType() & EndNodeMask) != 0;
     }
 
     public static boolean isLeftTupleNode(NetworkNode node) {
-        return isLeftTupleSource(node) || isLeftTupleSink(node);
+        return (node.getType() & TupleNodeMask) != 0;
     }
+
+    public static boolean isMemoryFactory(NetworkNode node) {
+        return (node.getType() & MemoryFactoryMask) != 0;
+    }
+    /**
+     * This is here because AlphaTerminalNode extends LeftInputAdapter node, so cannot be switched by getType return,
+     * when all you need ot know is if it's an lian.
+     * @param node
+     * @return
+     */
+    public static boolean isLeftInputAdapterNode(NetworkNode node) {
+        return (node.getType() & LeftInputAdapterMask) != 0;
+    }
+
 }

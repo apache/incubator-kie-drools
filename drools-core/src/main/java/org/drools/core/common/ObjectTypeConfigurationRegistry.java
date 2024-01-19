@@ -25,15 +25,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
-import org.drools.base.facttemplates.Fact;
-import org.drools.base.facttemplates.FactImpl;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ClassObjectTypeConf;
-import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.PrototypeTypeConf;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.consequence.InternalMatch;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
     private static final long serialVersionUID = 510l;
@@ -73,10 +72,8 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
     private Object getKey( Object object ) {
         if (object instanceof RuleTerminalNodeLeftTuple) {
             return ClassObjectType.Match_ObjectType.getClassType();
-        } else if (object instanceof FactImpl) {
-            return ((FactImpl) object).getFactTemplate().getName();
-        } else if (object instanceof Fact) {
-            return ((Fact) object).getFactTemplate().getName();
+        } else if (object instanceof PrototypeFactInstance p) {
+            return p.getPrototype().getFullName();
         } else if (object instanceof InternalMatch) {
             return ClassObjectType.Match_ObjectType.getClassType();
         }
@@ -84,8 +81,8 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
     }
 
     private ObjectTypeConf createObjectTypeConf(EntryPointId entrypoint, Object key, Object object) {
-        return object instanceof Fact ?
-                new FactTemplateTypeConf( entrypoint, ((Fact) object).getFactTemplate(), this.ruleBase ) :
+        return object instanceof PrototypeFactInstance p ?
+                new PrototypeTypeConf(entrypoint, p.getPrototype(), this.ruleBase ) :
                 new ClassObjectTypeConf( entrypoint, (Class<?>) key, this.ruleBase );
     }
 

@@ -20,7 +20,6 @@ package org.drools.core.reteoo;
 
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
 
 public interface TupleMemory {
 
@@ -42,36 +41,34 @@ public interface TupleMemory {
      * could potentially be in the wrong bucket. So the bucket matches check always checks to ignore the first facthandle if it's
      * the same as the context fact.
      */
-    Tuple getFirst( Tuple tuple );
+    TupleImpl getFirst(TupleImpl tuple );
     
-    void removeAdd( Tuple tuple );
+    void removeAdd(TupleImpl tuple );
 
-    void add( Tuple tuple );
+    void add(TupleImpl tuple );
 
-    void remove( Tuple tuple );
+    void remove(TupleImpl tuple );
 
     boolean isIndexed();
 
     int size();
 
-    Iterator<Tuple> iterator();
-    
-    FastIterator<AbstractTuple> fastIterator();
+//    Iterator<TupleImpl> iterator();
+
+    FastIterator<TupleImpl> fastIterator();
 
     /**
      * Iterates the entire data structure, regardless of whether TupleMemory is hashed or not.
      * @return
      */
-    FastIterator<AbstractTuple> fullFastIterator();
+    FastIterator<TupleImpl> fullFastIterator();
 
     /**
      * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
      * @param tuple
      * @return
      */
-    FastIterator<AbstractTuple> fullFastIterator( AbstractTuple tuple );
-
-    Tuple[] toArray();
+    FastIterator<TupleImpl> fullFastIterator(TupleImpl tuple );
 
     IndexType getIndexType();
 

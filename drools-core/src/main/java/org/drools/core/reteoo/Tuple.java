@@ -24,7 +24,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.util.Entry;
+import org.drools.core.util.DoubleLinkedEntry;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -33,7 +33,7 @@ import org.kie.api.runtime.rule.FactHandle;
  * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested pattern.
  * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
  */
-public interface Tuple extends BaseTuple, Serializable, Entry<AbstractTuple> {
+public interface Tuple<T extends TupleImpl> extends BaseTuple, Serializable, DoubleLinkedEntry<TupleImpl> {
 
     short NONE   = 0;
     short INSERT = 1;
@@ -64,7 +64,7 @@ public interface Tuple extends BaseTuple, Serializable, Entry<AbstractTuple> {
      * @return a ReteTuple containing the "elements" first elements
      *         of this tuple or null if "elements" is greater than size;
      */
-    Tuple getSubTuple(final int elements);
+    T getSubTuple(final int elements);
 
     Object getContextObject();
     void setContextObject( final Object object );
@@ -76,11 +76,12 @@ public interface Tuple extends BaseTuple, Serializable, Entry<AbstractTuple> {
         return getStagedType() == DELETE || getStagedType() == NORMALIZED_DELETE;
     }
 
-    Tuple getStagedPrevious();
-    void setStagedPrevious( Tuple stagePrevious );
+    T getStagedPrevious();
+    void setStagedPrevious( T stagePrevious );
 
-    <T extends Tuple> T getStagedNext();
-    void setStagedNext( Tuple stageNext );
+    T getStagedNext();
+
+    void setStagedNext( T stageNext );
 
     void clear();
     void clearStaged();
@@ -95,41 +96,35 @@ public interface Tuple extends BaseTuple, Serializable, Entry<AbstractTuple> {
 
     void setPropagationContext( PropagationContext propagationContext );
 
-    Tuple getPrevious();
-
-    void setPrevious( Tuple previous );
-
-    <S extends Sink> S getTupleSink();
+    Sink getSink();
 
     TupleList getMemory();
 
-    void setMemory( TupleList memory );
+    void setMemory(TupleList memory );
 
-    Tuple getRootTuple();
+    T getRootTuple();
 
-    Tuple skipEmptyHandles();
+    T skipEmptyHandles();
 
-    LeftTuple getFirstChild();
+    T getFirstChild();
 
-    void setFirstChild( LeftTuple firstChild );
+    void setFirstChild( T firstChild );
 
-    LeftTuple getLastChild();
+    T getLastChild();
 
-    void setLastChild( LeftTuple firstChild );
+    void setLastChild( T firstChild );
 
-    <T extends Tuple> T getHandlePrevious();
+    T getParent();
 
-    Tuple getParent();
+    T getHandlePrevious();
 
-    void setHandlePrevious( Tuple leftParentLeft );
+    void setHandlePrevious( T leftParentLeft );
 
-    <T extends Tuple> T getHandleNext();
+    T getHandleNext();
 
-    void setHandleNext( Tuple leftParentright );
+    void setHandleNext( T leftParentright );
 
-    ObjectTypeNode.Id getInputOtnId();
-
-    <N extends NetworkNode> N getTupleSource();
+    ObjectTypeNodeId getInputOtnId();
 
     boolean isExpired();
 

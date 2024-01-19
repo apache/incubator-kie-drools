@@ -206,7 +206,7 @@ public class ObjectTypeNodeParser {
 
             handler.startBetaNode(betaNode);
             handler.endBetaNode(betaNode);
-        } else if (sink.getType() == NodeTypeEnums.LeftInputAdapterNode) {
+        } else if (NodeTypeEnums.isLeftInputAdapterNode(sink)) {
             LeftInputAdapterNode leftInputAdapterNode = (LeftInputAdapterNode) sink;
 
             handler.startLeftInputAdapterNode(leftInputAdapterNode);

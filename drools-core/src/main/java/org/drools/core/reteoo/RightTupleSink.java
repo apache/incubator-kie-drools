@@ -23,13 +23,16 @@ import org.drools.core.common.ReteEvaluator;
 
 public interface RightTupleSink extends Sink {
 
-    void retractRightTuple(final RightTuple rightTuple,
+    void retractRightTuple(final TupleImpl rightTuple,
                            final PropagationContext context,
                            final ReteEvaluator reteEvaluator);
     
-    void modifyRightTuple(final RightTuple rightTuple,
+    void modifyRightTuple(final TupleImpl rightTuple,
                           final PropagationContext context,
                           final ReteEvaluator reteEvaluator);
 
-    ObjectTypeNode.Id getRightInputOtnId();
+    default ObjectTypeNodeId getRightInputOtnId() {
+        return null;
+    }
+
 }

@@ -25,4 +25,8 @@ public interface Variable<T> extends Argument<T> {
     default boolean isFact() {
         return true;
     }
+
+    default boolean isPrototype() {
+        return false;
+    }
 }

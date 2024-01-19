@@ -31,6 +31,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightTuple;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
@@ -86,7 +87,7 @@ public class WorkingMemoryReteExpireAction
 
         factHandle.forEachLeftTuple( ObjectTypeNode::expireLeftTuple );
         factHandle.forEachRightTuple( rt -> {
-            rt.setExpired(reteEvaluator, context);
+            ((RightTuple)rt).setExpired(reteEvaluator, context);
             ObjectTypeNode.expireRightTuple(rt);
         } );
 
@@ -148,7 +149,7 @@ public class WorkingMemoryReteExpireAction
             DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
             linkedTuples.forEachLeftTuple( partition, ObjectTypeNode::expireLeftTuple );
             linkedTuples.forEachRightTuple( partition, rt -> {
-                rt.setExpired(reteEvaluator, context);
+                ((RightTuple)rt).setExpired(reteEvaluator, context);
                 ObjectTypeNode.expireRightTuple(rt);
             });
 

@@ -26,6 +26,7 @@ import org.kie.api.KieServices;
 import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
@@ -214,6 +215,25 @@ public class KnowledgeBaseConfigurationTest {
         assertThat(config.getOption(EqualityBehaviorOption.KEY)).isEqualTo(EqualityBehaviorOption.IDENTITY);
         // checking the string based getProperty() method
         assertThat(config.getProperty(EqualityBehaviorOption.PROPERTY_NAME)).isEqualTo("identity");
+    }
+
+    @Test
+    public void testPrototypesConfiguration() {
+        // setting the option using the type safe method
+        config.setOption(PrototypesOption.ALLOWED);
+
+        // checking the type safe getOption() method
+        assertThat(config.getOption(PrototypesOption.KEY)).isEqualTo(PrototypesOption.ALLOWED);
+        // checking the string based getProperty() method
+        assertThat(config.getProperty(PrototypesOption.PROPERTY_NAME)).isEqualTo("allowed");
+
+        // setting the options using the string based setProperty() method
+        config.setProperty( PrototypesOption.PROPERTY_NAME, "disabled" );
+
+        // checking the type safe getOption() method
+        assertThat(config.getOption(PrototypesOption.KEY)).isEqualTo(PrototypesOption.DISABLED);
+        // checking the string based getProperty() method
+        assertThat(config.getProperty(PrototypesOption.PROPERTY_NAME)).isEqualTo("disabled");
     }
     
     @Test

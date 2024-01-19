@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 import java.util.Objects;
 
 import org.drools.base.util.IndexedValueReader;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 
@@ -147,7 +148,7 @@ public abstract class AbstractHashTable
     
     public abstract int getResizeHashcode(TupleList entry);
 
-    public TupleList<TupleList>[] getTable() {
+    public <T extends TupleImpl> TupleList[] getTable() {
         return this.table;
     }
 
@@ -187,7 +188,7 @@ public abstract class AbstractHashTable
 
     public interface Index extends Externalizable {
         IndexedValueReader getFieldIndex(int index);
-        HashEntry hashCodeOf(Tuple tuple, boolean left);
+        HashEntry hashCodeOf(TupleImpl tuple, boolean left);
     }
 
     public static class SingleIndex implements Index {
@@ -232,7 +233,7 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public HashEntry hashCodeOf(Tuple tuple, boolean left) {
+        public HashEntry hashCodeOf(TupleImpl tuple, boolean left) {
             return hashEntry.set(startResult, index.indexedValueOf( tuple, left ) );
         }
     }
@@ -264,7 +265,7 @@ public abstract class AbstractHashTable
 
         @Override
         protected void copyStateInto(TupleList other) {
-            super.copyStateInto( other );
+            super.copyStateInto(other);
             ( (IndexTupleList) other ).hashEntry = hashEntry;
             ( (IndexTupleList) other ).index = index;
             ( (IndexTupleList) other ).hashCode = hashCode;
@@ -331,7 +332,7 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public HashEntry hashCodeOf(Tuple tuple, boolean left) {
+        public HashEntry hashCodeOf(TupleImpl tuple, boolean left) {
             return hashEntry.set(startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ) );
         }
     }
@@ -393,7 +394,7 @@ public abstract class AbstractHashTable
         }
 
         @Override
-        public HashEntry hashCodeOf(Tuple tuple, boolean left) {
+        public HashEntry hashCodeOf(TupleImpl tuple, boolean left) {
             return hashEntry.set(startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ), index3.indexedValueOf( tuple, left ) );
         }
     }

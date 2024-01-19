@@ -32,6 +32,8 @@ import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.model.codegen.execmodel.generator.RuleContext.DIALECT_ATTRIBUTE;
+
 public class PackageParser {
 
     Logger logger = LoggerFactory.getLogger(PackageParser.class);
@@ -59,7 +61,7 @@ public class PackageParser {
     private Rule parseRule( RuleDescr ruleDescr ) {
         RuleContext context = new ImpactAnalysisRuleContext(kbuilder, packageModel, pkgRegistry.getTypeResolver(), ruleDescr);
         context.addGlobalDeclarations();
-        context.setDialectFromAttributes( packageDescr.getAttributes() );
+        context.setDialectFromAttribute( packageDescr.getAttribute( DIALECT_ATTRIBUTE ) );
         Rule rule = new Rule( packageDescr.getName(), ruleDescr.getName(), ruleDescr.getResource().getSourcePath() );
 
         logger.debug("Parsing : " + rule.getName());

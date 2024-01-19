@@ -18,7 +18,6 @@ import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.positional.Functions.Function1;
 import org.drools.core.positional.Functions.Function2;
 import org.drools.core.positional.PositionalConstraint.PositionalContextEntry;
@@ -26,14 +25,10 @@ import org.drools.core.positional.Predicates.Predicate1;
 import org.drools.core.positional.Predicates.Predicate2;
 import org.drools.core.positional.Predicates.Predicate3;
 import org.drools.core.positional.Predicates.Predicate4;
-import org.drools.core.positional.Predicates.Predicate5;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.AbstractHashTable.HashEntry;
-import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.index.IndexMemory;
 import org.drools.core.util.index.IndexSpec;
 import org.drools.core.util.index.TupleList;
@@ -46,7 +41,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PositionalConstraint extends MutableTypeConstraint<PositionalContextEntry> implements BetaConstraints<PositionalContextEntry>, IndexableConstraint, IntervalProviderConstraint  {
@@ -146,12 +140,12 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public void updateFromTuple(PositionalContextEntry context, ReteEvaluator reteEvaluator, Tuple tuple) {
+    public void updateFromTuple(PositionalContextEntry context, ValueResolver valueResolver, Tuple tuple) {
         context.tp = tuple;
     }
 
     @Override
-    public void updateFromFactHandle(PositionalContextEntry context, ReteEvaluator reteEvaluator, FactHandle handle) {
+    public void updateFromFactHandle(PositionalContextEntry context, ValueResolver valueResolver, FactHandle handle) {
         context.fh = handle;
     }
 
@@ -215,19 +209,19 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType) {
+    public BetaMemory createBetaMemory(RuleBaseConfiguration config, int nodeType) {
 
         if (config.getCompositeKeyDepth() < 1) {
-            return new BetaMemory( config.isSequential() ? null : new TupleList(),
-                                   new TupleList(),
-                                   createContext(),
-                                   nodeType );
+            return new BetaMemory(config.isSequential() ? null : new TupleList(),
+                                  new TupleList(),
+                                  createContext(),
+                                  nodeType );
         }
 
-        return new BetaMemory( createLeftMemory(config, indexSpec),
-                               createRightMemory(config, indexSpec),
-                               createContext(),
-                               nodeType );
+        return new BetaMemory(createLeftMemory(config, indexSpec),
+                              createRightMemory(config, indexSpec),
+                              createContext(),
+                              nodeType );
     }
 
     private static TupleMemory createRightMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {
@@ -276,12 +270,12 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public void init(BuildContext context, short betaNodeType) {
+    public void init(BuildContext context, int betaNodeType) {
 
     }
 
     @Override
-    public void initIndexes(int depth, short betaNodeType, RuleBaseConfiguration config) {
+    public void initIndexes(int depth, int betaNodeType, RuleBaseConfiguration config) {
         throw new UnsupportedOperationException();
     }
 
@@ -313,7 +307,7 @@ public class PositionalConstraint extends MutableTypeConstraint<PositionalContex
     }
 
     @Override
-    public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
+    public boolean isIndexable(int nodeType, KieBaseConfiguration config) {
         return false;
     }
 
