@@ -53,21 +53,11 @@
     <module>kogito-serverless-workflow-utils</module>
     <module>kogito-jsonpath-expression</module>
     <module>kogito-jq-expression</module>
+    <module>kogito-serverless-workflow-executor</module>
+    <module>kogito-serverless-workflow-executor-tests</module>
   </modules>
 
   <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-serverless-workflow-executor</module>
-        <module>kogito-serverless-workflow-executor-tests</module>
-      </modules>
-    </profile>
     <profile>
       <id>full</id>
       <activation>

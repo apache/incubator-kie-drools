@@ -145,20 +145,8 @@
     <module>addons</module>
     <module>kogito-workitems</module>
     <module>kogito-serverless-workflow</module>
+    <module>kogito-maven-plugin</module>
+    <module>springboot</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-maven-plugin</module>
-        <module>springboot</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>

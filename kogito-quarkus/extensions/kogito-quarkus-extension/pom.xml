@@ -37,21 +37,8 @@
   <modules>
     <module>kogito-quarkus-deployment</module>
     <module>kogito-quarkus</module>
+    <module>kogito-quarkus-integration-test</module>
+    <module>kogito-quarkus-integration-test-maven-devmode</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-quarkus-integration-test</module>
-        <module>kogito-quarkus-integration-test-maven-devmode</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

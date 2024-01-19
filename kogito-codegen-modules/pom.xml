@@ -40,24 +40,11 @@
     <module>kogito-codegen-api</module>
     <module>kogito-codegen-processes</module>
     <module>kogito-codegen-processes-integration-tests</module>
+    <module>kogito-codegen-rules</module>
+    <module>kogito-codegen-decisions</module>
+    <module>kogito-codegen-predictions</module>
+    <module>kogito-codegen-integration-tests</module>
+    <module>kogito-codegen-sample</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-codegen-rules</module>
-        <module>kogito-codegen-decisions</module>
-        <module>kogito-codegen-predictions</module>
-        <module>kogito-codegen-integration-tests</module>
-        <module>kogito-codegen-sample</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

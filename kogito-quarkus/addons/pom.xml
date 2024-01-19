@@ -49,28 +49,18 @@
     <module>fabric8-kubernetes-service-catalog</module>
     <module>microprofile-config-service-catalog</module>
     <module>jobs</module>
+    <module>explainability</module>
+    <module>mail</module>
+    <module>monitoring</module>
+    <module>process-svg</module>
+    <module>task-notification</module>
+    <module>tracing-decision</module>
+    <module>task-management</module>
+    <module>marshallers</module>
+    <module>process-definitions</module>
   </modules>
 
   <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>explainability</module>
-        <module>mail</module>
-        <module>monitoring</module>
-        <module>process-svg</module>
-        <module>task-notification</module>
-        <module>tracing-decision</module>
-        <module>task-management</module>
-        <module>marshallers</module>
-        <module>process-definitions</module>
-      </modules>
-    </profile>
     <profile>
       <id>full</id>
       <activation>

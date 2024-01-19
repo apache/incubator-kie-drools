@@ -36,21 +36,8 @@
   <modules>
     <module>common</module>
     <module>management</module>
+    <module>messaging</module>
+    <module>knative-eventing</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>messaging</module>
-        <module>knative-eventing</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

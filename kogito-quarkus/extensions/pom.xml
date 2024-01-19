@@ -52,25 +52,15 @@
     <module>kogito-quarkus-extension-common</module>
     <module>kogito-quarkus-workflow-extension-common</module>
     <module>kogito-quarkus-serverless-workflow-extension</module>
+    <module>kogito-quarkus-extension</module>
+    <module>kogito-quarkus-incubation-common</module>
+    <module>kogito-quarkus-processes-extension</module>
+    <module>kogito-quarkus-rules-extension</module>
+    <module>kogito-quarkus-decisions-extension</module>
+    <module>kogito-quarkus-predictions-extension</module>
   </modules>
 
   <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-quarkus-extension</module>
-        <module>kogito-quarkus-incubation-common</module>
-        <module>kogito-quarkus-processes-extension</module>
-        <module>kogito-quarkus-rules-extension</module>
-        <module>kogito-quarkus-decisions-extension</module>
-        <module>kogito-quarkus-predictions-extension</module>
-      </modules>
-    </profile>
     <profile>
       <id>integration-test-modules</id>
       <activation>

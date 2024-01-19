@@ -36,25 +36,12 @@
 
   <modules>
     <module>jdbc</module>
+    <module>infinispan</module>
+    <module>kafka</module>
+    <module>filesystem</module>
+    <module>mongodb</module>
+    <module>postgresql</module>
+    <module>rocksdb</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>infinispan</module>
-        <module>kafka</module>
-        <module>filesystem</module>
-        <module>mongodb</module>
-        <module>postgresql</module>
-        <module>rocksdb</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

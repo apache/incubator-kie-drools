@@ -36,23 +36,10 @@
 
   <modules>
     <module>process</module>
+    <module>decisions</module>
+    <module>predictions</module>
+    <module>rules</module>
+    <module>mongodb</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>decisions</module>
-        <module>predictions</module>
-        <module>rules</module>
-        <module>mongodb</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

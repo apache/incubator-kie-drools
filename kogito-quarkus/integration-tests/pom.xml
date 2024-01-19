@@ -36,33 +36,20 @@
 
   <modules>
     <module>integration-tests-quarkus-openapi-client</module>
+    <!-- TODO:Figure out Kafka containers, ports, resources -->
+    <module>integration-tests-quarkus-rules</module>
+    <module>integration-tests-quarkus-legacy-rules</module>
+    <module>integration-tests-quarkus-decisions</module>
+    <!-- module>integration-tests-quarkus-predictions</module -->
+    <module>integration-tests-quarkus-resteasy-classic</module>
+    <module>integration-tests-quarkus-resteasy-reactive</module>
+    <module>integration-tests-kogito-plugin</module>
+    <module>integration-tests-quarkus-norest</module>
+    <module>integration-tests-quarkus-processes</module>
+    <module>integration-tests-quarkus-processes-reactive</module>
+    <module>integration-tests-quarkus-processes-persistence</module>
+    <module>integration-tests-quarkus-source-files</module>
+    <module>integration-tests-quarkus-gradle</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <!-- TODO:Figure out Kafka containers, ports, resources -->
-        <module>integration-tests-quarkus-rules</module>
-        <module>integration-tests-quarkus-legacy-rules</module>
-        <module>integration-tests-quarkus-decisions</module>
-        <!-- module>integration-tests-quarkus-predictions</module -->
-        <module>integration-tests-quarkus-resteasy-classic</module>
-        <module>integration-tests-quarkus-resteasy-reactive</module>
-        <module>integration-tests-kogito-plugin</module>
-        <module>integration-tests-quarkus-norest</module>
-        <module>integration-tests-quarkus-processes</module>
-        <module>integration-tests-quarkus-processes-reactive</module>
-        <module>integration-tests-quarkus-processes-persistence</module>
-        <module>integration-tests-quarkus-source-files</module>
-        <module>integration-tests-quarkus-gradle</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
