@@ -40,20 +40,7 @@
     <module>deployment</module>
     <module>runtime</module>
     <module>integration-tests-sw</module>
+    <module>integration-tests-process</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>integration-tests-process</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

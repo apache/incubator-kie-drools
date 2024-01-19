@@ -44,22 +44,9 @@
     <module>kogito-addons-jobs-service</module>
     <module>jobs-service-messaging-kafka</module>
     <module>jobs-service-messaging-http</module>
+    <module>jobs-service-infinispan</module>
+    <module>jobs-service-mongodb</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>jobs-service-infinispan</module>
-        <module>jobs-service-mongodb</module>
-      </modules>
-    </profile>
-  </profiles>
 
   <dependencyManagement>
     <dependencies>

@@ -34,21 +34,8 @@
   <modules>
     <module>kogito-addons-quarkus-data-index-persistence-common</module>
     <module>kogito-addons-quarkus-data-index-persistence-postgresql</module>
+    <module>kogito-addons-quarkus-data-index-persistence-infinispan</module>
+    <module>kogito-addons-quarkus-data-index-persistence-mongodb</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-addons-quarkus-data-index-persistence-infinispan</module>
-        <module>kogito-addons-quarkus-data-index-persistence-mongodb</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

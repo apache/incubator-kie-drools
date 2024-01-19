@@ -39,23 +39,11 @@
     <module>persistence-commons-protobuf</module>
     <module>persistence-commons-jpa</module>
     <module>persistence-commons-postgresql</module>
+    <module>persistence-commons-infinispan</module>
+    <module>persistence-commons-mongodb</module>
+    <module>persistence-commons-redis</module>
+    <module>persistence-commons-reporting-parent</module>
     <module>kogito-ddl</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>persistence-commons-infinispan</module>
-        <module>persistence-commons-mongodb</module>
-        <module>persistence-commons-redis</module>
-        <module>persistence-commons-reporting-parent</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>

@@ -35,23 +35,10 @@
 
   <modules>
     <module>integration-tests-data-index-service-quarkus-devservice</module>
+    <module>integration-tests-data-index-service-common</module>
+    <module>integration-tests-data-index-service-quarkus</module>
+    <module>integration-tests-data-index-service-springboot</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>integration-tests-data-index-service-common</module>
-        <module>integration-tests-data-index-service-quarkus</module>
-        <module>integration-tests-data-index-service-springboot</module>
-      </modules>
-    </profile>
-  </profiles>
 
   <dependencyManagement>
     <dependencies>

@@ -36,22 +36,9 @@
 
   <modules>
     <module>integration-tests-data-index-service</module>
+    <module>integration-tests-jobs-service</module>
+    <module>integration-tests-trusty-audit</module>
+    <module>integration-tests-trusty-service</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>integration-tests-jobs-service</module>
-        <module>integration-tests-trusty-audit</module>
-        <module>integration-tests-trusty-service</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

@@ -74,50 +74,27 @@
     </repository>
   </repositories>
 
+  <modules>
+    <module>kogito-apps-bom</module>
+    <module>kogito-apps-build-parent</module>
+    <module>persistence-commons</module>
+    <module>jobs-service</module>
+    <module>data-index</module>
+    <module>data-audit</module>
+    <module>ui-packages</module>
+    <module>security-commons</module>
+    <module>management-console</module>
+    <module>trusty-ui</module>
+    <module>task-console</module>
+    <module>explainability</module>
+    <module>trusty</module>
+    <module>jitexecutor</module>
+    <module>apps-integration-tests</module>
+    <module>runtime-tools-quarkus-extension-parent</module>
+    <module>kogito-quarkus-serverless-workflow-devui-parent</module>
+  </modules>
+
   <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>kogito-apps-bom</module>
-        <module>kogito-apps-build-parent</module>
-        <module>persistence-commons</module>
-        <module>jobs-service</module>
-        <module>data-index</module>
-        <module>data-audit</module>
-        <module>ui-packages</module>
-        <module>security-commons</module>
-        <module>management-console</module>
-        <module>trusty-ui</module>
-        <module>task-console</module>
-        <module>explainability</module>
-        <module>trusty</module>
-        <module>jitexecutor</module>
-        <module>apps-integration-tests</module>
-        <module>runtime-tools-quarkus-extension-parent</module>
-        <module>kogito-quarkus-serverless-workflow-devui-parent</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>productized</id>
-      <activation>
-        <property>
-          <name>productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-apps-bom</module>
-        <module>kogito-apps-build-parent</module>
-        <module>persistence-commons</module>
-        <module>data-index</module>
-        <module>ui-packages</module>
-        <module>kogito-quarkus-serverless-workflow-devui-parent</module>
-        <module>jobs-service</module>
-        <module>apps-integration-tests</module>
-      </modules>
-    </profile>
     <profile>
       <id>optaplanner-downstream</id>
       <activation>
