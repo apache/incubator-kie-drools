@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.storage.merger;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,18 +63,18 @@ public class ProcessInstanceNodeDataEventMerger extends ProcessInstanceEventMerg
         nodeInstance.setNodeId(body.getNodeDefinitionId());
         nodeInstance.setName(body.getNodeName());
         nodeInstance.setType(body.getNodeType());
+        ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {
             case EVENT_TYPE_ENTER:
-                nodeInstance.setEnter(toZonedDateTime(body.getEventDate()));
+                nodeInstance.setEnter(eventDate);
                 break;
             case EVENT_TYPE_EXIT:
-                nodeInstance.setExit(toZonedDateTime(body.getEventDate()));
-
+                nodeInstance.setExit(eventDate);
+            default:
                 if (nodeInstance.getEnter() == null) {
                     // Adding a default enter time for exit events triggered by EventNodeInstances
-                    nodeInstance.setEnter(nodeInstance.getExit());
+                    nodeInstance.setEnter(eventDate);
                 }
-                break;
         }
         nodeInstances.add(nodeInstance);
 
