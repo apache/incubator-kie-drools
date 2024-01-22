@@ -41,10 +41,6 @@ include::_drl-operator-precedence-ref.adoc[leveloffset=+3]
 
 include::_drl-rules-WHEN-elements-ref.adoc[leveloffset=+3]
 
-include::_drl-rules-oopath-con.adoc[leveloffset=+3]
-
-include::_drl-rules-WHEN-elements-diagrams-ref.adoc[leveloffset=+3]
-
 include::_drl-rules-THEN-con.adoc[leveloffset=+2]
 
 include::_drl-rules-THEN-methods-ref.adoc[leveloffset=+3]
@@ -56,7 +52,5 @@ include::_drl-rules-THEN-advanced-con.adoc[leveloffset=+3]
 include::_drl-rules-comments-con.adoc[leveloffset=+2]
 
 include::_drl-rules-errors-ref.adoc[leveloffset=+2]
-
-include::_drl-rule-units-con.adoc[leveloffset=+2]
 
 include::_DSL-section.adoc[leveloffset=+1]
