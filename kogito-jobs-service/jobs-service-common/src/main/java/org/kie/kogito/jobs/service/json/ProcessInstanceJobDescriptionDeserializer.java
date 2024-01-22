@@ -45,14 +45,14 @@ public class ProcessInstanceJobDescriptionDeserializer extends StdDeserializer<P
         ProcessInstanceJobDescriptionBuilder builder = ProcessInstanceJobDescription.builder();
 
         JsonNode node = jp.getCodec().readTree(jp);
-        ofNullable(node.get("id")).ifPresent(e -> builder.id(e.asText()));
-        ofNullable(node.get("timerId")).ifPresent(e -> builder.timerId(e.asText()));
+        ofNullable(node.get("id")).ifPresent(e -> builder.id(e.textValue()));
+        ofNullable(node.get("timerId")).ifPresent(e -> builder.timerId(e.textValue()));
         ofNullable(node.get("priority")).ifPresent(e -> builder.priority(e.asInt()));
-        ofNullable(node.get("processInstanceId")).ifPresent(e -> builder.processInstanceId(e.asText()));
-        ofNullable(node.get("rootProcessInstanceId")).ifPresent(e -> builder.rootProcessInstanceId(e.asText()));
-        ofNullable(node.get("processId")).ifPresent(e -> builder.processId(e.asText()));
-        ofNullable(node.get("rootProcessId")).ifPresent(e -> builder.rootProcessId(e.asText()));
-        ofNullable(node.get("nodeInstanceId")).ifPresent(e -> builder.nodeInstanceId(e.asText()));
+        ofNullable(node.get("processInstanceId")).ifPresent(e -> builder.processInstanceId(e.textValue()));
+        ofNullable(node.get("rootProcessInstanceId")).ifPresent(e -> builder.rootProcessInstanceId(e.textValue()));
+        ofNullable(node.get("processId")).ifPresent(e -> builder.processId(e.textValue()));
+        ofNullable(node.get("rootProcessId")).ifPresent(e -> builder.rootProcessId(e.textValue()));
+        ofNullable(node.get("nodeInstanceId")).ifPresent(e -> builder.nodeInstanceId(e.textValue()));
 
         String type = node.get("expirationTime").get("@type").asText();
         try {

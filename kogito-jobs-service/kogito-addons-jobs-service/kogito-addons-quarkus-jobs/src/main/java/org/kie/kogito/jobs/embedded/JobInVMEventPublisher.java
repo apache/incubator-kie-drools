@@ -26,7 +26,9 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
+import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
+import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
@@ -138,6 +140,15 @@ public class JobInVMEventPublisher implements JobEventPublisher {
         LOGGER.debug("Emmit in-vm publishJobStatusChange {}", jobDetails);
         try {
             ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
+            Recipient<InVMPayloadData> recipient = jobDetails.getRecipient().getRecipient();
+            ProcessInstanceJobDescription jobDescription = recipient.getPayload().getJobDescription();
+
+            scheduledJob.setProcessInstanceId(jobDescription.processInstanceId());
+            scheduledJob.setProcessId(jobDescription.processId());
+            scheduledJob.setRootProcessInstanceId(jobDescription.rootProcessInstanceId());
+            scheduledJob.setRootProcessId(jobDescription.rootProcessId());
+            scheduledJob.setNodeInstanceId(jobDescription.nodeInstanceId());
+
             byte[] jsonContent = objectMapper.writeValueAsBytes(scheduledJob);
             JobInstanceDataEvent event = new JobInstanceDataEvent(JOB_EVENT_TYPE,
                     url + RestApiConstants.JOBS_PATH,

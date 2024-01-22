@@ -54,8 +54,8 @@ public class TestEventPublisher implements EventPublisher {
         events.forEach(e -> latch.countDown());
     }
 
-    public void expectedEvents(int numOfEvents) {
-        latch = new CountDownLatch(numOfEvents);
+    public void setLatch(CountDownLatch latch) {
+        this.latch = latch;
     }
 
 }
