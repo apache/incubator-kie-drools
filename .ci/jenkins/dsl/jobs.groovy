@@ -34,6 +34,9 @@ createProjectSetupBranchJob()
 // Nightly jobs
 setupProjectNightlyJob()
 
+// Weekly jobs
+setupProjectWeeklyJob()
+
 // Release jobs
 setupProjectReleaseJob()
 setupProjectPostReleaseJob()
@@ -66,6 +69,23 @@ void createProjectSetupBranchJob() {
 void setupProjectNightlyJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
     jobParams.triggers = [cron : isMainStream() ? '@midnight' : 'H 3 * * *']
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+
+        DROOLS_STREAM: Utils.getStream(this),
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+void setupProjectWeeklyJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-weekly', JobType.OTHER, "${jenkins_path_project}/Jenkinsfile.weekly", 'Drools Weekly')
+    jobParams.triggers = [cron : '0 3 * * 0']
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
