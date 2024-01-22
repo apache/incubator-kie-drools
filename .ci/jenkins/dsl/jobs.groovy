@@ -362,6 +362,7 @@ void setupPromoteJob(JobType jobType) {
 
 void setupWeeklyDeployJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools.weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Drools Weekly Deploy')
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         PROPERTIES_FILE_NAME: 'deployment.properties',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
