@@ -1,0 +1,73 @@
+[id='drl-operator-precedence-ref_{context}']
+= Operator precedence in DRL pattern constraints
+
+DRL supports standard Java operator precedence for applicable constraint operators, with some exceptions and with some additional operators that are unique in DRL. The following table lists DRL operator precedence where applicable, from highest to lowest precedence:
+
+.Operator precedence in DRL pattern constraints
+[cols="2,2,3", options="header"]
+|===
+|Operator type
+|Operators
+|Notes
+
+|Nested or null-safe property access
+|`.`, `.()`, `!.`
+|Not standard Java semantics
+
+|`List` or `Map` access
+|`[]`
+|Not standard Java semantics
+
+|Constraint binding
+|`:`
+|Not standard Java semantics
+
+|Multiplicative
+|`*`, `/%`
+|
+
+|Additive
+|`+`, `-`
+|
+
+|Shift
+|`>>`, `>>>`, `<<`
+|
+
+|Relational
+|`<`, `\<=`, `>`, `>=`, `instanceof`
+|
+
+|Equality
+|`== !=`
+|Uses `equals()` and `!equals()` semantics, not standard Java `same` and `not same` semantics
+
+
+|Non-short-circuiting `AND`
+|`&`
+|
+
+|	Non-short-circuiting exclusive `OR`
+|`^`
+|
+
+|Non-short-circuiting inclusive `OR`
+|`\|`
+|
+
+|Logical `AND`
+|`&&`
+|
+
+|Logical `OR`
+|`\|\|`
+|
+
+|Ternary
+|`? :`
+|
+
+|Comma-separated `AND`
+|`,`
+|Not standard Java semantics
+|===
