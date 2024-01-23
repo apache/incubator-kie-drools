@@ -104,7 +104,7 @@ public class DMNContextEvaluator
                     if ( er.getResultType() == ResultType.SUCCESS ) {
                         Object value = er.getResult();
                         value = optionallyConvertCollectionToArray(value, ed.getType());
-                        value = optionallyConvertDateToDateTime(value, ed.getType());
+                        //value = optionallyConvertDateToDateTime(value, ed.getType());
                         
                         if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
                             if (!(ed.getContextEntry().getExpression() instanceof FunctionDefinition)) {

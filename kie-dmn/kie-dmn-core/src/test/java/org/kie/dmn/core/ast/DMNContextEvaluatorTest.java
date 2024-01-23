@@ -7,10 +7,17 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 public class DMNContextEvaluatorTest {
@@ -103,5 +110,28 @@ public class DMNContextEvaluatorTest {
         retrieved = DMNContextEvaluator.optionallyConvertDateToDateTime(value, requiredType);
         assertNotNull(retrieved);
         assertEquals(value, retrieved);
+    }
+
+    @Test
+    public void  dateToDateTime() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("ContextEntryTypeCascade.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_8a15bd3c-c732-42c8-a2e4-60f1a23a1c5a", "Drawing 1");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+
+
+
+        SimpleTypeImpl type = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
+                                                 "date and time",
+                                                 null,
+                                                 false,
+                                                 null,
+                                                 null,
+                                                 BuiltInType.DATE_TIME);
+       // DMNExpressionEvaluator evaluator =
+       // new DMNContextEvaluator.ContextEntryDef("fromStringToDateTime",
+        // type, evaluator, ce )
     }
 }
