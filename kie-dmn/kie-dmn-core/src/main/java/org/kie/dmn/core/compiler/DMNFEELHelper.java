@@ -49,7 +49,6 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTHeuristicCheckEvent;
@@ -144,16 +143,16 @@ public class DMNFEELHelper {
         }
         feelctx.setFEELTypeRegistry(model.getTypeRegistry());
         // TODO: EXPERIMENT
-//        String baseExpression = expression.contains("(") ? expression.substring(0, expression.indexOf("(")) : expression;
-//        baseExpression = baseExpression.replace(" ", "");
-//        if (baseExpression.equals("date")) {
-//            Optional<Type> type = getTypeFromParent(element, feelctx);
-//           // Optional<QName> qnameType = getFirstInformationItemQNameFromParent(element);
-//            if (type.isPresent() &&
-//                    type.get().getName().equals("date and time")) {
-//                expression = "date and time" + (expression.substring(expression.indexOf("(")));
-//            }
-//        }
+        String baseExpression = expression.contains("(") ? expression.substring(0, expression.indexOf("(")) : expression;
+        baseExpression = baseExpression.replace(" ", "");
+        if (baseExpression.equals("date")) {
+            Optional<Type> type = getTypeFromParent(element, feelctx);
+           // Optional<QName> qnameType = getFirstInformationItemQNameFromParent(element);
+            if (type.isPresent() &&
+                    type.get().getName().equals("date and time")) {
+                expression = "date and time" + (expression.substring(expression.indexOf("(")));
+            }
+        }
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
