@@ -130,34 +130,66 @@ public class ProtobufProcessInstanceReader {
         processInstance.setProcessId(processInstanceProtobuf.getProcessId());
         processInstance.setState(processInstanceProtobuf.getState());
         processInstance.setSignalCompletion(processInstanceProtobuf.getSignalCompletion());
-        processInstance.setStartDate(new Date(processInstanceProtobuf.getStartDate()));
 
-        processInstance.setDescription(processInstanceProtobuf.getDescription());
-        processInstance.setDeploymentId(processInstanceProtobuf.getDeploymentId());
+        if (processInstanceProtobuf.hasStartDate()) {
+            processInstance.setStartDate(new Date(processInstanceProtobuf.getStartDate()));
+        }
+
+        if (processInstanceProtobuf.hasDescription()) {
+            processInstance.setDescription(processInstanceProtobuf.getDescription());
+        }
+
+        if (processInstanceProtobuf.hasDeploymentId()) {
+            processInstance.setDeploymentId(processInstanceProtobuf.getDeploymentId());
+        }
 
         for (String completedNodeId : processInstanceProtobuf.getCompletedNodeIdsList()) {
             processInstance.addCompletedNodeId(completedNodeId);
         }
 
-        processInstance.setCorrelationKey(processInstanceProtobuf.getBusinessKey());
-
-        SLAContext slaContext = processInstanceProtobuf.getSla();
-        if (slaContext.getSlaDueDate() > 0) {
-            processInstance.internalSetSlaDueDate(new Date(slaContext.getSlaDueDate()));
+        if (processInstanceProtobuf.hasBusinessKey()) {
+            processInstance.setCorrelationKey(processInstanceProtobuf.getBusinessKey());
         }
-        processInstance.internalSetSlaTimerId(slaContext.getSlaTimerId());
-        processInstance.internalSetSlaCompliance(slaContext.getSlaCompliance());
 
-        processInstance.internalSetCancelTimerId(processInstanceProtobuf.getCancelTimerId());
+        if (processInstanceProtobuf.hasSla()) {
+            SLAContext slaContext = processInstanceProtobuf.getSla();
+            if (slaContext.getSlaDueDate() > 0) {
+                processInstance.internalSetSlaDueDate(new Date(slaContext.getSlaDueDate()));
+            }
 
-        processInstance.setParentProcessInstanceId(processInstanceProtobuf.getParentProcessInstanceId());
-        processInstance.setRootProcessInstanceId(processInstanceProtobuf.getRootProcessInstanceId());
-        processInstance.setRootProcessId(processInstanceProtobuf.getRootProcessId());
+            if (slaContext.hasSlaTimerId()) {
+                processInstance.internalSetSlaTimerId(slaContext.getSlaTimerId());
+            }
+            if (slaContext.hasSlaCompliance()) {
+                processInstance.internalSetSlaCompliance(slaContext.getSlaCompliance());
+            }
+        }
 
-        processInstance.internalSetErrorNodeId(processInstanceProtobuf.getErrorNodeId());
-        processInstance.internalSetErrorMessage(processInstanceProtobuf.getErrorMessage());
+        if (processInstanceProtobuf.hasCancelTimerId()) {
+            processInstance.internalSetCancelTimerId(processInstanceProtobuf.getCancelTimerId());
+        }
 
-        processInstance.setReferenceId(processInstanceProtobuf.getReferenceId());
+        if (processInstanceProtobuf.hasParentProcessInstanceId()) {
+            processInstance.setParentProcessInstanceId(processInstanceProtobuf.getParentProcessInstanceId());
+        }
+        if (processInstanceProtobuf.hasRootProcessInstanceId()) {
+            processInstance.setRootProcessInstanceId(processInstanceProtobuf.getRootProcessInstanceId());
+        }
+        if (processInstanceProtobuf.hasRootProcessId()) {
+            processInstance.setRootProcessId(processInstanceProtobuf.getRootProcessId());
+        }
+
+        if (processInstanceProtobuf.hasErrorNodeId()) {
+            processInstance.internalSetErrorNodeId(processInstanceProtobuf.getErrorNodeId());
+        }
+
+        if (processInstanceProtobuf.hasErrorMessage()) {
+            processInstance.internalSetErrorMessage(processInstanceProtobuf.getErrorMessage());
+        }
+
+        if (processInstanceProtobuf.hasReferenceId()) {
+            processInstance.setReferenceId(processInstanceProtobuf.getReferenceId());
+        }
 
         if (processInstanceProtobuf.getSwimlaneContextCount() > 0) {
             SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) processInstance.getContextInstance(SwimlaneContext.SWIMLANE_SCOPE);
