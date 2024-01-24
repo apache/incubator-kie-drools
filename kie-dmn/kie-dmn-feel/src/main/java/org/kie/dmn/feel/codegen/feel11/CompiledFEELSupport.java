@@ -46,6 +46,7 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.impl.SilentWrappingEvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -59,6 +60,7 @@ import org.kie.dmn.feel.util.MsgUtil;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -531,8 +533,14 @@ public class CompiledFEELSupport {
         return BigDecimalMath.pow( l, r, MathContext.DECIMAL128 );
     }
 
-    public static BigDecimal negate(EvaluationContext feelExprCtx, Object value) {
+    public static Object negate(EvaluationContext feelExprCtx, Object value) {
         if (isValidSignedType(feelExprCtx, value)) {
+            if (value instanceof ComparablePeriod comparablePeriod) {
+                return comparablePeriod.negated();
+            }
+            if (value instanceof Duration duration) {
+                return duration.negated();
+            }
             return ((BigDecimal) value).negate();
         } else {
             return null;
