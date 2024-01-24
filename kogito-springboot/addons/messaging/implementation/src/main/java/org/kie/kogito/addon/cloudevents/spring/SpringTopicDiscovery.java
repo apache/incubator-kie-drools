@@ -19,40 +19,72 @@
 package org.kie.kogito.addon.cloudevents.spring;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.kogito.addon.cloudevents.AbstractTopicDiscovery;
+import org.kie.kogito.event.ChannelType;
+import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.event.Topic;
-import org.springframework.beans.factory.annotation.Value;
+import org.kie.kogito.event.cloudevents.CloudEventMeta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("springTopics")
 public class SpringTopicDiscovery extends AbstractTopicDiscovery {
 
-    // in the future we should be implementation agnostic
-    @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.INCOMING + "}")
-    String incomingStreamTopic;
+    private static final Logger logger = LoggerFactory.getLogger(SpringTopicDiscovery.class);
+    private static final String KAFKA_PREFIX = "kogito.addon.cloudevents.kafka.";
+    private static final String INCOMING_PREFIX = KAFKA_PREFIX + KogitoEventStreams.INCOMING;
+    private static final String OUTGOING_PREFIX = KAFKA_PREFIX + KogitoEventStreams.OUTGOING;
 
-    @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + "}")
-    String outgoingStreamTopic;
+    @Autowired
+    private Environment env;
+
+    @Autowired(required = false)
+    private List<CloudEventMeta> cloudEventMetaList = Collections.emptyList();
+
+    public Set<String> getIncomingTopics() {
+        return getTopics(INCOMING_PREFIX, KogitoEventStreams.INCOMING, EventKind.CONSUMED);
+    }
+
+    public Set<String> getOutgoingTopics() {
+        return getTopics(OUTGOING_PREFIX, KogitoEventStreams.OUTGOING, EventKind.PRODUCED);
+    }
 
     @Override
     protected List<Topic> getTopics() {
-        final List<Topic> topics = new ArrayList<>();
-
-        if (incomingStreamTopic != null && !incomingStreamTopic.isEmpty()) {
-            final Topic incoming = DEFAULT_INCOMING_CHANNEL;
-            incoming.setName(incomingStreamTopic);
-            topics.add(incoming);
+        List<Topic> topics = new ArrayList<>();
+        for (String topic : getIncomingTopics()) {
+            topics.add(new Topic(topic, ChannelType.INCOMING));
         }
-
-        if (outgoingStreamTopic != null && !outgoingStreamTopic.isEmpty()) {
-            final Topic outgoing = DEFAULT_OUTGOING_CHANNEL;
-            outgoing.setName(outgoingStreamTopic);
-            topics.add(outgoing);
+        for (String topic : getOutgoingTopics()) {
+            topics.add(new Topic(topic, ChannelType.OUTGOING));
         }
-
+        logger.debug("Using this list of topics {}", topics);
         return topics;
+    }
+
+    private Set<String> getTopics(String prefix, String defaultChannel, EventKind eventKind) {
+        final String defaultChannelName = env.getProperty(prefix, defaultChannel);
+        Set<String> topics = cloudEventMetaList.stream().filter(c -> c.getKind().equals(eventKind)).map(CloudEventMeta::getType).map(this::parserTopicType)
+                .map(t -> env.getProperty(prefix + "." + t, defaultChannelName))
+                .collect(Collectors.toSet());
+        if (topics.isEmpty()) {
+            logger.debug("Using default channel name {}", defaultChannelName);
+            topics.add(defaultChannelName);
+        }
+        return topics;
+    }
+
+    private String parserTopicType(String topic) {
+        int indexOf = topic.lastIndexOf('.');
+        return indexOf == -1 ? topic : topic.substring(indexOf + 1);
     }
 }

@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.addon.cloudevents.spring;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaConsumerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -27,6 +29,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
 
 @EnableKafka
 @Configuration
@@ -34,8 +37,9 @@ public class SpringKafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory(KafkaProperties properties, ObjectProvider<DefaultKafkaConsumerFactoryCustomizer> customizers) {
+        Map<String, Object> props = properties.buildConsumerProperties();
         DefaultKafkaConsumerFactory<String, String> factory = new DefaultKafkaConsumerFactory<>(
-                properties.buildConsumerProperties());
+                props);
         customizers.orderedStream().forEach(customizer -> customizer.customize(factory));
         return factory;
     }
@@ -44,7 +48,8 @@ public class SpringKafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(ConsumerFactory<String, String> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
-        factory.setBatchListener(true);
+        factory.setBatchListener(false);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
     }
 }
