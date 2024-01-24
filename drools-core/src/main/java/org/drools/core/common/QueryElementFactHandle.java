@@ -250,10 +250,6 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addTupleInPosition( TupleImpl rightTuple ) {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
-    }
-
     public void removeRightTuple( TupleImpl rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
