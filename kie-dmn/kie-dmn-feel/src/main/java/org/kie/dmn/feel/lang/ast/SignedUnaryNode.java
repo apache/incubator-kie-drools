@@ -22,10 +22,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 public class SignedUnaryNode
         extends BaseNode {
@@ -67,6 +69,12 @@ public class SignedUnaryNode
         if (expressionResult instanceof String) {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CANNOT_BE_SIGNED)));
             return null;
+        }
+        if (expressionResult instanceof ComparablePeriod comparablePeriod) {
+            return  Sign.NEGATIVE == sign ? comparablePeriod.negated() : expressionResult;
+        }
+        if (expressionResult instanceof Duration duration) {
+            return  Sign.NEGATIVE == sign ? duration.negated() : expressionResult;
         }
         BigDecimal result = EvalHelper.getBigDecimalOrNull( expressionResult );
         if ( result == null ) {
