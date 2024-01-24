@@ -28,6 +28,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.factmodel.traits.TraitTypeEnum;
 import org.drools.base.rule.EntryPointId;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -369,10 +370,6 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         linkedTuples.addLastLeftTuple( leftTuple );
     }
 
-    public void addTupleInPosition( TupleImpl tuple ) {
-        linkedTuples.addTupleInPosition( tuple );
-    }
-
     public void removeLeftTuple( TupleImpl leftTuple ) {
         linkedTuples.removeLeftTuple( leftTuple );
     }
@@ -508,48 +505,6 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
                 previous.setHandleNext( leftTuple );
             }
             lastLeftTuple = leftTuple;
-        }
-
-        @Override
-        public void addTupleInPosition( TupleImpl tuple ) {
-            boolean          left  = tuple.isLeftTuple();
-            ObjectTypeNodeId otnId = tuple.getInputOtnId();
-            if (otnId == null) { // can happen only in tests // @FIXME fix this
-                addLastTuple( tuple, left );
-                return;
-            }
-
-            TupleImpl previous = left ? lastLeftTuple : lastRightTuple;
-            if ( previous == null ) {
-                // no other LeftTuples, just add.
-                tuple.setHandlePrevious( null );
-                tuple.setHandleNext( null );
-                setFirstTuple( tuple, left );
-                setLastTuple( tuple, left );
-                return;
-            } else if (previous.getSink() == null || !otnId.before(previous.getInputOtnId()) ) {
-                // the last LeftTuple comes before the new one so just add it at the end
-                tuple.setHandlePrevious( previous );
-                tuple.setHandleNext( null );
-                previous.setHandleNext( tuple );
-                setLastTuple( tuple, left );
-                return;
-            }
-
-            TupleImpl next = previous;
-            previous = previous.getHandlePrevious();
-            while (previous != null && otnId.before( previous.getInputOtnId()) ) {
-                next = previous;
-                previous = previous.getHandlePrevious();
-            }
-            tuple.setHandleNext( next );
-            next.setHandlePrevious( tuple );
-            tuple.setHandlePrevious( previous );
-            if ( previous != null ) {
-                previous.setHandleNext( tuple );
-            } else {
-                setFirstTuple( tuple, left );
-            }
         }
 
         private void addLastTuple(TupleImpl tuple, boolean left) {
@@ -715,6 +670,82 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         TupleImpl getFirstRightTuple() {
             return firstRightTuple;
         }
+
+        public TupleImpl detachLeftTupleAfter(RuleBasePartitionId partitionId, ObjectTypeNodeId otnId) {
+            TupleImpl tuple = lastLeftTuple;
+            TupleImpl detached = null;
+            // Find the first Tuple that comes after the current ID, so it can be detached.
+            while (tuple != null && otnId.before(tuple.getInputOtnId())) {
+                detached = tuple;
+                tuple = tuple.getHandlePrevious();
+            }
+
+            if (detached != null) {
+                if (firstLeftTuple == detached) {
+                    firstLeftTuple = null;
+                }
+
+                if (lastLeftTuple == detached) {
+                    lastLeftTuple = null;
+                }
+
+                if (detached.getHandlePrevious() != null) {
+                    lastLeftTuple = detached.getHandlePrevious();
+                    detached.setHandlePrevious(null);
+                    lastLeftTuple.setHandleNext(null);
+                }
+            }
+
+            return detached;
+        }
+
+        public TupleImpl detachRightTupleAfter(RuleBasePartitionId partitionId, ObjectTypeNodeId otnId) {
+            TupleImpl tuple = lastRightTuple;
+            TupleImpl detached = null;
+            // Find the first Tuple that comes after the current ID, so it can be detached.
+            while (tuple != null && otnId.before(tuple.getInputOtnId())) {
+                detached = tuple;
+                tuple = tuple.getHandlePrevious();
+            }
+
+            if (detached != null) {
+                if (firstRightTuple == detached) {
+                    firstRightTuple = null;
+                }
+
+                if (lastRightTuple == detached) {
+                    lastRightTuple = null;
+                }
+
+                if (detached.getHandlePrevious() != null) {
+                    lastRightTuple = detached.getHandlePrevious();
+                    detached.setHandlePrevious(null);
+                    lastRightTuple.setHandleNext(null);
+                }
+            }
+
+            return detached;
+        }
+
+        public void reattachToLeft(TupleImpl tuple) {
+            if (lastLeftTuple == null) {
+                lastLeftTuple = tuple;
+            } else {
+                lastLeftTuple.setHandleNext(tuple);
+                tuple.setHandlePrevious(lastLeftTuple);
+                lastLeftTuple = tuple;
+            }
+        }
+
+        public void reattachToRight(TupleImpl tuple) {
+            if (lastRightTuple == null) {
+                lastRightTuple = tuple;
+            } else {
+                lastRightTuple.setHandleNext(tuple);
+                tuple.setHandlePrevious(lastRightTuple);
+                lastRightTuple = tuple;
+            }
+        }
     }
 
     public static class CompositeLinkedTuples implements LinkedTuples {
@@ -781,11 +812,6 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
         }
 
         @Override
-        public void addTupleInPosition( TupleImpl tuple ) {
-            getOrCreatePartitionedTuple(tuple).addTupleInPosition( tuple );
-        }
-
-        @Override
         public void removeLeftTuple( TupleImpl leftTuple ) {
             getPartitionedTuple(leftTuple).removeLeftTuple( leftTuple );
         }
@@ -805,6 +831,26 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
             if (rightTuple.getSink() != null) {
                 getPartitionedTuple( rightTuple ).removeRightTuple( rightTuple );
             }
+        }
+
+        @Override
+        public TupleImpl detachLeftTupleAfter(RuleBasePartitionId partitionId, ObjectTypeNodeId otnId) {
+            return getOrCreatePartitionedTuple(partitionId.getId()).detachLeftTupleAfter(partitionId, otnId);
+        }
+
+        @Override
+        public TupleImpl detachRightTupleAfter(RuleBasePartitionId partitionId, ObjectTypeNodeId otnId) {
+            return getOrCreatePartitionedTuple(partitionId.getId()).detachRightTupleAfter(partitionId, otnId);
+        }
+
+        @Override
+        public void reattachToLeft(TupleImpl tuple) {
+            getOrCreatePartitionedTuple(tuple).reattachToLeft(tuple);
+        }
+
+        @Override
+        public void reattachToRight(TupleImpl tuple) {
+            getOrCreatePartitionedTuple(tuple).reattachToRight(tuple);
         }
 
         @Override
@@ -897,11 +943,6 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
 
         @Override
         public void addLastLeftTuple(TupleImpl leftTuple) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void addTupleInPosition(TupleImpl tuple) {
             throw new UnsupportedOperationException();
         }
 

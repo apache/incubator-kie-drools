@@ -26,12 +26,14 @@ import java.util.Objects;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.Pattern;
 import org.drools.base.util.index.IndexUtil;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -47,6 +49,7 @@ import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.DetachedTuple;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.rule.constraint.BetaConstraint;
@@ -54,6 +57,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
+import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -679,5 +683,99 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void setRightInputOtnId(ObjectTypeNodeId rightInputOtnId) {
         this.rightInputOtnId = rightInputOtnId;
+    }
+
+    /**
+     * Used with the updateSink method, so that the parent ObjectSource
+     * can  update the  TupleSink
+     */
+    public static class RightTupleSinkAdapter
+            implements
+            ObjectSink {
+        private BetaNode bnNode;
+
+        private List<DetachedTuple> detachedTuples;
+
+        public RightTupleSinkAdapter(BetaNode bnNode, List<DetachedTuple> detachedTuples) {
+            this.bnNode = bnNode;
+            this.detachedTuples = detachedTuples;
+        }
+
+        /**
+         * Do not use this constructor. It should be used just by deserialization.
+         */
+        public RightTupleSinkAdapter() {
+        }
+
+        public void assertObject(final InternalFactHandle factHandle,
+                                 final PropagationContext context,
+                                 final ReteEvaluator reteEvaluator) {
+            ObjectTypeNodeId otnId = bnNode.getRightInputOtnId();
+            TupleImpl detached = factHandle.getLinkedTuples().detachRightTupleAfter(getPartitionId(), otnId);
+            if (detached != null) {
+                detachedTuples.add(new DetachedTuple((DefaultFactHandle) factHandle, detached));
+            }
+
+            bnNode.assertObject(factHandle, context, reteEvaluator);
+        }
+
+        public void modifyObject(InternalFactHandle factHandle,
+                                 ModifyPreviousTuples modifyPreviousTuples,
+                                 PropagationContext context,
+                                 ReteEvaluator reteEvaluator) {
+            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+        }
+
+        public int getId() {
+            return 0;
+        }
+
+        public RuleBasePartitionId getPartitionId() {
+            return bnNode.getPartitionId();
+        }
+
+        public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                           ModifyPreviousTuples modifyPreviousTuples,
+                                           PropagationContext context,
+                                           ReteEvaluator reteEvaluator) {
+            throw new UnsupportedOperationException();
+        }
+
+        public int getType() {
+            return NodeTypeEnums.LeftInputAdapterNode;
+        }
+
+        @Override public Rule[] getAssociatedRules() {
+            return bnNode.getAssociatedRules();
+        }
+
+        public boolean isAssociatedWith(Rule rule) {
+            return bnNode.isAssociatedWith( rule );
+        }
+
+        @Override
+        public NetworkNode[] getSinks() {
+            return new NetworkNode[0];
+        }
+
+        @Override
+        public void addAssociatedTerminal(BaseTerminalNode terminalNode) {
+            bnNode.addAssociatedTerminal(terminalNode);
+        }
+
+        @Override
+        public void removeAssociatedTerminal(BaseTerminalNode terminalNode) {
+            bnNode.removeAssociatedTerminal(terminalNode);
+        }
+
+        @Override
+        public int getAssociatedTerminalsSize() {
+            return bnNode.getAssociatedTerminalsSize();
+        }
+
+        @Override
+        public boolean hasAssociatedTerminal(BaseTerminalNode terminalNode) {
+            return bnNode.hasAssociatedTerminal(terminalNode);
+        }
     }
 }

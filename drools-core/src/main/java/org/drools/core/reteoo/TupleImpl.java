@@ -79,7 +79,7 @@ public abstract class TupleImpl implements Tuple<TupleImpl> {
         setSink(sink);
         this.handle = factHandle;
         if ( leftTupleMemoryEnabled ) {
-            factHandle.addTupleInPosition( this );
+            factHandle.addLastLeftTuple( this );
         }
     }
 

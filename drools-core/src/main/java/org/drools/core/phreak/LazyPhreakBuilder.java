@@ -56,7 +56,6 @@ import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -95,6 +94,7 @@ import static org.drools.core.phreak.BuildtimeSegmentUtilities.isRootNode;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.isSet;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.updateNodeTypesMask;
+import static org.drools.core.phreak.EagerPhreakBuilder.Add.attachAdapterAndPropagate;
 import static org.drools.core.phreak.EagerPhreakBuilder.deleteLeftTuple;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.createRiaSegmentMemory;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getOrCreateSegmentMemory;
@@ -711,8 +711,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
         LeftInputAdapterNode      lian        = (LeftInputAdapterNode) startNode;
-        RightTupleSinkAdapter     liaAdapter  = new RightTupleSinkAdapter(lian);
-        lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
+        attachAdapterAndPropagate(wm, lian, pctx);
     }
 
     private static void insertFacts(PathEndNodes endNodes, Collection<InternalWorkingMemory> wms) {
@@ -730,9 +729,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
                     if (!bn.isRightInputIsRiaNode()) {
                         for ( InternalWorkingMemory wm : wms ) {
-                            PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
-                            final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
-                            bn.getRightInput().updateSink(bn, pctx, wm);
+                            attachAdapterAndPropagate(wm, bn);
                         }
                     }
                 }
