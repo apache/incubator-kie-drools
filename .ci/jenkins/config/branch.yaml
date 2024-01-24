@@ -15,7 +15,7 @@ environments:
       NATIVE: true
       BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
+      QUARKUS_BRANCH: '3.2'
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
@@ -26,24 +26,7 @@ environments:
       QUARKUS_BRANCH: main
       DROOLS_BUILD_MVN_OPTS: -Dfull
     ids:
-    - quarkus
-  quarkus-3:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MAVEN_TOOL: kie-maven-3.9.1
-      BUILD_JDK_TOOL: kie-jdk17
-      BUILD_MVN_OPTS: -Denforcer.skip
-      # DROOLS_BUILD_MVN_OPTS: -Dfull #  "No enabled as it does not compile in quarkus-3
-      # BUILD_MVN_OPTS_QUARKUS_UPDATE: -Dfull
-    ids:
-    - quarkus
-    - quarkus3
-  quarkus-branch:
-    env_vars:
-      QUARKUS_BRANCH: '2.16'
-      DROOLS_BUILD_MVN_OPTS: -Dfull
-    ids:
-    - quarkus
+    - quarkus    
   quarkus-lts:
     pull_request_default_check: false
     env_vars:
@@ -70,7 +53,6 @@ repositories:
 - name: drools
 - name: drools-website
 - name: kie-benchmarks
-- name: kie-jpmml-integration
 productized_repositories:
 - name: drools
 - name: drools-website
@@ -119,5 +101,5 @@ jenkins:
   email_creds_id: DROOLS_CI_EMAIL_TO
   default_tools:
     jdk: kie-jdk11
-    maven: kie-maven-3.8.7
+    maven: kie-maven-3.9.3
     sonar_jdk: kie-jdk17
