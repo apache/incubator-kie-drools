@@ -100,7 +100,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
 
-    private boolean                           reproducibleExecutableModelGeneration = true;
+    private boolean                           reproducibleExecutableModelGeneration = false;
 
     private boolean                           externaliseCanonicalModelLambda       = true;
     private boolean                           parallelLambdaExternalization         = true;
@@ -167,7 +167,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                     getPropertyValue(ParallelLambdaExternalizationOption.PROPERTY_NAME,"true"));
 
         setProperty(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,
-                    getPropertyValue(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,"true"));
+                    getPropertyValue(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,"false"));
     }
 
     protected ClassLoader getFunctionFactoryClassLoader() {
