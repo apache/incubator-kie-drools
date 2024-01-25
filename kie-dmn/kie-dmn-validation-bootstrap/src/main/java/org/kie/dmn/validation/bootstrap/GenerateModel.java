@@ -65,8 +65,8 @@ public class GenerateModel {
 
         kieBuilder.buildAll(ValidationBootstrapProject::new,
                             s -> !s.contains("src/test/java") && !s.contains("src\\test\\java") &&
-                                 !s.contains("DMNValidator") && // <- to break circularity which is only caused by the KieBuilder trying to early compile everything by itself  
-                                 !s.contains("dtanalysis"));
+                                    !s.contains("DMNValidator") && // <- to break circularity which is only caused by the KieBuilder trying to early compile everything by itself
+                                    !s.contains("dtanalysis"));
 
         Results results = kieBuilder.getResults();
         results.getMessages().forEach(m -> LOG.info("{}", m.toString()));

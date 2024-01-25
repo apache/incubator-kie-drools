@@ -18,21 +18,21 @@
  */
 package org.drools.model.codegen.execmodel.processors;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
-import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
 import org.drools.compiler.builder.impl.processors.IteratingPhase;
+import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.model.codegen.execmodel.CanonicalModelBuildContext;
 import org.drools.model.codegen.execmodel.PackageModelManager;
 import org.drools.model.codegen.execmodel.generator.declaredtype.POJOGenerator;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.Collection;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -45,12 +45,9 @@ public class DeclaredTypeCompilationPhase implements CompilationPhase {
     private final Collection<CompositePackageDescr> packages;
     private final BuildResultCollector results;
 
-    public DeclaredTypeCompilationPhase(
-            PackageModelManager packageModelManager,
-            PackageRegistryManager pkgRegistryManager,
-            CanonicalModelBuildContext buildContext,
-            KnowledgeBuilderConfigurationImpl buildConfiguration,
-            Collection<CompositePackageDescr> packages) {
+    public DeclaredTypeCompilationPhase( PackageModelManager packageModelManager, PackageRegistryManager pkgRegistryManager,
+                                         CanonicalModelBuildContext buildContext, KnowledgeBuilderConfigurationImpl buildConfiguration,
+                                         Collection<CompositePackageDescr> packages) {
         this.packageModelManager = packageModelManager;
         this.pkgRegistryManager = pkgRegistryManager;
         this.buildContext = buildContext;
