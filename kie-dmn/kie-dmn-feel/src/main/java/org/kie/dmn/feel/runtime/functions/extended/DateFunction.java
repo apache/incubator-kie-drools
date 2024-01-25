@@ -20,8 +20,6 @@ package org.kie.dmn.feel.runtime.functions.extended;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
@@ -44,7 +42,6 @@ import static java.time.temporal.ChronoField.YEAR;
 
 public class DateFunction extends BaseFEELFunction {
     public static final DateFunction INSTANCE = new DateFunction();
-    private static final DateAndTimeFunction DATE_TIME_CONVERTER = DateAndTimeFunction.INSTANCE;
 
     private static final Pattern BEGIN_YEAR = Pattern.compile("^-?(([1-9]\\d\\d\\d+)|(0\\d\\d\\d))-"); // FEEL spec, "specified by XML Schema Part 2 Datatypes", hence: yearFrag ::= '-'? (([1-9] digit digit digit+)) | ('0' digit digit digit))
     private static final DateTimeFormatter FEEL_DATE;
@@ -72,14 +69,13 @@ public class DateFunction extends BaseFEELFunction {
         }
 
         try {
-            return convertedToDateTime(LocalDate.from(FEEL_DATE.parse(val)));
-            //return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
+            return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
         } catch (DateTimeException e) {
             // try to parse it as a date time and extract the date component
             // NOTE: this is an extension to the standard
             return BuiltInFunctions.getFunction(DateAndTimeFunction.class).invoke(val)
                     .cata(overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "date-parsing exception", e)),
-                            this::invoke
+                          this::invoke
                     );
         }
     }
@@ -96,8 +92,7 @@ public class DateFunction extends BaseFEELFunction {
         }
 
         try {
-            return convertedToDateTime(LocalDate.of(year.intValue(), month.intValue(), day.intValue()));
-            //return FEELFnResult.ofResult(LocalDate.of(year.intValue(), month.intValue(), day.intValue()));
+            return FEELFnResult.ofResult(LocalDate.of(year.intValue(), month.intValue(), day.intValue()));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "input parameters date-parsing exception", e));
         }
@@ -109,14 +104,9 @@ public class DateFunction extends BaseFEELFunction {
         }
 
         try {
-            //return FEELFnResult.ofResult(LocalDate.from(date));
-            return convertedToDateTime(LocalDate.from(date));
+            return FEELFnResult.ofResult(LocalDate.from(date));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "date-parsing exception", e));
         }
-    }
-
-    private FEELFnResult<TemporalAccessor> convertedToDateTime(LocalDate toConvert) {
-        return DATE_TIME_CONVERTER.invoke(toConvert, LocalTime.of(0, 0, 0));
     }
 }

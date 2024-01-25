@@ -20,7 +20,6 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
@@ -63,10 +62,9 @@ public class DateFunction
         if (!BEGIN_YEAR.matcher(val).find()) { // please notice the regex strictly requires the beginning, so we can use find.
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "year not compliant with XML Schema Part 2 Datatypes"));
         }
-        
+
         try {
-            return convertedToDateTime(LocalDate.from(FEEL_DATE.parse(val)));
-            //return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
+            return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
         }
@@ -82,10 +80,9 @@ public class DateFunction
         if ( day == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "day", "cannot be null"));
         }
-        
+
         try {
-            return convertedToDateTime(LocalDate.of(year.intValue(), month.intValue(), day.intValue()));
-            //return FEELFnResult.ofResult( LocalDate.of( year.intValue(), month.intValue(), day.intValue() ) );
+            return FEELFnResult.ofResult( LocalDate.of( year.intValue(), month.intValue(), day.intValue() ) );
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }
@@ -95,16 +92,11 @@ public class DateFunction
         if ( date == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
-        
+
         try {
-            return convertedToDateTime(LocalDate.from(date));
-            //return FEELFnResult.ofResult( LocalDate.from( date ) );
+            return FEELFnResult.ofResult( LocalDate.from( date ) );
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
-    }
-
-    private FEELFnResult<TemporalAccessor> convertedToDateTime(LocalDate toConvert) {
-        return DateAndTimeFunction.INSTANCE.invoke(toConvert, LocalTime.of(0, 0, 0));
     }
 }
