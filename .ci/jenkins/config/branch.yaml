@@ -10,32 +10,13 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '3.2'
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
   quarkus-main:
     enabled: false
     env_vars:
       QUARKUS_BRANCH: main
       DROOLS_BUILD_MVN_OPTS: -Dfull
     ids:
-    - quarkus    
-  quarkus-lts:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      QUARKUS_BRANCH: '2.13'
-    ids:
     - quarkus
-    - lts
-    - prod
   sonarcloud:
     enabled: false
     auto_generation: false
@@ -100,6 +81,6 @@ cloud:
 jenkins:
   email_creds_id: DROOLS_CI_EMAIL_TO
   default_tools:
-    jdk: kie-jdk11
+    jdk: kie-jdk17
     maven: kie-maven-3.9.3
     sonar_jdk: kie-jdk17
