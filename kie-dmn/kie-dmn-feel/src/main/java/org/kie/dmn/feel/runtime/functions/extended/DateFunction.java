@@ -75,7 +75,7 @@ public class DateFunction extends BaseFEELFunction {
             // NOTE: this is an extension to the standard
             return BuiltInFunctions.getFunction(DateAndTimeFunction.class).invoke(val)
                     .cata(overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "date-parsing exception", e)),
-                          this::invoke
+                            this::invoke
                     );
         }
     }
