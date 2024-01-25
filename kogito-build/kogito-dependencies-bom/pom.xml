@@ -25,7 +25,7 @@
     <version.com.networknt>1.0.86</version.com.networknt>
     <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
-    <version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
+    <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>2.0.1</version.io.quarkiverse.jackson-jq>
