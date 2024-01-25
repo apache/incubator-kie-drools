@@ -46,6 +46,7 @@ import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.util.IoUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Results;
+import org.kie.internal.builder.conf.ReproducibleExecutableModelGenerationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,10 +64,15 @@ public class GenerateModel {
         KieServices ks = KieServices.Factory.get();
         final KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(kieDmnValidationBaseDir);
 
-        kieBuilder.buildAll(ValidationBootstrapProject::new,
-                            s -> !s.contains("src/test/java") && !s.contains("src\\test\\java") &&
-                                 !s.contains("DMNValidator") && // <- to break circularity which is only caused by the KieBuilder trying to early compile everything by itself  
-                                 !s.contains("dtanalysis"));
+        System.setProperty(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME, "true");
+        try {
+            kieBuilder.buildAll(ValidationBootstrapProject::new,
+                                s -> !s.contains("src/test/java") && !s.contains("src\\test\\java") &&
+                                        !s.contains("DMNValidator") && // <- to break circularity which is only caused by the KieBuilder trying to early compile everything by itself
+                                        !s.contains("dtanalysis"));
+        } finally {
+            System.clearProperty(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME);
+        }
 
         Results results = kieBuilder.getResults();
         results.getMessages().forEach(m -> LOG.info("{}", m.toString()));

@@ -46,6 +46,7 @@ import org.kie.internal.builder.conf.ParallelLambdaExternalizationOption;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.builder.conf.ReproducibleExecutableModelGenerationOption;
 import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
 import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.conf.CompositeConfiguration;
@@ -98,6 +99,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     private boolean                           processStringEscapes                  = true;
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
+
+    private boolean                           reproducibleExecutableModelGeneration = true;
 
     private boolean                           externaliseCanonicalModelLambda       = true;
     private boolean                           parallelLambdaExternalization         = true;
@@ -162,6 +165,9 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
 
         setProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,
                     getPropertyValue(ParallelLambdaExternalizationOption.PROPERTY_NAME,"true"));
+
+        setProperty(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,
+                    getPropertyValue(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,"true"));
     }
 
     protected ClassLoader getFunctionFactoryClassLoader() {
@@ -206,6 +212,9 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
             } case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 setParallelLambdaExternalization(Boolean.parseBoolean(value));
                 break;
+            } case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                setReproducibleExecutableModelGeneration(Boolean.parseBoolean(value));
+                break;
             } case AlphaNetworkCompilerOption.PROPERTY_NAME: {
                 try {
                     setAlphaNetworkCompilerOption(AlphaNetworkCompilerOption.determineAlphaNetworkCompilerMode(value.toUpperCase()));
@@ -244,6 +253,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                 return String.valueOf(isExternaliseCanonicalModelLambda());
             } case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 return String.valueOf(isParallelLambdaExternalization());
+            } case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                return String.valueOf(isReproducibleExecutableModelGeneration());
             } default: {
                 if (name.startsWith(AccumulateFunctionOption.PROPERTY_NAME)) {
                     int                index    = AccumulateFunctionOption.PROPERTY_NAME.length();
@@ -412,6 +423,14 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
         this.parallelLambdaExternalization = parallelLambdaExternalization;
     }
 
+    public boolean isReproducibleExecutableModelGeneration() {
+        return reproducibleExecutableModelGeneration;
+    }
+
+    public void setReproducibleExecutableModelGeneration(boolean reproducibleExecutableModelGeneration) {
+        this.reproducibleExecutableModelGeneration = reproducibleExecutableModelGeneration;
+    }
+
     public AlphaNetworkCompilerOption getAlphaNetworkCompilerOption() {
         return alphaNetworkCompilerOption;
     }
@@ -443,6 +462,9 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
             }
             case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 return (T) (parallelLambdaExternalization ? ParallelLambdaExternalizationOption.ENABLED : ParallelLambdaExternalizationOption.DISABLED);
+            }
+            case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                return (T) (reproducibleExecutableModelGeneration ? ReproducibleExecutableModelGenerationOption.ENABLED : ReproducibleExecutableModelGenerationOption.DISABLED);
             }
             case ParallelRulesBuildThresholdOption.PROPERTY_NAME: {
                 return (T) parallelRulesBuildThreshold;
@@ -522,6 +544,10 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
             }
             case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 this.parallelLambdaExternalization = ((ParallelLambdaExternalizationOption) option).isLambdaExternalizationParallel();
+                break;
+            }
+            case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                this.reproducibleExecutableModelGeneration = ((ReproducibleExecutableModelGenerationOption) option).isReproducibleExecutableModelGeneration();
                 break;
             }
             case ParallelRulesBuildThresholdOption.PROPERTY_NAME: {
