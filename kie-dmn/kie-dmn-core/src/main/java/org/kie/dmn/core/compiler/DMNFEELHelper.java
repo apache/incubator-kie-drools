@@ -143,16 +143,16 @@ public class DMNFEELHelper {
         }
         feelctx.setFEELTypeRegistry(model.getTypeRegistry());
         // TODO: EXPERIMENT
-        String baseExpression = expression.contains("(") ? expression.substring(0, expression.indexOf("(")) : expression;
-        baseExpression = baseExpression.replace(" ", "");
-        if (baseExpression.equals("date")) {
-            Optional<Type> type = getTypeFromParent(element, feelctx);
-           // Optional<QName> qnameType = getFirstInformationItemQNameFromParent(element);
-            if (type.isPresent() &&
-                    type.get().getName().equals("date and time")) {
-                expression = "date and time" + (expression.substring(expression.indexOf("(")));
-            }
-        }
+//        String baseExpression = expression.contains("(") ? expression.substring(0, expression.indexOf("(")) : expression;
+//        baseExpression = baseExpression.replace(" ", "");
+//        if (baseExpression.equals("date")) {
+//            Optional<Type> type = getTypeFromParent(element, feelctx);
+//           // Optional<QName> qnameType = getFirstInformationItemQNameFromParent(element);
+//            if (type.isPresent() &&
+//                    type.get().getName().equals("date and time")) {
+//                expression = "date and time" + (expression.substring(expression.indexOf("(")));
+//            }
+//        }
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
