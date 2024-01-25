@@ -3,6 +3,7 @@
 * xref:KIE/index.adoc[leveloffset=+1]
 * xref:rule-engine/index.adoc[leveloffset=+1]
 * xref:language-reference/index.adoc[leveloffset=+1]
+* xref:language-reference-traditional/index.adoc[leveloffset=+1]
 * xref:DMN/index.adoc[leveloffset=+1]
 * xref:pragmatic-ai/index.adoc[leveloffset=+1]
 * xref:Commands/index.adoc[leveloffset=+1]

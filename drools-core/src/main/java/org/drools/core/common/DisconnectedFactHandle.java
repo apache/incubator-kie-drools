@@ -363,10 +363,6 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
 
-    public void addTupleInPosition(TupleImpl rightTuple) {
-        throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
-    }
-
     public void removeRightTuple(TupleImpl rightTuple) {
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MESSAGE);
     }
