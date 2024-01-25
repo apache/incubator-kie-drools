@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +45,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -95,6 +95,7 @@ import org.drools.util.TypeResolver;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.PrototypesOption;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.ReproducibleExecutableModelGenerationOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
@@ -155,7 +156,7 @@ public class PackageModel {
     private final List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
     private final List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
-    private final Set<Class<?>> domainClasses = new HashSet<>();
+    private final Set<Class<?>> domainClasses = new LinkedHashSet<>();
     private final Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
     
     private final Set<Class<?>> otnsClasses = new HashSet<>();
@@ -187,7 +188,7 @@ public class PackageModel {
     private final boolean prototypesAllowed;
 
     private PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
+        this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(configuration, releaseId, name));
     }
 
     public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
@@ -233,8 +234,19 @@ public class PackageModel {
      * @param packageName
      * @return
      */
-    public static String getPkgUUID(ReleaseId releaseId, String packageName) {
+    public static String getPkgUUID(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, String packageName) {
+        if (isReproducibleExecutableModelGeneration(configuration)) {
+            return StringUtils.getPkgUUID(releaseId != null ? releaseId.toString() : "", packageName);
+        }
         return (releaseId != null && !releaseId.isSnapshot()) ? StringUtils.getPkgUUID(releaseId.toString(), packageName) : StringUtils.generateUUID();
+    }
+
+    public boolean isReproducibleExecutableModelGeneration() {
+        return isReproducibleExecutableModelGeneration(configuration);
+    }
+
+    private static boolean isReproducibleExecutableModelGeneration(KnowledgeBuilderConfigurationImpl configuration) {
+        return configuration != null && configuration.getOption(ReproducibleExecutableModelGenerationOption.KEY).isReproducibleExecutableModelGeneration();
     }
 
     public Map<String, CreatedClass> getLambdaClasses() {
@@ -741,7 +753,7 @@ public class PackageModel {
 
         int ruleCount = ruleMethodsInUnit.size();
         boolean requiresMultipleRulesLists = ruleCount >= RULES_DECLARATION_PER_CLASS-1;
-        boolean parallelRulesLoad = ruleCount >= (RULES_DECLARATION_PER_CLASS*3-1);
+        boolean parallelRulesLoad = !isReproducibleExecutableModelGeneration() && ruleCount >= (RULES_DECLARATION_PER_CLASS*3-1);
         MethodCallExpr parallelRulesGetter = null;
 
 
@@ -761,9 +773,7 @@ public class PackageModel {
 
         ruleMethodsInUnit.parallelStream().forEach( DrlxParseUtil::transformDrlNameExprToNameExpr);
 
-        int maxLength = ruleMethodsInUnit
-                .parallelStream()
-                .map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
+        int maxLength = ruleMethodsInUnit.parallelStream().map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
         int rulesPerClass = oneClassPerRule ? 1 : Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result
@@ -812,13 +822,6 @@ public class PackageModel {
                         "    }\n"
         );
         rulesClass.addMember( getRulesMethod );
-
-        StringBuilder sb = new StringBuilder("\n");
-        sb.append("With the following expression ID:\n");
-        sb.append(exprIdGenerator.toString());
-        sb.append("\n");
-        JavadocComment exprIdComment = new JavadocComment(sb.toString());
-        getRulesMethod.setComment(exprIdComment);
     }
 
     private CompilationUnit createCompilationUnit(RuleSourceResult results ) {

@@ -32,6 +32,7 @@
 
   <properties>
     <java.module.name>org.kie.dmn.validation</java.module.name>
+    <drools.reproducibleExecutableModelGeneration>true</drools.reproducibleExecutableModelGeneration>
   </properties>
 
   <dependencyManagement>
@@ -208,6 +209,26 @@
               <sources>
                 <source>${project.build.directory}/generated-sources/bootstrap</source>
               </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>set-system-properties</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <property>
+                  <name>drools.reproducibleExecutableModelGeneration</name>
+                  <value>${drools.reproducibleExecutableModelGeneration}</value>
+                </property>
+              </properties>
             </configuration>
           </execution>
         </executions>
