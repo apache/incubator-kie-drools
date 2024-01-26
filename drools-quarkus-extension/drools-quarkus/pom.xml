@@ -159,10 +159,10 @@
                         <id>Run Script</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>java</goal>
                         </goals>
                         <configuration>
-                            <executable>${project.basedir}/../../script/remove_comments.sh</executable>
+                            <mainClass>org.drools.util.RemoveCommentsMain</mainClass>
                             <arguments>
                                 <argument>${project.basedir}/target/classes/META-INF/quarkus-extension.properties</argument>
                             </arguments>
