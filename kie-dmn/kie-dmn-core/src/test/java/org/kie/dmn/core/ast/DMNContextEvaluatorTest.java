@@ -2,11 +2,8 @@ package org.kie.dmn.core.ast;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -30,7 +27,9 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DMNContextEvaluatorTest {
 
@@ -155,15 +154,7 @@ public class DMNContextEvaluatorTest {
         DMNExpressionEvaluator evaluator = ed.getEvaluator();
         EvaluatorResult evaluated = evaluator.evaluate(runtime, result);
         assertNotNull(evaluated);
-        Object retrieved = evaluated.getResult();
-        assertNotNull(retrieved);
-        assertThat(retrieved instanceof LocalDateTime);
-        //ed.getEvaluator().evaluate( runtime, result );
-        //contextEntryDef.getEvaluator().evaluate()
-
-        // DMNExpressionEvaluator evaluator =
-       // new DMNContextEvaluator.ContextEntryDef("fromStringToDateTime",
-        // type, evaluator, ce )
+        assertEquals(EvaluatorResult.ResultType.SUCCESS, evaluated.getResultType());
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {
