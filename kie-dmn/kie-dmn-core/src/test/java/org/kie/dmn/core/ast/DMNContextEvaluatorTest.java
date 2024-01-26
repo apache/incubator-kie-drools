@@ -134,7 +134,8 @@ public class DMNContextEvaluatorTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         DecisionNode date = dmnModel.getDecisionByName("Date");
-        DMNContextEvaluator.ContextEntryDef ed = ((DMNContextEvaluator) ((DecisionNodeImpl) date).getEvaluator()).getEntries().stream()
+        DMNExpressionEvaluator dateDecisionEvaluator = ((DecisionNodeImpl) date).getEvaluator();
+        DMNContextEvaluator.ContextEntryDef ed = ((DMNContextEvaluator) dateDecisionEvaluator).getEntries().stream()
                 .filter(entry -> entry.getName().equals("fromStringToDateTime"))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Failed to find fromStringToDateTime ContextEntryDef"));
@@ -168,7 +169,7 @@ public class DMNContextEvaluatorTest {
 
     private DMNResultImpl createResultImpl(DMNModel model, DMNContext context) {
         DMNResultImpl result = dmnResultFactory.newDMNResultImpl(model);
-        result.setContext(context.clone()); // DMNContextFPAImpl.clone() creates DMNContextImpl
+        result.setContext(context.clone());
         return result;
     }
 }
