@@ -63,7 +63,7 @@ public class ModelBuilderImplTest {
         PackageDescr packageDescr = getPackageDescr(null);
         PackageModel retrieved =  modelBuilder.getPackageModel(packageDescr, packageRegistry, internalKnowledgePackage.getName());
         assertThat(retrieved).isNotNull();
-        String expected = getPkgUUID(RELEASE_ID, internalKnowledgePackage.getName());
+        String expected = getPkgUUID(retrieved.getConfiguration(), RELEASE_ID, internalKnowledgePackage.getName());
         assertThat(retrieved.getPackageUUID()).isEqualTo(expected);
     }
 
