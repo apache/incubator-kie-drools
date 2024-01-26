@@ -5,13 +5,13 @@ author=$1
 branch=$2
 
 if [ -z $author ]; then
-  author='kiegroup'
+  author='apache'
 fi
 
 if [ -z $branch ]; then
   branch='main'
 fi
 
-git clone --single-branch --branch $branch https://github.com/${author}/jenkins-pipeline-shared-libraries.git $TEMP_DIR
+git clone --single-branch --branch $branch https://github.com/${author}/incubator-kie-kogito-pipelines.git $TEMP_DIR
 
-cd $TEMP_DIR && mvn clean install -DskipTests
+cd $TEMP_DIR/jenkins-pipeline-shared-libraries && mvn clean install -DskipTests
