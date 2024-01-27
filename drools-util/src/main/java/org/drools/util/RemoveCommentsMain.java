@@ -7,12 +7,13 @@ import java.util.stream.Collectors;
 
 public class RemoveCommentsMain {
 
-    public static void main(String[] args) {
-        String fileName = args[0];
-        try {
-            Files.write(Path.of(fileName), removeComments(fileName).getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public static void main(String... args) {
+        for (String fileName : args) {
+            try {
+                Files.write(Path.of(fileName), removeComments(fileName).getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
