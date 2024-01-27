@@ -56,6 +56,10 @@
       <artifactId>quarkus-smallrye-health</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-data-index-health</artifactId>
+    </dependency>
     <!-- Testing dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>
