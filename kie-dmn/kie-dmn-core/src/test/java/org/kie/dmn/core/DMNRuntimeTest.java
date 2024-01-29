@@ -660,6 +660,22 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     @Test
+    public void testDateToDateTimeFunction() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DateToDateTimeFunction.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE",
+                                                   "new-file");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext ctx = runtime.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+        assertThat(dmnResult.getDecisionResultByName("usingNormal").getResult()).isEqualTo(new BigDecimal(3));
+    }
+
+    @Test
     public void testFiltering() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Person_filtering_by_age.dmn", getClass() );
         runtime.addListener( DMNRuntimeUtil.createListener() );

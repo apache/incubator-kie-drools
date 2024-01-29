@@ -1,0 +1,24 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_14BDA5CA-C87F-448D-AF75-F976A9E0EF83" name="new-file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE">
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id="_80847A66-F03E-4B81-B406-0E3B8D177EC8" name="normal">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1D5A641F-31EE-42FF-8DAD-D229A9A998BD" name="normal"/>
+    <dmn:encapsulatedLogic id="_4A6C9D35-03DE-47F8-8ADD-6F15A27077A5" kind="FEEL">
+      <dmn:formalParameter id="_3984C4F0-4E60-481A-9702-EAC914F1C63B" name="a" typeRef="date and time"/>
+      <dmn:formalParameter id="_C419BFC7-53E0-4B2C-A2B1-BA5A22D2971D" name="b" typeRef="time"/>
+      <dmn:literalExpression id="_88CC7676-B609-4430-8670-5B5735D5C6D5">
+        <dmn:text>a+b</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:decision id="_3151179A-E33D-4A7E-9D9C-8CFE388E8640" name="usingNormal">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C1455FFB-C4C4-4ABA-A9DF-2E7A92F2588B" name="usingNormal" typeRef="date and time"/>
+    <dmn:knowledgeRequirement id="_A1C84873-809C-44CD-90BE-AD32BFB8F79F">
+      <dmn:requiredKnowledge href="#_80847A66-F03E-4B81-B406-0E3B8D177EC8"/>
+    </dmn:knowledgeRequirement>
+    <dmn:literalExpression id="_B29EE21C-702B-40BB-A98A-1717BBC83C8C">
+      <dmn:text>normal( @"2019-03-31", duration( "P26M" ))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+</dmn:definitions>
