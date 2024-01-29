@@ -71,7 +71,7 @@ public class FunctionError extends DroolsError {
     
     private String createMessage( String message ) {
         StringBuilder detail = new StringBuilder();
-        if( object instanceof CompilationProblem[] ) {
+        if( object instanceof CompilationProblem[]) {
             CompilationProblem[] cp = (CompilationProblem[]) object;
             for( int i = 0; i < cp.length ; i ++ ) {
                detail.append( this.functionDescr.getName() );
