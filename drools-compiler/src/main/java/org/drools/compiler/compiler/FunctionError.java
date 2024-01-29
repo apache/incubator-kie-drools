@@ -57,7 +57,8 @@ public class FunctionError extends DroolsError {
     }
 
     private void setErrorLines() {
-        if( object instanceof CompilationProblem[] cp) {
+        if( object instanceof CompilationProblem[] ) {
+            CompilationProblem[] cp = ((CompilationProblem[]) object);
             this.errorLines = new int[cp.length];
             for( int i = 0; i < cp.length ; i ++ ) {
                 this.errorLines[i] = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1;
@@ -70,7 +71,8 @@ public class FunctionError extends DroolsError {
     
     private String createMessage( String message ) {
         StringBuilder detail = new StringBuilder();
-        if( object instanceof CompilationProblem[] cp) {
+        if( object instanceof CompilationProblem[] ) {
+            CompilationProblem[] cp = ((CompilationProblem[]) object);
             for( int i = 0; i < cp.length ; i ++ ) {
                detail.append( this.functionDescr.getName() );
                detail.append( " (line:" );
@@ -79,7 +81,9 @@ public class FunctionError extends DroolsError {
                detail.append( cp[i].getMessage() );
                detail.append( "\n" );
             }
-        } else if( object instanceof Exception ex) {
+        } else if( object instanceof Exception ) {
+            Exception ex = ((Exception) object);
+
             detail.append( " (line:" );
             detail.append( this.errorLines[0] );
             detail.append( "): " );
