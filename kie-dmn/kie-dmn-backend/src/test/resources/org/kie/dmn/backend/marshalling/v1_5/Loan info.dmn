@@ -71,6 +71,9 @@
 		<semantic:allowedValues>
 			<semantic:text>"Credit card","Auto loan","Student loan","Lease","Lien","Real estate loan","Alimony child support","Other"</semantic:text>
 		</semantic:allowedValues>
+		<semantic:typeConstraint>
+			<semantic:text>"Credit card","Auto loan","Student loan","Lease","Lien","Real estate loan","Alimony child support","Other"</semantic:text>
+		</semantic:typeConstraint>
 	</semantic:itemDefinition>
 	<semantic:itemDefinition name="tAmortizationType" label="tAmortizationType">
 		<semantic:typeRef>string</semantic:typeRef>

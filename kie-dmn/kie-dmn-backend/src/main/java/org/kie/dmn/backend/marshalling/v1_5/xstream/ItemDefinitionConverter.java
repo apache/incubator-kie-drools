@@ -48,7 +48,7 @@ public class ItemDefinitionConverter extends NamedElementConverter {
         } else if (ALLOWED_VALUES.equals(nodeName)) {
             id.setAllowedValues((UnaryTests) child);
         } else if (TYPE_CONSTRAINT.equals(nodeName)) {
-            id.setAllowedValues((UnaryTests) child);
+            id.setTypeConstraint((UnaryTests) child);
         } else if (ITEM_COMPONENT.equals(nodeName)) {
             id.getItemComponent().add((ItemDefinition) child);
         } else if (FUNCTION_ITEM.equals(nodeName)) {

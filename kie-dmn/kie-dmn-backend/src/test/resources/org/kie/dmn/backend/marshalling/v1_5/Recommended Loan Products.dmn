@@ -1181,7 +1181,7 @@ and To be paid off=true].Balance[item!=null])</semantic:text>
 		</semantic:encapsulatedLogic>
 	</semantic:businessKnowledgeModel>
 	<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/">
-		<dmndi:DMNDiagram id="_0b101bf8-a9c5-4e7c-8763-c8fcb4263a32" name="Page 1">
+		<dmndi:DMNDiagram id="_0b101bf8-a9c5-4e7c-8763-c8fcb4263a32" name="Page 1" useAlternativeInputDataShape="true">
 			<di:extension xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"/>
 			<dmndi:Size height="1050" width="1550.4755458831787"/>
 			<dmndi:DMNShape id="_c1bba5d5-fa68-482c-9856-62553328432f" dmnElementRef="_a177b73e-7064-4140-8757-23bdf7a5d696">
