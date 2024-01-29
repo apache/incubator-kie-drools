@@ -24,7 +24,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNLabelConverter;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_5.TDefinitions;
 import org.slf4j.Logger;
@@ -105,6 +104,7 @@ public abstract class DMNModelInstrumentedBaseConverter
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "DMNLabel", dmndiPrefix), "DMNLabel");
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, DMNLabelConverter.TEXT, dmndiPrefix), DMNLabelConverter.TEXT);
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "Size", dmndiPrefix), "Size");
+            staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "useAlternativeInputDataShape", dmndiPrefix), "useAlternativeInputDataShape");
 
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "FillColor", dmndiPrefix), "FillColor");
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DMNDI, "StrokeColor", dmndiPrefix), "StrokeColor");

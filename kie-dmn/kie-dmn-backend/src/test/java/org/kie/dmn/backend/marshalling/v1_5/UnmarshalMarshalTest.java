@@ -193,9 +193,10 @@ DMNDIv1.2:
                                                  new QName("kind"),
                                                  new QName("textFormat"),
                                                  new QName("associationDirection"),
-                                                 new QName("isCollapsed")));
+                                                 new QName("isCollapsed"),
+                                                 new QName("useAlternativeInputDataShape")));
         Set<String> nodeHavingDefaultableAttr = new HashSet<>();
-        nodeHavingDefaultableAttr.addAll(Arrays.asList("definitions", "decisionTable", "itemDefinition", "itemComponent", "encapsulatedLogic", "textAnnotation", "association", "DMNShape"));
+        nodeHavingDefaultableAttr.addAll(Arrays.asList("definitions", "decisionTable", "itemDefinition", "itemComponent", "encapsulatedLogic", "textAnnotation", "association", "DMNShape", "DMNDiagram"));
         Diff checkSimilar = DiffBuilder
                 .compare(control)
                 .withTest(test)

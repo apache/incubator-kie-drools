@@ -21,8 +21,8 @@ package org.kie.dmn.model.v1_5.dmndi;
 import org.kie.dmn.model.api.dmndi.DMNDiagram;
 import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.api.dmndi.DiagramElement;
-import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_3.dmndi.Style.IDREFStubStyle;
+import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_5.dmndi.Style.IDREFStubStyle;
 
 import java.util.ArrayList;
 import java.util.List;

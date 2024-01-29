@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<semantic:definitions id="_5c8b9296-96cf-4898-bba5-3a2d21d34eed" name="Loan info" namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" exporter="DMN Modeler" exporterVersion="6.2.2.3" xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/" xmlns="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed">
+<semantic:definitions
+				id="_5c8b9296-96cf-4898-bba5-3a2d21d34eed"
+				name="Loan info"
+				namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed"
+				exporter="DMN Modeler" exporterVersion="6.2.2.3"
+				xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+				xmlns="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed">
 	<semantic:itemDefinition name="tBorrower" label="tBorrower">
 		<semantic:itemComponent id="_b7dcc14d-510d-4628-a510-ca774208e501" name="Full Name">
 			<semantic:typeRef>string</semantic:typeRef>
@@ -640,7 +646,7 @@
 		<semantic:inputData href="#_e0cfe605-3068-42a2-946f-c7db3774de1e"/>
 		<semantic:inputData href="#_d78ee6d5-96ed-43e6-89d2-123e0f388a67"/>
 	</semantic:decisionService>
-	<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/">
+	<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/">
 		<dmndi:DMNDiagram id="_0b101bf8-a9c5-4e7c-8763-c8fcb4263a32" name="Page 1">
 			<di:extension xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"/>
 			<dmndi:Size height="1054.996529420125" width="1803.949344176753"/>

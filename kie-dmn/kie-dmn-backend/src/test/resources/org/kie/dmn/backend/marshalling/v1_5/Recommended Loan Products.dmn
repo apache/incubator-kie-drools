@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<semantic:definitions id="_736fa164-03d8-429f-8318-4913a548c3a6" name="Recommended Loan Products" namespace="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6" exporter="DMN Modeler" exporterVersion="6.2.3" xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:include1="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" xmlns="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6">
+<semantic:definitions
+				id="_736fa164-03d8-429f-8318-4913a548c3a6"
+				name="Recommended Loan Products"
+				namespace="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6"
+				exporter="DMN Modeler" exporterVersion="6.2.3"
+				xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+				xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xmlns:include1="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed"
+				xmlns="http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6">
 	<semantic:import namespace="http://www.trisotech.com/definitions/_5c8b9296-96cf-4898-bba5-3a2d21d34eed" name="Services" importType="https://www.omg.org/spec/DMN/20211108/MODEL/"/>
 	<semantic:itemDefinition name="tBorrower" label="tBorrower">
 		<semantic:itemComponent id="_b7dcc14d-510d-4628-a510-ca774208e501" name="Full Name">
@@ -1171,7 +1180,7 @@ and To be paid off=true].Balance[item!=null])</semantic:text>
 			</semantic:context>
 		</semantic:encapsulatedLogic>
 	</semantic:businessKnowledgeModel>
-	<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/">
+	<dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/">
 		<dmndi:DMNDiagram id="_0b101bf8-a9c5-4e7c-8763-c8fcb4263a32" name="Page 1">
 			<di:extension xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"/>
 			<dmndi:Size height="1050" width="1550.4755458831787"/>
