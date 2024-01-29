@@ -283,13 +283,12 @@ void setupReleasePromoteJob() {
 }
 
 void setupWeeklyDeployJob() {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools.weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Drools Weekly Deploy')
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-apps.weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Kogito Apps Weekly Deploy')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        PROPERTIES_FILE_NAME: 'deployment.properties',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
@@ -297,8 +296,6 @@ void setupWeeklyDeployJob() {
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
         MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
-
-        DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -307,6 +304,7 @@ void setupWeeklyDeployJob() {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
 
             booleanParam('SKIP_TESTS', false, 'Skip tests')
+
 
             stringParam('GIT_CHECKOUT_DATETIME', '', 'Git checkout date and time - (Y-m-d H:i)')
 
