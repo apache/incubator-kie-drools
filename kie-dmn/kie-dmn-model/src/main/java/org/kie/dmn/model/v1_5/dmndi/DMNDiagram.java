@@ -27,6 +27,7 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
 
     protected org.kie.dmn.model.api.dmndi.Dimension size;
     protected List<org.kie.dmn.model.api.dmndi.DiagramElement> dmnDiagramElement;
+    protected boolean useAlternativeInputDataShape = false;
 
     /**
      * Gets the value of the size property.
@@ -81,6 +82,16 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
             dmnDiagramElement = new ArrayList<>();
         }
         return this.dmnDiagramElement;
+    }
+
+    @Override
+    public boolean getUseAlternativeInputDataShape() {
+        return useAlternativeInputDataShape;
+    }
+
+    @Override
+    public void setUseAlternativeInputDataShape(boolean value) {
+        this.useAlternativeInputDataShape = value;
     }
 
 }
