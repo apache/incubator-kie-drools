@@ -61,52 +61,52 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void testV14_simple() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "simple.dmn");
+    public void testv15_simple() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "simple.dmn");
     }
 
     @Test
-    public void testV14_ch11example_asFromOMG() throws Exception {
+    public void testv15_ch11example_asFromOMG() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving (re-using from package of 1.3)
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_5/", "Chapter 11 Example.dmn", marshaller, DMN15_SCHEMA_SOURCE);
     }
 
     @Test
-    public void testV14_financial() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "Financial.dmn");
+    public void testv15_financial() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "Financial.dmn");
     }
 
     @Test
-    public void testV14_loan_info() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "Loan info.dmn");
+    public void testv15_loan_info() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "Loan info.dmn");
     }
 
     @Test
-    public void testV14_recommended_loan_product() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "Recommended Loan Products.dmn");
+    public void testv15_recommended_loan_product() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "Recommended Loan Products.dmn");
     }
     
     @Test
-    public void testV14_for() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "sampleFor.dmn");
+    public void testv15_for() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleFor.dmn");
     }
     
     @Test
-    public void testV14_quantified() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "sampleQuantified.dmn");
+    public void testv15_quantified() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleQuantified.dmn");
     }
     
     @Test
-    public void testV14_conditional() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "sampleConditional.dmn");
+    public void testv15_conditional() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleConditional.dmn");
     }
     
     @Test
-    public void testV14_filter() throws Exception {
-        testRoundTripV14("org/kie/dmn/backend/marshalling/v1_5/", "sampleFilter.dmn");
+    public void testv15_filter() throws Exception {
+        testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleFilter.dmn");
     }
 
-    public void testRoundTripV14(String subdir, String xmlfile) throws Exception {
+    public void testRoundTripV15(String subdir, String xmlfile) throws Exception {
         testRoundTrip(subdir, xmlfile, MARSHALLER, DMN15_SCHEMA_SOURCE);
     }
 

@@ -28,18 +28,6 @@ import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.BoundsConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.ColorConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNDIConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNDecisionServiceDividerLineConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNDiagramConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNEdgeConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNLabelConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNShapeConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNStyleConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DiagramElementExtensionConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.DimensionConverter;
-import org.kie.dmn.backend.marshalling.v1_5.xstream.PointConverter;
 import org.kie.dmn.backend.marshalling.v1x.DMNXStream;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
@@ -212,7 +200,7 @@ public class XStreamMarshaller
         XStream xStream = XStreamUtils.createNonTrustingXStream(staxDriver, Definitions.class.getClassLoader(), DMNXStream::from);
         xStream.addPermission(new TypeHierarchyPermission(QName.class));
         xStream.addPermission(new TypeHierarchyPermission(KieDMNModelInstrumentedBase.class));
-        xStream.addPermission(new TypeHierarchyPermission(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.class));
+        xStream.addPermission(new TypeHierarchyPermission(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.class));
         
         xStream.alias("artifact", TArtifact.class);
         xStream.alias("definitions", TDefinitions.class);
