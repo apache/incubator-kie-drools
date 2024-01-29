@@ -85,12 +85,12 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
     }
 
     @Override
-    public boolean getUseAlternativeInputDataShape() {
+    public Boolean getUseAlternativeInputDataShape() {
         return useAlternativeInputDataShape;
     }
 
     @Override
-    public void setUseAlternativeInputDataShape(boolean value) {
+    public void setUseAlternativeInputDataShape(Boolean value) {
         this.useAlternativeInputDataShape = value;
     }
 

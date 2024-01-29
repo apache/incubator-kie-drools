@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 public class ItemDefinitionConverter extends NamedElementConverter {
     public static final String ITEM_COMPONENT = "itemComponent";
     public static final String ALLOWED_VALUES = "allowedValues";
+    public static final String TYPE_CONSTRAINT = "typeConstraint";
     public static final String TYPE_REF = "typeRef";
     public static final String TYPE_LANGUAGE = "typeLanguage";
     public static final String IS_COLLECTION = "isCollection";
@@ -45,6 +46,8 @@ public class ItemDefinitionConverter extends NamedElementConverter {
         if (TYPE_REF.equals(nodeName)) {
             id.setTypeRef((QName) child);
         } else if (ALLOWED_VALUES.equals(nodeName)) {
+            id.setAllowedValues((UnaryTests) child);
+        } else if (TYPE_CONSTRAINT.equals(nodeName)) {
             id.setAllowedValues((UnaryTests) child);
         } else if (ITEM_COMPONENT.equals(nodeName)) {
             id.getItemComponent().add((ItemDefinition) child);
@@ -72,8 +75,15 @@ public class ItemDefinitionConverter extends NamedElementConverter {
         super.writeChildren(writer, context, parent);
         ItemDefinition id = (ItemDefinition) parent;
         
-        if (id.getTypeRef() != null) writeChildrenNode(writer, context, id.getTypeRef(), TYPE_REF);
-        if (id.getAllowedValues() != null) writeChildrenNode(writer, context, id.getAllowedValues(), ALLOWED_VALUES);
+        if (id.getTypeRef() != null) {
+            writeChildrenNode(writer, context, id.getTypeRef(), TYPE_REF);
+        }
+        if (id.getAllowedValues() != null) {
+            writeChildrenNode(writer, context, id.getAllowedValues(), ALLOWED_VALUES);
+        }
+        if (id.getTypeConstraint() != null) {
+            writeChildrenNode(writer, context, id.getTypeConstraint(), TYPE_CONSTRAINT);
+        }
         for ( ItemDefinition ic : id.getItemComponent() ) {
             writeChildrenNode(writer, context, ic, ITEM_COMPONENT);
         }

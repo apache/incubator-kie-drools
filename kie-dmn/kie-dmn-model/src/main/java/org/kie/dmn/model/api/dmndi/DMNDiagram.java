@@ -29,7 +29,7 @@ public interface DMNDiagram extends Diagram {
 
     List<DiagramElement> getDMNDiagramElement();
 
-    boolean getUseAlternativeInputDataShape();
+    Boolean getUseAlternativeInputDataShape();
 
-    void setUseAlternativeInputDataShape(boolean value);
+    void setUseAlternativeInputDataShape(Boolean value);
 }
