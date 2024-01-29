@@ -117,7 +117,7 @@
         <!-- This workaround can be removed when drools will be migrated to quarkus release containing this fix https://github.com/quarkusio/quarkus/pull/38365 -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>${version.maven-exec-plugin}</version>
         <executions>
           <execution>
             <id>Remove comments from quarkus-extension.properties</id>
