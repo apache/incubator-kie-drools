@@ -22,8 +22,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConverter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.FormatUtils;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNModelInstrumentedBaseConverter;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.FormatUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.Bounds;
 
@@ -66,20 +66,20 @@ public class BoundsConverter extends DMNModelInstrumentedBaseConverter {
 
         Bounds abs = (Bounds) parent;
 
-        writer.addAttribute(X, org.kie.dmn.backend.marshalling.v1_3.xstream.FormatUtils.manageDouble(abs.getX()));
-        writer.addAttribute(Y, org.kie.dmn.backend.marshalling.v1_3.xstream.FormatUtils.manageDouble(abs.getY()));
-        writer.addAttribute(WIDTH, org.kie.dmn.backend.marshalling.v1_3.xstream.FormatUtils.manageDouble(abs.getWidth()));
+        writer.addAttribute(X, org.kie.dmn.backend.marshalling.v1_5.xstream.FormatUtils.manageDouble(abs.getX()));
+        writer.addAttribute(Y, org.kie.dmn.backend.marshalling.v1_5.xstream.FormatUtils.manageDouble(abs.getY()));
+        writer.addAttribute(WIDTH, org.kie.dmn.backend.marshalling.v1_5.xstream.FormatUtils.manageDouble(abs.getWidth()));
         writer.addAttribute(HEIGHT, FormatUtils.manageDouble(abs.getHeight()));
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.Bounds();
+        return new org.kie.dmn.model.v1_5.dmndi.Bounds();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(org.kie.dmn.model.v1_3.dmndi.Bounds.class);
+        return type.equals(org.kie.dmn.model.v1_5.dmndi.Bounds.class);
     }
 
 }

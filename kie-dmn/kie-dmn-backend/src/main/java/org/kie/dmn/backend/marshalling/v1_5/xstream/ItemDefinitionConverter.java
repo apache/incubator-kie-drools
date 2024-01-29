@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_4.TItemDefinition;
+import org.kie.dmn.model.v1_5.TItemDefinition;
 
 import javax.xml.namespace.QName;
 

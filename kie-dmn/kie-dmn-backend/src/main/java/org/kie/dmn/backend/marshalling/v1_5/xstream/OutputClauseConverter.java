@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_4.TOutputClause;
+import org.kie.dmn.model.v1_5.TOutputClause;
 
 public class OutputClauseConverter extends DMNElementConverter {
     public static final String DEFAULT_OUTPUT_ENTRY = "defaultOutputEntry";

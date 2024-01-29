@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InputData;
-import org.kie.dmn.model.v1_4.TInputData;
+import org.kie.dmn.model.v1_5.TInputData;
 
 public class InputDataConverter
         extends DRGElementConverter {

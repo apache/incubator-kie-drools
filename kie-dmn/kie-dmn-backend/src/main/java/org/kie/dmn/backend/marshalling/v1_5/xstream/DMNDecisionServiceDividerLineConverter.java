@@ -52,12 +52,12 @@ public class DMNDecisionServiceDividerLineConverter extends EdgeConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.DMNDecisionServiceDividerLine();
+        return new org.kie.dmn.model.v1_5.dmndi.DMNDecisionServiceDividerLine();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(org.kie.dmn.model.v1_3.dmndi.DMNDecisionServiceDividerLine.class);
+        return type.equals(org.kie.dmn.model.v1_5.dmndi.DMNDecisionServiceDividerLine.class);
     }
 
 }

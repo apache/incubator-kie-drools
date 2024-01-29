@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.Context;
 import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TContext;
+import org.kie.dmn.model.v1_5.TContext;
 
 public class ContextConverter extends ExpressionConverter {
     public static final String CONTEXT_ENTRY = "contextEntry";

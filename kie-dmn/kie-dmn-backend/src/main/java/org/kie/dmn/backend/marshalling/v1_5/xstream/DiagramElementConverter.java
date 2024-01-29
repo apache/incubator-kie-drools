@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConverter;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNModelInstrumentedBaseConverter;
 import org.kie.dmn.model.api.dmndi.DiagramElement;
 import org.kie.dmn.model.api.dmndi.Style;
 
@@ -61,7 +61,7 @@ public abstract class DiagramElementConverter extends DMNModelInstrumentedBaseCo
 
         String sharedStyleXmlSerialization = reader.getAttribute(SHARED_STYLE);
         if (sharedStyleXmlSerialization != null) {
-            abs.setSharedStyle(new org.kie.dmn.model.v1_3.dmndi.Style.IDREFStubStyle(sharedStyleXmlSerialization));
+            abs.setSharedStyle(new org.kie.dmn.model.v1_5.dmndi.Style.IDREFStubStyle(sharedStyleXmlSerialization));
         }
     }
 

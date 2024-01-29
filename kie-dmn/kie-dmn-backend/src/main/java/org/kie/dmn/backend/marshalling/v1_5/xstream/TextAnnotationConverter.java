@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.TextAnnotation;
-import org.kie.dmn.model.v1_4.TTextAnnotation;
+import org.kie.dmn.model.v1_5.TTextAnnotation;
 
 public class TextAnnotationConverter extends ArtifactConverter {
     public static final String TEXT = "text";

@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.AuthorityRequirement;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.KnowledgeSource;
-import org.kie.dmn.model.v1_4.TKnowledgeSource;
+import org.kie.dmn.model.v1_5.TKnowledgeSource;
 
 public class KnowledgeSourceConverter extends DRGElementConverter {
     public static final String OWNER = "owner";

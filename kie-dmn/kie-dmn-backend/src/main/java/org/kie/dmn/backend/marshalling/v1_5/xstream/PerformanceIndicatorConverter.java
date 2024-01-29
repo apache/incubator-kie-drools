@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.PerformanceIndicator;
-import org.kie.dmn.model.v1_4.TPerformanceIndicator;
+import org.kie.dmn.model.v1_5.TPerformanceIndicator;
 
 public class PerformanceIndicatorConverter extends BusinessContextElementConverter {
     public static final String IMPACTING_DECISION = "impactingDecision";

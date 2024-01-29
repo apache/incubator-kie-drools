@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.ElementCollection;
-import org.kie.dmn.model.v1_4.TElementCollection;
+import org.kie.dmn.model.v1_5.TElementCollection;
 
 public class ElementCollectionConverter extends NamedElementConverter {
 

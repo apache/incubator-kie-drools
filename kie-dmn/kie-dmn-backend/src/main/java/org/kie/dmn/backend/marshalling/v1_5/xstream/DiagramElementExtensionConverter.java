@@ -25,10 +25,10 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConverter;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNModelInstrumentedBaseConverter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_3.dmndi.DiagramElement;
+import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_5.dmndi.DiagramElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

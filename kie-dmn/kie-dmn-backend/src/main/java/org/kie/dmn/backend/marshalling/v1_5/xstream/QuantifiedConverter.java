@@ -25,8 +25,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.Quantified;
-import org.kie.dmn.model.v1_4.TChildExpression;
-import org.kie.dmn.model.v1_4.TTypedChildExpression;
+import org.kie.dmn.model.v1_5.TChildExpression;
+import org.kie.dmn.model.v1_5.TTypedChildExpression;
 
 public abstract class QuantifiedConverter extends IteratorConverter {
 

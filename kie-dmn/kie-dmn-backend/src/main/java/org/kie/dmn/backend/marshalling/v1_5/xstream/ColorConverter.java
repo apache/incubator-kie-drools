@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConverter;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNModelInstrumentedBaseConverter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.Color;
 
@@ -69,12 +69,12 @@ public class ColorConverter extends DMNModelInstrumentedBaseConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.Color();
+        return new org.kie.dmn.model.v1_5.dmndi.Color();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals(org.kie.dmn.model.v1_3.dmndi.Color.class);
+        return clazz.equals(org.kie.dmn.model.v1_5.dmndi.Color.class);
     }
 
 }

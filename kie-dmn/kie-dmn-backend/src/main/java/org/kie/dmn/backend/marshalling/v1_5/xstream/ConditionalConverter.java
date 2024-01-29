@@ -26,8 +26,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TChildExpression;
-import org.kie.dmn.model.v1_4.TConditional;
+import org.kie.dmn.model.v1_5.TChildExpression;
+import org.kie.dmn.model.v1_5.TConditional;
 
 public class ConditionalConverter extends ExpressionConverter {
 

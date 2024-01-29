@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.ImportedValues;
 import org.kie.dmn.model.api.LiteralExpression;
-import org.kie.dmn.model.v1_4.TLiteralExpression;
+import org.kie.dmn.model.v1_5.TLiteralExpression;
 
 public class LiteralExpressionConverter
         extends ExpressionConverter {

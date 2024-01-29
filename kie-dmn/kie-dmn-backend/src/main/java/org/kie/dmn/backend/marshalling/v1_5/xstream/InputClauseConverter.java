@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_4.TInputClause;
+import org.kie.dmn.model.v1_5.TInputClause;
 
 public class InputClauseConverter extends DMNElementConverter {
     public static final String INPUT_VALUES = "inputValues";

@@ -41,7 +41,7 @@ import org.kie.dmn.model.api.OrganizationUnit;
 import org.kie.dmn.model.api.PerformanceIndicator;
 import org.kie.dmn.model.api.TextAnnotation;
 import org.kie.dmn.model.api.dmndi.DMNDI;
-import org.kie.dmn.model.v1_4.TDefinitions;
+import org.kie.dmn.model.v1_5.TDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

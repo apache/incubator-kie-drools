@@ -26,8 +26,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Filter;
-import org.kie.dmn.model.v1_4.TChildExpression;
-import org.kie.dmn.model.v1_4.TFilter;
+import org.kie.dmn.model.v1_5.TChildExpression;
+import org.kie.dmn.model.v1_5.TFilter;
 
 public class FilterConverter extends ExpressionConverter {
 

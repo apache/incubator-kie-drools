@@ -26,9 +26,9 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.For;
-import org.kie.dmn.model.v1_4.TChildExpression;
-import org.kie.dmn.model.v1_4.TFor;
-import org.kie.dmn.model.v1_4.TTypedChildExpression;
+import org.kie.dmn.model.v1_5.TChildExpression;
+import org.kie.dmn.model.v1_5.TFor;
+import org.kie.dmn.model.v1_5.TTypedChildExpression;
 
 public class ForConverter extends IteratorConverter {
 

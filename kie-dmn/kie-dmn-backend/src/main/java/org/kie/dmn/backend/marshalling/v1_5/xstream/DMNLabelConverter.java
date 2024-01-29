@@ -70,12 +70,12 @@ public class DMNLabelConverter extends ShapeConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.DMNLabel();
+        return new org.kie.dmn.model.v1_5.dmndi.DMNLabel();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(org.kie.dmn.model.v1_3.dmndi.DMNLabel.class);
+        return type.equals(org.kie.dmn.model.v1_5.dmndi.DMNLabel.class);
     }
 
 }

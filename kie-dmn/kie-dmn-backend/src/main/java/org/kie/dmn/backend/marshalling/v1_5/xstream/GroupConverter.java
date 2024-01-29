@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Group;
-import org.kie.dmn.model.v1_4.TGroup;
+import org.kie.dmn.model.v1_5.TGroup;
 
 public class GroupConverter extends ArtifactConverter {
 

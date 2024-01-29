@@ -27,7 +27,7 @@ import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.RuleAnnotation;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_4.TDecisionRule;
+import org.kie.dmn.model.v1_5.TDecisionRule;
 
 public class DecisionRuleConverter extends DMNElementConverter {
     public static final String OUTPUT_ENTRY = "outputEntry";

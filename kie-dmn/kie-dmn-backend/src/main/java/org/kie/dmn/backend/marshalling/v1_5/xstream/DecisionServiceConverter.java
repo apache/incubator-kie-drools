@@ -26,9 +26,9 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionService;
-import org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TDMNElementReference;
-import org.kie.dmn.model.v1_4.TDecisionService;
+import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_5.TDMNElementReference;
+import org.kie.dmn.model.v1_5.TDecisionService;
 
 public class DecisionServiceConverter extends InvocableConverter {
 

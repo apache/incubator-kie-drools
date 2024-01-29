@@ -27,7 +27,7 @@ import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.KnowledgeRequirement;
-import org.kie.dmn.model.v1_4.TBusinessKnowledgeModel;
+import org.kie.dmn.model.v1_5.TBusinessKnowledgeModel;
 
 public class BusinessKnowledgeModelConverter extends InvocableConverter {
     public static final String ENCAPSULATED_LOGIC = "encapsulatedLogic";

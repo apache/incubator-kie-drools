@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.Association;
 import org.kie.dmn.model.api.AssociationDirection;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TAssociation;
+import org.kie.dmn.model.v1_5.TAssociation;
 
 public class AssociationConverter extends ArtifactConverter {
     public static final String TARGET_REF = "targetRef";

@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.RuleAnnotationClause;
-import org.kie.dmn.model.v1_4.TRuleAnnotationClause;
+import org.kie.dmn.model.v1_5.TRuleAnnotationClause;
 
 public class RuleAnnotationClauseConverter extends DMNModelInstrumentedBaseConverter {
 

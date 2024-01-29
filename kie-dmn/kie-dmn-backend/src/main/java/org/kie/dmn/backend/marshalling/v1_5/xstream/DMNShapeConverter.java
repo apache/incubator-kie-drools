@@ -22,11 +22,11 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.DMNDecisionServiceDividerLine;
 import org.kie.dmn.model.api.dmndi.DMNLabel;
-import org.kie.dmn.model.v1_3.dmndi.DMNShape;
+import org.kie.dmn.model.v1_5.dmndi.DMNShape;
 
 public class DMNShapeConverter extends ShapeConverter {
 
@@ -62,7 +62,7 @@ public class DMNShapeConverter extends ShapeConverter {
         super.assignAttributes(reader, parent);
         DMNShape style = (DMNShape) parent;
 
-        style.setDmnElementRef(org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils.parseQNameString(reader.getAttribute("dmnElementRef")));
+        style.setDmnElementRef(org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils.parseQNameString(reader.getAttribute("dmnElementRef")));
         
         String isListedInputData = reader.getAttribute("isListedInputData");
         String isCollapsed = reader.getAttribute("isCollapsed");

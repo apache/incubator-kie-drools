@@ -27,7 +27,7 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.InformationItem;
-import org.kie.dmn.model.v1_4.TFunctionDefinition;
+import org.kie.dmn.model.v1_5.TFunctionDefinition;
 
 public class FunctionDefinitionConverter extends ExpressionConverter {
 

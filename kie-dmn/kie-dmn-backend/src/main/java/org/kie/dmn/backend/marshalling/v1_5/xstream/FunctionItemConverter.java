@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.InformationItem;
-import org.kie.dmn.model.v1_4.TFunctionItem;
+import org.kie.dmn.model.v1_5.TFunctionItem;
 
 public class FunctionItemConverter extends DMNElementConverter {
 

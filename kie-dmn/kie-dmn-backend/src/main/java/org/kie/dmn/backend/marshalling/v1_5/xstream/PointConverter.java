@@ -22,8 +22,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConverter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.FormatUtils;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNModelInstrumentedBaseConverter;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.FormatUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.Point;
 
@@ -62,18 +62,18 @@ public class PointConverter extends DMNModelInstrumentedBaseConverter {
 
         Point abs = (Point) parent;
 
-        writer.addAttribute(X, org.kie.dmn.backend.marshalling.v1_3.xstream.FormatUtils.manageDouble(abs.getX()));
+        writer.addAttribute(X, org.kie.dmn.backend.marshalling.v1_5.xstream.FormatUtils.manageDouble(abs.getX()));
         writer.addAttribute(Y, FormatUtils.manageDouble(abs.getY()));
     }
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.Point();
+        return new org.kie.dmn.model.v1_5.dmndi.Point();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(org.kie.dmn.model.v1_3.dmndi.Point.class);
+        return type.equals(org.kie.dmn.model.v1_5.dmndi.Point.class);
     }
 
 }

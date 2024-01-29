@@ -24,9 +24,9 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNLabelConverter;
-import org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TDefinitions;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNLabelConverter;
+import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_5.TDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

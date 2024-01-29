@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.InformationItem;
-import org.kie.dmn.model.v1_4.TInformationItem;
+import org.kie.dmn.model.v1_5.TInformationItem;
 
 public class InformationItemConverter
         extends NamedElementConverter {

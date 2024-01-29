@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.DMNEdge;
 import org.kie.dmn.model.api.dmndi.DMNLabel;
@@ -59,13 +59,13 @@ public class DMNEdgeConverter extends EdgeConverter {
         String targetElement = reader.getAttribute(TARGET_ELEMENT);
 
         if (dmnElementRef != null) {
-            concrete.setDmnElementRef(org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils.parseQNameString(dmnElementRef));
+            concrete.setDmnElementRef(org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils.parseQNameString(dmnElementRef));
         }
         if (sourceElement != null) {
-            concrete.setSourceElement(org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils.parseQNameString(sourceElement));
+            concrete.setSourceElement(org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils.parseQNameString(sourceElement));
         }
         if (targetElement != null) {
-            concrete.setTargetElement(org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils.parseQNameString(targetElement));
+            concrete.setTargetElement(org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils.parseQNameString(targetElement));
         }
     }
 
@@ -85,10 +85,10 @@ public class DMNEdgeConverter extends EdgeConverter {
 
         DMNEdge concrete = (DMNEdge) parent;
         if (concrete.getDmnElementRef() != null) {
-            writer.addAttribute(DMN_ELEMENT_REF, org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils.formatQName(concrete.getDmnElementRef(), concrete));
+            writer.addAttribute(DMN_ELEMENT_REF, org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils.formatQName(concrete.getDmnElementRef(), concrete));
         }
         if (concrete.getSourceElement() != null) {
-            writer.addAttribute(SOURCE_ELEMENT, org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils.formatQName(concrete.getSourceElement(), concrete));
+            writer.addAttribute(SOURCE_ELEMENT, org.kie.dmn.backend.marshalling.v1_5.xstream.MarshallingUtils.formatQName(concrete.getSourceElement(), concrete));
         }
         if (concrete.getTargetElement() != null) {
             writer.addAttribute(TARGET_ELEMENT, MarshallingUtils.formatQName(concrete.getTargetElement(), concrete));
@@ -97,12 +97,12 @@ public class DMNEdgeConverter extends EdgeConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.DMNEdge();
+        return new org.kie.dmn.model.v1_5.dmndi.DMNEdge();
     }
 
     @Override
     public boolean canConvert(Class type) {
-        return type.equals(org.kie.dmn.model.v1_3.dmndi.DMNEdge.class);
+        return type.equals(org.kie.dmn.model.v1_5.dmndi.DMNEdge.class);
     }
 
 }

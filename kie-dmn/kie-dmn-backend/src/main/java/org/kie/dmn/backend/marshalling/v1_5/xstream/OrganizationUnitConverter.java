@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.OrganizationUnit;
-import org.kie.dmn.model.v1_4.TOrganizationUnit;
+import org.kie.dmn.model.v1_5.TOrganizationUnit;
 
 public class OrganizationUnitConverter extends BusinessContextElementConverter {
     public static final String DECISION_OWNED = "decisionOwned";

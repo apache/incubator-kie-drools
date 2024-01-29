@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_4.TUnaryTests;
+import org.kie.dmn.model.v1_5.TUnaryTests;
 
 public class UnaryTestsConverter extends ExpressionConverter {
     public static final String TEXT = "text";

@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.Relation;
-import org.kie.dmn.model.v1_4.TRelation;
+import org.kie.dmn.model.v1_5.TRelation;
 
 public class RelationConverter extends ExpressionConverter {
     public static final String EXPRESSION = "expression";

@@ -20,7 +20,7 @@ package org.kie.dmn.backend.marshalling.v1_5.xstream;
 
 import com.thoughtworks.xstream.XStream;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TSome;
+import org.kie.dmn.model.v1_5.TSome;
 
 public class SomeConverter extends QuantifiedConverter {
 

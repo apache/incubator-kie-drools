@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.ImportedValues;
-import org.kie.dmn.model.v1_4.TImportedValues;
+import org.kie.dmn.model.v1_5.TImportedValues;
 
 public class ImportedValuesConverter extends ImportConverter {
     public static final String IMPORTED_ELEMENT = "importedElement";

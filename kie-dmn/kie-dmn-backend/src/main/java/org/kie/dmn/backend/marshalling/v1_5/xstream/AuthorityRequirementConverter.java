@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.AuthorityRequirement;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_4.TAuthorityRequirement;
+import org.kie.dmn.model.v1_5.TAuthorityRequirement;
 
 public class AuthorityRequirementConverter extends DMNElementConverter {
     public static final String REQUIRED_AUTHORITY = "requiredAuthority";

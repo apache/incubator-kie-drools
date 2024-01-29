@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.Binding;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.Invocation;
-import org.kie.dmn.model.v1_4.TInvocation;
+import org.kie.dmn.model.v1_5.TInvocation;
 
 public class InvocationConverter extends ExpressionConverter {
     public static final String BINDING = "binding";

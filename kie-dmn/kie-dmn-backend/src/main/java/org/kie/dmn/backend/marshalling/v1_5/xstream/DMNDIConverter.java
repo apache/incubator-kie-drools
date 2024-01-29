@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConverter;
+import org.kie.dmn.backend.marshalling.v1_5.xstream.DMNModelInstrumentedBaseConverter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.DMNDI;
 import org.kie.dmn.model.api.dmndi.DMNDiagram;
@@ -79,12 +79,12 @@ public class DMNDIConverter extends DMNModelInstrumentedBaseConverter {
 
     @Override
     protected DMNModelInstrumentedBase createModelObject() {
-        return new org.kie.dmn.model.v1_3.dmndi.DMNDI();
+        return new org.kie.dmn.model.v1_5.dmndi.DMNDI();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals(org.kie.dmn.model.v1_3.dmndi.DMNDI.class);
+        return clazz.equals(org.kie.dmn.model.v1_5.dmndi.DMNDI.class);
     }
 
 }

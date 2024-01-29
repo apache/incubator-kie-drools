@@ -31,7 +31,7 @@ import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.RuleAnnotationClause;
-import org.kie.dmn.model.v1_4.TDecisionTable;
+import org.kie.dmn.model.v1_5.TDecisionTable;
 
 public class DecisionTableConverter extends ExpressionConverter {
     public static final String RULE = "rule";

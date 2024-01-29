@@ -25,7 +25,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.List;
-import org.kie.dmn.model.v1_4.TList;
+import org.kie.dmn.model.v1_5.TList;
 
 public class DMNListConverter extends ExpressionConverter {
 

@@ -30,7 +30,7 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InformationRequirement;
 import org.kie.dmn.model.api.KnowledgeRequirement;
-import org.kie.dmn.model.v1_4.TDecision;
+import org.kie.dmn.model.v1_5.TDecision;
 
 public class DecisionConverter extends DRGElementConverter {
     public static final String QUESTION = "question";
