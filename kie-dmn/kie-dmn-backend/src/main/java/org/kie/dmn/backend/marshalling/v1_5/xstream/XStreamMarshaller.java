@@ -292,10 +292,12 @@ public class XStreamMarshaller
         xStream.alias("supportedObjective", TDMNElementReference.class);
         xStream.alias("targetRef", TDMNElementReference.class);
         xStream.alias("textAnnotation", TTextAnnotation.class);
-        xStream.alias("type", String.class ); // TODO where?
+        xStream.alias("type", String.class );
+        xStream.alias("typeConstraint", TUnaryTests.class);
         xStream.alias("typeRef", QName.class );
         xStream.alias("usingProcess", TDMNElementReference.class);
         xStream.alias("usingTask", TDMNElementReference.class);
+        xStream.alias("useAlternativeInputDataShape", Boolean.class);
         xStream.alias("variable", TInformationItem.class);
         xStream.alias("row", org.kie.dmn.model.v1_5.TList.class);
         xStream.alias("list", org.kie.dmn.model.v1_5.TList.class);

@@ -30,7 +30,7 @@ import org.kie.dmn.model.api.dmndi.Dimension;
 public class DMNDiagramConverter extends DiagramConverter {
 
     private static final String SIZE = "Size";
-    private static final String USE_ALTERNATIVE_INPUT_DATA_SHAPE = "UseAlternativeInputDataShape";
+    private static final String USE_ALTERNATIVE_INPUT_DATA_SHAPE = "useAlternativeInputDataShape";
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
