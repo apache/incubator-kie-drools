@@ -33,6 +33,7 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
      */
     protected QName typeRef;
     protected UnaryTests allowedValues;
+    protected UnaryTests typeConstraint;
     protected List<ItemDefinition> itemComponent;
     protected FunctionItem functionItem;
     protected String typeLanguage;
@@ -56,6 +57,16 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     @Override
     public void setAllowedValues(UnaryTests value) {
         this.allowedValues = value;
+    }
+
+    @Override
+    public UnaryTests getTypeConstraint() {
+        return typeConstraint;
+    }
+
+    @Override
+    public void setTypeConstraint(UnaryTests value) {
+        this.typeConstraint = value;
     }
 
     @Override
