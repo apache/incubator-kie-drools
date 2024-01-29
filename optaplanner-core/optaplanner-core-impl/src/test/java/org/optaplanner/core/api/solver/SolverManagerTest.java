@@ -20,6 +20,7 @@
 package org.optaplanner.core.api.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
@@ -208,6 +209,9 @@ class SolverManagerTest {
         assertThat(errorInConsumer.get())
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("exceptionInConsumer");
+        // Accessing the job's final best solution is necessary to guarantee that the solver is no longer solving.
+        assertThatCode(solverJob1::getFinalBestSolution).doesNotThrowAnyException();
+        // Otherwise, the following assertion could fail.
         assertThat(solverManager.getSolverStatus(1L)).isEqualTo(NOT_SOLVING);
         assertThat(solverJob1.getSolverStatus()).isEqualTo(NOT_SOLVING);
     }
