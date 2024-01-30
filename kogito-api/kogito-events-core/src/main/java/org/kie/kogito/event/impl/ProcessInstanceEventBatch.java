@@ -309,6 +309,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .rootProcessId(pi.getRootProcessId())
                 .rootProcessInstanceId(pi.getRootProcessInstanceId())
                 .state(event.getProcessInstance().getState())
+                .businessKey(pi.getBusinessKey())
                 .slaDueDate(pi.getSlaDueDate());
 
         String securityRoles = (String) event.getProcessInstance().getProcess().getMetaData().get("securityRoles");
