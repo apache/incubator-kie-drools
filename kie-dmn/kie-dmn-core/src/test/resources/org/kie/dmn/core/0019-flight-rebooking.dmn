@@ -2,10 +2,10 @@
 <semantic:definitions xmlns="https://www.drools.org/kie-dmn"
                       xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
                       xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
-                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
                       xmlns:kie="https://www.drools.org/kie-dmn"
-                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
                       id="_0019_flight_rebooking"
                       name="0019-flight-rebooking"
                       namespace="https://www.drools.org/kie-dmn">
