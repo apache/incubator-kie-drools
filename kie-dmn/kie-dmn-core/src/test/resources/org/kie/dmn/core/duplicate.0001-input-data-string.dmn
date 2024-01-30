@@ -17,9 +17,9 @@
 <semantic:definitions xmlns="https://github.com/kiegroup/drools/kie-dmn"
                       xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
                       xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
-                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-                      xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                      xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
                       id="_0001-input-data-string"
                       name="_0001-input-data-string"
                       namespace="https://github.com/kiegroup/drools/kie-dmn">

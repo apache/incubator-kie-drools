@@ -140,6 +140,20 @@ public class DMNValidatorImpl implements DMNValidator {
         }
     }
 
+    static final Schema schemav1_5;
+    static {
+        try {
+            schemav1_5 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DC.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DI.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DMNDI15.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DMN15.xsd"))
+                    });
+        } catch (SAXException e) {
+            throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
+        }
+    }
+
     private Schema overrideSchema = null;
     private final List<DMNProfile> dmnProfiles = new ArrayList<>();
     private final DMNCompilerConfiguration dmnCompilerConfig;
@@ -549,9 +563,11 @@ public class DMNValidatorImpl implements DMNValidator {
             case DMN_v1_3:
                 return schemav1_3;
             case DMN_v1_4:
+                return schemav1_4;
+            case DMN_v1_5:
             case UNKNOWN:
             default:
-                return schemav1_4;
+                return schemav1_5;
         }
     }
 
