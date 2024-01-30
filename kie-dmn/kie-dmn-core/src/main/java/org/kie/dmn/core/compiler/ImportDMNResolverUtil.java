@@ -83,6 +83,7 @@ public class ImportDMNResolverUtil {
             case org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN:
             case org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN:
             case org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN:
+            case org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN:
                 return ImportType.DMN;
             case NamespaceConsts.PMML_3_0:
             case NamespaceConsts.PMML_3_1:

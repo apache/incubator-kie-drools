@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" id="_5B689874-CFE0-41A6-9811-F084C515EC00"
-                 name="Untitled" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" id="_5B689874-CFE0-41A6-9811-F084C515EC00"
+                 name="Untitled" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
                  namespace="https://kiegroup.org/dmn/_7C6C0AAE-946B-42C8-9CE0-D39E485976FC">
   <dmn:extensionElements/>
   <dmn:decision id="_07F58DC1-3BC1-451C-893C-EE04774D8760" name="hassomerule">
@@ -45,7 +45,7 @@
     <dmn:extensionElements/>
     <dmn:variable id="_5FCD47C3-C990-4C1A-9A50-EF44F8832CA7" name="somedatetime" typeRef="date and time"/>
   </dmn:inputData>
-  <dmndi:DMNDI xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/">
+  <dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/">
     <dmndi:DMNDiagram id="_032FE205-7FCC-4DCD-9A6E-FD8A3C938314" name="DRG">
       <di:extension xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/">
         <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">

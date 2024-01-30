@@ -26,12 +26,12 @@ import java.util.Map;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -39,7 +39,7 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNTypeTest {
 
-    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV11(Collections.emptyMap());
+    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV15(Collections.emptyMap());
     private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
     private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
 
