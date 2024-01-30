@@ -2,6 +2,7 @@ package org.drools.util;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,10 @@ public class RemoveCommentsMain {
             try {
                 Files.write(Path.of(fileName), removeComments(fileName).getBytes());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                // Ignore non-existant files.
+                if (!(e instanceof NoSuchFileException)) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -21,7 +25,10 @@ public class RemoveCommentsMain {
         try (var lines = Files.lines(Path.of(fileName))) {
             return lines.filter(line -> !line.startsWith("#")).collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // Ignore non-existant files.
+            if (!(e instanceof NoSuchFileException)) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
