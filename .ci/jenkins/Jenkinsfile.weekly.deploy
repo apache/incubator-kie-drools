@@ -1,0 +1,246 @@
+import org.jenkinsci.plugins.workflow.libs.Library
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+import org.kie.jenkins.MavenStagingHelper
+
+deployProperties = [:]
+
+pipeline {
+    agent {
+        docker {
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
+    }
+
+    options {
+        timestamps()
+        timeout(time: 180, unit: 'MINUTES')
+    }
+
+    environment {
+        DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    cleanWs(disableDeferredWipeout: true)
+
+                    if (params.DISPLAY_NAME) {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+
+                    dir(getRepoName()) {
+                        checkoutRepo()
+                    }
+
+                    env.PROJECT_VERSION = maven.mvnGetVersionProperty(getMavenCommand(), 'project.version')
+                }
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('git.branch', getBuildBranch())
+                        setDeployPropertyIfNeeded('git.author', getGitAuthor())
+                        setDeployPropertyIfNeeded('project.version', getProjectVersion())
+                    }
+                }
+            }
+        }
+
+        stage('Update project version') {
+            steps {
+                script {
+                    maven.mvnVersionsSet(
+                        getMavenCommand(),
+                        getProjectVersion(),
+                        true
+                    )
+                }
+            }
+        }
+
+        stage('Build & Test & Deploy locally') {
+            steps {
+                script {
+                    runMavenLocalDeploy(params.SKIP_TESTS)
+                }
+            }
+            post {
+                always {
+                    script {
+                        saveReports()
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Upload artifacts to given repository') {
+            when {
+                expression { return shouldDeployToRepository() }
+            }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            getMavenCommand()
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .withProperty('wagon.source', "file://${getLocalDeploymentFolder()}")
+                                .withProperty('wagon.target', env.MAVEN_DEPLOY_REPOSITORY)
+                                .withProperty('wagon.targetId', 'apache-snapshots-repository')
+                                .withProperty('apache.snapshot.repository.username', REPOSITORY_USER)
+                                .withProperty('apache.snapshot.repository.password', REPOSITORY_TOKEN)
+                                .run("org.codehaus.mojo:wagon-maven-plugin:2.0.2:merge-maven-repos")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Create and push a new tag') {
+            steps {
+                script {
+                    projectVersion = getProjectVersion(false)
+                    dir(getRepoName()) {
+                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                        githubscm.tagRepository(projectVersion)
+                        githubscm.pushRemoteTag('origin', projectVersion, getGitAuthorPushCredsId())
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def propertiesStr = deployProperties.collect { entry ->  "${entry.key}=${entry.value}" }.join('\n')
+                writeFile(text: propertiesStr, file: PROPERTIES_FILE_NAME)
+                archiveArtifacts(artifacts: PROPERTIES_FILE_NAME)
+            }
+        }
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                util.cleanNode()
+            }
+        }
+    }
+}
+
+void saveReports() {
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml, **/target/invoker-reports/**/TEST-*.xml', allowEmptyResults: true
+}
+
+void checkoutRepo() {
+    deleteDir()
+    checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout ${getBuildBranch()}"
+    checkoutDatetime = getCheckoutDatetime()
+    if (checkoutDatetime) {
+        sh "git checkout `git rev-list -n 1 --before=\"${checkoutDatetime}\" ${getBuildBranch()}`"
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        mailer.sendMarkdownTestSummaryNotification('Weekly Deploy', "[${getBuildBranch()}] Drools", [env.DROOLS_CI_EMAIL_TO])
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'apache'
+}
+
+String getRepoName() {
+    return env.REPO_NAME
+}
+
+String getGitAuthor() {
+    // GIT_AUTHOR can be env or param
+    return "${GIT_AUTHOR}"
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getPRBranch() {
+    return params.DROOLS_PR_BRANCH
+}
+
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
+}
+
+void setDeployPropertyIfNeeded(String key, def value) {
+    if (value) {
+        deployProperties[key] = value
+    }
+}
+
+MavenCommand getMavenCommand(String directory = '') {
+    directory = directory ?: getRepoName()
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+                .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
+                .inDirectory(directory)
+    if (!isMainStream()) { // Workaround as enforcer rules may not be fixed on other streams
+        mvnCmd.withProperty('enforcer.skip')
+    } else {
+        mvnCmd.withProperty('full')
+    }
+    return mvnCmd
+}
+
+void runMavenLocalDeploy(boolean skipTests = true) {
+    mvnCmd = getMavenCommand()
+    mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
+
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        mvnCmd.withProperty('maven.test.failure.ignore', true)
+            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+            .skipTests(skipTests)
+            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+            .run('clean deploy')
+    }
+}
+
+String getLocalDeploymentFolder() {
+    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
+}
+
+boolean isMainStream() {
+    return env.DROOLS_STREAM == 'main'
+}
+
+String getCheckoutDatetime() {
+    return params.GIT_CHECKOUT_DATETIME
+}
+
+String getProjectVersionDate() {
+    def projectVersionDate = (getCheckoutDatetime() =~ /(\d{4}-\d{2}-\d{2})/)[0][0]
+    return projectVersionDate.replace('-', '')
+}
+
+String getProjectVersion(boolean keepSnapshotSuffix = true) {
+    def projectVersion = env.PROJECT_VERSION
+    if (keepSnapshotSuffix) {
+        return projectVersion.replace("-SNAPSHOT", "-${getProjectVersionDate()}-SNAPSHOT")
+    }
+    return projectVersion.replace("-SNAPSHOT", "-${getProjectVersionDate()}")
+}
