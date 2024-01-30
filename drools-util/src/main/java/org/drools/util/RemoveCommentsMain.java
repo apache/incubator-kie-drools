@@ -11,7 +11,10 @@ public class RemoveCommentsMain {
     public static void main(String... args) {
         for (String fileName : args) {
             try {
-                Files.write(Path.of(fileName), removeComments(fileName).getBytes());
+                final String result = removeComments(fileName);
+                if (result != null) {
+                    Files.write(Path.of(fileName), result.getBytes());
+                }
             } catch (IOException e) {
                 // Ignore non-existant files.
                 if (!(e instanceof NoSuchFileException)) {
@@ -29,6 +32,7 @@ public class RemoveCommentsMain {
             if (!(e instanceof NoSuchFileException)) {
                 throw new RuntimeException(e);
             }
+            return null;
         }
     }
 
