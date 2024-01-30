@@ -1,4 +1,4 @@
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_e5f752f2-f78c-47ac-a515-5152e00ac073" id="_e5f752f2-f78c-47ac-a515-5152e00ac073" name="DT2ndNFViolation" namespace="http://www.trisotech.com/definitions/_e5f752f2-f78c-47ac-a515-5152e00ac073" exporter="DMN Modeler" exporterVersion="6.2.2" triso:logoChoice="Default">
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_e5f752f2-f78c-47ac-a515-5152e00ac073" id="_e5f752f2-f78c-47ac-a515-5152e00ac073" name="DT2ndNFViolation" namespace="http://www.trisotech.com/definitions/_e5f752f2-f78c-47ac-a515-5152e00ac073" exporter="DMN Modeler" exporterVersion="6.2.2" triso:logoChoice="Default">
     <semantic:decisionService id="_e5f752f2-f78c-47ac-a515-5152e00ac073_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
         <semantic:variable name="Whole Model Decision Service" id="_37adb180-c52a-4ea4-9f8b-e76e5f3a8dfd" typeRef="Any"/>
         <semantic:outputDecision href="#_f5dcd024-c278-46b5-baa0-43b90bf29881"/>
@@ -78,7 +78,7 @@
                 <semantic:inputEntry id="_48a967e9-b79d-446e-847c-d6a03c644ed6">
                     <semantic:text>"A"</semantic:text>
                 </semantic:inputEntry>
-                <semantic:inputEntry id="_a7bb1b2f-9eb8-498f-89b9-d6926a7f9a74" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                <semantic:inputEntry id="_a7bb1b2f-9eb8-498f-89b9-d6926a7f9a74" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" triso:unparsed="true">
                     <semantic:text>1</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_2a855095-e7fe-4f41-a575-60705ca1eb6e">
@@ -95,7 +95,7 @@
                 <semantic:inputEntry id="_d4956858-b1c3-4db7-91e6-df4ac2e68ac0">
                     <semantic:text>"A"</semantic:text>
                 </semantic:inputEntry>
-                <semantic:inputEntry id="_5582685e-a680-4105-bc6e-ae0d91b1e294" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                <semantic:inputEntry id="_5582685e-a680-4105-bc6e-ae0d91b1e294" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" triso:unparsed="true">
                     <semantic:text>2,3,4</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_af417104-54d2-488e-8d27-429868fe81c2">
@@ -112,7 +112,7 @@
                 <semantic:inputEntry id="_4a9647a7-f09c-4f73-b170-f04b4bc3670c">
                     <semantic:text>"A"</semantic:text>
                 </semantic:inputEntry>
-                <semantic:inputEntry id="_9140c74e-79c6-4c94-9563-9f1d31e52802" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                <semantic:inputEntry id="_9140c74e-79c6-4c94-9563-9f1d31e52802" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" triso:unparsed="true">
                     <semantic:text>2,3,4</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_86148073-3c30-4615-b6f5-4cc7306a17fe">
