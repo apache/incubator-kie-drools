@@ -21,6 +21,7 @@ package org.kie.kogito.events.process;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.BiConsumer;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Message;
@@ -52,14 +53,17 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     @Inject
     @Channel(PROCESS_INSTANCES_TOPIC_NAME)
     MutinyEmitter<String> processInstancesEventsEmitter;
+    private BiConsumer<MutinyEmitter<String>, Message<String>> processInstanceConsumer;
 
     @Inject
     @Channel(PROCESS_DEFINITIONS_TOPIC_NAME)
     MutinyEmitter<String> processDefinitionEventsEmitter;
+    private BiConsumer<MutinyEmitter<String>, Message<String>> processDefinitionConsumer;
 
     @Inject
     @Channel(USER_TASK_INSTANCES_TOPIC_NAME)
     MutinyEmitter<String> userTasksEventsEmitter;
+    private BiConsumer<MutinyEmitter<String>, Message<String>> userTaskConsumer;
     @Inject
     EventsRuntimeConfig eventsRuntimeConfig;
 
@@ -71,6 +75,9 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     @PostConstruct
     public void init() {
         decoratorProvider = decoratorProviderInstance.isResolvable() ? decoratorProviderInstance.get() : null;
+        processInstanceConsumer = eventsRuntimeConfig.isProcessInstancesPropagateError() ? new BlockingMessageEmitter() : new ReactiveMessageEmitter();
+        processDefinitionConsumer = eventsRuntimeConfig.isProcessDefinitionPropagateError() ? new BlockingMessageEmitter() : new ReactiveMessageEmitter();
+        userTaskConsumer = eventsRuntimeConfig.isUserTasksPropagateError() ? new BlockingMessageEmitter() : new ReactiveMessageEmitter();
     }
 
     @Override
@@ -79,7 +86,7 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
         switch (event.getType()) {
             case "ProcessDefinitionEvent":
                 if (eventsRuntimeConfig.isProcessDefinitionEventsEnabled()) {
-                    publishToTopic(event, processDefinitionEventsEmitter, PROCESS_DEFINITIONS_TOPIC_NAME);
+                    publishToTopic(processDefinitionConsumer, event, processDefinitionEventsEmitter, PROCESS_DEFINITIONS_TOPIC_NAME);
                 }
                 break;
             case "ProcessInstanceErrorDataEvent":
@@ -88,7 +95,7 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
             case "ProcessInstanceStateDataEvent":
             case "ProcessInstanceVariableDataEvent":
                 if (eventsRuntimeConfig.isProcessInstancesEventsEnabled()) {
-                    publishToTopic(event, processInstancesEventsEmitter, PROCESS_INSTANCES_TOPIC_NAME);
+                    publishToTopic(processInstanceConsumer, event, processInstancesEventsEmitter, PROCESS_INSTANCES_TOPIC_NAME);
                 }
                 break;
 
@@ -99,7 +106,7 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
             case "UserTaskInstanceStateDataEvent":
             case "UserTaskInstanceVariableDataEvent":
                 if (eventsRuntimeConfig.isUserTasksEventsEnabled()) {
-                    publishToTopic(event, userTasksEventsEmitter, USER_TASK_INSTANCES_TOPIC_NAME);
+                    publishToTopic(userTaskConsumer, event, userTasksEventsEmitter, USER_TASK_INSTANCES_TOPIC_NAME);
                 }
                 break;
             default:
@@ -114,31 +121,49 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
         }
     }
 
-    protected void publishToTopic(DataEvent<?> event, MutinyEmitter<String> emitter, String topic) {
+    protected void publishToTopic(BiConsumer<MutinyEmitter<String>, Message<String>> consumer, DataEvent<?> event, MutinyEmitter<String> emitter, String topic) {
         logger.debug("About to publish event {} to topic {}", event, topic);
+        Message<String> message = null;
         try {
             String eventString = json.writeValueAsString(event);
-            Message<String> message = decorateMessage(ContextAwareMessage.of(eventString));
-
             logger.debug("Event payload '{}'", eventString);
-            emitter.sendMessageAndAwait(message);
-
+            message = decorateMessage(ContextAwareMessage.of(eventString));
         } catch (Exception e) {
-            logger.error("Error while creating event to topic {} for event {}", topic, event, e);
+            logger.error("Error while creating event to topic {} for event {}", topic, event);
+        }
+        if (message != null) {
+            consumer.accept(emitter, message);
         }
     }
 
-    protected CompletionStage<Void> onAck(DataEvent<?> event, String topic) {
-        logger.debug("Successfully published event {} to topic {}", event, topic);
+    protected CompletionStage<Void> onAck(Message<String> message) {
+        logger.debug("Successfully published message {}", message.getPayload());
         return CompletableFuture.completedFuture(null);
     }
 
-    protected CompletionStage<Void> onNack(Throwable reason, DataEvent<?> event, String topic) {
-        logger.error("Error while publishing event to topic {} for event {}", topic, event, reason);
+    protected CompletionStage<Void> onNack(Throwable reason, Message<String> message) {
+        logger.error("Error while publishing message {}", message, reason);
         return CompletableFuture.completedFuture(null);
     }
 
     protected Message<String> decorateMessage(Message<String> message) {
         return decoratorProvider != null ? decoratorProvider.decorate(message) : message;
+    }
+
+    private class BlockingMessageEmitter implements BiConsumer<MutinyEmitter<String>, Message<String>> {
+        @Override
+        public void accept(MutinyEmitter<String> emitter, Message<String> message) {
+            emitter.sendMessageAndAwait(message);
+            logger.debug("Successfully published message {}", message.getPayload());
+        }
+    }
+
+    private class ReactiveMessageEmitter implements BiConsumer<MutinyEmitter<String>, Message<String>> {
+        @Override
+        public void accept(MutinyEmitter<String> emitter, Message<String> message) {
+            emitter.sendMessageAndForget(message
+                    .withAck(() -> onAck(message))
+                    .withNack(reason -> onNack(reason, message)));
+        }
     }
 }

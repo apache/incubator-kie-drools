@@ -32,16 +32,34 @@ public class EventsRuntimeConfig {
     boolean processInstancesEventsEnabled;
 
     /**
+     * Propagate errors for process instance emitter
+     */
+    @ConfigItem(name = "processinstances.errors.propagate", defaultValue = "false")
+    boolean processInstancesPropagate;
+
+    /**
      * Enable publishing processes definition events
      */
     @ConfigItem(name = "processdefinitions.enabled", defaultValue = "true")
     boolean processDefinitionEventsEnabled;
 
     /**
+     * Propagate errors for process definition emitter
+     */
+    @ConfigItem(name = "processdefinitions.errors.propagate", defaultValue = "false")
+    boolean processDefinitionPropagate;
+
+    /**
      * Enable publishing user task instances events
      */
     @ConfigItem(name = "usertasks.enabled", defaultValue = "true")
     boolean userTasksEventsEnabled;
+
+    /**
+     * Propagate errors for user task emitter
+     */
+    @ConfigItem(name = "usertasks.errors.propagate", defaultValue = "false")
+    boolean userTasksPropagate;
 
     public boolean isProcessInstancesEventsEnabled() {
         return processInstancesEventsEnabled;
@@ -53,6 +71,18 @@ public class EventsRuntimeConfig {
 
     public boolean isUserTasksEventsEnabled() {
         return userTasksEventsEnabled;
+    }
+
+    public boolean isProcessInstancesPropagateError() {
+        return processInstancesPropagate;
+    }
+
+    public boolean isProcessDefinitionPropagateError() {
+        return processDefinitionPropagate;
+    }
+
+    public boolean isUserTasksPropagateError() {
+        return userTasksPropagate;
     }
 
 }
