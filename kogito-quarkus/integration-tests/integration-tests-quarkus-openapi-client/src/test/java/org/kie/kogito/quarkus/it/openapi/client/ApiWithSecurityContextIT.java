@@ -108,7 +108,7 @@ class ApiWithSecurityContextIT {
 
         authWithApiKeyServer3
                 .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.SEC_30.getPath()))
-                        .withHeader("X-Client-Id", matching("Bearer mytoken,Bearer mytoken,Bearer"))
+                        .withHeader("X-Client-Id", matching("Bearer mytoken,Bearer mytoken"))
                         .withHeader("Authorization", matching("Bearer mytoken")));
     }
 
