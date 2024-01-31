@@ -48,6 +48,8 @@ import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.core.util.CoerceUtil.coerceValue;
+
 public class DMNFunctionDefinitionEvaluator
         implements DMNExpressionEvaluator {
     private static final Logger logger = LoggerFactory.getLogger( DMNFunctionDefinitionEvaluator.class );
@@ -157,8 +159,9 @@ public class DMNFunctionDefinitionEvaluator
                     closureContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
                         final String paramName = parameters.get(i).name;
-                        if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(params[i])) {
-                            ctx.setValue(paramName, params[i]);
+                        Object coercedObject = coerceValue(parameters.get(i).type, params[i]);
+                        if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(coercedObject)) {
+                            ctx.setValue(paramName, coercedObject);
                         } else {
                             ctx.setValue(paramName, null);
                             MsgUtil.reportMessage(logger,

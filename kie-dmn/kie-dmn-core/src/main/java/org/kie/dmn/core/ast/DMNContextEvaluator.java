@@ -18,11 +18,7 @@
  */
 package org.kie.dmn.core.ast;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,7 +36,6 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
-import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.Context;
@@ -105,7 +100,6 @@ public class DMNContextEvaluator
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
                         Object value = coerceValue(ed.getType(), er.getResult());
-                        
                         if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
                             if (!(ed.getContextEntry().getExpression() instanceof FunctionDefinition)) {
                                 // checking directly the result type...

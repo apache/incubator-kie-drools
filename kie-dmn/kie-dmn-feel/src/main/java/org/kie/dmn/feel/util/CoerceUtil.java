@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 /**
@@ -33,6 +33,11 @@ public class CoerceUtil {
 
     private CoerceUtil() {
         // singleton class
+    }
+
+    public static Object coerceParameter(Type requiredType, Object valueToCoerce) {
+        return (requiredType != null && valueToCoerce != null) ? actualCoerceParameter(requiredType, valueToCoerce) :
+                valueToCoerce;
     }
 
     public static Optional<Object[]> coerceParams(Class<?> currentIdxActualParameterType, Class<?> expectedParameterType, Object[] actualParams, int i) {
@@ -45,23 +50,32 @@ public class CoerceUtil {
                 Object singletonValue = valueCollection.iterator().next();
                 // re-perform the assignable-from check, this time using the element itself the singleton value from the original parameter list
                 if ( singletonValue != null && expectedParameterType.isAssignableFrom( singletonValue.getClass() ) ) {
-                    return actualCoerceParams(actualParams, singletonValue, i);
+                    return Optional.of(actualCoerceParams(actualParams, singletonValue, i));
                 }
             }
         }
         if (actualObject instanceof LocalDate localDate &&
                 ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
             Object coercedObject = EvalHelper.coerceDateTime(localDate);
-            return actualCoerceParams(actualParams, coercedObject, i);
+            return Optional.of(actualCoerceParams(actualParams, coercedObject, i));
         }
         return Optional.empty();
     }
 
-    static Optional<Object[]> actualCoerceParams(Object[] actualParams, Object coercedObject, int i) {
-        Object[] newParams = new Object[actualParams.length];
-        System.arraycopy( actualParams, 0, newParams, 0, actualParams.length ); // can't rely on adjustForVariableParameters() have actually copied
-        newParams[i] = coercedObject;
-        return Optional.of(newParams);
+    static Object actualCoerceParameter(Type requiredType, Object valueToCoerce) {
+        Object toReturn = valueToCoerce;
+        if (valueToCoerce instanceof LocalDate localDate &&
+                requiredType == BuiltInType.DATE_TIME) {
+            return EvalHelper.coerceDateTime(localDate);
+        }
+        return toReturn;
+    }
+
+    static Object[] actualCoerceParams(Object[] actualParams, Object coercedObject, int i) {
+        Object[] toReturn = new Object[actualParams.length];
+        System.arraycopy( actualParams, 0, toReturn, 0, actualParams.length );
+        toReturn[i] = coercedObject;
+        return toReturn;
     }
 
 

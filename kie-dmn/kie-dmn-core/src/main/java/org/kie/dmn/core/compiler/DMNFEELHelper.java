@@ -25,10 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
-
-import javax.xml.namespace.QName;
 
 import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
@@ -56,7 +53,6 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.dmn.model.api.InformationItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,17 +138,6 @@ public class DMNFEELHelper {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
         feelctx.setFEELTypeRegistry(model.getTypeRegistry());
-        // TODO: EXPERIMENT
-//        String baseExpression = expression.contains("(") ? expression.substring(0, expression.indexOf("(")) : expression;
-//        baseExpression = baseExpression.replace(" ", "");
-//        if (baseExpression.equals("date")) {
-//            Optional<Type> type = getTypeFromParent(element, feelctx);
-//           // Optional<QName> qnameType = getFirstInformationItemQNameFromParent(element);
-//            if (type.isPresent() &&
-//                    type.get().getName().equals("date and time")) {
-//                expression = "date and time" + (expression.substring(expression.indexOf("(")));
-//            }
-//        }
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
@@ -322,44 +307,5 @@ public class DMNFEELHelper {
 
     public CompilationUnit generateFeelExpressionCompilationUnit(String input, CompilerContext compilerContext1) {
         return ((FEELImpl) feel).compileExpression(input, compilerContext1).getSourceCode();
-    }
-
-//    static String optionallyFixDateWithDateTimeExpression() {
-//
-//    }
-
-    /**
-     * Returns the <code>Optional&lt;QName&gt;</code> from the first <code>InformationItem</code> found in
-     * the <code>element</code>'s parent, if found, otherwise <code>Optional.empty()</code>
-     * @param element
-     * @return
-     */
-    static Optional<Type> getTypeFromParent(DMNElement element, CompilerContext feelctx) {
-        return element.getParent() != null ?
-                element.getParent().getChildren()
-                        .stream()
-                        .filter(InformationItem.class::isInstance)
-                        .findFirst()
-                        .map(i -> (InformationItem)i)
-                        .filter(i -> feelctx.getInputVariableTypes().containsKey(i.getName()))
-                        .map(i -> feelctx.getInputVariableTypes().get(i.getName())) :
-                Optional.empty();
-    }
-
-    /**
-     * Returns the <code>Optional&lt;QName&gt;</code> from the first <code>InformationItem</code> found in
-     * the <code>element</code>'s parent, if found, otherwise <code>Optional.empty()</code>
-     * @param element
-     * @return
-     */
-    static Optional<QName> getFirstInformationItemQNameFromParent(DMNElement element) {
-        return element.getParent() != null ?
-                element.getParent().getChildren()
-                        .stream()
-                        .filter(InformationItem.class::isInstance)
-                        .findFirst()
-                        .map(i -> (InformationItem)i)
-                        .map(InformationItem::getTypeRef) :
-                Optional.empty();
     }
 }

@@ -177,8 +177,6 @@ public enum BuiltInType implements SimpleType {
     public boolean isAssignableValue(Object value) {
         if ( value == null ) {
             return true; // a null-value can be assigned to any type.
-        } else if (this == DATE_TIME && value instanceof LocalDate) {
-            return true;
         }
         return isInstanceOf(value, this);
     }

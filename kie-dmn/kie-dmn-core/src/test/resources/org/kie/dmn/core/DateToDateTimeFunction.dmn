@@ -5,7 +5,7 @@
     <dmn:variable id="_1D5A641F-31EE-42FF-8DAD-D229A9A998BD" name="normal"/>
     <dmn:encapsulatedLogic id="_4A6C9D35-03DE-47F8-8ADD-6F15A27077A5" kind="FEEL">
       <dmn:formalParameter id="_3984C4F0-4E60-481A-9702-EAC914F1C63B" name="a" typeRef="date and time"/>
-      <dmn:formalParameter id="_C419BFC7-53E0-4B2C-A2B1-BA5A22D2971D" name="b" typeRef="time"/>
+      <dmn:formalParameter id="_C419BFC7-53E0-4B2C-A2B1-BA5A22D2971D" name="b" typeRef="duration"/>
       <dmn:literalExpression id="_88CC7676-B609-4430-8670-5B5735D5C6D5">
         <dmn:text>a+b</dmn:text>
       </dmn:literalExpression>

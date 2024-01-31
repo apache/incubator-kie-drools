@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -672,7 +673,9 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
-        assertThat(dmnResult.getDecisionResultByName("usingNormal").getResult()).isEqualTo(new BigDecimal(3));
+
+        ZonedDateTime expected = ZonedDateTime.of(LocalDate.of(2021, 05, 31), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
+        assertThat(dmnResult.getDecisionResultByName("usingNormal").getResult()).isEqualTo(expected);
     }
 
     @Test

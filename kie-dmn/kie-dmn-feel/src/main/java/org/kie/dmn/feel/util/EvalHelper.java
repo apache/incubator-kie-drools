@@ -619,9 +619,7 @@ public class EvalHelper {
      */
     private static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
-        if (datetime instanceof LocalDate) {
-            return ZonedDateTime.of((LocalDate) datetime, LocalTime.of(0,0,0,0), alternativeTZ).toEpochSecond();
-        } else if (datetime instanceof LocalDateTime) {
+        if (datetime instanceof LocalDateTime) {
             return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
         } else if (datetime instanceof ZonedDateTime) {
             return ((ZonedDateTime) datetime).toEpochSecond();
