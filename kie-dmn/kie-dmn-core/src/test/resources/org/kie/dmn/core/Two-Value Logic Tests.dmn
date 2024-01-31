@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                       xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
                       xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                       xmlns:include1="http://www.trisotech.com/definitions/_9d4f5c03-3a50-415b-9f96-8006d756ba73"
@@ -10,7 +10,7 @@
                       exporter="DMN Modeler" exporterVersion="6.1.17" name="Two-Value Logic Tests" triso:logoChoice="Default">
 
     <semantic:import namespace="http://www.kie.org/libs/twovaluelogic/1.0" name="tvl"
-                     importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                     importType="https://www.omg.org/spec/DMN/20230324/MODEL/"
                      xmlns:drools="http://www.drools.org/kie/dmn/1.1"
                      drools:modelName="Two-Value Logic"/>
                      

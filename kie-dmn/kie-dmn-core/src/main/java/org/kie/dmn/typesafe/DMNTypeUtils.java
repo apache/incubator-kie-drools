@@ -36,7 +36,8 @@ public class DMNTypeUtils {
         return dmnType.getNamespace().equals(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_FEEL) ||
                dmnType.getNamespace().equals(org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_FEEL) ||
                dmnType.getNamespace().equals(org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_FEEL) ||
-               dmnType.getNamespace().equals(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_FEEL)
+               dmnType.getNamespace().equals(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_FEEL) ||
+               dmnType.getNamespace().equals(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_FEEL)
                ;
     }
 

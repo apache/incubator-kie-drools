@@ -32,8 +32,13 @@ import org.kie.dmn.model.api.InformationRequirement;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+
+import javax.xml.namespace.QName;
 
 public final class ValidatorUtil {
+
+    public static final QName KIE_MODEL_NAME_QNAME = new QName(KieDMNModelInstrumentedBase.URI_KIE, "modelName");
 
     public static String rightOfHash(final String input) {
         return input.substring(input.indexOf("#") + 1);

@@ -14,9 +14,6 @@ git:
   branches:
   - name: main
     main_branch: true
-  - name: 9.9.x
-    seed:
-      branch: seed-drools-9.9.x
 seed:
   config_file:
     git:
