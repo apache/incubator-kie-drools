@@ -17,3 +17,7 @@ dependency-reduced-pom.xml
 
 #CI
 !.ci
+
+# Develocity
+!.mvn
+.mvn/.gradle-enterprise/

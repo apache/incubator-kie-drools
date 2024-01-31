@@ -31,3 +31,5 @@ jobs:
           allow-snapshots: true
       - name: Build with Maven
         run: mvn -B clean install --file drools-docs/pom.xml
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}

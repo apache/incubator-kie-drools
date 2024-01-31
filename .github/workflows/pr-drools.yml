@@ -44,6 +44,7 @@ jobs:
         env:
           BUILD_MVN_OPTS_CURRENT: -Dfull
           MAVEN_OPTS: "-Dfile.encoding=UTF-8"
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}

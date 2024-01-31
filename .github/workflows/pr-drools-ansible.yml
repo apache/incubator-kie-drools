@@ -42,6 +42,8 @@ jobs:
           allow-snapshots: true
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools-ansible-rulebook-integration/${BRANCH:main}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}

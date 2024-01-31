@@ -67,6 +67,7 @@ jobs:
         env: 
           BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }}
           KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.env_KOGITO_EXAMPLES_SUBFOLDER_POM }}
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
       - name: Surefire Report
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
