@@ -49,6 +49,8 @@ import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.core.util.CoerceUtil.coerceValue;
+
 public class DMNContextEvaluator
         implements DMNExpressionEvaluator {
     private static final Logger logger       = LoggerFactory.getLogger( DMNContextEvaluator.class );
@@ -102,9 +104,7 @@ public class DMNContextEvaluator
                     }
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
-                        Object value = er.getResult();
-                        value = optionallyConvertCollectionToArray(value, ed.getType());
-                        value = optionallyConvertDateToDateTime(value, ed.getType());
+                        Object value = coerceValue(ed.getType(), er.getResult());
                         
                         if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
                             if (!(ed.getContextEntry().getExpression() instanceof FunctionDefinition)) {
@@ -170,28 +170,6 @@ public class DMNContextEvaluator
         } else {
             return new EvaluatorResultImpl( results, ResultType.SUCCESS );
         }
-    }
-
-    static Object optionallyConvertCollectionToArray(Object originalValue, DMNType requiredType) {
-        Object toReturn = originalValue;
-        if( ! requiredType.isCollection() &&
-                originalValue instanceof Collection collection &&
-                collection.size()==1 ) {
-            // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-            // and vice-versa
-            toReturn = collection.toArray()[0];
-        }
-        return toReturn;
-    }
-
-    static Object optionallyConvertDateToDateTime(Object originalValue, DMNType requiredType) {
-        Object toReturn = originalValue;
-        if (originalValue instanceof LocalDate localDate &&
-                requiredType instanceof SimpleTypeImpl simpleType &&
-                simpleType.getFeelType().getName().equals("date and time")) {
-                toReturn = ZonedDateTime.of(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), 0, 0, 0, 0, ZoneOffset.UTC);
-            }
-        return toReturn;
     }
 
     private String getEntryExprId(ContextEntryDef ed) {

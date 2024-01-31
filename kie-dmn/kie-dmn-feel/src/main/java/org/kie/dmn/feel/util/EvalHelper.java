@@ -24,7 +24,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -189,6 +191,10 @@ public class EvalHelper {
         } else {
             return value;
         }
+    }
+
+    public static ZonedDateTime coerceDateTime(final LocalDate value) {
+        return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
     }
 
     public static Boolean getBooleanOrNull(Object value) {
@@ -613,7 +619,9 @@ public class EvalHelper {
      */
     private static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
         ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
-        if (datetime instanceof LocalDateTime) {
+        if (datetime instanceof LocalDate) {
+            return ZonedDateTime.of((LocalDate) datetime, LocalTime.of(0,0,0,0), alternativeTZ).toEpochSecond();
+        } else if (datetime instanceof LocalDateTime) {
             return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
         } else if (datetime instanceof ZonedDateTime) {
             return ((ZonedDateTime) datetime).toEpochSecond();
