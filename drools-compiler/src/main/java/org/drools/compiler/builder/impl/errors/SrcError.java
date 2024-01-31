@@ -21,14 +21,12 @@ import org.kie.internal.jci.CompilationProblem;
 public class SrcError extends DroolsError {
 
     private Object object;
-    private String message;
     private int[]  errorLines = new int[0];
 
     public SrcError(Object object,
                     String message) {
-        super(null);
+        super(null, message);
         this.object = object;
-        this.message = message;
     }
 
     public Object getObject() {
@@ -39,13 +37,10 @@ public class SrcError extends DroolsError {
         return this.errorLines;
     }
 
-    public String getMessage() {
-        return this.message;
-    }
 
     public String toString() {
         final StringBuilder buf = new StringBuilder();
-        buf.append(this.message);
+        buf.append(getMessage());
         buf.append(" : ");
         buf.append("\n");
         if (this.object instanceof CompilationProblem[]) {

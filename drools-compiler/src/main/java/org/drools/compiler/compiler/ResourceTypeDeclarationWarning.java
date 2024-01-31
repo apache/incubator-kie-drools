@@ -24,7 +24,7 @@ public class ResourceTypeDeclarationWarning extends DroolsWarning {
     private ResourceType actualResourceType;
 
     public ResourceTypeDeclarationWarning( Resource resource, ResourceType declaredResourceType, ResourceType actualResourceType ) {
-        super( resource );
+        super( resource, getSpecificMessage(resource, declaredResourceType, actualResourceType) );
         this.declaredResourceType = declaredResourceType;
         this.actualResourceType = actualResourceType;
     }
@@ -35,6 +35,7 @@ public class ResourceTypeDeclarationWarning extends DroolsWarning {
 
     public void setDeclaredResourceType( ResourceType declaredResourceType ) {
         this.declaredResourceType = declaredResourceType;
+        setMessage(getSpecificMessage(getResource(), this.declaredResourceType, this.actualResourceType));
     }
 
     public ResourceType getActualResourceType() {
@@ -43,15 +44,13 @@ public class ResourceTypeDeclarationWarning extends DroolsWarning {
 
     public void setActualResourceType( ResourceType actualResourceType ) {
         this.actualResourceType = actualResourceType;
+        setMessage(getSpecificMessage(getResource(), declaredResourceType, this.actualResourceType));
     }
-
-    @Override
-    public String getMessage() {
-        return "Resource " + getResource().getSourcePath() + " was created with type " + actualResourceType + " but is being added as " + declaredResourceType;
-    }
-
     @Override
     public int[] getLines() {
         return new int[ 0 ];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+    private static String getSpecificMessage(Resource resource, ResourceType declaredResourceType, ResourceType actualResourceType) {
+        return "Resource " + resource.getSourcePath() + " was created with type " + actualResourceType + " but is being added as " + declaredResourceType;
     }
 }

@@ -31,7 +31,7 @@ public class ParseExpressionErrorResult extends DroolsError {
     private int[] errorLines = new int[1];
 
     public ParseExpressionErrorResult(Expression expr) {
-        super();
+        super("Unable to Analyse Expression " + PrintUtil.printNode(expr) + ":");
         this.expr = expr;
         this.errorLines[0] = -1;
     }
@@ -44,11 +44,6 @@ public class ParseExpressionErrorResult extends DroolsError {
     @Override
     public ResultSeverity getSeverity() {
         return ResultSeverity.ERROR;
-    }
-
-    @Override
-    public String getMessage() {
-        return "Unable to Analyse Expression " + PrintUtil.printNode(expr) + ":";
     }
 
     @Override

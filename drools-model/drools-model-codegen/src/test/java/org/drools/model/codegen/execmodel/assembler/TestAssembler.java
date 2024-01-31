@@ -38,16 +38,11 @@ public class TestAssembler implements KieAssemblerService {
 
     }
 
-    public static final KnowledgeBuilderResult AFTER_RULES = new DroolsError(null) {
+    public static final KnowledgeBuilderResult AFTER_RULES = new DroolsError( "AFTER_RULES") {
 
         @Override
         public ResultSeverity getSeverity() {
             return ResultSeverity.WARNING;
-        }
-
-        @Override
-        public String getMessage() {
-            return "AFTER_RULES";
         }
 
         @Override
@@ -57,16 +52,11 @@ public class TestAssembler implements KieAssemblerService {
 
     };
 
-    public static final KnowledgeBuilderResult BEFORE_RULES = new DroolsError(null) {
+    public static final KnowledgeBuilderResult BEFORE_RULES = new DroolsError("BEFORE_RULES") {
 
         @Override
         public ResultSeverity getSeverity() {
             return ResultSeverity.WARNING;
-        }
-
-        @Override
-        public String getMessage() {
-            return "BEFORE_RULES";
         }
 
         @Override
