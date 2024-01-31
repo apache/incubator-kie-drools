@@ -1,5 +1,6 @@
-pom.xml;drools-beliefs,drools-traits,drools-verifier,drools-persistence,drools-examples,drools-examples-api,drools-test-coverage,drools-scenario-simulation,drools-metric,drools-impact-analysis,drools-retediagram,drools-fastutil,kie-maven-plugin,kie-archetypes,jpmml-migration-recipe,drools-drlonyaml-parent
+pom.xml;drools-beliefs,drools-traits,drools-verifier,drools-persistence,drools-examples,drools-examples-api,drools-test-coverage,drools-scenario-simulation,drools-metric,drools-retediagram,drools-fastutil,kie-maven-plugin,kie-archetypes,jpmml-migration-recipe,drools-drlonyaml-parent
 kie-drl/kie-drl-implementations/pom.xml;kie-drl-kiesession-local
 kie-drl/pom.xml;kie-drl-tests,kie-drl-tests-without-index-file
 kie-dmn/pom.xml;kie-dmn-openapi,kie-dmn-tck,kie-dmn-legacy-tests,kie-dmn-trisotech,kie-dmn-signavio,kie-dmn-pmml-tests-parent,kie-dmn-xls2dmn-cli,kie-dmn-core-jsr223-jq,kie-dmn-core-jsr223,kie-dmn-ruleset2dmn-parent
 drools-quarkus-extension/pom.xml;drools-quarkus,drools-quarkus-deployment,drools-quarkus-integration-test,drools-quarkus-integration-test-hotreload,drools-quarkus-ruleunit-integration-test,drools-quarkus-quickstart-test,drools-quarkus-examples
+drools-impact-analysis/pom.xml;drools-impact-analysis-itests
