@@ -72,17 +72,6 @@ pipeline {
             }
         }
 
-        // stage('Build & Deploy KIE jpmml integration') {
-        //     steps {
-        //         script {
-        //             def buildParams = getDefaultBuildParams()
-        //             addSkipTestsParam(buildParams)
-
-        //             buildJob(getDeployJobName(kieJpmmlIntegrationRepo), buildParams)
-        //         }
-        //     }
-        // }
-
         stage('Artifacts\' staging finalization') {
             steps {
                 script {
@@ -125,20 +114,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Promote KIE jpmml integration') {
-        //     when {
-        //         expression { return isJobConsideredOk(getDeployJobName(kieJpmmlIntegrationRepo)) }
-        //     }
-        //     steps {
-        //         script {
-        //             def buildParams = getDefaultBuildParams()
-        //             addDeployBuildUrlParam(buildParams, getDeployJobName(kieJpmmlIntegrationRepo))
-
-        //             buildJob(getPromoteJobName(kieJpmmlIntegrationRepo), buildParams)
-        //         }
-        //     }
-        // }
 
         stage('Setup next snapshot version') {
             steps {

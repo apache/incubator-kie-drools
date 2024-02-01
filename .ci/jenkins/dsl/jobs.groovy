@@ -190,9 +190,6 @@ setupSpecificBuildChainNightlyJob('native', nightlyJobParamsGetter)
 setupSpecificBuildChainNightlyJob('sonarcloud', nightlyJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-main', nightlyJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-branch', nightlyJobParamsGetter)
-//setupQuarkusIntegrationJob('quarkus-lts', nightlyJobParamsGetter)
-//setupQuarkusIntegrationJob('native-lts', nightlyJobParamsGetter)
-// Quarkus 3 nightly is exported to Kogito pipelines for easier integration
 
 // Release jobs
 //setupDeployJob(JobType.RELEASE)
