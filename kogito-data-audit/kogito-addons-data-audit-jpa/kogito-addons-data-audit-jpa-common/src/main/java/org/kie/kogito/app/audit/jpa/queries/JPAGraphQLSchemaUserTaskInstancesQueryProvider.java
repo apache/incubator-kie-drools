@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+import org.kie.kogito.app.audit.api.DataAuditContext;
 import org.kie.kogito.app.audit.graphql.type.UserTaskInstanceAssignmentTO;
 import org.kie.kogito.app.audit.graphql.type.UserTaskInstanceAttachmentTO;
 import org.kie.kogito.app.audit.graphql.type.UserTaskInstanceCommentTO;
@@ -37,7 +38,7 @@ import org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider;
 public class JPAGraphQLSchemaUserTaskInstancesQueryProvider implements GraphQLSchemaQueryProvider {
 
     @Override
-    public List<GraphQLSchemaQuery<?>> queries() {
+    public List<GraphQLSchemaQuery> queries(DataAuditContext dataAuditContext) {
         return List.of(
                 new JPASimpleNamedQuery<UserTaskInstanceStateTO>("GetAllUserTaskInstanceState", UserTaskInstanceStateTO.class),
                 new JPASimpleNamedQuery<UserTaskInstanceAttachmentTO>("GetAllUserTaskInstanceAttachments", UserTaskInstanceAttachmentTO.class),

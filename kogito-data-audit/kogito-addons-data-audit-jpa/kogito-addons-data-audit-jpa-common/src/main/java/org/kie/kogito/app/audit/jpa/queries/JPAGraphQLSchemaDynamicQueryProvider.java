@@ -16,26 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.audit.quarkus;
+package org.kie.kogito.app.audit.jpa.queries;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.kie.kogito.app.audit.api.DataAuditContext;
-import org.kie.kogito.app.audit.spi.DataAuditContextFactory;
+import org.kie.kogito.app.audit.jpa.model.AuditQuery;
+import org.kie.kogito.app.audit.spi.GraphQLSchemaQuery;
+import org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 
-@ApplicationScoped
-@Transactional
-public class QuarkusJPADataAuditContextFactory implements DataAuditContextFactory {
-
-    @PersistenceContext
-    EntityManager entityManager;
+public class JPAGraphQLSchemaDynamicQueryProvider implements GraphQLSchemaQueryProvider {
 
     @Override
-    public DataAuditContext newDataAuditContext() {
-        return DataAuditContext.newDataAuditContext(entityManager);
-    }
+    public List<GraphQLSchemaQuery> queries(DataAuditContext dataAuditContext) {
+        EntityManager entityManager = dataAuditContext.getContext();
+        List<AuditQuery> queriesRegistered = entityManager.createQuery("SELECT o FROM AuditQuery o", AuditQuery.class).getResultList();
+        List<GraphQLSchemaQuery> queries = new ArrayList<>();
+        for (AuditQuery auditQuery : queriesRegistered) {
+            queries.add(new JPADynamicQuery(auditQuery.getIdentifier(), auditQuery.getQuery()));
+        }
+        return queries;
 
+    }
 }

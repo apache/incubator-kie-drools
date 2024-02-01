@@ -25,6 +25,8 @@ public final class SubsystemConstants {
     }
 
     public static final String DATA_AUDIT_PATH = "/data-audit";
+    public static final String DATA_AUDIT_QUERY_PATH = DATA_AUDIT_PATH + "/q";
+    public static final String DATA_AUDIT_REGISTRY_PATH = DATA_AUDIT_PATH + "/r";
 
     public static final String KOGITO_PROCESSINSTANCES_EVENTS = "kogito-processinstances-events";
     public static final String KOGITO_USERTASKINSTANCES_EVENTS = "kogito-usertaskinstances-events";

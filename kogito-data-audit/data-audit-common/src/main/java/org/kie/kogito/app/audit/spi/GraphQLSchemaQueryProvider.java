@@ -20,12 +20,14 @@ package org.kie.kogito.app.audit.spi;
 
 import java.util.List;
 
+import org.kie.kogito.app.audit.api.DataAuditContext;
+
 public interface GraphQLSchemaQueryProvider {
 
     default String[] graphQLQueryExtension() {
         return new String[0];
     }
 
-    List<GraphQLSchemaQuery<?>> queries();
+    List<GraphQLSchemaQuery> queries(DataAuditContext dataAuditContext);
 
 }

@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.audit.spi;
 
-import graphql.schema.DataFetchingEnvironment;
+package org.kie.kogito.app.audit.graphql;
 
-public interface GraphQLSchemaQuery {
+import java.util.Map;
 
-    String name();
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
 
-    Object fetch(DataFetchingEnvironment datafetchingenvironment);
+public record GraphQLSchemaBuild(GraphQLSchema graphQLSchema, GraphQL graphQL, Map<String, String> additionalDefinitions) {
 
 }

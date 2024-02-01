@@ -46,6 +46,11 @@
 
         <!--testing -->
         <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>data-audit-common</artifactId>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${version.org.springframework.boot}</version>

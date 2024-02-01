@@ -16,26 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.app.audit.quarkus;
+package org.kie.kogito.app.audit.api;
 
-import org.kie.kogito.app.audit.api.DataAuditContext;
-import org.kie.kogito.app.audit.spi.DataAuditContextFactory;
+public class DataAuditQuery {
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+    private String identifier;
 
-@ApplicationScoped
-@Transactional
-public class QuarkusJPADataAuditContextFactory implements DataAuditContextFactory {
+    private String graphQLDefinition;
 
-    @PersistenceContext
-    EntityManager entityManager;
+    private String query;
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getGraphQLDefinition() {
+        return graphQLDefinition;
+    }
+
+    public void setGraphQLDefinition(String graphQLDefinition) {
+        this.graphQLDefinition = graphQLDefinition;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 
     @Override
-    public DataAuditContext newDataAuditContext() {
-        return DataAuditContext.newDataAuditContext(entityManager);
+    public String toString() {
+        return "DataAuditQuery [identifier=" + identifier + ", graphQLDefinition=" + graphQLDefinition + ", query=" + query + "]";
     }
 
 }

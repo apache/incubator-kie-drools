@@ -23,15 +23,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
 public abstract class JPAAbstractQuery<R> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JPAAbstractQuery.class);
 
     protected <T> List<T> executeWithNamedQueryEntityManager(EntityManager entityManager, String queryName, Class<T> clazz) {
         return executeWithNamedQueryEntityManager("META-INF/data-audit-orm.xml", entityManager, queryName);
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> List<T> executeWithNamedQueryEntityManager(String file, EntityManager entityManager, String queryName) {
         String query = MappingFile.findInFile(file, entityManager, queryName);
         return entityManager.createNativeQuery(query).getResultList();
@@ -47,10 +52,19 @@ public abstract class JPAAbstractQuery<R> {
 
     protected <T> List<T> executeWithNamedQueryEntityManagerAndArguments(String file, EntityManager entityManager, String queryName, Map<String, Object> arguments) {
         String query = MappingFile.findInFile(file, entityManager, queryName);
+        return executeWithQueryEntityManagerAndArguments(entityManager, query, arguments);
+    }
+
+    protected <T> List<T> executeWithQueryEntityManagerAndArguments(EntityManager entityManager, String query) {
+        return executeWithQueryEntityManagerAndArguments(entityManager, query, Collections.emptyMap());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> List<T> executeWithQueryEntityManagerAndArguments(EntityManager entityManager, String query, Map<String, Object> arguments) {
+        LOGGER.debug("About to execute native query {} with arguments {}", query, arguments);
+        Query jpaQuery = entityManager.createNativeQuery(query);
 
         Map<String, Object> parameters = new HashMap<>(arguments);
-        Query jpaQuery = entityManager.createNativeQuery(query);
-        @SuppressWarnings("unchecked")
         Map<String, Object> pagination = (Map<String, Object>) parameters.remove("pagination");
         parameters.forEach(jpaQuery::setParameter);
         if (pagination != null) {
@@ -69,6 +83,5 @@ public abstract class JPAAbstractQuery<R> {
         }
 
         return jpaQuery.getResultList();
-
     }
 }

@@ -20,6 +20,7 @@ package org.kie.kogito.app.audit.jpa.queries;
 
 import java.util.List;
 
+import org.kie.kogito.app.audit.api.DataAuditContext;
 import org.kie.kogito.app.audit.graphql.type.ProcessInstanceErrorTO;
 import org.kie.kogito.app.audit.graphql.type.ProcessInstanceNodeTO;
 import org.kie.kogito.app.audit.graphql.type.ProcessInstanceStateTO;
@@ -33,8 +34,8 @@ import org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider;
 public class JPAGraphQLSchemaProcessInstancesQueryProvider implements GraphQLSchemaQueryProvider {
 
     @Override
-    public List<GraphQLSchemaQuery<?>> queries() {
-        return List.<GraphQLSchemaQuery<?>> of(
+    public List<GraphQLSchemaQuery> queries(DataAuditContext dataAuditContext) {
+        return List.<GraphQLSchemaQuery> of(
                 new JPAComplexNamedQuery<ProcessInstanceStateTO, Object[]>("GetAllProcessInstancesState", new ProcessInstanceStateTOMapper()),
                 new JPAComplexNamedQuery<ProcessInstanceStateTO, Object[]>("GetAllProcessInstancesStateByStatus", new ProcessInstanceStateTOMapper()),
                 new JPAComplexNamedQuery<ProcessInstanceStateTO, Object[]>("GetAllProcessInstancesStateByProcessId", new ProcessInstanceStateTOMapper()),

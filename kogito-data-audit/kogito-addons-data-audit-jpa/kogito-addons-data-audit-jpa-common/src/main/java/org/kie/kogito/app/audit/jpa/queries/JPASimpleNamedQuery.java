@@ -28,7 +28,7 @@ import org.kie.kogito.app.audit.spi.GraphQLSchemaQuery;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.persistence.EntityManager;
 
-public class JPASimpleNamedQuery<T> extends JPAAbstractQuery<T> implements GraphQLSchemaQuery<List<T>> {
+public class JPASimpleNamedQuery<T> extends JPAAbstractQuery<T> implements GraphQLSchemaQuery {
 
     private String name;
     private String namedQuery;

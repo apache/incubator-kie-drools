@@ -33,23 +33,21 @@ import static org.kie.kogito.app.audit.graphql.GraphQLSchemaManager.graphQLSchem
 public class DataAuditQueryService {
 
     private GraphQLSchemaManager graphQLManager;
-    private GraphQL graphQL;
 
     private DataAuditQueryService(GraphQLSchemaManager graphQLManager) {
         this.graphQLManager = graphQLManager;
-        this.graphQL = GraphQL.newGraphQL(graphQLManager.getGraphQLSchema()).build();
     }
 
     public GraphQLSchema getGraphQLSchema() {
         return this.graphQLManager.getGraphQLSchema();
     }
 
-    public ExecutionResult executeQuery(DataAuditContext context, String query) {
-        return executeQuery(context, query, emptyMap());
+    public GraphQL getGraphQL() {
+        return this.graphQLManager.getGraphQL();
     }
 
-    public ExecutionResult executeQuery(String query) {
-        return executeQuery(null, query, emptyMap());
+    public ExecutionResult executeQuery(DataAuditContext context, String query) {
+        return executeQuery(context, query, emptyMap());
     }
 
     public ExecutionResult executeQuery(DataAuditContext context, String query, Map<String, Object> variables) {
@@ -59,7 +57,7 @@ public class DataAuditQueryService {
                 .variables(variables)
                 .build();
 
-        return graphQL.execute(executionInput);
+        return graphQLManager.execute(executionInput);
     }
 
     public static DataAuditQueryService newAuditQuerySerice() {

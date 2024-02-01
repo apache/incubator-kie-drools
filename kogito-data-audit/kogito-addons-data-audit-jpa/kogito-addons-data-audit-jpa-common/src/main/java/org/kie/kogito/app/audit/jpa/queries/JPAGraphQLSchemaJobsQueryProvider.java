@@ -20,6 +20,7 @@ package org.kie.kogito.app.audit.jpa.queries;
 
 import java.util.List;
 
+import org.kie.kogito.app.audit.api.DataAuditContext;
 import org.kie.kogito.app.audit.graphql.type.JobExecutionTO;
 import org.kie.kogito.app.audit.spi.GraphQLSchemaQuery;
 import org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider;
@@ -27,7 +28,7 @@ import org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider;
 public class JPAGraphQLSchemaJobsQueryProvider implements GraphQLSchemaQueryProvider {
 
     @Override
-    public List<GraphQLSchemaQuery<?>> queries() {
+    public List<GraphQLSchemaQuery> queries(DataAuditContext dataAuditContext) {
         return List.of(
                 new JPASimpleNamedQuery<JobExecutionTO>("GetAllScheduledJobs", JobExecutionTO.class),
                 new JPASimpleNamedQuery<JobExecutionTO>("GetJobById", JobExecutionTO.class),

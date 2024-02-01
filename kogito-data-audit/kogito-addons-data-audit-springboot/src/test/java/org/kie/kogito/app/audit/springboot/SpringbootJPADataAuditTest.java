@@ -90,7 +90,7 @@ public class SpringbootJPADataAuditTest {
                 .contentType(ContentType.JSON)
                 .body("{\"query\": \"{ GetAllProcessInstancesState { eventId, eventDate, processType, processId, processVersion, parentProcessInstanceId, rootProcessId, rootProcessInstanceId, processInstanceId, businessKey, eventType, outcome, state, slaDueDate } }\"}")
                 .when()
-                .post(SubsystemConstants.DATA_AUDIT_PATH)
+                .post(SubsystemConstants.DATA_AUDIT_QUERY_PATH)
                 .then()
                 .assertThat()
                 .statusCode(200)

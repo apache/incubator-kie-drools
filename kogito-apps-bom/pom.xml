@@ -144,6 +144,12 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
+                <artifactId>data-audit-common</artifactId>
+                <version>${project.version}</version>
+                <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
                 <artifactId>data-audit-common-service</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -24,12 +24,16 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.kie.kogito.app.audit.api.DataAuditContext;
+import org.kie.kogito.app.audit.api.DataAuditQuery;
 import org.kie.kogito.app.audit.jpa.model.AbstractProcessInstanceLog;
 import org.kie.kogito.app.audit.jpa.model.AbstractUserTaskInstanceLog;
+import org.kie.kogito.app.audit.jpa.model.AuditQuery;
 import org.kie.kogito.app.audit.jpa.model.JobExecutionLog;
 import org.kie.kogito.app.audit.jpa.model.ProcessInstanceErrorLog;
 import org.kie.kogito.app.audit.jpa.model.ProcessInstanceNodeLog;
@@ -397,4 +401,28 @@ public class JPADataAuditStore implements DataAuditStore {
         }
     }
 
+    @Override
+    public void storeQuery(DataAuditContext context, DataAuditQuery dataAuditQuery) {
+        EntityManager entityManager = context.getContext();
+        AuditQuery auditQuery = new AuditQuery();
+        auditQuery.setIdentifier(dataAuditQuery.getIdentifier());
+        auditQuery.setGraphQLDefinition(dataAuditQuery.getGraphQLDefinition());
+        auditQuery.setQuery(dataAuditQuery.getQuery());
+        entityManager.merge(auditQuery);
+    }
+
+    @Override
+    public List<DataAuditQuery> findQueries(DataAuditContext context) {
+        EntityManager entityManager = context.getContext();
+        List<AuditQuery> queries = entityManager.createQuery("SELECT o FROM AuditQuery o", AuditQuery.class).getResultList();
+        return queries.stream().map(this::to).collect(Collectors.toList());
+    }
+
+    private DataAuditQuery to(AuditQuery auditQuery) {
+        DataAuditQuery dataAuditQuery = new DataAuditQuery();
+        dataAuditQuery.setIdentifier(auditQuery.getIdentifier());
+        dataAuditQuery.setGraphQLDefinition(auditQuery.getGraphQLDefinition());
+        dataAuditQuery.setQuery(auditQuery.getQuery());
+        return dataAuditQuery;
+    }
 }

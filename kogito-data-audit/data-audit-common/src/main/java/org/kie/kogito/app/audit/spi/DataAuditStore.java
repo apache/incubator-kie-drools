@@ -18,7 +18,10 @@
  */
 package org.kie.kogito.app.audit.spi;
 
+import java.util.List;
+
 import org.kie.kogito.app.audit.api.DataAuditContext;
+import org.kie.kogito.app.audit.api.DataAuditQuery;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
@@ -57,5 +60,9 @@ public interface DataAuditStore {
     void storeUserTaskInstanceDataEvent(DataAuditContext context, UserTaskInstanceVariableDataEvent event);
 
     void storeJobDataEvent(DataAuditContext context, JobInstanceDataEvent event);
+
+    void storeQuery(DataAuditContext context, DataAuditQuery dataAuditQuery);
+
+    List<DataAuditQuery> findQueries(DataAuditContext context);
 
 }
