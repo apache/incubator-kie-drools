@@ -42,24 +42,49 @@ public class CoerceUtil {
 
     public static Optional<Object[]> coerceParams(Class<?> currentIdxActualParameterType, Class<?> expectedParameterType, Object[] actualParams, int i) {
         Object actualObject = actualParams[i];
-        // singleton list spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-        // and vice-versa
-        if ( Collection.class.isAssignableFrom( currentIdxActualParameterType ) ) {
-            Collection<?> valueCollection = (Collection<?>) actualObject;
-            if ( valueCollection.size() == 1 ) {
-                Object singletonValue = valueCollection.iterator().next();
-                // re-perform the assignable-from check, this time using the element itself the singleton value from the original parameter list
-                if ( singletonValue != null && expectedParameterType.isAssignableFrom( singletonValue.getClass() ) ) {
-                    return Optional.of(actualCoerceParams(actualParams, singletonValue, i));
+        Object coercedObject = coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
+        return coercedObject != null ? Optional.of(actualCoerceParams(actualParams, coercedObject, i)) : Optional.empty();
+    }
+
+    static Object coerceParam(Class<?> currentParameterType, Class<?> expectedParameterType, Object actualObject) {
+        if ( currentParameterType != null && !expectedParameterType.isAssignableFrom( currentParameterType ) ) {
+            // Original
+            if ( Collection.class.isAssignableFrom(currentParameterType ) ) {
+                Collection<?> valueCollection = (Collection<?>) actualObject;
+                if ( valueCollection.size() == 1 ) {
+                    Object singletonValue = valueCollection.iterator().next();
+                    // re-perform the assignable-from check, this time using the element itself the singleton value from the original parameter list
+                    if ( singletonValue != null && expectedParameterType.isAssignableFrom( singletonValue.getClass() ) ) {
+                        System.out.println();
+                        // put singleton vale in list
+//                        Object[] newParams = new Object[cm.getActualParams().length];
+//                        System.arraycopy( cm.getActualParams(), 0, newParams, 0, cm.getActualParams().length ); // can't rely on adjustForVariableParameters() have actually copied
+//                        newParams[i] = singletonValue;
+//                                cm.setActualParams(newParams);
+                    }
                 }
             }
+
+
+            if (Collection.class.isAssignableFrom(currentParameterType)) {
+                Collection<?> valueCollection = (Collection<?>) actualObject;
+                if (valueCollection.size() == 1) {
+                    Object toReturn = valueCollection.iterator().next();
+                    // re-perform the assignable-from check, this time using the element itself the singleton value from the original parameter list
+                    if (toReturn != null) {
+                        toReturn = coerceParam(toReturn.getClass(), expectedParameterType, toReturn);
+                    }
+                    return toReturn;
+                }
+            }
+            if (actualObject instanceof LocalDate localDate &&
+                    ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
+                return EvalHelper.coerceDateTime(localDate);
+            }
+            return null;
         }
-        if (actualObject instanceof LocalDate localDate &&
-                ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
-            Object coercedObject = EvalHelper.coerceDateTime(localDate);
-            return Optional.of(actualCoerceParams(actualParams, coercedObject, i));
-        }
-        return Optional.empty();
+        return actualObject;
+
     }
 
     static Object actualCoerceParameter(Type requiredType, Object valueToCoerce) {

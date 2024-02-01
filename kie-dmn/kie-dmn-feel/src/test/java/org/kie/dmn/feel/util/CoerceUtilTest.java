@@ -46,13 +46,30 @@ public class CoerceUtilTest {
     public void coerceParamsCollectionToArrayConverted() {
         Object item = "TESTED_OBJECT";
         Object value = Collections.singleton(item);
-        Object[] actualParams = {value, "NOT_DATE"};
-        Optional<Object[]> retrieved = CoerceUtil.coerceParams(Set.class, String.class, actualParams, 0);
+        Object[] actualParams1 = {value, "NOT_DATE"};
+        Optional<Object[]> retrieved = CoerceUtil.coerceParams(Set.class, String.class, actualParams1, 0);
         assertNotNull(retrieved);
         assertTrue(retrieved.isPresent());
         Object[] retrievedObjects = retrieved.get();
         assertEquals(item, retrievedObjects[0]);
-        assertEquals(actualParams[1], retrievedObjects[1]);
+        assertEquals(actualParams1[1], retrievedObjects[1]);
+
+
+        item = LocalDate.now();
+        value = Collections.singleton(item);
+        Object[] actualParams2 = {value, "NOT_DATE"};
+        retrieved = CoerceUtil.coerceParams(Set.class, ZonedDateTime.class, actualParams2, 0);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        retrievedObjects = retrieved.get();
+        assertTrue(retrievedObjects[0] instanceof ZonedDateTime);
+        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrievedObjects[0];
+        assertEquals(item, zdtRetrieved.toLocalDate());
+        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
+        assertEquals(0, zdtRetrieved.getHour());
+        assertEquals(0, zdtRetrieved.getMinute());
+        assertEquals(0, zdtRetrieved.getSecond());
+        assertEquals(actualParams2[1], retrievedObjects[1]);
     }
 
     @Test
