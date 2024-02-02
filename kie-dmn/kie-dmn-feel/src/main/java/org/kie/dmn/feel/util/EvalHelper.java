@@ -290,7 +290,7 @@ public class EvalHelper {
         }
 
         public static PropertyValueResult notDefined() {
-            return new PropertyValueResult(false, Either.ofLeft(new UnsupportedOperationException("Property was not defined.")));
+            return new PropertyValueResult(false, Either.ofRight(null));
         }
 
         public static PropertyValueResult of(Either<Exception, Object> valueResult) {
