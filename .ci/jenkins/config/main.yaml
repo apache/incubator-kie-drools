@@ -4,10 +4,6 @@ ecosystem:
   - name: drools
     regexs:
     - drools.*
-  - name: kie-jpmml-integration
-    ignore_productization: true
-    regexs:
-    - kie-jpmml-integration.*
   - name: kie-benchmarks
     ignore_release: true
     ignore_productization: true

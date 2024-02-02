@@ -60,22 +60,6 @@ pipeline {
                 }
             }
         }
-        stage('Build & Deploy KIE jpmml integration') {
-            steps {
-                script {
-                    def buildParams = getDefaultBuildParams()
-                    addSkipTestsParam(buildParams)
-                    addSkipIntegrationTestsParam(buildParams)
-
-                    buildJob(KIE_JPMML_INTEGRATION_DEPLOY, buildParams)
-                }
-            }
-            post {
-                failure {
-                    addFailedStage(KIE_JPMML_INTEGRATION_DEPLOY)
-                }
-            }
-        }
     }
     post {
         unsuccessful {
