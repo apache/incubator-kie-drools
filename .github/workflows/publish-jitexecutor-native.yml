@@ -1,0 +1,155 @@
+name: "Publish jitexecutor-native"
+
+on:
+  schedule:
+    - cron: '0 16 * * 0' # Every sunday at 4:00PM
+
+jobs:
+  build_jitexecutor_native_binaries:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "CURRENT_DATE=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Set version
+        id: version
+        run: | 
+          VERSION="999-${{ steps.date.outputs.CURRENT_DATE }}"
+          echo "TAG=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "PROJECT_VERSION=$VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
+          echo "NPM_VERSION=999.0.0-${{ steps.date.outputs.CURRENT_DATE }}-SNAPSHOT" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: "Set long paths for Windows"
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
+
+      - name: "Checkout kie-kogito-apps"
+        uses: actions/checkout@v3
+        with:
+          repository: apache/incubator-kie-kogito-apps
+          ref: ${{ steps.version.outputs.TAG }}
+
+      - name: "Set up Maven"
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.3
+
+      - name: "Set up JDK 17"
+        if: runner.os != 'Windows'
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "zulu"
+
+      - name: "Build macOS"
+        if: runner.os == 'macOS'
+        run: |
+          brew install make && \
+          wget https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-17.0.9/graalvm-community-jdk-17.0.9_macos-x64_bin.tar.gz && \
+          tar -xzf graalvm-community-jdk-17.0.9_macos-x64_bin.tar.gz && \
+          sudo mv graalvm-community-openjdk-17.0.9+9.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1
+          export PATH=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1/Contents/Home/bin:$PATH && \
+          export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1/Contents/Home && \
+          gu install native-image && \
+          mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+
+      - name: "Build Linux"
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update && \
+          sudo apt install -y \
+          build-essential \
+          libgtk-3-dev \
+          libappindicator3-dev \
+          gir1.2-appindicator3-0.1 && \
+          mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+
+      - name: "Configure Pagefile"
+        if: runner.os == 'Windows'
+        uses: al-cheb/configure-pagefile-action@86589fd789a4de3e62ba628dda2cb10027b66d67 #v1.3
+        with:
+          minimum-size: 16GB
+          maximum-size: 16GB
+          disk-root: "C:"
+
+      - name: "Setup MSCV"
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: "Setup MSBUILD"
+        if: runner.os == 'Windows'
+        uses: microsoft/setup-msbuild@v1
+
+      - name: "Setup GraalVM"
+        if: runner.os == 'Windows'
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "17"
+          components: "native-image"
+
+      - name: "Build Windows"
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+
+      - name: "Upload JIT Executor binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: jitexecutor_${{ runner.os }}
+          path: ./jitexecutor/jitexecutor-runner/target/jitexecutor-runner-${{ steps.version.outputs.PROJECT_VERSION }}-run*
+
+    outputs:
+      package_version: ${{ steps.version.outputs.PROJECT_VERSION }}
+      npm_version: ${{ steps.version.outputs.NPM_VERSION }}
+
+  pack_and_publish:
+    runs-on: ubuntu-latest
+    needs: [build_jitexecutor_native_binaries]
+    steps:
+      - name: "Checkout kie-kogito-apps"
+        uses: actions/checkout@v3
+
+      - name: "Download Windows binary"
+        uses: actions/download-artifact@v2
+        with:
+          name: jitexecutor_Windows
+          path: ./.github/supporting-files/publish_jitexecutor_native/dist/win32
+
+      - name: "Download macOS binary"
+        uses: actions/download-artifact@v2
+        with:
+          name: jitexecutor_macOS
+          path: ./.github/supporting-files/publish_jitexecutor_native/dist/darwin
+
+      - name: "Download Linux binary"
+        uses: actions/download-artifact@v2
+        with:
+          name: jitexecutor_Linux
+          path: ./.github/supporting-files/publish_jitexecutor_native/dist/linux
+
+      - name: "Pack and publish"
+        working-directory: ./.github/supporting-files/publish_jitexecutor_native
+        env:
+          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
+        run: |
+          mv ./dist/linux/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner ./dist/linux/jitexecutor
+          mv ./dist/darwin/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner ./dist/darwin/jitexecutor
+          mv ./dist/win32/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner.exe ./dist/win32/jitexecutor.exe
+          npm version ${{ needs.build_jitexecutor_native_binaries.outputs.npm_version }}
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npm publish --access public
