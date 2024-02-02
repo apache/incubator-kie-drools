@@ -49,9 +49,9 @@ class SwitchStateTimeoutsIT extends BaseSwitchStateTimeoutsIT implements SinkMoc
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> sink.verify(1,
                         postRequestedFor(urlEqualTo("/"))
-                                .withRequestBody(matchingJsonPath("kogitoprocinstanceid", equalTo(processInstanceId)))
-                                .withRequestBody(matchingJsonPath("type", equalTo(PROCESS_RESULT_EVENT_TYPE)))
-                                .withRequestBody(matchingJsonPath("data.decision", equalTo(DECISION_NO_DECISION)))));
+                                .withHeader("ce-kogitoprocinstanceid", equalTo(processInstanceId))
+                                .withHeader("ce-type", equalTo(PROCESS_RESULT_EVENT_TYPE))
+                                .withRequestBody(matchingJsonPath("decision", equalTo(DECISION_NO_DECISION)))));
 
     }
 
