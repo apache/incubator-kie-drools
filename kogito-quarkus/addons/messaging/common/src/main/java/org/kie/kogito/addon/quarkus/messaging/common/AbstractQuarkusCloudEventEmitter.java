@@ -20,10 +20,12 @@ package org.kie.kogito.addon.quarkus.messaging.common;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.eclipse.microprofile.reactive.messaging.Metadata;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.DataEvent;
@@ -31,6 +33,9 @@ import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.smallrye.reactive.messaging.ce.OutgoingCloudEventMetadata;
+import io.smallrye.reactive.messaging.ce.OutgoingCloudEventMetadataBuilder;
 
 import jakarta.inject.Inject;
 
@@ -49,11 +54,11 @@ public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitte
     public CompletionStage<Void> emit(DataEvent<?> dataEvent) {
         logger.debug("publishing event {}", dataEvent);
         try {
-            Message<M> message = messageDecorator.decorate(Message.of(getPayload(dataEvent))
+            Message<M> message = messageDecorator.decorate(getMessage(dataEvent))
                     .withNack(e -> {
                         logger.error("Error publishing event {}", dataEvent, e);
                         return CompletableFuture.completedFuture(null);
-                    }));
+                    });
             emit(message);
             return message.getAck().get();
         } catch (IOException e) {
@@ -69,11 +74,26 @@ public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitte
         this.cloudEventMarshaller = marshaller;
     }
 
-    private <T> M getPayload(DataEvent<T> event) throws IOException {
+    private <T> Optional<OutgoingCloudEventMetadata<?>> getMetadata(DataEvent<T> event) {
+        if (event.getId() == null || event.getType() == null || event.getSource() == null || event.getSpecVersion() == null) {
+            return Optional.empty();
+        }
+        OutgoingCloudEventMetadataBuilder<Object> builder = OutgoingCloudEventMetadata.builder().withId(event.getId()).withSource(event.getSource()).withType(event.getType())
+                .withSubject(event.getSubject())
+                .withDataContentType(event.getDataContentType()).withDataSchema(event.getDataSchema()).withSpecVersion(event.getSpecVersion().name()).withTimestamp(event.getTime().toZonedDateTime());
+        for (String extName : event.getExtensionNames()) {
+            builder.withExtension(extName, event.getExtension(extName));
+        }
+        return Optional.of(builder.build());
+    }
+
+    private <T> Message<M> getMessage(DataEvent<T> event) throws IOException {
         if (cloudEventMarshaller != null) {
-            return cloudEventMarshaller.marshall(event.asCloudEvent(cloudEventMarshaller.cloudEventDataFactory()));
+            return Message.of(cloudEventMarshaller.marshall(event.asCloudEvent(cloudEventMarshaller.cloudEventDataFactory())));
         } else if (eventMarshaller != null) {
-            return eventMarshaller.marshall(event.getData());
+            Optional<OutgoingCloudEventMetadata<?>> metadata = getMetadata(event);
+            M payload = eventMarshaller.marshall(event.getData());
+            return metadata.isPresent() ? Message.of(payload, Metadata.of(metadata.orElseThrow())) : Message.of(payload);
         } else {
             throw new IllegalStateException("Not marshaller has been set for emitter " + this);
         }

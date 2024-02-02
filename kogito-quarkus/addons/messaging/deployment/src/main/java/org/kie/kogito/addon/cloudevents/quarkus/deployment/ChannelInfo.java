@@ -30,10 +30,13 @@ public class ChannelInfo {
     private final boolean isInput;
     private final boolean isDefault;
 
+    private final Optional<CloudEventMode> cloudEventMode;
+
     private final Optional<String> marshaller;
     private final Optional<OnOverflowInfo> onOverflow;
 
-    protected ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault, Optional<String> marshaller, Optional<OnOverflowInfo> onOverflow) {
+    protected ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault, Optional<String> marshaller, Optional<OnOverflowInfo> onOverflow,
+            Optional<CloudEventMode> cloudEventMode) {
         this.className = className;
         this.channelName = channelName;
         this.isInput = isInput;
@@ -41,6 +44,7 @@ public class ChannelInfo {
         this.triggers = triggers;
         this.marshaller = marshaller;
         this.onOverflow = onOverflow;
+        this.cloudEventMode = cloudEventMode;
     }
 
     public Collection<String> getTriggers() {
@@ -93,9 +97,14 @@ public class ChannelInfo {
         return onOverflow;
     }
 
+    public Optional<CloudEventMode> getCloudEventMode() {
+        return cloudEventMode;
+    }
+
     @Override
     public String toString() {
         return "ChannelInfo [channelName=" + channelName + ", className=" + className + ", triggers=" + triggers
-                + ", isInput=" + isInput + ", isDefault=" + isDefault + ", marshaller=" + marshaller + "]";
+                + ", isInput=" + isInput + ", isDefault=" + isDefault + ", cloudEventMode=" + cloudEventMode
+                + ", marshaller=" + marshaller + ", onOverflow=" + onOverflow + "]";
     }
 }

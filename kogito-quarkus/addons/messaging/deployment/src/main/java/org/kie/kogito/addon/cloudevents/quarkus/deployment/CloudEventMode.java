@@ -18,18 +18,7 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.deployment;
 
-import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.event.CloudEventMarshaller;
-import org.kie.kogito.event.EventMarshaller;
-
-public class EventEmitterGenerator extends EventGenerator {
-
-    public EventEmitterGenerator(KogitoBuildContext context, ChannelInfo channelInfo) {
-        super(context, channelInfo, "EventEmitter");
-        if (channelInfo.getCloudEventMode().filter(mode -> mode == CloudEventMode.STRUCTURED).isPresent()) {
-            generateMarshallerField("marshaller", "setCloudEventMarshaller", CloudEventMarshaller.class);
-        } else {
-            generateMarshallerField("marshaller", "setEventDataMarshaller", EventMarshaller.class);
-        }
-    }
+public enum CloudEventMode {
+    STRUCTURED,
+    BINARY
 }

@@ -47,6 +47,8 @@ public class ChannelMappingStrategy {
     private static final String INCOMING_DEFAULT_CHANNEL = KOGITO_INCOMING_PREFIX + "defaultName";
     private static final String OUTGOING_DEFAULT_CHANNEL = KOGITO_OUTGOING_PREFIX + "defaultName";
 
+    private static final String CLOUD_EVENT_MODE = KOGITO_OUTGOING_PREFIX + "cloudEventMode";
+
     private static final String MARSHALLER_PREFIX = KOGITO_MESSAGING_PREFIX + "marshaller.";
     private static final String UNMARSHALLLER_PREFIX = KOGITO_MESSAGING_PREFIX + "unmarshaller.";
     private static final String KOGITO_EMITTER_PREFIX = KOGITO_MESSAGING_PREFIX + "emitter.";
@@ -96,7 +98,28 @@ public class ChannelMappingStrategy {
         return new ChannelInfo(name, triggers.getOrDefault(name, Collections.singleton(name)),
                 getClassName(config.getOptionalValue(getPropertyName(prefix, name, "value." + (isInput ? "deserializer" : "serializer")), String.class)), isInput,
                 name.equals(defaultChannelName), config.getOptionalValue((isInput ? UNMARSHALLLER_PREFIX : MARSHALLER_PREFIX) + name, String.class),
-                isInput ? Optional.empty() : onOverflowInfo(config, name));
+                isInput ? Optional.empty() : onOverflowInfo(config, name), cloudEventMode(config, name, property));
+    }
+
+    private static Optional<CloudEventMode> cloudEventMode(Config config, String name, String property) {
+        if (!config.getOptionalValue("kogito.messaging.as-cloudevents", Boolean.class).orElse(true)) {
+            return Optional.empty();
+        }
+        Optional<CloudEventMode> cloudEventMode = getCloudEventMode(config, CLOUD_EVENT_MODE + "." + name);
+        if (cloudEventMode.isPresent()) {
+            return cloudEventMode;
+        }
+        cloudEventMode = getCloudEventMode(config, CLOUD_EVENT_MODE);
+        if (cloudEventMode.isPresent()) {
+            return cloudEventMode;
+        }
+        // if no config, infer default from connector type
+        String connector = config.getValue(property, String.class);
+        return Optional.of(connector.equals("quarkus-http") ? CloudEventMode.BINARY : CloudEventMode.STRUCTURED);
+    }
+
+    private static Optional<CloudEventMode> getCloudEventMode(Config config, String propName) {
+        return config.getOptionalValue(propName, String.class).map(String::toUpperCase).map(CloudEventMode::valueOf);
     }
 
     private static Optional<OnOverflowInfo> onOverflowInfo(Config config, String name) {
