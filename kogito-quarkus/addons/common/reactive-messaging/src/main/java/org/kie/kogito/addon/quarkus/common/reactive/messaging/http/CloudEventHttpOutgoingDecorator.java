@@ -22,8 +22,10 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecorator;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
+import io.smallrye.reactive.messaging.ce.OutgoingCloudEventMetadata;
 
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * Decorators for Http CloudEvents outgoing messages
@@ -41,6 +43,12 @@ public class CloudEventHttpOutgoingDecorator implements MessageDecorator {
             new OutgoingHttpMetadata.Builder().addHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build();
 
     /**
+     * Metadata to include content-type for binary CloudEvents messages
+     */
+    private static final OutgoingHttpMetadata HTTP_BINARY_RESPONSE_METADATA =
+            new OutgoingHttpMetadata.Builder().addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
+
+    /**
      * Decorates a given payload with custom metadata needed by Http Outgoing processing
      *
      * @param message of the given message
@@ -48,6 +56,6 @@ public class CloudEventHttpOutgoingDecorator implements MessageDecorator {
      */
     @Override
     public <T> Message<T> decorate(Message<T> message) {
-        return message.addMetadata(HTTP_RESPONSE_METADATA);
+        return message.getMetadata(OutgoingCloudEventMetadata.class).isEmpty() ? message.addMetadata(HTTP_RESPONSE_METADATA) : message.addMetadata(HTTP_BINARY_RESPONSE_METADATA);
     }
 }
