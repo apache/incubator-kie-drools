@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -156,10 +155,7 @@ public abstract class BaseFEELFunction
             }
         } catch ( Exception e ) {
             logger.error( "Error trying to call function " + getName() + ".", e );
-            ctx.notifyEvt( () -> {
-                                       return new FEELEventBase( Severity.ERROR, "Error trying to call function " + getName() + ".", e );
-                                   }
-            );
+            ctx.notifyEvt( () -> new FEELEventBase( Severity.ERROR, "Error trying to call function " + getName() + ".", e ));
         }
         return null;
     }
@@ -241,33 +237,16 @@ public abstract class BaseFEELFunction
             boolean found = true;
             for ( int i = 0; i < parameterTypes.length; i++ ) {
                 Class<?> currentIdxActualParameterType = cm.getActualClasses()[i];
-                // Original behavior
-                if ( currentIdxActualParameterType != null && !parameterTypes[i].isAssignableFrom( currentIdxActualParameterType ) ) {
-                    // singleton list spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-                    // and vice-versa
-                    if ( Collection.class.isAssignableFrom(currentIdxActualParameterType ) ) {
-                        Collection<?> valueCollection = (Collection<?>) actualParams[i];
-                        if ( valueCollection.size() == 1 ) {
-                            Object singletonValue = valueCollection.iterator().next();
-                            // re-perform the assignable-from check, this time using the element itself the singleton value from the original parameter list
-                            if ( singletonValue != null && parameterTypes[i].isAssignableFrom( singletonValue.getClass() ) ) {
-                                Object[] newParams = new Object[cm.getActualParams().length];
-                                System.arraycopy( cm.getActualParams(), 0, newParams, 0, cm.getActualParams().length ); // can't rely on adjustForVariableParameters() have actually copied
-                                newParams[i] = singletonValue;
-//                                cm.setActualParams(newParams);
-                            }
-                        }
-                    }
-                }
-                // Refactored behavior
                 Class<?> expectedParameterType = parameterTypes[i];
-                Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType, actualParams, i);
-                if (coercedParams.isPresent()) {
-                    cm.setActualParams(coercedParams.get());
-                    continue;
+                if ( currentIdxActualParameterType != null && !expectedParameterType.isAssignableFrom( currentIdxActualParameterType ) ) {
+                    Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType, actualParams, i);
+                    if (coercedParams.isPresent()) {
+                        cm.setActualParams(coercedParams.get());
+                        continue;
+                    }
+                    found = false;
+                    break;
                 }
-                found = false;
-                break;
             }
             if ( found ) {
                 cm.setApply( m );
