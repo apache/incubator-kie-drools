@@ -49,9 +49,7 @@ public class IteratingPhase implements CompilationPhase {
     public void process() {
         for (CompositePackageDescr compositePackageDescr : packages) {
             PackageRegistry packageRegistry = pkgRegistryManager.getOrCreatePackageRegistry(compositePackageDescr);
-            CompilationPhase phase = phaseFactory.create(
-                    packageRegistry,
-                    compositePackageDescr);
+            CompilationPhase phase = phaseFactory.create( packageRegistry, compositePackageDescr );
             phase.process();
             this.results.addAll(phase.getResults());
             if (this.results.hasErrors()) {

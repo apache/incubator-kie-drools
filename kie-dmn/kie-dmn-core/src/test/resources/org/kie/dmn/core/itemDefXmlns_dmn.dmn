@@ -1,6 +1,6 @@
 <definitions name="MyDecision" id="_123456789" 
              xmlns:ns="http://sample.dmn" namespace="http://sample.dmn"
-             xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/">
+             xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/">
     <itemDefinition name="tPerson" label="tPerson">
         <itemComponent id="_f2d68912-345e-45bf-8791-457f6987bba1" name="name">
             <typeRef>string</typeRef>

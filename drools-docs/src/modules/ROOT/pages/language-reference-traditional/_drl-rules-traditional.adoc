@@ -1,0 +1,5 @@
+[id="con-drl_{context}]
+= Traditional DRL Syntax
+
+[role="_abstract"]
+This chapter explains the traditional DRL syntax. This syntax can be used instead of the RuleUnit and OOPath based syntax. The traditional syntax is still fully supported.

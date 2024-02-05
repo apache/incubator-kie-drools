@@ -21,6 +21,7 @@ package org.drools.compiler.kie.builder.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -222,7 +223,7 @@ public abstract class AbstractKieProject implements KieProject {
     public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, BuildContext buildContext, Predicate<String> buildFilter ) {
         boolean useFolders = useFolders( kBaseModel );
 
-        Set<Asset> assets = new HashSet<>();
+        Set<Asset> assets = new LinkedHashSet<>();
 
         boolean allIncludesAreValid = true;
         for (String include : getTransitiveIncludes(kBaseModel)) {
@@ -360,6 +361,11 @@ public abstract class AbstractKieProject implements KieProject {
             int result = kmodule.hashCode();
             result = 31 * result + name.hashCode();
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Asset: " + name;
         }
     }
 }
