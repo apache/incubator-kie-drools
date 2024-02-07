@@ -18,9 +18,15 @@
 #
 
 ---
-name: "Drools-DRL"
+name: "Drools"
 metadata:
   keywords:
   - "drools"
   - "rules"
+  - "rule engine"
+  - "artificial intelligence"
   - "DRL"
+  guide: "https://quarkus.io/guides/drools"
+  categories:
+    - "business-automation"
+  status: "stable"
