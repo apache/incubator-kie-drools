@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.core.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -72,10 +73,15 @@ public final class DMNRuntimeUtil {
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
                 ks.getResources().newClassPathResource(resourceName, testClass));
+        return createRuntime(kieContainer);
+    }
 
-        final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
-        assertThat(runtime).isNotNull();
-        return runtime;
+    public static DMNRuntime createRuntime(final File resourceFile) {
+        final KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(
+                ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
+                ks.getResources().newFileSystemResource(resourceFile));
+        return createRuntime(kieContainer);
     }
     
     public static List<DMNMessage> createExpectingDMNMessages(final String resourceName, final Class testClass) {
@@ -191,5 +197,11 @@ public final class DMNRuntimeUtil {
 
         byte[] jar = kieModule.getBytes();
         return jar;
+    }
+
+    static DMNRuntime createRuntime(KieContainer kieContainer) {
+        final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
+        assertThat(runtime).isNotNull();
+        return runtime;
     }
 }
