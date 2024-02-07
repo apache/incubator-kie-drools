@@ -92,7 +92,7 @@ public class CompositeTypeImpl
     public CompositeTypeImpl clone() {
         return new CompositeTypeImpl( getNamespace(), getName(), getId(), isCollection(), new LinkedHashMap<>( fields), getBaseType(), getFeelType() );
     }
-    
+
     @Override
     protected boolean internalIsInstanceOf(Object o) {
         if (getBaseType() != null) {

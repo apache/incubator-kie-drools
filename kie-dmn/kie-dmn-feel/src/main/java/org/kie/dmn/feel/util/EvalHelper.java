@@ -24,7 +24,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -189,6 +191,10 @@ public class EvalHelper {
         } else {
             return value;
         }
+    }
+
+    public static ZonedDateTime coerceDateTime(final LocalDate value) {
+        return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
     }
 
     public static Boolean getBooleanOrNull(Object value) {
