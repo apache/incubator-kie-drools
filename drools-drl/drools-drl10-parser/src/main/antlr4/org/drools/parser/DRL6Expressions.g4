@@ -99,6 +99,7 @@ catch (RecognitionException re) {
 // --------------------------------------------------------
 literal
     :	STRING_LITERAL  {	helper.emit($STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
+    |	DRL_STRING_LITERAL  {	helper.emit($DRL_STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
     |	DECIMAL_LITERAL {	helper.emit($DECIMAL_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	HEX_LITERAL     {	helper.emit($HEX_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	FLOAT_LITERAL   {	helper.emit($FLOAT_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
@@ -731,9 +732,6 @@ selector
 
 superSuffix
     :	arguments
-    // TODO syntactic predicates in the form of `(x) => x` can be safely removed but
-    //  there was originally `DOT ID ((LEFT_PAREN) => arguments)?`.
-    //  Not sure if removing `(LEFT_PAREN) =>` is correct.
     |   	DOT IDENTIFIER (arguments)?
     ;
 
@@ -832,15 +830,16 @@ new_key
     ;
 
 not_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}? id=DRL_NOT { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 in_key
-  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}? id=DRL_IN { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
 
 operator_key
-  :      {(helper.isPluggableEvaluator(false))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  // TODO get rid of the DRL_MATCHES token or introduce DRL_CONTAINS etc. for consistency.
+  :      {(helper.isPluggableEvaluator(false))}? id=(IDENTIFIER|DRL_MATCHES) { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
