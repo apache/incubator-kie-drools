@@ -70,6 +70,8 @@ rule "Underage"
 end
 ----
 
+For the traditional syntax, please refer to xref:ref-con-drl_drl-rules-traditional[]
+
 [id="con-drl-packages_{context}"]
 == Packages in DRL
 

@@ -68,7 +68,7 @@ class PatternAccumulateConstraint implements DSLNode {
 
         constraintsByVar.forEach( (id, constraints) -> {
             pattern.setIdentifier(id);
-            new PatternDSLPattern(context, packageModel, pattern, constraints, null).buildPattern();
+            new ClassPatternDSL(context, packageModel, pattern, constraints, null).buildPattern();
         });
         pattern.setIdentifier(null);
     }

@@ -91,7 +91,7 @@ public interface PathEndNode extends LeftTupleSinkNode, MemoryFactory<PathMemory
         boolean updateBitInNewSegment = true; // Avoids more than one isBetaNode check per segment
         boolean updateAllLinkedTest = !hasConditionalBranchNode(tupleSource); // if there is a CEN, do not set bit until it's reached
         boolean subnetworkBoundaryCrossed = false;
-        while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+        while (  !NodeTypeEnums.isLeftInputAdapterNode(tupleSource) ) {
             if ( !subnetworkBoundaryCrossed && tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
                 // start recording now we are after the BranchCE, but only if we are not outside the target subnetwork
                 updateAllLinkedTest = tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode;
@@ -138,7 +138,7 @@ public interface PathEndNode extends LeftTupleSinkNode, MemoryFactory<PathMemory
     }
 
     static boolean hasConditionalBranchNode(LeftTupleNode tupleSource) {
-        while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+        while (  !NodeTypeEnums.isLeftInputAdapterNode(tupleSource) ) {
             if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
                 return true;
             }

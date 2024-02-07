@@ -43,6 +43,7 @@ import org.drools.model.codegen.execmodel.QueryModel;
 import org.drools.model.codegen.execmodel.generator.visitor.ModelGeneratorVisitor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
+import static org.drools.model.codegen.execmodel.generator.RuleContext.DIALECT_ATTRIBUTE;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -79,9 +80,9 @@ public class QueryGenerator {
     }
 
     public static class QueryDefWithType {
-        private ClassOrInterfaceType queryType;
-        private MethodCallExpr methodCallExpr;
-        private RuleContext context;
+        private final ClassOrInterfaceType queryType;
+        private final MethodCallExpr methodCallExpr;
+        private final RuleContext context;
 
         public QueryDefWithType(ClassOrInterfaceType queryType, MethodCallExpr methodCallExpr, RuleContext contex) {
             this.queryType = queryType;
@@ -107,7 +108,7 @@ public class QueryGenerator {
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
 
         context.addGlobalDeclarations();
-        context.setDialectFromAttributes(queryDescr.getAttributes().values());
+        context.setDialectFromAttribute(queryDescr.getAttributes().get( DIALECT_ATTRIBUTE ));
 
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         if (context.getRuleUnitDescr() != null) {

@@ -30,7 +30,7 @@ public interface BeliefSet<M extends ModedAssertion<M>> {
     
     M getFirst();
 
-    FastIterator iterator();
+    FastIterator fastIterator();
 
     void add(M node);
     void remove(M node);

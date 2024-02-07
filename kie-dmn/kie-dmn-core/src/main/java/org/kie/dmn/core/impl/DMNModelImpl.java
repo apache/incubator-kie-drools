@@ -64,6 +64,7 @@ import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV13;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV14;
+import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
@@ -124,8 +125,10 @@ public class DMNModelImpl
             types = new DMNTypeRegistryV12(Collections.unmodifiableMap(importAliases));
         } else if (definitions instanceof org.kie.dmn.model.v1_3.TDefinitions) {
             types = new DMNTypeRegistryV13(Collections.unmodifiableMap(importAliases));
-        } else {
+        } else if (definitions instanceof org.kie.dmn.model.v1_4.TDefinitions) {
             types = new DMNTypeRegistryV14(Collections.unmodifiableMap(importAliases));
+        } else {
+            types = new DMNTypeRegistryV15(Collections.unmodifiableMap(importAliases));
         }
     }
     

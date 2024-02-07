@@ -92,7 +92,7 @@ public class DroolsAssemblerContextImpl implements DroolsAssemblerContext, Build
 
     @Override
     public TypeDeclaration getTypeDeclaration(ObjectType objectType) {
-        return objectType.isTemplate() ?
+        return objectType.isPrototype() ?
                 typeBuilder.getExistingTypeDeclaration(objectType.getClassName()) :
                 typeBuilder.getTypeDeclaration(((ClassObjectType) objectType).getClassType());
     }

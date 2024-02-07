@@ -23,7 +23,7 @@ import java.util.Collections;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
@@ -101,7 +101,7 @@ public class MVELAccumulateBuilderTest {
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( new InitialFactImpl() );
         final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
         final InternalFactHandle f2 = (InternalFactHandle) ksession.insert( cheddar2 );
-        final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
+        final LeftTuple tuple = new LeftTuple( f0,
                                                        sink,
                                                        true );
 
@@ -129,7 +129,7 @@ public class MVELAccumulateBuilderTest {
                 tuple,
                 ksession)).isEqualTo(Integer.valueOf( 18 ));
 
-        LeftTuple match = new JoinNodeLeftTuple();
+        LeftTuple match = new LeftTuple();
         match.setContextObject(value1);
         acc.tryReverse(wmContext,
                        accContext,

@@ -22,7 +22,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.objects.ObjectBidirectionalIterator;
-import org.drools.core.reteoo.AbstractTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
@@ -86,12 +86,12 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
     }
 
     @Override
-    public Tuple getFirst(Tuple tuple) {
-        return fastIterator.getFirst((AbstractTuple) tuple);
+    public TupleImpl getFirst(TupleImpl tuple) {
+        return fastIterator.getFirst((TupleImpl) tuple);
     }
 
     @Override
-    public void removeAdd(Tuple tuple) {
+    public void removeAdd(TupleImpl tuple) {
         IndexTupleList tupleList = (IndexTupleList) tuple.getMemory();
         tupleList.remove( tuple );
 
@@ -105,14 +105,14 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
     }
 
     @Override
-    public void add(Tuple tuple) {
+    public void add(TupleImpl tuple) {
         TupleList entry = getOrCreate(tuple);
         entry.add(tuple);
 
         this.factSize++;
     }
 
-    private TupleList getOrCreate(Tuple tuple) {
+    private TupleList getOrCreate(TupleImpl tuple) {
         Comparable key = TupleIndexRBTree.coerceType(index, !tree.isEmpty() ? tree.firstKey() : null, getIndexedValue(tuple, left));
         if (key == null) {
             return nullTupleList;
@@ -129,7 +129,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
     }
 
     @Override
-    public void remove(Tuple tuple) {
+    public void remove(TupleImpl tuple) {
         IndexTupleList memory = (IndexTupleList) tuple.getMemory();
 
         memory.remove( tuple );
@@ -152,12 +152,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
     }
 
     @Override
-    public Iterator<Tuple> iterator() {
-        return null;
-    }
-
-    @Override
-    public FastIterator<AbstractTuple> fastIterator() {
+    public FastIterator<TupleImpl> fastIterator() {
         return this.fastIterator;
     }
 
@@ -168,25 +163,8 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
     }
 
     @Override
-    public FastIterator fullFastIterator(AbstractTuple tuple) {
+    public FastIterator fullFastIterator(TupleImpl tuple) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Tuple[] toArray() {
-        Tuple[] result = new Tuple[size()];
-        int index = 0;
-
-        for ( Object2ObjectMap.Entry<Comparable, TupleList> i : Object2ObjectMaps.fastIterable(tree)) {
-            TupleList tupleList  = i.getValue();
-            Tuple entry = tupleList.getFirst();
-            while (entry != null) {
-                result[index++] = entry;
-                entry = entry.getNext();
-            }
-        }
-
-        return result;
     }
 
     @Override
@@ -200,7 +178,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         this.factSize = 0;
     }
 
-    public static class TreeFastFullIterator implements FastIterator<Tuple> {
+    public static class TreeFastFullIterator implements FastIterator<TupleImpl> {
         FastUtilTreeMemory treeMemory;
 
         ObjectIterator<Object2ObjectMap.Entry<Comparable, TupleList>> it;
@@ -222,8 +200,8 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         }
 
         @Override
-        public Tuple next(Tuple tuple) {
-            Tuple next = null;
+        public TupleImpl next(TupleImpl tuple) {
+            TupleImpl next = null;
             if (tuple != null) {
                 next = tuple.getNext();
             }
@@ -242,7 +220,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
             return true;
         }
     }
-    public static class TreeFastIterator implements FastIterator<AbstractTuple> {
+    public static class TreeFastIterator implements FastIterator<TupleImpl> {
         FastUtilTreeMemory treeMemory;
 
         ObjectBidirectionalIterator<Object2ObjectMap.Entry<Comparable, TupleList>> it;
@@ -258,7 +236,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
             constraintType = !treeMemory.left ? treeMemory.constraintType : treeMemory.constraintType.negate();
         }
 
-        public AbstractTuple getFirst(AbstractTuple tuple) {
+        public TupleImpl getFirst(TupleImpl tuple) {
             key = TupleIndexRBTree.coerceType(treeMemory.index, !treeMemory.tree.isEmpty() ? treeMemory.tree.firstKey() : null, treeMemory.getIndexedValue(tuple, !treeMemory.left));
 
             if (key == null) {
@@ -266,7 +244,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
                     case EQUAL:
                     case GREATER_OR_EQUAL:
                     case LESS_OR_EQUAL:
-                        return (AbstractTuple) treeMemory.nullTupleList.getFirst();
+                        return (TupleImpl) treeMemory.nullTupleList.getFirst();
                     default:
                         return null;
                 }
@@ -281,7 +259,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
                 it = treeMemory.tree.object2ObjectEntrySet().iterator(from);
             }
 
-            Tuple first = null;
+            TupleImpl first = null;
 
             // adjust for >=, as fastutils is it.next() is always returning the first that is >
             if (it.hasNext()) {
@@ -324,12 +302,12 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
             current = first;
 
-            return (AbstractTuple) first;
+            return (TupleImpl) first;
         }
 
         @Override
-        public AbstractTuple next(AbstractTuple tuple) {
-            AbstractTuple next = tuple.getNext();
+        public TupleImpl next(TupleImpl tuple) {
+            TupleImpl next = tuple.getNext();
 
             if (next == null && it.hasNext()) {
                 Object2ObjectMap.Entry<Comparable, TupleList> entry = it.next();
@@ -339,7 +317,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
                 switch (constraintType) {
                     case LESS_THAN: {
                         if (entry.getKey().compareTo(key) < 0) {
-                            next = (AbstractTuple) list.getFirst();
+                            next = (TupleImpl) list.getFirst();
                         } else {
                             it = null;
                             key = null;
@@ -347,14 +325,14 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
                         break;
                     } case LESS_OR_EQUAL: {
                         if (entry.getKey().compareTo(key) <= 0) {
-                            next = (AbstractTuple) list.getFirst();
+                            next = (TupleImpl) list.getFirst();
                         } else {
                             it = null;
                             key = null;
                         }
                         break;
                     } default:
-                        next = (AbstractTuple) list.getFirst();
+                        next = (TupleImpl) list.getFirst();
                 }
             } else if (next == null){
                 it = null;

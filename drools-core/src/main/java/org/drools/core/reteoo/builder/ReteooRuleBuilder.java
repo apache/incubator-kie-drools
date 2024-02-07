@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.AsyncSend;
@@ -229,7 +230,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         for ( int i = 0; i < pathEndNodes.length; i++ ) {
             PathEndNode node = context.getPathEndNodes().get(pathEndNodes.length-1-i);
             pathEndNodes[i] = node;
-            if ( node instanceof RightInputAdapterNode && node.getPathEndNodes() != null) {
+            if (node.getType() == NodeTypeEnums.RightInputAdapterNode && node.getPathEndNodes() != null) {
                 PathEndNode[] riaPathEndNodes = new PathEndNode[node.getPathEndNodes().length + i];
                 System.arraycopy( pathEndNodes, 0, riaPathEndNodes, 0, i );
                 System.arraycopy( node.getPathEndNodes(), 0, riaPathEndNodes, i, node.getPathEndNodes().length );

@@ -26,7 +26,7 @@ import org.drools.base.RuleBase;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.factmodel.traits.TraitConstants;
-import org.drools.base.facttemplates.FactTemplateObjectType;
+import org.drools.base.prototype.PrototypeObjectType;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.AllSetButLastBitMask;
@@ -40,8 +40,8 @@ public class PropertySpecificUtil {
     public static final int CUSTOM_BITS_OFFSET = 1;
 
     public static boolean isPropertyReactive(RuleBase ruleBase, ObjectType objectType) {
-        if (objectType.isTemplate()) {
-            return !((FactTemplateObjectType) objectType).getFieldNames().isEmpty();
+        if (objectType.isPrototype()) {
+            return !((PrototypeObjectType) objectType).getFieldNames().isEmpty();
         }
         TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(((ClassObjectType) objectType).getClassType() );
         return typeDeclaration != null && typeDeclaration.isPropertyReactive();
@@ -128,8 +128,8 @@ public class PropertySpecificUtil {
     }
 
     public static List<String> getAccessibleProperties(RuleBase ruleBase, ObjectType objectType) {
-        return objectType.isTemplate() ?
-                new ArrayList<>(((FactTemplateObjectType) objectType).getFieldNames()) :
+        return objectType.isPrototype() ?
+                new ArrayList<>(((PrototypeObjectType) objectType).getFieldNames()) :
                 getAccessibleProperties(ruleBase, ((ClassObjectType) objectType).getClassType());
     }
 

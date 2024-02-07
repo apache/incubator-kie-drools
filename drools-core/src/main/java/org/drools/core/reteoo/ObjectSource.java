@@ -217,7 +217,7 @@ public abstract class ObjectSource extends BaseNode {
     
     protected boolean doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder) {
-        if ( !isInUse() && this instanceof ObjectSink ) {
+        if ( !isInUse() && NodeTypeEnums.isObjectSink(this)) {
             this.source.removeObjectSink((ObjectSink) this);
             return true;
         }

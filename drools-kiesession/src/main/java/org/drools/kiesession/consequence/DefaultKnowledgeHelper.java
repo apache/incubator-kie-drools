@@ -34,15 +34,18 @@ import org.drools.base.factmodel.traits.TraitableBean;
 import org.drools.base.rule.Declaration;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.process.AbstractProcessContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -83,7 +86,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         internalMatch = (InternalMatch) in.readObject();
-        tuple = (LeftTuple) in.readObject();
+        tuple = (TupleImpl) in.readObject();
         reteEvaluator = (ReteEvaluator) in.readObject();
     }
 
@@ -125,7 +128,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public FactHandle insert(final Object object, final boolean dynamic) {
         return ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
-                .insert(object, dynamic, this.internalMatch.getRule(), this.internalMatch.getTuple().getTupleSink());
+                .insert(object, dynamic, this.internalMatch.getRule(), SuperCacheFixer.asTerminalNode(this.internalMatch.getTuple()));
     }
 
     @Override
@@ -271,7 +274,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
         ((InternalFactHandle) handle).getEntryPoint(reteEvaluator).delete(handle,
                                                              this.internalMatch.getRule(),
-                                                             this.internalMatch.getTuple().getTupleSink(),
+                                                             SuperCacheFixer.asTerminalNode(this.internalMatch.getTuple()),
                                                              fhState);
     }
 
@@ -285,7 +288,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     @Override
     public Declaration[] getRequiredDeclarations() {
-        return ((RuleTerminalNode)this.tuple.getTupleSink()).getRequiredDeclarations();
+        return ((RuleTerminalNode)this.tuple.getSink()).getRequiredDeclarations();
     }
 
     public WorkingMemory getWorkingMemory() {

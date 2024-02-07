@@ -38,6 +38,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.common.TupleSets;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -45,9 +46,10 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.BetaNode.RightTupleSinkAdapter;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
+import org.drools.core.reteoo.LeftInputAdapterNode.LeftTupleSinkAdapter;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSinkNode;
@@ -67,6 +69,8 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleFactory;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.util.FastIterator;
@@ -265,9 +269,24 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             LeftInputAdapterNode      lian        = (LeftInputAdapterNode) startNode;
             if (allBranches && visited.add(lian.getId()) || lian.getAssociatedTerminalsSize() == 1 ) {
-                RightTupleSinkAdapter liaAdapter = new RightTupleSinkAdapter(lian);
-                lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
+                attachAdapterAndPropagate(wm, lian, pctx);
             }
+        }
+
+        public static void attachAdapterAndPropagate(InternalWorkingMemory wm, LeftInputAdapterNode lian, PropagationContext pctx) {
+            List<DetachedTuple>  detachedTuples = new ArrayList<>();
+            LeftTupleSinkAdapter liaAdapter     = new LeftTupleSinkAdapter(lian, detachedTuples);
+            lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
+            detachedTuples.forEach(d -> d.reattachToLeft());
+        }
+
+        public static void attachAdapterAndPropagate(InternalWorkingMemory wm, BetaNode bn) {
+            PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
+            final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
+            List<DetachedTuple> detachedTuples = new ArrayList<>();
+            RightTupleSinkAdapter bnAdapter = new RightTupleSinkAdapter(bn, detachedTuples);
+            bn.getRightInput().updateSink(bnAdapter, pctx, wm);
+            detachedTuples.forEach(d -> d.reattachToRight());
         }
 
         public static SegmentPrototype processSplit(LeftTupleNode splitNode, InternalRuleBase kbase, Collection<InternalWorkingMemory> wms, Set<SegmentMemoryPair> smemsToNotify) {
@@ -323,9 +342,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         BetaNode bn = (BetaNode) node;
 
                         if (!bn.isRightInputIsRiaNode()) {
-                            PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
-                            final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
-                            bn.getRightInput().updateSink(bn, pctx, wm);
+                            attachAdapterAndPropagate(wm, bn);
                         }
                     }
                 }
@@ -357,7 +374,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             long currentLinkedNodeMask  = sm1.getLinkedNodeMask();
             proto1.shallowUpdateSegmentMemory(sm1);
 
-            if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode) {
+            if (NodeTypeEnums.isLeftInputAdapterNode(sm1.getTipNode())) {
                 if (!sm1.getStagedLeftTuples().isEmpty()) {
                     // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
                     sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());
@@ -876,7 +893,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2, SegmentPrototype proto1, LeftTupleNode[] origNodes) {
-            if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode && !sm2.getStagedLeftTuples().isEmpty()) {
+            if (NodeTypeEnums.isLeftInputAdapterNode(sm1.getTipNode()) && !sm2.getStagedLeftTuples().isEmpty()) {
                 // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
                 // these are safe to just move to the parent SegmentMemory
                 sm1.getStagedLeftTuples().addAll(sm2.getStagedLeftTuples());
@@ -951,7 +968,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         private static void deleteRightInputData(LeftTupleNode node, Memory m, InternalWorkingMemory wm) {
-            BetaNode   bn = (BetaNode) node;
+            BetaNode       bn = (BetaNode) node;
             BetaMemory bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
                 bm = ((AccumulateMemory) m).getBetaMemory();
@@ -960,9 +977,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
 
             TupleMemory  rtm = bm.getRightTupleMemory();
-            FastIterator it  = rtm.fullFastIterator();
-            for (Tuple rightTuple = BetaNode.getFirstTuple(rtm, it); rightTuple != null; ) {
-                Tuple next = (Tuple) it.next(rightTuple);
+            FastIterator<TupleImpl> it  = rtm.fullFastIterator();
+            for (TupleImpl rightTuple = BetaNode.getFirstTuple(rtm, it); rightTuple != null; ) {
+                TupleImpl next = it.next(rightTuple);
                 rtm.remove(rightTuple);
                 rightTuple.unlinkFromRightParent();
                 rightTuple = next;
@@ -971,7 +988,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             if (!bm.getStagedRightTuples().isEmpty()) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+            TupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
 
             unlinkRightTuples(srcRightTuples.getInsertFirst());
             unlinkRightTuples(srcRightTuples.getUpdateFirst());
@@ -982,12 +999,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
         private static void deleteFactsFromRightInput(BetaNode bn, InternalWorkingMemory wm) {
             ObjectSource source = bn.getRightInput();
-            if (source instanceof WindowNode) {
+            if (source.getType() == NodeTypeEnums.WindowNode) {
                 WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemories().peekNodeMemory(source);
                 if (memory != null) {
                     for (DefaultEventHandle factHandle : memory.getFactHandles()) {
                         factHandle.forEachRightTuple(rt -> {
-                            if (source.equals(rt.getTupleSink())) {
+                            if (source.equals(rt.getSink())) {
                                 rt.unlinkFromRightParent();
                             }
                         });
@@ -996,9 +1013,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         }
 
-        private static void unlinkRightTuples(RightTuple rightTuple) {
-            for (RightTuple rt = rightTuple; rt != null; ) {
-                RightTuple next = rt.getStagedNext();
+        private static void unlinkRightTuples(TupleImpl rightTuple) {
+            for (TupleImpl rt = rightTuple; rt != null; ) {
+                TupleImpl next = rt.getStagedNext();
                 // this RightTuple could have been already unlinked by the former cycle
                 if (rt.getFactHandle() != null) {
                     rt.unlinkFromRightParent();
@@ -1020,7 +1037,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
     }
 
     private static void correctMemoryOnSplitsChanged(LeftTupleNode splitStart, InternalWorkingMemory wm) {
-        if (splitStart.getType() == NodeTypeEnums.UnificationNode) {
+        if (splitStart.getType() == NodeTypeEnums.QueryElementNode) {
             QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart);
             if (mem != null) {
                 mem.correctMemoryOnSinksChanged(null);
@@ -1040,7 +1057,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
             // which provide the potential peer of the tuple being added or removed
 
-            if (node instanceof AlphaTerminalNode) {
+            if (node.getType() == NodeTypeEnums.AlphaTerminalNode) {
                 processLeftTuplesOnLian(wm, insert, tn, (LeftInputAdapterNode) node);
                 return;
             }
@@ -1054,7 +1071,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             // this visited is here due to subnetworks causing potential parent revisiting.
             Set<LeftTupleNode> visited = new HashSet<>();
 
-            while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
+            while (!NodeTypeEnums.isLeftInputAdapterNode(node)) {
                 if (!visited.add(node)) {
                     return;
                 }
@@ -1065,9 +1082,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         bm = am.getBetaMemory();
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                         Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                        for (; lt != null; lt = (TupleImpl) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                            visitChild((LeftTuple) accctx.getResultLeftTuple(), insert, wm, tn);
+                            visitChild((TupleImpl) accctx.getResultLeftTuple(), insert, wm, tn);
                         }
                     } else if (NodeTypeEnums.ExistsNode == node.getType() &&
                                !((BetaNode) node).isRightInputIsRiaNode()) { // do not process exists with subnetworks
@@ -1077,7 +1094,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(node);
                         if (bm != null) {
                             FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                            RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
+                            RightTuple   rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
                             for (; rt != null; rt = (RightTuple) it.next(rt)) {
                                 for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
                                     visitChild(wm, insert, tn, it, lt);
@@ -1087,8 +1104,8 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     } else {
                         bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(node);
                         if (bm != null) {
-                            FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                            Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
+                            FastIterator<TupleImpl> it = bm.getLeftTupleMemory().fullFastIterator();
+                            TupleImpl lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                             visitChild(wm, insert, tn, it, lt);
                         }
                     }
@@ -1098,7 +1115,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     if (fm != null) {
                         TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                         FastIterator it = ltm.fullFastIterator();
-                        for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                        for (TupleImpl lt = (TupleImpl) ltm.getFirst(null); lt != null; lt = (TupleImpl) it.next(lt)) {
                             visitChild(lt, insert, wm, tn);
                         }
                     }
@@ -1124,10 +1141,10 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
-                LeftTuple nextLt = lt.getHandleNext();
+                TupleImpl nextLt = lt.getHandleNext();
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
-                if (isAssociatedWith(lt.getTupleSource(), tn)) {
+                if (isAssociatedWith(SuperCacheFixer.getLeftTupleSource(lt), tn)) {
                     visitChild(lt, insert, wm, tn);
 
                     if (lt.getHandlePrevious() != null) {
@@ -1141,38 +1158,39 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void visitChild(InternalWorkingMemory wm, boolean insert, TerminalNode tn, FastIterator it, Tuple lt) {
-        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-            LeftTuple childLt = lt.getFirstChild();
+    private static void visitChild(InternalWorkingMemory wm, boolean insert, TerminalNode tn, FastIterator<TupleImpl> it, TupleImpl lt) {
+        for (; lt != null; lt = it.next(lt)) {
+            TupleImpl childLt = lt.getFirstChild();
             while (childLt != null) {
-                LeftTuple nextLt = childLt.getHandleNext();
+                TupleImpl nextLt = childLt.getHandleNext();
                 visitChild(childLt, insert, wm, tn);
                 childLt = nextLt;
             }
         }
     }
 
-    private static void visitChild(LeftTuple lt, boolean insert, InternalWorkingMemory wm, TerminalNode tn) {
-        LeftTuple prevLt = null;
-        LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getTupleSink();
+    private static void visitChild(TupleImpl lt, boolean insert, InternalWorkingMemory wm, TerminalNode tn) {
+        TupleImpl prevLt = null;
+
+        LeftTupleSinkNode sink = (LeftTupleSinkNode) lt.getSink();
 
         for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             if ( lt != null ) {
-                if (isAssociatedWith(lt.getTupleSink(), tn)) {
+                if (isAssociatedWith(lt.getSink(), tn)) {
 
-                    if (lt.getTupleSink().getAssociatedTerminalsSize() > 1) {
+                    if (lt.getSink().getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
-                            for ( LeftTuple child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
+                            for ( TupleImpl child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
                                 visitChild(child, insert, wm, tn);
                             }
-                        } else if (lt.getTupleSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
+                        } else if (lt.getSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
                             insertPeerRightTuple(lt, wm, tn, insert);
                         }
                     } else if (!insert) {
                         iterateLeftTuple( lt, wm );
-                        LeftTuple lt2 = null;
-                        for ( LeftTuple peerLt = lt.getPeer();
-                              peerLt != null && isAssociatedWith(peerLt.getTupleSink(), tn) && peerLt.getTupleSink().getAssociatedTerminalsSize() == 1;
+                        TupleImpl lt2 = null;
+                        for ( TupleImpl peerLt = lt.getPeer();
+                              peerLt != null && isAssociatedWith(peerLt.getSink(), tn) && peerLt.getSink().getAssociatedTerminalsSize() == 1;
                               peerLt = peerLt.getPeer() ) {
                             iterateLeftTuple( peerLt, wm );
                             lt2 = peerLt;
@@ -1193,10 +1211,10 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void insertPeerRightTuple(LeftTuple lt, InternalWorkingMemory wm, TerminalNode tn, boolean insert ) {
+    private static void insertPeerRightTuple(TupleImpl lt, InternalWorkingMemory wm, TerminalNode tn, boolean insert ) {
         // There's a shared RightInputAdapterNode, so check if one of its sinks is associated only to the new rule
-        LeftTuple prevLt = null;
-        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getTupleSink();
+        TupleImpl prevLt = null;
+        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getSink();
 
         for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
             if (lt != null) {
@@ -1206,11 +1224,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 prevLt = lt;
                 lt = lt.getPeer();
             } else if (insert) {
-                BetaMemory bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory( sink );
+                BetaMemory bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(sink);
                 if (bm != null) {
-                    prevLt = rian.createPeer(prevLt);
+                    prevLt = TupleFactory.createPeer(rian, prevLt);
                     bm.linkNode((BetaNode) sink, wm);
-                    bm.getStagedRightTuples().addInsert((RightTuple) prevLt);
+                    bm.getStagedRightTuples().addInsert(prevLt);
                 }
             }
         }
@@ -1219,10 +1237,10 @@ public class EagerPhreakBuilder implements PhreakBuilder {
     /**
      * Create all missing peers
      */
-    private static LeftTuple insertPeerLeftTuple(LeftTuple lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
-        LeftTuple peer = node.createPeer(lt);
+    private static TupleImpl insertPeerLeftTuple(TupleImpl lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
+        TupleImpl peer = TupleFactory.createPeer(node, lt);
 
-        if ( node.getLeftTupleSource() instanceof AlphaTerminalNode ) {
+        if ( node.getLeftTupleSource().getType() == NodeTypeEnums.AlphaTerminalNode ) {
             if (insert) {
                 TerminalNode rtn = ( TerminalNode ) node;
                 InternalAgenda agenda = wm.getAgenda();
@@ -1233,7 +1251,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         LeftInputAdapterNode.LiaNodeMemory liaMem = null;
-        if ( node.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+        if ( NodeTypeEnums.isLeftInputAdapterNode(node.getLeftTupleSource())) {
             liaMem = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getLeftTupleSource());
         }
 
@@ -1252,21 +1270,21 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         return peer;
     }
 
-    private static void iterateLeftTuple(LeftTuple lt, InternalWorkingMemory wm) {
-        if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
-            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink() );
+    private static void iterateLeftTuple(TupleImpl lt, InternalWorkingMemory wm) {
+        if (NodeTypeEnums.isTerminalNode(lt.getSink())) {
+            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getSink());
             if (pmem != null) {
                 PhreakRuleTerminalNode.doLeftDelete( pmem.getActualActivationsManager( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
         } else {
             if (lt.getContextObject() instanceof AccumulateContext) {
-                LeftTuple resultLt = (LeftTuple) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
+                TupleImpl resultLt = (TupleImpl) (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple();
                 if (resultLt != null) {
                     iterateLeftTuple( resultLt, wm );
                 }
             }
-            for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
-                for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
+            for (TupleImpl child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
+                for (TupleImpl peer = child; peer != null; peer = peer.getPeer()) {
                     if (peer.getPeer() == null) {
                         // it's unnnecessary to visit the unshared networks, so only iterate the last peer
                         iterateLeftTuple( peer, wm );
@@ -1276,7 +1294,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    static void deleteLeftTuple(LeftTuple removingLt, LeftTuple removingLt2, LeftTuple prevLt) {
+    static void deleteLeftTuple(TupleImpl removingLt, TupleImpl removingLt2, TupleImpl prevLt) {
         // only the first LT in a peer chain is hooked into left and right parents or the FH.
         // If the first LT is being remove, those hooks need to be shifted to the next peer,
         // or nulled if there is no next peer.
@@ -1285,7 +1303,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         // And the previous peer will need to point to the peer after removingLt, or removingLt2 if it exists.
 
         boolean isFirstLt = prevLt == null; // is this the first LT in a peer chain chain
-        LeftTuple nextPeerLt    = (removingLt2 == null ) ? removingLt.getPeer() : removingLt2.getPeer(); // if there is a subnetwork, skip to the peer after that
+        TupleImpl nextPeerLt    = (removingLt2 == null ) ? removingLt.getPeer() : removingLt2.getPeer(); // if there is a subnetwork, skip to the peer after that
 
         if( !isFirstLt ) {
             // This LT is not the first tuple in a peer chain. So just correct the peer chain linked list
@@ -1297,18 +1315,18 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 return;
             }
 
-            InternalFactHandle fh = (InternalFactHandle) removingLt.getFactHandle();
+            InternalFactHandle fh = removingLt.getFactHandle();
 
             // This is the first LT in a peer chain. Only this LT is hooked into the left and right parent LT and RT and
             // if it's the root (form the lian) it will be hooked itno the FH.
-            LeftTuple leftPrevious = removingLt.getHandlePrevious();
-            LeftTuple leftNext     = removingLt.getHandleNext();
+            TupleImpl leftPrevious = removingLt.getHandlePrevious();
+            TupleImpl leftNext     = removingLt.getHandleNext();
 
-            LeftTuple rightPrevious = removingLt.getRightParentPrevious();
-            LeftTuple rightNext     = removingLt.getRightParentNext();
+            TupleImpl rightPrevious = removingLt.getRightParentPrevious();
+            TupleImpl rightNext     = removingLt.getRightParentNext();
 
-            LeftTuple leftParent  = removingLt.getLeftParent();
-            RightTuple rightParent = removingLt.getRightParent();
+            TupleImpl leftParent  = removingLt.getLeftParent();
+            TupleImpl rightParent = removingLt.getRightParent();
 
             // This tuple is the first peer and thus is linked into the left parent LT.
 

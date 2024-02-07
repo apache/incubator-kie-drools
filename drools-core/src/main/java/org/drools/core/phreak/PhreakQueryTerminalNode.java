@@ -29,6 +29,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.util.LinkedList;
 
 /**
@@ -41,7 +42,7 @@ import org.drools.core.util.LinkedList;
 public class PhreakQueryTerminalNode {
     public void doNode(QueryTerminalNode qtnNode,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets srcLeftTuples,
                        LinkedList<StackEntry> stack) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qtnNode, activationsManager, srcLeftTuples, stack);
@@ -60,11 +61,11 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftInserts(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
-        for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
+        for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
+            TupleImpl next = leftTuple.getStagedNext();
             //qtnNode.assertLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
 
             // find the DroolsQuery object
@@ -88,15 +89,15 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftUpdates(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
-        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
+        for (TupleImpl leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+            TupleImpl next = leftTuple.getStagedNext();
 
             // qtnNode.modifyLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
             // find the DroolsQuery object
-            LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
+            TupleImpl rootEntry = leftTuple.getRootTuple();
 
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
@@ -116,16 +117,16 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftDeletes(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
-        for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
+        for (TupleImpl leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
+            TupleImpl next = leftTuple.getStagedNext();
 
             //qtnNode.retractLeftTuple( leftTuple, leftTuple.getPropagationContext(), wm );
 
             // find the DroolsQuery object
-            LeftTuple rootEntry = (LeftTuple) leftTuple.getRootTuple();
+            TupleImpl rootEntry = leftTuple.getRootTuple();
 
             DroolsQueryImpl dquery = (DroolsQueryImpl) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
@@ -153,7 +154,7 @@ public class PhreakQueryTerminalNode {
             // node must be marked as dirty
             ((QueryElementNodeMemory)stackEntry.getNodeMem()).setNodeDirtyWithoutNotify();
 
-            if (stackEntry.getRmem().getPathEndNode().getPathNodes()[0] == ((LeftTupleSink)rootEntry.getTupleSink()).getLeftTupleSource()) {
+            if (stackEntry.getRmem().getPathEndNode().getPathNodes()[0] == ((LeftTupleSink)rootEntry.getSink()).getLeftTupleSource()) {
                 // query is recursive, so just re-add the stack entry to the current stack. This happens for reactive queries, triggered by a beta node right input
                 stack.add(stackEntry);
             } else {

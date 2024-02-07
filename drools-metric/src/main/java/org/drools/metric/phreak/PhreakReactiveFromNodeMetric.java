@@ -34,9 +34,9 @@ public class PhreakReactiveFromNodeMetric extends PhreakReactiveFromNode {
                        ReactiveFromMemory fm,
                        LeftTupleSink sink,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       TupleSets srcLeftTuples,
+                       TupleSets trgLeftTuples,
+                       TupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(fromNode);

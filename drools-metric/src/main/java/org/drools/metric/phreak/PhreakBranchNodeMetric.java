@@ -35,9 +35,9 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples,
+                       TupleSets srcLeftTuples,
+                       TupleSets trgLeftTuples,
+                       TupleSets stagedLeftTuples,
                        RuleExecutor executor) {
 
         try {

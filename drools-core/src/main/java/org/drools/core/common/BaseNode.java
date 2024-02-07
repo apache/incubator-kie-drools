@@ -37,6 +37,7 @@ import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.kie.api.definition.rule.Rule;
+import org.drools.base.reteoo.NodeTypeEnums;
 
 /**
  * The base class for all Rete nodes.
@@ -133,7 +134,7 @@ public abstract class BaseNode
     public boolean remove(RuleRemovalContext context,
                           ReteooBuilder builder) {
         boolean removed = doRemove( context, builder );
-        if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
+        if ( !this.isInUse() && !(NodeTypeEnums.EntryPointNode == getType()) ) {
             builder.releaseId(this);
         }
         return removed;
@@ -226,17 +227,19 @@ public abstract class BaseNode
 
     public NetworkNode[] getSinks() {
         Sink[] sinks = null;
-        if (this instanceof EntryPointNode ) {
+        if (NodeTypeEnums.EntryPointNode == getType() ) {
             EntryPointNode source = (EntryPointNode) this;
             Collection<ObjectTypeNode> otns = source.getObjectTypeNodes().values();
             sinks = otns.toArray(new Sink[otns.size()]);
-        } else if (this instanceof ObjectSource ) {
+        } else if (NodeTypeEnums.isObjectSource(this)) {
             ObjectSource source = (ObjectSource) this;
             sinks = source.getObjectSinkPropagator().getSinks();
-        } else if (this instanceof LeftTupleSource ) {
+        } else if (NodeTypeEnums.isLeftTupleSource(this)) {
             LeftTupleSource source = (LeftTupleSource) this;
             sinks = source.getSinkPropagator().getSinks();
         }
         return sinks;
     }
+
+
 }

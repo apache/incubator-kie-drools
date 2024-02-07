@@ -18,6 +18,11 @@
  */
 package org.drools.model.codegen.execmodel.processors;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
@@ -27,9 +32,9 @@ import org.drools.compiler.builder.impl.processors.AccumulateFunctionCompilation
 import org.drools.compiler.builder.impl.processors.CompilationPhase;
 import org.drools.compiler.builder.impl.processors.FunctionCompilationPhase;
 import org.drools.compiler.builder.impl.processors.GlobalCompilationPhase;
+import org.drools.compiler.builder.impl.processors.IteratingPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
 import org.drools.compiler.builder.impl.processors.SinglePackagePhaseFactory;
-import org.drools.compiler.builder.impl.processors.IteratingPhase;
 import org.drools.compiler.builder.impl.processors.WindowDeclarationCompilationPhase;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -38,11 +43,6 @@ import org.drools.model.codegen.execmodel.PackageModelManager;
 import org.drools.model.codegen.execmodel.PackageSourceManager;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
 
 public class ModelMainCompilationPhase<T> implements CompilationPhase {
 

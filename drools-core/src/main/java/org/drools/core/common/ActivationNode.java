@@ -19,9 +19,9 @@
 package org.drools.core.common;
 
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 
-public class ActivationNode extends AbstractBaseLinkedListNode<ActivationNode> {
+public class ActivationNode extends AbstractLinkedListNode<ActivationNode> {
 
     private static final long     serialVersionUID = 510l;
 

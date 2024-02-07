@@ -663,13 +663,13 @@ public class AddRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
-        SegmentMemory c2Smem =  sm.getFirst().getNext();
+        BetaMemory c2Mem  = (BetaMemory) wm.getNodeMemory(c2Node);
+        SegmentMemory  c2Smem =  sm.getFirst().getNext();
         assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
         assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(0);
         assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(0);
@@ -727,13 +727,13 @@ public class AddRuleTest {
         LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
-        BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
+        BetaMemory c1Mem = (BetaMemory) wm.getNodeMemory(c1Node);
         assertThat(c1Mem.getSegmentMemory()).isSameAs(sm.getFirst());
         assertThat(c1Mem.getLeftTupleMemory().size()).isEqualTo(3);
         assertThat(c1Mem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
-        SegmentMemory c2Smem =  sm.getFirst().getNext();
+        BetaMemory c2Mem  = (BetaMemory) wm.getNodeMemory(c2Node);
+        SegmentMemory  c2Smem =  sm.getFirst().getNext();
         assertThat(c2Mem.getSegmentMemory()).isSameAs(c2Smem);
         assertThat(c2Mem.getLeftTupleMemory().size()).isEqualTo(0);
         assertThat(c2Mem.getRightTupleMemory().size()).isEqualTo(0);
@@ -785,8 +785,8 @@ public class AddRuleTest {
         JoinNode bNode1 = (JoinNode) liaNode.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode bNode2 = (JoinNode) liaNode.getSinkPropagator().getLastLeftTupleSink();
 
-        BetaMemory bm = ( BetaMemory ) wm.getNodeMemory(bNode2);
-        SegmentMemory sm = bm.getSegmentMemory();
+        BetaMemory bm = (BetaMemory) wm.getNodeMemory(bNode2);
+        SegmentMemory  sm = bm.getSegmentMemory();
         assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
         assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
         assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext()).isNotNull();

@@ -100,7 +100,7 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
             }
             entry.getPrevious().setNext( entry.getNext() );
             entry.getNext().setPrevious( entry.getPrevious() );
-            entry.nullPrevNext();
+            entry.clear();
 
         }
     }

@@ -18,12 +18,12 @@
  */
 package org.drools.core.common;
 
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
 
-public interface TupleSets<T extends Tuple> {
-    T getInsertFirst();
-    T getDeleteFirst();
-    T getUpdateFirst();
+public interface TupleSets {
+    TupleImpl getInsertFirst();
+    TupleImpl getDeleteFirst();
+    TupleImpl getUpdateFirst();
 
     int getInsertSize();
 
@@ -35,24 +35,24 @@ public interface TupleSets<T extends Tuple> {
      */
     void clear();
 
-    boolean addInsert(T leftTuple);
-    boolean addDelete(T leftTuple);
-    boolean addUpdate(T leftTuple);
+    boolean addInsert(TupleImpl leftTuple);
+    boolean addDelete(TupleImpl leftTuple);
+    boolean addUpdate(TupleImpl leftTuple);
 
-    void removeInsert(T leftTuple);
-    void removeDelete(T leftTuple);
-    void removeUpdate(T leftTuple);
+    void removeInsert(TupleImpl leftTuple);
+    void removeDelete(TupleImpl leftTuple);
+    void removeUpdate(TupleImpl leftTuple);
 
-    void addAll(TupleSets<T> source);
+    void addAll(TupleSets source);
 
-    void addTo(TupleSets<T> target);
+    void addTo(TupleSets target);
 
-    TupleSets<T> takeAll();
+    TupleSets takeAll();
 
     boolean isEmpty();
 
     String toStringSizes();
 
-    T getNormalizedDeleteFirst();
-    boolean addNormalizedDelete(T leftTuple);
+    TupleImpl getNormalizedDeleteFirst();
+    boolean addNormalizedDelete(TupleImpl leftTuple);
 }

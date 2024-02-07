@@ -35,7 +35,7 @@ public class MockRightTupleSink
     
     private final List        retracted        = new ArrayList();
 
-    public void retractRightTuple(RightTuple rightTuple,
+    public void retractRightTuple(TupleImpl rightTuple,
                                   PropagationContext context,
                                   ReteEvaluator reteEvaluator) {
         this.retracted.add( new Object[]{rightTuple, context, reteEvaluator} );
@@ -54,12 +54,12 @@ public class MockRightTupleSink
         return null;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.JoinNode;
     }
 
 
-    public void modifyRightTuple(RightTuple rightTuple,
+    public void modifyRightTuple(TupleImpl rightTuple,
                                  PropagationContext context,
                                  ReteEvaluator reteEvaluator) {
         // TODO Auto-generated method stub
@@ -72,10 +72,6 @@ public class MockRightTupleSink
 
     public boolean isAssociatedWith(Rule rule) {
         return false;
-    }
-
-    public ObjectTypeNode.Id getRightInputOtnId() {
-        return null;
     }
 
     public boolean thisNodeEquals(final Object object) {

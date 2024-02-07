@@ -45,12 +45,10 @@ import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.WorkItem;
-import org.drools.core.reteoo.AbstractTuple;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
@@ -358,10 +356,10 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.NodeMemory writeQueryElementNodeMemory(final int nodeId,
                                                                            final Memory memory,
                                                                            final InternalWorkingMemory wm) {
-        org.drools.core.util.Iterator<LeftTuple> it = LeftTupleIterator.iterator(wm, ((QueryElementNodeMemory) memory).getNode() );
+        org.drools.core.util.Iterator<TupleImpl> it = LeftTupleIterator.iterator(wm, ((QueryElementNodeMemory) memory).getNode() );
 
         ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder _query = ProtobufMessages.NodeMemory.QueryElementNodeMemory.newBuilder();
-        for ( LeftTuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
+        for ( TupleImpl leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
             InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
             FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                     .setId( handle.getId() )
@@ -372,9 +370,9 @@ public class ProtobufOutputMarshaller {
                     .setTuple( PersisterHelper.createTuple( leftTuple ) )
                     .setHandle( _handle );
 
-            LeftTuple childLeftTuple = leftTuple.getFirstChild();
+            TupleImpl childLeftTuple = leftTuple.getFirstChild();
             while ( childLeftTuple != null ) {
-                RightTuple rightParent = childLeftTuple.getRightParent();
+                TupleImpl rightParent = childLeftTuple.getRightParent();
                 _context.addResult( ProtobufMessages.FactHandle.newBuilder()
                         .setId( rightParent.getFactHandle().getId() )
                         .setRecency( rightParent.getFactHandle().getRecency() )
@@ -711,7 +709,7 @@ public class ProtobufOutputMarshaller {
         org.drools.core.reteoo.Tuple tuple = internalMatch.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 
-        boolean serializeObjects = isDormient && hasNodeMemory((AbstractTuple) internalMatch);
+        boolean serializeObjects = isDormient && hasNodeMemory((TupleImpl) internalMatch);
 
         if (tuple != null) {
             // tuple can be null if this is a rule network evaluation activation, instead of terminal node left tuple.
@@ -734,9 +732,9 @@ public class ProtobufOutputMarshaller {
         return _tb.build();
     }
 
-    private static boolean hasNodeMemory(AbstractTuple agendaItem) {
-        Sink tupleSink = agendaItem.getTupleSink();
-        if (tupleSink instanceof TerminalNode ) {
+    private static boolean hasNodeMemory(TupleImpl agendaItem) {
+        Sink tupleSink = agendaItem.getSink();
+        if (NodeTypeEnums.isTerminalNode(tupleSink)) {
             return PersisterHelper.hasNodeMemory( (TerminalNode) tupleSink );
         }
         return false;

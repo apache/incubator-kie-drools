@@ -53,7 +53,7 @@ import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.ParseExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.VariableUsedInBindingError;
-import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
+import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
@@ -200,7 +200,7 @@ public class ConstraintParser {
     }
 
     private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {
-        DeclarationSpec decl = context.addDeclaration(bindId, getDeclarationType(drlx, singleResult));
+        TypedDeclarationSpec decl = context.addDeclaration(bindId, getDeclarationType(drlx, singleResult));
         if (drlx.getExpr() instanceof NameExpr) {
             decl.setBoundVariable( PrintUtil.printNode(drlx.getExpr()) );
         } else if (drlx.getExpr() instanceof BinaryExpr) {
@@ -505,7 +505,7 @@ public class ConstraintParser {
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirstForBean(nameExpr.getNameAsString()) );
         } else if (context.hasDeclaration( expression )) {
-            Optional<DeclarationSpec> declarationSpec = context.getDeclarationById(expression);
+            Optional<TypedDeclarationSpec> declarationSpec = context.getTypedDeclarationById(expression);
             if (declarationSpec.isPresent()) {
                 return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printNode(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
             } else {
@@ -800,10 +800,10 @@ public class ConstraintParser {
     private boolean hasDeclarationFromOtherPattern(ExpressionTyperContext expressionTyperContext) {
         return expressionTyperContext.getUsedDeclarations()
                                      .stream()
-                                     .map(context::getDeclarationById)
+                                     .map(context::getTypedDeclarationById)
                                      .anyMatch(optDecl -> {
                                          if (optDecl.isPresent()) {
-                                             DeclarationSpec decl = optDecl.get();
+                                             TypedDeclarationSpec decl = optDecl.get();
                                              if (!decl.isGlobal() && decl.getBelongingPatternDescr() != context.getCurrentPatternDescr()) {
                                                  return true;
                                              }

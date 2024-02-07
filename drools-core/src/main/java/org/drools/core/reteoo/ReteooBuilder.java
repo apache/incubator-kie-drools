@@ -46,6 +46,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
+import org.drools.core.util.TupleRBTree.Node;
 import org.kie.api.definition.rule.Rule;
 
 /**
@@ -231,7 +232,7 @@ public class ReteooBuilder
                 // reteoo requires to call remove on the OTN for tuples cleanup
                 if (NodeTypeEnums.isBetaNode(node) && !((BetaNode) node).isRightInputIsRiaNode()) {
                     alphas.add(((BetaNode) node).getRightInput());
-                } else if (node.getType() == NodeTypeEnums.LeftInputAdapterNode) {
+                } else if (NodeTypeEnums.isLeftInputAdapterNode(node)) {
                     alphas.add(((LeftInputAdapterNode) node).getObjectSource());
                 }
             }
@@ -292,12 +293,12 @@ public class ReteooBuilder
         if (node == null || !removedNodes.add( node.getId() ) || !node.removeAssociation( rule, context )) {
             return;
         }
-        if (node instanceof LeftTupleNode) {
+        if (NodeTypeEnums.isLeftTupleNode(node)) {
             removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule, removedNodes, context );
         }
         if ( NodeTypeEnums.isBetaNode( node ) ) {
             removeNodeAssociation( ((BetaNode) node).getRightInput(), rule, removedNodes, context );
-        } else if ( node.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+        } else if ( NodeTypeEnums.isLeftInputAdapterNode(node)) {
             removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule, removedNodes, context );
         } else if ( node.getType() == NodeTypeEnums.AlphaNode ) {
             removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule, removedNodes, context );
@@ -348,7 +349,7 @@ public class ReteooBuilder
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
-        } else  if ( baseNode.getType() ==  NodeTypeEnums.LeftInputAdapterNode ) {
+        } else  if ( NodeTypeEnums.isLeftInputAdapterNode(baseNode)) {
             for ( LeftTupleSink sink : ((LeftInputAdapterNode) baseNode).getSinkPropagator().getSinks() ) {
                 if ( sink.getType() ==  NodeTypeEnums.RuleTerminalNode ) {
                     leafSet.add( (BaseNode) sink );

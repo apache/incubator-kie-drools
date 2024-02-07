@@ -24,7 +24,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.concurrent.CountDownLatch;
 
-import org.drools.base.facttemplates.Event;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.DefaultEventHandle;
@@ -46,6 +45,7 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
+import org.kie.api.prototype.PrototypeEventInstance;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
@@ -176,7 +176,7 @@ public interface PropagationEntry {
             }
 
             LeftTupleSource lts = tnode.getLeftTupleSource();
-            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            while ( !NodeTypeEnums.isLeftInputAdapterNode(lts)) {
                 lts = lts.getLeftTupleSource();
             }
             LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
@@ -252,11 +252,11 @@ public interface PropagationEntry {
 
         private static void scheduleExpiration(ReteEvaluator reteEvaluator, InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, long insertionTime) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
-                long expirationOffset = objectTypeConf.isPrototype() ? ((Event) handle.getObject()).getExpiration() : otn.getExpirationOffset();
+                long expirationOffset = objectTypeConf.isPrototype() ? ((PrototypeEventInstance) handle.getObject()).getExpiration() : otn.getExpirationOffset();
                 scheduleExpiration( reteEvaluator, handle, context, otn, insertionTime, expirationOffset );
             }
             if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
-                long expirationOffset = objectTypeConf.isPrototype() ? ((Event) handle.getObject()).getExpiration() : ((ClassObjectTypeConf) objectTypeConf).getExpirationOffset();
+                long expirationOffset = objectTypeConf.isPrototype() ? ((PrototypeEventInstance) handle.getObject()).getExpiration() : ((ClassObjectTypeConf) objectTypeConf).getExpirationOffset();
                 scheduleExpiration( reteEvaluator, handle, context, null, insertionTime, expirationOffset);
             }
         }

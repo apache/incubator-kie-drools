@@ -30,6 +30,7 @@ import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 
 public class WorkingMemoryReteAssertAction
@@ -67,7 +68,7 @@ public class WorkingMemoryReteAssertAction
         PropagationContextFactory pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
 
         final PropagationContext context = pctxFactory.createPropagationContext(reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
-                this.ruleOrigin, this.tuple != null ? this.tuple.getTupleSink() : null, this.factHandle);
+                                                                                this.ruleOrigin, (TerminalNode) (this.tuple != null ? this.tuple.getSink() : null), this.factHandle);
         reteEvaluator.getKnowledgeBase().getRete().assertObject(this.factHandle, context, reteEvaluator);
     }
 }

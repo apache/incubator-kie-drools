@@ -30,9 +30,10 @@ import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.RightTupleImpl;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.util.FastIterator;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.AFact;
 import org.drools.testcoverage.common.model.Cheese;
@@ -209,14 +210,16 @@ public class NotTest {
         BetaNode notNode = (BetaNode) otn.getSinks()[0].getSinks()[0];
 
         StatefulKnowledgeSessionImpl ksessionImpl = (StatefulKnowledgeSessionImpl) ksession;
-        NodeMemories nodeMemories = ksessionImpl.getNodeMemories();
-        BetaMemory betaMemory = (BetaMemory) nodeMemories.getNodeMemory(notNode, ksessionImpl);
-        TupleMemory rightTupleMemory = betaMemory.getRightTupleMemory();
-        Tuple[] tuples = (Tuple[]) rightTupleMemory.toArray();
-        for (int i = 0; i < tuples.length; i++) {
-            RightTupleImpl tuple = (RightTupleImpl) tuples[i];
-            if (tuple.getBlocked() != null) {
-                return tuple.getFactHandle();
+        NodeMemories                 nodeMemories = ksessionImpl.getNodeMemories();
+        BetaMemory                   betaMemory = (BetaMemory) nodeMemories.getNodeMemory(notNode, ksessionImpl);
+        TupleMemory                  rightTupleMemory = betaMemory.getRightTupleMemory();
+
+        FastIterator<TupleImpl> it = rightTupleMemory.fullFastIterator();
+        TupleImpl          rt = BetaNode.getFirstTuple(rightTupleMemory, it);
+
+        for (; rt != null; rt = it.next(rt)) {
+            if (((RightTuple)rt).getBlocked() != null) {
+                return rt.getFactHandle();
             }
         }
 

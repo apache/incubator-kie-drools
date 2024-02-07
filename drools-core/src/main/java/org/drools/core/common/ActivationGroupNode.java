@@ -19,9 +19,9 @@
 package org.drools.core.common;
 
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 
-public class ActivationGroupNode extends AbstractBaseLinkedListNode<ActivationGroupNode> {
+public class ActivationGroupNode extends AbstractLinkedListNode<ActivationGroupNode> {
 
     private final InternalMatch internalMatch;
 

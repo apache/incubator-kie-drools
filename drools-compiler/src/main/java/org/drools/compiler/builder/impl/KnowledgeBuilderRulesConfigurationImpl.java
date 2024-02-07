@@ -31,6 +31,7 @@ import org.drools.core.BaseConfiguration;
 import org.drools.drl.parser.DrlParser;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.PrototypesOption;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
@@ -45,6 +46,7 @@ import org.kie.internal.builder.conf.ParallelLambdaExternalizationOption;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.internal.builder.conf.ReproducibleExecutableModelGenerationOption;
 import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
 import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.conf.CompositeConfiguration;
@@ -98,6 +100,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
 
+    private boolean                           reproducibleExecutableModelGeneration = false;
+
     private boolean                           externaliseCanonicalModelLambda       = true;
     private boolean                           parallelLambdaExternalization         = true;
 
@@ -105,6 +109,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
+
+    private PrototypesOption                  prototypesOption  = PrototypesOption.DISABLED;
 
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
@@ -159,15 +165,21 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
 
         setProperty(ParallelLambdaExternalizationOption.PROPERTY_NAME,
                     getPropertyValue(ParallelLambdaExternalizationOption.PROPERTY_NAME,"true"));
+
+        setProperty(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,
+                    getPropertyValue(ReproducibleExecutableModelGenerationOption.PROPERTY_NAME,"false"));
     }
 
     protected ClassLoader getFunctionFactoryClassLoader() {
         return getClassLoader();
     }
 
-    public boolean setInternalProperty(String name,
-                                       String value) {
+    public boolean setInternalProperty(String name, String value) {
         switch (name) {
+            case PrototypesOption.PROPERTY_NAME: {
+                setPrototypesOption(PrototypesOption.determinePrototypesOption(value));
+                break;
+            }
             case ProcessStringEscapesOption.PROPERTY_NAME: {
                 setProcessStringEscapes(Boolean.parseBoolean(value));
                 break;
@@ -199,6 +211,9 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                 break;
             } case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 setParallelLambdaExternalization(Boolean.parseBoolean(value));
+                break;
+            } case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                setReproducibleExecutableModelGeneration(Boolean.parseBoolean(value));
                 break;
             } case AlphaNetworkCompilerOption.PROPERTY_NAME: {
                 try {
@@ -238,6 +253,8 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                 return String.valueOf(isExternaliseCanonicalModelLambda());
             } case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 return String.valueOf(isParallelLambdaExternalization());
+            } case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                return String.valueOf(isReproducibleExecutableModelGeneration());
             } default: {
                 if (name.startsWith(AccumulateFunctionOption.PROPERTY_NAME)) {
                     int                index    = AccumulateFunctionOption.PROPERTY_NAME.length();
@@ -382,6 +399,14 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
         this.propertySpecificOption = propertySpecificOption;
     }
 
+    public PrototypesOption getPrototypesOption() {
+        return prototypesOption;
+    }
+
+    public void setPrototypesOption(PrototypesOption prototypesOption) {
+        this.prototypesOption = prototypesOption;
+    }
+
     public boolean isExternaliseCanonicalModelLambda() {
         return externaliseCanonicalModelLambda;
     }
@@ -396,6 +421,14 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
 
     public void setParallelLambdaExternalization(boolean parallelLambdaExternalization) {
         this.parallelLambdaExternalization = parallelLambdaExternalization;
+    }
+
+    public boolean isReproducibleExecutableModelGeneration() {
+        return reproducibleExecutableModelGeneration;
+    }
+
+    public void setReproducibleExecutableModelGeneration(boolean reproducibleExecutableModelGeneration) {
+        this.reproducibleExecutableModelGeneration = reproducibleExecutableModelGeneration;
     }
 
     public AlphaNetworkCompilerOption getAlphaNetworkCompilerOption() {
@@ -429,6 +462,9 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
             }
             case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 return (T) (parallelLambdaExternalization ? ParallelLambdaExternalizationOption.ENABLED : ParallelLambdaExternalizationOption.DISABLED);
+            }
+            case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                return (T) (reproducibleExecutableModelGeneration ? ReproducibleExecutableModelGenerationOption.ENABLED : ReproducibleExecutableModelGenerationOption.DISABLED);
             }
             case ParallelRulesBuildThresholdOption.PROPERTY_NAME: {
                 return (T) parallelRulesBuildThreshold;
@@ -508,6 +544,10 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
             }
             case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
                 this.parallelLambdaExternalization = ((ParallelLambdaExternalizationOption) option).isLambdaExternalizationParallel();
+                break;
+            }
+            case ReproducibleExecutableModelGenerationOption.PROPERTY_NAME: {
+                this.reproducibleExecutableModelGeneration = ((ReproducibleExecutableModelGenerationOption) option).isReproducibleExecutableModelGeneration();
                 break;
             }
             case ParallelRulesBuildThresholdOption.PROPERTY_NAME: {

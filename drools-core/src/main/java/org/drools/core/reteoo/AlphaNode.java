@@ -96,7 +96,7 @@ public class AlphaNode extends ObjectSource
         return this.constraint;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.AlphaNode;
     }
 
@@ -108,7 +108,7 @@ public class AlphaNode extends ObjectSource
     @Override
     public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         if (this.partitionId != null && this.partitionId != partitionId) {
-            if (source instanceof AlphaNode) {
+            if (source.getType() == NodeTypeEnums.AlphaNode) {
                 source.setPartitionId( context, partitionId );
             }
             source.sink.changeSinkPartition( this, this.partitionId, partitionId, source.alphaNodeHashingThreshold, source.alphaNodeRangeIndexThreshold );
@@ -171,7 +171,7 @@ public class AlphaNode extends ObjectSource
             return true;
         }
 
-        if ( !(object instanceof AlphaNode) || this.hashCode() != object.hashCode() ) {
+        if ( ((NetworkNode)object).getType() != NodeTypeEnums.AlphaNode || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
@@ -246,6 +246,8 @@ public class AlphaNode extends ObjectSource
                     throw e;
                 }
             }
+
+
         }
 
         public int getId() {
@@ -269,7 +271,7 @@ public class AlphaNode extends ObjectSource
                                            ReteEvaluator reteEvaluator) {
         }
 
-        public short getType() {
+        public int getType() {
             return NodeTypeEnums.AlphaNode;
         }
 

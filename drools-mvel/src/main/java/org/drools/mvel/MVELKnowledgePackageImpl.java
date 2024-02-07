@@ -164,7 +164,7 @@ public class MVELKnowledgePackageImpl extends KnowledgePackageImpl {
             out.writeObject(this.staticImports);
             out.writeObject(this.functions);
             out.writeObject(this.accumulateFunctions);
-            out.writeObject(this.factTemplates);
+            out.writeObject(this.prototypes);
             out.writeObject(this.globals);
             out.writeBoolean(this.valid);
             out.writeBoolean(this.needStreamMode);
@@ -212,7 +212,7 @@ public class MVELKnowledgePackageImpl extends KnowledgePackageImpl {
         this.staticImports = (Set) in.readObject();
         this.functions = (Map<String, Function>) in.readObject();
         this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
-        this.factTemplates = (Map) in.readObject();
+        this.prototypes = (Map) in.readObject();
         this.globals = (Map<String, Type>) in.readObject();
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();

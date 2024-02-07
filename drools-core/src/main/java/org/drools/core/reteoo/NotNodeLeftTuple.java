@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.base.rule.ContextEntry;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.MemoryFactory;
@@ -35,7 +34,7 @@ public class NotNodeLeftTuple extends LeftTuple {
     private static final long serialVersionUID = 540l;
 
     private RightTuple blocker;
-    private LeftTuple blockedPrevious;
+    private LeftTuple  blockedPrevious;
     private LeftTuple blockedNext;
 
     public NotNodeLeftTuple() {
@@ -54,12 +53,12 @@ public class NotNodeLeftTuple extends LeftTuple {
     }
 
     public NotNodeLeftTuple(final InternalFactHandle factHandle,
-                            final LeftTuple leftTuple,
+                            final TupleImpl leftTuple,
                             final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
+    public NotNodeLeftTuple(final TupleImpl leftTuple,
                             final Sink sink,
                             final PropagationContext pctx,
                             final boolean leftTupleMemoryEnabled) {
@@ -69,16 +68,16 @@ public class NotNodeLeftTuple extends LeftTuple {
               leftTupleMemoryEnabled);
     }
 
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
-                            RightTuple rightTuple,
+    public NotNodeLeftTuple(final TupleImpl leftTuple,
+                            TupleImpl rightTuple,
                             Sink sink) {
         super(leftTuple,
               rightTuple,
               sink);
     }
 
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
-                            final RightTuple rightTuple,
+    public NotNodeLeftTuple(final TupleImpl leftTuple,
+                            final TupleImpl rightTuple,
                             final Sink sink,
                             final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
@@ -89,10 +88,10 @@ public class NotNodeLeftTuple extends LeftTuple {
              leftTupleMemoryEnabled);
     }
 
-    public NotNodeLeftTuple(final LeftTuple leftTuple,
-                            final RightTuple rightTuple,
-                            final LeftTuple currentLeftChild,
-                            final LeftTuple currentRightChild,
+    public NotNodeLeftTuple(final TupleImpl leftTuple,
+                            final TupleImpl rightTuple,
+                            final TupleImpl currentLeftChild,
+                            final TupleImpl currentRightChild,
                             final Sink sink,
                             final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -167,24 +166,24 @@ public class NotNodeLeftTuple extends LeftTuple {
 
     @Override
     public Collection<Object> getAccumulatedObjects() {
-        if (NodeTypeEnums.ExistsNode != getTupleSink().getType()) {
+        if (NodeTypeEnums.ExistsNode != this.getSink().getType()) {
             return Collections.emptyList();
         }
 
-        BetaNode betaNode = ( (BetaNode) getTupleSink() );
+        BetaNode betaNode = (BetaNode) this.getSink();
         BetaConstraints constraints = betaNode.getRawConstraints();
         ReteEvaluator reteEvaluator = getFactHandle().getReteEvaluator();
-        BetaMemory bm = (BetaMemory) reteEvaluator.getNodeMemory( (MemoryFactory) getTupleSink() );
+        BetaMemory bm = (BetaMemory) reteEvaluator.getNodeMemory( (MemoryFactory) this.getSink());
         TupleMemory rtm = bm.getRightTupleMemory();
-        FastIterator it = betaNode.getRightIterator( rtm );
+        FastIterator<TupleImpl> it = betaNode.getRightIterator( rtm );
 
         Object contextEntry = bm.getContext();
         constraints.updateFromTuple( contextEntry, reteEvaluator, this );
 
         Collection<Object> result = new ArrayList<>();
-        for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, it); rightTuple != null; ) {
-            RightTuple nextRight = (RightTuple) it.next(rightTuple);
-            if ( !(rightTuple instanceof SubnetworkTuple) ) {
+        for (TupleImpl rightTuple = betaNode.getFirstRightTuple(this, rtm, it); rightTuple != null; ) {
+            TupleImpl nextRight = it.next(rightTuple);
+            if ( !rightTuple.isSubnetworkTuple()) {
                 InternalFactHandle fh = rightTuple.getFactHandleForEvaluation();
                 if ( constraints.isAllowedCachedLeft( contextEntry, fh ) ) {
                     result.add( fh.getObject() );

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.base.common.NetworkNode;
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalRuleBase;
 import org.kie.api.KieBase;
@@ -202,11 +203,9 @@ public class ReteDumper {
         NetworkNode[] sinks = node.getSinks();
         if (sinks != null) {
             for (NetworkNode sink : sinks) {
-                if (sink instanceof BaseNode) {
-                    BaseNode sinkNode = ( BaseNode ) sink;
-                    if ( nodesFilter.test( sinkNode ) ) {
-                        dumpNode( sinkNode, ident + "  ", visitedNodes, consumer );
-                    }
+                BaseNode sinkNode = ( BaseNode ) sink;
+                if ( nodesFilter.test( sinkNode ) ) {
+                    dumpNode( sinkNode, ident + "  ", visitedNodes, consumer );
                 }
             }
         }
@@ -249,18 +248,18 @@ public class ReteDumper {
      */
     public String formatNode(BaseNode node) {
         StringBuilder additionalInfo = new StringBuilder();
-        if (node instanceof BetaNode) {
+        if (NodeTypeEnums.isBetaNode(node)) {
             BetaNode betaNode = (BetaNode) node;
             additionalInfo.append("contraints=");
             if (betaNode.getRawConstraints() != null) {
                 additionalInfo.append(Arrays.toString(betaNode.getConstraints()));
             }
-            if (node instanceof AccumulateNode) {
+            if (node.getType() == NodeTypeEnums.AccumulateNode) {
                 AccumulateNode accNode = (AccumulateNode) node;
                 additionalInfo.append(", resultConstraints=" + Arrays.toString(accNode.getResultConstraints()));
                 additionalInfo.append(", resultBinder=" + Arrays.toString(accNode.getResultBinder().getConstraints()));
             }
-        } else if (node instanceof FromNode<?>) {
+        } else if (node.getType() == NodeTypeEnums.FromNode) {
             FromNode<?> fromNode = (FromNode<?>) node;
             additionalInfo.append("result=" + fromNode.getResultClass().getName());
             additionalInfo.append(", alphaConstraints=" + Arrays.toString(fromNode.getAlphaConstraints()));

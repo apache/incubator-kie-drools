@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.drools.base.base.ObjectType;
+import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.From;
 import org.drools.base.rule.Pattern;
@@ -41,7 +42,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
@@ -117,7 +118,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             return true;
         }
 
-        if (!(object instanceof FromNode) || this.hashCode() != object.hashCode()) {
+        if (((NetworkNode)object).getType() != NodeTypeEnums.FromNode || this.hashCode() != object.hashCode()) {
             return false;
         }
 
@@ -195,11 +196,11 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    public RightTupleImpl createRightTuple( final LeftTuple leftTuple,
-                                        final PropagationContext context,
-                                        final ReteEvaluator reteEvaluator,
-                                        final Object object ) {
-        return new RightTupleImpl( createFactHandle( reteEvaluator, object ) );
+    public RightTuple createRightTuple(final TupleImpl leftTuple,
+                                       final PropagationContext context,
+                                       final ReteEvaluator reteEvaluator,
+                                       final Object object) {
+        return new RightTuple(createFactHandle(reteEvaluator, object) );
     }
 
     public InternalFactHandle createFactHandle( ReteEvaluator reteEvaluator, Object object ) {
@@ -222,12 +223,12 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         if ( rightTuple.getFactHandle().isValid() ) {
             Object object = rightTuple.getFactHandle().getObject();
             // keeping a list of matches
-            RightTuple existingMatch = matches.get( object );
+            RightTuple existingMatch = matches.get(object);
             if ( existingMatch != null ) {
                 // this is for the obscene case where two or more objects returned by "from"
                 // have the same hash code and evaluate equals() to true, so we need to preserve
                 // all of them to avoid leaks
-                rightTuple.setNext((AbstractTuple) existingMatch);
+                rightTuple.setNext(existingMatch);
             }
             matches.put( object,
                          rightTuple );
@@ -236,22 +237,13 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
 
     public T createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        BetaMemory beta = new BetaMemory( new TupleList(),
-                                          null,
-                                          this.betaConstraints.createContext(),
-                                          NodeTypeEnums.FromNode );
+        BetaMemory beta = new BetaMemory(new TupleList(),
+                                         null,
+                                         this.betaConstraints.createContext(),
+                                         NodeTypeEnums.FromNode );
         return (T) new FromMemory( beta,
                                    this.dataProvider );
     }
-   
-
-    @Override
-    public LeftTuple createPeer(LeftTuple original) {
-        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
-        peer.initPeer(original, this);
-        original.setPeer( peer );
-        return peer;
-    }    
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
@@ -293,11 +285,11 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public short getType() {
+    public int getType() {
         return NodeTypeEnums.FromNode;
     } 
 
-    public static class FromMemory extends AbstractBaseLinkedListNode<Memory>
+    public static class FromMemory extends AbstractLinkedListNode<Memory>
         implements
         Serializable,
         SegmentNodeMemory {
@@ -305,8 +297,8 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
         private DataProvider      dataProvider;
 
-        private final BetaMemory         betaMemory;
-        public Object                    providerContext;
+        private final BetaMemory betaMemory;
+        public        Object         providerContext;
 
         public FromMemory(BetaMemory betaMemory,
                           DataProvider dataProvider) {
@@ -315,7 +307,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             this.providerContext = dataProvider.createContext();
         }
 
-        public short getNodeType() {
+        public int getNodeType() {
             return NodeTypeEnums.FromNode;
         }
 
@@ -327,7 +319,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             betaMemory.setSegmentMemory(segmentMemory);
         }
 
-        public BetaMemory getBetaMemory() {
+        public BetaMemory<Object> getBetaMemory() {
             return betaMemory;
         }
 
@@ -355,39 +347,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         public void setNodeCleanWithoutNotify() {
             betaMemory.setNodeCleanWithoutNotify();
         }
-    }
-    
-    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
-                                     PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, sink, pctx,
-                                     leftTupleMemoryEnabled );
-    }
-
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     Sink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
-    public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTuple currentLeftChild,
-                                     LeftTuple currentRightChild,
-                                     Sink sink,
-                                     boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
 
     @Override

@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
 import org.drools.model.Global;
 import org.drools.model.Index;
 import org.drools.model.Model;
-import org.drools.model.PrototypeVariable;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
+import org.drools.model.prototype.PrototypeVariable;
 import org.drools.reliability.test.util.TimeAmount;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,10 +41,10 @@ import static org.drools.model.DSL.after;
 import static org.drools.model.DSL.globalOf;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PrototypeDSL.protoPattern;
-import static org.drools.model.PrototypeDSL.variable;
+import static org.drools.model.prototype.PrototypeDSL.protoPattern;
+import static org.drools.model.prototype.PrototypeDSL.variable;
 import static org.drools.reliability.test.util.PrototypeUtils.DEFAULT_PROTOTYPE_NAME;
-import static org.drools.reliability.test.util.PrototypeUtils.getPrototype;
+import static org.drools.reliability.test.util.PrototypeUtils.getPrototypeEvent;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityCepTimeWindowTest extends ReliabilityTestBasics {
@@ -61,9 +61,9 @@ class ReliabilityCepTimeWindowTest extends ReliabilityTestBasics {
 
         // main rule (all events should be matched within +- 5 minutes each other)
         TimeAmount timeAmount = TimeAmount.parseTimeAmount("5 minutes");
-        PrototypeVariable var0 = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m_0");
-        PrototypeVariable var1 = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m_1");
-        PrototypeVariable var2 = variable(getPrototype(DEFAULT_PROTOTYPE_NAME), "m_2");
+        PrototypeVariable var0 = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m_0");
+        PrototypeVariable var1 = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m_1");
+        PrototypeVariable var2 = variable(getPrototypeEvent(DEFAULT_PROTOTYPE_NAME), "m_2");
         rules.add(
                   rule( RULE_NAME )
                     .build(

@@ -37,6 +37,7 @@
   <modules>
     <module>drools-impact-analysis-graph-common</module>
     <module>drools-impact-analysis-graph-graphviz</module>
+    <module>drools-impact-analysis-graph-json</module>
   </modules>
 
 </project>

@@ -23,10 +23,13 @@ import java.util.List;
 
 public interface DMNDiagram extends Diagram {
 
-    public Dimension getSize();
+    Dimension getSize();
 
-    public void setSize(Dimension value);
+    void setSize(Dimension value);
 
-    public List<DiagramElement> getDMNDiagramElement();
+    List<DiagramElement> getDMNDiagramElement();
 
+    Boolean getUseAlternativeInputDataShape();
+
+    void setUseAlternativeInputDataShape(Boolean value);
 }

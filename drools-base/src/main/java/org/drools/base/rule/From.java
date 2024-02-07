@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.base.ClassObjectType;
-import org.drools.base.facttemplates.Fact;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.accessor.Wireable;
+import org.kie.api.prototype.PrototypeFactInstance;
 
 public class From extends ConditionalElement
         implements
@@ -131,7 +131,7 @@ public class From extends ConditionalElement
     public Class<?> getResultClass() {
         return resultClass != null ?
                 resultClass :
-                (resultPattern.getObjectType().isTemplate() ? Fact.class : ((ClassObjectType) resultPattern.getObjectType()).getClassType());
+                (resultPattern.getObjectType().isPrototype() ? PrototypeFactInstance.class : ((ClassObjectType) resultPattern.getObjectType()).getClassType());
     }
 
     public void setResultClass(Class<?> resultClass) {

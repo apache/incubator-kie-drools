@@ -34,9 +34,9 @@ public class PhreakQueryNodeMetric extends PhreakQueryNode {
                        QueryElementNodeMemory qmem,
                        StackEntry stackEntry,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       TupleSets srcLeftTuples,
+                       TupleSets trgLeftTuples,
+                       TupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(queryNode);

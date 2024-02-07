@@ -25,6 +25,8 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleFactory;
+import org.drools.core.reteoo.TupleImpl;
 
 public class LeftBuilder {
     /**
@@ -32,7 +34,7 @@ public class LeftBuilder {
      */
     private InternalWorkingMemory wm;
     private LeftTupleSink    sink;
-    private TupleSets<LeftTuple> leftTuples;
+    private TupleSets leftTuples;
     private Scenario     scenario;
 
     public LeftBuilder(Scenario scenario) {
@@ -43,8 +45,8 @@ public class LeftBuilder {
     }
     public LeftBuilder insert(Object... objects) {
         for ( Object object : objects ) {
-            InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            LeftTuple leftTuple = sink.createLeftTuple(fh, true );
+            InternalFactHandle fh        = (InternalFactHandle) wm.insert( object );
+            TupleImpl          leftTuple = TupleFactory.createLeftTuple(sink, fh, true);
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addInsert( leftTuple );
         }
@@ -54,7 +56,7 @@ public class LeftBuilder {
     public LeftBuilder update(Object... objects) {
         for ( Object object : objects ) {
             InternalFactHandle fh = wm.getFactHandle(object);
-            LeftTuple leftTuple = fh.getFirstLeftTuple();
+            TupleImpl leftTuple = fh.getFirstLeftTuple();
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addUpdate( leftTuple );
         }
@@ -64,14 +66,14 @@ public class LeftBuilder {
     public LeftBuilder delete(Object... objects) {
         for ( Object object : objects ) {
             InternalFactHandle fh = wm.getFactHandle(object);
-            LeftTuple leftTuple = fh.getFirstLeftTuple();
+            TupleImpl leftTuple = fh.getFirstLeftTuple();
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addDelete( leftTuple );
         }
         return this;
     }
 
-    TupleSets<LeftTuple> get() {
+    TupleSets get() {
         return this.leftTuples;
     }
 

@@ -36,6 +36,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -46,6 +47,7 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.SuperCacheFixer;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
@@ -403,9 +405,9 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
             if (h instanceof RuleUnitDefaultFactHandle && ((RuleUnitDefaultFactHandle) h).getDataStore() != null) {
                 // This handle has been insert from a datasource, so remove from it
                 ((RuleUnitDefaultFactHandle) h).getDataStore().delete((RuleUnitDefaultFactHandle) h,
-                        knowledgeHelper.getActivation().getRule(),
-                        knowledgeHelper.getActivation().getTuple().getTupleSink(),
-                        fhState);
+                                                                      knowledgeHelper.getActivation().getRule(),
+                                                                      SuperCacheFixer.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
+                                                                      fhState);
                 return;
             }
 
@@ -416,7 +418,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
             h.getEntryPoint(reteEvaluator).delete(handle,
                     knowledgeHelper.getActivation().getRule(),
-                    knowledgeHelper.getActivation().getTuple().getTupleSink(),
+                    SuperCacheFixer.asTerminalNode(knowledgeHelper.getActivation().getTuple()),
                     fhState);
         }
 

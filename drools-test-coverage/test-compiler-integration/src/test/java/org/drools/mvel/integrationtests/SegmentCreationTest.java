@@ -203,8 +203,8 @@ public class SegmentCreationTest {
         wm.flushPropagations();
 
         // LiaNode  is in it's own segment
-        BetaMemory betaMem = (BetaMemory ) wm.getNodeMemory( beta );
-        SegmentMemory smem = betaMem.getSegmentMemory();
+        BetaMemory betaMem = (BetaMemory) wm.getNodeMemory(beta);
+        SegmentMemory  smem    = betaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(lian);
         assertThat(smem.getTipNode()).isEqualTo(beta);
 
@@ -269,7 +269,7 @@ public class SegmentCreationTest {
         assertThat(bSmem.getRootNode()).isEqualTo(bNode);
         assertThat(bSmem.getTipNode()).isEqualTo(riaNode); 
         
-        BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( notNode );
+        BetaMemory bm = (BetaMemory) wm.getNodeMemory(notNode);
         assertThat(smem.getNext()).isEqualTo(bm.getSegmentMemory());
         assertThat(bm.getRiaRuleMemory().getSegmentMemory()).isEqualTo(bSmem); // check subnetwork ref was made
     }        
@@ -303,8 +303,8 @@ public class SegmentCreationTest {
         wm.insert( new LinkingTest.C() );
         wm.fireAllRules();
 
-        BetaMemory liaMem = ( BetaMemory ) wm.getNodeMemory( joinNode );
-        SegmentMemory smem = liaMem.getSegmentMemory();
+        BetaMemory liaMem = (BetaMemory) wm.getNodeMemory(joinNode);
+        SegmentMemory  smem   = liaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(lian);
         assertThat(smem.getTipNode()).isEqualTo(joinNode);
         
@@ -461,8 +461,8 @@ public class SegmentCreationTest {
         FactHandle cFh = wm.insert( new LinkingTest.C() );
         wm.flushPropagations();
 
-        BetaMemory bNodeBm = ( BetaMemory ) wm.getNodeMemory( bNode );
-        SegmentMemory bNodeSmem = bNodeBm.getSegmentMemory();
+        BetaMemory bNodeBm   = (BetaMemory) wm.getNodeMemory(bNode);
+        SegmentMemory  bNodeSmem = bNodeBm.getSegmentMemory();
         assertThat(bNodeSmem.getAllLinkedMaskTest()).isEqualTo(0); // no beta nodes before branch CE, so never unlinks
         assertThat(bNodeSmem.getLinkedNodeMask()).isEqualTo(2);
 
@@ -477,8 +477,8 @@ public class SegmentCreationTest {
         assertThat(pmemr3.getSegmentMemories().length).isEqualTo(3);
         assertThat(pmemr3.isRuleLinked()).isFalse();
 
-        BetaMemory cNodeBm = ( BetaMemory ) wm.getNodeMemory( cNode );
-        SegmentMemory cNodeSmem = cNodeBm.getSegmentMemory();
+        BetaMemory cNodeBm   = (BetaMemory) wm.getNodeMemory(cNode);
+        SegmentMemory  cNodeSmem = cNodeBm.getSegmentMemory();
 
         assertThat(cNodeSmem.getAllLinkedMaskTest()).isEqualTo(PhreakBuilder.isEagerSegmentCreation() ? 0 : 1);
         assertThat(cNodeSmem.getLinkedNodeMask()).isEqualTo(1);

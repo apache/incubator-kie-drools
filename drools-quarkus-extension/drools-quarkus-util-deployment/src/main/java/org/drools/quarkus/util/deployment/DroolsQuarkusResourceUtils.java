@@ -19,6 +19,16 @@
 package org.drools.quarkus.util.deployment;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.bootstrap.classloading.QuarkusClassLoader;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -41,16 +51,6 @@ import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.drools.util.Config.getConfig;
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
@@ -93,6 +93,7 @@ public class DroolsQuarkusResourceUtils {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
                 .withClassLoader(classLoader)
+                .withApplicationProperties(appPaths.getResourceFiles())
                 .withClassAvailabilityResolver(className -> classAvailabilityResolver(index, className))
                 .withAppPaths(appPaths)
                 .build();

@@ -28,12 +28,12 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
-import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
@@ -341,9 +341,9 @@ public class LinkingTest {
 
         LiaNodeMemory liam = wm.getNodeMemory(liaNodeA);
 
-        BetaMemory bm1 = ( BetaMemory ) wm.getNodeMemory( joinNodeB );
-        BetaMemory bm2 = ( BetaMemory ) wm.getNodeMemory( joinNodeC );
-        BetaMemory bm3 = ( BetaMemory ) wm.getNodeMemory( joinNodeD1 );
+        BetaMemory bm1 = (BetaMemory) wm.getNodeMemory(joinNodeB);
+        BetaMemory bm2 = (BetaMemory) wm.getNodeMemory(joinNodeC);
+        BetaMemory bm3 = (BetaMemory) wm.getNodeMemory(joinNodeD1);
         assertThat(liam.getNodePosMaskBit()).isEqualTo(1);
         assertThat(bm1.getNodePosMaskBit()).isEqualTo(1);
         assertThat(bm2.getNodePosMaskBit()).isEqualTo(2);
@@ -353,8 +353,8 @@ public class LinkingTest {
         assertThat(bm2.getSegmentMemory()).isSameAs(bm1.getSegmentMemory());
         assertThat(bm3.getSegmentMemory()).isNotSameAs(bm2.getSegmentMemory());
 
-        BetaMemory bm4 = ( BetaMemory ) wm.getNodeMemory( existsNode2 );
-        BetaMemory bm5 = ( BetaMemory ) wm.getNodeMemory( joinNodeD2 );
+        BetaMemory bm4 = (BetaMemory) wm.getNodeMemory(existsNode2);
+        BetaMemory bm5 = (BetaMemory) wm.getNodeMemory(joinNodeD2);
         assertThat(bm4.getNodePosMaskBit()).isEqualTo(1);
         assertThat(bm5.getNodePosMaskBit()).isEqualTo(2);
         assertThat(bm5.getSegmentMemory()).isSameAs(bm4.getSegmentMemory());
@@ -370,8 +370,8 @@ public class LinkingTest {
         wm.insert( new E() );
         wm.flushPropagations();
 
-        BetaMemory bm6 = ( BetaMemory ) wm.getNodeMemory( existsNode3 );
-        BetaMemory bm7 = ( BetaMemory ) wm.getNodeMemory( joinNodeE );
+        BetaMemory bm6 = (BetaMemory) wm.getNodeMemory(existsNode3);
+        BetaMemory bm7 = (BetaMemory) wm.getNodeMemory(joinNodeE);
         assertThat(bm6.getNodePosMaskBit()).isEqualTo(1);
         assertThat(bm7.getNodePosMaskBit()).isEqualTo(2);
         assertThat(bm7.getSegmentMemory()).isSameAs(bm6.getSegmentMemory());
@@ -430,7 +430,7 @@ public class LinkingTest {
         RuleTerminalNode rtn = ( RuleTerminalNode ) eNode.getSinkPropagator().getSinks()[0];
 
         RuntimeSegmentUtilities.getOrCreateSegmentMemory(exists1n, wm);
-        BetaMemory existsBm = ( BetaMemory ) wm.getNodeMemory( exists1n );
+        BetaMemory existsBm = (BetaMemory) wm.getNodeMemory(exists1n);
 
         assertThat(existsBm.getSegmentMemory().getLinkedNodeMask()).isEqualTo(0);
 
@@ -514,7 +514,7 @@ public class LinkingTest {
         assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(7); // D is in the exists segment
 
 
-        BetaMemory bm =  ( BetaMemory ) wm.getNodeMemory(dNode);
+        BetaMemory bm =  (BetaMemory) wm.getNodeMemory(dNode);
         assertThat(bm.getSegmentMemory()).isNull(); // check lazy initialization
         wm.insert(new X());
         wm.flushPropagations();
@@ -710,15 +710,15 @@ public class LinkingTest {
         wm.insert(  new G() );
         wm.flushPropagations();
 
-        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
-        BetaMemory bMem = ( BetaMemory )   wm.getNodeMemory( bNode );
-        BetaMemory exists1Mem = ( BetaMemory ) wm.getNodeMemory( exists1n );
-        BetaMemory cMem = ( BetaMemory )   wm.getNodeMemory( cNode );
-        BetaMemory dMem = ( BetaMemory )   wm.getNodeMemory( dNode );
-        BetaMemory exists2Mem = ( BetaMemory ) wm.getNodeMemory( exists2n );
-        BetaMemory eMem = ( BetaMemory )   wm.getNodeMemory( eNode );
-        BetaMemory fMem = ( BetaMemory )   wm.getNodeMemory( fNode );
-        BetaMemory gMem = ( BetaMemory )   wm.getNodeMemory( gNode );
+        LiaNodeMemory  liaMem     = wm.getNodeMemory(liaNode);
+        BetaMemory bMem       = (BetaMemory)   wm.getNodeMemory(bNode);
+        BetaMemory exists1Mem = (BetaMemory) wm.getNodeMemory(exists1n);
+        BetaMemory cMem       = (BetaMemory)   wm.getNodeMemory(cNode);
+        BetaMemory dMem       = (BetaMemory)   wm.getNodeMemory(dNode);
+        BetaMemory exists2Mem = (BetaMemory) wm.getNodeMemory(exists2n);
+        BetaMemory eMem       = (BetaMemory)   wm.getNodeMemory(eNode);
+        BetaMemory fMem       = (BetaMemory)   wm.getNodeMemory(fNode);
+        BetaMemory gMem       = (BetaMemory)   wm.getNodeMemory(gNode);
 
         RiaPathMemory riaMem1 = (RiaPathMemory) wm.getNodeMemory(riaNode1);
         RiaPathMemory riaMem2 = (RiaPathMemory) wm.getNodeMemory(riaNode2);
@@ -873,9 +873,9 @@ public class LinkingTest {
         JoinNode bNode = ( JoinNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
-        LiaNodeMemory amem = wm.getNodeMemory(aNode);
-        BetaMemory bmem = ( BetaMemory ) wm.getNodeMemory( bNode );
-        BetaMemory cmem = ( BetaMemory ) wm.getNodeMemory( cNode );
+        LiaNodeMemory  amem = wm.getNodeMemory(aNode);
+        BetaMemory bmem = (BetaMemory) wm.getNodeMemory(bNode);
+        BetaMemory cmem = (BetaMemory) wm.getNodeMemory(cNode);
         
         // amem.getSegmentMemory().getStagedLeftTuples().insertSize() == 3
         assertThat(amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst()).isNotNull();

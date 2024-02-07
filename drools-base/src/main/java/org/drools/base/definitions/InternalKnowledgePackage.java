@@ -30,7 +30,6 @@ import org.drools.base.RuleBase;
 import org.drools.base.base.AcceptsClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.facttemplates.FactTemplate;
 import org.drools.base.rule.DialectRuntimeRegistry;
 import org.drools.base.rule.Function;
 import org.drools.base.rule.ImportDeclaration;
@@ -44,6 +43,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
+import org.kie.api.prototype.Prototype;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
@@ -98,7 +98,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     void addTypeDeclaration(TypeDeclaration typeDecl);
 
-    void addFactTemplate(FactTemplate factTemplate);
+    void addPrototype(Prototype prototype);
 
     void addImport(ImportDeclaration importDecl);
 
@@ -141,7 +141,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     TypeDeclaration getTypeDeclaration(String type);
 
-    FactTemplate getFactTemplate(String name);
+    Prototype getPrototype(String name);
 
     ClassLoader getPackageClassLoader();
 

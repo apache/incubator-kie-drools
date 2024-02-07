@@ -48,9 +48,9 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.Type;
+import org.drools.base.factmodel.ClassDefinition;
 import org.drools.compiler.compiler.MissingDependencyError;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.base.factmodel.ClassDefinition;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -60,8 +60,8 @@ import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
-import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
+import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -260,7 +260,7 @@ public class Consequence {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
-        } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
+        } else if (ruleConsequence != null) {
             Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
             return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
         }
@@ -288,7 +288,9 @@ public class Consequence {
             executeLambda.addParameter(new Parameter(toClassOrInterfaceType(org.drools.model.Drools.class), "drools"));
         }
 
-        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
+        NodeList<Parameter> parameters = context.arePrototypesAllowed() ?
+                new BoxedParameters(context).getParametersForPrototype(verifiedDeclUsedInRHS, ruleConsequence) :
+                new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(verifiedDeclUsedInRHS, ruleConsequence);
         parameters.forEach(executeLambda::addParameter);
 
         executeLambda.setBody(ruleConsequence);
@@ -308,13 +310,14 @@ public class Consequence {
     private String preprocessConsequence(String consequence) {
         int modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify");
         int textBlockPos = StringUtils.indexOfOutOfQuotes(consequence, "\"\"\"");
+        Set<String> prototypes = context.getPrototypeDeclarations();
 
-        if (modifyPos < 0 && textBlockPos < 0) {
+        if (modifyPos < 0 && textBlockPos < 0 && prototypes.isEmpty()) {
             return consequence;
         }
 
         PreprocessCompiler preprocessCompiler = new PreprocessCompiler();
-        CompiledBlockResult compile = preprocessCompiler.compile(addCurlyBracesToBlock(consequence));
+        CompiledBlockResult compile = preprocessCompiler.compile(addCurlyBracesToBlock(consequence), prototypes);
 
         return printNode(compile.statementResults());
     }
@@ -421,8 +424,8 @@ public class Consequence {
                 throw new ConsequenceRewriteException();
             }
         } else {
-            return context.getDeclarationById(updatedVar)
-                    .map(DeclarationSpec::getDeclarationClass)
+            return context.getTypedDeclarationById(updatedVar)
+                    .map(TypedDeclarationSpec::getDeclarationClass)
                     .orElseThrow(ConsequenceRewriteException::new);
         }
     }
@@ -527,8 +530,8 @@ public class Consequence {
     }
 
     private boolean isDataStoreScope(Expression scope) {
-        return scope.isNameExpr() && context.getDeclarationById(scope.asNameExpr().getNameAsString())
-                .map(DeclarationSpec::getDeclarationClass)
+        return scope.isNameExpr() && context.getTypedDeclarationById(scope.asNameExpr().getNameAsString())
+                .map(TypedDeclarationSpec::getDeclarationClass)
                 .map(dataStoreClass::isAssignableFrom).orElse(false);
     }
 

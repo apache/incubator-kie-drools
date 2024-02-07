@@ -21,14 +21,14 @@ package org.drools.core.common;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.util.LinkedListNode;
+import org.drools.core.util.DoubleLinkedEntry;
 
 /**
  * A super interface for node memories
  */
-public interface Memory extends LinkedListNode<Memory> {
+public interface Memory extends DoubleLinkedEntry<Memory> {
     
-    short getNodeType();
+    int getNodeType();
     
     SegmentMemory getSegmentMemory();
 

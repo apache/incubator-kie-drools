@@ -28,10 +28,10 @@ public interface AgendaComponentFactory extends KieService {
 
     LeftTuple createTerminalTuple();
     LeftTuple createTerminalTuple(InternalFactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled);
-    LeftTuple createTerminalTuple(InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink);
-    LeftTuple createTerminalTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled);
-    LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, Sink sink);
-    LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, Sink sink, boolean leftTupleMemoryEnabled);
+    LeftTuple createTerminalTuple(InternalFactHandle factHandle, TupleImpl leftTuple, Sink sink);
+    LeftTuple createTerminalTuple(TupleImpl leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled);
+    LeftTuple createTerminalTuple(TupleImpl leftTuple, TupleImpl rightTuple, Sink sink);
+    LeftTuple createTerminalTuple(TupleImpl leftTuple, TupleImpl rightTuple, TupleImpl currentLeftChild, TupleImpl currentRightChild, Sink sink, boolean leftTupleMemoryEnabled);
 
     RuleAgendaItem createAgendaItem(int salience, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup);
 
@@ -67,13 +67,13 @@ public interface AgendaComponentFactory extends KieService {
 
         @Override
         public LeftTuple createTerminalTuple(final InternalFactHandle factHandle,
-                                             final LeftTuple leftTuple,
+                                             final TupleImpl leftTuple,
                                              final Sink sink) {
             return new RuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
         }
 
         @Override
-        public LeftTuple createTerminalTuple(LeftTuple leftTuple,
+        public LeftTuple createTerminalTuple(TupleImpl leftTuple,
                                              Sink sink,
                                              PropagationContext pctx,
                                              boolean leftTupleMemoryEnabled) {
@@ -81,17 +81,17 @@ public interface AgendaComponentFactory extends KieService {
         }
 
         @Override
-        public LeftTuple createTerminalTuple(LeftTuple leftTuple,
-                                             RightTuple rightTuple,
+        public LeftTuple createTerminalTuple(TupleImpl leftTuple,
+                                             TupleImpl rightTuple,
                                              Sink sink) {
             return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
         }
 
         @Override
-        public LeftTuple createTerminalTuple(LeftTuple leftTuple,
-                                             RightTuple rightTuple,
-                                             LeftTuple currentLeftChild,
-                                             LeftTuple currentRightChild,
+        public LeftTuple createTerminalTuple(TupleImpl leftTuple,
+                                             TupleImpl rightTuple,
+                                             TupleImpl currentLeftChild,
+                                             TupleImpl currentRightChild,
                                              Sink sink,
                                              boolean leftTupleMemoryEnabled) {
             return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );

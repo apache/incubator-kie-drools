@@ -83,4 +83,14 @@ public class DMNDiagram extends Diagram implements org.kie.dmn.model.api.dmndi.D
         return this.dmnDiagramElement;
     }
 
+    @Override
+    public Boolean getUseAlternativeInputDataShape() {
+        throw new UnsupportedOperationException("Since DMNv1.5");
+    }
+
+    @Override
+    public void setUseAlternativeInputDataShape(Boolean value) {
+        throw new UnsupportedOperationException("Since DMNv1.5");
+    }
+
 }

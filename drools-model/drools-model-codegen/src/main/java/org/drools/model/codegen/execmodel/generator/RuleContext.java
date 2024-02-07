@@ -23,6 +23,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -77,6 +79,8 @@ import static org.drools.util.ClassUtils.rawType;
 
 public class RuleContext {
 
+    public static final String DIALECT_ATTRIBUTE = "dialect";
+
     private static final String SCOPE_SUFFIX = "_sCoPe";
 
     private final TypeDeclarationContext typeDeclarationContext;
@@ -90,7 +94,7 @@ public class RuleContext {
 
     private final Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
     private final Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
-    private final List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
+    private final List<TypedDeclarationSpec> ooPathDeclarations = new ArrayList<>();
     private final Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, String> namedConsequences = new HashMap<>();
@@ -113,6 +117,8 @@ public class RuleContext {
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
+    private boolean prototypesAllowed = false;
+
     private int scopeCounter = 1;
     private Scope currentScope = new Scope();
     private final Deque<Scope> scopesStack = new LinkedList<>();
@@ -131,7 +137,21 @@ public class RuleContext {
     private boolean hasCompilationError;
 
     public enum RuleDialect {
-        JAVA, MVEL
+        JAVA, MVEL;
+
+        public static RuleDialect resolveDialect(String dialect) {
+            if (dialect == null) {
+                return JAVA;
+            }
+            switch (dialect) {
+                case "java":
+                    return JAVA;
+                case "mvel":
+                    return MVEL;
+                default:
+                    throw new IllegalArgumentException("Unknown dialect: " + dialect);
+            }
+        }
     }
 
     private AndDescr parentDescr;
@@ -145,7 +165,7 @@ public class RuleContext {
         this.resultCollector = resultCollector;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
-        exprPointer.push( this.expressions::add );
+        this.exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
         this.ruleDescr = ruleDescr;
         this.ruleUnitDescr = findUnitDescr();
@@ -224,18 +244,36 @@ public class RuleContext {
         return ofNullable(explicitCastType.get(field));
     }
 
+    public Optional<TypedDeclarationSpec> getTypedDeclarationById(String id) {
+        return getDeclarationById(id).map(TypedDeclarationSpec.class::cast);
+    }
+
+    public TypedDeclarationSpec getTypedDeclarationByIdWithException(String id) {
+        return getTypedDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
+    }
+
     public Optional<DeclarationSpec> getDeclarationById(String id) {
-        DeclarationSpec spec = scopedDeclarations.get( getDeclarationKey( id ));
+        DeclarationSpec spec = scopedDeclarations.get(getDeclarationKey(id ));
         if (spec == null) {
             Class<?> unitVarType = ruleUnitVarsOriginalType.get( id );
             if(unitVarType == null) {
                 unitVarType = ruleUnitVars.get(id);
             }
             if (unitVarType != null) {
-                spec = new DeclarationSpec(id, unitVarType);
+                spec = new TypedDeclarationSpec(id, unitVarType);
             }
         }
         return ofNullable( spec );
+    }
+
+    public boolean isPrototypeDeclaration(String id) {
+        return getDeclarationById(id).map(DeclarationSpec::isPrototypeDeclaration).orElse(false);
+    }
+
+    public Set<String> getPrototypeDeclarations() {
+        return arePrototypesAllowed() ?
+                scopedDeclarations.values().stream().filter(DeclarationSpec::isPrototypeDeclaration).map(DeclarationSpec::getBindingId).collect(Collectors.toSet()) :
+                Collections.emptySet();
     }
 
     public DeclarationSpec getDeclarationByIdWithException(String id) {
@@ -289,7 +327,7 @@ public class RuleContext {
         
         for (Map.Entry<String, java.lang.reflect.Type> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
-            addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue(), true));
+            addDeclaration(new TypedDeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
     }
 
@@ -312,7 +350,7 @@ public class RuleContext {
         return packageModel.hasEntryPoint(name) || (ruleUnitDescr != null && packageModel.hasEntryPointForUnit(name, ruleUnitDescr.getSimpleName()));
     }
 
-    public Optional<DeclarationSpec> getOOPathDeclarationById(String id) {
+    public Optional<TypedDeclarationSpec> getOOPathDeclarationById(String id) {
         return ooPathDeclarations.stream().filter(d -> d.getBindingId().equals(id)).findFirst();
     }
 
@@ -329,24 +367,28 @@ public class RuleContext {
         if (varType != null) {
             return varType;
         }
-        DeclarationSpec decl = scopedDeclarations.get( "$p" );
-        return decl != null ? decl.getDeclarationClass() : null;
+        DeclarationSpec decl = scopedDeclarations.get("$p" );
+        return decl instanceof TypedDeclarationSpec tDecl ? tDecl.getDeclarationClass() : null;
     }
 
-    public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass) {
-        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass));
+    public TypedDeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass) {
+        return addDeclaration(new TypedDeclarationSpec(defineVar(bindingId), declarationClass));
     }
 
-    public DeclarationSpec addDeclaration( String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
-        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, pattern, declarationSource, Optional.empty(), false));
+    public TypedDeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource) {
+        return addDeclaration(new TypedDeclarationSpec(defineVar(bindingId), declarationClass, pattern, declarationSource, Optional.empty(), false));
     }
 
-    public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, String variableName) {
-        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, variableName));
+    public TypedDeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, String variableName) {
+        return addDeclaration(new TypedDeclarationSpec(defineVar(bindingId), declarationClass, variableName));
     }
 
-    public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, Expression declarationSource) {
-        return addDeclaration(new DeclarationSpec(defineVar(bindingId), declarationClass, declarationSource));
+    public TypedDeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass, Expression declarationSource) {
+        return addDeclaration(new TypedDeclarationSpec(defineVar(bindingId), declarationClass, declarationSource));
+    }
+
+    public PrototypeDeclarationSpec addPrototypeDeclaration(String bindingId, String prototypeType) {
+        return addDeclaration(new PrototypeDeclarationSpec(defineVar(bindingId), prototypeType, false));
     }
 
     private String defineVar(String var) {
@@ -360,15 +402,15 @@ public class RuleContext {
         return currentScope.id;
     }
 
-    public DeclarationSpec addDeclaration(DeclarationSpec d) {
+    public <T extends DeclarationSpec> T addDeclaration(T d) {
         this.scopedDeclarations.putIfAbsent( d.getBindingId(), d );
         this.allDeclarations.putIfAbsent( d.getBindingId(), d );
         return d;
     }
 
-    public void addDeclarationReplacing(DeclarationSpec d) {
+    public void addDeclarationReplacing(TypedDeclarationSpec d) {
         final String bindingId = d.getBindingId();
-        final Optional<DeclarationSpec> declarationById = getDeclarationById(bindingId);
+        final Optional<TypedDeclarationSpec> declarationById = getTypedDeclarationById(bindingId);
         if (declarationById.isPresent()) {
             removeDeclarationById(bindingId);
         }
@@ -387,7 +429,7 @@ public class RuleContext {
         }
     }
 
-    public void addOOPathDeclaration(DeclarationSpec d) {
+    public void addOOPathDeclaration(TypedDeclarationSpec d) {
         if(getOOPathDeclarationById(d.getBindingId()).isEmpty()) {
             this.ooPathDeclarations.add(d);
         }
@@ -401,7 +443,7 @@ public class RuleContext {
         return scopedDeclarations.keySet();
     }
 
-    public List<DeclarationSpec> getOOPathDeclarations() {
+    public List<TypedDeclarationSpec> getOOPathDeclarations() {
         return ooPathDeclarations;
     }
 
@@ -478,6 +520,10 @@ public class RuleContext {
 
     public RuleDialect getRuleDialect() {
         return ruleDialect;
+    }
+
+    public boolean arePrototypesAllowed() {
+        return packageModel.arePrototypesAllowed();
     }
 
     public void setRuleDialect(RuleDialect ruleDialect) {
@@ -689,14 +735,9 @@ public class RuleContext {
         }
     }
 
-    public void setDialectFromAttributes(Collection<AttributeDescr> attributes) {
-        for (AttributeDescr a : attributes) {
-            if (a.getName().equals("dialect")) {
-                if (a.getValue().equals("mvel")) {
-                    setRuleDialect(RuleDialect.MVEL);
-                }
-                return;
-            }
+    public void setDialectFromAttribute(AttributeDescr attribute) {
+        if (attribute != null) {
+            setRuleDialect(RuleDialect.resolveDialect(attribute.getValue()));
         }
     }
 
@@ -709,7 +750,7 @@ public class RuleContext {
     }
 
     public Type getDelarationType(String variableName) {
-        return getDeclarationById(variableName).map(DeclarationSpec::getBoxedType)
+        return getTypedDeclarationById(variableName).map(TypedDeclarationSpec::getBoxedType)
                                                .orElseGet(UnknownType::new);
     }
 

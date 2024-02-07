@@ -57,18 +57,15 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.facttemplates.FactTemplate;
-import org.drools.base.facttemplates.FactTemplateImpl;
-import org.drools.base.facttemplates.FieldTemplate;
-import org.drools.base.facttemplates.FieldTemplateImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ObjectTypeNodeId;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.base.rule.accessor.Salience;
+import org.drools.core.reteoo.TupleImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
@@ -941,8 +938,8 @@ public class Misc2Test {
         // this second insert forces the regeneration of the otnIds
         ksession.insert( new A( 2, 2, 2, 2 ) );
 
-        LeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
-        ObjectTypeNode.Id letTupleOtnId = leftTuple.getInputOtnId();
+        TupleImpl        leftTuple     = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
+        ObjectTypeNodeId letTupleOtnId = leftTuple.getInputOtnId();
         leftTuple = leftTuple.getHandleNext();
         while ( leftTuple != null ) {
             assertThat(letTupleOtnId.before(leftTuple.getInputOtnId())).isTrue();
@@ -6556,31 +6553,6 @@ public class Misc2Test {
     }
 
     @Test
-    public void testFactTemplates() {
-        // DROOLS-600
-        String drl = "package com.testfacttemplate;" +
-                     " rule \"test rule\" " +
-                     " dialect \"mvel\" " +
-                     " when " +
-                     " $test : TestFactTemplate( status == 1 ) " +
-                     " then " +
-                     " System.out.println( \"Hello World\" ); " +
-                     " end ";
-
-        InternalKnowledgePackage kPackage = CoreComponentFactory.get().createKnowledgePackage( "com.testfacttemplate" );
-        FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", Integer.class );
-        FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", fieldTemplate);
-
-        KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl(kPackage );
-        StringReader rule = new StringReader( drl );
-        try {
-            kBuilder.addPackageFromDrl(rule);
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    @Test
     public void testBitwiseOperator() {
         // DROOLS-585
         String drl =
@@ -7626,7 +7598,7 @@ public class Misc2Test {
             if ( memory != null && memory.getSegmentMemory() != null ) {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
                 System.out.println( memory );
-                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                TupleImpl deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 System.out.println( deleteFirst );
                 assertThat(deleteFirst).isNull();
             }
