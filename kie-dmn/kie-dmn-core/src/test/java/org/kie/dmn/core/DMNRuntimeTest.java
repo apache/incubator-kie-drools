@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -634,6 +635,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(ctx.get("Date-Time")).isEqualTo( ZonedDateTime.of( 2016, 12, 24, 23, 59, 0, 0, ZoneOffset.ofHours( -5 )));
         assertThat(ctx.get("Date")).isEqualTo( new HashMap<String, Object>(  ) {{
             put( "fromString", LocalDate.of( 2015, 12, 24 ) );
+            put( "fromStringToDateTime", ZonedDateTime.of( 2015, 12, 24, 0, 0, 0, 0, ZoneOffset.UTC) );
             put( "fromDateTime", LocalDate.of( 2016, 12, 24 ) );
             put( "fromYearMonthDay", LocalDate.of( 1999, 11, 22 ) );
         }});
@@ -656,6 +658,24 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( ctx.get("years")).isEqualTo(BigDecimal.valueOf( 1 ) );
         assertThat( ctx.get("d1seconds")).isEqualTo(BigDecimal.valueOf( 14 ) );
 
+    }
+
+    @Test
+    public void testDateToDateTimeFunction() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DateToDateTimeFunction.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE",
+                                                   "new-file");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext ctx = runtime.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        ZonedDateTime expected = ZonedDateTime.of(LocalDate.of(2021, 05, 31), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
+        assertThat(dmnResult.getDecisionResultByName("usingNormal").getResult()).isEqualTo(expected);
     }
 
     @Test

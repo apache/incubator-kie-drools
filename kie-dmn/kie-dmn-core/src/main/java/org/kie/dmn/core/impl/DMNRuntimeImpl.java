@@ -65,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EVALUATING;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SKIPPED;
+import static org.kie.dmn.core.util.CoerceUtil.coerceValue;
 
 public class DMNRuntimeImpl
         implements DMNRuntime {
@@ -661,16 +662,9 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
-                EvaluatorResult er = decision.getEvaluator().evaluate( this, result );
+                EvaluatorResult er = decision.getEvaluator().evaluate( this, result);
                 if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
-                    Object value = er.getResult();
-                    if( ! decision.getResultType().isCollection() && value instanceof Collection &&
-                        ((Collection)value).size()==1 ) {
-                        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-                        // and vice-versa
-                        value = ((Collection)value).toArray()[0];
-                    }
-
+                    Object value = coerceValue(decision.getResultType(), er.getResult());
                     try {
                         if (typeCheck && !d.getResultType().isAssignableValue(value)) {
                             DMNMessage message = MsgUtil.reportMessage( logger,
