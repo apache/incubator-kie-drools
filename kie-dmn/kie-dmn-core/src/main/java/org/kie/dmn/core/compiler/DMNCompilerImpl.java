@@ -230,7 +230,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }, Function.identity());
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-                        model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                        if (iAlias != null && !iAlias.isEmpty()) {
+                            model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                        }
                         importFromModel(model, located, iAlias);
                     }
                 } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
@@ -337,29 +339,30 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
-        model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
-        for (ItemDefNode idn : m.getItemDefinitions()) {
-            model.getTypeRegistry().registerType(idn.getType());
+    private void importFromModel(DMNModelImpl parentModel, DMNModel importedModel, String iAlias) {
+        parentModel.addImportChainChild(((DMNModelImpl) importedModel).getImportChain(), iAlias);
+        for (ItemDefNode idn : importedModel.getItemDefinitions()) {
             if (iAlias != null && iAlias.isEmpty()) {
-                model.getTypeRegistry().registerTypeInNamespace(idn.getType(), model.getNamespace());
+                parentModel.getTypeRegistry().registerTypeInNamespace(idn.getType(), parentModel.getNamespace());
+            } else {
+                parentModel.getTypeRegistry().registerType(idn.getType());
             }
         }
-        for (InputDataNode idn : m.getInputs()) {
-            model.addInput(idn);
+        for (InputDataNode idn : importedModel.getInputs()) {
+            parentModel.addInput(idn);
         }
-        for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
-//            if (iAlias != null && iAlias.isEmpty()) {
-//                model.addBusinessKnowledgeModelInNamespace(bkm);
-//            } else {
-                model.addBusinessKnowledgeModel(bkm);
-//            }
+        for (BusinessKnowledgeModelNode bkm : importedModel.getBusinessKnowledgeModels()) {
+            if (iAlias != null && iAlias.isEmpty()) {
+                parentModel.addBusinessKnowledgeModelInNamespace(bkm);
+            } else {
+            parentModel.addBusinessKnowledgeModel(bkm);
+            }
         }
-        for (DecisionNode dn : m.getDecisions()) {
-            model.addDecision(dn);
+        for (DecisionNode dn : importedModel.getDecisions()) {
+            parentModel.addDecision(dn);
         }
-        for (DecisionServiceNode dsn : m.getDecisionServices()) {
-            model.addDecisionService(dsn);
+        for (DecisionServiceNode dsn : importedModel.getDecisionServices()) {
+            parentModel.addDecisionService(dsn);
         }
     }
 
