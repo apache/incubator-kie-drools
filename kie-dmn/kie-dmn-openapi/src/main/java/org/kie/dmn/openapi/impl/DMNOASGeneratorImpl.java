@@ -82,6 +82,8 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         ObjectNode tree = JsonUtil.objectNode();
         ObjectNode definitions = JsonUtil.objectNode();
         tree.set("definitions", definitions);
+        // It would be better if the map is a TreeMap, however that breaks test ProcessItemTest.test_together
+        // For some reason, it looks like there is some reliance on the map being a HashMap, which should be investigated later as that should never happen.
         final List<Entry<DMNType, Schema>> sortedEntries = schemas.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.comparing(DMNType::getName))).toList();
         for (Entry<DMNType, Schema> kv : sortedEntries) {
             SchemaWriter.writeSchema(definitions, kv.getValue(), namingPolicy.getName(kv.getKey()));
