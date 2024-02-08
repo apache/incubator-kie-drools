@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.kie.kogito.index.graphql.DefaultDateTimeCoercing;
+import org.kie.kogito.index.api.DefaultDateTimeCoercing;
 import org.kie.kogito.index.graphql.GraphQLScalarTypeProducer;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;

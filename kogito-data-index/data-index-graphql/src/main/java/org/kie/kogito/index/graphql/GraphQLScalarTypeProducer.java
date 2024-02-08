@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.index.graphql;
 
+import org.kie.kogito.index.api.DateTimeCoercing;
+
 import graphql.schema.GraphQLScalarType;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;

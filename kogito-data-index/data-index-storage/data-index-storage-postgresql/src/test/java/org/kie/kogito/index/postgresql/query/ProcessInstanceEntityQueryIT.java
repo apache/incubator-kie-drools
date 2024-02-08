@@ -18,30 +18,13 @@
  */
 package org.kie.kogito.index.postgresql.query;
 
-import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
-import org.kie.kogito.index.storage.ProcessInstanceStorage;
-import org.kie.kogito.index.test.query.AbstractProcessInstanceQueryIT;
+import org.kie.kogito.index.jpa.query.AbstractProcessInstanceEntityQueryIT;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
-import jakarta.inject.Inject;
-
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceQueryIT {
-
-    @Inject
-    ProcessInstanceEntityStorage storage;
-
-    @Override
-    public ProcessInstanceStorage getStorage() {
-        return storage;
-    }
-
-    @Override
-    protected Boolean isDateTimeAsLong() {
-        return false;
-    }
+class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT {
 }

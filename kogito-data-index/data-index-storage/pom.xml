@@ -36,11 +36,11 @@
     <module>data-index-storage-api</module>
     <module>data-index-storage-protobuf</module>
     <module>data-index-storage-postgresql</module>
-    <module>data-index-storage-jpa</module>
+    <module>data-index-storage-jpa-common</module>
     <module>data-index-storage-common</module>
     <module>data-index-storage-infinispan</module>
     <module>data-index-storage-mongodb</module>
     <module>data-index-storage-postgresql-reporting</module>
-    <module>data-index-storage-oracle</module>
+    <module>data-index-storage-jpa</module>
   </modules>
 </project>

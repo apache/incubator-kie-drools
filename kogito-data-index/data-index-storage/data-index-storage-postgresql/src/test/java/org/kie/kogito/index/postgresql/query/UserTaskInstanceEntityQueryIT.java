@@ -18,30 +18,14 @@
  */
 package org.kie.kogito.index.postgresql.query;
 
-import org.kie.kogito.index.jpa.storage.UserTaskInstanceEntityStorage;
-import org.kie.kogito.index.storage.UserTaskInstanceStorage;
-import org.kie.kogito.index.test.query.AbstractUserTaskInstanceQueryIT;
+import org.kie.kogito.index.jpa.query.AbstractUserTaskInstanceEntityQueryIT;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
-import jakarta.inject.Inject;
-
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-class UserTaskInstanceEntityQueryIT extends AbstractUserTaskInstanceQueryIT {
+class UserTaskInstanceEntityQueryIT extends AbstractUserTaskInstanceEntityQueryIT {
 
-    @Inject
-    UserTaskInstanceEntityStorage storage;
-
-    @Override
-    public UserTaskInstanceStorage getStorage() {
-        return storage;
-    }
-
-    @Override
-    protected Boolean isDateTimeAsLong() {
-        return false;
-    }
 }

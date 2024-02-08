@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.api.DefaultDateTimeCoercing;
 
 import graphql.language.StringValue;
 import graphql.schema.CoercingSerializeException;

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -265,17 +264,6 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
-                <artifactId>data-index-storage-oracle</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>data-index-storage-oracle</artifactId>
-                <version>${project.version}</version>
-                <classifier>sources</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-storage-jpa</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -284,6 +272,24 @@
                 <artifactId>data-index-storage-jpa</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-storage-jpa-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-storage-jpa-common</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-storage-jpa-common</artifactId>
+                <version>${project.version}</version>
+                <classifier>test-jar</classifier>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
@@ -365,17 +371,6 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-service-mongodb</artifactId>
-                <version>${project.version}</version>
-                <classifier>sources</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>data-index-service-oracle</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>data-index-service-oracle</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>

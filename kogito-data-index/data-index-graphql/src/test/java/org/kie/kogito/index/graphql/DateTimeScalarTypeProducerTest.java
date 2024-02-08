@@ -19,6 +19,7 @@
 package org.kie.kogito.index.graphql;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.api.DefaultDateTimeCoercing;
 
 import graphql.schema.GraphQLScalarType;
 

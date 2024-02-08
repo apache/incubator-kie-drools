@@ -18,37 +18,13 @@
  */
 package org.kie.kogito.index.postgresql.storage;
 
-import java.util.UUID;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
-import org.kie.kogito.index.model.ProcessInstanceState;
-import org.kie.kogito.index.test.TestUtils;
+import org.kie.kogito.index.jpa.storage.AbstractProcessInstanceStorageIT;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
-import jakarta.inject.Inject;
-
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-public class ProcessInstanceStorageIT {
-
-    @Inject
-    ProcessInstanceEntityRepository repository;
-
-    @Test
-    public void testProcessInstanceEntity() {
-        String processInstanceId = UUID.randomUUID().toString();
-        TestUtils
-                .createProcessInstance(processInstanceId, RandomStringUtils.randomAlphabetic(5), UUID.randomUUID().toString(),
-                        RandomStringUtils.randomAlphabetic(10), ProcessInstanceState.ACTIVE.ordinal(), 0L);
-        TestUtils
-                .createProcessInstance(processInstanceId, RandomStringUtils.randomAlphabetic(5), UUID.randomUUID().toString(),
-                        RandomStringUtils.randomAlphabetic(10), ProcessInstanceState.COMPLETED.ordinal(), 1000L);
-
-    }
-
+public class ProcessInstanceStorageIT extends AbstractProcessInstanceStorageIT {
 }

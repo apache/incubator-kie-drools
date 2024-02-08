@@ -18,38 +18,13 @@
  */
 package org.kie.kogito.index.postgresql.storage;
 
-import java.util.UUID;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.jpa.model.UserTaskInstanceEntityRepository;
-import org.kie.kogito.index.test.TestUtils;
+import org.kie.kogito.index.jpa.storage.AbstractUserTaskInstanceStorageIT;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
-import jakarta.inject.Inject;
-
 @QuarkusTest
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-public class UserTaskInstanceStorageIT {
-
-    @Inject
-    UserTaskInstanceEntityRepository repository;
-
-    @Test
-    public void testUserTaskInstanceEntity() {
-        String taskId = UUID.randomUUID().toString();
-        String processInstanceId = UUID.randomUUID().toString();
-        TestUtils
-                .createUserTaskInstance(taskId, processInstanceId, RandomStringUtils.randomAlphabetic(5),
-                        UUID.randomUUID().toString(),
-                        RandomStringUtils.randomAlphabetic(10), "InProgress", 0L);
-        TestUtils
-                .createUserTaskInstance(taskId, processInstanceId, RandomStringUtils.randomAlphabetic(5),
-                        UUID.randomUUID().toString(),
-                        RandomStringUtils.randomAlphabetic(10), "Completed", 1000L);
-    }
-
+public class UserTaskInstanceStorageIT extends AbstractUserTaskInstanceStorageIT {
 }

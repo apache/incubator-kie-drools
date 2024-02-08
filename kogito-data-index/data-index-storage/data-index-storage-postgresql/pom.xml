@@ -39,7 +39,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>data-index-storage-jpa</artifactId>
+      <artifactId>data-index-storage-jpa-common</artifactId>
     </dependency>
      <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -51,6 +51,13 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+     <dependency>
+       <groupId>org.kie.kogito</groupId>
+       <artifactId>data-index-storage-jpa-common</artifactId>
+       <type>test-jar</type>
+       <scope>test</scope>
+       <version>${project.version}</version>
+     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-mockito</artifactId>
