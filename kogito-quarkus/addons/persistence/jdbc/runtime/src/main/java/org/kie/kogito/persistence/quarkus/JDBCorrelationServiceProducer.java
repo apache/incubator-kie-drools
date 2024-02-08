@@ -18,33 +18,29 @@
  */
 package org.kie.kogito.persistence.quarkus;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.DefaultCorrelationService;
-import org.kie.kogito.persistence.jdbc.DatabaseType;
-import org.kie.kogito.persistence.jdbc.correlation.JDBCCorrelationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.kogito.persistence.jdbc.correlation.PostgreSQLCorrelationService;
 
 import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+
+import static org.kie.kogito.persistence.quarkus.KogitoAddOnPersistenceJDBCConfigSourceFactory.DATASOURCE_DB_KIND;
+import static org.kie.kogito.persistence.quarkus.KogitoAddOnPersistenceJDBCConfigSourceFactory.POSTGRESQL;
 
 public class JDBCorrelationServiceProducer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCorrelationServiceProducer.class);
+    @Inject
+    @ConfigProperty(name = DATASOURCE_DB_KIND)
+    Optional<String> dbKind;
 
     @Produces
     public CorrelationService jdbcCorrelationService(DataSource dataSource) {
-        try (Connection connection = dataSource.getConnection()) {
-            if (!DatabaseType.POSTGRES.equals(DatabaseType.getDataBaseType(connection))) {
-                return new DefaultCorrelationService();
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Error getting connection for {}", dataSource);
-        }
-        return new JDBCCorrelationService(dataSource);
+        return dbKind.filter(POSTGRESQL::equals).isPresent() ? new PostgreSQLCorrelationService(dataSource) : new DefaultCorrelationService();
     }
 }

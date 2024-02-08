@@ -96,11 +96,6 @@
       <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc11</artifactId>
-      <version>${version.com.oracle.database.jdbc}</version>
-    </dependency>
 
     <dependency>
       <groupId>org.testcontainers</groupId>

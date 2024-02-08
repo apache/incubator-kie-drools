@@ -40,10 +40,9 @@ public class KogitoAddOnPersistenceJDBCConfigSourceFactory implements ConfigSour
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoAddOnPersistenceJDBCConfigSourceFactory.class);
 
     static final String FLYWAY_LOCATIONS = "quarkus.flyway.locations";
-    private static final String DATASOURCE_DB_KIND = "quarkus.datasource.db-kind";
+    static final String DATASOURCE_DB_KIND = "quarkus.datasource.db-kind";
     private static final String LOCATION_PREFIX = "classpath:/db/";
     static final String POSTGRESQL = "postgresql";
-    private static final String ORACLE = "oracle";
     private static final String ANSI = "ansi";
 
     @Override
@@ -77,8 +76,6 @@ public class KogitoAddOnPersistenceJDBCConfigSourceFactory implements ConfigSour
     private String getDBName(final String dbKind) {
         if (POSTGRESQL.equals(dbKind)) {
             return POSTGRESQL;
-        } else if (ORACLE.equals(dbKind)) {
-            return ORACLE;
         } else {
             return ANSI;
         }
