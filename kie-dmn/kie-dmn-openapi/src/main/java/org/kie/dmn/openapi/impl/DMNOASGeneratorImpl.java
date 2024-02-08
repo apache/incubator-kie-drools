@@ -37,12 +37,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class DMNOASGeneratorImpl implements DMNOASGenerator {
@@ -52,7 +52,7 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private final Set<DMNType> typesIndex = new HashSet<>();
     private final String refPrefix;
     private NamingPolicy namingPolicy;
-    private final Map<DMNType, Schema> schemas = new TreeMap<>(Comparator.comparing(DMNType::getName));
+    private final Map<DMNType, Schema> schemas = new HashMap<>();
     private ObjectNode jsonSchema;
 
     public DMNOASGeneratorImpl(Collection<DMNModel> models, String refPrefix) {
@@ -82,7 +82,8 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         ObjectNode tree = JsonUtil.objectNode();
         ObjectNode definitions = JsonUtil.objectNode();
         tree.set("definitions", definitions);
-        for (Entry<DMNType, Schema> kv : schemas.entrySet()) {
+        final List<Entry<DMNType, Schema>> sortedEntries = schemas.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.comparing(DMNType::getName))).toList();
+        for (Entry<DMNType, Schema> kv : sortedEntries) {
             SchemaWriter.writeSchema(definitions, kv.getValue(), namingPolicy.getName(kv.getKey()));
         }
         jsonSchema = tree;
