@@ -18,9 +18,8 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.UUID;
-
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
+import org.jbpm.util.UUIDGenerator;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -34,7 +33,7 @@ public class DefaultProcessInstanceManagerTest {
     public void testCreateProcessInstance() {
         DefaultProcessInstanceManager pim = new DefaultProcessInstanceManager();
         final String processId = "processId";
-        final String instanceId = UUID.randomUUID().toString();
+        final String instanceId = UUIDGenerator.getID();
         KogitoProcessInstance kpi = mock(KogitoProcessInstance.class);
         when(kpi.getProcessId()).thenReturn(processId);
         when(kpi.getStringId()).thenReturn(instanceId);

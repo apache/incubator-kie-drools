@@ -25,10 +25,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jbpm.util.UUIDGenerator;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -191,7 +191,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         if (nodeInstance.getStringId() == null) {
             // assign new id only if it does not exist as it might already be set by marshalling 
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
-            ((NodeInstanceImpl) nodeInstance).setId(UUID.randomUUID().toString());
+            ((NodeInstanceImpl) nodeInstance).setId(UUIDGenerator.getID());
         }
         this.nodeInstances.add(nodeInstance);
     }

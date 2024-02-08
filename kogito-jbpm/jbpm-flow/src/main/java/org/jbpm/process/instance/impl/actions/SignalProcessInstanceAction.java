@@ -21,11 +21,11 @@ package org.jbpm.process.instance.impl.actions;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.util.VariableUtil;
+import org.jbpm.util.UUIDGenerator;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -108,7 +108,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
             context.getProcessInstance().signalEvent(signalName, signal);
         } else if (EXTERNAL_SCOPE.equals(scope)) {
             KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
-            workItem.setId(UUID.randomUUID().toString());
+            workItem.setId(UUIDGenerator.getID());
             workItem.setName("External Send Task");
             workItem.setNodeInstanceId(context.getNodeInstance().getStringId());
             workItem.setProcessInstanceId(context.getProcessInstance().getStringId());

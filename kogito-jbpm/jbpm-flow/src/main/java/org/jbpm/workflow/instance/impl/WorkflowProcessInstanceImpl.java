@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -52,6 +51,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.util.PatternConstants;
+import org.jbpm.util.UUIDGenerator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -165,7 +165,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         if (nodeInstance.getStringId() == null) {
             // assign new id only if it does not exist as it might already be set by marshalling
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
-            ((NodeInstanceImpl) nodeInstance).setId(UUID.randomUUID().toString());
+            ((NodeInstanceImpl) nodeInstance).setId(UUIDGenerator.getID());
         }
         this.nodeInstances.add(nodeInstance);
     }
@@ -563,7 +563,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     private TimerInstance createDurationTimer(long duration) {
         TimerInstance timerInstance = new TimerInstance();
-        timerInstance.setId(UUID.randomUUID().toString());
+        timerInstance.setId(UUIDGenerator.getID());
         timerInstance.setTimerId("-1");
         timerInstance.setDelay(duration);
         timerInstance.setPeriod(0);

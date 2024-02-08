@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
@@ -47,6 +46,7 @@ import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
+import org.jbpm.util.UUIDGenerator;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.NodeIoHelper;
@@ -222,7 +222,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     protected InternalKogitoWorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
         workItem = newWorkItem();
-        workItem.setId(UUID.randomUUID().toString());
+        workItem.setId(UUIDGenerator.getID());
         workItem.setName(work.getName());
         workItem.setProcessInstanceId(getProcessInstance().getStringId());
         workItem.setProcessInstance(this.getKogitoProcessInstance());

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -53,6 +52,7 @@ import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.util.PatternConstants;
+import org.jbpm.util.UUIDGenerator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -650,7 +650,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     private DataDefinition toDataExpression(String expression) {
-        DataDefinition dataSpec = new DataDefinition(UUID.randomUUID().toString(), "EXPRESSION (" + expression + ")", null);
+        DataDefinition dataSpec = new DataDefinition(UUIDGenerator.getID(), "EXPRESSION (" + expression + ")", null);
         dataSpec.setExpression(expression);
         return dataSpec;
 
