@@ -16,31 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl.parser;
+package org.drools.drl10.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 
 /**
- * This is a helper class that provides helper methods to parse expressions
- * using both the DRLExpressions parser and the DRLExprTree parser.
+ * Collect errors while parsing DRL
  */
-public interface DrlExprParser {
+public class DRLErrorListener extends BaseErrorListener {
 
-    /** Parse an expression from text */
-    ConstraintConnectiveDescr parse( final String text );
+    private final List<DRLParserError> errors = new ArrayList<>();
 
-    String getLeftMostExpr();
+    public List<DRLParserError> getErrors() {
+        return errors;
+    }
 
-    /**
-     * @return true if there were parser errors.
-     */
-    boolean hasErrors();
+    @Override
+    public void syntaxError(Recognizer<?, ?> recognizer,
+                            Object offendingSymbol,
+                            int line,
+                            int charPositionInLine,
+                            String msg,
+                            RecognitionException e) {
 
-    /**
-     * @return a list of errors found while parsing. 
-     */
-    @SuppressWarnings("unchecked")
-    List<DroolsParserException> getErrors();
+        errors.add(new DRLParserError(line, charPositionInLine, msg));
+    }
 }

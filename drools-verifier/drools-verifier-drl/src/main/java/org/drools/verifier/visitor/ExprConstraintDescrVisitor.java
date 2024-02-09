@@ -20,6 +20,7 @@ package org.drools.verifier.visitor;
 
 import java.util.List;
 
+import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.ast.descr.AtomicExprDescr;
@@ -57,7 +58,7 @@ public class ExprConstraintDescrVisitor {
 
     public void visit(ExprConstraintDescr descr) {
 
-        DrlExprParser drlExprParser = new DrlExprParser(LanguageLevelOption.DRL5);
+        DrlExprParser drlExprParser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL5);
         ConstraintConnectiveDescr constraintConnectiveDescr = drlExprParser.parse(descr.getExpression());
 
         visit(constraintConnectiveDescr.getDescrs());

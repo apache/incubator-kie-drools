@@ -16,31 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl.parser;
+package org.drools.drl.parser.lang;
 
 import java.util.List;
 
-import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.antlr.runtime.Token;
+import org.drools.drl.parser.DroolsParserException;
 
 /**
- * This is a helper class that provides helper methods to parse expressions
- * using both the DRLExpressions parser and the DRLExprTree parser.
+ * No implementation because everything is handled by DRL10Parser
  */
-public interface DrlExprParser {
+public class DRL10Lexer implements DRLLexer {
 
-    /** Parse an expression from text */
-    ConstraintConnectiveDescr parse( final String text );
+    @Override
+    public String getSourceName() {
+        return null;
+    }
 
-    String getLeftMostExpr();
+    @Override
+    public Token nextToken() {
+        return null;
+    }
 
-    /**
-     * @return true if there were parser errors.
-     */
-    boolean hasErrors();
+    @Override
+    public List<DroolsParserException> getErrors() {
+        return null;
+    }
 
-    /**
-     * @return a list of errors found while parsing. 
-     */
-    @SuppressWarnings("unchecked")
-    List<DroolsParserException> getErrors();
 }

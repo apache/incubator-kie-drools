@@ -16,31 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl.parser;
+package org.drools.drl10.parser;
 
-import java.util.List;
+public class DRLParserException extends RuntimeException {
 
-import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+    public DRLParserException() {
+        super();
+    }
 
-/**
- * This is a helper class that provides helper methods to parse expressions
- * using both the DRLExpressions parser and the DRLExprTree parser.
- */
-public interface DrlExprParser {
-
-    /** Parse an expression from text */
-    ConstraintConnectiveDescr parse( final String text );
-
-    String getLeftMostExpr();
-
-    /**
-     * @return true if there were parser errors.
-     */
-    boolean hasErrors();
-
-    /**
-     * @return a list of errors found while parsing. 
-     */
-    @SuppressWarnings("unchecked")
-    List<DroolsParserException> getErrors();
+    public DRLParserException(String message) {
+        super(message);
+    }
 }
