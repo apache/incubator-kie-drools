@@ -19,8 +19,7 @@
 package org.jbpm.workflow.core.impl;
 
 import java.io.Serializable;
-
-import org.jbpm.util.UUIDGenerator;
+import java.util.UUID;
 
 public class DataDefinition implements Serializable {
 
@@ -32,7 +31,7 @@ public class DataDefinition implements Serializable {
     private String expression;
 
     public DataDefinition(String expression) {
-        this.id = UUIDGenerator.getID();
+        this.id = UUID.randomUUID().toString();
         this.label = "EXPRESSION - (" + expression + ")";
         this.type = "java.lang.Object";
         this.expression = expression;

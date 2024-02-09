@@ -22,8 +22,8 @@ import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
-import org.jbpm.util.UUIDGenerator;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.kogito.MapOutput;
@@ -179,6 +179,6 @@ public class HumanTaskHelper {
     }
 
     private static String getNewId() {
-        return UUIDGenerator.getID();
+        return UUID.randomUUID().toString();
     }
 }

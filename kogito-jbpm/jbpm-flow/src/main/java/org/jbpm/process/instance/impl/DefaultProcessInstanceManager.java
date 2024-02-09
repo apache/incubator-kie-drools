@@ -22,10 +22,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbpm.process.instance.ProcessInstanceManager;
-import org.jbpm.util.UUIDGenerator;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {
@@ -36,7 +36,7 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
     public void addProcessInstance(KogitoProcessInstance processInstance) {
         if (Objects.isNull(processInstance.getStringId())) {
-            ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(UUIDGenerator.getID());
+            ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(UUID.randomUUID().toString());
         }
         internalAddProcessInstance(processInstance);
     }

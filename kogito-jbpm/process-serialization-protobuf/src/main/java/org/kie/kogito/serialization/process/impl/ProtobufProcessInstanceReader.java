@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,6 @@ import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemImpl;
 import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.humantask.Reassignment;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
-import org.jbpm.util.UUIDGenerator;
 import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -566,7 +566,7 @@ public class ProtobufProcessInstanceReader {
         } else {
             WorkItemNodeInstance nodeInstance = new WorkItemNodeInstance();
             KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
-            workItem.setId(UUIDGenerator.getID());
+            workItem.setId(UUID.randomUUID().toString());
             nodeInstance.internalSetWorkItem(workItem);
             return nodeInstance;
         }
