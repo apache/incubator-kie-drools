@@ -48,6 +48,8 @@ public class AlphaNodeTest {
 
     @Test
     public void testAlpha() {
+
+
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -195,7 +197,7 @@ public class AlphaNodeTest {
                 "  $p : Person(name == \"Mario\")\n" +
                 "  $s : String(this == $p.name)\n" +
                 "then\n" +
-                "  modify($p) { setName(\"Mark\") }" +
+                "  modify($p) { setName(\"Mark\") }\n" +
                 "end\n" +
                 "rule R2 when\n" +
                 "  $p : Person(name == \"Mark\")\n" +
