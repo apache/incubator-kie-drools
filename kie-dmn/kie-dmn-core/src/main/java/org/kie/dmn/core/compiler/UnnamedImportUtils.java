@@ -30,7 +30,6 @@ public class UnnamedImportUtils {
     private UnnamedImportUtils() {
     }
 
-
     public static boolean isInUnnamedImport(DMNNode node, DMNModelImpl model) {
         for (Import imported : model.getDefinitions().getImport()) {
             String importedName = imported.getName();

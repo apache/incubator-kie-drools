@@ -42,7 +42,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -232,7 +231,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
                         // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them
-                        //  with original opne,
+                        //  with original one,
                         // because otherwise we would have to deal with clashing name aliases, or similar issues
                         if (iAlias != null && !iAlias.isEmpty()) {
                             model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
@@ -763,34 +762,22 @@ public class DMNCompilerImpl implements DMNCompiler {
 
             DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
             if (type == null && localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
-                    if (model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable) {
-                        DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
-                        if (dt.getOutput().size() > 1) {
-                            // implicitly define a type for the decision table result
-                            CompositeTypeImpl compType = new CompositeTypeImpl(dmnModel.getNamespace(),
-                                                                               model.getName() + "_Type",
-                                                                               model.getId(),
-                                                                               dt.getHitPolicy().isMultiHit());
-                            for (OutputClause oc : dt.getOutput()) {
-                                DMNType fieldType = resolveTypeRef(dmnModel, model, oc, oc.getTypeRef());
-                                compType.addField(oc.getName(), fieldType);
-                            }
-                            dmnModel.getTypeRegistry().registerType(compType);
-                            return compType;
-                        } else if (dt.getOutput().size() == 1) {
-                            return resolveTypeRef(dmnModel, model, dt.getOutput().get(0),
-                                                  dt.getOutput().get(0).getTypeRef());
+                if ( model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable ) {
+                    DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
+                    if ( dt.getOutput().size() > 1 ) {
+                        // implicitly define a type for the decision table result
+                        CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), model.getName()+"_Type", model.getId(), dt.getHitPolicy().isMultiHit() );
+                        for ( OutputClause oc : dt.getOutput() ) {
+                            DMNType fieldType = resolveTypeRef(dmnModel, model, oc, oc.getTypeRef());
+                            compType.addField( oc.getName(), fieldType );
                         }
+                        dmnModel.getTypeRegistry().registerType( compType );
+                        return compType;
+                    } else if ( dt.getOutput().size() == 1 ) {
+                        return resolveTypeRef(dmnModel, model, dt.getOutput().get(0), dt.getOutput().get(0).getTypeRef());
                     }
                 }
-//            // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them with
-//            //  original one,
-//            // Here, we try to solve elements that comes from different namespaces but are the same types - e.g. "string"
-//            if (type == null && !localElement.getURIFEEL().equals(dmnModel.getTypeRegistry().feelNS())) {
-//                nsAndName = new QName(dmnModel.getTypeRegistry().feelNS(), typeRef.getLocalPart());
-//                type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
-//            }
-            if (type == null) {
+            } else if( type == null ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
                                        localElement,

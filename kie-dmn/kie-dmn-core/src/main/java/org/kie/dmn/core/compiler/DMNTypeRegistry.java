@@ -31,14 +31,6 @@ public interface DMNTypeRegistry extends FEELTypeRegistry {
 
     DMNType registerType(DMNType type);
 
-    /**
-     * Method used to register a type under different namespace. Needed, e.g., when importing a model with empty string as name
-     * @param type
-     * @param targetNamespace
-     * @return
-     */
-    DMNType registerTypeInNamespace(DMNType type, String targetNamespace);
-
     DMNType resolveType(String namespace, String name);
 
     String feelNS();
