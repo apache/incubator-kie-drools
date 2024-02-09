@@ -42,6 +42,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -211,7 +212,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
         DMNCompilerContext ctx = new DMNCompilerContext(feel);
         ctx.setRelativeResolver(relativeResolver);
-
+        List<DMNModel> toMerge = new ArrayList<>();
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {
                 if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
@@ -230,10 +231,13 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }, Function.identity());
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
+                        // TODO EXPERIMENT
                         if (iAlias != null && !iAlias.isEmpty()) {
                             model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                            importFromModel(model, located, iAlias);
+                        } else {
+                            toMerge.add(located);
                         }
-                        importFromModel(model, located, iAlias);
                     }
                 } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
                     processPMMLImport(model, i, relativeResolver);
@@ -251,9 +255,28 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
         }
 
+        toMerge.forEach(mergedModel -> processMergedModel(ctx, model, mergedModel));
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
+
         return model;
+    }
+
+    private void processMergedModel(DMNCompilerContext ctx, DMNModelImpl parentModel, DMNModel mergedModel) {
+//        for (ItemDefNode idn : mergedModel.getItemDefinitions()) {
+//            parentModel.getTypeRegistry().registerType(idn.getType());
+//        }
+        Definitions parentDefinitions = parentModel.getDefinitions();
+        Definitions mergedDefinitions = mergedModel.getDefinitions();
+        parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
+        parentDefinitions.getDecisionService().addAll(mergedDefinitions.getDecisionService());
+        parentDefinitions.getBusinessContextElement().addAll(mergedDefinitions.getBusinessContextElement());
+        parentDefinitions.getDrgElement().addAll(mergedDefinitions.getDrgElement());
+        parentDefinitions.getImport().addAll(mergedDefinitions.getImport());
+        parentDefinitions.getItemDefinition().addAll(mergedDefinitions.getItemDefinition());
+        mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
+//        processItemDefinitions(ctx, parentModel, mergedModel.getDefinitions());
+//        processDrgElements(ctx, parentModel, mergedModel.getDefinitions());
     }
 
     private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {
@@ -342,21 +365,21 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void importFromModel(DMNModelImpl parentModel, DMNModel importedModel, String iAlias) {
         parentModel.addImportChainChild(((DMNModelImpl) importedModel).getImportChain(), iAlias);
         for (ItemDefNode idn : importedModel.getItemDefinitions()) {
-            if (iAlias != null && iAlias.isEmpty()) {
-                parentModel.getTypeRegistry().registerTypeInNamespace(idn.getType(), parentModel.getNamespace());
-            } else {
+//            if (iAlias != null && iAlias.isEmpty()) {
+//                parentModel.getTypeRegistry().registerTypeInNamespace(idn.getType(), parentModel.getNamespace());
+//            } else {
                 parentModel.getTypeRegistry().registerType(idn.getType());
-            }
+//            }
         }
         for (InputDataNode idn : importedModel.getInputs()) {
             parentModel.addInput(idn);
         }
         for (BusinessKnowledgeModelNode bkm : importedModel.getBusinessKnowledgeModels()) {
-            if (iAlias != null && iAlias.isEmpty()) {
-                parentModel.addBusinessKnowledgeModelInNamespace(bkm);
-            } else {
+//            if (iAlias != null && iAlias.isEmpty()) {
+//                parentModel.addBusinessKnowledgeModelInNamespace(bkm);
+//            } else {
             parentModel.addBusinessKnowledgeModel(bkm);
-            }
+//            }
         }
         for (DecisionNode dn : importedModel.getDecisions()) {
             parentModel.addDecision(dn);
@@ -745,23 +768,34 @@ public class DMNCompilerImpl implements DMNCompiler {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef, dmnModel.getNamespace());
 
             DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
-            if (type == null && localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
-                if ( model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable ) {
-                    DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
-                    if ( dt.getOutput().size() > 1 ) {
-                        // implicitly define a type for the decision table result
-                        CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), model.getName()+"_Type", model.getId(), dt.getHitPolicy().isMultiHit() );
-                        for ( OutputClause oc : dt.getOutput() ) {
-                            DMNType fieldType = resolveTypeRef(dmnModel, model, oc, oc.getTypeRef());
-                            compType.addField( oc.getName(), fieldType );
+            if (type == null) {
+                if (localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
+                    if (model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable) {
+                        DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
+                        if (dt.getOutput().size() > 1) {
+                            // implicitly define a type for the decision table result
+                            CompositeTypeImpl compType = new CompositeTypeImpl(dmnModel.getNamespace(),
+                                                                               model.getName() + "_Type",
+                                                                               model.getId(),
+                                                                               dt.getHitPolicy().isMultiHit());
+                            for (OutputClause oc : dt.getOutput()) {
+                                DMNType fieldType = resolveTypeRef(dmnModel, model, oc, oc.getTypeRef());
+                                compType.addField(oc.getName(), fieldType);
+                            }
+                            dmnModel.getTypeRegistry().registerType(compType);
+                            return compType;
+                        } else if (dt.getOutput().size() == 1) {
+                            return resolveTypeRef(dmnModel, model, dt.getOutput().get(0),
+                                                  dt.getOutput().get(0).getTypeRef());
                         }
-                        dmnModel.getTypeRegistry().registerType( compType );
-                        return compType;
-                    } else if ( dt.getOutput().size() == 1 ) {
-                        return resolveTypeRef(dmnModel, model, dt.getOutput().get(0), dt.getOutput().get(0).getTypeRef());
                     }
                 }
-            } else if( type == null ) {
+                if (!localElement.getURIFEEL().equals(dmnModel.getTypeRegistry().feelNS())) {
+                    nsAndName = new QName(dmnModel.getTypeRegistry().feelNS(), typeRef.getLocalPart());
+                    type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
+                }
+            }
+            if (type == null) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
                                        localElement,

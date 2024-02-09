@@ -45,7 +45,6 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
     protected ScopeImpl feelTypesScope = new ScopeImpl(); // no parent scope, intentional.
     protected Map<String, ScopeImpl> feelTypesScopeChildLU = new HashMap<>();
 
-    protected abstract String feelNS();
 
     public DMNTypeRegistryAbstract(Map<String, QName> aliases) {
         this.aliases = aliases;

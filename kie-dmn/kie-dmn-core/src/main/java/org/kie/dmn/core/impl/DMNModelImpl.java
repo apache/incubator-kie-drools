@@ -283,6 +283,7 @@ public class DMNModelImpl
 
     public void addBusinessKnowledgeModelInNamespace(BusinessKnowledgeModelNode bkm) {
         bkms.put(bkm.getId(), bkm);
+       // ((BusinessKnowledgeModelNodeImpl)bkm).getSource().
     }
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
         bkms.put(computeDRGElementModelLocalId(bkm), bkm);

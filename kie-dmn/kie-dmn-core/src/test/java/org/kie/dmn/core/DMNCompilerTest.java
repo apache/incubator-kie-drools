@@ -300,12 +300,13 @@ public class DMNCompilerTest extends BaseVariantTest {
             LOG.debug("{}", message);
         }
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.getDecisionResultByName("Greeting").getResult()).isEqualTo("Hello John!");
+        // Verify locally-defined BusinessKnowledgeModel
+        assertThat(evaluateAll.getDecisionResultByName("Local Greeting").getResult()).isEqualTo("Local Hello John!");
 
         if (isTypeSafe()) {
             FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
             Map<String, Object> allProperties = outputSet.allFEELProperties();
-            assertThat(allProperties.get("Greeting")).isEqualTo("Hello John!");
+            assertThat(allProperties).containsEntry("Local Greeting", "Local Hello John!");
         }
     }
 
