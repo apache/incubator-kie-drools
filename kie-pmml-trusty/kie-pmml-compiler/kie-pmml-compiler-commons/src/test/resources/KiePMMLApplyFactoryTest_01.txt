@@ -1,0 +1,9 @@
+{
+    KiePMMLConstant %3$s_0 = new KiePMMLConstant("%3$s_0", Collections.emptyList(), %1$s, null);
+    KiePMMLConstant %3$s_1 = new KiePMMLConstant("%3$s_1", Collections.emptyList(), %2$s, null);
+    KiePMMLApply %3$s = KiePMMLApply.builder("%3$s", Collections.emptyList(), "%4$s")
+            .withDefaultValue("%5$s")
+            .withMapMissingTo("%6$s")
+            .withInvalidValueTreatmentMethod("%7$s")
+            .withKiePMMLExpressions(Arrays.asList(%3$s_0, %3$s_1)).build();
+}

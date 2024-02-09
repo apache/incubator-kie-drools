@@ -1,0 +1,24 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+name: Jenkins Tests
+on:
+  pull_request:
+    paths: 
+    - '.ci/jenkins/**'
+    - '.github/workflows/jenkins-tests-PR.yml'
+
+jobs:
+  dsl-tests:
+    concurrency:
+      group: ${{ github.repository.name }}_dsl_tests-${{ github.head_ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    name: DSL
+    steps:
+    - name: DSL tests
+      uses: apache/incubator-kie-kogito-pipelines/.ci/actions/dsl-tests@main
+      with:
+        project: incubator-kie-drools
+        main-config-file-repo: apache/incubator-kie-drools
+        main-config-file-path: .ci/jenkins/config/main.yaml
+        branch-config-file-repo: apache/incubator-kie-drools

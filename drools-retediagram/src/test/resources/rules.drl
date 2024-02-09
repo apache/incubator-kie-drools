@@ -1,0 +1,41 @@
+package org.drools.retediagram.model;
+
+global java.util.Set controlSet;
+
+rule "For color"
+no-loop
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	controlSet.add($colorVal);
+end
+
+rule "Likes cheddar"
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese == $cheddar )
+then
+    System.out.println( $person.getName() + " likes cheddar" );
+end
+
+rule "Don't like cheddar"
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese != $cheddar )
+then
+    System.out.println( $person.getName() + " does not like cheddar" );
+end
+
+rule "Color count"
+when
+    accumulate( $m: Measurement( id == "color" ); $c: count($m) )
+then
+    System.out.println( $c );
+end
+
+rule "Not a Color"
+when
+    not ( Measurement( id == "color" ) and String() )
+then
+    System.out.println( "no color yet." );
+end

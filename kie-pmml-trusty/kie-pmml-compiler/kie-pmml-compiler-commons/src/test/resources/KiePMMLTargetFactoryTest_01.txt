@@ -1,0 +1,3 @@
+KiePMMLTarget.builder("%s", Collections.emptyList(),
+new TargetField(Arrays.asList(new TargetValue("%s", "%s", %s, %s), new TargetValue("%s", "%s", %s, %s), new TargetValue("%s", "%s", %s, %s)), %s, "%s", %s, %s, %s, %s, %s))
+    .build()

@@ -1,0 +1,1 @@
+new KiePMMLLinearNorm("%s", Collections.emptyList(), %s, %s)

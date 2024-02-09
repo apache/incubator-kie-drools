@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456" xmlns:included1="test_kmeans.pmml" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_CA32FDFE-2E29-4026-AA95-08A290808FF7" name="KMeansDMN" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_51A1FD67-8A67-4332-9889-B718BE8B7456">
+    <dmn:extensionElements/>
+    <dmn:import id="_TestKMeans" name="TestKMeans" namespace="TestKMeans" locationURI="test_kmeans.pmml" importType="http://www.dmg.org/PMML-4_2"/>
+    <dmn:inputData id="_x" name="x">
+      <dmn:variable name="x" typeRef="Any"/>
+    </dmn:inputData>
+    <dmn:inputData id="_y" name="y">
+      <dmn:variable name="y" typeRef="Any"/>
+    </dmn:inputData>
+    <dmn:businessKnowledgeModel id="_KMeansModelBKM" name="KMeansModelBKM">
+      <dmn:extensionElements/>
+      <dmn:variable id="_KMeansModelBKM2" name="KMeansModelBKM"/>
+      <dmn:encapsulatedLogic id="pmml_logic" kind="PMML">
+        <dmn:formalParameter id="_xx" name="x" typeRef="Any"/>
+        <dmn:formalParameter id="_yx" name="y" typeRef="Any"/>
+        <dmn:context id="_991B62E3-C276-4521-80B1-BBD9C5EA1C1C">
+          <dmn:contextEntry>
+            <dmn:variable id="_832AAA1B-1765-480F-AFC1-C81C5062906B" name="document" typeRef="string"/>
+            <dmn:literalExpression id="_9B105002-44C3-4CBE-BB30-DA08D7348A6A">
+              <dmn:text>"TestKMeans"</dmn:text>
+            </dmn:literalExpression>
+          </dmn:contextEntry>
+          <dmn:contextEntry>
+            <dmn:variable name="model" typeRef="string"/>
+            <dmn:literalExpression id="_BFCECD3D-A60C-4937-8440-4EFC5EFF5973">
+              <dmn:text>"KMeans_Model"</dmn:text>
+            </dmn:literalExpression>
+          </dmn:contextEntry>
+        </dmn:context>
+      </dmn:encapsulatedLogic>
+    </dmn:businessKnowledgeModel>
+    <dmn:decision id="d1" name="Decision1">
+        <dmn:variable name="Decision1" typeRef="Any"/>
+        <dmn:informationRequirement id="_x_ir">
+          <dmn:requiredInput href="#_x"/>
+        </dmn:informationRequirement>
+        <dmn:informationRequirement id="_y_ir">
+          <dmn:requiredInput href="#_y"/>
+        </dmn:informationRequirement>
+        <dmn:knowledgeRequirement>
+          <dmn:requiredKnowledge href="#_KMeansModelBKM"/>
+        </dmn:knowledgeRequirement>
+        <dmn:invocation>
+            <dmn:literalExpression>
+                <dmn:text>KMeansModelBKM</dmn:text>
+            </dmn:literalExpression>
+            <dmn:binding>
+                <dmn:parameter name="x" typeRef="string"/>
+                <dmn:literalExpression>
+                  <dmn:text>x</dmn:text>
+                </dmn:literalExpression>
+            </dmn:binding>
+            <dmn:binding>
+              <dmn:parameter name="y" typeRef="string"/>
+                <dmn:literalExpression>
+                  <dmn:text>y</dmn:text>
+                </dmn:literalExpression>
+            </dmn:binding>
+        </dmn:invocation>
+    </dmn:decision>
+</dmn:definitions>

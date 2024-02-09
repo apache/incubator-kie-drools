@@ -1,0 +1,3 @@
+{
+    KiePMMLFieldRef %1$s = new KiePMMLFieldRef("%2$s", Collections.emptyList(), "%3$s");
+}

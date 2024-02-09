@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns="http://www.trisotech.com/definitions/_9e005ed6-4e16-446f-92d2-360988638c1b" id="_9e005ed6-4e16-446f-92d2-360988638c1b" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_9e005ed6-4e16-446f-92d2-360988638c1b" exporter="DMN Modeler" exporterVersion="6.2.5.201907032309" triso:logoChoice="Default">
+    <semantic:decision id="_c81f2688-84ba-422c-9a40-8bfd62052a9c" name="Text">
+        <semantic:variable name="Text" id="_9a4286cb-536e-43a2-945f-569cf794972d" typeRef="Any"/>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_9188246b-bdb6-42b1-9017-b344c958bca7" triso:modelElementRef="_850f6e9d-25ac-4b06-a427-00c831cb547e" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_2da82f9a-f625-4338-b597-4be80692d9f3" dmnElementRef="_c81f2688-84ba-422c-9a40-8bfd62052a9c">
+                <dc:Bounds x="481.5" y="233" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_9e005ed6-4e16-446f-92d2-360988638c1b_0" trisodmn:defaultBounds="true">
+                    <dmndi:Text>Alternate Text</dmndi:Text>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_9e005ed6-4e16-446f-92d2-360988638c1b_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

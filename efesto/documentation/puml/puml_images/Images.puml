@@ -1,0 +1,10 @@
+@startuml
+
+!include efesto.puml
+!include bpmn.puml
+!include dmn.puml
+!include drl.puml
+!include pmml.puml
+!include other.puml
+
+@enduml

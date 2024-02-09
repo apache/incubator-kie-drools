@@ -1,0 +1,26 @@
+package org.drools.testcoverage.kjar
+
+import org.drools.testcoverage.domain.Customer;
+import org.drools.testcoverage.domain.Drink;
+import org.drools.testcoverage.domain.Order;
+
+rule "approve non-alcoholic drink"
+when
+  order: Order(isApproved() == null, drink.containsAlcohol == false)
+then
+  order.approve();
+end
+
+rule "approve alcoholic drink"
+when
+  order: Order(isApproved() == null, drink.containsAlcohol, customer.ageInYears >= 18)
+then
+  order.approve();
+end
+
+rule "disapprove alcoholic drink for too young customer"
+when
+  order: Order(isApproved() == null, drink.containsAlcohol, customer.ageInYears < 18)
+then
+  order.disapprove();
+end

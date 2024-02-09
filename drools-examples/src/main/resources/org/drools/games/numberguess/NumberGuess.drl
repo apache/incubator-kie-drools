@@ -1,0 +1,84 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.numberguess
+
+import org.drools.games.numberguess.RandomNumber
+import org.drools.games.numberguess.Guess
+import org.drools.games.numberguess.Game
+import org.drools.games.numberguess.GameRules
+
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
+dialect "mvel"
+
+rule Main when
+    rules : GameRules( )
+then
+    insert( new RandomNumber( rules.maxRange ) );
+    setFocus("Guess");
+end
+
+rule "No more Guesses" when
+    rules : GameRules( )
+    game : Game( guessCount == rules.allowedGuesses )
+    not Guess()
+    r : RandomNumber()
+then
+    System.out.println( "You have no more guesses\nThe correct guess was " + r.value );
+end
+
+rule "Get user Guess" agenda-group "Guess" when
+    $r : RandomNumber()
+    rules : GameRules( )
+    game : Game(  guessCount < rules.allowedGuesses  )
+    not Guess()
+then
+    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
+    br = new BufferedReader( new InputStreamReader( System.in ) );
+
+    modify (game) { guessCount = game.guessCount + 1 }
+    int i = Integer.parseInt( br.readLine() );
+    insert( new Guess( i ) );
+end
+
+rule "Record the highest Guess" agenda-group "Guess"  no-loop when
+    game  : Game( )
+    r : RandomNumber()
+    guess : Guess( value > r.value)
+then
+    modify ( game ) { biggest = guess.value };
+    delete( guess );
+    System.out.println( "Your guess was too high" );
+end
+
+rule "Record the lowest Guess" agenda-group "Guess" when
+    game : Game( )
+    r : RandomNumber()
+    guess :  Guess(value < r.value )
+then
+    modify ( game ) { smallest = guess.value };
+    delete( guess );
+    System.out.println( "Your guess was too low" );
+end
+
+rule "Guess correct" agenda-group "Guess" when
+    game  : Game( )
+    r : RandomNumber()
+    guess : Guess( value == r.value)
+then
+    System.out.println( "You guessed correctly" );
+end

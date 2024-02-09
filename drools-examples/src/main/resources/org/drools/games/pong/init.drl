@@ -1,0 +1,77 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.pong
+
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
+
+import org.kie.api.runtime.KieRuntime
+
+import java.lang.Math
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.event.KeyEvent
+import org.kie.api.runtime.KieSession
+
+global PongConfiguration pconf
+
+dialect "mvel"
+
+function Player initPlayer(PlayerId playerId, int batX, PongConfiguration pconf, KieRuntime kruntime, PongUI ui) {
+    int batY =  ( pconf.getTableHeight() / 2 ) - ( pconf.getBatHeight() / 2 );
+    Bat bat = new Bat( batX, batY, pconf.getBatWidth(), pconf.getBatHeight() );
+    bat.setSpeed( pconf.getBatSpeed() );
+    ui.drawBat(bat);
+
+    Player p = new Player(playerId, bat);
+
+    kruntime.insert( bat );
+    kruntime.insert( p);
+    return p;
+}
+
+function void initBall(KieRuntime kruntime, PongConfiguration pconf, PongUI ui) {
+    Ball ball = new Ball( (pconf.getTableWidth()/2)-(pconf.getBallWidth()/2),
+                     (pconf.getTableHeight()/2)-(pconf.getBallWidth()/2),
+                      pconf.getBallWidth());
+    ball.setSpeed( pconf.getBallStartingSpeed() );
+    ball.setDx( 0 - ball.getSpeed() );
+    kruntime.insert( ball );
+}
+
+rule Init when
+then
+        PongUI ui = new PongUI((KieSession) kcontext.knowledgeRuntime, pconf);
+        ui.init();
+        insert( ui );
+
+        Player p1 = initPlayer( PlayerId.PlayerOne, pconf.getPadding(),
+                                pconf, kcontext.getKnowledgeRuntime(), ui);
+
+        Player p2 = initPlayer( PlayerId.PlayerTwo, pconf.tableWidth - pconf.padding - pconf.batWidth,
+                                pconf, kcontext.getKnowledgeRuntime(), ui);
+
+        insert( new PongGame(p1, p2) );
+
+        initBall(kcontext.getKnowledgeRuntime(), pconf, ui);
+end

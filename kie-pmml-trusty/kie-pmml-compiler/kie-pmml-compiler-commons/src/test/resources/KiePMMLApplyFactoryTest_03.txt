@@ -1,0 +1,16 @@
+{
+    KiePMMLFieldRef %6$s_0_0 = new KiePMMLFieldRef("%1$s", Collections.emptyList(), null);
+    KiePMMLFieldRef %6$s_0_1 = new KiePMMLFieldRef("%2$s", Collections.emptyList(), null);
+    KiePMMLApply %6$s_0 = KiePMMLApply.builder("%6$s_0", Collections.emptyList(), "nested_function")
+            .withDefaultValue("%3$s")
+            .withMapMissingTo("%4$s")
+            .withInvalidValueTreatmentMethod("%5$s")
+            .withKiePMMLExpressions(Arrays.asList(%6$s_0_0, %6$s_0_1))
+            .build();
+    KiePMMLApply %6$s = KiePMMLApply.builder("%6$s", Collections.emptyList(), "function")
+            .withDefaultValue(null)
+            .withMapMissingTo(null)
+            .withInvalidValueTreatmentMethod("%7$s")
+            .withKiePMMLExpressions(Arrays.asList(%6$s_0))
+            .build();
+}

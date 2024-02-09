@@ -1,0 +1,26 @@
+package org.kie.pmml;
+
+import java.util.function.BinaryOperator;
+
+public class KiePMMLOperatorFunctionTemplate {
+
+    protected BinaryOperator<Boolean> getInnerBinaryOperatorOR() {
+         return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean || aBoolean2 : aBoolean2;
+    }
+
+    protected BinaryOperator<Boolean> getInnerBinaryOperatorAND() {
+         return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean && aBoolean2 : aBoolean2;
+    }
+
+    protected BinaryOperator<Boolean> getInnerBinaryOperatorXOR() {
+         return (aBoolean, aBoolean2) -> aBoolean != null ? aBoolean ^ aBoolean2 : aBoolean2;
+    }
+
+    protected BinaryOperator<Boolean> getInnerBinaryOperatorSURROGATE() {
+        return (aBoolean, aBoolean2) -> aBoolean;
+    }
+
+    protected BinaryOperator<Boolean> getInnerBinaryOperator() {
+        return (aBoolean, aBoolean2) -> aBoolean;
+    }
+}

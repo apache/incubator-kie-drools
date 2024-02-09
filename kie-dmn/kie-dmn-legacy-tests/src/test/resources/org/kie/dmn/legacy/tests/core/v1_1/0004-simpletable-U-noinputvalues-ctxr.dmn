@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="https://github.com/kiegroup/kie-dmn" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c" name="0004-simpletable-U-noinputvalues" namespace="https://github.com/kiegroup/kie-dmn" exporter="Decision Modeler" exporterVersion="6.12.0" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true" triso:wholeModelService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_0004-simpletable-U-noinputvalues"/>
+        <semantic:inputData href="#_Age"/>
+        <semantic:inputData href="#_RiskCategory"/>
+        <semantic:inputData href="#_isAffordable"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_D1_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_D1_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_0004-simpletable-U-noinputvalues"/>
+        <semantic:inputData href="#_Age"/>
+        <semantic:inputData href="#_RiskCategory"/>
+        <semantic:inputData href="#_isAffordable"/>
+    </semantic:decisionService>
+    <semantic:decision id="_0004-simpletable-U-noinputvalues" name="_0004-simpletable-U-noinputvalues" triso:useOutputTypeAsAnswer="false">
+        <semantic:variable name="_0004-simpletable-U-noinputvalues" id="_f2d9c4dd-f8de-4162-81ab-777cc7024e71" typeRef="string"/>
+        <semantic:informationRequirement id="_0b76a379-7aad-4da3-b6e3-e1d7946a4b8b">
+            <semantic:requiredInput href="#_Age"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_0fd3beff-05d2-4e20-8d4f-796865456419">
+            <semantic:requiredInput href="#_RiskCategory"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_54fba8c5-32af-411c-aece-5ca4005f8173">
+            <semantic:requiredInput href="#_isAffordable"/>
+        </semantic:informationRequirement>
+        <semantic:context id="_999bfa1c-0f92-411d-b18e-5f40a57e1e98" typeRef="string" triso:expressionId="_cf1b61e7-368e-4a6b-a1d5-8d827874a2da">
+            <semantic:contextEntry id="_a58a4cb9-b64c-43d2-bcd6-c600f2c054a9">
+                <semantic:variable name="asd" id="_e1895b70-f3b0-49cc-806a-c0f65ef03c43" typeRef="string"/>
+                <semantic:literalExpression id="_2bc90273-be3d-43b8-8ef8-af19a40b6c21">
+                    <semantic:text>"an ignored string literal"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_a8d28fe2-21d4-49c8-87b5-724460f14de8">
+                <semantic:decisionTable id="_e13582e4-1dd9-4a3f-978f-e0aa9b1168b1" hitPolicy="UNIQUE" outputLabel="asd">
+                    <semantic:input id="_iAge" label="Age">
+                        <semantic:inputExpression typeRef="number">
+                            <semantic:text>Age</semantic:text>
+                        </semantic:inputExpression>
+                    </semantic:input>
+                    <semantic:input id="_iRiskCategory" label="RiskCategory">
+                        <semantic:inputExpression typeRef="string">
+                            <semantic:text>RiskCategory</semantic:text>
+                        </semantic:inputExpression>
+                    </semantic:input>
+                    <semantic:input id="_iIsAffordable" label="isAffordable">
+                        <semantic:inputExpression typeRef="boolean">
+                            <semantic:text>isAffordable</semantic:text>
+                        </semantic:inputExpression>
+                    </semantic:input>
+                    <semantic:output id="_oApprovalStatus">
+                        <semantic:outputValues triso:constraintsType="enumeration">
+                            <semantic:text>"Approved", "Declined"</semantic:text>
+                        </semantic:outputValues>
+                    </semantic:output>
+                    <semantic:annotation/>
+                    <semantic:rule id="_7f03803d-2636-40ab-8346-7fd7f38ab695">
+                        <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-0">
+                            <semantic:text>&gt;=18</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-1">
+                            <semantic:text>"Medium","Low"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-2">
+                            <semantic:text>true</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-3">
+                            <semantic:text>"Approved"</semantic:text>
+                        </semantic:outputEntry>
+                        <semantic:annotationEntry>
+                            <semantic:text/>
+                        </semantic:annotationEntry>
+                    </semantic:rule>
+                    <semantic:rule id="_887acecd-40fc-42da-9443-eeba476f5516">
+                        <semantic:inputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-0">
+                            <semantic:text>&lt;18</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-1">
+                            <semantic:text>"Medium","Low"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-2">
+                            <semantic:text>true</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-3">
+                            <semantic:text>"Declined"</semantic:text>
+                        </semantic:outputEntry>
+                        <semantic:annotationEntry>
+                            <semantic:text/>
+                        </semantic:annotationEntry>
+                    </semantic:rule>
+                    <semantic:rule id="_18058414-a571-4375-991f-77b9ea7fc699">
+                        <semantic:inputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-0">
+                            <semantic:text>-</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-1">
+                            <semantic:text>"High"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-2">
+                            <semantic:text>true</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-3">
+                            <semantic:text>"Declined"</semantic:text>
+                        </semantic:outputEntry>
+                        <semantic:annotationEntry>
+                            <semantic:text/>
+                        </semantic:annotationEntry>
+                    </semantic:rule>
+                    <semantic:rule id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54">
+                        <semantic:inputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-0">
+                            <semantic:text>-</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-1">
+                            <semantic:text>"High"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-2">
+                            <semantic:text>false</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-3">
+                            <semantic:text>"Declined"</semantic:text>
+                        </semantic:outputEntry>
+                        <semantic:annotationEntry>
+                            <semantic:text/>
+                        </semantic:annotationEntry>
+                    </semantic:rule>
+                </semantic:decisionTable>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <semantic:inputData id="_Age" name="Age">
+        <semantic:variable name="Age" id="_461bd653-5769-47e3-83d5-b8ad5482b7f8" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_RiskCategory" name="RiskCategory">
+        <semantic:variable name="RiskCategory" id="_90292820-ccd4-425c-b88c-30709016052e" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:inputData id="_isAffordable" name="isAffordable">
+        <semantic:variable name="isAffordable" id="_366bd320-c475-4324-acc9-e17cfc9973a3" typeRef="boolean"/>
+    </semantic:inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_D1" triso:modelElementRef="_a9112c97-2acc-4749-9d5c-9e4ac5937d6e" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="650" width="879"/>
+            <dmndi:DMNShape id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s1" dmnElementRef="_0004-simpletable-U-noinputvalues">
+                <dc:Bounds x="362" y="150" width="154" height="61"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s2" dmnElementRef="_Age">
+                <dc:Bounds x="150" y="331" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s3" dmnElementRef="_RiskCategory">
+                <dc:Bounds x="363" y="331" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s4" dmnElementRef="_isAffordable">
+                <dc:Bounds x="576" y="331" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e1" dmnElementRef="_0b76a379-7aad-4da3-b6e3-e1d7946a4b8b">
+                <di:waypoint x="226" y="331"/>
+                <di:waypoint x="439" y="211"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e2" dmnElementRef="_0fd3beff-05d2-4e20-8d4f-796865456419">
+                <di:waypoint x="439" y="331"/>
+                <di:waypoint x="439" y="211"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e3" dmnElementRef="_54fba8c5-32af-411c-aece-5ca4005f8173">
+                <di:waypoint x="652" y="331"/>
+                <di:waypoint x="439" y="211"/>
+                <dmndi:DMNLabel sharedStyle="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

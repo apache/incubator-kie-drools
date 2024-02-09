@@ -1,0 +1,11 @@
+[
+  {
+    "step-type": "executable",
+    "modelLocalUriId": {
+      "model": "drl",
+      "basePath": "/LoanApplication",
+      "fullPath": "/drl/LoanApplication"
+    },
+    "fullClassNames": ["org.kie.drl.engine.mapinput.compilation.model.test.RulesED2A293F9C55BB1943AA9A6A1A8BF64C"]
+  }
+]

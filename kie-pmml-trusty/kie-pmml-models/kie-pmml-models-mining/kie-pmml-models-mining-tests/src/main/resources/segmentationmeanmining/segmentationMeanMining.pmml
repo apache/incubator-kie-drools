@@ -1,0 +1,45 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField name="result" optype="continuous" dataType="double"/>
+    <DataField name="x" optype="continuous" dataType="double"/>
+    <DataField name="y" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <MiningModel modelName="SegmentationMeanMining" functionName="regression">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="y" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Segmentation multipleModelMethod="average">
+      <Segment id="1">
+        <True/>
+        <RegressionModel modelName="segment1Model" functionName="regression">
+          <MiningSchema>
+            <MiningField name="result" usageType="target" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="y" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <RegressionTable intercept="-5">
+            <NumericPredictor name="x" exponent="1" coefficient="2"/>
+            <NumericPredictor name="y" exponent="1" coefficient="3"/>
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+      <Segment id="2">
+        <True/>
+        <RegressionModel modelName="segment2Model" functionName="regression">
+          <MiningSchema>
+            <MiningField name="result" usageType="target" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="y" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <RegressionTable intercept="10">
+            <NumericPredictor name="x" exponent="1" coefficient="1"/>
+            <NumericPredictor name="y" exponent="1" coefficient="1"/>
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

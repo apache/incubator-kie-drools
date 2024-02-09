@@ -1,0 +1,5 @@
+{
+    KiePMMLSimpleSetPredicate %1$s = KiePMMLSimpleSetPredicate.builder("%2$s", Collections.emptyList(), %3$s, %4$s)
+            .withValues(Arrays.asList(%5$s))
+            .build();
+}

@@ -1,0 +1,55 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.invaders5;
+
+import org.drools.games.Run
+
+import org.drools.games.invaders.Ship
+import org.drools.games.invaders.Invader
+
+import org.drools.games.invaders.InvadersConfiguration
+import org.drools.games.invaders.Invader
+import org.drools.games.invaders.Invader
+
+global InvadersConfiguration conf
+
+dialect "mvel"
+
+rule InitShip agenda-group "Init" when
+    Run()
+then
+    ship = new Ship();
+    ship.width = conf.shipWidth;
+    ship.height = conf.shipHeight;
+    ship.speed = conf.shipSpeed;
+    ship.x = (conf.windowWidth/2) - (conf.shipWidth/2);
+    ship.y = conf.windowHeight-10 - conf.shipHeight;
+    insert( ship );
+end
+
+rule InitInvader agenda-group "Init" when
+    i : Integer() from [1, 2, 3, 4, 5, 6]
+    Run()
+then
+    invader = new Invader();
+    invader.width = conf.invader1Width;
+    invader.height = conf.invader1Height;
+    invader.speed = conf.invader1Speed;
+    invader.x = 90 * i;
+    invader.y = 40 + conf.invader1Height;
+    insert( invader );
+
+end

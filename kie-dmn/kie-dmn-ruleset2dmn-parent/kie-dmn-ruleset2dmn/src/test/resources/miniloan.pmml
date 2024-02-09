@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4.1">
+    <Header copyright="Copyright IBM Corp, exported to PMML by Nyoka (c) 2022 Software AG" description="Default description">
+        <Application name="SimpleRuleSetExport" version="0.0.1"/>
+        <Timestamp>1970-01-01 00:00:00+00:00</Timestamp>
+    </Header>
+    <DataDictionary numberOfFields="5">
+        <DataField name="creditScore" optype="continuous" dataType="double"/>
+        <DataField name="income" optype="continuous" dataType="double"/>
+        <DataField name="loanAmount" optype="continuous" dataType="double"/>
+        <DataField name="monthDuration" optype="continuous" dataType="double"/>
+        <DataField name="rate" optype="continuous" dataType="double"/>
+    </DataDictionary>
+    <RuleSetModel functionName="classification" algorithmName="RuleSet">
+        <MiningSchema>
+            <MiningField name="monthDuration" usageType="active"/>
+            <MiningField name="income" usageType="active"/>
+            <MiningField name="loanAmount" usageType="active"/>
+            <MiningField name="creditScore" usageType="active"/>
+            <MiningField name="rate" usageType="active"/>
+        </MiningSchema>
+        <RuleSet defaultScore=" false">
+            <RuleSelectionMethod criterion="weightedMax"/>
+            <SimpleRule id="[monthDuration &gt;= 3.0] ^ [income &gt;= 211782.0] ^ [loanAmount &lt;= 153536.0]" score=" true" recordCount="7493" nbCorrect="6236" confidence="0.9932885906040269" weight="0.9932885906040269">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="3.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="211782.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="153536.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[income &gt;= 132178.0] ^ [monthDuration &gt;= 15.0] ^ [loanAmount &lt;= 590222.0] ^ [creditScore &gt;= 328.0]" score=" true" recordCount="7493" nbCorrect="6677" confidence="0.9932885906040269" weight="0.9932885906040269">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="132178.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="15.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="590222.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="328.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[income &gt;= 76108.0] ^ [monthDuration &gt;= 4.0] ^ [loanAmount &lt;= 178030.0]" score=" true" recordCount="7493" nbCorrect="6545" confidence="0.9978165938864629" weight="0.9978165938864629">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="76108.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="4.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="178030.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 468674.0] ^ [monthDuration &gt;= 10.0] ^ [creditScore &gt;= 328.0] ^ [income &gt;= 142121.0]" score=" true" recordCount="7493" nbCorrect="6658" confidence="0.9965095986038395" weight="0.9965095986038395">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="468674.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="10.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="328.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="142121.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 337488.0] ^ [income &gt;= 143599.0] ^ [creditScore &gt;= 328.0] ^ [monthDuration &gt;= 6.0] ^ [income &lt;= 251583.0]" score=" true" recordCount="7493" nbCorrect="6457" confidence="0.9972972972972973" weight="0.9972972972972973">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="337488.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="143599.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="328.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="6.0"/>
+                    <SimplePredicate field="income" operator="lessOrEqual" value="251583.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 46876.0]" score=" true" recordCount="7493" nbCorrect="6250" confidence="0.9653179190751445" weight="0.9653179190751445">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="46876.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[rate &gt;= 0.063] ^ [income &gt;= 210912.0] ^ [creditScore &gt;= 578.0] ^ [monthDuration &gt;= 15.0]" score=" true" recordCount="7493" nbCorrect="6324" confidence="0.9571984435797666" weight="0.9571984435797666">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="rate" operator="greaterOrEqual" value="0.063"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="210912.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="578.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="15.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[income &gt;= 90353.0] ^ [monthDuration &gt;= 11.0] ^ [loanAmount &lt;= 308090.0] ^ [income &lt;= 148529.0]" score=" true" recordCount="7493" nbCorrect="6262" confidence="0.9887005649717514" weight="0.9887005649717514">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="90353.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="11.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="308090.0"/>
+                    <SimplePredicate field="income" operator="lessOrEqual" value="148529.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[income &gt;= 64402.0] ^ [loanAmount &lt;= 291169.0] ^ [monthDuration &gt;= 14.0]" score=" true" recordCount="7493" nbCorrect="6585" confidence="0.9940239043824701" weight="0.9940239043824701">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="64402.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="291169.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="14.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 647657.0] ^ [income &gt;= 160445.0] ^ [creditScore &gt;= 539.0] ^ [monthDuration &gt;= 16.0]" score=" true" recordCount="7493" nbCorrect="6374" confidence="0.9965156794425087" weight="0.9965156794425087">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="647657.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="160445.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="539.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="16.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 468674.0] ^ [monthDuration &gt;= 5.0] ^ [income &gt;= 230216.0] ^ [creditScore &gt;= 572.0]" score=" true" recordCount="7493" nbCorrect="6263" confidence="0.9943181818181818" weight="0.9943181818181818">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="468674.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="5.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="230216.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="572.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[monthDuration &gt;= 12.0] ^ [income &gt;= 29816.0] ^ [loanAmount &lt;= 151371.0]" score=" true" recordCount="7493" nbCorrect="6425" confidence="0.9970414201183432" weight="0.9970414201183432">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="12.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="29816.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="151371.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[income &gt;= 104044.0] ^ [monthDuration &gt;= 13.0] ^ [creditScore &gt;= 419.0] ^ [loanAmount &lt;= 396518.0]" score=" true" recordCount="7493" nbCorrect="6517" confidence="0.9976744186046511" weight="0.9976744186046511">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="104044.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="13.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="419.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="396518.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[monthDuration &gt;= 13.0] ^ [loanAmount &lt;= 600626.0] ^ [income &gt;= 197451.0]" score=" true" recordCount="7493" nbCorrect="6498" confidence="0.9904076738609112" weight="0.9904076738609112">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="13.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="600626.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="197451.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 224145.0] ^ [income &gt;= 80356.0] ^ [monthDuration &gt;= 6.0]" score=" true" recordCount="7493" nbCorrect="6610" confidence="0.9980879541108987" weight="0.9980879541108987">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="224145.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="80356.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="6.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[loanAmount &lt;= 792456.0] ^ [creditScore &gt;= 577.0] ^ [monthDuration &gt;= 10.0] ^ [income &gt;= 253374.0]" score=" true" recordCount="7493" nbCorrect="6227" confidence="0.9928571428571429" weight="0.9928571428571429">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="792456.0"/>
+                    <SimplePredicate field="creditScore" operator="greaterOrEqual" value="577.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="10.0"/>
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="253374.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[income &gt;= 45833.0] ^ [loanAmount &lt;= 177234.0] ^ [monthDuration &gt;= 7.0]" score=" true" recordCount="7493" nbCorrect="6558" confidence="0.9957716701902748" weight="0.9957716701902748">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="income" operator="greaterOrEqual" value="45833.0"/>
+                    <SimplePredicate field="loanAmount" operator="lessOrEqual" value="177234.0"/>
+                    <SimplePredicate field="monthDuration" operator="greaterOrEqual" value="7.0"/>
+                </CompoundPredicate>
+            </SimpleRule>
+        </RuleSet>
+    </RuleSetModel>
+</PMML>

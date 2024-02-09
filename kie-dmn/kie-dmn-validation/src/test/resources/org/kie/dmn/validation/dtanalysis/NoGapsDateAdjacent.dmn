@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="http://www.trisotech.com/definitions/_e8fbdbbc-ff24-4576-8c71-f4df1588907b" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/" xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0" id="_e8fbdbbc-ff24-4576-8c71-f4df1588907b" name="Drawing 1" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="http://www.trisotech.com/definitions/_e8fbdbbc-ff24-4576-8c71-f4df1588907b">
+  <dmn:extensionElements/>
+  <dmn:decision id="_ae1f402a-6da4-48c1-b83c-b23326e6e82e" name="DT With no Gaps">
+    <dmn:extensionElements/>
+    <dmn:variable id="_ced8209d-2284-4dde-9c22-22e7d9633a83" name="DT With no Gaps" typeRef="Any"/>
+    <dmn:informationRequirement id="_420A6A8A-5D63-4F4B-BE7B-84B86A6184D9">
+      <dmn:requiredInput href="#_26F86091-C14E-4273-9FE3-D78C899FC5D5"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_322732ef-01be-40fb-abd7-ec599c2efa47" typeRef="Any" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" outputLabel="DT With no Gaps">
+      <dmn:input id="_dfa35756-5995-47d3-8cd6-89b37da1e88a">
+        <dmn:inputExpression id="_0F3C1175-ABF5-4C43-B2F2-24E77B7A12F0" typeRef="date">
+          <dmn:text>MyInput</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_f4571c21-2aea-4524-b001-93882221689c"/>
+      <dmn:annotation name="Description"/>
+      <dmn:rule id="_5815f91c-3981-45b6-8412-28b8dca9e9bb">
+        <dmn:inputEntry id="_110afc55-8e12-4757-8f46-94d56cb11218">
+          <dmn:text>&lt; date("2021-03-01")</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_3f57dc31-3801-4a62-9560-aee1e829d979">
+          <dmn:text>"A"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_61799913-e9de-45e3-9354-7ba0ee4bffe1">
+        <dmn:inputEntry id="_6b3bac25-f5b0-47d9-9140-c753ddee34c4">
+          <dmn:text>[date("2021-03-01")..date("2021-03-31")]</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_c88bb7d5-e1e0-4bb8-964e-05da801f63c7">
+          <dmn:text>"B"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_981d9a11-3b5a-4afa-82f9-b0151f0f4e93">
+        <dmn:inputEntry id="_85a8113a-ed58-4209-a9a8-e762c4f585ce">
+          <dmn:text>[date("2021-04-01")..date("2021-04-30")]</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6bfd9585-66e5-4b03-9332-2c48aa15bae8">
+          <dmn:text>"C"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_955deac6-acdd-4086-878e-2f624e0ac47f">
+        <dmn:inputEntry id="_9497b7d7-6155-4609-a623-d95b405bfdfb">
+          <dmn:text>&gt;= date("2021-05-01")</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_b4b69308-9671-4395-bac5-a0587824feab">
+          <dmn:text>"D"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_26F86091-C14E-4273-9FE3-D78C899FC5D5" name="MyInput">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4FED6BA7-CFE9-4644-8853-3E6956E1D1B6" name="MyInput" typeRef="date"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_2cf11d86-e22d-4898-8151-fa206dfb6e5d" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+          <kie:ComponentWidths dmnElementRef="_322732ef-01be-40fb-abd7-ec599c2efa47">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_ae1f402a-6da4-48c1-b83c-b23326e6e82e" dmnElementRef="_ae1f402a-6da4-48c1-b83c-b23326e6e82e" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="481" y="256" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_26F86091-C14E-4273-9FE3-D78C899FC5D5" dmnElementRef="_26F86091-C14E-4273-9FE3-D78C899FC5D5" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="250" y="241" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_420A6A8A-5D63-4F4B-BE7B-84B86A6184D9" dmnElementRef="_420A6A8A-5D63-4F4B-BE7B-84B86A6184D9">
+        <di:waypoint x="300" y="266"/>
+        <di:waypoint x="557.5" y="286"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

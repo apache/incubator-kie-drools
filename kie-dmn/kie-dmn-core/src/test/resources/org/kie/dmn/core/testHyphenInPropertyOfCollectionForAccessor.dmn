@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/"   xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0"  xmlns="http://www.trisotech.com/definitions/_b5362305-17be-42d8-acec-f2621e3cc0e0" id="_b5362305-17be-42d8-acec-f2621e3cc0e0" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_b5362305-17be-42d8-acec-f2621e3cc0e0" exporter="Decision Modeler" exporterVersion="7.10.3" xml:lang="en" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="myType" label="myType" isCollection="true">
+        <semantic:itemComponent id="_0a981007-095e-4d01-8867-c5478e9bd45b" name="Primary-Key">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_21de9187-6259-491b-995a-cacc3b1193fb" name="Value">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_09dcf320-da73-42ef-abf2-67834947b3a1" name="input">
+        <semantic:variable name="input" id="_77f92815-2182-40a6-a8f5-3d04104cd344" typeRef="myType"/>
+    </semantic:inputData>
+    <semantic:decision id="_e2e8187c-3944-4c4c-b9cd-ba3bcd579b75" name="decision">
+        <semantic:variable name="decision" id="_c7c846c1-a670-4a3a-b4d8-d298110b06ea" typeRef="Any"/>
+        <semantic:informationRequirement id="_bff2f4b7-0895-4528-a280-69f1d21da8aa">
+            <semantic:requiredInput href="#_09dcf320-da73-42ef-abf2-67834947b3a1"/>
+        </semantic:informationRequirement>
+        <semantic:context id="_95fdea29-70e0-4238-a7a4-8d39885aa121" triso:descriptionVisible="false" typeRef="Any" triso:expressionId="_acbf9f5d-77ad-4c96-b007-2961c56f916b">
+            <semantic:contextEntry id="_424b7163-0c12-4263-9d32-0ef9b2df5f97">
+                <semantic:variable name="correct" id="_0289a89f-c514-49b3-ab86-6b53c544364e" typeRef="Any"/>
+                <semantic:literalExpression id="_3b5d9f87-31e5-4dce-b8c4-fc2ffcef3a37" triso:descriptionVisible="false">
+                    <semantic:text>input.Primary-Key</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_5168ebda-0fef-436d-a7e1-28489dfcb6ab">
+                <semantic:variable name="incorrect" id="_22072499-2394-424d-942b-a03aee50d90f" typeRef="Any"/>
+                <semantic:literalExpression id="_47c4040a-7f3a-4458-a383-528f4a176b5e" triso:descriptionVisible="false">
+                    <semantic:text>input[1].Primary-Key</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+</semantic:definitions>

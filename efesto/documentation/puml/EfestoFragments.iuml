@@ -1,0 +1,50 @@
+!startsub efesto_content
+    !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+    !include <tupadr3/devicons2/java>
+    Container(RuntimeManager, "Runtime Manager", "Container: java", "API for requesting execution", $sprite="java")
+    Container(CompilationManager, "Compilation Manager", "Container: java", "API for requesting compilation", $sprite="java")
+!endsub
+
+!startsub efesto_container
+System(EfestoFramework,"Efesto") {
+    !includesub ./EfestoFragments.iuml!efesto_content
+}
+!endsub
+
+!startsub engine_drools_content
+    !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+    !include <tupadr3/devicons2/java>
+    Container(PredictionEngine, "Prediction Engine", "", $sprite="java")
+    Container(DecisionEngine, "Decision Engine", "", $sprite="java")
+    Container(RuleEngine, "Rule Engine", "", $sprite="java")
+!endsub
+
+!startsub engine_not_drools_content
+    !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+    !include <tupadr3/devicons2/java>
+    Container(WorkflowEngine, "Workflow Engine", "", $sprite="java")
+    Container(UnknownEngine, "?", "", $sprite="java")
+!endsub
+
+!startsub kogito_content
+    !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+    !include <tupadr3/devicons2/java>
+    System(RestEndpoints, "Rest endpoints", "Container: java", "", $sprite="java")
+    System(PlatformSpecReq, "Platform specific infra requirements", "Container: java", "", $sprite="java") {
+        Container(Messaging, "Messaging", "Container: java", "", $sprite="java")
+        Container(Audit, "Audit", "Container: java", "", $sprite="java")
+        Container(Persistence, "Persistence", "Container: java", "", $sprite="java")
+        Container(Other, "Other", "Container: java", "", $sprite="java")
+    }
+!endsub
+
+!startsub serverless_content
+    !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+    !include <tupadr3/devicons2/java>
+    System(ServerlessWorkflow, "Serverless Workflow", "Container: java", "", $sprite="java") {
+        Container(SpecImpl, "Spec Implementation", "Container: java", "", $sprite="java")
+        Container(SpecReq, "Specific set of cloud native reqs", "Container: java", "", $sprite="java")
+        Container(JavaFO, "Java Framework opinionated", "Container: java", "", $sprite="java")
+        Container(KDI, "Kubernetes Deployment Interface", "Container: java", "", $sprite="java")
+    }
+!endsub

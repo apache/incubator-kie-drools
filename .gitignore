@@ -1,0 +1,19 @@
+target/
+local/
+
+# Eclipse, Netbeans and IntelliJ files
+.*
+!.gitignore
+!.github
+!.git-blame-ignore-revs
+!.openrewrite
+nbproject
+*.ipr
+*.iws
+*.iml
+
+# generated files
+dependency-reduced-pom.xml
+
+#CI
+!.ci

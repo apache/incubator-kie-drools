@@ -1,0 +1,6 @@
+{
+    java.util.Map<String, Double> %1$s = new java.util.HashMap<String, Double>();
+    %1$s.put("%2$s", %3$s);
+    %1$s.put("%4$s", %5$s);
+    %1$s.put("%6$s", %7$s);
+}

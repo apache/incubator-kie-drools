@@ -1,0 +1,45 @@
+TestCase "Test Case Name"
+
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+
+Setup  
+    LeftTupleSource: left; 
+    ObjectSource: right;
+    LeftTupleSink: sink;
+    CollectNode:
+        col, left, right, java.util.ArrayList;
+        source, type, ==, l1;
+    Binding:
+        l1, 0, Person, likes;
+    Facts:
+        Person('darth', 35, "brie"), Person('bobba', 36, 'stilton'),
+        Cheese('brie', 10), Cheese('brie', 12),
+        Cheese('stilton', 15), Cheese('muzzarella', 12);
+
+TearDown
+ 
+Test "test 1"
+    assert :
+        left, [h0];
+    col :
+        leftMemory, [[h0]];
+    sink :
+        verify, assert, count, 1;
+        verify, assert, tuple0[1], is(empty());
+    retract :
+        left, [h0];
+    col :
+        leftMemory, [];
+    sink :
+        verify, retract, count, 1;
+        verify, retract, tuple0[1], is(empty());
+
+Test "another test"
+    assert :
+        left,[h2];
+    col :
+        leftMemory, [[h2]];
+    sink :
+        verify, assert, count, 1;
+        verify, assert, tuple0[1], is(empty());

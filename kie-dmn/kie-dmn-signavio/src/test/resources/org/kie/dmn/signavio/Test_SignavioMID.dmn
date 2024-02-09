@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/4dc786e882bd4a82ad0c9653a19eef94.xml" exporterVersion="14.6.1" name="MID with dependencies" id="id-95c95be702af46ad9812936ca57af033" sigExt:revisionId="f14d510898964e3fa24347b4621ea94d" sigExt:revisionNumber="1" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/4dc786e882bd4a82ad0c9653a19eef94.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements>
+        <sigExt:diagramMetaData name="mytable" value=""/>
+        <sigExt:diagramMetaData name="jirareference" value=""/>
+        <sigExt:diagramMetaData name="playbookreference" value=""/>
+        <sigExt:diagramMetaData name="mapowner3" value=""/>
+        <sigExt:diagramMetaData name="foobar" value=""/>
+        <sigExt:diagramMetaData name="dmntestattribute" value=""/>
+    </extensionElements>
+    <itemDefinition isCollection="true" name="makeList" id="id-594bad1c51ac8a481bb6f45ea5899616" label="makeList">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="a" id="id-7f84b1cabf9403603131106a1b9fc373" label="A">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="calculate" id="id-41ae6d7c5eb735c656614e9a46d46a74" label="calculate">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="b" id="id-622986eb51b4d127573694e9002241c5" label="B">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="makeList2" id="id-4b7d431b91909a9cf105fbb972f96dd4" label="makeList">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="numbers2" id="id-bbcde5ef5f386ca89df08a4447c18ec7" label="numbers2">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="numbers1" id="id-f659a73fdcc41f2da196cfebf7dbbcc1" label="numbers1">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="square" id="id-878d6f2ee5de34b1c043eac3fcb0bbe0" label="square">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <inputData name="numbers1" id="id-d6801df055da4f011b53f4eee9b86537" label="numbers1" sigExt:shapeId="sid-7BDC3CDA-3D9C-4120-9775-66603EF56FAB" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="mytable" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:numbers1" name="numbers1" id="id-d6801df055da4f011b53f4eee9b86537_variable"/>
+    </inputData>
+    <inputData name="numbers2" id="id-076d912a0c6e1db3f9ad8a63e2d66c76" label="numbers2" sigExt:shapeId="sid-E9122353-E97D-4446-8421-26E8ADDA2800" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="mytable" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:numbers2" name="numbers2" id="id-076d912a0c6e1db3f9ad8a63e2d66c76_variable"/>
+    </inputData>
+    <inputData name="makeList_iterator" id="id-fe491040a648646a6c4f55e52ae4bcf4" label="makeList" sigExt:shapeId="sid-D04BD40C-5361-46DE-9457-DBB91DB80D51" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="mytable" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:makeList2" name="makeList_iterator" id="id-fe491040a648646a6c4f55e52ae4bcf4_variable"/>
+    </inputData>
+    <decision name="a" id="id-07fb2aba406ae4290542ee6b2a259d0c" label="A" sigExt:shapeId="sid-4B3B578A-065E-4BD2-856F-6677B348DD9E" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="jirareference" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:a" name="a" id="id-07fb2aba406ae4290542ee6b2a259d0c_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-d6801df055da4f011b53f4eee9b86537"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>append(numbers1, 1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="b" id="id-591d806334630c30030ae78e41ffaba9" label="B" sigExt:shapeId="sid-B86ECA9B-9749-4562-8D9E-B4B09DB87C5C" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="jirareference" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:b" name="b" id="id-591d806334630c30030ae78e41ffaba9_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-076d912a0c6e1db3f9ad8a63e2d66c76"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>append(numbers2, 2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="calculate" id="id-ef74fc266df4796403717d2063cc9169" label="calculate" sigExt:shapeId="sid-868EBF44-A873-4969-8354-B16E56C841EE" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:MultiInstanceDecisionLogic>
+                <sigExt:iterationExpression>makeList</sigExt:iterationExpression>
+                <sigExt:iteratorShapeId>id-fe491040a648646a6c4f55e52ae4bcf4</sigExt:iteratorShapeId>
+                <sigExt:aggregationFunction>COLLECT</sigExt:aggregationFunction>
+                <sigExt:topLevelDecisionId>id-2f6b5dff8581a79f5fffea053ca381c4</sigExt:topLevelDecisionId>
+            </sigExt:MultiInstanceDecisionLogic>
+        </extensionElements>
+        <variable typeRef="sig:calculate" name="calculate" id="id-ef74fc266df4796403717d2063cc9169_variable"/>
+        <informationRequirement>
+            <requiredDecision href="#id-0f8716f8db599baeb956cf1ed2d5e165"/>
+        </informationRequirement>
+    </decision>
+    <decision name="square" id="id-2f6b5dff8581a79f5fffea053ca381c4" label="square" sigExt:shapeId="sid-6AAE5C45-DEEE-4A7C-B495-CFAC0313E836" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="jirareference" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:square" name="square" id="id-2f6b5dff8581a79f5fffea053ca381c4_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-fe491040a648646a6c4f55e52ae4bcf4"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>(makeList_iterator*makeList_iterator)</text>
+        </literalExpression>
+    </decision>
+    <decision name="makeList" id="id-0f8716f8db599baeb956cf1ed2d5e165" label="makeList" sigExt:shapeId="sid-3FA6E29C-2814-4317-8DBD-CF8B3D0F123B" sigExt:diagramId="4dc786e882bd4a82ad0c9653a19eef94">
+        <extensionElements>
+            <sigExt:diagramMetaData name="jirareference" value=""/>
+        </extensionElements>
+        <variable typeRef="sig:makeList" name="makeList" id="id-0f8716f8db599baeb956cf1ed2d5e165_variable"/>
+        <informationRequirement>
+            <requiredDecision href="#id-07fb2aba406ae4290542ee6b2a259d0c"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredDecision href="#id-591d806334630c30030ae78e41ffaba9"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>appendAll(a, b)</text>
+        </literalExpression>
+    </decision>
+</definitions>

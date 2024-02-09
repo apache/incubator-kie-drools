@@ -1,0 +1,11 @@
+@startuml
+header Sequence Diagram Inventory
+' Overall C4-PlantUML binding
+actor Input_provider #blue
+note over Input_provider: Any service requiring evaluation (e.g. Kogito, KieServer)
+
+participant Runtime_Manager #green
+participant KieRuntimeService #lime
+
+loop executionStep #blue
+@enduml

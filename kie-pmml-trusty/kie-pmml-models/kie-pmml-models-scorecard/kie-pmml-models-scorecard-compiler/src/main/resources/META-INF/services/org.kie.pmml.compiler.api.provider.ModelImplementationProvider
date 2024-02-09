@@ -1,0 +1,2 @@
+# SPI implementation
+org.kie.pmml.models.scorecard.compiler.executor.ScorecardModelImplementationProvider

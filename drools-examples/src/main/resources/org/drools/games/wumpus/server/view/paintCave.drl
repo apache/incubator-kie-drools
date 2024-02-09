@@ -1,0 +1,170 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.wumpus.server.view
+
+import org.drools.games.wumpus.Cell
+import org.drools.games.wumpus.Direction
+import org.drools.games.wumpus.Hero
+import org.drools.games.wumpus.Gold
+import org.drools.games.wumpus.Pit
+import org.drools.games.wumpus.Wumpus
+import org.drools.games.wumpus.Thing
+import org.drools.games.wumpus.view.GameView
+import org.drools.games.wumpus.view.GameUI
+
+import java.awt.image.BufferedImage
+import java.awt.Color;
+import java.awt.Graphics
+
+import javax.imageio.ImageIO
+
+import javax.swing.JPanel;
+
+function void paintCaveCell(String image, Cell cell, GameView gv, GameUI gui) {
+     int rowIndent = 20;
+     int colIndent = 5;
+     int rowPad = cell.getRow() * gv.getCellPadding();
+     int colPad = cell.getCol() * gv.getCellPadding();
+     int y = (4 - cell.getRow()) * 50 - rowPad + rowIndent;
+     int x = cell.getCol() * 50 + colPad + colIndent;
+     
+     Graphics caveG = gui.getCavePanel().getGraphics2D();
+     caveG.setColor( Color.WHITE ); // background
+     caveG.fillRect( x, y,  gv.getCellWidth(), gv.getCellHeight() );
+     caveG.drawImage( ImageIO.read( GameView.class.getResource( image ) ), x, y, gv.getCellHeight(), gv.getCellWidth(), gui.getCavePanel() );
+}
+
+
+dialect "mvel"
+
+declare CompositeImageName
+    @propertyReactive
+    cell : Cell
+    pit : String
+    wumpus : String
+    gold : String
+    hero : String    
+end
+
+rule "Create CompositeImage"  agenda-group "PaintCave" when
+    $c : Cell()
+    not CompositeImageName( cell == $c )
+then
+    CompositeImageName cin = new CompositeImageName($c, "", "", "", "");
+    insert( cin );
+end  
+
+rule "Reset CompositeImage"  agenda-group "PaintCave" when
+    $cin : CompositeImageName()
+    not Cell( row == $cin.cell.row, col == $cin.cell.col)
+then
+    delete( $cin );
+end    
+
+rule "Base Paint"  agenda-group "PaintCave" when
+    $c : Cell()
+    $cin : CompositeImageName( cell == $c )
+then
+end    
+
+rule "Paint Gold" extends "Base Paint" agenda-group "PaintCave" when
+    Gold(row == $c.row, col == $c.col)  
+then
+   modify( $cin ) { gold = "gold" };
+end
+
+rule "Paint Empty Gold" extends "Base Paint" agenda-group "PaintCave"  when
+    not Gold(row == $c.row, col == $c.col)  
+then
+   modify( $cin ) { gold = "" };
+end
+
+rule "Paint Pit" extends "Base Paint" agenda-group "PaintCave"  when
+    Pit(row == $c.row, col == $c.col)  
+then
+   modify( $cin ) { pit = "pit" };
+end
+
+rule "Paint Wumpus Alive" extends "Base Paint" agenda-group "PaintCave"  when
+    Wumpus(alive == true, row == $c.row, col == $c.col)  
+then
+   modify( $cin ) { wumpus = "wumpus_alive" };
+end
+
+rule "Paint Wumpus Dead" extends "Base Paint" agenda-group "PaintCave"  when
+    Wumpus(alive == false, row == $c.row, col == $c.col)  
+then
+   modify( $cin ) { wumpus = "wumpus_dead" }
+end
+
+rule "Paint Hero Direction Up" extends "Base Paint" agenda-group "PaintCave"  when
+    $h : Hero( direction == Direction.UP, row == $c.row, col == $c.col )
+then
+     modify( $cin ) { hero = "hero_up" };
+end    
+
+rule "Paint Hero Direction Down" extends "Base Paint" agenda-group "PaintCave"   when
+    $h : Hero( direction == Direction.DOWN, row == $c.row, col == $c.col  )
+then
+    modify( $cin ) { hero = "hero_down" };
+end   
+
+rule "Paint Hero Direction Left" extends "Base Paint" agenda-group "PaintCave"   when
+    $h : Hero( direction == Direction.LEFT, row == $c.row, col == $c.col  )
+then
+    modify( $cin ) { hero = "hero_left" };
+end    
+
+rule "Paint Hero Direction Right" extends "Base Paint"  agenda-group "PaintCave" when
+    $h : Hero( direction == Direction.RIGHT, row == $c.row, col == $c.col  )
+then
+    modify( $cin ) { hero = "hero_right" };
+end 
+
+rule "Paint Empty Hero" extends "Base Paint"  agenda-group "PaintCave" when
+    not Hero( row == $c.row, col == $c.col  )
+then
+    modify( $cin ) { hero = "" };
+end   
+
+rule "Paint Hidden Room" agenda-group "PaintCave" when
+    $gui : GameUI( )
+    $gv : GameView(showAllCells == false)
+    $c : Cell(hidden == true) 
+then
+   paintCaveCell( "hidden_room.png", $c, $gv, $gui);
+end
+
+
+rule "Paint Empty Room" agenda-group "PaintCave" when
+   $gui : GameUI( )
+   ($gv : GameView(showAllCells == true) and $c : Cell() ) or
+   ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )      
+   CompositeImageName( cell == $c, pit == "", wumpus == "", gold == "", hero == "" )
+then
+   paintCaveCell( "empty_room.png", $c, $gv, $gui );
+end 
+
+rule "Paint Non Empty Room" agenda-group "PaintCave" when
+   $gui : GameUI()
+   ($gv : GameView(showAllCells == true) and $c : Cell() ) or
+   ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )    
+   $cin : CompositeImageName( cell == $c, ( !(hero != "" && pit != "")  &&  // don't draw a hero on the same square as a pit or an alive wumpus, as the game is over
+                                            !(hero != "" && wumpus == "wumpus_alive") && 
+                                            !(pit == "" && wumpus == "" && gold == "" && hero == "") ) )
+then
+    paintCaveCell( $cin.pit + $cin.wumpus + $cin.gold +  $cin.hero + ".png", $cin.cell, $gv, $gui );
+end

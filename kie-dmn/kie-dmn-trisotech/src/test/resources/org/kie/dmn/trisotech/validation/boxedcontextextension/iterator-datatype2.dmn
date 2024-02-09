@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/" xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0" xmlns:ns2="https://www.trisotech.com/spec/DMN/20191111/EXT/" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd"                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978" id="_caa02430-93c6-4ba7-a646-81bbcef32978" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978" exporter="Decision Modeler" exporterVersion="7.7.1.202105101531" xml:lang="en" triso:translationLanguages="" triso:logoChoice="Default">
+    <semantic:itemDefinition name="Collection_of_Complex" label="Collection of Complex" isCollection="true">
+        <semantic:itemComponent id="_398bc7bf-00f4-4757-a879-7b22997da3de" name="Value in String" isCollection="false">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_5e970f7d-d960-4256-bf1a-103809dee1d9" name="Value of Number" isCollection="false">
+            <semantic:typeRef>number</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_cf815ee6-ec3b-48ec-ac18-a675bbbf9959" name="Value" isCollection="false">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_570b4375-d01d-4cf8-8061-848227cc7059" name="Input">
+        <semantic:variable name="Input" id="_1e972e5e-6ed7-4d23-8333-b0145209a106" typeRef="Collection_of_Complex"/>
+    </semantic:inputData>
+    <semantic:decision id="_ac7c2f05-6324-427f-8fc2-f5a1352fbacf" name="Decision" triso:useOutputTypeAsAnswer="false">
+        <semantic:variable name="Decision" id="_aaca7ab8-3f40-4083-ade6-a0220b85231b" typeRef="Any"/>
+        <semantic:informationRequirement id="_d4de2b04-c956-43d4-8095-d3e576a7ef6a">
+            <semantic:requiredInput href="#_570b4375-d01d-4cf8-8061-848227cc7059"/>
+        </semantic:informationRequirement>
+        <boxedext:iterator id="_a3a0e4af-fb3a-461f-aaf3-19e2cfa92312" triso:descriptionVisible="false" iteratorType="for" iteratorVariable="i" typeRef="Any" triso:expressionId="_a7843f4c-9802-49c8-9d32-9f1f4860cdcb">
+            <boxedext:in id="_872ff1a2-622e-4bac-827c-557309907851" typeRef="Collection_of_Complex">
+                <semantic:literalExpression id="_1512c80f-41a6-438e-936b-49869cafe097" triso:descriptionVisible="false">
+                    <semantic:text>Input</semantic:text>
+                </semantic:literalExpression>
+            </boxedext:in>
+            <boxedext:return id="_2b3f04f4-310f-44e5-9fbf-fdea874da72f">
+                <semantic:literalExpression id="_c4f92f7b-f6a5-4a97-adae-8e8c1b5dbc28" triso:descriptionVisible="false">
+                    <semantic:text>i.Value in String</semantic:text>
+                </semantic:literalExpression>
+            </boxedext:return>
+        </boxedext:iterator>
+    </semantic:decision>
+</semantic:definitions>

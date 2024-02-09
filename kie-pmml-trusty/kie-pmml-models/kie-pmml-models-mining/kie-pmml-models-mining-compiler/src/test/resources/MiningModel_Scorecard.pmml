@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.4" xmlns="http://www.dmg.org/PMML-4_4">
+  <Header copyright="KNIME">
+    <Application name="KNIME" version="2.8.0"/>
+  </Header>
+  <DataDictionary >
+    <DataField name="age" optype="continuous" dataType="double"/>
+    <DataField name="occupation" optype="categorical" dataType="string">
+      <Value value="SKYDIVER" />
+      <Value value="ASTRONAUT" />
+      <Value value="PROGRAMMER" />
+      <Value value="TEACHER" />
+      <Value value="INSTRUCTOR" />
+    </DataField>
+    <DataField name="residenceState" optype="categorical" dataType="string">
+      <Value value="AP" />
+      <Value value="KN" />
+      <Value value="TN" />
+    </DataField>
+    <DataField name="validLicense" optype="categorical" dataType="boolean"/>
+    <DataField name="overallScore" optype="continuous" dataType="double" />
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+    <DataField name="averageScore" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <MiningModel functionName="regression">
+    <MiningSchema>
+      <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="averageScore" usageType="target"/>
+    </MiningSchema>
+    <Segmentation multipleModelMethod="weightedAverage">
+      <Segment>
+        <True/>
+        <Scorecard modelName="Sample Score" useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+          <MiningSchema>
+            <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="overallScore" usageType="predicted"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+          </Output>
+          <Characteristics>
+            <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">
+              <Extension name="cellRef" value="$B$8"/>
+              <Attribute partialScore="10.0">
+                <Extension name="cellRef" value="$C$10"/>
+                <SimplePredicate field="age" operator="lessOrEqual" value="5"/>
+              </Attribute>
+              <Attribute partialScore="30.0" reasonCode="CX1">
+                <Extension name="cellRef" value="$C$11"/>
+                <CompoundPredicate booleanOperator="and">
+                  <SimplePredicate field="age" operator="greaterOrEqual" value="5"/>
+                  <SimplePredicate field="age" operator="lessThan" value="12"/>
+                </CompoundPredicate>
+              </Attribute>
+              <Attribute partialScore="40.0" reasonCode="CX2">
+                <Extension name="cellRef" value="$C$12"/>
+                <CompoundPredicate booleanOperator="and">
+                  <SimplePredicate field="age" operator="greaterOrEqual" value="13"/>
+                  <SimplePredicate field="age" operator="lessThan" value="44"/>
+                </CompoundPredicate>
+              </Attribute>
+              <Attribute partialScore="25.0">
+                <Extension name="cellRef" value="$C$13"/>
+                <SimplePredicate field="age" operator="greaterOrEqual" value="45"/>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="OccupationScore" baselineScore="0.0" reasonCode="OCC">
+              <Extension name="cellRef" value="$B$16"/>
+              <Attribute partialScore="-10.0" reasonCode="CX2">
+                <Extension name="description" value="skydiving is a risky occupation"/>
+                <Extension name="cellRef" value="$C$18"/>
+                <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+                  <Array n="2" type="string">SKYDIVER ASTRONAUT</Array>
+                </SimpleSetPredicate>
+              </Attribute>
+              <Attribute partialScore="10.0">
+                <Extension name="cellRef" value="$C$19"/>
+                <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+                  <Array n="2" type="string">TEACHER INSTRUCTOR</Array>
+                </SimpleSetPredicate>
+              </Attribute>
+              <Attribute partialScore="5.0">
+                <Extension name="cellRef" value="$C$20"/>
+                <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+                  <Array n="2" type="string">PROGRAMMER STUDENT</Array>
+                </SimpleSetPredicate>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="ResidenceStateScore" baselineScore="0.0" reasonCode="RES">
+              <Extension name="cellRef" value="$B$22"/>
+              <Attribute partialScore="-10.0">
+                <Extension name="cellRef" value="$C$24"/>
+                <SimplePredicate field="residenceState" operator="equal" value="AP"/>
+              </Attribute>
+              <Attribute partialScore="10.0">
+                <Extension name="cellRef" value="$C$25"/>
+                <SimplePredicate field="residenceState" operator="equal" value="KN"/>
+              </Attribute>
+              <Attribute partialScore="5.0">
+                <Extension name="cellRef" value="$C$26"/>
+                <SimplePredicate field="residenceState" operator="equal" value="TN"/>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="ValidLicenseScore" baselineScore="0.0">
+              <Extension name="cellRef" value="$B$28"/>
+              <Attribute partialScore="1.0" reasonCode="LX00">
+                <Extension name="cellRef" value="$C$30"/>
+                <SimplePredicate field="validLicense" operator="equal" value="true"/>
+              </Attribute>
+              <Attribute partialScore="-1.0" reasonCode="LX00">
+                <Extension name="cellRef" value="$C$31"/>
+                <SimplePredicate field="validLicense" operator="equal" value="false"/>
+              </Attribute>
+            </Characteristic>
+          </Characteristics>
+        </Scorecard>
+      </Segment>
+      <Segment>
+        <True/>
+        <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
+          <MiningSchema>
+            <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="score" usageType="target"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+            <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+            <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+          </Output>
+          <Characteristics>
+            <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
+              <Attribute partialScore="-12">
+                <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
+              </Attribute>
+              <Attribute partialScore="50">
+                <SimplePredicate field="input1" operator="greaterThan" value="10"/>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="input2Score" baselineScore="8" reasonCode="Input2ReasonCode">
+              <Attribute partialScore="-8">
+                <SimplePredicate field="input2" operator="lessOrEqual" value="-5"/>
+              </Attribute>
+              <Attribute partialScore="32">
+                <SimplePredicate field="input2" operator="greaterThan" value="-5"/>
+              </Attribute>
+            </Characteristic>
+          </Characteristics>
+        </Scorecard>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

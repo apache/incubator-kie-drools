@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
+  <Header>
+    <Application name="JPMML-SkLearn" version="1.6.25"/>
+    <Timestamp>2021-08-13T09:57:11Z</Timestamp>
+  </Header>
+  <DataDictionary>
+    <DataField name="class" optype="categorical" dataType="string">
+      <Value value="Iris-setosa"/>
+      <Value value="Iris-versicolor"/>
+      <Value value="Iris-virginica"/>
+    </DataField>
+    <DataField name="s_len" optype="continuous" dataType="float"/>
+    <DataField name="s_wid" optype="continuous" dataType="float"/>
+    <DataField name="p_len" optype="continuous" dataType="float"/>
+    <DataField name="p_wid" optype="continuous" dataType="float"/>
+  </DataDictionary>
+  <MiningModel modelName="MiningWithNestedRefers" functionName="classification" algorithmName="sklearn.ensemble._forest.RandomForestClassifier">
+    <MiningSchema>
+      <MiningField name="class" usageType="target"/>
+      <MiningField name="p_wid"/>
+      <MiningField name="s_wid"/>
+      <MiningField name="p_len"/>
+      <MiningField name="s_len"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="probability(Iris-setosa)" optype="continuous" dataType="double" feature="probability" value="Iris-setosa"/>
+      <OutputField name="probability(Iris-versicolor)" optype="continuous" dataType="double" feature="probability" value="Iris-versicolor"/>
+      <OutputField name="probability(Iris-virginica)" optype="continuous" dataType="double" feature="probability" value="Iris-virginica"/>
+    </Output>
+    <LocalTransformations>
+      <DerivedField name="double(p_wid)" optype="continuous" dataType="double">
+        <FieldRef field="p_wid"/>
+      </DerivedField>
+      <DerivedField name="double(s_wid)" optype="continuous" dataType="double">
+        <FieldRef field="s_wid"/>
+      </DerivedField>
+      <DerivedField name="double(p_len)" optype="continuous" dataType="double">
+        <FieldRef field="p_len"/>
+      </DerivedField>
+      <DerivedField name="double(s_len)" optype="continuous" dataType="double">
+        <FieldRef field="s_len"/>
+      </DerivedField>
+    </LocalTransformations>
+    <Segmentation multipleModelMethod="selectFirst">
+      <Segment id="1">
+        <True/>
+        <RegressionModel functionName="classification" >
+          <MiningSchema>
+            <MiningField name="double(p_wid)"/>
+            <MiningField name="double(s_wid)"/>
+            <MiningField name="double(p_len)"/>
+            <MiningField name="double(s_len)"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
+            <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
+            <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+          </Output>
+
+          <RegressionTable targetCategory="setosa" intercept="0.11822288946815">
+            <NumericPredictor name="double(s_len)" exponent="1" coefficient="0.0660297693761902"/>
+            <NumericPredictor name="double(s_wid)" exponent="1" coefficient="0.242847872054487"/>
+            <NumericPredictor name="double(p_len)" exponent="1" coefficient="-0.224657116235727"/>
+            <NumericPredictor name="double(p_wid)" exponent="1" coefficient="-0.0574727291860025"/>
+          </RegressionTable>
+
+          <RegressionTable targetCategory="versicolor" intercept="1.57705897385745">
+            <NumericPredictor name="double(s_len)" exponent="1" coefficient="-0.0201536848255179"/>
+            <NumericPredictor name="double(s_wid)" exponent="1" coefficient="-0.44561625761404"/>
+            <NumericPredictor name="double(p_len)" exponent="1" coefficient="0.22066920522933"/>
+            <NumericPredictor name="double(p_wid)" exponent="1" coefficient="-0.494306595747785"/>
+          </RegressionTable>
+
+          <RegressionTable targetCategory="virginica" intercept="-0.695281863325603">
+            <NumericPredictor name="double(s_len)" exponent="1" coefficient="-0.0458760845506725"/>
+            <NumericPredictor name="double(s_wid)" exponent="1" coefficient="0.202768385559553"/>
+            <NumericPredictor name="double(p_len)" exponent="1" coefficient="0.00398791100639665"/>
+            <NumericPredictor name="double(p_wid)" exponent="1" coefficient="0.551779324933787"/>
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

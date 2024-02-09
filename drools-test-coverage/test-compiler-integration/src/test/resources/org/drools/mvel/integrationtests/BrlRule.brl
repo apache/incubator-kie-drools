@@ -1,0 +1,20 @@
+<rule>
+  <name>GuidedRule</name>
+  <modelVersion>1.0</modelVersion>
+  <attributes/>
+  <metadataList/>
+  <lhs>
+    <fact>
+      <constraintList>
+        <constraints/>
+      </constraintList>
+      <factType>Person</factType>
+      <boundName>p</boundName>
+    </fact>
+  </lhs>
+  <rhs>
+    <retract>
+      <variableName>p</variableName>
+    </retract>
+  </rhs>
+</rule>

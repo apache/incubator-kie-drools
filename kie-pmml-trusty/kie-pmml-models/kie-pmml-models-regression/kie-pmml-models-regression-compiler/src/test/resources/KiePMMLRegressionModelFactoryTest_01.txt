@@ -1,0 +1,4 @@
+public static KiePMMLRegressionModel getModel() {
+    KiePMMLRegressionModel toReturn = KiePMMLRegressionModel.builder("fileName", "firstModel", org.kie.pmml.api.enums.MINING_FUNCTION.REGRESSION).withAbstractKiePMMLTable(NestedTable.getKiePMMLTable()).withTargetField("NumPred-2").withMiningFields(getCreatedMiningFields()).withOutputFields(getCreatedOutputFields()).withKiePMMLMiningFields(getCreatedKiePMMLMiningFields()).withKiePMMLOutputFields(getCreatedKiePMMLOutputFields()).withKiePMMLTargets(getCreatedKiePMMLTargets()).withKiePMMLTransformationDictionary(getCreatedTransformationDictionary()).withKiePMMLLocalTransformations(getCreatedLocalTransformations()).build();
+    return toReturn;
+}

@@ -1,0 +1,4 @@
+{
+    KiePMMLInterval %1$s_Interval = new KiePMMLInterval(%2$s, null, %3$s);
+    KiePMMLDiscretizeBin %1$s = new KiePMMLDiscretizeBin("%1$s", Collections.emptyList(), "%4$s", %1$s_Interval);
+}

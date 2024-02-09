@@ -1,0 +1,47 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# only syntactically valid yaml.
+rules:
+- name: Fix the Service targetPort and the containerPort
+  when:
+  - given: Service
+    as: $svc
+    having:
+    - metadata.name != "kubernetes"
+  - given: ServicePort
+    as: $sPort
+    from: $svc.spec.ports
+  - given: Pod
+    as: $pod
+    having:
+    - "mapContains(metadata.labels, $svc.spec.selector)"
+  - not:
+    - all:
+      - given: Container
+        as: $c
+        from: $pod.spec.containers
+      - given: ContainerPort
+        having:
+        - containerPort == $sPort.targetPort.intVal
+        from: $c.ports
+  then: "insert(new Advice(\"Fix the Service targetPort and the containerPort\",\"\
+    Service \" + \n      $svc.getMetadata().getName() +\n      \" targetPort: \" +\n\
+    \      $sPort.getTargetPort() +\n      \" not found in any Container of related\
+    \ Pod: \" +\n      $pod.getMetadata().getName()\n  ));\n"

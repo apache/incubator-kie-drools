@@ -1,0 +1,80 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.wumpus.server.view
+
+import org.drools.games.wumpus.Reset
+import org.drools.games.wumpus.Play
+import org.drools.games.wumpus.Init
+import org.drools.games.wumpus.Wumpus
+import org.drools.games.wumpus.Gold
+import org.drools.games.wumpus.Hero
+import org.drools.games.wumpus.Score
+import org.drools.games.wumpus.WumpusDeath
+import org.drools.games.wumpus.PitDeath
+import org.drools.games.wumpus.GoldWin
+import org.drools.games.wumpus.view.GameView
+import org.drools.games.wumpus.view.GameUI
+
+import javax.swing.JOptionPane
+
+import java.util.ArrayList
+
+global org.drools.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration;
+
+dialect "mvel"
+
+rule "Score Updated" agenda-group "UpdateScore" when
+    $gv : GameView()
+    $s : Score() @watch(*)
+then
+    channels["score"].send( $s );
+end
+
+rule "Wumpus Death View" agenda-group "EndGame" when
+    $g  : GameView()
+    $ui : GameUI()    
+    $wd : WumpusDeath()       
+then
+	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
+                                   "Oh No! You where killed by the Wumpus" );
+    delete( $wd );
+    insert( new Reset() );
+    setFocus( "Reset" );
+end
+
+rule "Pit Game View" agenda-group "EndGame" when
+    $g : GameView()
+    $ui : GameUI()    
+    $pd : PitDeath()
+then    
+	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
+                                   "Oh No! You where killed by a Pit" );
+    delete( $pd );
+    insert( new Reset() );
+    setFocus( "Reset" );
+end
+
+rule "Gold Win View" agenda-group "EndGame" when
+    $g : GameView()
+    $ui : GameUI()    
+    $gw : GoldWin()    
+then
+	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
+                                   "Congratulations! You retreived the gold from the cave" );
+    delete( $gw );
+    insert( new Reset() );
+    setFocus( "Reset" );
+end

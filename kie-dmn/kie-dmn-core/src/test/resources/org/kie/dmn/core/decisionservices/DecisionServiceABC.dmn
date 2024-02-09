@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns="http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                      xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="6.1.6.201808301036"
+                      id="_2443d3f5-f178-47c6-a0c9-b1fd1c933f60"
+                      name="Drawing 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60">
+   <semantic:extensionElements>
+  </semantic:extensionElements>
+   <semantic:decision id="_8786de4a-b9d3-42b9-ba55-3c23610a3017" name="Invoking Decision">
+      <semantic:variable id="_8a0e33e2-7c18-4f9f-8255-6add99439a75"
+                         name="Invoking Decision"
+                         typeRef="string"/>
+      <semantic:knowledgeRequirement>
+         <semantic:requiredKnowledge href="#_f8555b12-15f7-45f2-803c-fb621f44088d"/>
+      </semantic:knowledgeRequirement>
+      <semantic:literalExpression id="_3fa75474-1e59-4590-b4c4-32e6133d1f8a" typeRef="string">
+         <semantic:text>Decision Service ABC()</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decision id="_148cc263-b911-4aa5-a59b-b4239b93c03d" name="ABC">
+      <semantic:variable id="_90e44665-56a9-46f6-9385-9b745ac60e3f"
+                         name="ABC"
+                         typeRef="string"/>
+      <semantic:literalExpression id="_8fcfe696-11b2-44a0-b55c-ffb60ea9c88b" typeRef="string">
+         <semantic:text>"abc"</semantic:text>
+      </semantic:literalExpression>
+   </semantic:decision>
+   <semantic:decisionService id="_f8555b12-15f7-45f2-803c-fb621f44088d" name="Decision Service ABC">
+      <semantic:variable name="Decision Service ABC" typeRef="Any"/>
+      <semantic:outputDecision href="#_148cc263-b911-4aa5-a59b-b4239b93c03d"/>
+   </semantic:decisionService>
+</semantic:definitions>

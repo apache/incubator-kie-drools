@@ -1,0 +1,49 @@
+<BIF VERSION="0.3">
+<NETWORK>
+    <NAME>Garden</NAME>
+    <PROPERTY>package = org.drools.beliefs.bayes.integration</PROPERTY>
+        <VARIABLE TYPE="nature">
+            <NAME>WetGrass</NAME>
+            <OUTCOME>false</OUTCOME>
+            <OUTCOME>true</OUTCOME>
+            <PROPERTY>position = (0,10)</PROPERTY>
+        </VARIABLE>
+        <VARIABLE TYPE="nature">
+            <NAME>Cloudy</NAME>
+            <OUTCOME>false</OUTCOME>
+            <OUTCOME>true</OUTCOME>
+            <PROPERTY>position = (0,-10)</PROPERTY>
+        </VARIABLE>
+        <VARIABLE TYPE="nature">
+            <NAME>Sprinkler</NAME>
+            <OUTCOME>false</OUTCOME>
+            <OUTCOME>true</OUTCOME>
+            <PROPERTY>position = (13,0)</PROPERTY>
+        </VARIABLE>
+        <VARIABLE TYPE="nature">
+            <NAME>Rain</NAME>
+            <OUTCOME>false</OUTCOME>
+            <OUTCOME>true</OUTCOME>
+            <PROPERTY>position = (-12,0)</PROPERTY>
+        </VARIABLE>
+        <DEFINITION>
+            <FOR>WetGrass</FOR>
+            <GIVEN>Sprinkler</GIVEN>
+            <GIVEN>Rain</GIVEN>
+            <TABLE>1.0 0.0 0.1 0.9 0.1 0.9 0.01 0.99</TABLE>
+        </DEFINITION>
+        <DEFINITION>
+            <FOR>Cloudy</FOR>
+            <TABLE>0.5 0.5 		</TABLE>
+        </DEFINITION>
+        <DEFINITION>
+            <FOR>Sprinkler</FOR>
+            <GIVEN>Cloudy</GIVEN>
+            <TABLE>0.5 0.5 0.9 0.1</TABLE>
+        </DEFINITION>
+        <DEFINITION>
+            <FOR>Rain</FOR>
+            <TABLE>0.5 0.5</TABLE>
+        </DEFINITION>
+	</NETWORK>
+</BIF>

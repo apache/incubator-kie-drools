@@ -1,0 +1,22 @@
+[[_kieoverviewsection]]
+= Overview
+
+include::Overview/KIEAnatomy-section.adoc[leveloffset=+1]
+
+include::Overview/KIELifeCycles-section.adoc[leveloffset=+1]
+
+// The following is temporarily conditionalized. After the content is made applicable to jBPM by incorporating process-specific and jBPM-specific considerations, we can unconditionalize and make it genuinely shared. (Stetson R., 6 Feb 2019)
+ifdef::DROOLS[]
+:context: decision-management-architecture
+include::Overview/installation-options-ref.adoc[leveloffset=+1]
+
+include::Overview/decision-authoring-assets-ref.adoc[leveloffset=+1]
+
+include::Overview/project-storage-version-build-options-ref.adoc[leveloffset=+1]
+
+include::Overview/project-deployment-options-ref.adoc[leveloffset=+1]
+
+include::Overview/project-asset-execution-options-ref.adoc[leveloffset=+1]
+
+include::Overview/architecture-scenarios-ref.adoc[leveloffset=+1]
+endif::[]

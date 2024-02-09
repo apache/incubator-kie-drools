@@ -1,0 +1,100 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.testcoverage.functional.parser
+
+rule "TestAndInfix"
+    when
+        String() and Integer ()
+    then
+        //consequences
+end
+
+rule "TestAndPrefix"
+    when
+        (and String() Integer () )
+    then
+        //consequences
+end
+
+rule "TestOrInfix"
+    when
+        String() or Integer ()
+    then
+        //consequences
+end
+
+rule "TestOrPrefix"
+    when
+        (or String() Integer () )
+    then
+        //consequences
+end
+
+rule "TestNot"
+    when
+        not( String( ) )
+    then
+        //consequences
+end
+
+rule "TestExists"
+    when
+        exists( String( ) )
+    then
+        //consequences
+end
+
+rule "TestForall"
+    when
+        forall( String( ) )
+    then
+        //consequences
+end
+
+rule "TestFrom"
+    when
+        $list : java.util.List()
+        String() from $list
+    then
+        //consequences
+end
+
+rule "TestCollect"
+    when
+        $list : java.util.ArrayList()
+            from collect( Integer(this > 5) )
+    then
+        //consequences
+end
+
+rule "TestAccumulate1"
+    when
+        $avg : Number() from accumulate ( $d : Double (), average ($d) )
+    then
+        //consequences
+end
+
+rule "TestAccumulate2"
+    when
+        $dx : Number (doubleValue > 0) from accumulate ( $d : Double (),
+                    init   ( double ex = 0; double ex2 = 0; int count = 0; ),
+                    action ( count++; ex += $d; ex2 += $d * $d; ),
+                    reverse( count--; ex -= $d; ex2 -= $d * $d; ),
+                    result ( (ex / count) * (ex / count) - (ex2 / count) ) )
+    then
+        //consequences
+end

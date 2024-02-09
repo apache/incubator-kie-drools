@@ -1,0 +1,38 @@
+package org.kie.pmml.commons.model.predicates;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+
+public class KiePMMLCompoundPredicateEvaluateMethodTemplate {
+
+    public boolean evaluate(Map<String, Object> stringObjectMap) {
+           Boolean toReturn = null;
+           final List<Function<Map<String, Object>, Boolean>> functions = new LinkedList();
+           for (Function<Map<String, Object>, Boolean> function : functions) {
+                       Boolean evaluation = function.apply(stringObjectMap);
+                       toReturn = null; // generated
+           }
+           return toReturn != null && toReturn;
+       }
+
+    private boolean evaluateOR() {
+        return toReturn != null ? toReturn || evaluation : evaluation;
+    }
+
+    private boolean evaluateAND() {
+       return toReturn != null ? toReturn && evaluation : evaluation;
+    }
+
+    private boolean evaluateXOR() {
+       return toReturn != null ? toReturn ^ evaluation : evaluation;
+    }
+
+    private boolean evaluateSURROGATE() {
+       return toReturn != null ? toReturn : evaluation;
+    }
+
+}

@@ -1,0 +1,73 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.examples.backwardchaining;
+
+import org.drools.examples.backwardchaining.Location;
+
+dialect  "mvel"
+
+query isContainedIn( String x, String y )
+  Location( x, y; )
+  or
+  ( Location( z, y; ) and isContainedIn( x, z; ) )
+end
+
+rule "go" salience 10
+when
+    $s : String(  )
+then
+    System.out.println( $s );
+end
+
+rule "go1"
+when
+    String( this == "go1" )
+    isContainedIn("Office", "House"; )
+then
+    System.out.println( "Office is in the House" );
+end
+
+rule "go2"
+when
+    String( this == "go2" )
+    isContainedIn("Drawer", "House"; )
+then
+    System.out.println( "Drawer is in the House" );
+end
+
+rule "go3"
+when
+    String( this == "go3" )
+    isContainedIn("Key", "Office"; )
+then
+    System.out.println( "Key is in the Office" );
+end
+
+rule "go4"
+when
+    String( this == "go4" )
+    isContainedIn(thing, "Office"; )
+then
+    System.out.println(thing + " is in the Office" );
+end
+
+rule "go5"
+when
+    String( this == "go5" )
+    isContainedIn(thing, location; )
+then
+    System.out.println(thing + " is in " + location );
+end

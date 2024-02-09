@@ -1,0 +1,48 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="4">
+    <DataField name="result" optype="categorical" dataType="string">
+      <Value value="classA"/>
+      <Value value="classB"/>
+      <Value value="classC"/>
+    </DataField>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="input3" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <TreeModel modelName="SimpleClassificationTreeModel" functionName="classification">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Predicted_result" optype="categorical" dataType="string" feature="predictedValue"/>
+    </Output>
+    <Node id="1">
+      <True/>
+      <Node id="2" score="classA">
+        <SimplePredicate field="input1" operator="equal" value="5"/>
+      </Node>
+      <Node id="3">
+        <SimplePredicate field="input1" operator="lessThan" value="5"/>
+        <Node id="5" score="classB">
+          <SimplePredicate field="input2" operator="lessThan" value="-2"/>
+        </Node>
+        <Node id="6" score="classC">
+          <SimplePredicate field="input2" operator="greaterOrEqual" value="-2"/>
+        </Node>
+      </Node>
+      <Node id="4" score="classB">
+        <SimplePredicate field="input1" operator="greaterThan" value="5"/>
+        <Node id="7" score="classB">
+          <SimplePredicate field="input3" operator="lessThan" value="0.5"/>
+        </Node>
+        <Node id="8" score="classC">
+          <SimplePredicate field="input3" operator="greaterOrEqual" value="0.5"/>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>

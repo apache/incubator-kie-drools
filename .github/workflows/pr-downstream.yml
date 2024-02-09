@@ -1,0 +1,74 @@
+name: Kogito Downstream
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - 'docsimg/**'
+      - '.ci/jenkins/**'
+
+jobs:
+  kogito-downstream-build:
+    concurrency:
+      group: pr-${{ matrix.job_name }}_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 180
+    strategy:
+      matrix:
+        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        os: [ubuntu-latest]
+        java-version: [17]
+        maven-version: ['3.9.3']
+        include:
+          - job_name: kogito-runtimes
+            repository: incubator-kie-kogito-runtimes
+          - job_name: kogito-apps
+            repository: incubator-kie-kogito-apps
+            env_BUILD_MVN_OPTS: "-DskipUI"
+          - job_name: kogito-quarkus-examples
+            repository: incubator-kie-kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
+          - job_name: kogito-springboot-examples
+            repository: incubator-kie-kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
+          - job_name: serverless-workflow-examples
+            repository: incubator-kie-kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
+          # - job_name: kie-jpmml-integration
+          #   repository: kie-jpmml-integration
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
+    steps:
+      - name: Clean Disk Space
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Support long paths
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
+      - name: Java and Maven Setup
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Build Chain
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
+        with:
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+          starting-project: apache/${{ matrix.repository }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+        env: 
+          BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }}
+          KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.env_KOGITO_EXAMPLES_SUBFOLDER_POM }}
+      - name: Surefire Report
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
+        if: ${{ always() }}
+        with:
+          report_paths: '**/*-reports/TEST-*.xml'

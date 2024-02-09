@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title Related Resource already compiled to class
+
+autonumber 1
+actor Execution_provider
+note over Execution_provider: Any service requiring compiled class for execution
+
+Execution_provider -> Runtime_Manager: Input Data
+Runtime_Manager --> Runtime_Manager: Find specific KieLoaderService (Input Data)
+Runtime_Manager --> KieLoaderService: execute (Input Data)
+KieLoaderService --> KieLoaderService: load required classes
+KieLoaderService --> Runtime_Manager: Result
+Runtime_Manager -> Execution_provider: Result
+Execution_provider -> Execution_provider: Consume Result
+
+newpage Related Resource compiled on-the-fly
+
+autonumber 1
+note over Execution_provider: Any service requiring compiled class for execution
+
+Execution_provider -> Runtime_Manager: Input Data
+Runtime_Manager --> Runtime_Manager: Find specific KieLoaderService (Input Data)
+Runtime_Manager --> KieLoaderService: execute (Input Data)
+KieLoaderService --> Compilation_Manager: compile (Primary Resource)
+Compilation_Manager --> KieLoaderService: Compiled Class
+KieLoaderService --> KieLoaderService: load required classes
+KieLoaderService --> Runtime_Manager: Result
+Runtime_Manager -> Execution_provider: Result
+Execution_provider -> Execution_provider: Consume Result
+
+@enduml

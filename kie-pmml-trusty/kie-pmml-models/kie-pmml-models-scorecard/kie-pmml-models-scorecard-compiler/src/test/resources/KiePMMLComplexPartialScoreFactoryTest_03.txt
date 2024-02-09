@@ -1,0 +1,11 @@
+{
+    KiePMMLConstant %5$s_0_0 = new KiePMMLConstant("%5$s_0_0", Collections.emptyList(), %1$s, null);
+    KiePMMLFieldRef %5$s_0_1 = new KiePMMLFieldRef("%2$s", Collections.emptyList(), null);
+    KiePMMLApply %5$s_0 = KiePMMLApply.builder("%5$s_0", Collections.emptyList(), "%3$s")
+            .withDefaultValue(null)
+            .withMapMissingTo(null)
+            .withInvalidValueTreatmentMethod("%4$s")
+            .withKiePMMLExpressions(Arrays.asList(%5$s_0_0, %5$s_0_1))
+            .build();
+    KiePMMLComplexPartialScore %5$s = new KiePMMLComplexPartialScore("%5$s", Collections.emptyList(), %5$s_0);
+}

@@ -1,0 +1,11 @@
+resultMap -> {
+    final AtomicReference<Double> result = new AtomicReference<>(1.0);
+    List<String> fieldRefs = Arrays.asList("%s");
+    for (String key : resultMap.keySet()) {
+        if (fieldRefs.contains(key)) {
+            result.set(result.get() * (Double) resultMap.get(key));
+        }
+    }
+    double coefficient = %s;
+    return result.get() * coefficient;
+}

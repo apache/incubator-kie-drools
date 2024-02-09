@@ -1,0 +1,8 @@
+[id='dmn-execution-kogito-proc_{context}']
+= Executing a DMN service using {KOGITO}
+
+Interacting with the REST endpoints of {KOGITO} cloud-native microservice including DMN models provides the most separation between the calling code and the decision logic definition. The calling code is completely free of direct dependencies, and you can implement it in an entirely different development platform such as `Node.js` or `.NET`. 
+
+For a quick getting started guide for {KOGITO} on Quarkus, see the Quarkus guide for https://quarkus.io/guides/kogito-dmn[using {KOGITO} DMN support to add Decision Automation capabilities to a Quarkus application].
+
+For more information about {KOGITO} or migrating to {KOGITO} microservices, see the https://kogito.kie.org/guides/[Kogito website for documentation].

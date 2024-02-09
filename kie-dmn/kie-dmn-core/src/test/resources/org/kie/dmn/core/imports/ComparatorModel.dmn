@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_33A94A92-E771-4ED3-8C20-A76EA13D6A2E" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_43478672-66B1-4B17-B5D8-3889C2CB9C8E" name="ComparatorModel" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_33A94A92-E771-4ED3-8C20-A76EA13D6A2E">
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id="_22D14974-CB99-467C-A1DF-D78974CF22E7" name="Comparator">
+    <dmn:description>Returns true if first argument was bigger than second. False otherwise.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_C8964321-A87B-4D44-A6B1-D44C19E160FB" name="Comparator" typeRef="boolean"/>
+    <dmn:encapsulatedLogic id="_8593CC19-3165-40DD-BE91-8320BDE9A10A" kind="FEEL">
+      <dmn:formalParameter id="_DDBD20C5-A4F8-4178-A827-C2E40D503F1D" name="p-1" typeRef="number"/>
+      <dmn:formalParameter id="_492B279E-436E-4940-87B2-DAB57EA99334" name="p-2" typeRef="number"/>
+      <dmn:literalExpression id="_D9CA6418-6412-4893-B020-0415D6BCB135">
+        <dmn:text>p-1 &gt; p-2</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_2F591541-1C99-4D2C-B658-AB65C0F6A9DC" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_D9CA6418-6412-4893-B020-0415D6BCB135">
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8593CC19-3165-40DD-BE91-8320BDE9A10A">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_22D14974-CB99-467C-A1DF-D78974CF22E7" dmnElementRef="_22D14974-CB99-467C-A1DF-D78974CF22E7" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="268" y="116" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

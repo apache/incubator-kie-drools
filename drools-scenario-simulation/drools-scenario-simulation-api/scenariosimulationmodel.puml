@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+class AbstractScesimModel<T extends AbstractScesimData>
+class Background<BackgroundData>
+class Simulation<Scenario>
+AbstractScesimData <|- BackgroundData
+AbstractScesimData <|- Scenario
+AbstractScesimModel ---* AbstractScesimData
+AbstractScesimModel ---* SimulationDescriptor
+Background -|> AbstractScesimModel
+Simulation -|> AbstractScesimModel
+ScenarioSimulationModel -* Simulation
+ScenarioSimulationModel -* Background
+ScenarioSimulationModel -* Settings
+ScenarioSimulationModel -* Imports
+@enduml

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_F0CCDEC6-F439-421B-8259-87878AC367C9" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_FF60558F-014C-4B50-83D9-F2FF06C1C34E" name="ComparatorModelNamedWithDots" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_F0CCDEC6-F439-421B-8259-87878AC367C9">
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id="_8C5DCC7B-6712-4A93-B33B-AA3B26895421" name="A.more.than.B">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D4CD5C15-1DD0-4CEB-B96F-0CF2E2F4B292" name="A.more.than.B" typeRef="boolean"/>
+    <dmn:encapsulatedLogic id="_2491DAB0-2EAF-42D8-8A2D-D9C163CDE228" kind="FEEL">
+      <dmn:formalParameter id="_077CFE88-2F78-4B87-88A7-67044B82F3E3" name="A" typeRef="number"/>
+      <dmn:formalParameter id="_138122BD-7E1E-4F94-BD85-3ACDF0035263" name="B" typeRef="number"/>
+      <dmn:literalExpression id="_AC473197-FF16-46AD-91E0-E8FCA46FC2D1">
+        <dmn:text>A &gt; B</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_5D7FAB5B-B49D-4E06-80E0-39460D31DD6B" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_AC473197-FF16-46AD-91E0-E8FCA46FC2D1">
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_2491DAB0-2EAF-42D8-8A2D-D9C163CDE228">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_8C5DCC7B-6712-4A93-B33B-AA3B26895421" dmnElementRef="_8C5DCC7B-6712-4A93-B33B-AA3B26895421" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="369" y="143" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

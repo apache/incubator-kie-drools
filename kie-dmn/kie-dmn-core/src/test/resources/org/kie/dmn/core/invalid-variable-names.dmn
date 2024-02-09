@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                      xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                      id="0001-input-data-string"
+                      name="0001-input-data-string"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:itemDefinition name="Person)" id="_person">
+      <semantic:itemComponent name="not old">
+         <semantic:typeRef>boolean</semantic:typeRef>
+      </semantic:itemComponent>
+   </semantic:itemDefinition>
+   <semantic:decision name="Monkeys in the jungle" id="d_NameWithInKeyword">
+      <semantic:variable name="Monkeys in the jungle" typeRef="string"/>
+      <semantic:informationRequirement>
+         <semantic:requiredInput href="#i_FullName"/>
+      </semantic:informationRequirement>
+      <semantic:context>
+         <semantic:contextEntry>
+            <semantic:variable name="# foo bar"/>
+            <semantic:literalExpression>
+               <semantic:text>"Hello " + Full Name</semantic:text>
+            </semantic:literalExpression>
+         </semantic:contextEntry>
+         <semantic:contextEntry>
+            <semantic:variable name="my ^ function" typeRef="number"/>
+            <semantic:functionDefinition id="_mf">
+               <semantic:formalParameter name="some number" id="_some_param"/>
+               <semantic:literalExpression>
+                  <semantic:text>some number</semantic:text>
+               </semantic:literalExpression>
+            </semantic:functionDefinition>
+         </semantic:contextEntry>
+      </semantic:context>
+   </semantic:decision>
+   <semantic:decision name="Relation with invalid names" id="_relation">
+      <semantic:variable name="Relation with invalid names"/>
+      <semantic:relation>
+         <semantic:column name="Foo # bar" typeRef="string" id="_fff"/>
+         <semantic:column name="Baz - this is valid" typeRef="number"/>
+         <semantic:row>
+            <semantic:literalExpression>
+               <semantic:text>"x"</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression>
+               <semantic:text>100</semantic:text>
+            </semantic:literalExpression>
+         </semantic:row>
+      </semantic:relation>
+   </semantic:decision>
+   <semantic:inputData name="Full Name" id="i_FullName">
+      <semantic:variable name="Full Name" typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData name="Sales (%)" id="i_InvalidSymbol">
+      <semantic:variable name="Sales (%)" typeRef="string"/>
+   </semantic:inputData>
+   <semantic:inputData name="some people" id="i_somekeyword">
+      <semantic:variable name="some people" typeRef="string"/>
+   </semantic:inputData>
+</semantic:definitions>

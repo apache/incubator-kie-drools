@@ -1,0 +1,31 @@
+[
+  {
+    "step-type": "executable",
+    "modelLocalUriId": {
+      "model": "drl",
+      "basePath": "/TestingRule",
+      "fullPath": "/drl/TestingRule"
+    },
+    "fullClassNames": ["org.kie.drl.engine.compilation.model.Rulesefe9b92fdd254fbabc9e9002be0d51d6"]
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "org.kie.drl.engine.compilation.model.Rulesefe9b92fdd254fbabc9e9002be0d51d6"
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "org.kie.drl.engine.compilation.model.DomainClassesMetadataefe9b92fdd254fbabc9e9002be0d51d6"
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "org.kie.drl.engine.compilation.model.Rulesefe9b92fdd254fbabc9e9002be0d51d6_rule_first"
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "org.kie.drl.engine.compilation.model.Rulesefe9b92fdd254fbabc9e9002be0d51d6_rule_second"
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "org.kie.drl.engine.compilation.model.P70.LambdaConsequence7037A15B6FD94A0C410A07AD1B7BC897"
+  }
+]

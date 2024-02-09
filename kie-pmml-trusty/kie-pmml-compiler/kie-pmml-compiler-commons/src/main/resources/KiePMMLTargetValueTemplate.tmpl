@@ -1,0 +1,17 @@
+package org.kie.pmml.compilation.commons;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.kie.pmml.api.models.TargetValue;
+import org.kie.pmml.commons.model.KiePMMLTargetValue;
+
+public class KiePMMLTargetValueTemplate {
+
+    private KiePMMLTargetValue getKiePMMLTargetValue() {
+        TargetValue kieTargetValue = new TargetValue(value, displayValue, priorProbability, defaultValue);
+        KiePMMLTargetValue targetValue = KiePMMLTargetValue.builder(name, Collections.emptyList(), kieTargetValue)
+                .build();
+    }
+
+}

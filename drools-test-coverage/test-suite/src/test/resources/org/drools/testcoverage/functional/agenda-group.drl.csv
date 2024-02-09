@@ -1,0 +1,17 @@
+"RuleSet","org.drools.testcoverage.functional",,,,,,,
+,,,,,,,,
+,,,,,,,,
+"RuleTable agenda-group",,,,,,,,
+"NAME","CONDITION","PRIORITY","Agenda-Group","Activation-Group","Lock-On-Active","Auto-Focus","ACTION","ACTION"
+,,,,,,,,
+,"String(this == ""$param"")",,,,,,"drools.getKnowledgeRuntime().getAgenda().getAgendaGroup(""$param"").setFocus();","insert(new String(""$param""));"
+"rule names","string for test","saliences",,,,,"set focus to start group 'a' rules",
+"a","lockOnActive",,,,,,"a",
+"a1","lockOnActive2",0,"a",,"true",,,
+"a2","lockOnActive",10,"a",,"false",,,"lockOnActive2"
+"a3","lockOnActive",5,"a",,"true",,,
+"b1","withoutAutoFocus",10,"b",,,,,
+"b2","autoFocus",5,"b",,,"true",,"withoutAutoFocus"
+"c1","activationGroup",0,,"c",,,,
+"c2","activationGroup",10,,"c",,,,
+"c3","activationGroup",5,,"c",,,,

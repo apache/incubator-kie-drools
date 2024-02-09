@@ -1,0 +1,9 @@
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[gettingStarted]]
+= Getting Started
+:context: getting-started
+
+include::_first-rule-project.adoc[leveloffset=+1]
+include::_getting-started-decision-services.adoc[leveloffset=+1]

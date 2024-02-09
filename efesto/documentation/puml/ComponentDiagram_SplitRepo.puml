@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+node Engines_repo {
+  [Rule eng.]
+  [Decision eng.]
+  [Prediction eng.]
+}
+
+[? eng.]
+
+node Efesto_repo {
+  [Rule eng.] <--  [Efesto]
+  [Decision eng.] <--  [Efesto]
+  [Prediction eng.] <--  [Efesto]
+  [? eng.] <--  [Efesto]
+}
+
+[Workflow eng.] <- [Efesto]
+
+note left of Efesto
+    * Having engines and Efesto code
+    in different repository allows
+    dependency on final, even downward
+    (e.g. Kogito)
+    * This situation should be transitory
+end note
+
+
+node "Kogito repo" {
+  component Kogito [
+    * REST Endpoints
+    * Platform specific infra requirements
+    ** Messaging
+    ** Audit
+    ** Persistence
+    ** etc…
+  ]
+}
+
+[Efesto] <-- [Kogito]
+
+node "Serverless Workflow repo" {
+  component Serverless_Workflow [
+    * Spec Implementation
+    * Specific set of cloud native reqs
+    * Java Framework opinionated
+    * Kubernetes Deployment Interface
+   ]
+}
+
+[Workflow eng.] <... [Serverless_Workflow]
+
+[Kogito] <- [Serverless_Workflow]
+
+
+
+@enduml

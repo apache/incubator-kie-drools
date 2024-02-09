@@ -1,0 +1,74 @@
+<xsd:schema
+	xmlns="https://www.trisotech.com/spec/DMN/20191111/EXT/"
+	xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	targetNamespace="https://www.trisotech.com/spec/DMN/20191111/EXT/">
+	<xsd:import
+		namespace="https://www.omg.org/spec/DMN/20191111/MODEL/"
+		schemaLocation="DMN13.xsd" />
+		
+	<xsd:complexType name="tNamedExpression">
+		<xsd:sequence>
+			<xsd:element ref="dmn:expression" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="id"
+			type="xsd:ID" use="optional" />
+		<xsd:attribute name="typeRef"
+			type="xsd:string" use="optional" />	
+	</xsd:complexType>
+	
+	<!-- Conditional Boxed Expression -->
+	<xsd:complexType name="tConditional">
+		<xsd:complexContent>
+			<xsd:extension base="dmn:tExpression">
+				<xsd:sequence>
+					<xsd:element name="if" type="tNamedExpression" />
+					<xsd:element name="then" type="tNamedExpression" />
+					<xsd:element name="else" type="tNamedExpression" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="conditional" type="tConditional"
+		substitutionGroup="dmn:expression" />
+	<xsd:simpleType name="tIteratorType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="for" />
+			<xsd:enumeration value="every" />
+			<xsd:enumeration value="some" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<!-- Iterator Boxed Expression -->
+	<xsd:complexType name="tIterator">
+		<xsd:complexContent>
+			<xsd:extension base="dmn:tExpression">
+				<xsd:sequence>
+					<xsd:element name="in" type="tNamedExpression" />
+					<xsd:element name="return" type="tNamedExpression" />
+				</xsd:sequence>
+				<xsd:attribute name="iteratorType"
+					type="tIteratorType" />
+				<xsd:attribute name="iteratorVariable"
+					type="xsd:string" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="iterator" type="tIterator"
+		substitutionGroup="dmn:expression" />
+		
+	<!-- Filter Boxed Expression -->
+	<xsd:complexType name="tFilter">
+		<xsd:complexContent>
+			<xsd:extension base="dmn:tExpression">
+				<xsd:sequence>
+					<xsd:element name="in" type="tNamedExpression" />
+					<xsd:element name="match" type="tNamedExpression" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="filter" type="tFilter"
+		substitutionGroup="dmn:expression" />
+</xsd:schema>

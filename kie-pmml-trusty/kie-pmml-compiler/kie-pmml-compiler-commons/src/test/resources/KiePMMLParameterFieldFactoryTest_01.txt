@@ -1,0 +1,7 @@
+{
+    KiePMMLParameterField %1$s = KiePMMLParameterField.builder("%1$s", Collections.emptyList())
+            .withDataType(%2$s)
+            .withOpType(%3$s)
+            .withDisplayName("%4$s")
+            .build();
+}

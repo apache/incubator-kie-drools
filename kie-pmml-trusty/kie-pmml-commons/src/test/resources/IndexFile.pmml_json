@@ -1,0 +1,15 @@
+[
+  {
+    "step-type": "executable",
+    "modelLocalUriId": {
+      "model": "pmml",
+      "basePath": "/testmod",
+      "fullPath": "/pmml/testmod"
+    },
+    "fullClassNames": ["org.kie.pmml.commons.compilation.model.TestingModelFactory"]
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "full.path.Intermediate"
+  }
+]

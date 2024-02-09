@@ -1,0 +1,30 @@
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_B359CA2D-0702-43E2-BDC5-E1AE54FD97E5" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_7F053730-3219-4FE7-A4F8-30B7E97C1757" name="new-file" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_B359CA2D-0702-43E2-BDC5-E1AE54FD97E5">
+  <dmn:extensionElements/>
+  <dmn:decision id="_45DE6D75-54CA-4E38-A90A-69BDC4B5A9CE" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_FEE06D5B-5527-4174-A842-9DB1A4706E11" name="Decision-1" typeRef="Any"/>
+    <dmn:literalExpression id="_63BD601F-3ABB-4526-A68E-4382D826FFCE">
+      <dmn:text>now().year &gt; 1970</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_F70F32DD-7886-4BA7-A38D-8F0A0DD9238B" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_63BD601F-3ABB-4526-A68E-4382D826FFCE">
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_45DE6D75-54CA-4E38-A90A-69BDC4B5A9CE" dmnElementRef="_45DE6D75-54CA-4E38-A90A-69BDC4B5A9CE" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="582" y="222" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

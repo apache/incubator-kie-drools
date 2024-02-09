@@ -1,0 +1,36 @@
+{
+    KiePMMLFieldColumnPair %1$s_0 = new KiePMMLFieldColumnPair("BAND", Collections.emptyList(), "band");
+    KiePMMLFieldColumnPair %1$s_1 = new KiePMMLFieldColumnPair("STATE", Collections.emptyList(), "state");
+    Map<String, Object> %1$s_InlineTable_0_columnValues = Stream
+            .of(new Object[][] { { "band", "1" }, { "state", "MN" }, { "out", "10000" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_0 = new KiePMMLRow(%1$s_InlineTable_0_columnValues);
+    Map<String, Object> %1$s_InlineTable_1_columnValues = Stream
+            .of(new Object[][] { { "band", "1" }, { "state", "IL" }, { "out", "12000" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_1 = new KiePMMLRow(%1$s_InlineTable_1_columnValues);
+    Map<String, Object> %1$s_InlineTable_2_columnValues = Stream
+            .of(new Object[][] { { "band", "1" }, { "state", "NY" }, { "out", "20000" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_2 = new KiePMMLRow(%1$s_InlineTable_2_columnValues);
+    Map<String, Object> %1$s_InlineTable_3_columnValues = Stream
+            .of(new Object[][] { { "band", "2" }, { "state", "MN" }, { "out", "20000" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_3 = new KiePMMLRow(%1$s_InlineTable_3_columnValues);
+    Map<String, Object> %1$s_InlineTable_4_columnValues = Stream
+            .of(new Object[][] { { "band", "2" }, { "state", "IL" }, { "out", "23000" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_4 = new KiePMMLRow(%1$s_InlineTable_4_columnValues);
+    Map<String, Object> %1$s_InlineTable_5_columnValues = Stream
+            .of(new Object[][] { { "band", "2" }, { "state", "NY" }, { "out", "30000" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_5 = new KiePMMLRow(%1$s_InlineTable_5_columnValues);
+    KiePMMLInlineTable %1$s_InlineTable = new KiePMMLInlineTable("%1$s_InlineTable", Collections.emptyList(),
+            Arrays.asList(%1$s_InlineTable_0, %1$s_InlineTable_1, %1$s_InlineTable_2, %1$s_InlineTable_3, %1$s_InlineTable_4, %1$s_InlineTable_5));
+    KiePMMLMapValues %1$s = KiePMMLMapValues.builder("%1$s", Collections.emptyList(), "out")
+            .withDefaultValue(null).withMapMissingTo(null)
+            .withDataType(org.kie.pmml.api.enums.DATA_TYPE.INTEGER)
+            .withKiePMMLInlineTable(%1$s_InlineTable)
+            .withKiePMMLFieldColumnPairs(Arrays.asList(%1$s_0, %1$s_1))
+            .build();
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "step-type": "executable",
+    "modelLocalUriId": {
+      "model": "foo",
+      "basePath": "/this/is/fri",
+      "fullPath": "/foo/this/is/fri"
+    },
+    "fullClassNames": ["full.class.Name"]
+  },
+  {
+    "step-type": "class",
+    "fullClassName": "full.class.Name"
+  }
+]

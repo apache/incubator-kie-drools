@@ -1,0 +1,187 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.adventures
+
+
+import org.drools.games.adventures.model.*;
+import java.util.List;
+
+global org.drools.games.adventures.Counter counter
+
+dialect "mvel"
+
+function String thingsToString(List list) {
+    StringBuilder s = new StringBuilder();
+    for( int i = 0; i < list.size(); i++ ) {
+        if ( i != 0 ) {
+            s.append( ", " );
+        }
+        s.append( ((Thing)list.get(i)).getName() );
+    }
+
+    return s.toString();
+}
+
+rule processCommand  when
+    Command()
+then
+    setFocus( "commands" );
+end
+
+rule Look agenda-group "commands"  when
+    lc : LookCommand( )
+    l : Location( thing == lc.character )
+    ?look( lc.character, things, exits; )
+then
+    str = "You are in the " + l.target.name + "\n";
+    str +="You can see " + thingsToString( things ) + "\n";
+    str +="Available exits are  " + thingsToString( exits ) + "\n";
+    str +="\n";
+
+    lc.session.channels["output"].send( str );
+end
+
+rule Locked extends Move agenda-group "commands" when
+    Door( lockStatus == LockStatus.LOCKED ) from d
+then
+    mc.session.channels["output"].send( "The  " + r.name + " Door is locked\n" );
+    delete( mc );
+end
+
+rule Move agenda-group "commands" when
+    mc : MoveCommand(r : room )
+    l  : Location( thing == mc.character ) @watch( !target )
+    ?connect( d, r, l.target; )
+then
+    exit = new ExitEvent( mc.character, (Room) l.target );
+    enter = new EnterEvent( mc.character, r );
+
+    modify( l ) { target = r };
+
+    insert( exit );
+    insert( enter );
+
+    mc.session.channels["output"].send( "You have entered the " + l.target.name + "\n" );
+end
+
+rule UnlockingDoors agenda-group "commands"  when
+    uc : UseCommand()
+    r : Room() from uc.target
+    cl  : Location( thing == uc.character  )
+    ?connect( door, cl.target, r; )
+    if( door.key != uc.thing) break[wrongKey]
+    if( door.lockStatus == LockStatus.UNLOCKED) break[alreadyUnlocked]
+then
+    modify(door){ lockStatus = LockStatus.UNLOCKED };
+    uc.session.channels["output"].send(  "You have unlocked the " + r.name + " door\n" );
+    delete ( uc );
+then[wrongKey]
+    uc.session.channels["output"].send(  "The selected key cannot open the " + r.name + " door\n" );
+    delete ( uc );
+then[alreadyUnlocked]
+    uc.session.channels["output"].send(  "The " + r.name + " door is already unlocked\n" );
+    delete ( uc );
+end
+
+rule KillMonster agenda-group "commands"  when
+    uc : UseCommand( c : character, thing.name == "umbrella", uc.target.name == "monster")
+    mc : Character( this == uc.target )
+    lc : Location( thing == mc )
+then
+    uc.session.channels["output"].send(  "You have killed the Monster\n" );
+    delete( mc );
+    delete( lc );
+    delete ( uc );
+end
+
+rule InvalidUse agenda-group "commands" when
+    uc : UseCommand( c : character)
+then
+    uc.session.channels["output"].send(  "The " + uc.thing.name + " cannot be used with the " + uc.target.name + "\n" );
+end
+
+rule Pickup agenda-group "commands"  when
+    pc : PickupCommand( c : character, t : thing )
+    cl  : Location( thing == c, $room : target)
+    ?isContainedIn(t, x, $room;)
+    tl : Location( thing == t )
+    if ( t.portable != true) break[nonportable]
+    session : UserSession( $char : character )
+    things( $char, $things; )  
+then
+    insert( new Holding(  c, t ) );
+    modify( tl ) { target =  c };
+    insert( new PickupEvent( c, t ) );
+    session.channels["things"].send( $things );
+    pc.session.channels["output"].send(  "You have picked up the " + t.name + "\n" );
+then[nonportable]
+    pc.session.channels["output"].send(  "Unable to picked up the " + t.name + "\n" );
+end
+
+rule Drop agenda-group "commands" when
+    dc : DropCommand( c : character, t : thing)
+
+    cl : Location( thing == c )
+    tl : Location( thing == t ) @watch( !target )
+    h  : Holding( c, t;)
+then
+    modify( tl ) { target = cl.target };
+    delete ( h );
+    insert( new DropEvent( c, t ) );
+
+    dc.session.channels["output"].send( "You have dropped the " + t.name + "\n" );
+end
+
+rule Give agenda-group "commands" when
+    gc : GiveCommand( $giver : giver, $thing : thing )
+
+    // They are in the same room
+    giverl  : Location( thing == gc.giver )
+              Location( thing == gc.receiver, target == giverl.target )
+
+    // The giver must be holding the thing
+    h : Holding( $giver, $thing;) @watch( !character )
+then
+    modify( h ) { character = gc.receiver };
+    insert( new GiveEvent( gc.giver, gc.thing, gc.receiver ) );
+
+    gc.session.channels["output"].send( "You have given the " + gc.thing.name + " to " + gc.receiver.name + "\n" );
+end
+
+rule Search agenda-group "commands"  when
+    sc : SearchCommand( thing != null )
+    session : UserSession( )
+    acc( ?isContainedIn(child, r, sc.thing;);
+         strThings : collectList( child.name + " in " + r.name ),
+         things : collectList( child ))
+then
+    sc.session.channels["output"].send( "found " + strThings + "\n" );
+    session.channels["things"].send( things );
+end
+
+rule SearchNoArgs agenda-group "commands"  when
+    sc : SearchCommand( t : thing, t == null )
+    session : UserSession( $char : character )
+    things( $char, $things; )
+then
+    session.channels["things"].send( $things );
+end
+
+rule retractCommand agenda-group "commands" salience -100 when
+    c : Command()
+then
+    delete( c );
+end

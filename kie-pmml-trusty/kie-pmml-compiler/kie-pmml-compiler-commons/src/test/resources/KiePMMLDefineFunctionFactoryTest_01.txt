@@ -1,0 +1,22 @@
+{
+    KiePMMLParameterField CUSTOM_FUNCTION_0 = KiePMMLParameterField.builder("%s", Collections.emptyList())
+                .withDataType(%s)
+                .withOpType(%s)
+                .withDisplayName("%s")
+                .build();
+    KiePMMLParameterField CUSTOM_FUNCTION_1 = KiePMMLParameterField.builder("%s", Collections.emptyList())
+                .withDataType(%s)
+                .withOpType(%s)
+                .withDisplayName("%s")
+                .build();
+    KiePMMLConstant CUSTOM_FUNCTION_Expression_0 = new KiePMMLConstant("CUSTOM_FUNCTION_Expression_0", Collections.emptyList(), %s, null);
+    KiePMMLFieldRef CUSTOM_FUNCTION_Expression_1 = new KiePMMLFieldRef("%s", Collections.emptyList(), null);
+    KiePMMLApply CUSTOM_FUNCTION_Expression = KiePMMLApply.builder("CUSTOM_FUNCTION_Expression", Collections.emptyList(), "%s")
+                .withDefaultValue(null)
+                .withMapMissingTo(null)
+                .withInvalidValueTreatmentMethod("%s")
+                .withKiePMMLExpressions(Arrays.asList(CUSTOM_FUNCTION_Expression_0, CUSTOM_FUNCTION_Expression_1))
+                .build();
+    KiePMMLDefineFunction CUSTOM_FUNCTION = new KiePMMLDefineFunction("CUSTOM_FUNCTION", Collections.emptyList(),  %s, %s,
+                Arrays.asList(CUSTOM_FUNCTION_0, CUSTOM_FUNCTION_1), CUSTOM_FUNCTION_Expression);
+}

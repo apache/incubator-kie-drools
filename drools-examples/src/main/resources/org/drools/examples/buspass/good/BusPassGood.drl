@@ -1,0 +1,54 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.examples.buspass.good;
+
+import org.drools.examples.buspass.Person;
+import org.drools.examples.buspass.IsChild;
+import org.drools.examples.buspass.IsAdult;
+import org.drools.examples.buspass.ChildBusPass;
+import org.drools.examples.buspass.AdultBusPass;
+
+rule IssueChildBusPass when
+    p : Person()
+    IsChild( person == p )
+then
+    insertLogical( new ChildBusPass( p ) );
+end
+
+rule IssueAdultBusPass when
+    p : Person()
+    IsAdult( person == p )
+then
+    insertLogical( new AdultBusPass( p ) );
+end
+
+rule PrintChildBusPass when
+    ChildBusPass()
+then
+    System.out.println( "Child Bus Pass" );
+end
+
+rule PrintNoChildBusPass when
+    ChildBusPass()
+then
+    System.out.println( "No Child Bus Pass" );
+end
+
+rule PrintAdultBussPass when
+    AdultBusPass()
+then
+    System.out.println( "Adult Bus Pass" );
+end

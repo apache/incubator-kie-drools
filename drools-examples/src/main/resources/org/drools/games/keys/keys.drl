@@ -1,0 +1,56 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.keys
+
+import org.drools.games.KeyPressed
+
+import java.lang.Math
+
+
+import java.awt.event.KeyEvent
+import org.drools.games.KeyPressed
+
+dialect "mvel"
+
+rule "Detect KeyPressed" agenda-group "Keys" when
+    ke : KeyEvent( ) from entry-point "KeyPressedStream"
+    not KeyPressed( keyText ==  KeyEvent.getKeyText( ke.getKeyCode() ) )    
+then
+    kp = new KeyPressed( KeyEvent.getKeyText( ke.getKeyCode() ) );
+    insert( kp );
+    delete( ke );
+end
+
+
+rule "Detect KeyReleased"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+    kp : KeyPressed( keyText == KeyEvent.getKeyText( ke.getKeyCode() ) )    
+then
+    delete( ke );
+    delete( kp );
+end
+
+rule "Remove KeyPressed Event"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyPressedStream"
+then
+    delete( ke );
+end
+
+rule "Remove KeyReleased Event"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+then
+    delete( ke );
+end

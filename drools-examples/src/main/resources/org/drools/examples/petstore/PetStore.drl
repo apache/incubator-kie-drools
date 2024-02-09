@@ -1,0 +1,174 @@
+/*
+ * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.petstore
+
+import org.kie.api.runtime.KieRuntime
+import org.drools.examples.petstore.PetStoreExample.Order
+import org.drools.examples.petstore.PetStoreExample.Purchase
+import org.drools.examples.petstore.PetStoreExample.Product
+import java.util.ArrayList
+import javax.swing.JOptionPane;
+ 
+import javax.swing.JFrame 
+        
+global JFrame frame 
+global javax.swing.JTextArea textArea
+ 
+// dialect "mvel"
+
+// insert each item in the shopping cart into the Working Memory 
+rule "Explode Cart"
+    agenda-group "init"
+    auto-focus true
+    salience 10
+    dialect "java"
+    when
+        $order : Order( grossTotal == -1 )
+        $item : Purchase() from $order.items
+    then
+        insert( $item );
+        kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
+        kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
+end
+
+
+// Free Fish Food sample when we buy a Gold Fish if we haven't already  bought 
+// Fish Food and dont already have a Fish Food Sample
+rule "Free Fish Food Sample"
+    agenda-group "evaluate"
+    dialect "mvel"
+    when
+        $order : Order()
+        not ( $p : Product( name == "Fish Food") && Purchase( product == $p ) )
+        not ( $p : Product( name == "Fish Food Sample") && Purchase( product == $p ) )
+        exists ( $p : Product( name == "Gold Fish") && Purchase( product == $p ) )
+        $fishFoodSample : Product( name == "Fish Food Sample" );
+    then
+        System.out.println( "Adding free Fish Food Sample to cart" );
+        purchase = new Purchase($order, $fishFoodSample);
+        insert( purchase );
+        $order.addItem( purchase );
+end
+
+
+// Suggest a tank if we have bought more than 5 gold fish and dont already have one
+rule "Suggest Tank"
+       agenda-group "evaluate"
+       dialect "java"
+    when
+        $order : Order()
+        not ( $p : Product( name == "Fish Tank") && Purchase( product == $p ) )
+        ArrayList( $total : size > 5 ) from collect( Purchase( product.name == "Gold Fish" ) )
+        $fishTank : Product( name == "Fish Tank" )
+    then
+        requireTank(frame, kcontext.getKieRuntime(), $order, $fishTank, $total);
+end
+
+rule "Show Items"
+    agenda-group "show items"
+    dialect "java"
+    when
+        $order : Order( )
+        $p : Purchase( order == $order )
+    then
+        textArea.append( $p.getProduct() + "\n");
+end
+
+rule "do checkout"
+        dialect "java"
+    when
+    then
+        doCheckout(frame, kcontext.getKieRuntime());
+end    
+
+rule "Gross Total"
+    agenda-group "checkout"
+    dialect "mvel"
+    when
+        $order : Order( grossTotal == -1)
+        Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ),
+                                                              sum( $price ) )
+    then
+        modify( $order ) { grossTotal = total }
+        textArea.append( "\ngross total=" + total + "\n" );
+end
+
+rule "Apply 5% Discount"
+    agenda-group "checkout"
+    dialect "mvel"
+    when
+        $order : Order( grossTotal >= 10 && < 20 )
+    then
+        $order.discountedTotal = $order.grossTotal * 0.95;
+        textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
+end
+
+
+rule "Apply 10% Discount"
+    agenda-group "checkout"
+    dialect "mvel"
+    when
+        $order : Order( grossTotal >= 20 )
+    then
+        $order.discountedTotal = $order.grossTotal * 0.90;
+        textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
+end
+
+function void doCheckout(JFrame frame, KieRuntime krt) {
+        Object[] options = {"Yes",
+                            "No"};
+                            
+        int n = JOptionPane.showOptionDialog(frame,
+                                             "Would you like to checkout?",
+                                             "",
+                                             JOptionPane.YES_NO_OPTION,
+                                             JOptionPane.QUESTION_MESSAGE,
+                                             null,
+                                             options,
+                                             options[0]);
+
+       if (n == 0) {
+            krt.getAgenda().getAgendaGroup( "checkout" ).setFocus();
+       }   
+}
+
+function boolean requireTank(JFrame frame, KieRuntime krt, Order order, Product fishTank, int total) {
+        Object[] options = {"Yes",
+                            "No"};
+                            
+        int n = JOptionPane.showOptionDialog(frame,
+                                             "Would you like to buy a tank for your " + total + " fish?",
+                                             "Purchase Suggestion",
+                                             JOptionPane.YES_NO_OPTION,
+                                             JOptionPane.QUESTION_MESSAGE,
+                                             null,
+                                             options,
+                                             options[0]);
+                                             
+       System.out.print( "SUGGESTION: Would you like to buy a tank for your "
+                           + total + " fish? - " );
+
+       if (n == 0) {
+             Purchase purchase = new Purchase( order, fishTank );
+             krt.insert( purchase );
+             order.addItem( purchase );
+             System.out.println( "Yes" );
+       } else {
+            System.out.println( "No" );
+       }      
+       return true;
+}

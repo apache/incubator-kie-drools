@@ -1,0 +1,25 @@
+package org.kie.pmml.compilation.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.*;
+import org.kie.pmml.commons.model.KiePMMLMiningField;
+
+public class KiePMMLMiningFieldTemplate {
+
+
+    private KiePMMLMiningField getKiePMMLMiningField() {
+        KiePMMLMiningField miningField = KiePMMLMiningField.builder(name, Collections.emptyList())
+                        .withFieldUsageType(fieldUsageType)
+                        .withOpType(opType)
+                        .withDataType(dataType)
+                        .withMissingValueTreatmentMethod(missingValueTreatmentMethod)
+                        .withInvalidValueTreatmentMethod(invalidValueTreatmentMethod)
+                        .withMissingValueReplacement(missingValueReplacement)
+                        .withInvalidValueReplacement(invalidValueReplacement)
+                        .withAllowedValues(Arrays.asList(allowedValue1, allowedValue2))
+                        .withIntervals(Arrays.asList(interval1, interval2))
+                        .build();
+    }
+
+}

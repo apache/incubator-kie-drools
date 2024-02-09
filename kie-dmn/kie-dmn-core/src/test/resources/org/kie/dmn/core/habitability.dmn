@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_93836704-04E9-45B6-8D10-51409FEBDF25" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_769E1EEB-1FF5-486D-A01A-2AC8B41B56F1" name="habitability" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_93836704-04E9-45B6-8D10-51409FEBDF25">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_91C73E47-B022-445F-8EB8-03C9D151ADAF" name="oxygene">
+    <dmn:extensionElements/>
+    <dmn:variable id="_134AD5DB-0EF6-4919-A1C8-D6DFD01F01E1" name="oxygene" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:inputData id="_A69350B8-C033-4625-ACDD-BE3372DDA3A5" name="temperature">
+    <dmn:extensionElements/>
+    <dmn:variable id="_695F2636-2215-4D9C-B5CF-82A5EF087242" name="temperature" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_0699341C-A1BE-4B6D-B8D5-3972D67FCA45" name="habitability">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5220852F-82F7-4796-B8DE-9F449B6CC816" name="habitability" typeRef="string"/>
+    <dmn:informationRequirement id="_A107332C-69A6-4645-945A-A96FA2D651B0">
+      <dmn:requiredInput href="#_A69350B8-C033-4625-ACDD-BE3372DDA3A5"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_787EB027-AB8A-4438-B731-D968F4CF79E5">
+      <dmn:requiredInput href="#_91C73E47-B022-445F-8EB8-03C9D151ADAF"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_C5BB119B-AACF-401F-AF09-5BD330238822" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_90FF4BF1-1EFA-4FC2-AB19-75E762FD6A73">
+        <dmn:inputExpression id="_9000F1E8-9B5B-47D2-B2A7-D61598581B5D" typeRef="number">
+          <dmn:text>oxygene</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_134AA7DE-CECC-4A11-BFC4-8C12A87257C6">
+        <dmn:inputExpression id="_9CD36547-D37A-4138-8CFA-42E6B7C09645" typeRef="number">
+          <dmn:text>temperature</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_E8EED071-672A-4177-BE50-9FC1CC8AED19"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_F935B705-FDF8-4334-8130-26A9A5635ECA">
+        <dmn:inputEntry id="_7C9B42E8-87B7-4230-B3D9-14A564ADD00A">
+          <dmn:text>[10..100]</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_3F897307-6E62-41E5-B841-F986DDE00A20">
+          <dmn:text>&lt; 40</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_EAB5858C-200C-4468-B5C2-D082B2E21028">
+          <dmn:text>"somehow doable"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_2A61D35A-722E-4EF0-8B3C-0ACB22EF7BBF">
+        <dmn:inputEntry id="_53C1F87C-9778-468F-ABB8-D09567F7A24E">
+          <dmn:text>&lt;10</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_8107798C-00D3-4F11-BDF0-9D509E3904E8">
+          <dmn:text>&lt; 40</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_570C9F94-13FD-4F98-90B0-3971173AA21D">
+          <dmn:text>"hardly doable"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_97632101-3E19-4BEF-B511-6E9523A48636">
+        <dmn:inputEntry id="_3110AE37-454D-4D46-BE90-EB9EBBDA32C9">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_C109EE05-38D4-468D-BB5C-73BC72BBB0CB">
+          <dmn:text>&gt;= 40</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6764C731-E4D0-41FF-B432-F9A8FACB6E1C">
+          <dmn:text>"too hot"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_E7C6ED6C-30FF-428D-BBB3-29D7098060DF" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C5BB119B-AACF-401F-AF09-5BD330238822">
+            <kie:width>50</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_91C73E47-B022-445F-8EB8-03C9D151ADAF" dmnElementRef="_91C73E47-B022-445F-8EB8-03C9D151ADAF" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="82" y="96" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_A69350B8-C033-4625-ACDD-BE3372DDA3A5" dmnElementRef="_A69350B8-C033-4625-ACDD-BE3372DDA3A5" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="98" y="231" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_0699341C-A1BE-4B6D-B8D5-3972D67FCA45" dmnElementRef="_0699341C-A1BE-4B6D-B8D5-3972D67FCA45" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="429" y="155" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_A107332C-69A6-4645-945A-A96FA2D651B0-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="_A107332C-69A6-4645-945A-A96FA2D651B0">
+        <di:waypoint x="148" y="231"/>
+        <di:waypoint x="479" y="205"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_787EB027-AB8A-4438-B731-D968F4CF79E5-AUTO-TARGET" dmnElementRef="_787EB027-AB8A-4438-B731-D968F4CF79E5">
+        <di:waypoint x="132" y="121"/>
+        <di:waypoint x="479" y="155"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

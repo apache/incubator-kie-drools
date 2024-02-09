@@ -1,0 +1,89 @@
+TestCase "Exists node assert/retract test case"
+
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+
+Setup
+    ObjectTypeNode:
+        otnLeft1, Person;
+    LeftInputAdapterNode:
+        lian1, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, Person;
+    ObjectTypeNode:
+        otnRight2, Person;
+    Binding:
+         p1, 0, Person, age;
+    ExistsNode:
+        exists1, lian1, otnRight1;
+        age, !=, p1;
+    JoinNode:
+        join2, exists1, otnRight2;
+        age, !=, p1;
+    Facts:
+        new Person('darth', 35), new Person('bobba', 35),
+        new Person('yoda', 35), new Person('luke', 35),
+        new Person('dave', 35), new Person('bob', 36),
+        new Person('obi', 36), new Person('han', 37);
+
+Test "Exists node assert/retract test"	    
+    /**
+     * check single left assertion and retraction
+     */
+    assert:
+        otnLeft1, [h0];
+    exists1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [];
+    retract:
+        otnLeft1, [h0];
+    exists1:
+        leftMemory, [];
+    join2:
+        leftMemory, [];
+
+    /**
+     * check single right assertion and retraction
+     */
+    assert:
+        otnRight1, [h1];
+    exists1:
+        rightMemory, [h1];
+    join2:
+        leftMemory, [];
+    retract:
+        otnRight1, [h1];
+    exists1:
+        rightMemory, [];
+
+    /**
+     *  check single left then right assertion, where age != age (matches)
+     */
+    assert:
+        otnLeft1, [h0];
+    exists1:
+        leftMemory, [[h0]];
+        rightMemory, [];
+    join2:
+        leftMemory, [];
+    assert:
+        otnRight1, [h5];    // h5 is not equal, so it blocks, and thus h0 is propagated to join2
+    exists1:
+        leftMemory, [];
+        rightMemory, [h5];
+    join2:
+        leftMemory, [[h0]];
+    retract:
+        otnRight1, [h5];   // nothing blocks h0, so it's removed from join2
+    join2:
+        leftMemory, [];
+    retract:
+        otnLeft1, [h0];
+    exists1:
+        leftMemory, [];
+        rightMemory, [];
+    join2:
+        leftMemory, [];
+        
+        

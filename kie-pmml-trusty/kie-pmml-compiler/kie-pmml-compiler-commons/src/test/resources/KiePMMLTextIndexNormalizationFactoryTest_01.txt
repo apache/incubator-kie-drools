@@ -1,0 +1,27 @@
+{
+    Map<String, Object> %1$s_InlineTable_0_columnValues = Stream
+            .of(new Object[][] { { "regex", "true" }, { "string", "interfaces?" }, { "stem", "interface" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_0 = new KiePMMLRow(%1$s_InlineTable_0_columnValues);
+    Map<String, Object> %1$s_InlineTable_1_columnValues = Stream
+            .of(new Object[][] { { "regex", "true" }, { "string", "is|are|seem(ed|s?)|were" }, { "stem", "be" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_1 = new KiePMMLRow(%1$s_InlineTable_1_columnValues);
+    Map<String, Object> %1$s_InlineTable_2_columnValues = Stream
+            .of(new Object[][] { { "regex", "true" }, { "string", "user friendl(y|iness)" }, { "stem", "user_friendly" } })
+            .collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+    KiePMMLRow %1$s_InlineTable_2 = new KiePMMLRow(%1$s_InlineTable_2_columnValues);
+    KiePMMLInlineTable %1$s_InlineTable = new KiePMMLInlineTable("%1$s_InlineTable", Collections.emptyList(),
+            Arrays.asList(%1$s_InlineTable_0, %1$s_InlineTable_1, %1$s_InlineTable_2));
+    KiePMMLTextIndexNormalization %1$s = KiePMMLTextIndexNormalization.builder("%1$s", Collections.emptyList())
+            .withInField("string")
+            .withOutField("stem")
+            .withKiePMMLInlineTable(%1$s_InlineTable)
+            .withRegexField("regex")
+            .withRecursive(false)
+            .withIsCaseSensitive(false)
+            .withMaxLevenshteinDistance(null)
+            .withWordSeparatorCharacterRE(null)
+            .withTokenize(false)
+            .build();
+}

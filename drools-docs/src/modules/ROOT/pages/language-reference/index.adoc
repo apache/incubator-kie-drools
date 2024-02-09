@@ -1,0 +1,14 @@
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[_droolslanguagereferencechapter]]
+= Rule Language Reference
+:context: drl-rules
+
+include::_drl-rules.adoc[leveloffset=+1]
+
+include::_performance-tuning-drl-ref.adoc[leveloffset=+2]
+
+include::_DSL-section.adoc[leveloffset=+1]
+
+include::_XLSDecisionTable-section.adoc[leveloffset=+1]

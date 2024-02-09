@@ -1,0 +1,34 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField name="result" optype="continuous" dataType="double"/>
+    <DataField name="x" optype="continuous" dataType="double"/>
+    <DataField name="y" optype="continuous" dataType="double"/>
+    <DataField name="z" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <RegressionModel modelName="PredictorTermRegression" functionName="regression">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="y" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="z" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+    </Output>
+    <RegressionTable intercept="5">
+      <NumericPredictor name="x" exponent="1" coefficient="2"/>
+      <NumericPredictor name="y" exponent="1" coefficient="1"/>
+      <NumericPredictor name="z" exponent="2" coefficient="5"/>
+      <PredictorTerm coefficient="4">
+        <FieldRef field="y"/>
+        <FieldRef field="z"/>
+      </PredictorTerm>
+      <PredictorTerm coefficient="-2.5">
+        <FieldRef field="x"/>
+        <FieldRef field="y"/>
+        <FieldRef field="z"/>
+      </PredictorTerm>
+    </RegressionTable>
+  </RegressionModel>
+</PMML>

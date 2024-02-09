@@ -1,0 +1,343 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.drools.util;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+public class IoUtils {
+
+    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+
+    public static int findPort() {
+        for( int i = 1024; i < 65535; i++) {
+            if ( validPort( i ) ) {
+                return i;
+            }
+        }
+        throw new RuntimeException( "No valid port could be found" );
+    }
+    
+    public static boolean validPort(int port) {
+
+        ServerSocket ss = null;
+        DatagramSocket ds = null;
+        try {
+            ss = new ServerSocket(port);
+            ss.setReuseAddress(true);
+            ds = new DatagramSocket(port);
+            ds.setReuseAddress(true);
+            return true;
+        } catch (IOException e) {
+        } finally {
+            if (ds != null) {
+                ds.close();
+            }
+
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (IOException e) {
+                    /* should not be thrown */
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static String readFileAsString(File file) {
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return readInputStreamAsString(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String readJarEntryAsString(JarFile jarFile, JarEntry jarEntry) {
+        try (InputStream inputStream = jarFile.getInputStream(jarEntry)) {
+            return readInputStreamAsString(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String readInputStreamAsString(InputStream inputStream) {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(inputStream, UTF8_CHARSET));
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) { }
+            }
+        }
+        return sb.toString();
+    }
+
+    public static void copyFile(File sourceFile, File destFile) {
+        if (!destFile.getParentFile().mkdirs()) {
+            throw new IllegalStateException("Cannot create directory structure for file " + destFile.getParentFile().getAbsolutePath() + "!");
+        }
+        try {
+            destFile.createNewFile();
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
+        }
+
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel();
+             FileChannel destination = new FileOutputStream(destFile).getChannel()) {
+            destination.transferFrom(source, 0, source.size());
+        } catch (IOException ioe) {
+            throw new RuntimeException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
+        }
+    }
+
+    public static long copy( InputStream input, OutputStream output ) throws IOException {
+        byte[] buffer = createBytesBuffer( input );
+        long count = 0;
+        int n;
+        while ((n = input.read(buffer)) != -1) {
+            output.write(buffer, 0, n);
+            count += n;
+        }
+        return count;
+    }
+
+    public static File copyInTempFile( InputStream input, String fileExtension ) throws IOException {
+        File tempFile = File.createTempFile(UUID.randomUUID().toString(), "." + fileExtension );
+        tempFile.deleteOnExit();
+        copy(input, new FileOutputStream(tempFile));
+        return tempFile;
+    }
+
+    public static List<String> recursiveListFile(File folder) {
+        return recursiveListFile( folder, "", f -> true );
+    }
+
+    public static List<String> recursiveListFile(File folder, String prefix, Predicate<File> filter) {
+        List<String> files = new ArrayList<>();
+        for (File child : safeListFiles(folder)) {
+            filesInFolder(files, child, prefix, filter);
+        }
+        return files;
+    }
+
+    private static void filesInFolder(List<String> files, File file, String relativePath, Predicate<File> filter) {
+        if (file.isDirectory()) {
+            relativePath += file.getName() + "/";
+            for (File child : safeListFiles(file)) {
+                filesInFolder(files, child, relativePath, filter);
+            }
+        } else {
+            if (filter.test(file)) {
+                files.add(relativePath + file.getName());
+            }
+        }
+    }
+
+    /**
+     * Returns {@link File#listFiles()} on a given file, avoids returning null when an IO error occurs.
+     *
+     * @param file directory whose files will be returned
+     * @return {@link File#listFiles()}
+     * @throws IllegalArgumentException when the file is a directory or cannot be accessed
+     */
+    private static File[] safeListFiles(final File file) {
+        final File[] children = file.listFiles();
+        if (children != null) {
+            return children;
+        } else {
+            throw new IllegalArgumentException(String.format("Unable to retrieve contents of directory '%s'.",
+                                                             file.getAbsolutePath()));
+        }
+    }
+
+    public static byte[] readBytesFromInputStream(InputStream input) throws IOException {
+        return readBytesFromInputStream( input, true );
+    }
+
+    public static byte[] readBytesFromInputStream(InputStream input, boolean closeInput) throws IOException {
+        try {
+            byte[] buffer = createBytesBuffer( input );
+            ByteArrayOutputStream output = new ByteArrayOutputStream( buffer.length );
+
+            int n;
+            while ( -1 != ( n = input.read( buffer ) ) ) {
+                output.write( buffer, 0, n );
+            }
+            return output.toByteArray();
+        } finally {
+            try {
+                if ( closeInput ) {
+                    input.close();
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+    }
+
+    private static byte[] createBytesBuffer( InputStream input ) throws IOException {
+        return new byte[Math.max(input.available(), 8192)];
+    }
+
+    public static byte[] readBytesFromZipEntry(File file, ZipEntry entry) throws IOException {
+        if ( entry == null ) {
+            return null;
+        }
+
+        byte[] bytes;
+        try (ZipFile zipFile = new ZipFile( file )) {
+            bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ), true );
+        }
+        return bytes;
+
+    }
+
+    public static byte[] readBytes(File f) throws IOException {
+        byte[] buf = new byte[1024];
+        try (BufferedInputStream bais = new BufferedInputStream(new FileInputStream(f));
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            int len;
+            while ((len = bais.read(buf)) > 0) {
+                baos.write(buf, 0, len);
+            }
+            return baos.toByteArray();
+        }
+    }
+
+    public static void write(File f,
+                             byte[] data) throws IOException {
+        if ( f.exists() ) {
+            // we want to make sure there is a time difference for lastModified and lastRead checks as Linux and http often round to seconds
+            // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
+            try {
+                Thread.sleep( 1000 );
+            } catch ( Exception e ) {
+                throw new RuntimeException( "Unable to sleep" );
+            }
+        }
+
+        // Attempt to write the file
+        writeBytes(f, data );
+
+        // Now check the file was written and re-attempt if it was not
+        // Need to do this for testing, to ensure the texts are read the same way, otherwise sometimes you get tail \n sometimes you don't
+        int count = 0;
+        while ( !areByteArraysEqual(data, readBytes( f ) ) && count < 5 ) {
+            // The file failed to write, try 5 times, calling GC and sleep between each iteration
+            // Sometimes windows takes a while to release a lock on a file
+            System.gc();
+            try {
+                Thread.sleep( 250 );
+            } catch ( InterruptedException e ) {
+                throw new RuntimeException( "This should never happen" );
+            }
+            writeBytes(f, data );
+            count++;
+        }
+
+        //areByteArraysEqual
+
+        if ( count == 5 ) {
+            throw new IOException( "Unable to write to file:" + f.getCanonicalPath() );
+        }
+    }
+
+    public static void writeBytes(File f, byte[] data) throws IOException {
+        byte[] buf = new byte[1024];
+
+        BufferedOutputStream bos = null;
+        ByteArrayInputStream bais = null;
+
+        try {
+            bos = new BufferedOutputStream( new FileOutputStream(f) );
+            bais = new ByteArrayInputStream( data );
+            int len;
+            while ( (len = bais.read( buf )) > 0 ) {
+                bos.write( buf, 0, len );
+            }
+        } finally {
+            if (  bos != null ) {
+                bos.close();
+            }
+            if ( bais != null ) {
+                bais.close();
+            }
+        }
+    }
+
+    public static boolean areByteArraysEqual(byte[] b1,
+                                             byte[] b2) {
+
+        if ( b1.length != b2.length ) {
+            return false;
+        }
+
+        for ( int i = 0, length = b1.length; i < length; i++ ) {
+            if ( b1[i] != b2[i] ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static String asSystemSpecificPath(String urlPath, int colonIndex) {
+        String ic = urlPath.substring( Math.max( 0, colonIndex - 2 ), colonIndex + 1 );
+        if  ( ic.matches( "\\/[a-zA-Z]:" ) ) {
+            return urlPath.substring( colonIndex - 2 );
+        } else if  ( ic.matches( "[a-zA-Z]:" ) ) {
+            return urlPath.substring( colonIndex - 1 );
+        } else {
+            return urlPath.substring( colonIndex + 1 );
+        }
+    }
+}

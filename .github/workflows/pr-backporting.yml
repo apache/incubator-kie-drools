@@ -1,0 +1,40 @@
+name: Pull Request Backporting
+
+on:
+  pull_request_target:
+    types: [closed, labeled]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  compute-targets:
+    if: ${{ github.event.pull_request.state == 'closed' && github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    outputs:
+      target-branches: ${{ steps.set-targets.outputs.targets }}
+    env:
+      LABELS: ${{ toJSON(github.event.pull_request.labels) }}
+    steps:
+      - name: Set target branches
+        id: set-targets
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/parse-labels@main
+        with:
+          labels: ${LABELS}
+  
+  backporting:
+    if: ${{ github.event.pull_request.state == 'closed' && github.event.pull_request.merged && needs.compute-targets.outputs.target-branches != '[]' }}
+    name: "[${{ matrix.target-branch }}] - Backporting"
+    runs-on: ubuntu-latest
+    needs: compute-targets
+    strategy:
+      matrix: 
+        target-branch: ${{ fromJSON(needs.compute-targets.outputs.target-branches) }}
+      fail-fast: false
+    env:
+      REVIEWERS: ${{ toJSON(github.event.pull_request.requested_reviewers) }}
+    steps:
+      - name: Backporting
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/backporting@main
+        with:
+          target-branch: ${{ matrix.target-branch }}
+          additional-reviewers: ${REVIEWERS}

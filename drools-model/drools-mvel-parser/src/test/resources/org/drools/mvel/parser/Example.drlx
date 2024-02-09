@@ -1,0 +1,41 @@
+package org.drools.mvel.parser;
+
+import blah.*;
+
+unit Example;
+
+rule fooBar {
+    or (
+       Blah blah = /a/b/c,
+       Flah flah = /a/b/c,
+       and (
+          Blah blah = /a/b/c,
+          Flah flah = /a/b/c,
+       ),
+    ),
+
+    Foo foo : /blah/baz[x == "test"],
+    var whatever : /blah/baz[y],
+    do System.out.println("hello");
+
+    or (
+       Blah blah = /a/b/c,
+       Flah flah = /a/b/c,
+       and (
+          Blah blah = /a/b/c,
+          Flah flah = /a/b/c,
+       ),
+    ),
+
+
+    Blah blah = /a/b/c,
+    do {
+        System.out.println("more hello");
+    }
+
+    var xx : /blah/baz[y],
+
+
+
+}
+

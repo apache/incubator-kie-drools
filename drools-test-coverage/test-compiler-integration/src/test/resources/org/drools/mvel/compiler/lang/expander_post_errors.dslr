@@ -1,0 +1,12 @@
+//this will show error line numbers post expansion
+expander foo.dsl
+
+rule simple_rule 
+  when
+    Foo().
+    Bar()
+    bax() from wee()
+    k x
+  then
+      baz
+end

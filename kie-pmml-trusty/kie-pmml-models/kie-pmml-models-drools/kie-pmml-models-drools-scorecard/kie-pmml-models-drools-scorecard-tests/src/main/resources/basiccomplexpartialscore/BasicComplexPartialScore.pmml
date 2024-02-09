@@ -1,0 +1,50 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <Scorecard modelName="BasicComplexPartialScore" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="10" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="characteristic1Score" baselineScore="20" reasonCode="characteristic1ReasonCode">
+        <Attribute>
+          <SimplePredicate field="input1" operator="greaterThan" value="-1000"/>
+          <ComplexPartialScore>
+            <Apply function="+">
+              <FieldRef field="input1"/>
+              <FieldRef field="input2"/>
+            </Apply>
+          </ComplexPartialScore>
+        </Attribute>
+        <Attribute partialScore="25">
+          <True/>
+        </Attribute>
+      </Characteristic>
+      <Characteristic name="characteristic2Score" baselineScore="5" reasonCode="characteristic2ReasonCode">
+        <Attribute>
+          <SimplePredicate field="input2" operator="lessOrEqual" value="1000"/>
+          <ComplexPartialScore>
+            <Apply function="*">
+              <FieldRef field="input1"/>
+              <FieldRef field="input2"/>
+            </Apply>
+          </ComplexPartialScore>
+        </Attribute>
+        <Attribute partialScore="-50">
+          <True/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>

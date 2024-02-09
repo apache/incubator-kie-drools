@@ -1,0 +1,4 @@
+{
+    KiePMMLConstant %2$s_0 = new KiePMMLConstant("%2$s_0", Collections.emptyList(), %1$s, null);
+    KiePMMLComplexPartialScore %2$s = new KiePMMLComplexPartialScore("%2$s", Collections.emptyList(), %2$s_0);
+}

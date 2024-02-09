@@ -1,0 +1,2 @@
+KiePMMLTargetValue.builder("%s", Collections.emptyList(), new TargetValue("%s", "%s", %s, %s))
+    .build()

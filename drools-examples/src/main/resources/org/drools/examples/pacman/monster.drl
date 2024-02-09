@@ -1,0 +1,96 @@
+/*
+ * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.pacman
+
+import java.lang.Math;
+
+
+rule determineDistance dialect "mvel" when
+    $pac    : Character( name == "Pacman" )
+    $pacLoc : Location( character == $pac )
+    $mon    : Character( name == "Monster" )
+    $monLoc : Location( character == $mon )
+    $t : Tick()  
+then
+    df = new DirectionDiff( $mon, $pac, $monLoc.col, $monLoc.row, $pacLoc.col - $monLoc.col, $pacLoc.row - $monLoc.row );
+    insert( df );
+end
+
+
+/** 
+ * Go Left
+ */
+rule GoLeft dialect "mvel" salience (Math.abs( $df.colDiff ))  when
+    $df   : DirectionDiff(colDiff < 0 )
+    $target : Cell(  row == $df.row, col == ($df.col - 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )        
+    not Direction(character == $df.fromChar, horizontal == Direction.LEFT )
+then
+    System.out.println( "monster left" );
+    delete( $df );
+    insert( new Direction($df.fromChar, Direction.LEFT, Direction.NONE ) ); 
+end
+
+/** 
+ * Go Right
+ */
+rule GoRight dialect "mvel"  salience (Math.abs( $df.colDiff ))  when
+    $df   : DirectionDiff(colDiff > 0 )
+    $target : Cell(  row == $df.row, col == ($df.col + 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )  
+    not Direction(character == $df.fromChar, horizontal == Direction.RIGHT )      
+then
+    System.out.println( "monster right" );
+    delete( $df );
+    insert( new Direction($df.fromChar, Direction.RIGHT, Direction.NONE ) );       
+end
+
+/** 
+ * Go Down
+ */
+rule GoDown dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
+    $df   : DirectionDiff(rowDiff < 0 )
+    $target : Cell(  col == $df.col, row == ($df.row - 1))
+    $contents : CellContents( cell == $target, cellType != CellType.WALL )      
+    not Direction(character == $df.fromChar, vertical == Direction.DOWN )
+then
+    System.out.println( "monster down" + ":" + $df + " : " + $target + " : " + $contents);
+    delete( $df );
+    insert( new Direction($df.fromChar, Direction.NONE,  Direction.DOWN ) );
+end
+
+
+/** 
+ * Go Up
+ */
+rule GoUp dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
+    $df   : DirectionDiff(rowDiff > 0 )
+    $target : Cell(  col == $df.col, row == ($df.row + 1) )
+    CellContents( cell == $target, cellType != CellType.WALL )       
+    not Direction(character == $df.fromChar, vertical == Direction.UP )
+then
+    System.out.println( "monster up" );
+    delete( $df );
+    insert( new Direction($df.fromChar, Direction.NONE, Direction.UP ) );  
+end
+
+rule removeDirectionDiff salience -5 when
+   $df : DirectionDiff()
+then
+    delete( $df );
+end
+

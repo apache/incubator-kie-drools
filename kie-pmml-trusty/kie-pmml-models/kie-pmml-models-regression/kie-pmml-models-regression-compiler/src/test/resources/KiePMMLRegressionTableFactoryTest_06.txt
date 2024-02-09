@@ -1,0 +1,53 @@
+public static KiePMMLRegressionTable getKiePMMLTable() {
+    java.util.Map<String, SerializableFunction<Double, Double>> numericFunctionMap_variableName = new java.util.HashMap<String, SerializableFunction<Double, Double>>();
+    numericFunctionMap_variableName.put("NumPred-2", (org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) input -> KiePMMLRegressionTable.evaluateNumericWithExponent(input, 13.11, 2.0));
+    numericFunctionMap_variableName.put("NumPred-3", (org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) input -> KiePMMLRegressionTable.evaluateNumericWithoutExponent(input, 32.55));
+    numericFunctionMap_variableName.put("NumPred-0", (org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) input -> KiePMMLRegressionTable.evaluateNumericWithExponent(input, 13.11, 2.0));
+    numericFunctionMap_variableName.put("NumPred-1", (org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) input -> KiePMMLRegressionTable.evaluateNumericWithExponent(input, 13.11, 2.0));
+    java.util.Map<String, Double> variableNameMap_0 = new java.util.HashMap<String, Double>();
+    variableNameMap_0.put("27.12", 3.46);
+    java.util.Map<String, Double> variableNameMap_1 = new java.util.HashMap<String, Double>();
+    variableNameMap_1.put("27.12", 3.46);
+    java.util.Map<String, Double> variableNameMap_2 = new java.util.HashMap<String, Double>();
+    variableNameMap_2.put("27.12", 3.46);
+    java.util.Map<String, SerializableFunction<String, Double>> categoricalFunctionMap_variableName = new java.util.HashMap<String, SerializableFunction<String, Double>>();
+    categoricalFunctionMap_variableName.put("CatPred-2", (org.kie.pmml.api.iinterfaces.SerializableFunction<String, Double>) input -> KiePMMLRegressionTable.evaluateCategoricalPredictor(input, variableNameMap_0));
+    categoricalFunctionMap_variableName.put("CatPred-1", (org.kie.pmml.api.iinterfaces.SerializableFunction<String, Double>) input -> KiePMMLRegressionTable.evaluateCategoricalPredictor(input, variableNameMap_1));
+    categoricalFunctionMap_variableName.put("CatPred-0", (org.kie.pmml.api.iinterfaces.SerializableFunction<String, Double>) input -> KiePMMLRegressionTable.evaluateCategoricalPredictor(input, variableNameMap_2));
+    java.util.Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermFunctionMap_variableName = new java.util.HashMap<String, SerializableFunction<Map<String, Object>, Double>>();
+    predictorTermFunctionMap_variableName.put("PredTerm-2", resultMap -> {
+        final AtomicReference<Double> result = new AtomicReference<>(1.0);
+        List<String> fieldRefs = Arrays.asList("CatPred-0", "NumPred-3");
+        for (String key : resultMap.keySet()) {
+            if (fieldRefs.contains(key)) {
+                result.set(result.get() * (Double) resultMap.get(key));
+            }
+        }
+        double coefficient = 32.29;
+        return result.get() * coefficient;
+    });
+    predictorTermFunctionMap_variableName.put("PredTerm-0", resultMap -> {
+        final AtomicReference<Double> result = new AtomicReference<>(1.0);
+        List<String> fieldRefs = Arrays.asList("CatPred-0", "NumPred-3");
+        for (String key : resultMap.keySet()) {
+            if (fieldRefs.contains(key)) {
+                result.set(result.get() * (Double) resultMap.get(key));
+            }
+        }
+        double coefficient = 32.29;
+        return result.get() * coefficient;
+    });
+    predictorTermFunctionMap_variableName.put("PredTerm-1", resultMap -> {
+        final AtomicReference<Double> result = new AtomicReference<>(1.0);
+        List<String> fieldRefs = Arrays.asList("CatPred-0", "NumPred-3");
+        for (String key : resultMap.keySet()) {
+            if (fieldRefs.contains(key)) {
+                result.set(result.get() * (Double) resultMap.get(key));
+            }
+        }
+        double coefficient = 32.29;
+        return result.get() * coefficient;
+    });
+    KiePMMLRegressionTable toReturn = KiePMMLRegressionTable.builder("variableName", Collections.emptyList()).withNumericFunctionMap(numericFunctionMap_variableName).withCategoricalFunctionMap(categoricalFunctionMap_variableName).withPredictorTermsFunctionMap(predictorTermFunctionMap_variableName).withResultUpdater((org.kie.pmml.api.iinterfaces.SerializableFunction<Double, Double>) KiePMMLRegressionTable::updateCAUCHITResult).withIntercept(3.5).withTargetField("targetField").withTargetCategory("professional").build();
+    return toReturn;
+}

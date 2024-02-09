@@ -1,0 +1,27 @@
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_730A7A75-F473-4083-93B9-85E0DAF7F4BD" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_B0E7B3DA-0BD8-4BF4-9A45-24B1671709E8" name="dupContextEntryKey" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_730A7A75-F473-4083-93B9-85E0DAF7F4BD">
+  <dmn:extensionElements/>
+  <dmn:decision id="_E571194A-0563-44BF-8F50-CC40283416D1" name="hardcoded">
+    <dmn:extensionElements/>
+    <dmn:variable id="_8313C0ED-508A-480B-B85B-71B2245E42B3" name="hardcoded" typeRef="Any"/>
+    <dmn:context id="_F67C748B-D473-4EFE-AC0C-239DC77FB6F4">
+      <dmn:contextEntry>
+        <dmn:variable id="_95689CB6-FF78-4A2B-9331-CAF52ED30F30" name="a" typeRef="Any"/>
+        <dmn:literalExpression id="_07DEEF4C-B917-4FA1-ACE9-9CE425646A6E">
+          <dmn:text>1</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_FC66F79A-080D-482B-8370-8D1743F583C9" name="b" typeRef="Any"/>
+        <dmn:literalExpression id="_D8453BD2-19AE-4DD1-B41A-35398CAA433B">
+          <dmn:text>2</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_85EA2479-11BC-4B27-9EBE-CA2BA4DA889C" name="a" typeRef="Any"/>
+        <dmn:literalExpression id="_E521715E-7386-42E3-8577-CEBD7DC2A86E">
+          <dmn:text>3</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+</dmn:definitions>

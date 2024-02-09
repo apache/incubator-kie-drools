@@ -1,0 +1,16 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
+
+public class KiePMMLAttributeTemplate {
+
+    private KiePMMLAttribute getKiePMMLAttribute() {
+        KiePMMLAttribute attribute = KiePMMLAttribute.builder(name, Collections.emptyList(), predicate)
+                                                     .withPartialScore(partialScore)
+                                                     .withComplexPartialScore(complexPartialScore)
+                                                     .build();
+    }
+
+}

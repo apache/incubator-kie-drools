@@ -1,0 +1,11 @@
+[id='dmn-execution-con_{context}']
+= DMN model execution
+
+You can create or import DMN files in your {PRODUCT} project using {DMN_EDITOR} or package the DMN files as part of your project knowledge JAR (KJAR) file without {DMN_EDITOR}.
+
+After you implement your DMN files in your {PRODUCT} project, you can execute the DMN decision service by instantiating a KIE container that contains it directly as a dependency of the calling application. Other options for creating and deploying DMN knowledge packages are also available, and most are similar for all types of knowledge assets, such as DRL files or process definitions.
+
+Alternatively, you could package your DMN files as part of a {KOGITO} cloud-native microservice.
+
+For information about including external DMN assets with your project packaging and deployment method, see
+the xref:KIE/index.adoc[Build, Deploy, Utilize and Run section].

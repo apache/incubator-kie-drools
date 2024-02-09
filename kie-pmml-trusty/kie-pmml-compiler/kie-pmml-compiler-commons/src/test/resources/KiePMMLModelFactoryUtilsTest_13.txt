@@ -1,0 +1,27 @@
+private static List<OutputField> getCreatedOutputFields() {
+    List<OutputField> toReturn = new ArrayList();
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_Shift", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_Group", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_SW_TO_PLer", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_SelfRef", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_Ref", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_BackRef", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_StageOne", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_StageTwo", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_StageThree", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_CONSTANT_DERIVEDFIELD", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_APPLY_DERIVEDFIELD", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_dis_pl", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_dis_pw", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_dis_sl", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_dis_sw", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_d_class", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_class_Iris_setosa", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_class_Iris_versicolor", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Output_class_Iris_virginica", null, null, null, org.kie.pmml.api.enums.RESULT_FEATURE.TRANSFORMED_VALUE, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Predicted_Species", org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL, org.kie.pmml.api.enums.DATA_TYPE.STRING, "Species", org.kie.pmml.api.enums.RESULT_FEATURE.PREDICTED_VALUE, java.util.Arrays.asList("setosa", "versicolor", "virginica")));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Probability_setosa", org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, null, org.kie.pmml.api.enums.RESULT_FEATURE.PROBABILITY, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Probability_versicolor", org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, null, org.kie.pmml.api.enums.RESULT_FEATURE.PROBABILITY, null));
+    toReturn.add(new org.kie.pmml.api.models.OutputField("Probability_virginica", org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, null, org.kie.pmml.api.enums.RESULT_FEATURE.PROBABILITY, null));
+    return toReturn;
+}

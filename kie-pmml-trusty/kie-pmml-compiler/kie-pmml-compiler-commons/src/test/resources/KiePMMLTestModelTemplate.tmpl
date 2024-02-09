@@ -1,0 +1,75 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.kie.pmml.api.models.MiningField;
+import org.kie.pmml.api.models.OutputField;
+import org.kie.pmml.commons.model.KiePMMLMiningField;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.KiePMMLTarget;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
+
+public class KiePMMLTestModelTemplate extends KiePMMLTestingModel {
+
+
+    public KiePMMLTestModelTemplate() {
+        super(fileName, name, Collections.emptyList());
+        pmmlMODEL = null;
+        transformationDictionary = null;
+        localTransformations = null;
+        miningFunction = null;
+        targetField = null;
+        kiePMMLMiningFields = null;
+    }
+
+    public static KiePMMLTestingModel getModel() {
+            KiePMMLTestingModel toReturn = KiePMMLTestingModel.builder("fileName", "name", Collections.emptyList(), null)
+                                    .withTargetField("targetField")
+                                    .withMiningFields(getCreatedMiningFields())
+                                    .withOutputFields(getCreatedOutputFields())
+                                    .withKiePMMLMiningFields(getCreatedKiePMMLMiningFields())
+                                    .withKiePMMLOutputFields(getCreatedKiePMMLOutputFields())
+                                    .withKiePMMLTargets(getCreatedKiePMMLTargets())
+                                    .withKiePMMLTransformationDictionary(getCreatedTransformationDictionary())
+                                    .withKiePMMLLocalTransformations(getCreatedLocalTransformations())
+                                    .build();
+            return toReturn;
+        }
+
+        private static List<MiningField> getCreatedMiningFields() {
+            List<MiningField> toReturn = new ArrayList();
+            return toReturn;
+        }
+
+        private static List<OutputField> getCreatedOutputFields() {
+            List<OutputField> toReturn = new ArrayList();
+            return toReturn;
+        }
+
+        private static List<KiePMMLMiningField> getCreatedKiePMMLMiningFields() {
+            List<KiePMMLMiningField> toReturn = new ArrayList();
+            return toReturn;
+        }
+
+        private static List<KiePMMLOutputField> getCreatedKiePMMLOutputFields() {
+            List<KiePMMLOutputField> toReturn = new ArrayList();
+            return toReturn;
+        }
+
+        private static List<KiePMMLTarget> getCreatedKiePMMLTargets() {
+            List<KiePMMLTarget> toReturn = new ArrayList();
+            return toReturn;
+        }
+
+        private static KiePMMLTransformationDictionary getCreatedTransformationDictionary() {
+            return null;
+        }
+
+        private static KiePMMLLocalTransformations getCreatedLocalTransformations() {
+            return null;
+        }
+
+}

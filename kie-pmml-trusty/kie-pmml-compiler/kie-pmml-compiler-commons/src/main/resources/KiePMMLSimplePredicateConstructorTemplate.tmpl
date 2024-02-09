@@ -1,0 +1,14 @@
+package org.kie.pmml.commons.model.predicates;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
+
+public class KiePMMLSimplePredicateConstructorTemplate extends KiePMMLSimplePredicate {
+
+    public KiePMMLSimplePredicateConstructorTemplate() {
+        super(name, Collections.emptyList(), operator);
+        value = null;
+    }
+
+}

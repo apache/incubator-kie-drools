@@ -1,0 +1,15 @@
+{
+    KiePMMLSimplePredicate %1$s_0 = KiePMMLSimplePredicate.builder("PARAM_1", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.EQUAL)
+            .withValue(100.0)
+            .build();
+    KiePMMLSimplePredicate %1$s_1 = KiePMMLSimplePredicate.builder("PARAM_2", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.GREATER_THAN)
+            .withValue(5.0)
+            .build();
+    KiePMMLSimpleSetPredicate %1$s_2 = KiePMMLSimpleSetPredicate.builder("SIMPLESETPREDICATENAME", Collections.emptyList(),
+            org.kie.pmml.api.enums.ARRAY_TYPE.STRING, org.kie.pmml.api.enums.IN_NOTIN.IN)
+            .withValues(Arrays.asList(%2$s))
+            .build();
+    KiePMMLCompoundPredicate %1$s = KiePMMLCompoundPredicate.builder(Collections.emptyList(), %3$s)
+            .withKiePMMLPredicates(Arrays.asList(%1$s_0, %1$s_1, %1$s_2))
+            .build();
+}

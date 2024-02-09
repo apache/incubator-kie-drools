@@ -1,0 +1,502 @@
+import org.drools.testcoverage.common.model.*;
+
+rule "R0"
+ when
+  $a : A( value > 0)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R1"
+ when
+  $a : A( value > 1)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R2"
+ when
+  $a : A( value > 2)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R3"
+ when
+  $a : A( value > 3)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R4"
+ when
+  $a : A( value > 4)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R5"
+ when
+  $a : A( value > 5)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R6"
+ when
+  $a : A( value > 6)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R7"
+ when
+  $a : A( value > 7)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R8"
+ when
+  $a : A( value > 8)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R9"
+ when
+  $a : A( value > 9)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R10"
+ when
+  $a : A( value > 10)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R11"
+ when
+  $a : A( value > 11)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R12"
+ when
+  $a : A( value > 12)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R13"
+ when
+  $a : A( value > 13)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R14"
+ when
+  $a : A( value > 14)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R15"
+ when
+  $a : A( value > 15)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R16"
+ when
+  $a : A( value > 16)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R17"
+ when
+  $a : A( value > 17)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R18"
+ when
+  $a : A( value > 18)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R19"
+ when
+  $a : A( value > 19)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R20"
+ when
+  $a : A( value > 20)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R21"
+ when
+  $a : A( value > 21)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R22"
+ when
+  $a : A( value > 22)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R23"
+ when
+  $a : A( value > 23)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R24"
+ when
+  $a : A( value > 24)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R25"
+ when
+  $a : A( value > 25)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R26"
+ when
+  $a : A( value > 26)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R27"
+ when
+  $a : A( value > 27)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R28"
+ when
+  $a : A( value > 28)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R29"
+ when
+  $a : A( value > 29)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R30"
+ when
+  $a : A( value > 30)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R31"
+ when
+  $a : A( value > 31)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R32"
+ when
+  $a : A( value > 32)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R33"
+ when
+  $a : A( value > 33)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R34"
+ when
+  $a : A( value > 34)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R35"
+ when
+  $a : A( value > 35)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R36"
+ when
+  $a : A( value > 36)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R37"
+ when
+  $a : A( value > 37)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R38"
+ when
+  $a : A( value > 38)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R39"
+ when
+  $a : A( value > 39)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R40"
+ when
+  $a : A( value > 40)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R41"
+ when
+  $a : A( value > 41)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R42"
+ when
+  $a : A( value > 42)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R43"
+ when
+  $a : A( value > 43)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R44"
+ when
+  $a : A( value > 44)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R45"
+ when
+  $a : A( value > 45)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R46"
+ when
+  $a : A( value > 46)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R47"
+ when
+  $a : A( value > 47)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R48"
+ when
+  $a : A( value > 48)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end
+rule "R49"
+ when
+  $a : A( value > 49)
+  $b : B( value > $a.value )
+  $c : C( value > $b.value )
+  $d : D( value > $c.value )
+  $e : E( value > $d.value )
+then
+
+end

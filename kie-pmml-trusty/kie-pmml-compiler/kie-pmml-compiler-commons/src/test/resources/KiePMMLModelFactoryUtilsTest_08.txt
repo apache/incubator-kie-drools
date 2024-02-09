@@ -1,0 +1,10 @@
+    private static KiePMMLLocalTransformations getCreatedLocalTransformations() {
+        KiePMMLConstant localTransformationsDerivedField_0_0 = new KiePMMLConstant("localTransformationsDerivedField_0_0", Collections.emptyList(), "LOCAL_CONSTANT_DERIVEDFIELD_VALUE", null);
+        KiePMMLDerivedField localTransformationsDerivedField_0 = KiePMMLDerivedField.builder("LOCAL_CONSTANT_DERIVEDFIELD", Collections.emptyList(), org.kie.pmml.api.enums.DATA_TYPE.STRING, org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL, localTransformationsDerivedField_0_0).withDisplayName(null).build();
+        KiePMMLFieldRef localTransformationsDerivedField_1_0 = new KiePMMLFieldRef("Ref", Collections.emptyList(), null);
+        KiePMMLDerivedField localTransformationsDerivedField_1 = KiePMMLDerivedField.builder("LOCAL_Ref", Collections.emptyList(), org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, localTransformationsDerivedField_1_0).withDisplayName(null).build();
+        KiePMMLFieldRef localTransformationsDerivedField_2_0 = new KiePMMLFieldRef("BackRef", Collections.emptyList(), null);
+        KiePMMLDerivedField localTransformationsDerivedField_2 = KiePMMLDerivedField.builder("LOCAL_BackRef", Collections.emptyList(), org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, localTransformationsDerivedField_2_0).withDisplayName(null).build();
+        KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations", Collections.emptyList()).withDerivedFields(Arrays.asList(localTransformationsDerivedField_0, localTransformationsDerivedField_1, localTransformationsDerivedField_2)).build();
+        return localTransformations;
+    }

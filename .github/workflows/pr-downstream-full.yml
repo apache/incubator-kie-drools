@@ -1,0 +1,53 @@
+name: Full downstream build
+
+on:
+  pull_request:
+    types: [labeled]
+    branches:
+      - main
+    paths-ignore:
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - 'docsimg/**'
+      - '.ci/jenkins/**'
+
+jobs:
+  build-chain:
+    if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
+    concurrency:
+      group: fdb-drools_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [17]
+        maven-version: ['3.9.3']
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: Build Chain (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
+    steps:
+      - name: Clean Disk Space
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/ubuntu-disk-space@main
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Support long paths
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
+      - name: Java and Maven Setup
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: Build Chain
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
+        with:
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          flow-type: full-downstream
+      - name: Surefire Report
+        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
+        if: ${{ always() }}

@@ -1,0 +1,102 @@
+package org.kie.pmml.commons.model.predicates;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+
+public class KiePMMLSimplePredicateEvaluateMethodTemplate {
+
+    private boolean evaluateEQUAL(Map<String, Object> stringObjectMap) {
+        Object value = null;
+        if (stringObjectMap.containsKey("avalue")) {
+                return value.equals(stringObjectMap.get("avalue"));
+        } else {
+                return false;
+        }
+    }
+
+    private boolean evaluateNOT_EQUAL(Map<String, Object> stringObjectMap) {
+        Object value = null;
+        if (stringObjectMap.containsKey("avalue")) {
+                return !value.equals(stringObjectMap.get("avalue"));
+        } else {
+                return false;
+        }
+    }
+
+    private boolean evaluateLESS_THAN(Map<String, Object> stringObjectMap) {
+        Object inputValue = null;
+        Object value = null;
+        if (stringObjectMap.containsKey("avalue")) {
+             inputValue = stringObjectMap.get("avalue");
+        } else {
+            return false;
+        }
+        if (inputValue instanceof Number && value instanceof Number) {
+            return ((Number) inputValue).doubleValue() < ((Number) value).doubleValue();
+        } else {
+            return false;
+        }
+    }
+
+    private boolean evaluateLESS_OR_EQUAL(Map<String, Object> stringObjectMap) {
+        Object inputValue = null;
+         Object value = null;
+        if (stringObjectMap.containsKey("avalue")) {
+            inputValue = stringObjectMap.get("avalue");
+        } else {
+            return false;
+        }
+        if (inputValue instanceof Number && value instanceof Number) {
+            return ((Number) inputValue).doubleValue() <= ((Number) value).doubleValue();
+        } else {
+            return false;
+        }
+    }
+
+    private boolean evaluateGREATER_THAN(Map<String, Object> stringObjectMap) {
+        Object inputValue = null;
+        Object value = null;
+        if (stringObjectMap.containsKey("avalue")) {
+            inputValue = stringObjectMap.get("avalue");
+        } else {
+            return false;
+        }
+        if (inputValue instanceof Number && value instanceof Number) {
+            return ((Number) inputValue).doubleValue() > ((Number) value).doubleValue();
+        } else {
+            return false;
+        }
+    }
+
+    private boolean evaluateGREATER_OR_EQUAL(Map<String, Object> stringObjectMap) {
+        Object inputValue = null;
+        Object value = null;
+        if (stringObjectMap.containsKey("avalue")) {
+            inputValue = stringObjectMap.get("avalue");
+        } else {
+            return false;
+        }
+        if (inputValue instanceof Number && value instanceof Number) {
+            return ((Number) inputValue).doubleValue() >= ((Number) value).doubleValue();
+        } else {
+            return false;
+        }
+    }
+
+    private boolean evaluateIS_MISSING(Map<String, Object> stringObjectMap) {
+         return !stringObjectMap.containsKey("avalue");
+    }
+
+    private boolean evaluateIS_NOT_MISSING(Map<String, Object> stringObjectMap) {
+         return stringObjectMap.containsKey("avalue");
+    }
+
+     private boolean evaluateFALSE(Map<String, Object> stringObjectMap) {
+         return false;
+     }
+
+}

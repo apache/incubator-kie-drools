@@ -1,0 +1,90 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.jboss.qa.brms.persistence
+
+declare TestEvent
+	@role( event )
+	@expires( 10s )
+end
+
+declare MessageEvent
+	@role( event )
+	@expires( 10s )
+end
+
+declare DRLTestEvent
+	@role( event )
+	id : int
+	name : String
+	value : Object
+end
+
+rule "TestEventReceived"
+	no-loop
+	when
+		$event : TestEvent ( value != null ) over window:time( 10s ) from entry-point EventStream
+	then
+		insert( new Message( $event.getValue().toString() ) );
+end
+
+rule "TestEventReceived2"
+	no-loop
+	when
+		$event : TestEvent ( value != null ) over window:time( 10s ) from entry-point SecondStream
+	then
+		insert( new Message( $event.getValue().toString() ) );
+end
+
+rule "DRLTestEventReceived"
+	no-loop
+	when
+		$event : DRLTestEvent ( value != null ) over window:time( 10s ) from entry-point EventStream
+	then
+		insert( new Message( $event.getValue().toString() ) );
+end
+
+query "TestEventCount"
+	Number( $eventCount : longValue ) from
+		accumulate (
+			$event : TestEvent ( id != null ) from entry-point EventStream,
+			count($event)
+		)
+end
+
+rule "InsertCloned"
+	when
+		$event : MessageEvent ( msg != null ) from entry-point EventStream
+	then
+		TestEvent e = new TestEvent(99, $event.getMsg().getMessage(), $event);
+		drools.getEntryPoint("ClonedStream").insert(e);
+end
+
+rule "UpdateCloned"
+	no-loop
+	when
+		$event : TestEvent ( name == "update" ) from entry-point ClonedStream
+	then
+		modify ( $event ) {
+			setValue("xxx");
+		}
+end
+
+rule "RetractCloned"
+	when
+		$event : TestEvent ( name == "retract" ) from entry-point ClonedStream
+	then
+		retract( $event );
+end

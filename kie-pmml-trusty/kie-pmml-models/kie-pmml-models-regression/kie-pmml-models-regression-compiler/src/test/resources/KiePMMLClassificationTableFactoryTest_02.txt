@@ -1,0 +1,7 @@
+public static KiePMMLClassificationTable getKiePMMLTable() {
+    java.util.Map<String, org.kie.pmml.models.regression.model.KiePMMLRegressionTable> categoryTableMap_variableName = new java.util.LinkedHashMap<String, org.kie.pmml.models.regression.model.KiePMMLRegressionTable>();
+    categoryTableMap_variableName.put("professional", defpack.PROFESSIONAL.getKiePMMLTable());
+    categoryTableMap_variableName.put("clerical", defpack.CLERICAL.getKiePMMLTable());
+    KiePMMLClassificationTable toReturn = KiePMMLClassificationTable.builder("variableName", Collections.emptyList()).withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.CAUCHIT).withOpType(OP_TYPE.CATEGORICAL).withCategoryTableMap(categoryTableMap_variableName).withProbabilityMapFunction((org.kie.pmml.api.iinterfaces.SerializableFunction<java.util.LinkedHashMap<String, Double>, java.util.LinkedHashMap<String, Double>>) KiePMMLClassificationTable::getCAUCHITProbabilityMap).withIsBinary(true).withTargetField("targetField").withTargetCategory(null).build();
+    return toReturn;
+}

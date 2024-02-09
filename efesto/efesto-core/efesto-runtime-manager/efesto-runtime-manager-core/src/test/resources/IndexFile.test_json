@@ -1,0 +1,20 @@
+[
+  {
+    "step-type": "executable",
+    "modelLocalUriId": {
+      "model": "test",
+      "basePath": "/testmod",
+      "fullPath": "/test/testmod"
+    },
+    "fullClassNames": [""]
+  },
+  {
+    "step-type": "redirect",
+    "modelLocalUriId": {
+      "model": "test",
+      "basePath": "/redirecttestmod",
+      "fullPath": "/test/redirecttestmod"
+    },
+    "target": "other"
+  }
+]

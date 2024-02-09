@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.4" xmlns="http://www.dmg.org/PMML-4_4">
+  <Header copyright="KNIME">
+    <Application name="KNIME" version="2.8.0"/>
+  </Header>
+  <DataDictionary >
+    <DataField name="categoricalResult" optype="continuous" dataType="double"/>
+    <DataField name="categoricalX" optype="categorical" dataType="string">
+      <Value value="red"/>
+      <Value value="green"/>
+      <Value value="blue"/>
+      <Value value="orange"/>
+      <Value value="yellow"/>
+    </DataField>
+    <DataField name="categoricalY" optype="categorical" dataType="string">
+      <Value value="classA"/>
+      <Value value="classB"/>
+      <Value value="classC"/>
+    </DataField>
+    <DataField name="predictionResult" optype="continuous" dataType="double"/>
+    <DataField name="predictionX" optype="continuous" dataType="double"/>
+    <DataField name="predictionY" optype="continuous" dataType="double"/>
+    <DataField name="predictionZ" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <MiningModel functionName="regression">
+    <MiningSchema>
+      <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="predictionX" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="predictionY" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="predictionZ" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Segmentation multipleModelMethod="average">
+      <Segment>
+        <True/>
+        <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
+          <MiningSchema>
+            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+          </Output>
+          <RegressionTable intercept="-22.1">
+            <CategoricalPredictor name="categoricalX" value="red" coefficient="5.5"/>
+            <CategoricalPredictor name="categoricalX" value="green" coefficient="15"/>
+            <CategoricalPredictor name="categoricalX" value="blue" coefficient="12"/>
+            <CategoricalPredictor name="categoricalX" value="orange" coefficient="5.5"/>
+            <CategoricalPredictor name="categoricalX" value="yellow" coefficient="-100.25"/>
+            <CategoricalPredictor name="categoricalY" value="classA" coefficient="0"/>
+            <CategoricalPredictor name="categoricalY" value="classB" coefficient="20"/>
+            <CategoricalPredictor name="categoricalY" value="classC" coefficient="40"/>
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+      <Segment>
+        <True/>
+        <RegressionModel modelName="PredictorTermRegression" functionName="regression">
+          <MiningSchema>
+            <MiningField name="predictionResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="predictionX" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="predictionY" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="predictionZ" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+          </Output>
+          <RegressionTable intercept="5">
+            <NumericPredictor name="predictionX" exponent="1" coefficient="2"/>
+            <NumericPredictor name="predictionY" exponent="1" coefficient="1"/>
+            <NumericPredictor name="predictionZ" exponent="2" coefficient="5"/>
+            <PredictorTerm coefficient="4">
+              <FieldRef field="predictionY"/>
+              <FieldRef field="predictionZ"/>
+            </PredictorTerm>
+            <PredictorTerm coefficient="-2.5">
+              <FieldRef field="predictionX"/>
+              <FieldRef field="predictionY"/>
+              <FieldRef field="predictionZ"/>
+            </PredictorTerm>
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

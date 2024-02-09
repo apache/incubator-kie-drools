@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_91c67ae0-5753-4a23-ac34-1b558a006efd" id="_91c67ae0-5753-4a23-ac34-1b558a006efd" name="http://www.dmg.org/PMML-4_1" namespace="http://www.trisotech.com/definitions/_91c67ae0-5753-4a23-ac34-1b558a006efd" exporter="DMN Modeler" exporterVersion="6.2.3.201905161513" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:import namespace="iris"
+                     name="iris"
+                     locationURI="iris model.pmml"
+                     importType="http://www.dmg.org/PMML-4_1"/>
+    <semantic:decisionService id="_91c67ae0-5753-4a23-ac34-1b558a006efd_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_7641e4b7-65ab-4ac2-9b02-92fc700aa8b1" typeRef="Any"/>
+        <semantic:outputDecision href="#_4f445c77-3398-44a8-a8d9-270a6c982a55"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_3a69775b-047b-4eec-a4ca-e0415018d952_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_884cf29a-7bb4-4a90-9257-301c4231a54d" typeRef="Any"/>
+        <semantic:outputDecision href="#_4f445c77-3398-44a8-a8d9-270a6c982a55"/>
+    </semantic:decisionService>
+    <semantic:businessKnowledgeModel id="_3b32809b-21cb-40b3-944c-cfad61baeee0" name="PMML">
+        <semantic:variable name="PMML" id="_031d359a-afed-4cd0-98f3-ed63a355388e" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_0a7f0a83-0c8c-4025-94e4-a6bff3d5ac7b" kind="PMML" typeRef="Any" triso:expressionId="_2e6bd36e-94eb-42bd-bdbf-b74a621fd2f4">
+            <semantic:formalParameter name="sepal_length" typeRef="iris.sepal_length" id="_686afb4a-d686-446b-aaf6-93b688d67986"/>
+            <semantic:formalParameter name="sepal_width" typeRef="iris.sepal_width" id="_b2dcfebd-1640-4a53-b90f-b612c7491580"/>
+            <semantic:formalParameter name="petal_length" typeRef="iris.petal_length" id="_ebcbe229-c201-4649-8148-cff6f6ac2aaf"/>
+            <semantic:formalParameter name="petal_width" typeRef="iris.petal_width" id="_e15c016c-d20a-459d-8786-6264f97abb76"/>
+            <semantic:context>
+                <semantic:contextEntry id="_133b4585-25f7-48b2-96af-676edf56fa06">
+                    <semantic:variable name="document" id="_c26313aa-71b8-4401-a9da-08e66bfa6a23" typeRef="string"/>
+                    <semantic:literalExpression id="_5efe2c15-4e5a-4fac-8ba5-5f8143797890">
+                        <semantic:text>"iris"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_a083126d-5149-4b25-8301-4d06a95acad9">
+                    <semantic:variable name="model" id="_2fbcc502-a9d9-4fb2-ab68-cffdeeaac44b" typeRef="string"/>
+                    <semantic:literalExpression id="_00fc60e3-81fb-4275-8676-3251a2d70742"/>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_4f445c77-3398-44a8-a8d9-270a6c982a55" name="Decision">
+        <semantic:variable name="Decision" id="_a47812e7-2b6e-40d7-9871-b622576dde8a" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_82d4c03d-dd7f-4b2e-bcaf-245a5bb2b27c">
+            <semantic:requiredKnowledge href="#_3b32809b-21cb-40b3-944c-cfad61baeee0"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_3a090705-a029-47a6-b56c-4d79a378348c" typeRef="Any" triso:expressionId="_69fdadcd-bb30-4159-b0a5-0c86f4bd19d4">
+            <semantic:literalExpression id="literal__3a090705-a029-47a6-b56c-4d79a378348c">
+                <semantic:text>PMML</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_1701d948-5330-455f-8afd-110b15da89b2" name="sepal_length"/>
+                <semantic:literalExpression id="_aaddf00d-9e59-44c8-a31c-4a020447ddc0">
+                    <semantic:text>5</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_8206b6ea-837a-421b-b20f-6c80deed7667" name="sepal_width"/>
+                <semantic:literalExpression id="_149e0a53-55b0-486c-be55-8adec35f5e55">
+                    <semantic:text>3</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_69524e67-7abc-4433-98b7-43a9aeeaa110" name="petal_length"/>
+                <semantic:literalExpression id="_807e9927-681c-4a04-b012-53732b164711">
+                    <semantic:text>4</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_e8dd64fc-b1d3-4c53-90f9-e0fe3c835fc9" name="petal_width"/>
+                <semantic:literalExpression id="_497b9e1f-dd7f-4cc3-9444-3b09faa84c7c">
+                    <semantic:text>1</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_3a69775b-047b-4eec-a4ca-e0415018d952" triso:modelElementRef="_1394b111-0739-4c9d-b9cd-6e3d2391cbcf" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_c8dc2bbe-5af9-491b-8b26-086f68d40b98" dmnElementRef="_3b32809b-21cb-40b3-944c-cfad61baeee0">
+                <dc:Bounds x="419" y="149" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_91c67ae0-5753-4a23-ac34-1b558a006efd_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="448" y="173"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_e9f5bcea-6c7d-4309-ac60-60e7ea81f3fc" dmnElementRef="_4f445c77-3398-44a8-a8d9-270a6c982a55">
+                <dc:Bounds x="181" y="149" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_91c67ae0-5753-4a23-ac34-1b558a006efd_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="184" y="173"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_8520f5ad-cef6-4cfd-8597-426b37ac1f88" dmnElementRef="_82d4c03d-dd7f-4b2e-bcaf-245a5bb2b27c">
+                <di:waypoint x="572" y="179"/>
+                <di:waypoint x="181" y="179"/>
+                <dmndi:DMNLabel sharedStyle="LS_91c67ae0-5753-4a23-ac34-1b558a006efd_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_91c67ae0-5753-4a23-ac34-1b558a006efd_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

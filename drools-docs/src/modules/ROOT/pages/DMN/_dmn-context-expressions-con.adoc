@@ -1,0 +1,14 @@
+[id='dmn-context-expressions-con_{context}']
+= Boxed context expressions
+
+A boxed context expression in DMN is a set of variable names and values with a result value. Each name-value pair is a context entry. You use context expressions to represent data definitions in decision logic and set a value for a desired decision element within the DMN decision model. A value in a boxed context expression can be a data type value or FEEL expression, or can contain a nested sub-expression of any type, such as a decision table, a literal expression, or another context expression.
+
+For example, the following boxed context expression defines the factors for sorting delayed passengers in a flight-rebooking decision model, based on defined data types (`tPassengerTable`, `tFlightNumberList`):
+
+.Boxed context expression for flight passenger waiting list
+image::dmn/dmn-context-expression-example.png[]
+
+The following boxed context expression defines the factors that determine whether a loan applicant can meet minimum mortgage payments based on principal, interest, taxes, and insurance (PITI), represented as a front-end ratio calculation with a sub-context expression:
+
+.Boxed context expression for front-end client PITI ratio
+image::dmn/dmn-context-expression-example2.png[]

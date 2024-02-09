@@ -1,0 +1,25 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
+import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
+import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
+import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
+import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristics;
+import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
+
+public class KiePMMLCharacteristicsTemplate extends KiePMMLCharacteristics {
+
+    public KiePMMLCharacteristicsTemplate() {
+        super(name, Collections.emptyList(), Arrays.asList(getKiePMMLCharacteristic));
+    }
+
+}

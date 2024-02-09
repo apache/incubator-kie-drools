@@ -1,0 +1,53 @@
+public class ExpressionFunctionUtilsTemplate {
+
+     Object applyKiePMMLNameValueList(List<KiePMMLNameValue> param1)  {
+        Object variableVARIABLE_NAMEConstant1 = 34.6;
+        Optional<KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((KiePMMLNameValue lmbdParam) -> Objects.equals("FIELD_NAME", lmbdParam.getName())).findFirst();
+        Object variableVARIABLE_NAMEFieldRef2 = kiePMMLNameValue.map(KiePMMLNameValue::getValue).orElse(null);
+        Object VARIABLE_NAME = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);
+        return null;
+     }
+
+   java.lang.Object expressionMethod() {
+       return null;
+   }
+
+   void applyExpressionBuiltinFunctionInvocation(java.util.Map<java.lang.String, java.lang.Object> param1) {
+        Object[] inputData = {};
+        Object applyVariable = (Object) org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.byName("+").getValue(inputData);
+   }
+
+   void applyExpressionLocalMethodInvocation(java.util.Map<java.lang.String, java.lang.Object> param1) {
+       Object applyVariable = this.FUNCTION_NAME(variableVARIABLE_NAMEConstant1, variableVARIABLE_NAMEFieldRef2);
+   }
+
+   void fieldRefExpressionFromKiePMMLNameValuesTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+       java.util.Optional<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> kiePMMLNameValue = param1.stream().filter((lmbdParam) ->
+       java.util.Objects.equals(fieldRefName, lmbdParam.getName())).findFirst();
+       Object fieldRefVariable = (java.lang.Object) kiePMMLNameValue.map(org.kie.pmml.commons.model.tuples.KiePMMLNameValue::getValue).orElse(fieldRefMapMissingTo);
+   }
+
+
+   void fieldRefExpressionFromStringObjectMapTemplate(java.util.Map<java.lang.String, java.lang.Object> param1) {
+         java.lang.String keyRefVariable = null;
+         java.lang.Object missingFieldRefVariable = null;
+         java.lang.Object fieldRefVariable = param1.containsKey(keyRefVariable) ? param1.get(keyRefVariable) : missingFieldRefVariable;
+   }
+
+   void fieldRefExpressionFromInputValueTemplate(java.util.Map<String, Object> param1, java.lang.Object param2) {
+       java.lang.Object fieldRefVariable = param2 != null ? (java.lang.Object) org.kie.pmml.api.utils.ConverterTypeUtil.convert(java.lang.Double.class, param2) : (java.lang.Object) null;
+   }
+
+    void constantExpressionTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+       double constantValue = null;
+   }
+
+   void methodDeclarationKiePMMLNameValueTemplate(java.util.List<org.kie.pmml.commons.model.tuples.KiePMMLNameValue> param1) {
+            return toReturn;
+   }
+
+   void methodDeclarationStringObjectMapTemplate(java.util.Map<java.lang.String, java.lang.Object> param1) {
+           return toReturn;
+   }
+
+}

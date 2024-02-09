@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" 
+      xmlns="http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.4" id="_6cfe7d88-6741-45d1-968c-b61a597d0964" name="MACD-enhanced iteration" 
+  namespace="http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <triso:dmnInputs>[{"name":"DailyTable","id":"_5c7b0249-b284-481a-b177-a2b46c7ac2ef","type":"complex","isCollection":true,"children":[{"name":"aDate","id":"_5c7b0249-b284-481a-b177-a2b46c7ac2ef_90c3f986-d80c-4b44-8a56-b5036c455889","type":"date"},{"name":"Close","id":"_5c7b0249-b284-481a-b177-a2b46c7ac2ef_2f7acc15-f997-4a3d-8435-9424e9c3b896","type":"number"}]}]</triso:dmnInputs>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1"/>
+  </semantic:extensionElements>
+  <semantic:itemDefinition label="tDailyPrice" name="tDailyPrice">
+    <semantic:itemComponent id="_90c3f986-d80c-4b44-8a56-b5036c455889" name="aDate">
+      <semantic:typeRef>feel:date</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2f7acc15-f997-4a3d-8435-9424e9c3b896" name="Close">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tDailyPriceTable" name="tDailyPriceTable">
+    <semantic:typeRef>tDailyPrice</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tNumList" name="tNumList">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tMACDRow" name="tMACDRow">
+    <semantic:itemComponent id="_ad3bf703-cd6e-4d52-b725-b43da823ffd8" name="aDate">
+      <semantic:typeRef>feel:date</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_55b1224b-2bc8-4473-8c8c-2044529aa2c0" name="MACD">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_a33a774f-1cd1-4e2d-830f-845164a3a453" name="EMA26">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_e1ddced6-acc3-4ca9-bdf9-ef80dda2981a" name="EMA12">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tMACDTable" name="tMACDTable">
+    <semantic:typeRef>tMACDRow</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_ea16edf5-67c9-4652-8475-613b2a7858c9" name="MACDTable">
+    <semantic:variable id="_88df43d8-edf5-4f59-afee-847975b30563" name="MACDTable" typeRef="tMACDTable"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_76b2ddc4-ac31-43f9-9137-899c5bcf7be8"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_642a724d-cd71-4558-85cb-0f538f6048fe"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_e1f08da6-d4e8-4e26-9711-f6988f031a8e"/>
+    </semantic:knowledgeRequirement>
+    <semantic:context id="_c66485f0-3583-4381-92e0-c07996d0d4e2">
+      <semantic:contextEntry>
+        <semantic:variable id="_28b989f1-a218-43d4-bc91-46b8e82d798c" name="EMA12" typeRef="tNumList"/>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_60af9ab6-c804-4137-a810-079a93aeb84f" triso:unparsed="false">
+          <semantic:text>for i in 1..count(reverseList) return EMAn2(12,reverseList.Close, i, partial)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_05b60527-c6ce-4d1e-8df8-2443a5686d84" name="EMA26" typeRef="tNumList"/>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_3e789c29-424b-4b57-9c84-223f09542d97" triso:unparsed="false">
+          <semantic:text>for i in 1..count(reverseList) return EMAn2(26,reverseList.Close, i, partial)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_4fe24b34-856c-41dc-bea5-430e0653fd6f" name="MACDraw" typeRef="tNumList"/>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_ed02d39f-8263-4ed7-9880-c4296d9a3d44" triso:unparsed="false">
+          <semantic:text>for i in 1..count(reverseList) return EMA12[i]-EMA26[i]</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_055c2d32-e10d-40f5-9ab4-358acb1eb342" name="MACD" typeRef="tNumList"/>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_99cc3d5a-b058-4b34-9cf4-48c477c6decd" triso:unparsed="false">
+          <semantic:text>for i in 1..count(reverseList) return EMAn2(9,MACDraw, i, partial)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_9f325ca3-e140-4554-9ec1-9f2613d9832d" triso:unparsed="false">
+          <semantic:text>reverse(for i in 1..count(reverseList) return MACDRow(reverseList.aDate[i], MACD[i], EMA26[i], EMA12[i]))</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="_642a724d-cd71-4558-85cb-0f538f6048fe" name="EMAn2">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_7d5bb4a5-05a6-4f92-8ef3-a37289cd4fcf">
+      <semantic:formalParameter id="_4e54d7cf-65d7-4890-aead-5feea44365f8" name="n" typeRef="feel:number"/>
+      <semantic:formalParameter id="_16c9d232-eabe-403c-af50-abe5684e6345" name="origList" typeRef="tNumList"/>
+      <semantic:formalParameter id="_ace307a0-2ade-463b-b6c5-b7e378e2a8c8" name="i" typeRef="feel:number"/>
+      <semantic:formalParameter id="_34fc03c1-f155-4474-a2d8-67cba58a65c6" name="partial" typeRef="tNumList"/>
+      <semantic:context id="_8958e1f3-ec24-4817-8fa3-e0838b6ba070">
+        <semantic:contextEntry>
+          <semantic:variable id="_cd5d46b3-566e-4961-82c3-0b3dc1d610e3" name="multiplier" typeRef="feel:number"/>
+          <semantic:literalExpression id="_dc5f6beb-d4a1-4ba7-a039-d0f3245f0eef">
+            <semantic:text>2/(n+1)</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:literalExpression id="_c790918e-97ad-4f32-9a9d-53f4aba01f05">
+            <semantic:text>if i=1 then origList[i] else partial[i-1]+(origList[i]-partial[i-1])*multiplier</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_178c8fa2-1dab-44d7-9e2e-f6ddaaddfb35" name="EMAn2" typeRef="feel:number"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_e1f08da6-d4e8-4e26-9711-f6988f031a8e" name="MACDRow">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_80ac4fa7-125c-4794-89cf-bbaa0daa0574">
+      <semantic:formalParameter id="_838b5cdb-dfd8-4e46-a8b6-47ad317a8454" name="aDate" typeRef="feel:date"/>
+      <semantic:formalParameter id="_97161579-8ecb-4d66-a8c7-c4fd45c9cfee" name="MACD" typeRef="feel:number"/>
+      <semantic:formalParameter id="_45d21e6a-0909-4416-bf9a-6228cb7dff1b" name="EMA26" typeRef="feel:number"/>
+      <semantic:formalParameter id="_b47da1c5-715c-4c66-8dee-f5dfc1ebe574" name="EMA12" typeRef="feel:number"/>
+      <semantic:context id="_41b12790-0cea-48bb-92af-37b8365c623e">
+        <semantic:contextEntry>
+          <semantic:variable id="_d4f8a75a-e2bf-4de8-84ab-eea5039a86a8" name="aDate" typeRef="feel:date"/>
+          <semantic:literalExpression id="_e95e1b1f-4384-4e75-a453-e44367a07cd2">
+            <semantic:text>aDate</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_8ff11f93-3344-4bda-bc01-903494781676" name="MACD" typeRef="feel:number"/>
+          <semantic:literalExpression id="_e131f266-c4f1-453d-9437-20e1540f17ea">
+            <semantic:text>MACD</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_6bb20538-2bb7-452c-9d08-91cb1d9e6977" name="EMA26" typeRef="feel:number"/>
+          <semantic:literalExpression id="_23083e50-c992-4687-a18b-1e0f35c1ac74">
+            <semantic:text>EMA26</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_51fe9a82-5b6a-4046-84a2-8de1acd165a1" name="EMA12" typeRef="feel:number"/>
+          <semantic:literalExpression id="_d3490c2f-3247-4f4e-b244-7fd06f652233">
+            <semantic:text>EMA12</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_a409c4a9-ac11-481b-a62f-50eca84f5f8a" name="MACDRow" typeRef="tMACDRow"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:inputData id="_5c7b0249-b284-481a-b177-a2b46c7ac2ef" name="DailyTable">
+    <semantic:variable id="_33289174-544e-4b97-8d48-aab2bf4b4add" name="DailyTable" typeRef="tDailyPriceTable"/>
+  </semantic:inputData>
+  <semantic:decision id="_76b2ddc4-ac31-43f9-9137-899c5bcf7be8" name="reverseList">
+    <semantic:variable id="_3bcf7390-5a12-4cd1-8d01-d9e40a51a1a9" name="reverseList" typeRef="tDailyPriceTable"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_5c7b0249-b284-481a-b177-a2b46c7ac2ef"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_a4447b82-f330-492e-aaa9-c03123910a67">
+      <semantic:text>reverse(DailyTable)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

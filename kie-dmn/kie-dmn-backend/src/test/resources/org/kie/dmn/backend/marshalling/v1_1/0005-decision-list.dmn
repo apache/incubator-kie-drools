@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="_0005-decision-list" name="0005-decision-list"
+	namespace="https://github.com/agilepro/dmn-tck"
+	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+	<decision name="Greeting Message" id="d_GreetingMessage">
+		<variable name="Greeting Message" typeRef="feel:string"/>
+		<list>
+		    <literalExpression>
+			    <text>"a"</text>
+		    </literalExpression>
+		    <literalExpression>
+			    <text>"b"</text>
+		    </literalExpression>
+		</list>
+	</decision>
+</definitions>

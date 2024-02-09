@@ -1,0 +1,250 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.ShootCommand;
+import org.drools.games.wumpus.MoveCommand;
+import org.drools.games.wumpus.ClimbCommand;
+import org.drools.games.wumpus.GrabCommand;
+import org.drools.games.wumpus.Hero;
+import org.drools.games.wumpus.Gold;
+import org.drools.games.wumpus.Move;
+import org.drools.games.wumpus.Cell;
+import org.drools.games.wumpus.SeeGlitter;
+import org.drools.games.wumpus.FeelBreeze;
+import org.drools.games.wumpus.SmellStench;
+import org.drools.games.wumpus.WumpusDeath;
+import org.drools.games.wumpus.PitDeath;
+import org.drools.games.wumpus.Command;
+import org.drools.games.wumpus.SensorArray;
+import org.drools.games.wumpus.FeelBump;
+import org.drools.games.wumpus.HearScream;
+import org.drools.games.wumpus.Reset;
+import org.drools.games.wumpus.GoldWin;
+import org.drools.games.wumpus.Hero;
+import org.drools.games.wumpus.Direction;
+
+dialect "mvel"
+
+rule "Create Sensor Array" agenda-group "Commands"  when
+    c : Command()
+then
+    insert( new SensorArray() );
+end
+
+rule "Clear FeelBump" agenda-group "Commands"  when
+    Command()
+    $s : FeelBump()
+then
+    delete( $s );
+end
+
+rule "Shoot Arrow" agenda-group "Commands" when
+    $sc : ShootCommand();
+    $h  : Hero( arrows == 1 )
+then
+    delete ( $sc );
+    modify( $h ) { arrows = 0 };
+    insert( new Arrow($h.row, $h.col, $h.direction) );
+    setFocus( "Shoot" );
+end
+
+rule "Direction.UP, Move.TURN_LEFT"  agenda-group "Commands"  when
+    $h  : Hero( direction == Direction.UP)
+    $mc : MoveCommand( move == Move.TURN_LEFT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.LEFT };
+end
+
+rule "Direction.LEFT, MOVE.TURN_LEFT" agenda-group "Commands" when
+    $h  : Hero( direction == Direction.LEFT)
+    $mc : MoveCommand( move == Move.TURN_LEFT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.DOWN };
+end
+
+rule "Direction DOWN,  MOVE.TURN_LEFT" agenda-group "Commands" when
+    $h  : Hero( direction == Direction.DOWN)
+    $mc : MoveCommand( move == Move.TURN_LEFT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.RIGHT };
+end
+
+rule "Direction.RIGHT, MOVE.TURN_LEFT" agenda-group "Commands" when
+    $h  : Hero( direction == Direction.RIGHT )
+    $mc : MoveCommand( move == Move.TURN_LEFT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.UP };
+end
+
+rule "Direction.UP, Move.TURN_RIGHT"agenda-group "Commands"  when
+    $h  : Hero( direction == Direction.UP)
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.RIGHT };
+end
+
+rule "Direction.RIGHT, MOVE.TURN_RIGHT" agenda-group "Commands" when
+    $h  : Hero( direction == Direction.RIGHT)
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.DOWN };
+end
+
+rule "Direction DOWN,  MOVE.TURN_RIGHT" agenda-group "Commands" when
+    $h  : Hero( direction == Direction.DOWN)
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.LEFT };
+end
+
+rule "Direction.LEFT, MOVE.TURN_RIGHT" agenda-group "Commands" when
+    $h  : Hero( direction == Direction.LEFT )
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
+then
+	delete ( $mc );
+    modify( $h ) { direction = Direction.UP };
+end
+
+
+rule "Move Up" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.UP)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.DOWN)))
+     $c  : Cell(row == $h.row + 1, col == $h.col )
+then
+	delete ( $mc );
+    modify( $h ) { row = $h.row + 1 };
+    modify( $c ) { hidden = false };
+end
+
+rule "Move Down" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.DOWN)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.UP)))
+     $c  : Cell(row == $h.row - 1, col == $h.col )
+then
+	delete ( $mc );
+    modify( $h ) { row = $h.row - 1 };
+    modify( $c ) { hidden = false };
+end
+
+rule "Move Left" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.LEFT)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.RIGHT)))
+     $c  : Cell(row == $h.row, col == $h.col - 1 )
+then
+	delete ( $mc );
+    modify( $h ) { col = $h.col - 1 };
+    modify( $c ) { hidden = false };
+end
+
+rule "Move Right" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.RIGHT)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.LEFT)))
+     $c  : Cell(row == $h.row, col == $h.col + 1 )
+then
+	delete ( $mc );
+    modify( $h ) { col = $h.col + 1 };
+    modify( $c ) { hidden = false };
+end
+
+rule "Invalid Move"  agenda-group "Commands" when
+     // Invalid Up
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.UP)) or
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.DOWN))) and
+     not Cell(row == $h.row + 1, col == $h.col )) or
+
+    // Invalid Down
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.DOWN)) or
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.UP))) and
+     not Cell(row == $h.row - 1, col == $h.col )) or
+
+     // Invalid LEFT
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.LEFT)) or
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.RIGHT))) and
+     not Cell(row == $h.row, col == $h.col - 1 )) or
+
+     // Invalid RIGHT
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
+     $h  : Hero(direction == Direction.RIGHT)) or
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.LEFT))) and
+     not Cell(row == $h.row, col == $h.col + 1 ) )
+then
+    delete( $mc );
+    insert( new FeelBump() );
+end
+
+rule "Move Gold" agenda-group "Commands" when
+    $h : Hero( gold == true ) @watch( col, row )
+    $g : Gold()
+then
+   modify( $g ) { col = $h.col, row = $h.row };
+end
+
+rule "Climb With Gold" agenda-group "Commands" when
+    $cc : ClimbCommand()
+    Hero( gold == true, row == 0, col == 0 )
+then
+    delete( $cc );
+    insert( new GoldWin() );
+end
+
+rule "Climb retraction"  agenda-group "Commands" when
+    $cc : ClimbCommand()
+    Hero( row != 0 || col != 0 )
+then
+    delete( $cc );
+end
+
+rule "Grab Gold" agenda-group "Commands" when
+    $gc : GrabCommand()
+    $h  : Hero()
+    $g  : Gold(row == $h.row, col == $h.col )
+then
+    delete ( $gc );
+    modify ( $h ) { gold = true };
+end
+
+rule "Climb without Gold" agenda-group "Commands" when
+    $cc : ClimbCommand()
+    Hero( gold == false,  row == 0, col == 0 )
+then
+    delete( $cc );
+    insert( new Reset() );
+    setFocus( "Reset" );
+end
+

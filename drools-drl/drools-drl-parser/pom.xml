@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl</artifactId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.drools</groupId>
+    <artifactId>drools-drl-parser</artifactId>
+
+    <name>Drools :: DRL :: Parser</name>
+
+    <properties>
+        <java.module.name>org.drools.drl.parser</java.module.name>
+    </properties>
+
+    <dependencies>
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-drl-ast</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-internal</artifactId>
+        </dependency>
+        <!-- External dependencies -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <configuration>
+                        <excludeFilterFile>${project.basedir}/src/main/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+                        <maxHeap>1024</maxHeap> <!-- MB -->
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>default-instrument</id>
+                            <goals>
+                                <goal>instrument</goal>
+                            </goals>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/DRL5Lexer.class</exclude>
+                                    <exclude>**/DRL6Lexer.class</exclude>
+                                </excludes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>grammarsProfile</id>
+            <activation>
+                <property>
+                    <name>grammars</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <condition property="antlr.debugParser" value="-Xconversiontimeout 32000 -debug" else="">
+                                            <isset property="debugParser"/>
+                                        </condition>
+                                        <!-- path id="antlr.path">
+                                            <path refid="maven.compile.classpath"/>
+                                        </path -->
+                                        <echo message="Generating Lexer (${antlr.debugParser})"/>
+<!--                                        <java classname="org.antlr.Tool" fork="true">-->
+<!--                                            <jvmarg line="-Xmx750M -Xincgc"/>-->
+<!--                                            <arg line="${antlr.debugParser} -lib src/main/resources/org/drools/compiler/lang src/main/resources/org/drools/compiler/lang/DRL5Lexer.g"/>-->
+<!--                                            <classpath refid="maven.compile.classpath"/>-->
+<!--                                        </java>-->
+                                        <java classname="org.antlr.Tool" fork="true">
+                                            <jvmarg line="-Xmx750M"/>
+                                            <arg line="${antlr.debugParser} -lib src/main/resources/org/drools/drl/parser src/main/resources/org/drools/drl/parser/DRL6Lexer.g"/>
+                                            <classpath refid="maven.compile.classpath"/>
+                                        </java>
+                                        <echo message="Generating Expressions Parser (${antlr.debugParser})"/>
+<!--                                        <java classname="org.antlr.Tool" fork="true">-->
+<!--                                            <jvmarg line="-Xmx750M -Xincgc"/>-->
+<!--                                            <arg line="${antlr.debugParser} -lib src/main/resources/org/drools/compiler/lang src/main/resources/org/drools/compiler/lang/DRL5Expressions.g"/>-->
+<!--                                            <classpath refid="maven.compile.classpath"/>-->
+<!--                                        </java>-->
+                                        <java classname="org.antlr.Tool" fork="true">
+                                            <jvmarg line="-Xmx750M"/>
+                                            <arg line="${antlr.debugParser} -lib src/main/resources/org/drools/drl/parser src/main/resources/org/drools/drl/parser/DRL6Expressions.g"/>
+                                            <classpath refid="maven.compile.classpath"/>
+                                        </java>
+                                        <move todir="src/main/java/org/drools/drl/parser/lang/">
+                                            <fileset dir="src/main/resources/org/drools/drl/parser">
+                                                <include name="**/*.java"/>
+                                            </fileset>
+                                        </move>
+<!--                                        <echo message="Generating Antlr DSLMap.g and DSLMapWalker.g"/>-->
+<!--                                        <java classname="org.antlr.Tool" fork="true">-->
+<!--                                            <arg line="-lib src/main/resources/org/drools/compiler/lang/dsl src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g src/main/resources/org/drools/compiler/lang/dsl/DSLMapWalker.g"/>-->
+<!--                                            <classpath refid="maven.compile.classpath"/>-->
+<!--                                        </java>-->
+<!--                                        <move todir="src/main/java/org/drools/compiler/lang/dsl/">-->
+<!--                                            <fileset dir="src/main/resources/org/drools/compiler/lang/dsl">-->
+<!--                                                <include name="**/*.java"/>-->
+<!--                                            </fileset>-->
+<!--                                        </move>-->
+                                        <delete>
+                                            <fileset dir=".">
+                                                <include name="*.tokens"/>
+                                            </fileset>
+                                            <fileset dir="src/main/resources/org/drools/drl/parser">
+                                                <include name="*.tokens"/>
+                                                <include name="DRL__.g"/>
+                                                <include name="dsl/DSLMap__.g"/>
+                                                <include name="__Test__.java"/>
+                                                <include name="classes"/>
+                                            </fileset>
+                                        </delete>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sonarcloud-analysis</id>
+            <properties>
+                <!-- Generated classes should not show up in Sonar. -->
+                <sonar.exclusions>**/*Lexer.java</sonar.exclusions>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,55 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="ns1" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_DE242471-A6B3-44FD-8729-4B82E804AAC8" name="typeWithSpace" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="ns1">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_BA692878-4BA2-4EF5-B85B-DD85DB4749BA" name="my person type" isCollection="false">
+    <dmn:itemComponent id="_1BB0B922-BB25-4E80-8261-46ABC1DAD48F" name="full name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_29A10DF8-F1EB-4B13-B5E0-EA17D298DC9B" name="a Person">
+    <dmn:extensionElements/>
+    <dmn:variable id="_61347B4E-FEE7-489A-811A-BB95ED3E1065" name="a Person" typeRef="my person type"/>
+  </dmn:inputData>
+  <dmn:decision id="_99761846-CE01-4B87-A5A6-86F99FA8B3EA" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_25867C26-69A7-4446-9750-896BFAE52856" name="Decision-1" typeRef="string"/>
+    <dmn:informationRequirement id="_AED8086A-83B8-48B4-9479-4D21A5C0C4D9">
+      <dmn:requiredInput href="#_29A10DF8-F1EB-4B13-B5E0-EA17D298DC9B"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_FAEDBD46-7FA0-4805-8D53-FD03794EB008">
+      <dmn:text>"Hello, "+a Person.full name</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_FAEDBD46-7FA0-4805-8D53-FD03794EB008">
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape xmlns:p0="https://kiegroup.org/dmn/_E01D9061-CE77-4763-B52A-6F2C7BA9DD03" id="dmnshape-_29A10DF8-F1EB-4B13-B5E0-EA17D298DC9B" dmnElementRef="p0:_29A10DF8-F1EB-4B13-B5E0-EA17D298DC9B" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="215" y="128" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape xmlns:p1="https://kiegroup.org/dmn/_E01D9061-CE77-4763-B52A-6F2C7BA9DD03" id="dmnshape-_99761846-CE01-4B87-A5A6-86F99FA8B3EA" dmnElementRef="p1:_99761846-CE01-4B87-A5A6-86F99FA8B3EA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="395" y="128" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge xmlns:p2="https://kiegroup.org/dmn/_E01D9061-CE77-4763-B52A-6F2C7BA9DD03" id="dmnedge-_AED8086A-83B8-48B4-9479-4D21A5C0C4D9" dmnElementRef="p2:_AED8086A-83B8-48B4-9479-4D21A5C0C4D9">
+        <di:waypoint x="315" y="153"/>
+        <di:waypoint x="395" y="153"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_A058818E-2879-42A2-88C7-53E9A1F4295C" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_64896F78-720C-4DE3-A494-71C2447B260D" name="basic" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_A058818E-2879-42A2-88C7-53E9A1F4295C">
+  <dmn:extensionElements/>
+  <dmn:decision id="_BE812B19-4F7B-41B0-B3A3-43E00DC5FEF6" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6F5D02F2-9DFC-4FBD-8D44-CDFB15E1B8FA" name="Decision-1" typeRef="Any"/>
+    <dmn:informationRequirement id="_8DEF10E4-0FAF-47C6-8DC6-E64497B4BD8B">
+      <dmn:requiredInput href="#_567285E5-5891-41B3-8EAD-B9D822FA257C"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_406133D7-96FE-4237-8726-44D839F400D6" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_4EA4D70F-A24C-41DE-B623-01BDC1EDB375">
+        <dmn:inputExpression id="_62BCC498-5FAA-4A89-B26B-BE95E2BDA256" typeRef="string">
+          <dmn:text>in1</dmn:text>
+        </dmn:inputExpression>
+<!--    deliberately omitted for this test model:
+        <dmn:inputValues kie:constraintType="expression" id="_77CFD906-7433-4DBB-AC0E-59117540BE4F">
+          <dmn:text>"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"</dmn:text>
+        </dmn:inputValues> -->
+      </dmn:input>
+      <dmn:output id="_B83F2B75-DDAD-449D-A4BE-2ED0DB596968"/>
+      <dmn:annotation name="annotation-1"/>
+      <dmn:rule id="_C05B0EF3-47A5-4C08-9751-DEB1324E931A">
+        <dmn:inputEntry id="_D887025F-7677-48E9-A4B2-84E7558A3485">
+          <dmn:text>not("A", "E", "I", "O", "U")</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_D8265110-07CC-40F4-B498-C22721B84CB6">
+          <dmn:text>"a consonant"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_56C76F89-AD23-494E-829B-02A493515602">
+        <dmn:inputEntry id="_045ECC2A-7173-46AF-974A-8F4D241E8EE3">
+          <dmn:text>"A"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_7FC7EFB1-0572-4D15-A7DF-A21D4E4135C6">
+          <dmn:text>"the vowel A"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_FB02DE40-26FD-43BC-A77F-2CC0E2E42288">
+        <dmn:inputEntry id="_0486AB28-B149-4584-B8A1-112CAD778255">
+          <dmn:text>"E"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_964B4D90-A329-4E74-BD2A-F1DFA7EDAD9B">
+          <dmn:text>"the vowel E"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_D6789EC1-1A47-48D7-8649-2314646045F0">
+        <dmn:inputEntry id="_8D2B7807-A40D-47C4-992F-538AC85AC0BA">
+          <dmn:text>"I"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_2010239F-59AD-44A3-99EE-00BC9C3AFD42">
+          <dmn:text>"the vowel I"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_666AA76C-FD15-4409-90BB-203F4A5DD407">
+        <dmn:inputEntry id="_481E227C-32CA-432A-9CD7-AA63C3345EA1">
+          <dmn:text>"O"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_F04DE953-2CDE-425B-9085-AAD32789EDDD">
+          <dmn:text>"the vowel O"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_9BE35267-0EEB-4C22-93F1-1D4B2497E6E2">
+        <dmn:inputEntry id="_CBE91431-FE87-4D9F-81A4-3AF251A99C48">
+          <dmn:text>"U"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_78E5B205-1C88-4F27-990A-2448C75815C1">
+          <dmn:text>"the vowel U"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_567285E5-5891-41B3-8EAD-B9D822FA257C" name="in1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_26FD5ED2-9A10-43DB-BDFB-89E858C8B62A" name="in1" typeRef="string"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_A3BFD596-3954-46C3-B2EA-E302A8FE45E6" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_406133D7-96FE-4237-8726-44D839F400D6">
+            <kie:width>50</kie:width>
+            <kie:width>241</kie:width>
+            <kie:width>160</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_BE812B19-4F7B-41B0-B3A3-43E00DC5FEF6" dmnElementRef="_BE812B19-4F7B-41B0-B3A3-43E00DC5FEF6" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="402" y="218" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_567285E5-5891-41B3-8EAD-B9D822FA257C" dmnElementRef="_567285E5-5891-41B3-8EAD-B9D822FA257C" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="214" y="230" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_8DEF10E4-0FAF-47C6-8DC6-E64497B4BD8B" dmnElementRef="_8DEF10E4-0FAF-47C6-8DC6-E64497B4BD8B">
+        <di:waypoint x="264" y="255"/>
+        <di:waypoint x="452" y="243"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

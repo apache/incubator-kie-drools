@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="332" height="61"
+     viewBox="0 0 332 63">
+<title>Creator</title>
+<rect x='25.5' y='22' width='118.97' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='NonWildcardTypeArguments.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='107.97' x='31' y='31.33'>NonWildcardTypeArguments</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 23 27 L 25 29 L 23 31'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 42 L 159.47 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 42 A 5 5 0 0 0 15 37'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 34 A 5 5 0 0 1 20 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 29 L 25 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 159.47 42 A 5 5 0 0 1 154.47 37'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 154.47 34 A 5 5 0 0 0 149.47 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 144.47 29 L 149.47 29'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 37 L 15 34'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 154.47 37 L 154.47 34'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 159.47 42 L 164.47 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 162.47 40 L 164.47 42 L 162.47 44'/>
+<rect x='164.97' y='35' width='60.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='CreatedName.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='49.98' x='170.47' y='44.33'>CreatedName</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 225.95 42 L 230.95 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 228.95 40 L 230.95 42 L 228.95 44'/>
+<rect x='241.45' y='24.5' width='75.48' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='ArrayCreatorRest.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='64.48' x='246.95' y='33.83'>ArrayCreatorRest</text>
+</a>
+<rect x='241.45' y='45.5' width='51.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Arguments.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='40.49' x='246.95' y='54.83'>Arguments</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 230.95 42 L 235.95 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 321.93 42 L 326.93 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 235.95 36.5 A 5 5 0 0 1 240.95 31.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 240.95 52.5 A 5 5 0 0 1 235.95 47.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 235.95 47.5 L 235.95 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 321.93 36.5 A 5 5 0 0 0 316.93 31.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 316.93 52.5 A 5 5 0 0 0 321.93 47.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 321.93 47.5 L 321.93 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 316.93 31.5 L 316.93 31.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 292.94 52.5 L 316.93 52.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 326.93 42 L 331.93 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 329.93 40 L 331.93 42 L 329.93 44'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='Creator' x='0' y='8.83'>Creator</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 42 L 10 42'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 40 L 10 42 L 8 44'/>
+</svg>

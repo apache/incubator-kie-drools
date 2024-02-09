@@ -1,0 +1,13 @@
+{
+    KiePMMLConstant variableName_0_0 = new KiePMMLConstant("variableName_0_0", Collections.emptyList(), %s, null);
+    KiePMMLFieldRef variableName_0_1 = new KiePMMLFieldRef("%s", Collections.emptyList(), null);
+    KiePMMLApply variableName_0 = KiePMMLApply.builder("variableName_0", Collections.emptyList(), "%s")
+            .withDefaultValue(null)
+            .withMapMissingTo(null)
+            .withInvalidValueTreatmentMethod("%s")
+            .withKiePMMLExpressions(Arrays.asList(variableName_0_0, variableName_0_1))
+            .build();
+    KiePMMLDerivedField %s = KiePMMLDerivedField.builder("%s", Collections.emptyList(), %s, %s, variableName_0)
+            .withDisplayName(null)
+            .build();
+}

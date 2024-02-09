@@ -1,0 +1,112 @@
+{
+  "filters": {
+    "revapi": {
+      "java": {
+        "filter": {
+          "_comment": [
+            "We don't want to check transitive classes, e.g. from kie-api, since we already check them in their own module."
+          ],
+          "annotated": {
+            "_comment": "Everything with XML annotations is included.",
+            "regex": true,
+            "include": [
+              "@javax\\.xml\\.bind\\.annotation.*",
+              "@com\\.thoughtworks\\.xstream\\.annotations.*"
+            ]
+          },
+          "classes": {
+            "_comment": [
+              "ProtobufMessages should be excluded since it is a generated class and revapi doesn't handle it correctly.",
+              "JaxbConfigurationImpl is excluded as well."
+            ],
+            "regex": true,
+            "exclude": [
+              "org\\.drools\\.core\\.marshalling\\.impl\\.ProtobufMessages.*",
+              "org\\.drools\\.core\\.builder\\.conf\\.impl\\.JaxbConfigurationImpl"
+            ]
+          }
+        }
+      },
+      "reclassify": [
+        {
+          "comment": "We do not want to have this change in ignores, therefore, it is reclassified to the lowest possible severity.",
+          "code": "java.field.serialVersionUIDUnchanged",
+          "classify": {
+            "BINARY": "NON_BREAKING",
+            "SEMANTIC": "NON_BREAKING",
+            "SOURCE": "NON_BREAKING"
+          }
+        }
+      ]
+    }
+  },
+
+  "ignores": {
+    "revapi": {
+      "_comment": "Changes between 7.52.0.Final and the current branch. These changes are desired and thus ignored.",
+      "ignore": [
+        {
+          "code": "java.annotation.removed",
+          "old": "method void org.drools.core.command.runtime.rule.GetObjectCommand::setFactHandleFromString(java.lang.String)",
+          "new": "method void org.drools.core.command.runtime.rule.GetObjectCommand::setFactHandleFromString(java.lang.String)",
+          "annotationType": "javax.xml.bind.annotation.XmlElement",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"fact-handle\", required = true)",
+          "package": "org.drools.core.command.runtime.rule",
+          "classSimpleName": "GetObjectCommand",
+          "methodName": "setFactHandleFromString",
+          "elementKind": "method",
+          "justification": "moved the annotation to a field. DROOLS-6681"
+        },
+        {
+          "code": "java.annotation.removed",
+          "old": "method void org.drools.core.command.runtime.rule.UpdateCommand::setFactHandleFromString(java.lang.String)",
+          "new": "method void org.drools.core.command.runtime.rule.UpdateCommand::setFactHandleFromString(java.lang.String)",
+          "annotationType": "javax.xml.bind.annotation.XmlElement",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"fact-handle\", required = true)",
+          "package": "org.drools.core.command.runtime.rule",
+          "classSimpleName": "UpdateCommand",
+          "methodName": "setFactHandleFromString",
+          "elementKind": "method",
+          "justification": "moved the annotation to a field. DROOLS-6681"
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.drools.core.command.runtime.rule.ModifyCommand",
+          "new": "class org.drools.core.command.runtime.rule.ModifyCommand",
+          "annotationType": "javax.xml.bind.annotation.XmlRootElement",
+          "annotation": "@javax.xml.bind.annotation.XmlRootElement",
+          "package": "org.drools.core.command.runtime.rule",
+          "classSimpleName": "ModifyCommand",
+          "elementKind": "class",
+          "justification": "Added the annotation. DROOLS-6681"
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.drools.core.command.runtime.rule.GetObjectCommand",
+          "new": "class org.drools.core.command.runtime.rule.GetObjectCommand",
+          "annotationType": "javax.xml.bind.annotation.XmlRootElement",
+          "annotation": "@javax.xml.bind.annotation.XmlRootElement",
+          "package": "org.drools.core.command.runtime.rule",
+          "classSimpleName": "GetObjectCommand",
+          "elementKind": "class",
+          "justification": "Added the annotation. DROOLS-6681"
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "field org.drools.core.command.runtime.BatchExecutionCommandImpl.commands",
+          "new": "field org.drools.core.command.runtime.BatchExecutionCommandImpl.commands",
+          "annotationType": "javax.xml.bind.annotation.XmlElements",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"abort-work-item\", type = org.drools.core.command.runtime.process.AbortWorkItemCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"signal-event\", type = org.drools.core.command.runtime.process.SignalEventCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"start-process\", type = org.drools.core.command.runtime.process.StartProcessCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"retract\", type = org.drools.core.command.runtime.rule.DeleteCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-global\", type = org.drools.core.command.runtime.GetGlobalCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"set-global\", type = org.drools.core.command.runtime.SetGlobalCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"insert-elements\", type = org.drools.core.command.runtime.rule.InsertElementsCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"query\", type = org.drools.core.command.runtime.rule.QueryCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"insert\", type = org.drools.core.command.runtime.rule.InsertObjectCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"modify\", type = org.drools.core.command.runtime.rule.ModifyCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"update\", type = org.drools.core.command.runtime.rule.UpdateCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-object\", type = org.drools.core.command.runtime.rule.GetObjectCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"fire-all-rules\", type = org.drools.core.command.runtime.rule.FireAllRulesCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"fire-until-halt\", type = org.drools.core.command.runtime.rule.FireUntilHaltCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"dispose\", type = org.drools.core.command.runtime.DisposeCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"complete-work-item\", type = org.drools.core.command.runtime.process.CompleteWorkItemCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-objects\", type = org.drools.core.command.runtime.rule.GetObjectsCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"set-focus\", type = org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-activation-group\", type = org.drools.core.command.runtime.rule.ClearActivationGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-agenda\", type = org.drools.core.command.runtime.rule.ClearAgendaCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-agenda-group\", type = org.drools.core.command.runtime.rule.ClearAgendaGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-ruleflow-group\", type = org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-fact-handles\", type = org.drools.core.command.runtime.rule.GetFactHandlesCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"apply-pmml-model-command\", type = org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-ends-with-agenda-filter\", type = org.drools.core.base.RuleNameEndsWithAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-starts-with-agenda-filter\", type = org.drools.core.base.RuleNameStartsWithAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-equals-agenda-filter\", type = org.drools.core.base.RuleNameEqualsAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-matches-agenda-filter\", type = org.drools.core.base.RuleNameMatchesAgendaFilter.class)})",
+          "attribute": "value",
+          "oldValue": "{@javax.xml.bind.annotation.XmlElement(name = \"abort-work-item\", type = org.drools.core.command.runtime.process.AbortWorkItemCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"signal-event\", type = org.drools.core.command.runtime.process.SignalEventCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"start-process\", type = org.drools.core.command.runtime.process.StartProcessCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"retract\", type = org.drools.core.command.runtime.rule.DeleteCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-global\", type = org.drools.core.command.runtime.GetGlobalCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"set-global\", type = org.drools.core.command.runtime.SetGlobalCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"insert-elements\", type = org.drools.core.command.runtime.rule.InsertElementsCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"query\", type = org.drools.core.command.runtime.rule.QueryCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"insert\", type = org.drools.core.command.runtime.rule.InsertObjectCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"modify\", type = org.drools.core.command.runtime.rule.ModifyCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-object\", type = org.drools.core.command.runtime.rule.GetObjectCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"fire-all-rules\", type = org.drools.core.command.runtime.rule.FireAllRulesCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"fire-until-halt\", type = org.drools.core.command.runtime.rule.FireUntilHaltCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"dispose\", type = org.drools.core.command.runtime.DisposeCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"complete-work-item\", type = org.drools.core.command.runtime.process.CompleteWorkItemCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-objects\", type = org.drools.core.command.runtime.rule.GetObjectsCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"set-focus\", type = org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-activation-group\", type = org.drools.core.command.runtime.rule.ClearActivationGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-agenda\", type = org.drools.core.command.runtime.rule.ClearAgendaCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-agenda-group\", type = org.drools.core.command.runtime.rule.ClearAgendaGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-ruleflow-group\", type = org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-fact-handles\", type = org.drools.core.command.runtime.rule.GetFactHandlesCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"apply-pmml-model-command\", type = org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-ends-with-agenda-filter\", type = org.drools.core.base.RuleNameEndsWithAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-starts-with-agenda-filter\", type = org.drools.core.base.RuleNameStartsWithAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-equals-agenda-filter\", type = org.drools.core.base.RuleNameEqualsAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-matches-agenda-filter\", type = org.drools.core.base.RuleNameMatchesAgendaFilter.class)}",
+          "newValue": "{@javax.xml.bind.annotation.XmlElement(name = \"abort-work-item\", type = org.drools.core.command.runtime.process.AbortWorkItemCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"signal-event\", type = org.drools.core.command.runtime.process.SignalEventCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"start-process\", type = org.drools.core.command.runtime.process.StartProcessCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"retract\", type = org.drools.core.command.runtime.rule.DeleteCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-global\", type = org.drools.core.command.runtime.GetGlobalCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"set-global\", type = org.drools.core.command.runtime.SetGlobalCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"insert-elements\", type = org.drools.core.command.runtime.rule.InsertElementsCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"query\", type = org.drools.core.command.runtime.rule.QueryCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"insert\", type = org.drools.core.command.runtime.rule.InsertObjectCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"modify\", type = org.drools.core.command.runtime.rule.ModifyCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"update\", type = org.drools.core.command.runtime.rule.UpdateCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-object\", type = org.drools.core.command.runtime.rule.GetObjectCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"fire-all-rules\", type = org.drools.core.command.runtime.rule.FireAllRulesCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"fire-until-halt\", type = org.drools.core.command.runtime.rule.FireUntilHaltCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"dispose\", type = org.drools.core.command.runtime.DisposeCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"complete-work-item\", type = org.drools.core.command.runtime.process.CompleteWorkItemCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-objects\", type = org.drools.core.command.runtime.rule.GetObjectsCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"set-focus\", type = org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-activation-group\", type = org.drools.core.command.runtime.rule.ClearActivationGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-agenda\", type = org.drools.core.command.runtime.rule.ClearAgendaCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-agenda-group\", type = org.drools.core.command.runtime.rule.ClearAgendaGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"clear-ruleflow-group\", type = org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"get-fact-handles\", type = org.drools.core.command.runtime.rule.GetFactHandlesCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"apply-pmml-model-command\", type = org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-ends-with-agenda-filter\", type = org.drools.core.base.RuleNameEndsWithAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-starts-with-agenda-filter\", type = org.drools.core.base.RuleNameStartsWithAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-equals-agenda-filter\", type = org.drools.core.base.RuleNameEqualsAgendaFilter.class), @javax.xml.bind.annotation.XmlElement(name = \"rule-name-matches-agenda-filter\", type = org.drools.core.base.RuleNameMatchesAgendaFilter.class)}",
+          "package": "org.drools.core.command.runtime",
+          "classSimpleName": "BatchExecutionCommandImpl",
+          "fieldName": "commands",
+          "elementKind": "field",
+          "justification": "support UpdateCommand. DROOLS-6681"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+package org.kie.pmml.models.tree.model;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.kie.pmml.api.models.*;
+import org.kie.pmml.commons.model.*;
+import org.kie.pmml.commons.model.expressions.*;
+import org.kie.pmml.commons.transformations.*;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
+
+
+public class KiePMMLTreeModelTemplate extends KiePMMLTreeModel {
+
+    public KiePMMLTreeModelTemplate() {
+        super(fileName, name);
+        targetField = targetField;
+        pmmlMODEL = null;
+        miningFunction = null;
+        nodeFunction = null;
+        transformationDictionary = null;
+        localTransformations = null;
+        kiePMMLMiningFields = null;
+        kiePMMLOutputFields = null;
+    }
+
+}

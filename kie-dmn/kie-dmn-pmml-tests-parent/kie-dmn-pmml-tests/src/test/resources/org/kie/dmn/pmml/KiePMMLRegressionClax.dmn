@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" name="KiePMMLRegressionClax" namespace="http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" exporter="DMN Modeler" exporterVersion="6.7.1.202001172012" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:import namespace="test_regression_clax" name="test_regression_clax" triso:fileId="eyJhdHRyaWJ1dGVzIjp7ImlkIjoiOWU3NmY0ODItOTY4ZS00MzU4LWEzMmQtYjFmNjU1NDMxNWU3Iiwic2t1IjoiOWU3NmY0ODItOTY4ZS00MzU4LWEzMmQtYjFmNjU1NDMxNWU3IiwibmFtZSI6InRlc3RfcmVncmVzc2lvbl9jbGF4IiwicGF0aCI6Ii8iLCJtaW1ldHlwZSI6ImFwcGxpY2F0aW9uL3BtbWwreG1sIiwidXBkYXRlZCI6IjIwMjAtMDEtMjBUMDI6MTA6MjlaIiwidXBkYXRlciI6IlRvc2hpeWEgS29iYXlhc2hpIiwidXJsIjoiaHR0cHM6Ly90ZXN0LXJlZGhhdC50cmlzb3RlY2guY29tL3B1YmxpY2FwaS9yZXBvc2l0b3J5ZmlsZWNvbnRlbnQ/bW9kZT1qc29uJnBhdGg9JTJGJmFwaWtleT0yOTIwMDNmNjk4NDBlNzEyJnJlcG9zaXRvcnk9JTdDcGVyc29uYWwlN0Mmc2t1PTllNzZmNDgyLTk2OGUtNDM1OC1hMzJkLWIxZjY1NTQzMTVlNyZtaW1ldHlwZT1hcHBsaWNhdGlvbiUyRnBtbWwlMkJ4bWwiLCJpc0ZvbGRlciI6ZmFsc2V9LCJyZXBvc2l0b3J5VHlwZSI6InB1YmxpY2FwaSIsInJlcG9zaXRvcnkiOnsibmFtZSI6IlRvc2hpeWEgS29iYXlhc2hpIiwiYXBpa2V5IjoiMjkyMDAzZjY5ODQwZTcxMiIsInVybCI6Imh0dHBzOi8vdGVzdC1yZWRoYXQudHJpc290ZWNoLmNvbS9wdWJsaWNhcGkiLCJyZXBvc2l0b3J5SWQiOiJ8cGVyc29uYWx8In19" triso:fileName="Toshiya Kobayashi/test_regression_clax" triso:fileType="PMML" locationURI="test_regression_clax.pmml" importType="http://www.dmg.org/PMML-4_2"/>
+    <semantic:decisionService id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true" triso:wholeModelService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_c7724c41-b281-4890-ac3d-7d8ed1dc517f"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_55ca2300-3c26-4665-b44b-8eab7417c248_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_55ca2300-3c26-4665-b44b-8eab7417c248_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_c7724c41-b281-4890-ac3d-7d8ed1dc517f"/>
+    </semantic:decisionService>
+    <semantic:businessKnowledgeModel id="_3bb6bcbe-54ac-449a-b198-59130cf9be1b" name="call my pmml">
+        <semantic:variable name="call my pmml" id="_7a2e03c5-3532-4f7f-baaf-21e0c8423b14" typeRef="test_regression_clax.LinReg"/>
+        <semantic:encapsulatedLogic id="_6e04a10d-a086-4631-98e8-c4fdc740106b" kind="PMML" typeRef="test_regression_clax.LinReg" triso:expressionId="_8d3f10b8-a53b-49db-a086-c8b63c270730">
+            <semantic:formalParameter name="fld1" typeRef="test_regression_clax.fld1" triso:typeRef="test_regression_clax.tfld1" id="_1ec7b9fa-58bd-468a-8891-6a412629ff07"/>
+            <semantic:formalParameter name="fld2" typeRef="test_regression_clax.fld2" triso:typeRef="test_regression_clax.tfld2" id="_76c6333e-1ce2-43d0-bf6c-e75e81274ca5"/>
+            <semantic:formalParameter name="fld3" typeRef="test_regression_clax.fld3" triso:typeRef="test_regression_clax.tfld3" id="_242b8c5e-ffba-4093-a09f-e47c641716e9"/>
+            <semantic:context typeRef="Any">
+                <semantic:contextEntry id="_71f89971-82d6-4e64-9c37-544f800eb258">
+                    <semantic:variable name="document" id="_45eb749e-e8cf-4b6e-9d27-6489c9af463a" typeRef="string"/>
+                    <semantic:literalExpression id="_3780fb28-6a1c-4f35-a70c-731bc1b9d69a">
+                        <semantic:text>"test_regression_clax"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_9a55a338-30e1-41ce-a9dd-8f9df2701238">
+                    <semantic:variable name="model" id="_037d1001-8c03-4b2f-a11c-6ff82cfe3a94" typeRef="string"/>
+                    <semantic:literalExpression id="_fbf09ac0-ddb3-434d-89d5-b2ff0a5f5319">
+                        <semantic:text>"LinReg"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_c7724c41-b281-4890-ac3d-7d8ed1dc517f" name="my decision" triso:useOutputTypeAsAnswer="false">
+        <semantic:variable name="my decision" id="_7a85bbf1-c91d-4772-ba85-4cc026398b38" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_b4049dfd-eec0-4fb6-ae59-6c77b4319f85">
+            <semantic:requiredKnowledge href="#_3bb6bcbe-54ac-449a-b198-59130cf9be1b"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_a1a61704-1d13-4a39-b91d-ee4936b36c6a" typeRef="Any" triso:expressionId="_4b0f67b2-dccd-46ec-92f6-d65ac6ca9512">
+            <semantic:literalExpression id="literal__a1a61704-1d13-4a39-b91d-ee4936b36c6a">
+                <semantic:text>call my pmml</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_b0acdd65-65f8-4304-9836-6bc5f4c473ba" name="fld1"/>
+                <semantic:literalExpression id="_94d89ac0-1503-4ad8-8962-030fd5b4f6df">
+                    <semantic:text>1.0</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_e85ec960-d125-4957-a805-c41837dea3af" name="fld2"/>
+                <semantic:literalExpression id="_b7bc0c72-027a-4e61-9b00-eb876a9b3138">
+                    <semantic:text>1.0</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_b08e9400-cca5-4bda-a05e-d9548021541d" name="fld3"/>
+                <semantic:literalExpression id="_6466d0da-30ec-453a-a060-54816e7c177b">
+                    <semantic:text>"x"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_55ca2300-3c26-4665-b44b-8eab7417c248" triso:modelElementRef="_f613aa7e-7139-48ff-b0fa-8212a8fc1ec3" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_7043fd5d-bd15-495d-8db8-9b9ed2ae3a4a" dmnElementRef="_3bb6bcbe-54ac-449a-b198-59130cf9be1b">
+                <dc:Bounds x="340.5" y="171.5" width="152" height="59"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_9df8b711-3273-4002-ae1a-49100756a647" dmnElementRef="_c7724c41-b281-4890-ac3d-7d8ed1dc517f">
+                <dc:Bounds x="109" y="171" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_2f2ecf0d-09f9-45ac-a0c1-88c55db223a8" dmnElementRef="_b4049dfd-eec0-4fb6-ae59-6c77b4319f85">
+                <di:waypoint x="492.5" y="200.5"/>
+                <di:waypoint x="109" y="201"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

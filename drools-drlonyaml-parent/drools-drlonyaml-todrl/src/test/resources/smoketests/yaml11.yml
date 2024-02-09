@@ -1,0 +1,63 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# only syntactically valid yaml.
+name: rules.rhoc
+imports:
+- java.util.Map
+- org.drools.ruleops.model.Advice
+- io.fabric8.kubernetes.api.model.ConfigMap
+- io.fabric8.kubernetes.api.model.Pod
+globals:
+- type: String
+  id: arg0
+rules:
+- name: Find configMap in connector namespace to enable logs
+  when:
+  - given: Pod
+    as: $pod
+    having:
+    - "metadata.labels[\"cos.bf2.org/connector.id\"] == arg0"
+    - "$deploymentId : metadata.labels[\"cos.bf2.org/deployment.id\"]"
+    - "$namespace: metadata.namespace"
+  - given: ConfigMap
+    as: $configMap
+    having:
+    - metadata.name ==  "mctr-" + $deploymentId + "-configmap"
+    - metadata.namespace == $namespace
+  then: |
+    if(!$configMap.getData().containsKey("override.properties")) {
+            String description = """
+                    Run the following command:
+
+                        kubectl edit configmap %s -n %s
+
+                    Upgrade then the data field:
+
+                        override.properties: |-
+                            quarkus.log.level=DEBUG
+                            quarkus.log.min-level=DEBUG
+                            quarkus.log.category."org.apache".level = DEBUG
+                            quarkus.log.category."org.apache".min-level = DEBUG
+
+                    """
+                    .formatted($configMap.getMetadata().getName(), $namespace);
+
+            insert(new Advice("To enable logging on connector: %s".formatted(arg0), description));
+      }

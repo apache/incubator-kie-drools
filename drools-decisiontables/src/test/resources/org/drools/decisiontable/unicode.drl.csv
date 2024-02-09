@@ -1,0 +1,14 @@
+"RuleSet","org.drools.decisiontable",
+"Import","org.drools.decisiontable.UnicodeInCSVTest.Člověk",
+"Variables","java.util.List dospělí",
+,,
+"RuleTable Test použití češtiny",,
+"NAME","CONDITION","ACTION"
+,"$člověk : Člověk",
+,"$param > 18","dospělí.add($člověk);"
+"název pravidla","starší než 18 let","přidat do seznamu dospělých"
+"přidej k dospělým","věk","X"
+"привет мир","věk","X"
+"你好世界","věk","X"
+"hallå världen","věk","X"
+"مرحبا العالم","věk","X"

@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+title On the fly compilation and execution of Mining model with a drl-related one class
+
+
+actor Input_provider
+note over Input_provider: Any service requiring evaluation with the ability of on-the-fly compilation (e.g. KieService)
+
+Input_provider -> Runtime_manager: evaluate (MiningModel input)
+Runtime_manager -> Input_provider: no result
+
+Input_provider -> Compilation_Manager: compile (MiningModel)
+Compilation_Manager --> PMML_Compiler: compile (MiningModel)
+PMML_Compiler --> MiningModel_compiler: compile (MiningModel )
+MiningModel_compiler --> Regression_compiler: compile (RegressionModel)
+Regression_compiler --> MiningModel_compiler: generatedClasses
+MiningModel_compiler --> Tree_compiler: compile (TreeModel )
+Tree_compiler --> Compilation_Manager: compile (PackageDescr)
+Compilation_Manager --> DrlCompiler: compile (PackageDescr)
+DrlCompiler --> Compilation_Manager: generatedClasses
+Compilation_Manager --> Tree_compiler: generatedClasses
+Tree_compiler --> MiningModel_compiler: generatedClasses
+MiningModel_compiler --> Compilation_Manager: generatedClasses
+Compilation_Manager --> Input_provider: done
+
+Input_provider -> Runtime_manager: evaluate (input)
+Runtime_manager -> PMML_Runtime: evaluate (input)
+PMML_Runtime --> MiningModel_runtime: evaluate (input)
+MiningModel_runtime --> Regression_runtime: evaluate (input)
+Regression_runtime --> MiningModel_runtime: result
+MiningModel_runtime --> Tree_runtime: evaluate (input)
+Tree_runtime --> Runtime_manager: evaluate (input)
+Runtime_manager --> DrlRuntime: evaluate (input)
+DrlRuntime --> Runtime_manager: result
+Runtime_manager --> Tree_runtime: result
+Tree_runtime --> MiningModel_runtime: wrappedResult
+MiningModel_runtime --> Runtime_manager: result
+Runtime_manager --> Input_provider: result
+
+
+
+@enduml

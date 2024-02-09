@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6" name="Drawing 1" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="http://www.trisotech.com/definitions/_50aea0bb-4482-48f6-acfe-4abc1a1bd0d6">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_BA87A52A-0481-4921-A1EA-A6FD0E5FB435" name="tLevel" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+    <dmn:allowedValues drools:constraintType="expression" id="_26755E8C-D3E6-494A-899F-730951CFEAA7">
+      <dmn:text>&gt;=0,null</dmn:text> <!-- a number GTE than zero, or null (explicitly) -->
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_3aad4dbe-ad99-4dc3-8fad-cba91d4a7c15" name="Level">
+    <dmn:extensionElements/>
+    <dmn:variable id="_09a643aa-0f89-4216-ab5a-58179fa86b33" name="Level" typeRef="tLevel"/>
+  </dmn:inputData>
+  <dmn:decision id="_0cd2bcb7-1882-4e26-8d7f-3dd35b04c2d4" name="Evaluation">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4d97f0f6-9bf8-4693-b049-dadd34243900" name="Evaluation" typeRef="string"/>
+    <dmn:informationRequirement id="_07EB7C45-FE70-41ED-AED0-9203763ABB29">
+      <dmn:requiredInput href="#_3aad4dbe-ad99-4dc3-8fad-cba91d4a7c15"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_3aa68aee-6314-482f-a0be-84c2411d65d7" typeRef="string" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" outputLabel="Evaluation">
+      <dmn:input id="_de33d278-570e-4065-9d68-9f8ba6f4d1e6">
+        <dmn:inputExpression id="_68C50455-07C9-47CF-931B-BE06DAB066FC" typeRef="tLevel">
+          <dmn:text>Level</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues id="_51A9733A-4497-40B4-B708-0BF54C55E340">
+          <dmn:text>&gt;=0,null</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:output id="_26189690-cdb6-466d-b2d7-289380c47e83">
+        <dmn:outputValues id="_84D161ED-E100-493A-A673-372CE254B66A">
+          <dmn:text>"No risk","Danger","Unknown",null</dmn:text>
+        </dmn:outputValues>
+        <dmn:defaultOutputEntry id="_D213CB99-E3F6-4EBC-AC8F-98106792109B">
+          <dmn:text>"Unknown"</dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:annotation name="Description"/>
+      <dmn:rule id="_663e0683-f440-4031-bdb9-0acd121d4651">
+        <dmn:inputEntry id="_b544eee7-d7b9-491d-83a4-e4916029e7f6">
+          <dmn:text>[0..80)</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_6a5f720b-5063-4b3e-8062-c06fd6903e90">
+          <dmn:text>"No risk"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text/>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_9ad17ef0-3226-4c07-9a83-bd72ef71612d">
+        <dmn:inputEntry id="_c04cae1e-a7e8-46d6-8cdc-2cfa4f6adcb9">
+          <dmn:text>&gt;=120</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_e08a897c-9c66-4ee0-89b0-d3c74996c9cf">
+          <dmn:text>"Danger"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text>"Seconds of exposure may cause irreversible damage"</dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_433EAC15-27FE-4380-9CCE-A7E8F1E7ACE0" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+          <kie:ComponentWidths dmnElementRef="_3aa68aee-6314-482f-a0be-84c2411d65d7">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_3aad4dbe-ad99-4dc3-8fad-cba91d4a7c15" dmnElementRef="_3aad4dbe-ad99-4dc3-8fad-cba91d4a7c15" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_0cd2bcb7-1882-4e26-8d7f-3dd35b04c2d4" dmnElementRef="_0cd2bcb7-1882-4e26-8d7f-3dd35b04c2d4" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="339" y="142" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_07EB7C45-FE70-41ED-AED0-9203763ABB29" dmnElementRef="_07EB7C45-FE70-41ED-AED0-9203763ABB29">
+        <di:waypoint x="100" y="250"/>
+        <di:waypoint x="389" y="167"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

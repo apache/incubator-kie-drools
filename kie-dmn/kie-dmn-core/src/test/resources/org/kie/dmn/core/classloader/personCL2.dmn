@@ -1,0 +1,58 @@
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="ns2" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_7DA74F05-3390-4C23-8125-2029806F9544" name="personCL2" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="ns2">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_ACA1DD5E-9729-4A75-9902-CD17C37AED25" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_275390DF-19D3-4C8C-840A-9DD97D5BAADC" name="first name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_B8B7530F-FCFA-4B55-9208-305072B0C657" name="age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_63E807D6-48EA-42D5-84EB-53F307646981" name="my person">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1C6971CF-1715-4FB1-A0B3-EC343FC3BD4E" name="my person" typeRef="tPerson"/>
+  </dmn:inputData>
+  <dmn:decision id="_E4FADBA4-9727-4971-AACB-FDD1C2D4469D" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A02D9BB9-896E-4F56-8CB7-6EC57F5B7C1C" name="Decision-1" typeRef="Any"/>
+    <dmn:informationRequirement id="_0C8374B2-AAB2-42C0-ABC9-5E476FC38E54">
+      <dmn:requiredInput href="#_63E807D6-48EA-42D5-84EB-53F307646981"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_D4110C78-0968-41F7-9DF0-EC018E0B0F8D">
+      <dmn:text>"Hello, "+my person.first name</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_62E698F5-F6B4-493D-835E-33C35D517938" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_D4110C78-0968-41F7-9DF0-EC018E0B0F8D">
+            <kie:width>622</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape xmlns:p0="https://kiegroup.org/dmn/_78BDCBE4-32EA-486E-9D81-CCC0D2378C61" id="dmnshape-drg-_63E807D6-48EA-42D5-84EB-53F307646981" dmnElementRef="p0:_63E807D6-48EA-42D5-84EB-53F307646981" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="341" y="248" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape xmlns:p1="https://kiegroup.org/dmn/_78BDCBE4-32EA-486E-9D81-CCC0D2378C61" id="dmnshape-drg-_E4FADBA4-9727-4971-AACB-FDD1C2D4469D" dmnElementRef="p1:_E4FADBA4-9727-4971-AACB-FDD1C2D4469D" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="518" y="248" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge xmlns:p2="https://kiegroup.org/dmn/_78BDCBE4-32EA-486E-9D81-CCC0D2378C61" id="dmnedge-drg-_0C8374B2-AAB2-42C0-ABC9-5E476FC38E54-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="p2:_0C8374B2-AAB2-42C0-ABC9-5E476FC38E54">
+        <di:waypoint x="391" y="248"/>
+        <di:waypoint x="568" y="298"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

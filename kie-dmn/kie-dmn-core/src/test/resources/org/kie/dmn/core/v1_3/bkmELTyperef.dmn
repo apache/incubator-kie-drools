@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/"   xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0"  xmlns="http://www.trisotech.com/definitions/_a49df6fc-c936-467a-9762-9aa3c9a93c06" id="_a49df6fc-c936-467a-9762-9aa3c9a93c06" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_a49df6fc-c936-467a-9762-9aa3c9a93c06" exporter="Decision Modeler" exporterVersion="7.4.1" xml:lang="en" triso:logoChoice="Default">
+    <semantic:decision id="_87aa4379-b7b1-41ee-b876-a10090190197" name="Decision1">
+        <semantic:variable name="Decision1" id="_b80276a5-de51-4fca-b1d7-fde6b2bcde66" typeRef="number"/>
+        <semantic:knowledgeRequirement id="_24110310-17e6-4058-b5f8-0944c90d9158">
+            <semantic:requiredKnowledge href="#_e42de739-5cfb-44cb-ac3c-8de529a12f41"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_ccaf5bab-83fb-468a-a7a8-ea0ec800c1a3" triso:descriptionVisible="false" typeRef="number" triso:expressionId="_7d69f3a6-cf03-4148-942b-370fa237c765">
+            <semantic:text>BKM1(1, 2)</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:businessKnowledgeModel id="_e42de739-5cfb-44cb-ac3c-8de529a12f41" name="BKM1">
+        <semantic:variable name="BKM1" id="_419aa2ba-fffb-420a-9c19-0be3668afe9e" /> <!--  eliding: typeRef="number"/>      -->
+        <semantic:encapsulatedLogic id="_f7a128d6-ad45-4d29-a7fc-b54b1657730f" kind="FEEL"> <!-- eliding typeRef="number" -->
+            <semantic:formalParameter name="p1" typeRef="number" id="_efa68e88-2afe-4fa6-9bd1-f2c31e73ef27"/>
+            <semantic:formalParameter name="p2" typeRef="number" id="_13315d9c-7e31-4514-a1ff-e1fa688801ad"/>
+            <semantic:literalExpression id="_ddcb6b3e-0595-40ec-9385-b2b72fd94485" typeRef="number">
+                <semantic:text>p1+p2</semantic:text>
+            </semantic:literalExpression>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+</semantic:definitions>

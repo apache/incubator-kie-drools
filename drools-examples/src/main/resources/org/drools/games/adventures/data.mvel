@@ -1,0 +1,64 @@
+import org.drools.games.adventures.model.Thing;
+import org.drools.games.adventures.model.Character;
+import org.drools.games.adventures.model.Item;
+import org.drools.games.adventures.model.Key;
+import org.drools.games.adventures.model.Room;
+import org.drools.games.adventures.model.Door;
+import org.drools.games.adventures.model.Location;
+import java.util.HashMap;
+
+
+rooms = [
+    "basement" : new Room("basement"),
+    "lounge" : new Room("lounge"),
+    "kitchen" : new Room("kitchen"),
+    "ground floor hallway" : new Room("ground floor hallway"),
+    "bedroom" : new Room("bedroom"),
+    "office" : new Room("office"),
+    "first floor hallway" : new Room("first floor hallway")
+];
+
+foreach( room : rooms.values ) {
+    room.id = c.getAndIncrement();
+}
+
+doors = [
+    "d1" : new Door( rooms["kitchen"], rooms["basement"] ),
+    "d2" : new Door( rooms["ground floor hallway"], rooms["lounge"]),
+    "d4" : new Door( rooms["ground floor hallway"], rooms["kitchen"]),
+    "d5" : new Door( rooms["ground floor hallway"], rooms[ "first floor hallway"] ),
+    "d8" : new Door( rooms["first floor hallway"], rooms[ "bedroom"] ),
+    "d9" : new Door( rooms["first floor hallway"], rooms[ "office"] )
+];
+
+characters = [ "hero" : new Character( "hero" ), "monster" : new Character( "monster" ) ];
+for( character : characters.values ) {
+    character.id = c.getAndIncrement();
+}
+
+items = [
+    "umbrella" : new Item( "umbrella" ),
+    "desk" : new Item( "desk", false ),
+    "draw" : new Item( "draw", false ),
+    "envelop" : new Item( "envelop" ),
+    "key1" : new Key("basement key")
+];
+
+for( item : items.values ) {
+    item.id = c.getAndIncrement();
+}
+
+with(doors["d1"]){ lockStatus =  LockStatus.LOCKED, key = items["key1"] };
+
+locations = [
+    "monster" :  new Location( characters["monster"], rooms["basement"] ),
+    "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] ),
+    "umbrella" :  new Location( items["umbrella"], rooms["lounge"] ),
+    "desk" :  new Location( items["desk"], rooms["office"] ),
+    "draw" :  new Location( items["draw"], items["desk"] ),
+    "envelop" :  new Location( items["envelop"], items["draw"] ),
+    "key1" :  new Location( items["key1"], items["envelop"] )
+];
+
+return [ "rooms" : rooms, "doors" : doors, "characters" : characters,
+         "items" : items, "locations" : locations ];

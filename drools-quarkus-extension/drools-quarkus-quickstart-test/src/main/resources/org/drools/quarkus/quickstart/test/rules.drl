@@ -1,0 +1,25 @@
+package org.drools.quarkus.quickstart.test;
+
+unit HomeRuleUnitData;
+
+import org.drools.quarkus.quickstart.test.model.*;
+
+rule "No lights on while outside"
+when
+    $l: /lights[ powered == true ];
+    not( /smartphones );
+then
+    alerts.add(new Alert("You might have forgot one light powered on: " + $l.getName()));
+end
+
+query "All Alerts"
+	$a: /alerts;
+end
+
+rule "No camera when present at home"
+when
+    accumulate( $s: /smartphones ; $count : count($s) ; $count >= 1 );
+    $l: /cctvs[ powered == true ];
+then
+    alerts.add(new Alert("One CCTV is still operating: " + $l.getName()));
+end

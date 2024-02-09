@@ -1,0 +1,42 @@
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38" xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kiegroup.org/dmn/_127520A0-364A-4ADA-A012-3AB6A7E3585E" id="_71312135-794C-40AF-A0F7-BB0E583B8704" name="importing0004" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38">
+  <dmn:extensionElements/>
+  <dmn:import id="_31E344CE-40C8-4534-9076-763197B2EBB0" name="my0004" namespace="http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def" locationURI="0004-decision-services.dmn" importType="https://www.omg.org/spec/DMN/20230324/MODEL/"/>
+  <dmn:inputData id="_B5FFB8C8-FAE9-4BB9-8B42-4E2D1FE54E74" name="B">
+    <dmn:extensionElements/>
+    <dmn:variable id="_09144444-595B-4820-8C67-9703D22BFCD2" name="B"/>
+  </dmn:inputData>
+  <dmn:inputData id="_0D82D4FC-2570-4F46-8868-B63A888E742B" name="C">
+    <dmn:extensionElements/>
+    <dmn:variable id="_58C3DAD0-8F7B-479D-81EC-D4A0FB92648F" name="C"/>
+  </dmn:inputData>
+  <dmn:decision id="_7DF1C5FB-F683-4E57-BDB4-7F4584990527" name="Decision1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_7E9C1B6E-6A90-4D70-80BB-DED45645B877" name="Decision1"/>
+    <dmn:invocation >
+      <dmn:literalExpression>
+        <dmn:text>my0004.A Only Knowing B and C</dmn:text>
+      </dmn:literalExpression>
+      <dmn:binding>
+        <dmn:parameter name="B" typeRef="Any"/>
+        <dmn:literalExpression >
+          <dmn:text>B</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+      <dmn:binding>
+        <dmn:parameter name="C" typeRef="Any"/>
+        <dmn:literalExpression >
+          <dmn:text>C</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+    </dmn:invocation>
+    <dmn:informationRequirement id="_ED5E3867-CD4B-47BA-9321-5E8EB4F52C25">
+      <dmn:requiredInput href="#_0D82D4FC-2570-4F46-8868-B63A888E742B"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_F0F00284-1C61-4310-8B5E-DF5FFB0FB9C8">
+      <dmn:requiredInput href="#_B5FFB8C8-FAE9-4BB9-8B42-4E2D1FE54E74"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_FD6D4EFE-50EB-483A-8B76-A6496F1FA323">
+      <dmn:requiredKnowledge href="http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def#_70386614-9838-420b-a2ae-ff901ada63fb"/>
+    </dmn:knowledgeRequirement>
+  </dmn:decision>
+</dmn:definitions>

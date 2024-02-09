@@ -1,0 +1,86 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="4">
+    <DataField name="result" optype="categorical" dataType="string">
+      <Value value="classA"/>
+      <Value value="classB"/>
+      <Value value="classC"/>
+    </DataField>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="input3" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <MiningModel functionName="classification" modelName="SegmentationClassificationSelectFirst">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Segmentation multipleModelMethod="selectFirst">
+      <Segment id="1">
+        <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
+        <TreeModel functionName="classification" noTrueChildStrategy="returnLastPrediction">
+          <MiningSchema>
+            <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <Node id="1" score="classA1">
+            <True/>
+            <Node id="2" score="classB1">
+              <SimplePredicate field="input2" operator="lessThan" value="15"/>
+            </Node>
+            <Node id="3" score="classC1">
+              <SimplePredicate field="input3" operator="greaterThan" value="85"/>
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+      <Segment id="2">
+        <CompoundPredicate booleanOperator="and">
+          <SimplePredicate field="input1" operator="greaterThan" value="10" />
+          <SimplePredicate field="input1" operator="lessThan" value="25" />
+        </CompoundPredicate>
+        <TreeModel functionName="classification" noTrueChildStrategy="returnLastPrediction">
+          <MiningSchema>
+            <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <Node id="1" score="classB2">
+            <True/>
+            <Node id="2" score="classC2">
+              <SimplePredicate field="input2" operator="lessThan" value="15"/>
+            </Node>
+            <Node id="3" score="classA2">
+              <SimplePredicate field="input3" operator="greaterThan" value="85"/>
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+      <Segment id="3">
+        <True/>
+        <TreeModel functionName="classification" noTrueChildStrategy="returnLastPrediction">
+          <MiningSchema>
+            <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <Node id="1" score="classC3">
+            <True/>
+            <Node id="2" score="classA3">
+              <SimplePredicate field="input2" operator="lessThan" value="15"/>
+            </Node>
+            <Node id="3" score="classB3">
+              <SimplePredicate field="input3" operator="greaterThan" value="85"/>
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

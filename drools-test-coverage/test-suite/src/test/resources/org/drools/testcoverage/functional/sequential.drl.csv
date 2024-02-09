@@ -1,0 +1,11 @@
+"RuleSet","org.drools.testcoverage.functional",,
+"Sequential","true",,
+,,,
+"RuleTable sequential-test",,,
+"NAME","CONDITION","PRIORITY","ACTION"
+,,,
+,"String()",,
+"rule names","simple condition","user defined salience","empty action"
+"Rule1","x",30,
+"Rule2","x",10,
+"Rule3","x",20,

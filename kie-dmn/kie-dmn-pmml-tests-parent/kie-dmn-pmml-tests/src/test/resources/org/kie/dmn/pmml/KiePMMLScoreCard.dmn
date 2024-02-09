@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" name="KiePMMLScoreCard" namespace="http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" exporter="DMN Modeler" exporterVersion="6.2.2.3" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:import namespace="iris" 
+                     name="iris" 
+                     locationURI="test_scorecard.pmml" 
+                     importType="http://www.dmg.org/PMML-4_2"/>    
+    <semantic:decisionService id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_b3184a98-1820-4eed-a647-fad14b470fd1" typeRef="Any"/>
+        <semantic:outputDecision href="#_c7724c41-b281-4890-ac3d-7d8ed1dc517f"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_55ca2300-3c26-4665-b44b-8eab7417c248_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_3c8c3313-052a-46b6-81dd-216ca4c9bbe0" typeRef="Any"/>
+        <semantic:outputDecision href="#_c7724c41-b281-4890-ac3d-7d8ed1dc517f"/>
+    </semantic:decisionService>
+    <semantic:businessKnowledgeModel id="_3bb6bcbe-54ac-449a-b198-59130cf9be1b" name="call my pmml">
+        <semantic:variable name="call my pmml" id="_7a2e03c5-3532-4f7f-baaf-21e0c8423b14" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_6e04a10d-a086-4631-98e8-c4fdc740106b" kind="PMML" typeRef="Any" triso:expressionId="_8d3f10b8-a53b-49db-a086-c8b63c270730">
+            <semantic:formalParameter name="age" typeRef="number" id="_ecc590e3-c5dd-4ba9-a03e-8ab4e287fa0d"/>
+            <semantic:formalParameter name="occupation" typeRef="string" id="_1c79ad27-a905-4e7e-804c-079695bf91b5"/>
+            <semantic:formalParameter name="residenceState" typeRef="string" id="_4604528f-7f81-4fac-8236-6a1e56c9515b"/>
+            <semantic:formalParameter name="validLicense" typeRef="boolean" id="_2b535c7c-a4df-4ed0-a25c-ac38e1a0db29"/>
+            <semantic:context>
+                <semantic:contextEntry id="_71f89971-82d6-4e64-9c37-544f800eb258">
+                    <semantic:variable name="document" id="_45eb749e-e8cf-4b6e-9d27-6489c9af463a" typeRef="string"/>
+                    <semantic:literalExpression id="_3780fb28-6a1c-4f35-a70c-731bc1b9d69a">
+                        <semantic:text>"iris"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_9a55a338-30e1-41ce-a9dd-8f9df2701238">
+                    <semantic:variable name="model" id="_037d1001-8c03-4b2f-a11c-6ff82cfe3a94" typeRef="string"/>
+                    <semantic:literalExpression id="_fbf09ac0-ddb3-434d-89d5-b2ff0a5f5319">
+                        <semantic:text>"Sample Score"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_c7724c41-b281-4890-ac3d-7d8ed1dc517f" name="my decision">
+        <semantic:variable name="my decision" id="_7a85bbf1-c91d-4772-ba85-4cc026398b38" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_b4049dfd-eec0-4fb6-ae59-6c77b4319f85">
+            <semantic:requiredKnowledge href="#_3bb6bcbe-54ac-449a-b198-59130cf9be1b"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_a1a61704-1d13-4a39-b91d-ee4936b36c6a" typeRef="Any" triso:expressionId="_4b0f67b2-dccd-46ec-92f6-d65ac6ca9512">
+            <semantic:literalExpression id="literal__a1a61704-1d13-4a39-b91d-ee4936b36c6a">
+                <semantic:text>call my pmml</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_b0acdd65-65f8-4304-9836-6bc5f4c473ba" name="age"/>
+                <semantic:literalExpression id="_94d89ac0-1503-4ad8-8962-030fd5b4f6df">
+                    <semantic:text>33</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_e85ec960-d125-4957-a805-c41837dea3af" name="occupation"/>
+                <semantic:literalExpression id="_b7bc0c72-027a-4e61-9b00-eb876a9b3138">
+                    <semantic:text>"SKYDIVER"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_b08e9400-cca5-4bda-a05e-d9548021541d" name="residenceState"/>
+                <semantic:literalExpression id="_6466d0da-30ec-453a-a060-54816e7c177b">
+                    <semantic:text>"KN"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_403dbb4d-82a7-49b1-838b-824bec9031f6" name="validLicense"/>
+                <semantic:literalExpression id="_c77f954e-396a-47be-ab7a-7903de8ac4c4">
+                    <semantic:text>true</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_55ca2300-3c26-4665-b44b-8eab7417c248" triso:modelElementRef="_f613aa7e-7139-48ff-b0fa-8212a8fc1ec3" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_7043fd5d-bd15-495d-8db8-9b9ed2ae3a4a" dmnElementRef="_3bb6bcbe-54ac-449a-b198-59130cf9be1b">
+                <dc:Bounds x="340.5" y="171.5" width="152" height="59"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="368.5" y="194.5"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_9df8b711-3273-4002-ae1a-49100756a647" dmnElementRef="_c7724c41-b281-4890-ac3d-7d8ed1dc517f">
+                <dc:Bounds x="109" y="171" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="112" y="195"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_2f2ecf0d-09f9-45ac-a0c1-88c55db223a8" dmnElementRef="_b4049dfd-eec0-4fb6-ae59-6c77b4319f85">
+                <di:waypoint x="492.5" y="200.5"/>
+                <di:waypoint x="109" y="201"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

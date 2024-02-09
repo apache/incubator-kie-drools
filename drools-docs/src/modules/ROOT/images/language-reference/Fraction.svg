@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="164" height="76"
+     viewBox="0 0 164 78">
+<title>Fraction</title>
+<rect x='30.5' y='34.5' width='30' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Digit.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='19' x='36' y='43.83'>Digit</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 41.5 L 30 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 60.50 41.5 L 70.5 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 41.5 A 5 5 0 0 1 25 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 33.5 A 5 5 0 0 1 30 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 60.50 41.5 A 5 5 0 0 0 65.50 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 65.50 33.5 A 5 5 0 0 0 60.50 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 36.5 L 25 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 65.50 36.5 L 65.5 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 28.5 L 60.5 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.25 26.5 L 45.25 28.5 L 47.25 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 70.50 41.5 L 75.5 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 73.50 39.5 L 75.5 41.5 L 73.5 43.5'/>
+<rect x='76' y='34.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='81.50' y='44.43'>.</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.90 41.5 L 97.9 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 95.90 39.5 L 97.9 41.5 L 95.9 43.5'/>
+<rect x='108.4' y='21.5' width='30' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Digit.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='19' x='113.90' y='30.83'>Digit</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 140.40 26.5 L 138.4 28.5 L 140.4 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 97.90 41.5 L 148.4 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 107.90 41.5 A 5 5 0 0 1 102.90 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.90 33.5 A 5 5 0 0 1 107.90 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 138.40 41.5 A 5 5 0 0 0 143.40 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 143.40 33.5 A 5 5 0 0 0 138.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.90 36.5 L 102.9 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 143.40 36.5 L 143.4 33.5'/>
+<rect x='20.5' y='60.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='26' y='70.43'>.</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 37.40 67.5 L 42.4 67.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 40.40 65.5 L 42.4 67.5 L 40.4 69.5'/>
+<rect x='52.9' y='60.5' width='30' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Digit.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='19' x='58.40' y='69.83'>Digit</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 42.40 67.5 L 52.4 67.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 82.90 67.5 L 92.9 67.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 67.5 A 5 5 0 0 1 47.40 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 59.5 A 5 5 0 0 1 52.40 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 82.90 67.5 A 5 5 0 0 0 87.90 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.90 59.5 A 5 5 0 0 0 82.90 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 62.5 L 47.4 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.90 62.5 L 87.9 59.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 54.5 L 82.9 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 69.65 52.5 L 67.65 54.5 L 69.65 56.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 54.5 L 15 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.40 54.5 L 158.4 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 46.5 A 5 5 0 0 1 20 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 67.5 A 5 5 0 0 1 15 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 62.5 L 15 46.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.40 46.5 A 5 5 0 0 0 148.40 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 148.40 67.5 A 5 5 0 0 0 153.40 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.40 62.5 L 153.4 46.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 148.40 41.5 L 148.4 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.90 67.5 L 148.4 67.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 158.40 54.5 L 163.4 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 161.40 52.5 L 163.4 54.5 L 161.4 56.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='Fraction' x='0' y='8.33'>Fraction</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 54.5 L 10 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 52.5 L 10 54.5 L 8 56.5'/>
+</svg>

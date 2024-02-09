@@ -1,0 +1,66 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.MoveCommand;
+import org.drools.games.wumpus.ShootCommand;
+import org.drools.games.wumpus.GoldWin;
+import org.drools.games.wumpus.PitDeath;
+import org.drools.games.wumpus.WumpusDeath;
+
+dialect "mvel"
+
+declare Score
+	@propertyReactive
+end	
+    
+rule "Move -1" salience 100 agenda-group "Score" when
+    $m : MoveCommand()
+    $s : Score()
+then
+    modify( $s) { value = $s.value  - 1 };  
+end 
+
+rule "Shoot Arrow -10" salience 100 agenda-group "Score" when
+         ShootCommand()
+    $s : Score()
+then
+    modify( $s) { value = $s.value  - 10 };
+end   
+     
+
+rule "Gold Win +100" salience 100 agenda-group "Score" when
+         GoldWin()
+    $s : Score()
+then
+    modify( $s ) { value = $s.value  + 100 };
+    setFocus( "EndGame" );
+end
+   
+rule "Pit Death -1000" salience 100 agenda-group "Score" when
+         PitDeath()
+    $s : Score()
+then
+    modify( $s) { value = $s.value  - 1000 };
+end 
+
+rule "Wumpus Death -1000" salience 100  agenda-group "Score" when
+         WumpusDeath()
+    $s : Score()
+then
+     modify( $s) { value = $s.value - 1000 };  
+end          
+

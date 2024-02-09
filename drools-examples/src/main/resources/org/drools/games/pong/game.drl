@@ -1,0 +1,67 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.pong
+
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
+
+import java.lang.Math
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.event.KeyEvent
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.event.KeyEvent
+import java.awt.font.FontRenderContext
+import java.awt.font.TextLayout
+import java.awt.Font
+import org.kie.internal.runtime.StatefulKnowledgeSession
+
+
+global PongConfiguration pconf
+
+dialect "mvel"
+
+
+rule "PlayerOne Win" agenda-group "Game" when
+    ball : Ball( x >= pconf.tableWidth + width )
+    player : Player( id == PlayerId.PlayerOne )
+
+then
+    modify ( ball ) { x = (pconf.tableWidth/2)-(pconf.ballWidth/2), y = (pconf.tableHeight/2)-(pconf.ballWidth/2),
+                      dx = 1, dy = 0, speed = pconf.ballStartingSpeed }
+    modify( player ) { score = player.score + 1 };
+end
+
+
+rule "PlayerTwo Win" agenda-group "Game" when
+    ball : Ball( x <= 0 )
+    player : Player( id == PlayerId.PlayerTwo )
+then
+    modify ( ball ) { x = (pconf.tableWidth/2)-(pconf.ballWidth/2), y = (pconf.tableHeight/2)-(pconf.ballWidth/2),
+                     dx = -1, dy = 0, speed = pconf.ballStartingSpeed }
+
+    modify( player ) { score = player.score + 1 };
+end

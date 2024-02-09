@@ -1,0 +1,68 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.ShootCommand;
+import org.drools.games.wumpus.Hero;
+import org.drools.games.wumpus.Arrow;
+import org.drools.games.wumpus.Direction;
+import org.drools.games.wumpus.Wumpus;
+import org.drools.games.wumpus.Cell;
+import org.drools.games.wumpus.HearScream;
+
+dialect "mvel"
+
+rule "Wumpus Killed" agenda-group "Shoot" when
+    $a  : Arrow() @watch(row,col)
+    $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
+    $c  : Cell(row == $a.row, col == $a.col )
+then
+    delete( $a );
+    insert( new HearScream() );
+    modify( $w ) { alive = false };
+end
+
+rule "Cave Boundary, Remove Arrow" agenda-group "Shoot"  when
+     $a : Arrow()
+     not Cell(row == $a.row, col == $a.col )
+then
+    delete ( $a );
+end
+
+rule "Move Arrow Up" agenda-group "Shoot"  when
+     $a :  Arrow( direction == Direction.UP) @watch(row,col)
+then
+    modify( $a ) { row = $a.row + 1 };
+end   
+
+rule "Move Arrow Down" agenda-group "Shoot"  when
+     $a :  Arrow( direction == Direction.DOWN) @watch(row,col)
+then
+    modify( $a ) { row = $a.row - 1 };
+end   
+
+rule "Move Arrow Left" agenda-group "Shoot"  when
+     $a :  Arrow( direction == Direction.LEFT) @watch(row,col)
+then
+    modify( $a ) { col = $a.col - 1 };
+end    
+
+rule "Move Arrow Right" agenda-group "Shoot" when
+     $a :  Arrow( direction == Direction.RIGHT) @watch(row,col)
+then
+    modify( $a ) { col = $a.col + 1 };
+end  
+

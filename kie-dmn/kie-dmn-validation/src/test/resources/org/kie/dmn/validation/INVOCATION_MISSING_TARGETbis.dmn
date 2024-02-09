@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                      xmlns:semantic="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      id="INVOCATION_MISSING_TARGETbis"
+                      name="INVOCATION_MISSING_TARGETbis"
+                      namespace="https://github.com/kiegroup/kie-dmn">
+   <semantic:decision id="d1" name="Decision1">
+      <semantic:variable name="Decision1"/>
+      <semantic:invocation>
+         <semantic:literalExpression>
+            <semantic:text>"Decision"+"2"</semantic:text>
+            <!-- TEST -->
+         </semantic:literalExpression>
+         <semantic:binding>
+            <semantic:parameter id="p1" name="Parameter1"/>
+            <semantic:literalExpression>
+               <semantic:text>Parameter1</semantic:text>
+            </semantic:literalExpression>
+         </semantic:binding>
+      </semantic:invocation>
+   </semantic:decision>
+   <semantic:businessKnowledgeModel id="bkm1" name="Decision2">
+      <semantic:variable name="Decision2" typeRef="string"/>
+      <semantic:encapsulatedLogic>
+         <semantic:formalParameter name="Parameter1" typeRef="string"/>
+         <semantic:context>
+            <semantic:contextEntry>
+               <semantic:literalExpression>
+                  <semantic:text>"Hello "+Parameter1</semantic:text>
+               </semantic:literalExpression>
+            </semantic:contextEntry>
+         </semantic:context>
+      </semantic:encapsulatedLogic>
+   </semantic:businessKnowledgeModel>
+</semantic:definitions>

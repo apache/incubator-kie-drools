@@ -1,0 +1,15 @@
+
+package it.pkg;
+
+unit MeasurementUnit;
+
+rule "will execute per each Measurement having ID color"
+when
+	/measurements[ id == "color", $colorVal : val ]
+then
+	controlSet.add($colorVal);
+end
+
+query FindColor
+    $m: /measurements[ id == "color" ]
+end

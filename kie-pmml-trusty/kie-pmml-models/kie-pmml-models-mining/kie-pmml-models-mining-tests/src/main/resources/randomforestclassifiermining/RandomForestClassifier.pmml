@@ -1,0 +1,1548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4.1">
+  <Header copyright="Copyright (c) 2018 Software AG" description="Default Description">
+    <Application name="Nyoka" version="4.4.0"/>
+    <Timestamp>2021-03-19 10:01:00.555510</Timestamp>
+  </Header>
+  <DataDictionary numberOfFields="5">
+    <DataField name="Age" optype="continuous" dataType="double"/>
+    <DataField name="Debt" optype="continuous" dataType="double"/>
+    <DataField name="YearsEmployed" optype="continuous" dataType="double"/>
+    <DataField name="Income" optype="continuous" dataType="double"/>
+    <DataField name="Approved" optype="categorical" dataType="integer">
+      <Value value="0"/>
+      <Value value="1"/>
+    </DataField>
+  </DataDictionary>
+  <MiningModel modelName="RandomForestClassifier" functionName="classification">
+    <MiningSchema>
+      <MiningField name="Age" usageType="active" optype="continuous"/>
+      <MiningField name="Debt" usageType="active" optype="continuous"/>
+      <MiningField name="YearsEmployed" usageType="active" optype="continuous"/>
+      <MiningField name="Income" usageType="active" optype="continuous"/>
+      <MiningField name="Approved" usageType="target" optype="categorical"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="probability_0" optype="continuous" dataType="double" feature="probability" value="0"/>
+      <OutputField name="probability_1" optype="continuous" dataType="double" feature="probability" value="1"/>
+      <OutputField name="predicted_Approved" optype="categorical" dataType="integer" feature="predictedValue"/>
+    </Output>
+    <Segmentation multipleModelMethod="average" missingThreshold="1">
+      <Segment id="0" weight="1">
+        <True/>
+        <TreeModel modelName="DecisionTreeClassifier" functionName="classification" missingValuePenalty="1.0">
+          <MiningSchema>
+            <MiningField name="Age" usageType="active"/>
+            <MiningField name="Debt" usageType="active"/>
+            <MiningField name="YearsEmployed" usageType="active"/>
+            <MiningField name="Income" usageType="active"/>
+            <MiningField name="Approved" usageType="target" optype="categorical"/>
+          </MiningSchema>
+          <Node id="0" recordCount="220.0">
+            <True/>
+            <Node id="1" recordCount="152.0">
+              <SimplePredicate field="Income" operator="lessOrEqual" value="190.0"/>
+              <Node id="2" recordCount="95.0">
+                <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.2925000190734863"/>
+                <Node id="3" recordCount="25.0">
+                  <SimplePredicate field="Age" operator="lessOrEqual" value="20.954999923706055"/>
+                  <Node id="4" recordCount="5.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.10500000044703484"/>
+                    <Node id="5" score="1" recordCount="3.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="0.5"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="7.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="6" score="0" recordCount="2.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="0.5"/>
+                      <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="7" recordCount="20.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.10500000044703484"/>
+                    <Node id="8" recordCount="5.0">
+                      <SimplePredicate field="Debt" operator="lessOrEqual" value="0.35499999672174454"/>
+                      <Node id="9" score="0" recordCount="2.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="17.25"/>
+                        <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="10" recordCount="3.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="17.25"/>
+                        <Node id="11" score="0" recordCount="1.0">
+                          <SimplePredicate field="Income" operator="lessOrEqual" value="20.0"/>
+                          <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="12" score="1" recordCount="2.0">
+                          <SimplePredicate field="Income" operator="greaterThan" value="20.0"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="13" recordCount="15.0">
+                      <SimplePredicate field="Debt" operator="greaterThan" value="0.35499999672174454"/>
+                      <Node id="14" score="0" recordCount="12.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="20.375"/>
+                        <ScoreDistribution value="0" recordCount="15.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="15" recordCount="3.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="20.375"/>
+                        <Node id="16" recordCount="2.0">
+                          <SimplePredicate field="Income" operator="lessOrEqual" value="92.0"/>
+                          <Node id="17" score="0" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="5.375"/>
+                            <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="18" score="1" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="5.375"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                        <Node id="19" score="0" recordCount="1.0">
+                          <SimplePredicate field="Income" operator="greaterThan" value="92.0"/>
+                          <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+                <Node id="20" recordCount="70.0">
+                  <SimplePredicate field="Age" operator="greaterThan" value="20.954999923706055"/>
+                  <Node id="21" recordCount="7.0">
+                    <SimplePredicate field="Debt" operator="lessOrEqual" value="0.3974999934434891"/>
+                    <Node id="22" score="0" recordCount="4.0">
+                      <SimplePredicate field="Debt" operator="lessOrEqual" value="0.35500000417232513"/>
+                      <ScoreDistribution value="0" recordCount="8.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                    <Node id="23" score="1" recordCount="3.0">
+                      <SimplePredicate field="Debt" operator="greaterThan" value="0.35500000417232513"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="5.0" confidence="1.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="24" recordCount="63.0">
+                    <SimplePredicate field="Debt" operator="greaterThan" value="0.3974999934434891"/>
+                    <Node id="25" recordCount="56.0">
+                      <SimplePredicate field="Debt" operator="lessOrEqual" value="5.167500019073486"/>
+                      <Node id="26" recordCount="45.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="3.125"/>
+                        <Node id="27" recordCount="14.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.0625"/>
+                          <Node id="28" score="0" recordCount="10.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="1.7074999809265137"/>
+                            <ScoreDistribution value="0" recordCount="18.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="29" recordCount="4.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="1.7074999809265137"/>
+                            <Node id="30" recordCount="2.0">
+                              <SimplePredicate field="Debt" operator="lessOrEqual" value="2.1449999809265137"/>
+                              <Node id="31" score="0" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.019999999552965164"/>
+                                <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                              <Node id="32" score="1" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.019999999552965164"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                              </Node>
+                            </Node>
+                            <Node id="33" score="0" recordCount="2.0">
+                              <SimplePredicate field="Debt" operator="greaterThan" value="2.1449999809265137"/>
+                              <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                          </Node>
+                        </Node>
+                        <Node id="34" score="0" recordCount="31.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.0625"/>
+                          <ScoreDistribution value="0" recordCount="43.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                      <Node id="35" recordCount="11.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="3.125"/>
+                        <Node id="36" recordCount="2.0">
+                          <SimplePredicate field="Debt" operator="lessOrEqual" value="3.5625"/>
+                          <Node id="37" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="34.625000953674316"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="38" score="0" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="34.625000953674316"/>
+                            <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                        <Node id="39" score="0" recordCount="9.0">
+                          <SimplePredicate field="Debt" operator="greaterThan" value="3.5625"/>
+                          <ScoreDistribution value="0" recordCount="13.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="40" recordCount="7.0">
+                      <SimplePredicate field="Debt" operator="greaterThan" value="5.167500019073486"/>
+                      <Node id="41" recordCount="6.0">
+                        <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.75"/>
+                        <Node id="42" score="0" recordCount="3.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="28.209999084472656"/>
+                          <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="43" recordCount="3.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="28.209999084472656"/>
+                          <Node id="44" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="48.459999084472656"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="45" score="0" recordCount="2.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="48.459999084472656"/>
+                            <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="46" score="1" recordCount="1.0">
+                        <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.75"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="47" recordCount="57.0">
+                <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.2925000190734863"/>
+                <Node id="48" recordCount="21.0">
+                  <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="2.3524999618530273"/>
+                  <Node id="49" recordCount="10.0">
+                    <SimplePredicate field="Debt" operator="lessOrEqual" value="4.894999980926514"/>
+                    <Node id="50" recordCount="3.0">
+                      <SimplePredicate field="Age" operator="lessOrEqual" value="24.460000038146973"/>
+                      <Node id="51" score="1" recordCount="1.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="0.7300000190734863"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="52" recordCount="2.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="0.7300000190734863"/>
+                        <Node id="53" score="0" recordCount="1.0">
+                          <SimplePredicate field="Income" operator="lessOrEqual" value="7.5"/>
+                          <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="54" score="1" recordCount="1.0">
+                          <SimplePredicate field="Income" operator="greaterThan" value="7.5"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="55" recordCount="7.0">
+                      <SimplePredicate field="Age" operator="greaterThan" value="24.460000038146973"/>
+                      <Node id="56" score="0" recordCount="6.0">
+                        <SimplePredicate field="Income" operator="lessOrEqual" value="90.5"/>
+                        <ScoreDistribution value="0" recordCount="7.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="57" score="1" recordCount="1.0">
+                        <SimplePredicate field="Income" operator="greaterThan" value="90.5"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="58" recordCount="11.0">
+                    <SimplePredicate field="Debt" operator="greaterThan" value="4.894999980926514"/>
+                    <Node id="59" score="1" recordCount="3.0">
+                      <SimplePredicate field="Debt" operator="lessOrEqual" value="9.375"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="5.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="60" recordCount="8.0">
+                      <SimplePredicate field="Debt" operator="greaterThan" value="9.375"/>
+                      <Node id="61" score="0" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="20.0"/>
+                        <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="62" recordCount="7.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="20.0"/>
+                        <Node id="63" recordCount="3.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.5425000190734863"/>
+                          <Node id="64" score="1" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="10.75"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="65" score="0" recordCount="2.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="10.75"/>
+                            <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                        <Node id="66" score="1" recordCount="4.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.5425000190734863"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="7.0" confidence="1.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+                <Node id="67" recordCount="36.0">
+                  <SimplePredicate field="YearsEmployed" operator="greaterThan" value="2.3524999618530273"/>
+                  <Node id="68" recordCount="15.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="4.539999961853027"/>
+                    <Node id="69" recordCount="2.0">
+                      <SimplePredicate field="Age" operator="lessOrEqual" value="23.085000038146973"/>
+                      <Node id="70" score="0" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="22.170000076293945"/>
+                        <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="71" score="1" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="22.170000076293945"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                    <Node id="72" score="0" recordCount="13.0">
+                      <SimplePredicate field="Age" operator="greaterThan" value="23.085000038146973"/>
+                      <ScoreDistribution value="0" recordCount="20.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="73" recordCount="21.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="4.539999961853027"/>
+                    <Node id="74" recordCount="16.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="8.0"/>
+                      <Node id="75" recordCount="12.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="49.959999084472656"/>
+                        <Node id="76" recordCount="6.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="5.625"/>
+                          <Node id="77" score="1" recordCount="3.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="34.959999084472656"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="5.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="78" recordCount="3.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="34.959999084472656"/>
+                            <Node id="79" score="1" recordCount="1.0">
+                              <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="4.789999961853027"/>
+                              <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                              <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                            </Node>
+                            <Node id="80" recordCount="2.0">
+                              <SimplePredicate field="YearsEmployed" operator="greaterThan" value="4.789999961853027"/>
+                              <Node id="81" score="0" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="5.0625"/>
+                                <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                              <Node id="82" score="1" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="greaterThan" value="5.0625"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                              </Node>
+                            </Node>
+                          </Node>
+                        </Node>
+                        <Node id="83" recordCount="6.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="5.625"/>
+                          <Node id="84" score="0" recordCount="3.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="4.25"/>
+                            <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="85" score="1" recordCount="3.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="4.25"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="5.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="86" score="0" recordCount="4.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="49.959999084472656"/>
+                        <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                    </Node>
+                    <Node id="87" recordCount="5.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="8.0"/>
+                      <Node id="88" score="0" recordCount="1.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="8.5"/>
+                        <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="89" score="1" recordCount="4.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="8.5"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="7.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+            <Node id="90" recordCount="68.0">
+              <SimplePredicate field="Income" operator="greaterThan" value="190.0"/>
+              <Node id="91" recordCount="22.0">
+                <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.5625"/>
+                <Node id="92" recordCount="19.0">
+                  <SimplePredicate field="Age" operator="lessOrEqual" value="39.41999816894531"/>
+                  <Node id="93" recordCount="6.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.0625"/>
+                    <Node id="94" recordCount="5.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="1384.5"/>
+                      <Node id="95" score="0" recordCount="3.0">
+                        <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.019999999552965164"/>
+                        <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="96" recordCount="2.0">
+                        <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.019999999552965164"/>
+                        <Node id="97" score="1" recordCount="1.0">
+                          <SimplePredicate field="Debt" operator="lessOrEqual" value="11.6875"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="98" score="0" recordCount="1.0">
+                          <SimplePredicate field="Debt" operator="greaterThan" value="11.6875"/>
+                          <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="99" score="1" recordCount="1.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="1384.5"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="100" score="0" recordCount="13.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.0625"/>
+                    <ScoreDistribution value="0" recordCount="20.0" confidence="1.0"/>
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                  </Node>
+                </Node>
+                <Node id="101" recordCount="3.0">
+                  <SimplePredicate field="Age" operator="greaterThan" value="39.41999816894531"/>
+                  <Node id="102" score="1" recordCount="2.0">
+                    <SimplePredicate field="Debt" operator="lessOrEqual" value="14.5"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                  </Node>
+                  <Node id="103" score="0" recordCount="1.0">
+                    <SimplePredicate field="Debt" operator="greaterThan" value="14.5"/>
+                    <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="104" recordCount="46.0">
+                <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.5625"/>
+                <Node id="105" score="1" recordCount="15.0">
+                  <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.4574999809265137"/>
+                  <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                  <ScoreDistribution value="1" recordCount="25.0" confidence="1.0"/>
+                </Node>
+                <Node id="106" recordCount="31.0">
+                  <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.4574999809265137"/>
+                  <Node id="107" recordCount="4.0">
+                    <SimplePredicate field="Debt" operator="lessOrEqual" value="1.5824999809265137"/>
+                    <Node id="108" score="1" recordCount="1.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="323.5"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="109" recordCount="3.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="323.5"/>
+                      <Node id="110" score="0" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="27.914999961853027"/>
+                        <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="111" recordCount="2.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="27.914999961853027"/>
+                        <Node id="112" score="1" recordCount="1.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="42.334999084472656"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="113" score="0" recordCount="1.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="42.334999084472656"/>
+                          <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="114" recordCount="27.0">
+                    <SimplePredicate field="Debt" operator="greaterThan" value="1.5824999809265137"/>
+                    <Node id="115" recordCount="19.0">
+                      <SimplePredicate field="Debt" operator="lessOrEqual" value="11.230000019073486"/>
+                      <Node id="116" recordCount="6.0">
+                        <SimplePredicate field="Income" operator="lessOrEqual" value="478.0"/>
+                        <Node id="117" score="1" recordCount="5.0">
+                          <SimplePredicate field="Income" operator="lessOrEqual" value="411.5"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="7.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="118" score="0" recordCount="1.0">
+                          <SimplePredicate field="Income" operator="greaterThan" value="411.5"/>
+                          <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                      <Node id="119" score="1" recordCount="13.0">
+                        <SimplePredicate field="Income" operator="greaterThan" value="478.0"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="23.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                    <Node id="120" recordCount="8.0">
+                      <SimplePredicate field="Debt" operator="greaterThan" value="11.230000019073486"/>
+                      <Node id="121" score="0" recordCount="2.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="11.914999961853027"/>
+                        <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="122" score="1" recordCount="6.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="11.914999961853027"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="13.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+      <Segment id="1" weight="1">
+        <True/>
+        <TreeModel modelName="DecisionTreeClassifier" functionName="classification" missingValuePenalty="1.0">
+          <MiningSchema>
+            <MiningField name="Age" usageType="active"/>
+            <MiningField name="Debt" usageType="active"/>
+            <MiningField name="YearsEmployed" usageType="active"/>
+            <MiningField name="Income" usageType="active"/>
+            <MiningField name="Approved" usageType="target" optype="categorical"/>
+          </MiningSchema>
+          <Node id="0" recordCount="217.0">
+            <True/>
+            <Node id="1" recordCount="105.0">
+              <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.9375"/>
+              <Node id="2" recordCount="87.0">
+                <SimplePredicate field="Income" operator="lessOrEqual" value="393.0"/>
+                <Node id="3" recordCount="10.0">
+                  <SimplePredicate field="Debt" operator="lessOrEqual" value="0.39499999582767487"/>
+                  <Node id="4" recordCount="6.0">
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="24.335000038146973"/>
+                    <Node id="5" score="1" recordCount="1.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.08249999955296516"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="6" recordCount="5.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.08249999955296516"/>
+                      <Node id="7" score="0" recordCount="3.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="0.14500000327825546"/>
+                        <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="8" recordCount="2.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="0.14500000327825546"/>
+                        <Node id="9" score="1" recordCount="1.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.22999999672174454"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="10" score="0" recordCount="1.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.22999999672174454"/>
+                          <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="11" score="1" recordCount="4.0">
+                    <SimplePredicate field="Age" operator="greaterThan" value="24.335000038146973"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="7.0" confidence="1.0"/>
+                  </Node>
+                </Node>
+                <Node id="12" recordCount="77.0">
+                  <SimplePredicate field="Debt" operator="greaterThan" value="0.39499999582767487"/>
+                  <Node id="13" recordCount="28.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.10500000044703484"/>
+                    <Node id="14" recordCount="4.0">
+                      <SimplePredicate field="Age" operator="lessOrEqual" value="20.954999923706055"/>
+                      <Node id="15" score="1" recordCount="3.0">
+                        <SimplePredicate field="Income" operator="lessOrEqual" value="20.0"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="16" score="0" recordCount="1.0">
+                        <SimplePredicate field="Income" operator="greaterThan" value="20.0"/>
+                        <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                    </Node>
+                    <Node id="17" recordCount="24.0">
+                      <SimplePredicate field="Age" operator="greaterThan" value="20.954999923706055"/>
+                      <Node id="18" recordCount="23.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="71.45999908447266"/>
+                        <Node id="19" score="0" recordCount="17.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.0625"/>
+                          <ScoreDistribution value="0" recordCount="22.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="20" recordCount="6.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.0625"/>
+                          <Node id="21" score="0" recordCount="5.0">
+                            <SimplePredicate field="Income" operator="lessOrEqual" value="5.5"/>
+                            <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="22" score="1" recordCount="1.0">
+                            <SimplePredicate field="Income" operator="greaterThan" value="5.5"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="23" score="1" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="71.45999908447266"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="24" recordCount="49.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.10500000044703484"/>
+                    <Node id="25" recordCount="34.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="25.5"/>
+                      <Node id="26" recordCount="5.0">
+                        <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.14500000327825546"/>
+                        <Node id="27" score="0" recordCount="4.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="49.0"/>
+                          <ScoreDistribution value="0" recordCount="5.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="28" score="1" recordCount="1.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="49.0"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                        </Node>
+                      </Node>
+                      <Node id="29" recordCount="29.0">
+                        <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.14500000327825546"/>
+                        <Node id="30" recordCount="3.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="18.125"/>
+                          <Node id="31" score="0" recordCount="2.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="17.875"/>
+                            <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="32" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="17.875"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                        <Node id="33" recordCount="26.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="18.125"/>
+                          <Node id="34" score="0" recordCount="25.0">
+                            <SimplePredicate field="Income" operator="lessOrEqual" value="13.0"/>
+                            <ScoreDistribution value="0" recordCount="46.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="35" score="1" recordCount="1.0">
+                            <SimplePredicate field="Income" operator="greaterThan" value="13.0"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="36" score="0" recordCount="15.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="25.5"/>
+                      <ScoreDistribution value="0" recordCount="30.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="37" recordCount="18.0">
+                <SimplePredicate field="Income" operator="greaterThan" value="393.0"/>
+                <Node id="38" recordCount="5.0">
+                  <SimplePredicate field="Debt" operator="lessOrEqual" value="0.5600000023841858"/>
+                  <Node id="39" score="1" recordCount="3.0">
+                    <SimplePredicate field="Income" operator="lessOrEqual" value="2050.0"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="8.0" confidence="1.0"/>
+                  </Node>
+                  <Node id="40" recordCount="2.0">
+                    <SimplePredicate field="Income" operator="greaterThan" value="2050.0"/>
+                    <Node id="41" score="1" recordCount="1.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.0625"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="42" score="0" recordCount="1.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.0625"/>
+                      <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                </Node>
+                <Node id="43" recordCount="13.0">
+                  <SimplePredicate field="Debt" operator="greaterThan" value="0.5600000023841858"/>
+                  <Node id="44" recordCount="10.0">
+                    <SimplePredicate field="Income" operator="lessOrEqual" value="4562.0"/>
+                    <Node id="45" recordCount="5.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.10250000283122063"/>
+                      <Node id="46" score="0" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="21.079999923706055"/>
+                        <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="47" recordCount="4.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="21.079999923706055"/>
+                        <Node id="48" score="1" recordCount="2.0">
+                          <SimplePredicate field="Debt" operator="lessOrEqual" value="11.6875"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="49" recordCount="2.0">
+                          <SimplePredicate field="Debt" operator="greaterThan" value="11.6875"/>
+                          <Node id="50" score="0" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="44.834999084472656"/>
+                            <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="51" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="44.834999084472656"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="52" score="0" recordCount="5.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.10250000283122063"/>
+                      <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="53" score="1" recordCount="3.0">
+                    <SimplePredicate field="Income" operator="greaterThan" value="4562.0"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+            <Node id="54" recordCount="112.0">
+              <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.9375"/>
+              <Node id="55" recordCount="65.0">
+                <SimplePredicate field="Income" operator="lessOrEqual" value="88.5"/>
+                <Node id="56" recordCount="40.0">
+                  <SimplePredicate field="Debt" operator="lessOrEqual" value="4.375"/>
+                  <Node id="57" score="0" recordCount="10.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.3550000190734863"/>
+                    <ScoreDistribution value="0" recordCount="13.0" confidence="1.0"/>
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                  </Node>
+                  <Node id="58" recordCount="30.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.3550000190734863"/>
+                    <Node id="59" recordCount="11.0">
+                      <SimplePredicate field="Debt" operator="lessOrEqual" value="1.7925000190734863"/>
+                      <Node id="60" recordCount="9.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="1.375"/>
+                        <Node id="61" score="1" recordCount="1.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="20.170000076293945"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="62" recordCount="8.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="20.170000076293945"/>
+                          <Node id="63" score="0" recordCount="4.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="25.664999961853027"/>
+                            <ScoreDistribution value="0" recordCount="7.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="64" recordCount="4.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="25.664999961853027"/>
+                            <Node id="65" recordCount="3.0">
+                              <SimplePredicate field="Age" operator="lessOrEqual" value="43.125"/>
+                              <Node id="66" score="1" recordCount="2.0">
+                                <SimplePredicate field="Debt" operator="lessOrEqual" value="0.875"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                              </Node>
+                              <Node id="67" score="0" recordCount="1.0">
+                                <SimplePredicate field="Debt" operator="greaterThan" value="0.875"/>
+                                <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                            </Node>
+                            <Node id="68" score="0" recordCount="1.0">
+                              <SimplePredicate field="Age" operator="greaterThan" value="43.125"/>
+                              <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="69" score="1" recordCount="2.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="1.375"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                    <Node id="70" recordCount="19.0">
+                      <SimplePredicate field="Debt" operator="greaterThan" value="1.7925000190734863"/>
+                      <Node id="71" score="1" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="23.085000038146973"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="72" recordCount="18.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="23.085000038146973"/>
+                        <Node id="73" score="0" recordCount="15.0">
+                          <SimplePredicate field="Debt" operator="lessOrEqual" value="4.019999980926514"/>
+                          <ScoreDistribution value="0" recordCount="23.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="74" recordCount="3.0">
+                          <SimplePredicate field="Debt" operator="greaterThan" value="4.019999980926514"/>
+                          <Node id="75" score="1" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="4.144999980926514"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="76" score="0" recordCount="2.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="4.144999980926514"/>
+                            <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+                <Node id="77" recordCount="25.0">
+                  <SimplePredicate field="Debt" operator="greaterThan" value="4.375"/>
+                  <Node id="78" recordCount="20.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="7.0625"/>
+                    <Node id="79" recordCount="11.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="0.5"/>
+                      <Node id="80" score="0" recordCount="1.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="4.605000019073486"/>
+                        <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="81" recordCount="10.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="4.605000019073486"/>
+                        <Node id="82" score="0" recordCount="1.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="17.835000038146973"/>
+                          <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="83" recordCount="9.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="17.835000038146973"/>
+                          <Node id="84" score="1" recordCount="3.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="7.0"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="6.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="85" recordCount="6.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="7.0"/>
+                            <Node id="86" recordCount="4.0">
+                              <SimplePredicate field="Age" operator="lessOrEqual" value="32.5"/>
+                              <Node id="87" score="1" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.4600000381469727"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                              </Node>
+                              <Node id="88" recordCount="3.0">
+                                <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.4600000381469727"/>
+                                <Node id="89" score="0" recordCount="2.0">
+                                  <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="5.25"/>
+                                  <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                                </Node>
+                                <Node id="90" score="1" recordCount="1.0">
+                                  <SimplePredicate field="YearsEmployed" operator="greaterThan" value="5.25"/>
+                                  <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                  <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                                </Node>
+                              </Node>
+                            </Node>
+                            <Node id="91" score="1" recordCount="2.0">
+                              <SimplePredicate field="Age" operator="greaterThan" value="32.5"/>
+                              <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                              <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                            </Node>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="92" recordCount="9.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="0.5"/>
+                      <Node id="93" recordCount="7.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="43.21000003814697"/>
+                        <Node id="94" score="0" recordCount="2.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.5824999809265137"/>
+                          <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                        <Node id="95" recordCount="5.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.5824999809265137"/>
+                          <Node id="96" score="0" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="4.9375"/>
+                            <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="97" recordCount="4.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="4.9375"/>
+                            <Node id="98" score="1" recordCount="2.0">
+                              <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="2.125"/>
+                              <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                              <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                            </Node>
+                            <Node id="99" recordCount="2.0">
+                              <SimplePredicate field="YearsEmployed" operator="greaterThan" value="2.125"/>
+                              <Node id="100" score="0" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="3.5"/>
+                                <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                              <Node id="101" score="1" recordCount="1.0">
+                                <SimplePredicate field="YearsEmployed" operator="greaterThan" value="3.5"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                              </Node>
+                            </Node>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="102" score="0" recordCount="2.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="43.21000003814697"/>
+                        <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="103" score="1" recordCount="5.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="7.0625"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="11.0" confidence="1.0"/>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="104" recordCount="47.0">
+                <SimplePredicate field="Income" operator="greaterThan" value="88.5"/>
+                <Node id="105" recordCount="17.0">
+                  <SimplePredicate field="Debt" operator="lessOrEqual" value="2.875"/>
+                  <Node id="106" recordCount="12.0">
+                    <SimplePredicate field="Income" operator="lessOrEqual" value="2598.5"/>
+                    <Node id="107" score="1" recordCount="3.0">
+                      <SimplePredicate field="Age" operator="lessOrEqual" value="20.545000076293945"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="108" recordCount="9.0">
+                      <SimplePredicate field="Age" operator="greaterThan" value="20.545000076293945"/>
+                      <Node id="109" recordCount="8.0">
+                        <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="4.792500019073486"/>
+                        <Node id="110" recordCount="5.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="3.125"/>
+                          <Node id="111" score="0" recordCount="2.0">
+                            <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.4375"/>
+                            <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="112" recordCount="3.0">
+                            <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.4375"/>
+                            <Node id="113" score="1" recordCount="2.0">
+                              <SimplePredicate field="Debt" operator="lessOrEqual" value="1.75"/>
+                              <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                              <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                            </Node>
+                            <Node id="114" score="0" recordCount="1.0">
+                              <SimplePredicate field="Debt" operator="greaterThan" value="1.75"/>
+                              <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                          </Node>
+                        </Node>
+                        <Node id="115" score="0" recordCount="3.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="3.125"/>
+                          <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                      <Node id="116" score="1" recordCount="1.0">
+                        <SimplePredicate field="YearsEmployed" operator="greaterThan" value="4.792500019073486"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="117" score="1" recordCount="5.0">
+                    <SimplePredicate field="Income" operator="greaterThan" value="2598.5"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="8.0" confidence="1.0"/>
+                  </Node>
+                </Node>
+                <Node id="118" recordCount="30.0">
+                  <SimplePredicate field="Debt" operator="greaterThan" value="2.875"/>
+                  <Node id="119" recordCount="10.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="2.0"/>
+                    <Node id="120" recordCount="8.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.5425000190734863"/>
+                      <Node id="121" score="1" recordCount="4.0">
+                        <SimplePredicate field="Income" operator="lessOrEqual" value="931.0"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="11.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="122" recordCount="4.0">
+                        <SimplePredicate field="Income" operator="greaterThan" value="931.0"/>
+                        <Node id="123" score="1" recordCount="2.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="22.789999961853027"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="124" recordCount="2.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="22.789999961853027"/>
+                          <Node id="125" score="1" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="9.25"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="126" score="0" recordCount="1.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="9.25"/>
+                            <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="127" score="0" recordCount="2.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.5425000190734863"/>
+                      <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="128" score="1" recordCount="20.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="2.0"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="31.0" confidence="1.0"/>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+      <Segment id="2" weight="1">
+        <True/>
+        <TreeModel modelName="DecisionTreeClassifier" functionName="classification" missingValuePenalty="1.0">
+          <MiningSchema>
+            <MiningField name="Age" usageType="active"/>
+            <MiningField name="Debt" usageType="active"/>
+            <MiningField name="YearsEmployed" usageType="active"/>
+            <MiningField name="Income" usageType="active"/>
+            <MiningField name="Approved" usageType="target" optype="categorical"/>
+          </MiningSchema>
+          <Node id="0" recordCount="216.0">
+            <True/>
+            <Node id="1" recordCount="128.0">
+              <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.2699999809265137"/>
+              <Node id="2" recordCount="10.0">
+                <SimplePredicate field="Debt" operator="lessOrEqual" value="0.26999999582767487"/>
+                <Node id="3" score="0" recordCount="2.0">
+                  <SimplePredicate field="Debt" operator="lessOrEqual" value="0.019999999552965164"/>
+                  <ScoreDistribution value="0" recordCount="5.0" confidence="1.0"/>
+                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                </Node>
+                <Node id="4" recordCount="8.0">
+                  <SimplePredicate field="Debt" operator="greaterThan" value="0.019999999552965164"/>
+                  <Node id="5" score="0" recordCount="1.0">
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="16.085000038146973"/>
+                    <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                  </Node>
+                  <Node id="6" recordCount="7.0">
+                    <SimplePredicate field="Age" operator="greaterThan" value="16.085000038146973"/>
+                    <Node id="7" recordCount="3.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="20.0"/>
+                      <Node id="8" score="1" recordCount="1.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="0.10250000283122063"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="9" recordCount="2.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="0.10250000283122063"/>
+                        <Node id="10" score="1" recordCount="1.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.125"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="11" score="0" recordCount="1.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.125"/>
+                          <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="12" score="1" recordCount="4.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="20.0"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="9.0" confidence="1.0"/>
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="13" recordCount="118.0">
+                <SimplePredicate field="Debt" operator="greaterThan" value="0.26999999582767487"/>
+                <Node id="14" recordCount="112.0">
+                  <SimplePredicate field="Age" operator="lessOrEqual" value="51.040000915527344"/>
+                  <Node id="15" recordCount="78.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.5200000107288361"/>
+                    <Node id="16" recordCount="76.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="4338.0"/>
+                      <Node id="17" recordCount="51.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="31.539999961853027"/>
+                        <Node id="18" recordCount="7.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="18.125"/>
+                          <Node id="19" score="0" recordCount="6.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="17.875"/>
+                            <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="20" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="17.875"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                        <Node id="21" recordCount="44.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="18.125"/>
+                          <Node id="22" recordCount="14.0">
+                            <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.0625"/>
+                            <Node id="23" score="0" recordCount="9.0">
+                              <SimplePredicate field="Debt" operator="lessOrEqual" value="2.4175000190734863"/>
+                              <ScoreDistribution value="0" recordCount="19.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                            <Node id="24" recordCount="5.0">
+                              <SimplePredicate field="Debt" operator="greaterThan" value="2.4175000190734863"/>
+                              <Node id="25" recordCount="3.0">
+                                <SimplePredicate field="Income" operator="lessOrEqual" value="50.0"/>
+                                <Node id="26" score="0" recordCount="2.0">
+                                  <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.019999999552965164"/>
+                                  <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                                </Node>
+                                <Node id="27" score="1" recordCount="1.0">
+                                  <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.019999999552965164"/>
+                                  <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                  <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                                </Node>
+                              </Node>
+                              <Node id="28" score="0" recordCount="2.0">
+                                <SimplePredicate field="Income" operator="greaterThan" value="50.0"/>
+                                <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                            </Node>
+                          </Node>
+                          <Node id="29" score="0" recordCount="30.0">
+                            <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.0625"/>
+                            <ScoreDistribution value="0" recordCount="45.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="30" recordCount="25.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="31.539999961853027"/>
+                        <Node id="31" recordCount="18.0">
+                          <SimplePredicate field="Debt" operator="lessOrEqual" value="1.875"/>
+                          <Node id="32" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="32.790000915527344"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="33" recordCount="17.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="32.790000915527344"/>
+                            <Node id="34" score="0" recordCount="5.0">
+                              <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.10500000044703484"/>
+                              <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                            <Node id="35" recordCount="12.0">
+                              <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.10500000044703484"/>
+                              <Node id="36" recordCount="6.0">
+                                <SimplePredicate field="Age" operator="lessOrEqual" value="39.04499816894531"/>
+                                <Node id="37" score="1" recordCount="1.0">
+                                  <SimplePredicate field="Debt" operator="lessOrEqual" value="0.3974999934434891"/>
+                                  <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                  <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                                </Node>
+                                <Node id="38" score="0" recordCount="5.0">
+                                  <SimplePredicate field="Debt" operator="greaterThan" value="0.3974999934434891"/>
+                                  <ScoreDistribution value="0" recordCount="7.0" confidence="1.0"/>
+                                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                                </Node>
+                              </Node>
+                              <Node id="39" recordCount="6.0">
+                                <SimplePredicate field="Age" operator="greaterThan" value="39.04499816894531"/>
+                                <Node id="40" score="1" recordCount="1.0">
+                                  <SimplePredicate field="Age" operator="lessOrEqual" value="39.5"/>
+                                  <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                  <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                                </Node>
+                                <Node id="41" recordCount="5.0">
+                                  <SimplePredicate field="Age" operator="greaterThan" value="39.5"/>
+                                  <Node id="42" score="0" recordCount="2.0">
+                                    <SimplePredicate field="Income" operator="lessOrEqual" value="141.0"/>
+                                    <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                                  </Node>
+                                  <Node id="43" recordCount="3.0">
+                                    <SimplePredicate field="Income" operator="greaterThan" value="141.0"/>
+                                    <Node id="44" score="1" recordCount="2.0">
+                                      <SimplePredicate field="Debt" operator="lessOrEqual" value="0.8950000107288361"/>
+                                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                      <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                                    </Node>
+                                    <Node id="45" score="0" recordCount="1.0">
+                                      <SimplePredicate field="Debt" operator="greaterThan" value="0.8950000107288361"/>
+                                      <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                                    </Node>
+                                  </Node>
+                                </Node>
+                              </Node>
+                            </Node>
+                          </Node>
+                        </Node>
+                        <Node id="46" score="0" recordCount="7.0">
+                          <SimplePredicate field="Debt" operator="greaterThan" value="1.875"/>
+                          <ScoreDistribution value="0" recordCount="11.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="47" score="1" recordCount="2.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="4338.0"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="48" recordCount="34.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.5200000107288361"/>
+                    <Node id="49" recordCount="30.0">
+                      <SimplePredicate field="Income" operator="lessOrEqual" value="1263.5"/>
+                      <Node id="50" recordCount="27.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="8.625"/>
+                        <Node id="51" recordCount="17.0">
+                          <SimplePredicate field="Age" operator="lessOrEqual" value="29.539999961853027"/>
+                          <Node id="52" recordCount="14.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="26.670000076293945"/>
+                            <Node id="53" recordCount="12.0">
+                              <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.0425000190734863"/>
+                              <Node id="54" score="0" recordCount="11.0">
+                                <SimplePredicate field="Age" operator="lessOrEqual" value="24.960000038146973"/>
+                                <ScoreDistribution value="0" recordCount="21.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                              <Node id="55" score="1" recordCount="1.0">
+                                <SimplePredicate field="Age" operator="greaterThan" value="24.960000038146973"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                              </Node>
+                            </Node>
+                            <Node id="56" recordCount="2.0">
+                              <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.0425000190734863"/>
+                              <Node id="57" score="1" recordCount="1.0">
+                                <SimplePredicate field="Age" operator="lessOrEqual" value="23.085000038146973"/>
+                                <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                                <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                              </Node>
+                              <Node id="58" score="0" recordCount="1.0">
+                                <SimplePredicate field="Age" operator="greaterThan" value="23.085000038146973"/>
+                                <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                              </Node>
+                            </Node>
+                          </Node>
+                          <Node id="59" score="1" recordCount="3.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="26.670000076293945"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="3.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                        <Node id="60" score="0" recordCount="10.0">
+                          <SimplePredicate field="Age" operator="greaterThan" value="29.539999961853027"/>
+                          <ScoreDistribution value="0" recordCount="14.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                      <Node id="61" recordCount="3.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="8.625"/>
+                        <Node id="62" score="1" recordCount="2.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.875"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="63" score="0" recordCount="1.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.875"/>
+                          <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="64" score="1" recordCount="4.0">
+                      <SimplePredicate field="Income" operator="greaterThan" value="1263.5"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="7.0" confidence="1.0"/>
+                    </Node>
+                  </Node>
+                </Node>
+                <Node id="65" recordCount="6.0">
+                  <SimplePredicate field="Age" operator="greaterThan" value="51.040000915527344"/>
+                  <Node id="66" recordCount="4.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="0.019999999552965164"/>
+                    <Node id="67" score="1" recordCount="1.0">
+                      <SimplePredicate field="Age" operator="lessOrEqual" value="57.040000915527344"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="68" recordCount="3.0">
+                      <SimplePredicate field="Age" operator="greaterThan" value="57.040000915527344"/>
+                      <Node id="69" score="0" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="63.959999084472656"/>
+                        <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                      <Node id="70" score="1" recordCount="2.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="63.959999084472656"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="2.0" confidence="1.0"/>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="71" score="0" recordCount="2.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="0.019999999552965164"/>
+                    <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+            <Node id="72" recordCount="88.0">
+              <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.2699999809265137"/>
+              <Node id="73" recordCount="62.0">
+                <SimplePredicate field="Income" operator="lessOrEqual" value="457.0"/>
+                <Node id="74" recordCount="32.0">
+                  <SimplePredicate field="Debt" operator="lessOrEqual" value="4.019999980926514"/>
+                  <Node id="75" recordCount="16.0">
+                    <SimplePredicate field="Debt" operator="lessOrEqual" value="2.0425000190734863"/>
+                    <Node id="76" score="1" recordCount="3.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.5425000190734863"/>
+                      <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                      <ScoreDistribution value="1" recordCount="4.0" confidence="1.0"/>
+                    </Node>
+                    <Node id="77" recordCount="13.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.5425000190734863"/>
+                      <Node id="78" score="1" recordCount="1.0">
+                        <SimplePredicate field="Debt" operator="lessOrEqual" value="0.22749999910593033"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="79" recordCount="12.0">
+                        <SimplePredicate field="Debt" operator="greaterThan" value="0.22749999910593033"/>
+                        <Node id="80" recordCount="10.0">
+                          <SimplePredicate field="Income" operator="lessOrEqual" value="80.0"/>
+                          <Node id="81" score="0" recordCount="8.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="1.75"/>
+                            <ScoreDistribution value="0" recordCount="13.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="82" recordCount="2.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="1.75"/>
+                            <Node id="83" score="1" recordCount="1.0">
+                              <SimplePredicate field="Age" operator="lessOrEqual" value="42.790000915527344"/>
+                              <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                              <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                            </Node>
+                            <Node id="84" score="0" recordCount="1.0">
+                              <SimplePredicate field="Age" operator="greaterThan" value="42.790000915527344"/>
+                              <ScoreDistribution value="0" recordCount="2.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                          </Node>
+                        </Node>
+                        <Node id="85" recordCount="2.0">
+                          <SimplePredicate field="Income" operator="greaterThan" value="80.0"/>
+                          <Node id="86" score="1" recordCount="1.0">
+                            <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="3.0"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="87" score="0" recordCount="1.0">
+                            <SimplePredicate field="YearsEmployed" operator="greaterThan" value="3.0"/>
+                            <ScoreDistribution value="0" recordCount="3.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                  <Node id="88" recordCount="16.0">
+                    <SimplePredicate field="Debt" operator="greaterThan" value="2.0425000190734863"/>
+                    <Node id="89" recordCount="5.0">
+                      <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="2.6675000190734863"/>
+                      <Node id="90" score="1" recordCount="1.0">
+                        <SimplePredicate field="Age" operator="lessOrEqual" value="27.79499912261963"/>
+                        <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                        <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                      </Node>
+                      <Node id="91" score="0" recordCount="4.0">
+                        <SimplePredicate field="Age" operator="greaterThan" value="27.79499912261963"/>
+                        <ScoreDistribution value="0" recordCount="6.0" confidence="1.0"/>
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                      </Node>
+                    </Node>
+                    <Node id="92" score="0" recordCount="11.0">
+                      <SimplePredicate field="YearsEmployed" operator="greaterThan" value="2.6675000190734863"/>
+                      <ScoreDistribution value="0" recordCount="20.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                </Node>
+                <Node id="93" recordCount="30.0">
+                  <SimplePredicate field="Debt" operator="greaterThan" value="4.019999980926514"/>
+                  <Node id="94" recordCount="19.0">
+                    <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="5.25"/>
+                    <Node id="95" recordCount="15.0">
+                      <SimplePredicate field="Age" operator="lessOrEqual" value="51.0"/>
+                      <Node id="96" recordCount="5.0">
+                        <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="1.875"/>
+                        <Node id="97" score="1" recordCount="1.0">
+                          <SimplePredicate field="Debt" operator="lessOrEqual" value="5.269999980926514"/>
+                          <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                          <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                        </Node>
+                        <Node id="98" recordCount="4.0">
+                          <SimplePredicate field="Debt" operator="greaterThan" value="5.269999980926514"/>
+                          <Node id="99" score="0" recordCount="3.0">
+                            <SimplePredicate field="Income" operator="lessOrEqual" value="12.0"/>
+                            <ScoreDistribution value="0" recordCount="4.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="100" score="1" recordCount="1.0">
+                            <SimplePredicate field="Income" operator="greaterThan" value="12.0"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="101" recordCount="10.0">
+                        <SimplePredicate field="YearsEmployed" operator="greaterThan" value="1.875"/>
+                        <Node id="102" recordCount="8.0">
+                          <SimplePredicate field="YearsEmployed" operator="lessOrEqual" value="4.375"/>
+                          <Node id="103" score="1" recordCount="6.0">
+                            <SimplePredicate field="Debt" operator="lessOrEqual" value="11.75"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="11.0" confidence="1.0"/>
+                          </Node>
+                          <Node id="104" recordCount="2.0">
+                            <SimplePredicate field="Debt" operator="greaterThan" value="11.75"/>
+                            <Node id="105" score="1" recordCount="1.0">
+                              <SimplePredicate field="Income" operator="lessOrEqual" value="2.5"/>
+                              <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                              <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                            </Node>
+                            <Node id="106" score="0" recordCount="1.0">
+                              <SimplePredicate field="Income" operator="greaterThan" value="2.5"/>
+                              <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                            </Node>
+                          </Node>
+                        </Node>
+                        <Node id="107" recordCount="2.0">
+                          <SimplePredicate field="YearsEmployed" operator="greaterThan" value="4.375"/>
+                          <Node id="108" score="0" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="lessOrEqual" value="26.625"/>
+                            <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                          </Node>
+                          <Node id="109" score="1" recordCount="1.0">
+                            <SimplePredicate field="Age" operator="greaterThan" value="26.625"/>
+                            <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                            <ScoreDistribution value="1" recordCount="1.0" confidence="1.0"/>
+                          </Node>
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="110" score="0" recordCount="4.0">
+                      <SimplePredicate field="Age" operator="greaterThan" value="51.0"/>
+                      <ScoreDistribution value="0" recordCount="7.0" confidence="1.0"/>
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                    </Node>
+                  </Node>
+                  <Node id="111" score="1" recordCount="11.0">
+                    <SimplePredicate field="YearsEmployed" operator="greaterThan" value="5.25"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="17.0" confidence="1.0"/>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="112" recordCount="26.0">
+                <SimplePredicate field="Income" operator="greaterThan" value="457.0"/>
+                <Node id="113" recordCount="5.0">
+                  <SimplePredicate field="Age" operator="lessOrEqual" value="22.454999923706055"/>
+                  <Node id="114" score="1" recordCount="4.0">
+                    <SimplePredicate field="Age" operator="lessOrEqual" value="21.789999961853027"/>
+                    <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                    <ScoreDistribution value="1" recordCount="5.0" confidence="1.0"/>
+                  </Node>
+                  <Node id="115" score="0" recordCount="1.0">
+                    <SimplePredicate field="Age" operator="greaterThan" value="21.789999961853027"/>
+                    <ScoreDistribution value="0" recordCount="1.0" confidence="1.0"/>
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0"/>
+                  </Node>
+                </Node>
+                <Node id="116" score="1" recordCount="21.0">
+                  <SimplePredicate field="Age" operator="greaterThan" value="22.454999923706055"/>
+                  <ScoreDistribution value="0" recordCount="0.0" confidence="0.0"/>
+                  <ScoreDistribution value="1" recordCount="39.0" confidence="1.0"/>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </TreeModel>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

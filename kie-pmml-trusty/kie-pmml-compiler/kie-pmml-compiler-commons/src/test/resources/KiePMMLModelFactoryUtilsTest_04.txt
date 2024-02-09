@@ -1,0 +1,4 @@
+public static KiePMMLModel getModel() {
+    KiePMMLModel toReturn = KiePMMLModel.builder("TransformationsSample", "IrisTreeModel", org.kie.pmml.api.enums.MINING_FUNCTION.CLASSIFICATION).withTargetField("Species").withMiningFields(getCreatedMiningFields()).withOutputFields(getCreatedOutputFields()).withKiePMMLMiningFields(getCreatedKiePMMLMiningFields()).withKiePMMLOutputFields(getCreatedKiePMMLOutputFields()).withKiePMMLTargets(getCreatedKiePMMLTargets()).withKiePMMLTransformationDictionary(getCreatedTransformationDictionary()).withKiePMMLLocalTransformations(getCreatedLocalTransformations()).build();
+    return toReturn;
+}

@@ -1,0 +1,43 @@
+@startuml efestoplugindesign
+header Efesto Plugin Design
+' Overall C4-PlantUML binding
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+' Additional C4 macros, like RelIndex
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Dynamic.puml
+!include <tupadr3/devicons2/chrome>
+!include <tupadr3/devicons2/java>
+!include <tupadr3/devicons2/postgresql>
+!include <tupadr3/devicons2/nginx_original>
+!include <tupadr3/devicons2/react_original>
+!include <tupadr3/devicons2/android>
+!include <tupadr3/devicons2/groovy>
+!include <tupadr3/material/queue>
+!include <tupadr3/material/mail>
+!include <tupadr3/devicons2/dot_net_wordmark>
+!include <tupadr3/devicons2/oracle_original>
+!include <tupadr3/font-awesome-5/user>
+!include <office/Concepts/web_services>
+!include puml_images/Images.puml
+
+HIDE_STEREOTYPE()
+SHOW_PERSON_PORTRAIT()
+
+System(EfestoFramework, "Efesto", $tags="efesto_framework_style") {
+    !include puml_images/Images.puml
+    AddElementTag("efesto_framework_style", $bgColor="orange")
+    System(EfestoServices,"Efesto API", $sprite="efesto")
+    Container(RuleEngine,"Rule engine","",$sprite="drl")
+    Container(DecisionEngine,"Decision engine","",$sprite="dmn")
+    Container(PredictionEngine,"Prediction engine","",$sprite="pmml")
+    Container(OtherEngine,"Other engine","",$sprite="other")
+    Lay_U(RuleEngine,EfestoServices)
+    Lay_U(DecisionEngine,EfestoServices)
+    Lay_U(PredictionEngine,EfestoServices)
+    Lay_U(OtherEngine,EfestoServices)
+    Rel_U(RuleEngine,EfestoServices,"Implements","")
+    Rel_U(DecisionEngine,EfestoServices,"Implements","")
+    Rel_U(PredictionEngine,EfestoServices,"Implements","")
+    Rel_U(OtherEngine,EfestoServices,"Implements","")
+}
+
+@enduml

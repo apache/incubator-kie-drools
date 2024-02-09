@@ -1,0 +1,77 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.examples.fire.simple;
+
+import org.drools.examples.fire.Fire;
+import org.drools.examples.fire.Alarm;
+import org.drools.examples.fire.Room;
+import org.drools.examples.fire.Sprinkler;
+
+rule RaiseAlarm when
+     exists Fire()
+then
+    insert( new Alarm( "house1" ) );
+    System.out.println( "Raise the Alarm");
+end
+
+rule CancelAlarm when
+    not Fire()
+    a : Alarm()
+then
+    delete( a );
+    System.out.println( "Cancel the Alarm");
+end
+
+
+rule ThereIsAnAlarm when
+     Alarm()
+then
+    System.out.println( "there is an Alarm " );
+end
+
+rule ThereIsNoAlarm when
+     not Alarm()
+then
+    System.out.println( "there is no Alarm " );
+end
+
+
+
+rule TurnSprinklerOn when
+    s : Sprinkler( on == false )
+    f : Fire( room == s.room )
+then
+    modify( s ) { setOn( true ) }
+    System.out.println( "Turn on the sprinkler for room " + f.getRoom().getName() );
+end
+
+rule TurnSprinklerOff when
+    s : Sprinkler( on == true )
+    not Fire( room == s.room )
+then
+    modify( s ) { setOn( false ) }
+    System.out.println( "Turn off the sprinkler for room " + s.getRoom().getName() );
+end
+
+rule OK when
+    not Alarm()
+    not Sprinkler( on == true )
+then
+    System.out.println( "Everything is ok" );
+end
+
+
+

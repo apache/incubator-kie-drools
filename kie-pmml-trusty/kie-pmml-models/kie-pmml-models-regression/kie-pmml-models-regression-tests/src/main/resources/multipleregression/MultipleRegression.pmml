@@ -1,0 +1,66 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField name="result" optype="continuous" dataType="double"/>
+    <DataField name="x" optype="categorical" dataType="string">
+      <Value value="red"/>
+      <Value value="green"/>
+      <Value value="blue"/>
+      <Value value="orange"/>
+      <Value value="yellow"/>
+    </DataField>
+    <DataField name="y" optype="categorical" dataType="string">
+      <Value value="classA"/>
+      <Value value="classB"/>
+      <Value value="classC"/>
+    </DataField>
+    <DataField name="class" optype="categorical" dataType="string">
+      <Value value="Authentic"/>
+      <Value value="Counterfeit"/>
+    </DataField>
+    <DataField name="variance" optype="continuous" dataType="double"/>
+    <DataField name="skewness" optype="continuous" dataType="double"/>
+    <DataField name="curtosis" optype="continuous" dataType="double"/>
+    <DataField name="entropy" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="y" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+    </Output>
+    <RegressionTable intercept="-22.1">
+      <CategoricalPredictor name="x" value="red" coefficient="5.5"/>
+      <CategoricalPredictor name="x" value="green" coefficient="15"/>
+      <CategoricalPredictor name="x" value="blue" coefficient="12"/>
+      <CategoricalPredictor name="x" value="orange" coefficient="5.5"/>
+      <CategoricalPredictor name="x" value="yellow" coefficient="-100.25"/>
+      <CategoricalPredictor name="y" value="classA" coefficient="0"/>
+      <CategoricalPredictor name="y" value="classB" coefficient="20"/>
+      <CategoricalPredictor name="y" value="classC" coefficient="40"/>
+    </RegressionTable>
+  </RegressionModel>
+  <RegressionModel functionName="classification" normalizationMethod="logit" modelName="LogisticRegression">
+    <MiningSchema>
+      <MiningField name="class" usageType="target"/>
+      <MiningField name="variance"/>
+      <MiningField name="skewness"/>
+      <MiningField name="curtosis"/>
+      <MiningField name="entropy"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="probability(Authentic)" optype="continuous" dataType="double" feature="probability" value="Authentic"/>
+      <OutputField name="probability(Counterfeit)" optype="continuous" dataType="double" feature="probability" value="Counterfeit"/>
+    </Output>
+    <RegressionTable intercept="3.460264122656936" targetCategory="Counterfeit">
+      <NumericPredictor name="variance" coefficient="-2.9831300080950225"/>
+      <NumericPredictor name="skewness" coefficient="-1.7026628143884872"/>
+      <NumericPredictor name="curtosis" coefficient="-2.1131094277477027"/>
+      <NumericPredictor name="entropy" coefficient="-0.09574353592868858"/>
+    </RegressionTable>
+    <RegressionTable intercept="0.0" targetCategory="Authentic"/>
+  </RegressionModel>
+</PMML>

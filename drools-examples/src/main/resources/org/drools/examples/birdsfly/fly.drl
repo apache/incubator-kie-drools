@@ -1,0 +1,62 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.examples.birdsfly;
+
+import org.drools.examples.birdsfly.Bird
+import org.drools.examples.birdsfly.Broken
+import org.drools.examples.birdsfly.Fly
+
+
+
+rule AllBirdsFly @Defeasible when
+    b : Bird()
+then
+    insertLogical( new Fly( b ) );
+end
+
+rule PenguinsDontFly @Defeasible @Defeats( "AllBirdsFly" ) when
+    b : Bird( species == "Penguin" )
+then
+    insertLogical( new Fly( b ), "neg" );
+end
+
+rule PenguinsWithRocketsFly @Defeasible @Defeats( "PenguinsDontFly" ) when
+    b : Bird( species == "Penguin" )
+    Rocket( bird == b )
+then
+    insertLogical( new Fly( b ) );
+end
+
+rule BrokenWing @Defeasible @Defeats( "AllBirdsFly" ) when
+    b : Bird(  )
+    Broken( part == "wing", bird == b )
+then
+    insertLogical( new Fly( b ), "neg" );
+end
+
+rule Flies when
+    b : Bird()
+    Fly( bird == b )
+then
+    System.out.println( b + " Flies" );
+end
+
+rule DoesNotFly when
+    b : Bird()
+    not Fly( bird == b )
+then
+    System.out.println( b + " Does not fly" );
+end

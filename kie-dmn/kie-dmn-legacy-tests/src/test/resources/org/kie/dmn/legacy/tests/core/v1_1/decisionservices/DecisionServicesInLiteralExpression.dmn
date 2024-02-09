@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- THIS IS AN OLD VERSION OF DMN EXAMPLE/TEST, PLEASE USE THE MORE RECENT VERSION -->
+<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.1.1" id="_686f58d4-4ec3-4c65-8c06-0e4fd8983def" name="Decision Services" namespace="http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_70386614-9838-420b-a2ae-ff901ada63fb" name="A Only Knowing B and C">
+        <dmn11:description>Description of A (BC)</dmn11:description>
+        <dmn11:outputDecision href="#_c2b44706-d479-4ceb-bb74-73589d26dd04"/>
+        <dmn11:inputDecision href="#_e878ecd7-ecaa-42b9-b8c9-4437230f2b89"/>
+        <dmn11:inputDecision href="#_8758871c-af70-4da9-8355-536670bade10"/>
+      </dmn11:decisionService>
+      <dmn11:decisionService id="_4620ef13-248a-419e-bc68-6b601b725a03" name="A only as output knowing D and E">
+        <dmn11:outputDecision href="#_c2b44706-d479-4ceb-bb74-73589d26dd04"/>
+        <dmn11:encapsulatedDecision href="#_e878ecd7-ecaa-42b9-b8c9-4437230f2b89"/>
+        <dmn11:encapsulatedDecision href="#_8758871c-af70-4da9-8355-536670bade10"/>
+        <dmn11:inputData href="#_bcea16fb-6c19-4bde-b37d-73407002c064"/>
+        <dmn11:inputData href="#_207b9195-a441-47f2-9414-2fad64b463f9"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:decision id="_c2b44706-d479-4ceb-bb74-73589d26dd04" name="A">
+    <dmn11:variable id="_ae20d60a-42c2-4609-973e-dc5752f6fdcd" name="A"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_e878ecd7-ecaa-42b9-b8c9-4437230f2b89"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_8758871c-af70-4da9-8355-536670bade10"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_ce5ce63c-86b4-4d5b-8248-ab89a4b50134">
+      <dmn11:text>B + C</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_e878ecd7-ecaa-42b9-b8c9-4437230f2b89" name="B">
+    <dmn11:variable id="_9b321117-0478-4057-b0fd-7194fff15ea2" name="B"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_bcea16fb-6c19-4bde-b37d-73407002c064"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_4b40ed43-22ff-4296-a0f0-cd6c1670b326">
+      <dmn11:text>D</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_8758871c-af70-4da9-8355-536670bade10" name="C">
+    <dmn11:variable id="_3e0ca83c-ad2e-4acc-a25d-62fd9664c1da" name="C"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_207b9195-a441-47f2-9414-2fad64b463f9"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_ce67b906-9b6a-4cd6-b0ba-b6031924bfe9">
+      <dmn11:text>E</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:inputData id="_bcea16fb-6c19-4bde-b37d-73407002c064" name="D">
+    <dmn11:variable id="_938cdce9-7f28-4d5f-bf67-975d3e754e42" name="D" typeRef="feel:string"/>
+  </dmn11:inputData>
+  <dmn11:inputData id="_207b9195-a441-47f2-9414-2fad64b463f9" name="E">
+    <dmn11:variable id="_8f8d3406-a27e-405d-b201-d8361754d8cf" name="E" typeRef="feel:string"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_a11fa472-06a6-412e-b0e7-1dbf4a463125" name="Decide based on A and DS">
+    <dmn11:variable id="_c8e8ec48-32e8-4dac-b61c-d56cd85348ef" name="Decide based on A and DS"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_c2b44706-d479-4ceb-bb74-73589d26dd04"/>
+    </dmn11:informationRequirement>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_4620ef13-248a-419e-bc68-6b601b725a03"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_745aece8-041d-4e7c-8c28-1c0bb399d514">
+      <dmn11:text>A only as output knowing D and E("x", "y") + A </dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

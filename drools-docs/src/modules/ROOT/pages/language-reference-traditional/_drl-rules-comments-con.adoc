@@ -1,0 +1,28 @@
+[id='drl-rules-comments-con_{context}']
+
+= Comments in DRL files
+
+DRL supports single-line comments prefixed with a double forward slash `//` and multi-line comments enclosed with a forward slash and asterisk `/* ... */`. You can use DRL comments to annotate rules or any related components in DRL files. DRL comments are ignored by the {RULE_ENGINE} when the DRL file is processed.
+
+.Example rule with comments
+[source]
+----
+rule "Underage"
+  // This is a single-line comment.
+  when
+    $application : LoanApplication()  // This is an in-line comment.
+    Applicant( age < 21 )
+  then
+    /* This is a multi-line comment
+    in the rule actions. */
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+end
+----
+
+ifdef::DROOLS,JBPM,OP[]
+.Multi-line comment
+image::language-reference/multi_line_comment.png[align="center"]
+endif::[]
+
+IMPORTANT: The hash symbol `#` is not supported for DRL comments.

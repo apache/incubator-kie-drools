@@ -1,0 +1,6 @@
+{
+    KiePMMLNormContinuous %s = new KiePMMLNormContinuous("%s", Collections.emptyList(),
+            Arrays.asList(new KiePMMLLinearNorm("LinearNorm-0", Collections.emptyList(), %s, %s),
+            new KiePMMLLinearNorm("LinearNorm-0", Collections.emptyList(), %s, %s),
+            new KiePMMLLinearNorm("LinearNorm-0", Collections.emptyList(), %s, %s)), %s, %s);
+}

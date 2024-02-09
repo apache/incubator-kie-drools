@@ -1,0 +1,34 @@
+package org.kie.pmml.models.scorecard.model;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.api.models.*;
+import org.kie.pmml.commons.model.*;
+import org.kie.pmml.commons.model.expressions.*;
+import org.kie.pmml.commons.transformations.*;
+
+import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
+
+
+public class KiePMMLScorecardModelTemplate extends KiePMMLScorecardModel {
+
+    public KiePMMLScorecardModelTemplate() {
+        super(fileName, name, Collections.emptyList(), characteristics, initialScore, useReasonCodes, reasonCodeAlgorithm, baselineScore);
+        targetField = targetField;
+        pmmlMODEL = null;
+        miningFunction = null;
+        transformationDictionary = null;
+        localTransformations = null;
+        kiePMMLMiningFields = null;
+        kiePMMLOutputFields = null;
+    }
+
+}

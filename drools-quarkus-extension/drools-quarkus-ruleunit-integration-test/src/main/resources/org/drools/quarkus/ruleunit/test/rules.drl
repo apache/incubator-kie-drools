@@ -1,0 +1,10 @@
+package org.drools.quarkus.ruleunit.test;
+
+unit HelloWorldUnit;
+
+rule R1
+when
+    $s: /strings[ length > 2 ]
+then
+    results.add("Hello " + $s);
+end

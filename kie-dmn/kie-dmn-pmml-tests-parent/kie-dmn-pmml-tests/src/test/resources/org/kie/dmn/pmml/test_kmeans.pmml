@@ -1,0 +1,37 @@
+<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_2">
+ <Header/>
+ <DataDictionary numberOfFields="2">
+  <DataField name="x" optype="continuous" dataType="double"/>
+  <DataField name="y" optype="continuous" dataType="double"/>
+ </DataDictionary>
+ <ClusteringModel modelName="KMeans_Model" functionName="clustering" algorithmName="KMeans: Hartigan and Wong" modelClass="centerBased" numberOfClusters="4">
+  <MiningSchema>
+   <MiningField name="x" invalidValueTreatment="returnInvalid"/>
+   <MiningField name="y" invalidValueTreatment="returnInvalid"/>
+  </MiningSchema>
+  <Output>
+   <OutputField name="predictedValue" feature="predictedValue" dataType="string" optype="categorical"/>
+   <OutputField name="clusterAffinity_1" feature="clusterAffinity" value="1" dataType="double"/>
+   <OutputField name="clusterAffinity_2" feature="clusterAffinity" value="2" dataType="double"/>
+   <OutputField name="clusterAffinity_3" feature="clusterAffinity" value="3" dataType="double"/>
+   <OutputField name="clusterAffinity_4" feature="clusterAffinity" value="4" dataType="double"/>
+  </Output>
+  <ComparisonMeasure kind="distance">
+   <squaredEuclidean/>
+  </ComparisonMeasure>
+  <ClusteringField field="x" compareFunction="absDiff"/>
+  <ClusteringField field="y" compareFunction="absDiff"/>
+  <Cluster name="1" size="100" id="1">
+   <Array n="2" type="real">5.11497468003584 -4.83071180422217</Array>
+  </Cluster>
+  <Cluster name="2" size="100" id="2">
+   <Array n="2" type="real">-5.08740632689631 -4.86814572107326</Array>
+  </Cluster>
+  <Cluster name="3" size="100" id="3">
+   <Array n="2" type="real">-5.07918372589642 5.0217421342805</Array>
+  </Cluster>
+  <Cluster name="4" size="100" id="4">
+   <Array n="2" type="real">5.03725683942275 4.85705514729699</Array>
+  </Cluster>
+ </ClusteringModel>
+</PMML>

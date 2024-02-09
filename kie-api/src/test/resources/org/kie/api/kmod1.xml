@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<kmodule
+    xmlns="http://www.drools.org/xsd/kmodule">
+
+    <kbase name="org.kie.example1">
+    </kbase>
+
+    <kbase name="org.kie.example2" includes="org.kie.example1" >
+    </kbase>
+
+
+    <kbase name="org.kie.example3" includes="org.kie.example1, org.kie.example1" equalsBehavior="identity" scope="jakarta.enterprise.context.ApplicationScoped">
+        <ksession name="ksession1"/>
+    </kbase>
+
+    <kbase name="org.kie.example4" includes="org.kie.example1, org.kie.example1" equalsBehavior="equality" >
+        <ksession name="ksession2"/>
+        <ksession name="ksession3"/>
+    </kbase>
+
+    <kbase name="org.kie.example5" includes="org.kie.example1, org.kie.example1" eventProcessingMode="stream" default="true">
+        <ksession name="ksession4" type="stateless"  clockType="pseudo" default="true">
+        </ksession>
+
+        <ksession name="ksession5" type="stateful"  clockType="realtime" default="true">
+        </ksession>
+    </kbase>
+
+    <kbase name="org.kie.example6" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud" packages="org.kie.pkg1, org.kie.pkg2">
+        <ksession name="ksession6" type="stateless"  clockType="pseudo" scope="jakarta.enterprise.context.ApplicationScoped">
+            <consoleLogger />
+        </ksession>
+
+        <ksession name="ksession7" type="stateful"  clockType="realtime">
+            <fileLogger name="logger1" file="...." threaded="true" interval="50" />
+        </ksession>
+
+        <ksession name="ksession8" type="stateful"  clockType="realtime">
+            <fileLogger name="logger2" file="...." threaded="true" interval="50" />
+            <listeners>
+                <ruleRuntimeEventListener type="type1"/>
+                <ruleRuntimeEventListener type="type2"/>
+            </listeners>
+        </ksession>
+    </kbase>
+
+    <kbase name="org.kie.example7" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud">
+        <ksession name="ksession9" type="stateful"  clockType="realtime">
+            <fileLogger name="logger3" file="...." threaded="true" interval="50" />
+            <workItemHandlers>
+                <workItemHandler name="name1" type="type1"/>
+                <workItemHandler name="name2" type="type3"/>
+                <workItemHandler name="name3" type="type4"/>
+            </workItemHandlers>
+            <listeners>
+                <ruleRuntimeEventListener type="type1"/>
+                <ruleRuntimeEventListener type="type3"/>
+                <ruleRuntimeEventListener type="type4"/>
+                <agendaEventListener type="type2"/>
+                <agendaEventListener type="type4"/>
+                <processEventListener type="type4"/>
+                <processEventListener type="type4"/>
+            </listeners>
+        </ksession>
+    </kbase>
+
+
+    <kbase name="org.kie.example8" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud">
+        <ksession name="ksession10" type="stateful"  clockType="realtime">
+            <fileLogger name="logger4" file="...." threaded="true" interval="50" />
+            <workItemHandlers>
+                <workItemHandler name="name1" type="type1"/>
+                <workItemHandler name="name2" type="type3"/>
+                <workItemHandler name="name3" type="type4"/>
+            </workItemHandlers>
+            <listeners>
+                <processEventListener type="type4"/>
+                <ruleRuntimeEventListener type="type3"/>
+                <ruleRuntimeEventListener type="type4"/>
+                <agendaEventListener type="type4"/>
+                <processEventListener type="type4"/>
+                <agendaEventListener type="type2"/>
+                <ruleRuntimeEventListener type="type1"/>
+            </listeners>
+        </ksession>
+    </kbase>
+</kmodule>

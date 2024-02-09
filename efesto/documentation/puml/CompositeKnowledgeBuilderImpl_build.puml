@@ -1,0 +1,881 @@
+@startuml
+participant Actor
+Actor -> CompositeKnowledgeBuilderImpl : build
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : build
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KnowledgeBuilderImpl : registerBuildResources
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResources
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResourceType
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceBuilder : build
+activate ResourceBuilder
+ResourceBuilder --> CompositeKnowledgeBuilderImpl
+deactivate ResourceBuilder
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResourceType
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceBuilder : build
+activate ResourceBuilder
+ResourceBuilder --> CompositeKnowledgeBuilderImpl
+deactivate ResourceBuilder
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResourceType
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceBuilder : build
+activate ResourceBuilder
+ResourceBuilder --> CompositeKnowledgeBuilderImpl
+deactivate ResourceBuilder
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResource
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceToPkgDescrMapper : map
+activate ResourceToPkgDescrMapper
+ResourceToPkgDescrMapper --> CompositeKnowledgeBuilderImpl
+deactivate ResourceToPkgDescrMapper
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : registerPackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : makeCompositePackageDescr
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addPackageDescr
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl -> CompositePackageDescr : addFilter
+activate CompositePackageDescr
+CompositePackageDescr --> CompositeKnowledgeBuilderImpl
+deactivate CompositePackageDescr
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildAssemblerResourcesBeforeRules
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KieService : load
+activate KieService
+KieService -> KieService : compareTo
+activate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService --> KieService
+deactivate KieService
+KieService --> CompositeKnowledgeBuilderImpl
+deactivate KieService
+CompositeKnowledgeBuilderImpl -> KieAssemblers : addResourceBeforeRules
+activate KieAssemblers
+KieAssemblers --> CompositeKnowledgeBuilderImpl
+deactivate KieAssemblers
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KnowledgeBuilderImpl : doFirstBuildStep
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : buildPackagesWithoutRules
+activate KnowledgeBuilderImpl
+create CompositePackageCompilationPhase
+KnowledgeBuilderImpl -> CompositePackageCompilationPhase : new
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> KnowledgeBuilderImpl
+deactivate CompositePackageCompilationPhase
+KnowledgeBuilderImpl -> CompositePackageCompilationPhase : process
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : initAnnotationNormalizers
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create TypeDeclarationAnnotationNormalizer
+CompositePackageCompilationPhase -> TypeDeclarationAnnotationNormalizer : new
+activate TypeDeclarationAnnotationNormalizer
+TypeDeclarationAnnotationNormalizer --> CompositePackageCompilationPhase
+deactivate TypeDeclarationAnnotationNormalizer
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+create TypeDeclarationCompositeCompilationPhase
+CompositePackageCompilationPhase -> TypeDeclarationCompositeCompilationPhase : new
+activate TypeDeclarationCompositeCompilationPhase
+TypeDeclarationCompositeCompilationPhase --> CompositePackageCompilationPhase
+deactivate TypeDeclarationCompositeCompilationPhase
+create ImportCompilationPhase
+CompositePackageCompilationPhase -> ImportCompilationPhase : new
+activate ImportCompilationPhase
+ImportCompilationPhase --> CompositePackageCompilationPhase
+deactivate ImportCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+create EntryPointDeclarationCompilationPhase
+CompositePackageCompilationPhase -> EntryPointDeclarationCompilationPhase : new
+activate EntryPointDeclarationCompilationPhase
+EntryPointDeclarationCompilationPhase --> CompositePackageCompilationPhase
+deactivate EntryPointDeclarationCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+create AccumulateFunctionCompilationPhase
+CompositePackageCompilationPhase -> AccumulateFunctionCompilationPhase : new
+activate AccumulateFunctionCompilationPhase
+AccumulateFunctionCompilationPhase --> CompositePackageCompilationPhase
+deactivate AccumulateFunctionCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create WindowDeclarationCompilationPhase
+CompositePackageCompilationPhase -> WindowDeclarationCompilationPhase : new
+activate WindowDeclarationCompilationPhase
+create AbstractPackageCompilationPhase
+WindowDeclarationCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> WindowDeclarationCompilationPhase
+deactivate AbstractPackageCompilationPhase
+WindowDeclarationCompilationPhase --> CompositePackageCompilationPhase
+deactivate WindowDeclarationCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create FunctionCompilationPhase
+CompositePackageCompilationPhase -> FunctionCompilationPhase : new
+activate FunctionCompilationPhase
+create AbstractPackageCompilationPhase
+FunctionCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> FunctionCompilationPhase
+deactivate AbstractPackageCompilationPhase
+FunctionCompilationPhase --> CompositePackageCompilationPhase
+deactivate FunctionCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create GlobalCompilationPhase
+CompositePackageCompilationPhase -> GlobalCompilationPhase : new
+activate GlobalCompilationPhase
+create AbstractPackageCompilationPhase
+GlobalCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> GlobalCompilationPhase
+deactivate AbstractPackageCompilationPhase
+GlobalCompilationPhase --> CompositePackageCompilationPhase
+deactivate GlobalCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create RuleAnnotationNormalizer
+CompositePackageCompilationPhase -> RuleAnnotationNormalizer : new
+activate RuleAnnotationNormalizer
+RuleAnnotationNormalizer --> CompositePackageCompilationPhase
+deactivate RuleAnnotationNormalizer
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompilationPhase : process
+activate CompilationPhase
+CompilationPhase --> CompositePackageCompilationPhase
+deactivate CompilationPhase
+CompositePackageCompilationPhase -> BuildResultAccumulator : addBuilderResult
+activate BuildResultAccumulator
+BuildResultAccumulator --> CompositePackageCompilationPhase
+deactivate BuildResultAccumulator
+CompositePackageCompilationPhase --> KnowledgeBuilderImpl
+deactivate CompositePackageCompilationPhase
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : buildRules
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : getPackageRegistry
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> PackageRegistryManagerImpl : getPackageRegistry
+activate PackageRegistryManagerImpl
+PackageRegistryManagerImpl --> KnowledgeBuilderImpl
+deactivate PackageRegistryManagerImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : compileKnowledgePackages
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : getPackageDialect
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> PackageRegistryManagerImpl : getPackageRegistry
+activate PackageRegistryManagerImpl
+PackageRegistryManagerImpl --> KnowledgeBuilderImpl
+deactivate PackageRegistryManagerImpl
+KnowledgeBuilderImpl -> PackageAttributeManagerImpl : get
+activate PackageAttributeManagerImpl
+PackageAttributeManagerImpl --> KnowledgeBuilderImpl
+deactivate PackageAttributeManagerImpl
+create RuleValidator
+KnowledgeBuilderImpl -> RuleValidator : new
+activate RuleValidator
+RuleValidator --> KnowledgeBuilderImpl
+deactivate RuleValidator
+create FunctionCompiler
+KnowledgeBuilderImpl -> FunctionCompiler : new
+activate FunctionCompiler
+FunctionCompiler --> KnowledgeBuilderImpl
+deactivate FunctionCompiler
+create RuleCompiler
+KnowledgeBuilderImpl -> RuleCompiler : new
+activate RuleCompiler
+RuleCompiler --> KnowledgeBuilderImpl
+deactivate RuleCompiler
+KnowledgeBuilderImpl -> CompilationPhase : process
+activate CompilationPhase
+CompilationPhase --> KnowledgeBuilderImpl
+deactivate CompilationPhase
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : λ→
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> BuildResultAccumulatorImpl : addAll
+activate BuildResultAccumulatorImpl
+BuildResultAccumulatorImpl --> KnowledgeBuilderImpl
+deactivate BuildResultAccumulatorImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : wireAllRules
+activate KnowledgeBuilderImpl
+create ConsequenceCompilationPhase
+KnowledgeBuilderImpl -> ConsequenceCompilationPhase : new
+activate ConsequenceCompilationPhase
+ConsequenceCompilationPhase --> KnowledgeBuilderImpl
+deactivate ConsequenceCompilationPhase
+KnowledgeBuilderImpl -> ConsequenceCompilationPhase : process
+activate ConsequenceCompilationPhase
+ConsequenceCompilationPhase --> KnowledgeBuilderImpl
+deactivate ConsequenceCompilationPhase
+KnowledgeBuilderImpl -> BuildResultAccumulatorImpl : addAll
+activate BuildResultAccumulatorImpl
+BuildResultAccumulatorImpl --> KnowledgeBuilderImpl
+deactivate BuildResultAccumulatorImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : processKieBaseTypes
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : hasErrors
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> RuleBase : processAllTypesDeclaration
+activate RuleBase
+RuleBase --> KnowledgeBuilderImpl
+deactivate RuleBase
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : getPackageRegistry
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> PackageRegistryManagerImpl : getPackageRegistry
+activate PackageRegistryManagerImpl
+PackageRegistryManagerImpl --> KnowledgeBuilderImpl
+deactivate PackageRegistryManagerImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : compileRete
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl -> KnowledgeBuilderImpl : hasErrors
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+create ReteCompiler
+KnowledgeBuilderImpl -> ReteCompiler : new
+activate ReteCompiler
+ReteCompiler --> KnowledgeBuilderImpl
+deactivate ReteCompiler
+KnowledgeBuilderImpl -> ReteCompiler : process
+activate ReteCompiler
+ReteCompiler --> KnowledgeBuilderImpl
+deactivate ReteCompiler
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> KnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KnowledgeBuilderImpl : buildPackagesWithoutRules
+activate KnowledgeBuilderImpl
+create CompositePackageCompilationPhase
+KnowledgeBuilderImpl -> CompositePackageCompilationPhase : new
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> KnowledgeBuilderImpl
+deactivate CompositePackageCompilationPhase
+KnowledgeBuilderImpl -> CompositePackageCompilationPhase : process
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : initAnnotationNormalizers
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> LanguageLevelOption : useJavaAnnotations
+activate LanguageLevelOption
+LanguageLevelOption --> CompositePackageCompilationPhase
+deactivate LanguageLevelOption
+CompositePackageCompilationPhase -> StringUtils : isEmpty
+activate StringUtils
+StringUtils --> CompositePackageCompilationPhase
+deactivate StringUtils
+CompositePackageCompilationPhase -> PackageRegistryManager : getOrCreatePackageRegistry
+activate PackageRegistryManager
+PackageRegistryManager --> CompositePackageCompilationPhase
+deactivate PackageRegistryManager
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> AnnotationNormalizer : of
+activate AnnotationNormalizer
+create Strict
+AnnotationNormalizer -> Strict : new
+activate Strict
+create AnnotationNormalizer
+Strict -> AnnotationNormalizer : new
+activate AnnotationNormalizer
+AnnotationNormalizer --> Strict
+deactivate AnnotationNormalizer
+Strict --> AnnotationNormalizer
+deactivate Strict
+create NonStrict
+AnnotationNormalizer -> NonStrict : new
+activate NonStrict
+create AnnotationNormalizer
+NonStrict -> AnnotationNormalizer : new
+activate AnnotationNormalizer
+AnnotationNormalizer --> NonStrict
+deactivate AnnotationNormalizer
+NonStrict --> AnnotationNormalizer
+deactivate NonStrict
+AnnotationNormalizer --> CompositePackageCompilationPhase
+deactivate AnnotationNormalizer
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create TypeDeclarationAnnotationNormalizer
+CompositePackageCompilationPhase -> TypeDeclarationAnnotationNormalizer : new
+activate TypeDeclarationAnnotationNormalizer
+TypeDeclarationAnnotationNormalizer --> CompositePackageCompilationPhase
+deactivate TypeDeclarationAnnotationNormalizer
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+create TypeDeclarationCompositeCompilationPhase
+CompositePackageCompilationPhase -> TypeDeclarationCompositeCompilationPhase : new
+activate TypeDeclarationCompositeCompilationPhase
+TypeDeclarationCompositeCompilationPhase --> CompositePackageCompilationPhase
+deactivate TypeDeclarationCompositeCompilationPhase
+create ImportCompilationPhase
+CompositePackageCompilationPhase -> ImportCompilationPhase : new
+activate ImportCompilationPhase
+create AbstractPackageCompilationPhase
+ImportCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> ImportCompilationPhase
+deactivate AbstractPackageCompilationPhase
+ImportCompilationPhase --> CompositePackageCompilationPhase
+deactivate ImportCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+create EntryPointDeclarationCompilationPhase
+CompositePackageCompilationPhase -> EntryPointDeclarationCompilationPhase : new
+activate EntryPointDeclarationCompilationPhase
+create AbstractPackageCompilationPhase
+EntryPointDeclarationCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> EntryPointDeclarationCompilationPhase
+deactivate AbstractPackageCompilationPhase
+EntryPointDeclarationCompilationPhase --> CompositePackageCompilationPhase
+deactivate EntryPointDeclarationCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+create AccumulateFunctionCompilationPhase
+CompositePackageCompilationPhase -> AccumulateFunctionCompilationPhase : new
+activate AccumulateFunctionCompilationPhase
+create AbstractPackageCompilationPhase
+AccumulateFunctionCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> AccumulateFunctionCompilationPhase
+deactivate AbstractPackageCompilationPhase
+AccumulateFunctionCompilationPhase --> CompositePackageCompilationPhase
+deactivate AccumulateFunctionCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create WindowDeclarationCompilationPhase
+CompositePackageCompilationPhase -> WindowDeclarationCompilationPhase : new
+activate WindowDeclarationCompilationPhase
+create AbstractPackageCompilationPhase
+WindowDeclarationCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> WindowDeclarationCompilationPhase
+deactivate AbstractPackageCompilationPhase
+WindowDeclarationCompilationPhase --> CompositePackageCompilationPhase
+deactivate WindowDeclarationCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create FunctionCompilationPhase
+CompositePackageCompilationPhase -> FunctionCompilationPhase : new
+activate FunctionCompilationPhase
+create AbstractPackageCompilationPhase
+FunctionCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> FunctionCompilationPhase
+deactivate AbstractPackageCompilationPhase
+FunctionCompilationPhase --> CompositePackageCompilationPhase
+deactivate FunctionCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create GlobalCompilationPhase
+CompositePackageCompilationPhase -> GlobalCompilationPhase : new
+activate GlobalCompilationPhase
+create AbstractPackageCompilationPhase
+GlobalCompilationPhase -> AbstractPackageCompilationPhase : new
+activate AbstractPackageCompilationPhase
+AbstractPackageCompilationPhase --> GlobalCompilationPhase
+deactivate AbstractPackageCompilationPhase
+GlobalCompilationPhase --> CompositePackageCompilationPhase
+deactivate GlobalCompilationPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : λ→
+activate CompositePackageCompilationPhase
+create RuleAnnotationNormalizer
+CompositePackageCompilationPhase -> RuleAnnotationNormalizer : new
+activate RuleAnnotationNormalizer
+RuleAnnotationNormalizer --> CompositePackageCompilationPhase
+deactivate RuleAnnotationNormalizer
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompositePackageCompilationPhase : iteratingPhase
+activate CompositePackageCompilationPhase
+create IteratingPhase
+CompositePackageCompilationPhase -> IteratingPhase : new
+activate IteratingPhase
+IteratingPhase --> CompositePackageCompilationPhase
+deactivate IteratingPhase
+CompositePackageCompilationPhase --> CompositePackageCompilationPhase
+deactivate CompositePackageCompilationPhase
+CompositePackageCompilationPhase -> CompilationPhase : process
+activate CompilationPhase
+CompilationPhase --> CompositePackageCompilationPhase
+deactivate CompilationPhase
+CompositePackageCompilationPhase -> BuildResultAccumulator : addBuilderResult
+activate BuildResultAccumulator
+BuildResultAccumulator --> CompositePackageCompilationPhase
+deactivate BuildResultAccumulator
+CompositePackageCompilationPhase --> KnowledgeBuilderImpl
+deactivate CompositePackageCompilationPhase
+KnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildProcesses
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResourceType
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceBuilder : build
+activate ResourceBuilder
+ResourceBuilder --> CompositeKnowledgeBuilderImpl
+deactivate ResourceBuilder
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildResourceType
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> ResourceBuilder : build
+activate ResourceBuilder
+ResourceBuilder --> CompositeKnowledgeBuilderImpl
+deactivate ResourceBuilder
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : buildAssemblerResourcesAfterRules
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KieService : load
+activate KieService
+KieService -> KieService : compareTo
+activate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService -> KieService : servicePriority
+activate KieService
+KieService --> KieService
+deactivate KieService
+KieService --> KieService
+deactivate KieService
+KieService --> CompositeKnowledgeBuilderImpl
+deactivate KieService
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : descrToResourceWithConfiguration
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : λ→
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> CompositeKnowledgeBuilderImpl : λ→
+activate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+create ResourceWithConfigurationImpl
+CompositeKnowledgeBuilderImpl -> ResourceWithConfigurationImpl : new
+activate ResourceWithConfigurationImpl
+ResourceWithConfigurationImpl --> CompositeKnowledgeBuilderImpl
+deactivate ResourceWithConfigurationImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KieAssemblers : addResourcesAfterRules
+activate KieAssemblers
+KieAssemblers --> CompositeKnowledgeBuilderImpl
+deactivate KieAssemblers
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl -> KnowledgeBuilderImpl : doSecondBuildStep
+activate KnowledgeBuilderImpl
+KnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate KnowledgeBuilderImpl
+CompositeKnowledgeBuilderImpl --> CompositeKnowledgeBuilderImpl
+deactivate CompositeKnowledgeBuilderImpl
+return
+@enduml

@@ -1,0 +1,43 @@
+package org.kie.pmml.models.regression.model;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+
+public class KiePMMLEvaluateMethodTemplate {
+
+    private double evaluateNumericWithExponent(double input) {
+        // Considering exponent because it is != 1
+        return evaluateNumericWithExponent(input, coefficient, exponent);
+    }
+
+    private double evaluateNumericWithoutExponent(double input) {
+        // Ignoring exponent because it is 1
+        return evaluateNumericWithoutExponent(input, coefficient);
+    }
+
+    private double evaluateCategorical(Object input) {
+//        if (Objects.equals("x", input)) {
+//            return -3;
+//        } else if (Objects.equals("y", input)) {
+//            return 3;
+//        } else {
+//            return 0.0;
+//        }
+    }
+
+    private double evaluatePredictor(Map<String, Object> resultMap) {
+        final AtomicReference<Double> result = new AtomicReference<>(1.0);
+        List<String> fieldRefs = Arrays.asList("fld1", "fld2");
+        for (String key : resultMap.keySet()) {
+            if (fieldRefs.contains(key)) {
+                result.set(result.get() * (Double)resultMap.get(key));
+            }
+        }
+        double coefficient = 0.4;
+        return result.get() * coefficient;
+    }
+}

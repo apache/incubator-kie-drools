@@ -1,0 +1,6 @@
+{
+    KiePMMLConstant variableName_0 = new KiePMMLConstant("variableName_0", Collections.emptyList(), %s, null);
+    KiePMMLDerivedField %s = KiePMMLDerivedField.builder("%s", Collections.emptyList(), %s, %s, variableName_0)
+            .withDisplayName(null)
+            .build();
+}

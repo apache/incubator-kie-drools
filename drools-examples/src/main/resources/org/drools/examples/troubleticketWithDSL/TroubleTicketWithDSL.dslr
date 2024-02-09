@@ -1,0 +1,61 @@
+package org.drools.examples.troubleticket
+expander ticketing.dsl
+
+rule "New Ticket"
+    salience 10
+    when
+       There is a customer ticket with status of "New"
+    then
+       Log "New ticket..."
+end
+
+rule "Silver Priorty"
+    // if after a certain time, we still have an issue, then escalate
+    duration 3000
+    when
+        There is a "Silver" customer with a ticket status of "New"
+
+    then
+        Escalate the ticket
+end
+
+rule "Gold Priority"
+    duration 1000
+    when
+        There is a "Gold" customer with a ticket status of "New"
+    then
+        Escalate the ticket
+end
+
+rule "Platinum Priority"
+    // we don't want to make the high rollers wait !
+    when
+        There is a "Platinum" customer with a ticket status of "New"
+    then
+        Escalate the ticket
+end
+
+
+
+rule "Escalate"
+    when
+        There is a customer ticket with status of "Escalate"
+    then
+        Send escalation email
+end
+
+rule "Done"
+    when
+        There is a customer ticket with status of "Done"
+    then
+        Log "Done"
+end
+
+// This is the same as the non DSL version. This could be kept in another file of course.
+function void sendEscalationEmail( Customer customer, Ticket ticket ) {
+    System.out.println( "Email : " + ticket );
+}
+
+// hey, the imports can appear anywhere !
+import org.drools.examples.troubleticket.Customer;
+import org.drools.examples.troubleticket.Ticket;

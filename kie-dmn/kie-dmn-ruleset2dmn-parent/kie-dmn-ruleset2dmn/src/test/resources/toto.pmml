@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4.1">
+    <Header copyright="Copyright IBM Corp, exported to PMML by Nyoka (c) 2022 Software AG" description="Default description">
+        <Application name="SimpleRuleSetExport" version="0.0.1"/>
+        <Timestamp>1970-01-01 00:00:00+00:00</Timestamp>
+    </Header>
+    <DataDictionary numberOfFields="4">
+        <DataField name="toto0" optype="continuous" dataType="double"/>
+        <DataField name="toto1" optype="categorical" dataType="string"/>
+        <DataField name="toto2" optype="categorical" dataType="boolean"/>
+        <DataField name="toto3" optype="ordinal" dataType="integer"/>
+    </DataDictionary>
+    <RuleSetModel functionName="classification" algorithmName="RuleSet">
+        <MiningSchema>
+            <MiningField name="toto0" usageType="active"/>
+            <MiningField name="toto2" usageType="active"/>
+            <MiningField name="toto1" usageType="active"/>
+            <MiningField name="toto3" usageType="active"/>
+        </MiningSchema>
+        <RuleSet defaultScore="0">
+            <RuleSelectionMethod criterion="firstHit"/>
+            <SimpleRule id="[toto0 &lt; 0.1] ^ [toto2 == False]" score="1">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="toto0" operator="lessThan" value="0.1"/>
+                    <SimplePredicate field="toto2" operator="equal" value="False"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[toto1 == foo] ^ [toto3 &gt;= 1]" score="1">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="toto1" operator="equal" value="foo"/>
+                    <SimplePredicate field="toto3" operator="greaterOrEqual" value="1"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[toto1 == foo] ^ [toto2 == False]" score="1">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="toto1" operator="equal" value="foo"/>
+                    <SimplePredicate field="toto2" operator="equal" value="False"/>
+                </CompoundPredicate>
+            </SimpleRule>
+            <SimpleRule id="[toto0 &lt; 0.1] ^ [toto1 == foo] ^ [toto2 == False] ^ [toto3 &gt;= 1]" score="1">
+                <CompoundPredicate booleanOperator="and">
+                    <SimplePredicate field="toto0" operator="lessThan" value="0.1"/>
+                    <SimplePredicate field="toto1" operator="equal" value="foo"/>
+                    <SimplePredicate field="toto2" operator="equal" value="False"/>
+                    <SimplePredicate field="toto3" operator="greaterOrEqual" value="1"/>
+                </CompoundPredicate>
+            </SimpleRule>
+        </RuleSet>
+    </RuleSetModel>
+</PMML>

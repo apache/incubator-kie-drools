@@ -1,0 +1,10 @@
+package AllResourceTypes
+
+expander sample.dsl
+
+
+rule "simple"
+	when
+	then
+		hello
+end

@@ -1,0 +1,79 @@
+package com.myteam.proj1;
+
+rule R0
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R1
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R2
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R3
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R4
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R5
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R6
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R7
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R8
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R9
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+
+rule R10
+    when
+        $s : String()
+    then
+        System.out.println($s);
+end
+

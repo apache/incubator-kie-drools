@@ -1,0 +1,148 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.SensorArray;
+import org.drools.games.wumpus.HearScream;
+import org.drools.games.wumpus.FeelBreeze;
+import org.drools.games.wumpus.SmellStench;
+import org.drools.games.wumpus.FeelBump;
+import org.drools.games.wumpus.SeeGlitter;
+
+dialect "mvel"
+
+rule "Smell Stench" agenda-group "Sensor" when
+    $h  : Hero() @watch( col, row )
+          Wumpus(row == $h.row, col == $h.col ) or
+          Wumpus(row == $h.row + 1, col == $h.col ) or
+          Wumpus(row == $h.row - 1, col == $h.col ) or
+          Wumpus(row == $h.row, col == $h.col + 1 ) or
+          Wumpus(row == $h.row, col == $h.col - 1 )
+then
+    insertLogical( new SmellStench() );
+end
+
+rule "Feel Breeze"  agenda-group "Sensor"  when
+    $h  : Hero() @watch( col, row )
+          Pit(row == $h.row + 1, col == $h.col ) or
+          Pit(row == $h.row - 1, col == $h.col ) or
+          Pit(row == $h.row, col == $h.col + 1 ) or
+          Pit(row == $h.row, col == $h.col - 1 )
+then
+    insertLogical( new FeelBreeze() );
+end
+
+rule "See Glitter"  agenda-group "Sensor"  when
+    $h  : Hero( ) @watch( col, row )
+          Gold(row == $h.row, col == $h.col )
+then
+    insertLogical( new SeeGlitter() );
+end
+
+rule "Wumpus Death"  agenda-group "Sensor" when
+    $h  : Hero() @watch( col, row )
+          Wumpus(row == $h.row, col == $h.col, alive == true )
+then
+    insert( new WumpusDeath() );
+    setFocus( "EndGame" );
+end
+
+rule "Pit Death"  agenda-group "Sensor"  when
+    $h  : Hero() @watch( col, row )
+          Pit(row == $h.row, col == $h.col )
+then
+    insert( new PitDeath() );
+    setFocus( "EndGame" );
+end
+
+
+rule "Feel Breeze Sensor Array Update" agenda-group "Sensor" when
+    FeelBreeze()
+    $sa : SensorArray()
+then
+    $sa.feelBreeze = true;   
+end
+
+rule "Breeze Gone Array Update" agenda-group "Sensor" when
+    not FeelBreeze()
+    $sa : SensorArray()    
+then
+    $sa.feelBreeze = false;  
+end
+
+rule "Smell Stench Array Update" agenda-group "Sensor" when
+    SmellStench()
+    $sa : SensorArray()     
+then  
+    $sa.smellStench = true;
+end
+
+rule "Stench Gone Array Update" agenda-group "Sensor" when
+    not SmellStench()
+    $sa : SensorArray()     
+then 
+    $sa.smellStench = false;
+end
+
+rule "See Glitter Array Update" agenda-group "Sensor" when
+    SeeGlitter()
+    $sa : SensorArray()     
+then
+     $sa.seeGlitter = true;
+end
+
+rule "Glitter Gone Array Update" agenda-group "Sensor" when
+    not SeeGlitter()
+    $sa : SensorArray()     
+then
+     $sa.seeGlitter = false;
+end
+
+rule "Feel Bump Array Update" agenda-group "Sensor" when
+    FeelBump()
+    $sa : SensorArray()     
+then 
+    $sa.feelBump = true;
+end
+
+rule "Bump Gone Array Update" agenda-group "Sensor" when
+    not FeelBump()
+    $sa : SensorArray()     
+then   
+   $sa.feelBump = false;
+end
+
+
+rule "Hear Scream Array Update" agenda-group "Sensor" when
+    HearScream()
+    $sa : SensorArray()     
+then
+    $sa.hearScream = true;
+end
+
+rule "Scream Gone Array Update" agenda-group "Sensor" when
+    not HearScream()
+    $sa : SensorArray()     
+then
+    $sa.hearScream = false;
+end
+
+rule "Send SensorArray" agenda-group "Sensor" when
+    $sa : SensorArray()
+then
+    channels["sensors"].send( $sa );
+    delete( $sa );
+end

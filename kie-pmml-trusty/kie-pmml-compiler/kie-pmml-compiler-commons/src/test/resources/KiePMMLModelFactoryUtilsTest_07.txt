@@ -1,0 +1,15 @@
+{
+    super(fileName, name, Collections.emptyList(), operator, second);
+    targetField = targetField;
+    miningFunction = miningFunction;
+    pmmlMODEL = null;
+    value = null;
+    values = null;
+    operatorFunction = null;
+    kiePMMLPredicates = null;
+    transformationDictionary = this.createTransformationDictionary();
+    localTransformations = this.createLocalTransformations();
+    kModulePackageName = null;
+    kiePMMLMiningFields = null;
+    kiePMMLOutputFields = null;
+}

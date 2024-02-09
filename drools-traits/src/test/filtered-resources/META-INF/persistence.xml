@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<persistence version="3.0"
+             xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
+      <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+      <jta-data-source>jdbc/testDS1</jta-data-source>        
+      <class>org.drools.persistence.info.SessionInfo</class>
+      <class>org.drools.persistence.info.WorkItemInfo</class>
+      
+      <!--  test class -->
+      <class>org.drools.persistence.jta.TransactionTestObject</class>
+      
+      <properties>
+        <property name="hibernate.max_fetch_depth" value="3"/>
+        <property name="hibernate.hbm2ddl.auto" value="update" />
+        <property name="hibernate.show_sql" value="false" />
+                        
+        <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+        <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
+         
+        <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
+        <property name="hibernate.id.new_generator_mappings" value="false" />
+
+        <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
+        <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
+        <property name="hibernate.connection.release_mode" value="after_transaction"/>
+      </properties>
+
+    </persistence-unit>
+</persistence>

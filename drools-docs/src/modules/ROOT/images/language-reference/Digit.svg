@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="71" height="37"
+     viewBox="0 0 71 39">
+<title>Digit</title>
+<rect x='10.5' y='21.5' rx='7.75' ry='7.75' width='54.7' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='43.7' x='16' y='31.43'>'0'..'9'</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 65.20 28.5 L 70.2 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 68.20 26.5 L 70.2 28.5 L 68.2 30.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='Digit' x='0' y='8.33'>Digit</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 28.5 L 10 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 26.5 L 10 28.5 L 8 30.5'/>
+</svg>

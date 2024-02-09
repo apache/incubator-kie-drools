@@ -1,0 +1,9 @@
+digraph "simple" {
+graph ["rankdir"="LR","ranksep"="1.0"]
+"rule5"
+"rule4"
+"rule1" -> "rule3" ["style"="dashed"]
+"rule1" -> "rule2" ["style"="solid"]
+"rule3" -> "rule5" ["style"="solid"]
+"rule2" -> "rule4" ["style"="dotted"]
+}

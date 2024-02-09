@@ -1,0 +1,122 @@
+/*
+ * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.traits
+
+declare Person
+    @Traitable
+    @PropertyReactive
+
+    name    : String       = "john"     @key
+
+    age     : int          = 18
+
+    weight  : Double       = 75.4
+
+end
+
+
+declare trait IPerson
+    @PropertyReactive
+
+    name    : String
+
+    age     : int
+
+    weight  : Double
+
+end
+
+
+declare trait IStudent extends IPerson
+    @PropertyReactive
+
+    school  : String
+end
+
+
+declare trait IWorker extends IPerson
+    @PropertyReactive
+
+    wage    : int
+end
+
+
+rule "Zero"
+when
+then
+    insert( new Person() );
+end
+
+
+rule "Students and Workers"
+when
+    $p : Person( $name : name, $age : age < 25 )
+then
+    IStudent s = don( $p, IStudent.class, true );
+    modify( s ) {
+        setSchool( "SomeSchool" );
+    }
+
+    IWorker w = don( $p, IWorker.class, true );
+    modify( w ) {
+        setWage( 1200 );
+    }
+
+end
+
+
+rule "Welcome"
+salience 10
+when
+    $s : IStudent( $school : school, $name : name )
+then
+    System.out.println( "Dear "+ $name + ", welcome to " + $school );
+end
+
+
+
+/* This rule will raise the wage up to 2000 */
+rule "Hard toil"
+salience 5
+// no-loop /* with no-loop, the raise will happen only once! */
+when
+    $w : IWorker( $name : name, $weight : weight, $wage : wage < 2000 )
+then
+
+    modify( $w ) {
+        setWage( $wage + 100 ),
+        setWeight( $weight - 10 );
+    }
+
+    System.out.println( "Work harder, " + $name + ", your wage is now " + $w.getWage() );
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+public static KiePMMLClusteringModel getModel() {
+    KiePMMLClusteringModel toReturn = KiePMMLClusteringModel.builder("fileName", "firstModel", org.kie.pmml.api.enums.MINING_FUNCTION.CLUSTERING).withModelClass(%s).withClusters(getClusters()).withClusteringFields(getClusteringFields())
+    .withComparisonMeasure(new org.kie.pmml.models.clustering.model.KiePMMLComparisonMeasure(%s, %s, %s)).withMissingValueWeights(new org.kie.pmml.models.clustering.model.KiePMMLMissingValueWeights(java.util.Arrays.asList())).withTargetField("%s").withMiningFields(getCreatedMiningFields()).withOutputFields(getCreatedOutputFields()).withKiePMMLMiningFields(getCreatedKiePMMLMiningFields()).withKiePMMLOutputFields(getCreatedKiePMMLOutputFields()).withKiePMMLTargets(getCreatedKiePMMLTargets()).withKiePMMLTransformationDictionary(getCreatedTransformationDictionary()).withKiePMMLLocalTransformations(getCreatedLocalTransformations()).build();
+    return toReturn;
+}

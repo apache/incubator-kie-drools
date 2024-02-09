@@ -1,0 +1,3 @@
+{
+    KiePMMLNormDiscrete %s = new KiePMMLNormDiscrete("%s", Collections.emptyList(), "%s", %s);
+}

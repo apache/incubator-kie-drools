@@ -1,0 +1,16 @@
+/*
+ *  Example context from DMN Spec page 100
+ *
+ *  Defines the data of an Applicant
+ */
+{
+    Age : 51,
+    Marital Status : "M",
+    Employment Status : "EMPLOYED",
+    Existing Customer : false,
+    Monthly : {
+        Income: 10000.00,
+        Repayments: 2500.00,
+        Expenses: 3000.00
+    }
+}
