@@ -20,6 +20,7 @@ package org.kie.kogito.index.jpa.query;
 
 import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.test.query.AbstractProcessDefinitionQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 
@@ -31,7 +32,7 @@ public abstract class AbstractProcessDefinitionEntityQueryIT extends AbstractPro
     ProcessDefinitionEntityStorage storage;
 
     @Override
-    public Storage<String, ProcessDefinition> getStorage() {
+    public Storage<ProcessDefinitionKey, ProcessDefinition> getStorage() {
         return storage;
     }
 

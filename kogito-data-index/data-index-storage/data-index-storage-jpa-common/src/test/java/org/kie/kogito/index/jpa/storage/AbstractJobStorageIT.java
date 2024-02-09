@@ -23,32 +23,23 @@ import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.model.JobEntity;
-import org.kie.kogito.index.jpa.model.JobEntityRepository;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.test.TestUtils;
-import org.kie.kogito.persistence.api.StorageService;
+import org.kie.kogito.persistence.api.Storage;
 
 import jakarta.inject.Inject;
 
-public abstract class AbstractJobStorageIT extends AbstractStorageIT<JobEntity, Job> {
+public abstract class AbstractJobStorageIT extends AbstractStorageIT<String, JobEntity, Job> {
 
     @Inject
-    JobEntityRepository repository;
-
-    @Inject
-    StorageService storage;
+    JobEntityStorage storage;
 
     public AbstractJobStorageIT() {
         super(Job.class);
     }
 
     @Override
-    public JobEntityRepository getRepository() {
-        return repository;
-    }
-
-    @Override
-    public StorageService getStorage() {
+    public Storage<String, Job> getStorage() {
         return storage;
     }
 
@@ -65,5 +56,4 @@ public abstract class AbstractJobStorageIT extends AbstractStorageIT<JobEntity, 
                         RandomStringUtils.randomAlphabetic(10), "SCHEDULED", 1000L);
         testStorage(jobId, job1, job2);
     }
-
 }

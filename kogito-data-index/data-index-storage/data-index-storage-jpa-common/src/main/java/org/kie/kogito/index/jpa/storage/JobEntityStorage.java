@@ -28,7 +28,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
-public class JobEntityStorage extends AbstractStorage<JobEntity, Job> {
+public class JobEntityStorage extends AbstractStorage<String, JobEntity, Job> {
 
     protected JobEntityStorage() {
     }

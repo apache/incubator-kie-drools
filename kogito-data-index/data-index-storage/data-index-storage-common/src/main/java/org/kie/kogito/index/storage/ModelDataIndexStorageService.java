@@ -20,6 +20,7 @@ package org.kie.kogito.index.storage;
 
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.api.Storage;
@@ -43,8 +44,8 @@ public class ModelDataIndexStorageService implements DataIndexStorageService {
     StorageService storageService;
 
     @Override
-    public Storage<String, ProcessDefinition> getProcessDefinitionStorage() {
-        return storageService.getCache(PROCESS_DEFINITIONS_STORAGE, ProcessDefinition.class);
+    public Storage<ProcessDefinitionKey, ProcessDefinition> getProcessDefinitionStorage() {
+        return new ModelProcessDefinitionStorage(storageService.getCache(PROCESS_DEFINITIONS_STORAGE, ProcessDefinition.class));
     }
 
     @Override

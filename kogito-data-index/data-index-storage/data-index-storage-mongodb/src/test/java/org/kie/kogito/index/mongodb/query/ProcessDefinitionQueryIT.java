@@ -20,8 +20,10 @@ package org.kie.kogito.index.mongodb.query;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.mongodb.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.mongodb.model.ProcessDefinitionEntityMapper;
+import org.kie.kogito.index.storage.ModelProcessDefinitionStorage;
 import org.kie.kogito.index.test.query.AbstractProcessDefinitionQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
@@ -42,16 +44,16 @@ class ProcessDefinitionQueryIT extends AbstractProcessDefinitionQueryIT {
     @Inject
     MongoClientManager mongoClientManager;
 
-    Storage<String, ProcessDefinition> storage;
+    Storage<ProcessDefinitionKey, ProcessDefinition> storage;
 
     @BeforeEach
     void setUp() {
-        this.storage = new MongoStorage<>(mongoClientManager.getCollection(PROCESS_DEFINITIONS_STORAGE, ProcessDefinitionEntity.class),
-                ProcessDefinition.class.getName(), new ProcessDefinitionEntityMapper());
+        this.storage = new ModelProcessDefinitionStorage(new MongoStorage<>(mongoClientManager.getCollection(PROCESS_DEFINITIONS_STORAGE, ProcessDefinitionEntity.class),
+                ProcessDefinition.class.getName(), new ProcessDefinitionEntityMapper()));
     }
 
     @Override
-    public Storage<String, ProcessDefinition> getStorage() {
+    public Storage<ProcessDefinitionKey, ProcessDefinition> getStorage() {
         return storage;
     }
 }

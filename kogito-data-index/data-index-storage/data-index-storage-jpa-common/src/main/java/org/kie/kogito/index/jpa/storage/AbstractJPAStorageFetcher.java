@@ -29,18 +29,18 @@ import io.smallrye.mutiny.Multi;
 
 import jakarta.transaction.Transactional;
 
-public class AbstractJPAStorageFetcher<E extends AbstractEntity, V> implements StorageFetcher<String, V> {
+public class AbstractJPAStorageFetcher<K, E extends AbstractEntity, V> implements StorageFetcher<K, V> {
 
     private static final String LISTENER_NOT_AVAILABLE_IN_JPA = "Listener not available in JPA database";
 
-    protected PanacheRepositoryBase<E, String> repository;
+    protected PanacheRepositoryBase<E, K> repository;
     protected Class<E> entityClass;
     protected Function<E, V> mapToModel;
 
     protected AbstractJPAStorageFetcher() {
     }
 
-    protected AbstractJPAStorageFetcher(PanacheRepositoryBase<E, String> repository, Class<E> entityClass, Function<E, V> mapToModel) {
+    protected AbstractJPAStorageFetcher(PanacheRepositoryBase<E, K> repository, Class<E> entityClass, Function<E, V> mapToModel) {
         this.repository = repository;
         this.entityClass = entityClass;
         this.mapToModel = mapToModel;
@@ -57,7 +57,7 @@ public class AbstractJPAStorageFetcher<E extends AbstractEntity, V> implements S
     }
 
     @Override
-    public Multi<String> objectRemovedListener() {
+    public Multi<K> objectRemovedListener() {
         throw new UnsupportedOperationException(LISTENER_NOT_AVAILABLE_IN_JPA);
     }
 
@@ -68,7 +68,7 @@ public class AbstractJPAStorageFetcher<E extends AbstractEntity, V> implements S
 
     @Override
     @Transactional
-    public V get(String key) {
+    public V get(K key) {
         return repository.findByIdOptional(key).map(mapToModel).orElse(null);
     }
 

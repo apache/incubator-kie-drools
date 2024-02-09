@@ -20,26 +20,25 @@ package org.kie.kogito.index.jpa.storage;
 
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.api.StorageService;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import static org.kie.kogito.index.storage.Constants.JOBS_STORAGE;
-import static org.kie.kogito.index.storage.Constants.PROCESS_DEFINITIONS_STORAGE;
-import static org.kie.kogito.index.storage.Constants.PROCESS_ID_MODEL_STORAGE;
-
 @ApplicationScoped
 public class JPADataIndexStorageService implements DataIndexStorageService {
 
     @Inject
-    StorageService storageService;
+    ProcessDefinitionEntityStorage definitionStorage;
+
+    @Inject
+    JobEntityStorage jobsStorage;
 
     @Inject
     ProcessInstanceStorage processInstanceStorage;
@@ -48,8 +47,8 @@ public class JPADataIndexStorageService implements DataIndexStorageService {
     UserTaskInstanceStorage userTaskInstanceStorage;
 
     @Override
-    public Storage<String, ProcessDefinition> getProcessDefinitionStorage() {
-        return storageService.getCache(PROCESS_DEFINITIONS_STORAGE, ProcessDefinition.class);
+    public Storage<ProcessDefinitionKey, ProcessDefinition> getProcessDefinitionStorage() {
+        return definitionStorage;
     }
 
     @Override
@@ -64,13 +63,12 @@ public class JPADataIndexStorageService implements DataIndexStorageService {
 
     @Override
     public Storage<String, Job> getJobsStorage() {
-        return storageService.getCache(JOBS_STORAGE, Job.class);
+        return jobsStorage;
     }
 
     @Override
     public Storage<String, ObjectNode> getDomainModelCache(String processId) {
-        String rootType = getProcessIdModelCache().get(processId);
-        return rootType == null ? null : storageService.getCache(getDomainModelCacheName(processId), ObjectNode.class, rootType);
+        throw new UnsupportedOperationException("Generic custom type cache not available in JPA");
     }
 
     @Override
@@ -80,6 +78,6 @@ public class JPADataIndexStorageService implements DataIndexStorageService {
 
     @Override
     public Storage<String, String> getProcessIdModelCache() {
-        return storageService.getCache(PROCESS_ID_MODEL_STORAGE);
+        throw new UnsupportedOperationException("Generic String cache not available in JPA");
     }
 }

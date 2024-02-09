@@ -34,8 +34,8 @@ public abstract class QueryTestBase<K, V> {
         return true;
     }
 
-    public void queryAndAssert(BiConsumer<List<V>, String[]> assertConsumer, StorageFetcher<K, V> storage, List<AttributeFilter<?>> filters, List<AttributeSort> sort, Integer offset, Integer limit,
-            String... ids) {
+    public void queryAndAssert(BiConsumer<List<V>, K[]> assertConsumer, StorageFetcher<K, V> storage, List<AttributeFilter<?>> filters, List<AttributeSort> sort, Integer offset, Integer limit,
+            K... ids) {
         assertConsumer.accept(storage.query().filter(filters).sort(sort).offset(offset).limit(limit).execute(), ids);
     }
 

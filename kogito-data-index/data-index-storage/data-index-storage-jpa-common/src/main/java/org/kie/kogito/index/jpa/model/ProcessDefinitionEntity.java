@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.kie.kogito.index.model.ProcessDefinitionKey;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -38,7 +40,7 @@ import jakarta.persistence.Table;
 
 @Entity(name = "definitions")
 @Table(name = "definitions")
-@IdClass(ProcessDefinitionEntityId.class)
+@IdClass(ProcessDefinitionKey.class)
 public class ProcessDefinitionEntity extends AbstractEntity {
 
     @Id

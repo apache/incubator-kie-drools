@@ -41,7 +41,7 @@ import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceVariableDataEvent;
 import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.index.storage.UserTaskInstanceStorage;
@@ -92,9 +92,8 @@ public class IndexingService {
     //retry in case of rare but possible race condition during the insert for the first registry
     @Retry(maxRetries = 3, delay = 300, jitter = 100, retryOn = ConcurrentModificationException.class)
     public void indexProcessDefinition(ProcessDefinitionDataEvent definitionDataEvent) {
-        ProcessDefinition definition = ProcessDefinitionHelper
-                .merge(manager.getProcessDefinitionStorage().get(ProcessDefinition.toKey(definitionDataEvent.getKogitoProcessId(), definitionDataEvent.getData().getVersion())), definitionDataEvent);
-        manager.getProcessDefinitionStorage().put(definition.getKey(), definition);
+        ProcessDefinitionKey key = new ProcessDefinitionKey(definitionDataEvent.getKogitoProcessId(), definitionDataEvent.getData().getVersion());
+        manager.getProcessDefinitionStorage().put(key, ProcessDefinitionHelper.merge(manager.getProcessDefinitionStorage().get(key), definitionDataEvent));
     }
 
     //retry in case of rare but possible race condition during the insert for the first registry

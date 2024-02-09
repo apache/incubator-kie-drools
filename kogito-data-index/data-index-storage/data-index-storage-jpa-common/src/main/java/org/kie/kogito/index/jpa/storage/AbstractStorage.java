@@ -33,18 +33,18 @@ import jakarta.transaction.Transactional;
 
 import static java.util.stream.Collectors.toMap;
 
-public abstract class AbstractStorage<E extends AbstractEntity, V> extends AbstractJPAStorageFetcher<E, V> implements Storage<String, V> {
+public abstract class AbstractStorage<K, E extends AbstractEntity, V> extends AbstractJPAStorageFetcher<K, E, V> implements Storage<K, V> {
 
     private Class<V> modelClass;
 
     private Function<V, E> mapToEntity;
-    private Function<E, String> mapEntityToKey;
+    private Function<E, K> mapEntityToKey;
 
     protected AbstractStorage() {
     }
 
-    protected AbstractStorage(PanacheRepositoryBase<E, String> repository, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
-            Function<V, E> mapToEntity, Function<E, String> mapEntityToKey) {
+    protected AbstractStorage(PanacheRepositoryBase<E, K> repository, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
+            Function<V, E> mapToEntity, Function<E, K> mapEntityToKey) {
         super(repository, entityClass, mapToModel);
         this.modelClass = modelClass;
         this.mapToEntity = mapToEntity;
@@ -53,7 +53,7 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> extends Abstr
 
     @Override
     @Transactional
-    public V put(String key, V value) {
+    public V put(K key, V value) {
         //Pessimistic lock is used to lock the row to handle concurrency with an exiting registry
         E persistedEntity = repository.findById(key, LockModeType.PESSIMISTIC_WRITE);
         E newEntity = mapToEntity.apply(value);
@@ -72,7 +72,7 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> extends Abstr
 
     @Override
     @Transactional
-    public V remove(String key) {
+    public V remove(K key) {
         V value = get(key);
         if (value != null) {
             repository.deleteById(key);
@@ -82,12 +82,12 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> extends Abstr
 
     @Transactional
     @Override
-    public boolean containsKey(String key) {
+    public boolean containsKey(K key) {
         return repository.count("id = ?1", key) == 1;
     }
 
     @Override
-    public Map<String, V> entries() {
+    public Map<K, V> entries() {
         return repository.streamAll().collect(toMap(mapEntityToKey, mapToModel));
     }
 
@@ -102,7 +102,7 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> extends Abstr
         return modelClass.getCanonicalName();
     }
 
-    protected PanacheRepositoryBase<E, String> getRepository() {
+    protected PanacheRepositoryBase<E, K> getRepository() {
         return repository;
     }
 }

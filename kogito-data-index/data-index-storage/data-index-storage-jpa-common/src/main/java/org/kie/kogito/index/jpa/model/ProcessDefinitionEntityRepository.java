@@ -18,11 +18,13 @@
  */
 package org.kie.kogito.index.jpa.model;
 
+import org.kie.kogito.index.model.ProcessDefinitionKey;
+
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class ProcessDefinitionEntityRepository implements PanacheRepositoryBase<ProcessDefinitionEntity, ProcessDefinitionEntityId> {
+public class ProcessDefinitionEntityRepository implements PanacheRepositoryBase<ProcessDefinitionEntity, ProcessDefinitionKey> {
 
 }

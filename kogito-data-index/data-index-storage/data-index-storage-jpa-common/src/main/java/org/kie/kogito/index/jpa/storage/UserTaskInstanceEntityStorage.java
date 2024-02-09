@@ -56,7 +56,7 @@ import static java.lang.String.format;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
-public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<UserTaskInstanceEntity, UserTaskInstance> implements UserTaskInstanceStorage {
+public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<String, UserTaskInstanceEntity, UserTaskInstance> implements UserTaskInstanceStorage {
 
     protected UserTaskInstanceEntityStorage() {
     }

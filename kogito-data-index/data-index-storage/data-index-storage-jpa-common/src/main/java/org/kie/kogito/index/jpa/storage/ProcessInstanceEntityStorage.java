@@ -55,7 +55,7 @@ import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TY
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
-public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<ProcessInstanceEntity, ProcessInstance> implements ProcessInstanceStorage {
+public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<String, ProcessInstanceEntity, ProcessInstance> implements ProcessInstanceStorage {
 
     protected ProcessInstanceEntityStorage() {
     }

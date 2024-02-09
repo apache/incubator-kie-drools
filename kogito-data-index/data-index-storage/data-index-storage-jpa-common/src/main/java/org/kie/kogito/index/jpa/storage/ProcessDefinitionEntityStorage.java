@@ -22,9 +22,9 @@ import java.util.Optional;
 
 import org.kie.kogito.index.jpa.mapper.ProcessDefinitionEntityMapper;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
-import org.kie.kogito.index.jpa.model.ProcessDefinitionEntityId;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntityRepository;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
@@ -35,25 +35,24 @@ import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefinitionEntity, ProcessDefinition> {
+public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefinitionKey, ProcessDefinitionEntity, ProcessDefinition> {
 
     protected ProcessDefinitionEntityStorage() {
     }
 
     @Inject
     public ProcessDefinitionEntityStorage(ProcessDefinitionEntityRepository repository, ProcessDefinitionEntityMapper mapper) {
-        super(new RepositoryAdapter(repository), ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionEntityId(e.getId(),
-                e.getVersion()).getKey());
+        super(new RepositoryAdapter(repository), ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
+                e.getVersion()));
     }
 
     @Transactional
     @Override
-    public boolean containsKey(String key) {
-        ProcessDefinitionEntityId id = new ProcessDefinitionEntityId(key);
-        return getRepository().count("id = ?1 and version = ?2", id.getId(), id.getVersion()) == 1;
+    public boolean containsKey(ProcessDefinitionKey key) {
+        return getRepository().count("id = ?1 and version = ?2", key.getId(), key.getVersion()) == 1;
     }
 
-    public static class RepositoryAdapter implements PanacheRepositoryBase<ProcessDefinitionEntity, String> {
+    public static class RepositoryAdapter implements PanacheRepositoryBase<ProcessDefinitionEntity, ProcessDefinitionKey> {
 
         ProcessDefinitionEntityRepository repository;
 
@@ -62,18 +61,18 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
         }
 
         @Override
-        public boolean deleteById(String key) {
-            return repository.deleteById(new ProcessDefinitionEntityId(key));
+        public boolean deleteById(ProcessDefinitionKey key) {
+            return repository.deleteById(key);
         }
 
         @Override
-        public Optional<ProcessDefinitionEntity> findByIdOptional(String key) {
-            return repository.findByIdOptional(new ProcessDefinitionEntityId(key));
+        public Optional<ProcessDefinitionEntity> findByIdOptional(ProcessDefinitionKey key) {
+            return repository.findByIdOptional(key);
         }
 
         @Override
-        public ProcessDefinitionEntity findById(String s, LockModeType lockModeType) {
-            return repository.findById(new ProcessDefinitionEntityId(s), lockModeType);
+        public ProcessDefinitionEntity findById(ProcessDefinitionKey s, LockModeType lockModeType) {
+            return repository.findById(s, lockModeType);
         }
 
         @Override

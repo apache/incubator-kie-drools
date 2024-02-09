@@ -26,6 +26,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.Application;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.process.Process;
@@ -57,7 +58,7 @@ public class ProcessDefinitionRegister {
                     .map(mapProcessDefinition(app.config().addons().availableAddons(), kogitoServiceUrl.orElse(null), client))
                     .forEach(process -> {
                         LOGGER.debug("Registering process definition with id: {}", process.getId());
-                        storage.getProcessDefinitionStorage().put(process.getKey(), process);
+                        storage.getProcessDefinitionStorage().put(new ProcessDefinitionKey(process.getId(), process.getVersion()), process);
                     });
         } else {
             LOGGER.info("No process definitions to register.");

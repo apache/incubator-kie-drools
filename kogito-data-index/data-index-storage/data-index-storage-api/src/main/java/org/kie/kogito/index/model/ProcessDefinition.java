@@ -21,9 +21,7 @@ package org.kie.kogito.index.model;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 public class ProcessDefinition {
 
@@ -112,18 +110,6 @@ public class ProcessDefinition {
         this.nodes = nodes;
     }
 
-    public String getKey() {
-        return toKey(id, version);
-    }
-
-    public static String toKey(String processId, String version) {
-        return processId + "$v:" + version;
-    }
-
-    public static String[] fromKey(String key) {
-        return Optional.ofNullable(key).map(k -> k.split(Pattern.quote("$v:"))).orElse(new String[0]);
-    }
-
     public String getDescription() {
         return description;
     }
@@ -176,5 +162,4 @@ public class ProcessDefinition {
                 ", nodes='" + nodes + '\'' +
                 '}';
     }
-
 }

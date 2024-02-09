@@ -23,32 +23,24 @@ import java.util.Set;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
-import org.kie.kogito.index.jpa.model.ProcessDefinitionEntityRepository;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.test.TestUtils;
-import org.kie.kogito.persistence.api.StorageService;
+import org.kie.kogito.persistence.api.Storage;
 
 import jakarta.inject.Inject;
 
-public abstract class AbstractProcessDefinitionStorageIT extends AbstractStorageIT<ProcessDefinitionEntity, ProcessDefinition> {
+public abstract class AbstractProcessDefinitionStorageIT extends AbstractStorageIT<ProcessDefinitionKey, ProcessDefinitionEntity, ProcessDefinition> {
 
     @Inject
-    ProcessDefinitionEntityRepository repository;
-
-    @Inject
-    StorageService storage;
+    ProcessDefinitionEntityStorage storage;
 
     public AbstractProcessDefinitionStorageIT() {
         super(ProcessDefinition.class);
     }
 
     @Override
-    public ProcessDefinitionEntityStorage.RepositoryAdapter getRepository() {
-        return new ProcessDefinitionEntityStorage.RepositoryAdapter(repository);
-    }
-
-    @Override
-    public StorageService getStorage() {
+    public Storage<ProcessDefinitionKey, ProcessDefinition> getStorage() {
         return storage;
     }
 
@@ -58,7 +50,7 @@ public abstract class AbstractProcessDefinitionStorageIT extends AbstractStorage
         String version = "1.0";
         ProcessDefinition pdv1 = TestUtils.createProcessDefinition(processId, version, Set.of("admin", "kogito"));
         ProcessDefinition pdv2 = TestUtils.createProcessDefinition(processId, version, Set.of("kogito"));
-        testStorage(pdv1.getKey(), pdv1, pdv2);
+        testStorage(new ProcessDefinitionKey(pdv1.getId(), pdv1.getVersion()), pdv1, pdv2);
     }
 
 }

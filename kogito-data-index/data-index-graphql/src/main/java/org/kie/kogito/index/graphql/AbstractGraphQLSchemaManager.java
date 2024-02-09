@@ -34,6 +34,7 @@ import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
@@ -137,7 +138,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public ProcessDefinition getProcessDefinition(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
-        return cacheService.getProcessDefinitionStorage().get(ProcessDefinition.toKey(source.getProcessId(), source.getVersion()));
+        return cacheService.getProcessDefinitionStorage().get(new ProcessDefinitionKey(source.getProcessId(), source.getVersion()));
     }
 
     protected String getServiceUrl(String endpoint, String processId) {
@@ -188,7 +189,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         return executeAdvancedQueryForCache(cacheService.getProcessInstanceStorage(), env);
     }
 
-    protected <T> List<T> executeAdvancedQueryForCache(StorageFetcher<String, T> cache, DataFetchingEnvironment env) {
+    protected <K, T> List<T> executeAdvancedQueryForCache(StorageFetcher<K, T> cache, DataFetchingEnvironment env) {
         Objects.requireNonNull(cache, "Cache not found");
 
         String inputTypeName = ((GraphQLNamedType) env.getFieldDefinition().getArgument("where").getType()).getName();
@@ -231,7 +232,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<String> getProcessInstanceSource(DataFetchingEnvironment env) {
         ProcessInstance pi = env.getSource();
-        ProcessDefinition pd = cacheService.getProcessDefinitionStorage().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
+        ProcessDefinition pd = cacheService.getProcessDefinitionStorage().get(new ProcessDefinitionKey(pi.getProcessId(), pi.getVersion()));
         if (pd == null) {
             return dataIndexApiExecutor.getProcessDefinitionSourceFileContent(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
         } else {
@@ -241,7 +242,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public CompletableFuture<List<Node>> getProcessInstanceNodes(DataFetchingEnvironment env) {
         ProcessInstance pi = env.getSource();
-        ProcessDefinition pd = cacheService.getProcessDefinitionStorage().get(ProcessDefinition.toKey(pi.getProcessId(), pi.getVersion()));
+        ProcessDefinition pd = cacheService.getProcessDefinitionStorage().get(new ProcessDefinitionKey(pi.getProcessId(), pi.getVersion()));
         if (pd == null) {
             return dataIndexApiExecutor.getProcessDefinitionNodes(getServiceUrl(pi.getEndpoint(), pi.getProcessId()), pi.getProcessId());
         } else {

@@ -20,13 +20,10 @@ package org.kie.kogito.index.jpa.storage;
 
 import org.kie.kogito.index.jpa.model.AbstractEntity;
 import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.api.StorageService;
-
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class AbstractStorageIT<E extends AbstractEntity, T> {
+public abstract class AbstractStorageIT<K, E extends AbstractEntity, T> {
 
     Class<T> type;
 
@@ -34,12 +31,10 @@ public abstract class AbstractStorageIT<E extends AbstractEntity, T> {
         this.type = type;
     }
 
-    abstract StorageService getStorage();
+    abstract Storage<K, T> getStorage();
 
-    abstract PanacheRepositoryBase<E, String> getRepository();
-
-    void testStorage(String key, T value1, T value2) {
-        Storage<String, T> cache = getStorage().getCache("cache", type);
+    void testStorage(K key, T value1, T value2) {
+        Storage<K, T> cache = getStorage();
         assertThat(cache.get(key)).isNull();
         assertThat(cache.containsKey(key)).isFalse();
 
