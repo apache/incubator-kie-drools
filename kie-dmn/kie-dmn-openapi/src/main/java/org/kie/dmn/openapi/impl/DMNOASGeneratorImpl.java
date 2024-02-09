@@ -18,16 +18,6 @@
  */
 package org.kie.dmn.openapi.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
@@ -43,6 +33,17 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DMNOASGeneratorImpl implements DMNOASGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(DMNOASGeneratorImpl.class);
@@ -81,7 +82,10 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
         ObjectNode tree = JsonUtil.objectNode();
         ObjectNode definitions = JsonUtil.objectNode();
         tree.set("definitions", definitions);
-        for (Entry<DMNType, Schema> kv : schemas.entrySet()) {
+        // It would be better if the map is a TreeMap, however that breaks test ProcessItemTest.test_together
+        // For some reason, it looks like there is some reliance on the map being a HashMap, which should be investigated later as that should never happen.
+        final List<Entry<DMNType, Schema>> sortedEntries = schemas.entrySet().stream().sorted(Map.Entry.comparingByKey(Comparator.comparing(DMNType::getName))).toList();
+        for (Entry<DMNType, Schema> kv : sortedEntries) {
             SchemaWriter.writeSchema(definitions, kv.getValue(), namingPolicy.getName(kv.getKey()));
         }
         jsonSchema = tree;
@@ -191,5 +195,4 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
             }
         }
     }
-
 }
