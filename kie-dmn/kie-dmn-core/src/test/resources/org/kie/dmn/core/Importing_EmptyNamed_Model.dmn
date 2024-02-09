@@ -28,22 +28,22 @@
                          name="A Person"
                          typeRef="tPerson"/>
    </semantic:inputData>
-   <semantic:decision id="_bf4a9628-15ae-4887-97f2-7099426cb60f" name="Local Greeting">
-      <semantic:variable id="_ecc6e0bb-a0af-4e99-aac6-5b8bed09c538"
-                         name="Local Greeting"
-                         typeRef="string"/>
-      <semantic:informationRequirement>
-         <semantic:requiredInput href="#_51190b90-924d-479b-872b-4c6f3486c2cb"/>
-      </semantic:informationRequirement>
-     <semantic:knowledgeRequirement>
-       <semantic:requiredKnowledge href="#_42543811-b499-4608-b784-6c6f294b1c59"/>
-     </semantic:knowledgeRequirement>
-      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-                                  id="_d7e6836b-8491-487a-a653-5735daa85be1"
-                                  triso:unparsed="true">
-         <semantic:text>Local Hello( A Person )</semantic:text>
-      </semantic:literalExpression>
-   </semantic:decision>
+<!--   <semantic:decision id="_bf4a9628-15ae-4887-97f2-7099426cb60f" name="Local Greeting">-->
+<!--      <semantic:variable id="_ecc6e0bb-a0af-4e99-aac6-5b8bed09c538"-->
+<!--                         name="Local Greeting"-->
+<!--                         typeRef="string"/>-->
+<!--      <semantic:informationRequirement>-->
+<!--         <semantic:requiredInput href="#_51190b90-924d-479b-872b-4c6f3486c2cb"/>-->
+<!--      </semantic:informationRequirement>-->
+<!--     <semantic:knowledgeRequirement>-->
+<!--       <semantic:requiredKnowledge href="#_42543811-b499-4608-b784-6c6f294b1c59"/>-->
+<!--     </semantic:knowledgeRequirement>-->
+<!--      <semantic:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"-->
+<!--                                  id="_d7e6836b-8491-487a-a653-5735daa85be1"-->
+<!--                                  triso:unparsed="true">-->
+<!--         <semantic:text>Local Hello( A Person )</semantic:text>-->
+<!--      </semantic:literalExpression>-->
+<!--   </semantic:decision>-->
 
   <semantic:decision id="_bf4a9628-15ae-4887-97f2-7099426cb60g" name="Imported Greeting">
     <semantic:variable id="_ecc6e0bb-a0af-4e99-aac6-5b8bed09c539"
@@ -62,18 +62,18 @@
     </semantic:literalExpression>
   </semantic:decision>
 
-  <semantic:businessKnowledgeModel id="_42543811-b499-4608-b784-6c6f294b1c59" name="Local Hello">
-    <semantic:variable id="_a8eb10e1-30e6-40d8-a564-a868f4e0af34"
-                       name="Local Hello"
-                       typeRef="string"/>
-    <semantic:encapsulatedLogic kind="FEEL" id="_acbb96c9-34a3-4628-8179-dfc5f583e695">
-      <semantic:formalParameter id="_4a626f74-2ecc-4759-b76a-04baec6b795d"
-                                name="Person"
-                                typeRef="tPerson"/>
-      <semantic:literalExpression id="_c173a894-3719-4d2f-a365-25850e217310">
-        <semantic:text>"Local Hello " + Person.name + "!"</semantic:text>
-      </semantic:literalExpression>
-    </semantic:encapsulatedLogic>
-  </semantic:businessKnowledgeModel>
+<!--  <semantic:businessKnowledgeModel id="_42543811-b499-4608-b784-6c6f294b1c59" name="Local Hello">-->
+<!--    <semantic:variable id="_a8eb10e1-30e6-40d8-a564-a868f4e0af45"-->
+<!--                       name="Local Hello"-->
+<!--                       typeRef="string"/>-->
+<!--    <semantic:encapsulatedLogic kind="FEEL" id="_acbb96c9-34a3-4628-8179-dfc5f583e695">-->
+<!--      <semantic:formalParameter id="_4a626f74-2ecc-4759-b76a-04baec6b795d"-->
+<!--                                name="Person"-->
+<!--                                typeRef="tPerson"/>-->
+<!--      <semantic:literalExpression id="_c173a894-3719-4d2f-a365-25850e217310">-->
+<!--        <semantic:text>"Local Hello " + Person.name + "!"</semantic:text>-->
+<!--      </semantic:literalExpression>-->
+<!--    </semantic:encapsulatedLogic>-->
+<!--  </semantic:businessKnowledgeModel>-->
 
 </semantic:definitions>

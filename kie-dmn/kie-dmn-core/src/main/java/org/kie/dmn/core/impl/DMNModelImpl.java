@@ -69,6 +69,7 @@ import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.Import;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
@@ -205,11 +206,27 @@ public class DMNModelImpl
     }
 
     private String computeDRGElementModelLocalId(DMNNode node) {
+        // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them with original opne,
+        // Here, if the node comes from an anonimous imported model, then it is stored only with its id, to be looked for
+        // as if defined in the model itself
         if (node.getModelNamespace().equals(definitions.getNamespace())) {
+            return node.getId();
+        } else if (isInUnnamedImport(node)) {
             return node.getId();
         } else {
             return node.getModelNamespace() + "#" + node.getId();
         }
+    }
+
+    private boolean isInUnnamedImport(DMNNode node) {
+        for (Import imported : getDefinitions().getImport()) {
+            String importedName = imported.getName();
+            if ((node.getModelNamespace().equals(imported.getNamespace()) &&
+                    (importedName != null && importedName.isEmpty()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -280,11 +297,6 @@ public class DMNModelImpl
         return this.decisionServices.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-
-    public void addBusinessKnowledgeModelInNamespace(BusinessKnowledgeModelNode bkm) {
-        bkms.put(bkm.getId(), bkm);
-       // ((BusinessKnowledgeModelNodeImpl)bkm).getSource().
-    }
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
         bkms.put(computeDRGElementModelLocalId(bkm), bkm);
     }

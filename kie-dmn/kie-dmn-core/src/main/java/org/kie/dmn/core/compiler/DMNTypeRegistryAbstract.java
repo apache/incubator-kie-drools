@@ -92,6 +92,11 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
         }
     }
 
+    @Override
+    public Map<String, Map<String, DMNType>> getTypes() {
+        return types;
+    }
+
     protected void registerAsFEELType(DMNType dmnType) {
         Optional<String> optAliasKey = keyfromNS(dmnType.getNamespace());
         Type feelType = ((BaseDMNTypeImpl) dmnType).getFeelType();

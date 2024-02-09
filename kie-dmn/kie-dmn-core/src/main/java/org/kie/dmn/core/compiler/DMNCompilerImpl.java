@@ -231,7 +231,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }, Function.identity());
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-                        // TODO EXPERIMENT
+                        // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them
+                        //  with original opne,
+                        // because otherwise we would have to deal with clashing name aliases, or similar issues
                         if (iAlias != null && !iAlias.isEmpty()) {
                             model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                             importFromModel(model, located, iAlias);
@@ -255,17 +257,16 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
         }
 
-        toMerge.forEach(mergedModel -> processMergedModel(ctx, model, mergedModel));
+        toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
 
         return model;
     }
 
-    private void processMergedModel(DMNCompilerContext ctx, DMNModelImpl parentModel, DMNModel mergedModel) {
-//        for (ItemDefNode idn : mergedModel.getItemDefinitions()) {
-//            parentModel.getTypeRegistry().registerType(idn.getType());
-//        }
+    private void processMergedModel(DMNModelImpl parentModel, DMNModelImpl mergedModel) {
+        // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them with original opne,
+        // Here we try to put all the definitions from the "imported" model inside the parent one
         Definitions parentDefinitions = parentModel.getDefinitions();
         Definitions mergedDefinitions = mergedModel.getDefinitions();
         parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
@@ -275,8 +276,9 @@ public class DMNCompilerImpl implements DMNCompiler {
         parentDefinitions.getImport().addAll(mergedDefinitions.getImport());
         parentDefinitions.getItemDefinition().addAll(mergedDefinitions.getItemDefinition());
         mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
-//        processItemDefinitions(ctx, parentModel, mergedModel.getDefinitions());
-//        processDrgElements(ctx, parentModel, mergedModel.getDefinitions());
+        mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
+                                                                 stringDMNTypeMap.values().
+                                                                         forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
     }
 
     private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {
@@ -362,30 +364,22 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    private void importFromModel(DMNModelImpl parentModel, DMNModel importedModel, String iAlias) {
-        parentModel.addImportChainChild(((DMNModelImpl) importedModel).getImportChain(), iAlias);
-        for (ItemDefNode idn : importedModel.getItemDefinitions()) {
-//            if (iAlias != null && iAlias.isEmpty()) {
-//                parentModel.getTypeRegistry().registerTypeInNamespace(idn.getType(), parentModel.getNamespace());
-//            } else {
-                parentModel.getTypeRegistry().registerType(idn.getType());
-//            }
+    private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
+        model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
+        for (ItemDefNode idn : m.getItemDefinitions()) {
+            model.getTypeRegistry().registerType(idn.getType());
         }
-        for (InputDataNode idn : importedModel.getInputs()) {
-            parentModel.addInput(idn);
+        for (InputDataNode idn : m.getInputs()) {
+            model.addInput(idn);
         }
-        for (BusinessKnowledgeModelNode bkm : importedModel.getBusinessKnowledgeModels()) {
-//            if (iAlias != null && iAlias.isEmpty()) {
-//                parentModel.addBusinessKnowledgeModelInNamespace(bkm);
-//            } else {
-            parentModel.addBusinessKnowledgeModel(bkm);
-//            }
+        for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
+            model.addBusinessKnowledgeModel(bkm);
         }
-        for (DecisionNode dn : importedModel.getDecisions()) {
-            parentModel.addDecision(dn);
+        for (DecisionNode dn : m.getDecisions()) {
+            model.addDecision(dn);
         }
-        for (DecisionServiceNode dsn : importedModel.getDecisionServices()) {
-            parentModel.addDecisionService(dsn);
+        for (DecisionServiceNode dsn : m.getDecisionServices()) {
+            model.addDecisionService(dsn);
         }
     }
 
@@ -768,8 +762,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             QName nsAndName = getNamespaceAndName(localElement, dmnModel.getImportAliasesForNS(), typeRef, dmnModel.getNamespace());
 
             DMNType type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
-            if (type == null) {
-                if (localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
+            if (type == null && localElement.getURIFEEL().equals(nsAndName.getNamespaceURI())) {
                     if (model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable) {
                         DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
                         if (dt.getOutput().size() > 1) {
@@ -790,11 +783,13 @@ public class DMNCompilerImpl implements DMNCompiler {
                         }
                     }
                 }
-                if (!localElement.getURIFEEL().equals(dmnModel.getTypeRegistry().feelNS())) {
-                    nsAndName = new QName(dmnModel.getTypeRegistry().feelNS(), typeRef.getLocalPart());
-                    type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
-                }
-            }
+//            // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them with
+//            //  original one,
+//            // Here, we try to solve elements that comes from different namespaces but are the same types - e.g. "string"
+//            if (type == null && !localElement.getURIFEEL().equals(dmnModel.getTypeRegistry().feelNS())) {
+//                nsAndName = new QName(dmnModel.getTypeRegistry().feelNS(), typeRef.getLocalPart());
+//                type = dmnModel.getTypeRegistry().resolveType(nsAndName.getNamespaceURI(), nsAndName.getLocalPart());
+//            }
             if (type == null) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
