@@ -16,22 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.mvel.compiler.lang;
+package org.drools.drl10.parser;
 
-import org.drools.compiler.builder.impl.EvaluatorRegistry;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DrlExprParserFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DRLExprTreeTest
@@ -40,13 +39,12 @@ public class DRLExprParserTest {
 
     DrlExprParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        new EvaluatorRegistry();
-        this.parser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL6);
+        this.parser = new Drl10ExprParser(LanguageLevelOption.DRL6);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.parser = null;
     }
@@ -182,7 +180,7 @@ public class DRLExprParserTest {
 
         AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
         assertThat(right.getExpression()).isEqualTo("value");
-        
+
         rel = (RelationalExprDescr) result.getDescrs().get( 1 );
         assertThat(rel.getOperator()).isEqualTo("<");
 
@@ -250,7 +248,8 @@ public class DRLExprParserTest {
 
     }
 
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testNestedExpression() throws Exception {
         // DROOLS-982
         String source = "(((((((((((((((((((((((((((((((((((((((((((((((((( a > b ))))))))))))))))))))))))))))))))))))))))))))))))))";
