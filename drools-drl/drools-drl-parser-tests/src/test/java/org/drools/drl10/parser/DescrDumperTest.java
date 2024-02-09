@@ -16,29 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.mvel.compiler.lang;
+package org.drools.drl10.parser;
 
-import org.drools.drl.parser.DrlExprParser;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.DumperContext;
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
-import org.drools.drl.parser.DrlExprParserFactory;
+import org.drools.drl.parser.DrlExprParser;
 import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.mvel.evaluators.SetEvaluatorsDefinition;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class DescrDumperTest {
 
     private DescrDumper dumper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // configure operators
         new SetEvaluatorsDefinition();
@@ -135,7 +134,7 @@ public class DescrDumperTest {
         assertThat(result).isEqualTo(expected);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testDumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";
@@ -359,7 +358,7 @@ public class DescrDumperTest {
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL6);
+        DrlExprParser parser = new Drl10ExprParser(LanguageLevelOption.DRL6);
         ConstraintConnectiveDescr result = parser.parse( constraint );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
