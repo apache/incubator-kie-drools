@@ -71,6 +71,8 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
     
@@ -211,23 +213,13 @@ public class DMNModelImpl
         // as if defined in the model itself
         if (node.getModelNamespace().equals(definitions.getNamespace())) {
             return node.getId();
-        } else if (isInUnnamedImport(node)) {
+        } else if (isInUnnamedImport(node, this)) {
             return node.getId();
         } else {
             return node.getModelNamespace() + "#" + node.getId();
         }
     }
 
-    private boolean isInUnnamedImport(DMNNode node) {
-        for (Import imported : getDefinitions().getImport()) {
-            String importedName = imported.getName();
-            if ((node.getModelNamespace().equals(imported.getNamespace()) &&
-                    (importedName != null && importedName.isEmpty()))) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public DecisionNode getDecisionById(String id) {

@@ -38,6 +38,8 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Decision;
 
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+
 public class DecisionCompiler implements DRGElementCompiler {
     @Override
     public boolean accept(DRGElement de) {
@@ -96,6 +98,9 @@ public class DecisionCompiler implements DRGElementCompiler {
             if (dep.getModelNamespace().equals(model.getNamespace())) {
                 // for BKMs might need to create a DMNType for "functions" and replace the type here by that
                 ctx.setVariable(dep.getName(), depType);
+            } else if (isInUnnamedImport(dep, model)) {
+                // the dependency is an unnamed import
+                ctx.setVariable(dep.getName(), depType);
             } else {
                 // then the dependency is an imported dependency.
                 Optional<String> alias = model.getImportAliasFor(dep.getModelNamespace(), dep.getModelName());
@@ -109,4 +114,5 @@ public class DecisionCompiler implements DRGElementCompiler {
             ctx.setVariable(importedType.getKey(), importedType.getValue());
         }
     }
+
 }
