@@ -281,6 +281,11 @@ public class EvalHelper {
 
     public static class PropertyValueResult implements FEELPropertyAccessible.AbstractPropertyValueResult {
 
+        // This exception is used to signal an undefined property for notDefined(). This method may be many times when
+        // evaluating a decision, so a single instance is being cached to avoid the cost of creating the stack trace
+        // each time.
+        private static final Exception undefinedPropertyException = new UnsupportedOperationException("Property was not defined.");
+
         private final boolean defined;
         private final Either<Exception, Object> valueResult;
 
@@ -290,7 +295,7 @@ public class EvalHelper {
         }
 
         public static PropertyValueResult notDefined() {
-            return new PropertyValueResult(false, Either.ofRight(null));
+            return new PropertyValueResult(false, Either.ofLeft(undefinedPropertyException));
         }
 
         public static PropertyValueResult of(Either<Exception, Object> valueResult) {
