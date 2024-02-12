@@ -22,7 +22,11 @@ do
     modules_list=$(echo $modules | tr "," "\n")
     for module in ${modules_list}
     do
+        if ! grep -Rq "<module>${module}</module>" ${pom} ; then
+            echo "Could not find module ${module} in ${pom}. Exiting script..."
+            exit 1
+        fi
         echo "Removing module ${module} from ${pom}"
-        sed -i "/<module>${module}<\/module/d" ${pom}
+        sed -i "/<module>${module}<\/module>/d" ${pom}
     done
 done
