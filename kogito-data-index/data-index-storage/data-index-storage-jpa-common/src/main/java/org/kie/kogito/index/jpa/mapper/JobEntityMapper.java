@@ -23,7 +23,7 @@ import org.kie.kogito.index.model.Job;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
 public interface JobEntityMapper {
 
     JobEntity mapToEntity(Job job);

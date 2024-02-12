@@ -27,7 +27,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
 public interface ProcessInstanceEntityMapper {
 
     MilestoneEntity mapMilestoneToEntity(Milestone mi);

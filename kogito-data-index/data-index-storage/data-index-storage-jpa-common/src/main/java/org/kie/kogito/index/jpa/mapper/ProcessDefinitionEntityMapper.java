@@ -25,7 +25,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
 public interface ProcessDefinitionEntityMapper {
 
     ProcessDefinitionEntity mapToEntity(ProcessDefinition pd);
