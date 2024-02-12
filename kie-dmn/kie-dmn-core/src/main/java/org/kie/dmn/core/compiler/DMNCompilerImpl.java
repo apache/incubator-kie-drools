@@ -42,6 +42,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -105,6 +106,8 @@ import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -230,7 +233,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }, Function.identity());
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-                        // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them
+                        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
                         //  with original one,
                         // because otherwise we would have to deal with clashing name aliases, or similar issues
                         if (iAlias != null && !iAlias.isEmpty()) {
@@ -259,25 +262,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
-
         return model;
-    }
-
-    private void processMergedModel(DMNModelImpl parentModel, DMNModelImpl mergedModel) {
-        // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them with original opne,
-        // Here we try to put all the definitions from the "imported" model inside the parent one
-        Definitions parentDefinitions = parentModel.getDefinitions();
-        Definitions mergedDefinitions = mergedModel.getDefinitions();
-        parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
-        parentDefinitions.getDecisionService().addAll(mergedDefinitions.getDecisionService());
-        parentDefinitions.getBusinessContextElement().addAll(mergedDefinitions.getBusinessContextElement());
-        parentDefinitions.getDrgElement().addAll(mergedDefinitions.getDrgElement());
-        parentDefinitions.getImport().addAll(mergedDefinitions.getImport());
-        parentDefinitions.getItemDefinition().addAll(mergedDefinitions.getItemDefinition());
-        mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
-        mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
-                                                                 stringDMNTypeMap.values().
-                                                                         forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
     }
 
     private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {

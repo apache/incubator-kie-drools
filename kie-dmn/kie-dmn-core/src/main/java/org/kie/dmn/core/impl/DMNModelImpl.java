@@ -207,12 +207,13 @@ public class DMNModelImpl
     }
 
     private String computeDRGElementModelLocalId(DMNNode node) {
-        // TODO WIP 852: The idea is to not treat the anonimous model as import, but to "merge" them with original opne,
+        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
         // Here, if the node comes from an unnamed imported model, then it is stored only with its id, to be looked for
         // as if defined in the model itself
         if (node.getModelNamespace().equals(definitions.getNamespace())) {
             return node.getId();
         } else if (isInUnnamedImport(node, this)) {
+            // the node is an unnamed import
             return node.getId();
         } else {
             return node.getModelNamespace() + "#" + node.getId();

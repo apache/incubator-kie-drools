@@ -18,9 +18,14 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.util.Collection;
+import java.util.Objects;
+
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.NamedElement;
 
 /**
  * Class meant to provide helper methods to deal with unnamed model imports
@@ -39,5 +44,33 @@ public class UnnamedImportUtils {
             }
         }
         return false;
+    }
+
+    public static void processMergedModel(DMNModelImpl parentModel, DMNModelImpl mergedModel) {
+        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
+        // Here we try to put all the definitions from the "imported" model inside the parent one
+        Definitions parentDefinitions = parentModel.getDefinitions();
+        Definitions mergedDefinitions = mergedModel.getDefinitions();
+        parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
+
+        addIfNotPresent(parentDefinitions.getDecisionService(), mergedDefinitions.getDecisionService());
+        addIfNotPresent(parentDefinitions.getBusinessContextElement(), mergedDefinitions.getBusinessContextElement());
+        addIfNotPresent(parentDefinitions.getDrgElement(), mergedDefinitions.getDrgElement());
+        addIfNotPresent(parentDefinitions.getImport(), mergedDefinitions.getImport());
+        addIfNotPresent(parentDefinitions.getItemDefinition(), mergedDefinitions.getItemDefinition());
+        mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
+        mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
+                                                                 stringDMNTypeMap.values().
+                                                                         forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
+    }
+
+    static <T extends NamedElement> void addIfNotPresent(Collection<T> target, Collection<T> source) {
+        source.forEach(sourceElement -> addIfNotPresent(target, sourceElement));
+    }
+
+    static <T extends NamedElement> void addIfNotPresent(Collection<T> target, T source) {
+        if (target.stream().noneMatch(namedElement -> Objects.equals(namedElement.getName(), source.getName()))) {
+            target.add(source);
+        }
     }
 }
