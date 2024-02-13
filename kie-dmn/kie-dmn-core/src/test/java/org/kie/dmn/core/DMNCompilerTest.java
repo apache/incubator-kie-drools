@@ -276,7 +276,7 @@ public class DMNCompilerTest extends BaseVariantTest {
     public void testEmptyNamedModelImport() {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Importing_EmptyNamed_Model.dmn",
                                                                         this.getClass(),
-                                                                        "Imported_Model.dmn");
+                                                                        "Imported_Model_Unamed.dmn");
 
         final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
                                                         "Imported Model");
@@ -322,7 +322,7 @@ public class DMNCompilerTest extends BaseVariantTest {
     public void testOverridingEmptyNamedModelImport() {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Importing_OverridingEmptyNamed_Model.dmn",
                                                                         this.getClass(),
-                                                                        "Imported_Model.dmn");
+                                                                        "Imported_Model_Unamed.dmn");
 
         final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
                                                         "Imported Model");

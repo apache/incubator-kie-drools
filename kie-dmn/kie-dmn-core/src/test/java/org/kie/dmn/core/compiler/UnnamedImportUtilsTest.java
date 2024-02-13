@@ -28,7 +28,7 @@ public class UnnamedImportUtilsTest {
     public void isInUnnamedImportTrue() {
         File importingModelFile = FileUtils.getFile("Importing_EmptyNamed_Model.dmn");
         assertThat(importingModelFile).isNotNull().exists();
-        File importedModelFile = FileUtils.getFile("Imported_Model.dmn");
+        File importedModelFile = FileUtils.getFile("Imported_Model_Unamed.dmn");
         assertThat(importedModelFile).isNotNull().exists();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelFile,
                                                                                        importedModelFile);
@@ -50,7 +50,7 @@ public class UnnamedImportUtilsTest {
     public void isInUnnamedImportFalse() {
         File importingModelFile = FileUtils.getFile("Importing_Named_Model.dmn");
         assertThat(importingModelFile).isNotNull().exists();
-        File importedModelFile = FileUtils.getFile("Imported_Model.dmn");
+        File importedModelFile = FileUtils.getFile("Imported_Model_Unamed.dmn");
         assertThat(importedModelFile).isNotNull().exists();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelFile,
                                                                                        importedModelFile);
@@ -70,7 +70,7 @@ public class UnnamedImportUtilsTest {
 
     @Test
     public void addIfNotPresentTrue() throws IOException {
-        File importedModelFile = FileUtils.getFile("Imported_Model.dmn");
+        File importedModelFile = FileUtils.getFile("Imported_Model_Unamed.dmn");
         assertThat(importedModelFile).isNotNull().exists();
 
         String xml = new String(Files.readAllBytes(Paths.get(importedModelFile.toURI())));
@@ -86,7 +86,7 @@ public class UnnamedImportUtilsTest {
     public void addIfNotPresentFalse() throws IOException {
         File importingModelFile = FileUtils.getFile("Importing_OverridingEmptyNamed_Model.dmn");
         assertThat(importingModelFile).isNotNull().exists();
-        File importedModelFile = FileUtils.getFile("Imported_Model.dmn");
+        File importedModelFile = FileUtils.getFile("Imported_Model_Unamed.dmn");
         assertThat(importedModelFile).isNotNull().exists();
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelFile,
                                                                                        importedModelFile);
