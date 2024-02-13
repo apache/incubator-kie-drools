@@ -41,6 +41,8 @@ public abstract class BaseDMNTypeImpl
     private String          id;
     private boolean         collection;
     private List<UnaryTest> allowedValues;
+
+    private List<UnaryTest> typeConstraints;
     private DMNType         baseType;
     private Type            feelType;
     private DMNType         belongingType;
@@ -100,6 +102,11 @@ public abstract class BaseDMNTypeImpl
     public List<DMNUnaryTest> getAllowedValues() {
         return allowedValues != null ? Collections.unmodifiableList((List) allowedValues) : Collections.emptyList();
     }
+
+    @Override
+    public List<DMNUnaryTest> getTypeConstraints() {
+        return typeConstraints != null ? Collections.unmodifiableList((List) typeConstraints) : Collections.emptyList();
+    }
     
     public List<UnaryTest> getAllowedValuesFEEL() {
         return allowedValues;
@@ -108,6 +115,15 @@ public abstract class BaseDMNTypeImpl
     public void setAllowedValues(List<UnaryTest> allowedValues) {
         this.allowedValues = allowedValues;
     }
+
+    public List<UnaryTest> getTypeConstraintsFEEL() {
+        return typeConstraints;
+    }
+
+    public void setTypeConstraints(List<UnaryTest> typeConstraints) {
+        this.typeConstraints = typeConstraints;
+    }
+
 
     @Override
     public DMNType getBaseType() {
@@ -184,8 +200,21 @@ public abstract class BaseDMNTypeImpl
         // and vice-versa
         return internalIsAssignableValue( value ) && valueMatchesInUnaryTests(value);
     }
+
+    @Override
+    public boolean isTypeConstraint(Object value) {
+        if (value == null && typeConstraints == null) {
+            return true; // a null-value can be assigned to any type.
+        }
+        // .. normal case, or collection of 1 element: singleton list
+        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+        // and vice-versa
+        return internalIsTypeConstraint( value ) && valueMatchesInUnaryTests(value);
+    }
     
     protected abstract boolean internalIsAssignableValue(Object o);
+
+    protected abstract boolean internalIsTypeConstraint(Object o);
 
     public void setBelongingType(DMNType belongingType) {
         this.belongingType = belongingType;

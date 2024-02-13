@@ -101,4 +101,25 @@ public class MapBackedType
         }
         return true;
     }
+
+    @Override
+    public boolean isTypeConstraint(Object value) {
+        if ( value == null ) {
+            return true;
+        }
+        if ( !(value instanceof Map) ) {
+            return false;
+        }
+        Map<?, ?> instance = (Map<?, ?>) value;
+        for ( Entry<String, Type> f : fields.entrySet() ) {
+            if ( !instance.containsKey(f.getKey()) ) {
+                return false;
+            }
+            Object instanceValueForKey = instance.get(f.getKey());
+            if ( instanceValueForKey != null && !f.getValue().isTypeConstraint(instanceValueForKey) ) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

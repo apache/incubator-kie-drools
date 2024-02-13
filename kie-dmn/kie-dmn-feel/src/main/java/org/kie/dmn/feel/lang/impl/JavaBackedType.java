@@ -138,6 +138,11 @@ public class JavaBackedType implements CompositeType {
         return value == null || wrapped.getClass().isAssignableFrom(value.getClass());
     }
 
+    @Override
+    public boolean isTypeConstraint(Object value) {
+        return value == null || wrapped.getClass().isAssignableFrom(value.getClass());
+    }
+
     public static Type determineTypeFromClass( Class<?> clazz ) {
         if( clazz == null ) {
             return BuiltInType.UNKNOWN;

@@ -100,6 +100,11 @@ import org.kie.dmn.model.api.ItemDefinition;
  * This is reflected in this DMN type {@link #getAllowedValues()}.<br/>
  * <br/>
  * It is important to note that attribute can only be present when the type is specified by reference.
+ * <h1>typeConstraints</h1>
+ * As per the DMN specification, the {@link ItemDefinition#getTypeConstraints()} ()} attribute lists the possible values or ranges of values in the base type that are allowed in this ItemDefinition.
+ * This is reflected in this DMN type {@link #getTypeConstraints()}.<br/>
+ * <br/>
+ * It is important to note that attribute can only be present when the type is specified by reference.
  * <h1>getFields</h1>
  * Only when a type is specified by composition, {@link #getFields()} will return the collection of the fields which constitutes the composite type.<br/>
  * <br/>
@@ -218,4 +223,13 @@ public interface DMNType
     boolean isAssignableValue(Object value);
 
     List<DMNUnaryTest> getAllowedValues();
+
+    /**
+     * Check if the value passed as parameter fulfill the typeConstraint to this type.
+     * @param value
+     * @return if value fulfill the typeConstraint represented by this type. If the parameter is null, returns true.
+     */
+    boolean isTypeConstraint(Object value);
+
+    List<DMNUnaryTest> getTypeConstraints();
 }

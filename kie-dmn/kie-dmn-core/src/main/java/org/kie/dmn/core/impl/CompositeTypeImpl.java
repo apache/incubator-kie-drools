@@ -163,4 +163,37 @@ public class CompositeTypeImpl
             return true;
         }
     }
+
+    @Override
+    protected boolean internalIsTypeConstraint(Object o) {
+        if (getBaseType() != null) {
+            return getBaseType().isTypeConstraint(o);
+        } else if (o instanceof Map<?, ?>) {
+            Map<?, ?> instance = (Map<?, ?>) o;
+            for ( Entry<String, DMNType> f : fields.entrySet() ) {
+                if ( !instance.containsKey(f.getKey()) ) {
+                    return false; // It must have key named 'f.getKey()' like a Duck.
+                } else {
+                    if ( !f.getValue().isTypeConstraint(instance.get(f.getKey())) ) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else if (o == null) {
+            return true; // a null-value can be assigned to any type.
+        } else {
+            for ( Entry<String, DMNType> f : fields.entrySet() ) {
+                PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
+                if (fValue.isDefined()) {
+                    if (!f.getValue().isTypeConstraint(fValue.getValueResult().getOrElseThrow(e -> new IllegalStateException(e)))) {
+                        return false;
+                    }
+                } else {
+                    return false; // It must <genericAccessor> like a Duck.
+                }
+            }
+            return true;
+        }
+    }
 }

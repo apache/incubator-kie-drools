@@ -48,6 +48,17 @@ public class GenListType implements SimpleType {
     }
 
     @Override
+    public boolean isTypeConstraint(Object value) {
+        if ( value == null ) {
+            return true; // a null-value can be assigned to any type.
+        }
+        if (!(value instanceof Collection)) {
+            return gen.isTypeConstraint(value);
+        }
+        return isInstanceOf(value);
+    }
+
+    @Override
     public String getName() {
         return "[anonymous]";
     }

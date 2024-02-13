@@ -129,9 +129,17 @@ public class DMNTypeSchemas {
         if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
             schema.addExtension(DMNOASConstants.X_DMN_ALLOWED_VALUES, t.getAllowedValuesFEEL().stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
             if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
-                FEELSchemaEnum.parseNumberAllowedValuesIntoSchema(schema, t.getAllowedValues());
+                FEELSchemaEnum.parseNumbersIntoSchema(schema, t.getAllowedValues());
             } else {
-                FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
+                FEELSchemaEnum.parseValuesIntoSchema(schema, t.getAllowedValues());
+            }
+        }
+        if (t.getTypeConstraints() != null && !t.getTypeConstraints().isEmpty()) {
+            schema.addExtension(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, t.getTypeConstraintsFEEL().stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
+            if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
+                FEELSchemaEnum.parseNumbersIntoSchema(schema, t.getTypeConstraints());
+            } else {
+                FEELSchemaEnum.parseValuesIntoSchema(schema, t.getTypeConstraints());
             }
         }
         schema = nestAsItemIfCollection(schema, t);

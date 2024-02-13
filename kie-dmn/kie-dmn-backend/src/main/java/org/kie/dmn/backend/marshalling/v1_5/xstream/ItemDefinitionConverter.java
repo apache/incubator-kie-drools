@@ -48,7 +48,7 @@ public class ItemDefinitionConverter extends NamedElementConverter {
         } else if (ALLOWED_VALUES.equals(nodeName)) {
             id.setAllowedValues((UnaryTests) child);
         } else if (TYPE_CONSTRAINT.equals(nodeName)) {
-            id.setTypeConstraint((UnaryTests) child);
+            id.setTypeConstraints((UnaryTests) child);
         } else if (ITEM_COMPONENT.equals(nodeName)) {
             id.getItemComponent().add((ItemDefinition) child);
         } else if (FUNCTION_ITEM.equals(nodeName)) {
@@ -81,8 +81,8 @@ public class ItemDefinitionConverter extends NamedElementConverter {
         if (id.getAllowedValues() != null) {
             writeChildrenNode(writer, context, id.getAllowedValues(), ALLOWED_VALUES);
         }
-        if (id.getTypeConstraint() != null) {
-            writeChildrenNode(writer, context, id.getTypeConstraint(), TYPE_CONSTRAINT);
+        if (id.getTypeConstraints() != null) {
+            writeChildrenNode(writer, context, id.getTypeConstraints(), TYPE_CONSTRAINT);
         }
         for ( ItemDefinition ic : id.getItemComponent() ) {
             writeChildrenNode(writer, context, ic, ITEM_COMPONENT);

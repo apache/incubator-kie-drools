@@ -60,12 +60,12 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     }
 
     @Override
-    public UnaryTests getTypeConstraint() {
+    public UnaryTests getTypeConstraints() {
         return typeConstraint;
     }
 
     @Override
-    public void setTypeConstraint(UnaryTests value) {
+    public void setTypeConstraints(UnaryTests value) {
         this.typeConstraint = value;
     }
 

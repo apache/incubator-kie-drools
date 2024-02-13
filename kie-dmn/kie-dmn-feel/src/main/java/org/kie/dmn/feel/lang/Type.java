@@ -40,6 +40,13 @@ public interface Type {
     boolean isAssignableValue(Object value);
 
     /**
+     * Check if the value passed as parameter fulfill the typeConstraint to this type.
+     * @param value
+     * @return if value fulfill the typeConstraint represented by this type. If the parameter is null, returns true.
+     */
+    boolean isTypeConstraint(Object value);
+
+    /**
      * Check if this type does Conform to specified type <code>t</code> accordingly to FEEL DMN specification 10.3.2.9.2 Type Conformance
      * @param t
      * @return if this type does conform to specified type.
