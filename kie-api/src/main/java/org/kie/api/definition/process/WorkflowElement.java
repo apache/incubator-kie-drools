@@ -16,23 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.runtime.error;
 
-import java.util.List;
+package org.kie.api.definition.process;
 
-public interface ExecutionErrorStorage {
+public interface WorkflowElement {
 
-    ExecutionError store(ExecutionError error);
-    
-    ExecutionError get(String errorId);
-    
-    void acknowledge(String user, String... errorId);
-    
-    List<ExecutionError> list(Integer page, Integer pageSize);
-    
-    List<ExecutionError> listByProcessInstance(String processInstanceId, Integer page, Integer pageSize);
-    
-    List<ExecutionError> listByActivity(String activityName, Integer page, Integer pageSize);
-    
-    List<ExecutionError> listByDeployment(String deploymentId, Integer page, Integer pageSize);
+    /**
+     * The id of the node.  This is unique within its NodeContainer.
+     * @return the id of the node
+     */
+    WorkflowElementIdentifier getId();
+
+    /**
+     * the node id in the bpmn
+     * @return
+     */
+    default String getUniqueId() {
+        return this.getId().toExternalFormat();
+    }
+
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * A connection is a link from one Node to another.
  */
-public interface Connection {
+public interface Connection extends WorkflowElement {
 
     /**
      * The Node the connection starts from.

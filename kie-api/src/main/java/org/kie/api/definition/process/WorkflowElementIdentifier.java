@@ -16,9 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.runtime.manager.audit.query;
 
+package org.kie.api.definition.process;
 
-public interface ErrorInfoDeleteBuilder extends AuditDateDeleteBuilder<ErrorInfoDeleteBuilder> {
+public interface WorkflowElementIdentifier extends Comparable<WorkflowElementIdentifier> {
+
+    <T> T toValue();
+
+    @Override
+    int hashCode();
+
+    @Override
+    boolean equals(Object obj);
+
+    @Override
+    default int compareTo(WorkflowElementIdentifier o) {
+        return this.toExternalFormat().compareTo(o.toExternalFormat());
+    }
+
+    default String toExternalFormat() {
+        return toValue().toString();
+    }
+
+    String toSanitizeString();
 
 }

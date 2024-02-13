@@ -36,7 +36,7 @@ public interface NodeContainer {
      *
      * @return the node with the given id
      */
-    Node getNode(long id);
+    Node getNode(WorkflowElementIdentifier id);
 
     /** 
      * the node in this NodeContainer with the give unique id
