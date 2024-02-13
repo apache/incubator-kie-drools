@@ -29,7 +29,6 @@ import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.SemanticModule;
 import org.jbpm.compiler.xml.core.DefaultSemanticModule;
 import org.jbpm.compiler.xml.core.SemanticModules;
-import org.jbpm.compiler.xml.core.WrapperSemanticModule;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.MultiValueKieBuilderOption;
 import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
@@ -58,11 +57,6 @@ public class SemanticKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderC
 
     public void initSemanticModules() {
         this.semanticModules = new SemanticModules();
-
-        RulesSemanticModule ruleModule = new RulesSemanticModule("http://ddefault");
-
-        this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.0", ruleModule));
-        this.semanticModules.addSemanticModule(new WrapperSemanticModule("http://drools.org/drools-5.2", ruleModule));
 
         // split on each space
         String locations[] = getChainedProperties().getProperty("semanticModules", "").split("\\s");

@@ -43,7 +43,6 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.ParserError;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.assembler.DuplicateProcess;
-import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.ProcessBuildContext;
@@ -79,7 +78,6 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,14 +95,6 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 
     public ProcessBuilderImpl(KnowledgeBuilderImpl packageBuilder) {
         this.knowledgeBuilder = packageBuilder;
-        configurePackageBuilder(packageBuilder);
-    }
-
-    public void configurePackageBuilder(KnowledgeBuilder packageBuilder) {
-        SemanticKnowledgeBuilderConfigurationImpl conf = (SemanticKnowledgeBuilderConfigurationImpl) ((KnowledgeBuilderImpl) packageBuilder).getBuilderConfiguration();
-        if (conf.getSemanticModules().getSemanticModule(ProcessSemanticModule.URI) == null) {
-            conf.addSemanticModule(new ProcessSemanticModule());
-        }
     }
 
     public List<KnowledgeBuilderResult> getErrors() {
