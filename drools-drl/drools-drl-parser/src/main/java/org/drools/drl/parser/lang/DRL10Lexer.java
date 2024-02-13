@@ -30,17 +30,17 @@ public class DRL10Lexer implements DRLLexer {
 
     @Override
     public String getSourceName() {
-        return null;
+        throw new UnsupportedOperationException("This method should not be called");
     }
 
     @Override
     public Token nextToken() {
-        return null;
+        throw new UnsupportedOperationException("This method should not be called");
     }
 
     @Override
     public List<DroolsParserException> getErrors() {
-        return null;
+        throw new UnsupportedOperationException("This method should not be called");
     }
 
 }
