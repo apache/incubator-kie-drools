@@ -80,7 +80,8 @@ public abstract class AbstractQuarkusCloudEventEmitter<M> implements EventEmitte
         }
         OutgoingCloudEventMetadataBuilder<Object> builder = OutgoingCloudEventMetadata.builder().withId(event.getId()).withSource(event.getSource()).withType(event.getType())
                 .withSubject(event.getSubject())
-                .withDataContentType(event.getDataContentType()).withDataSchema(event.getDataSchema()).withSpecVersion(event.getSpecVersion().name()).withTimestamp(event.getTime().toZonedDateTime());
+                .withDataContentType(event.getDataContentType()).withDataSchema(event.getDataSchema()).withSpecVersion(event.getSpecVersion().toString())
+                .withTimestamp(event.getTime().toZonedDateTime());
         for (String extName : event.getExtensionNames()) {
             builder.withExtension(extName, event.getExtension(extName));
         }
