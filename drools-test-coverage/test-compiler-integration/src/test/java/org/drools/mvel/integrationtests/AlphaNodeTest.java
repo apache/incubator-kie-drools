@@ -197,7 +197,7 @@ public class AlphaNodeTest {
                 "  $p : Person(name == \"Mario\")\n" +
                 "  $s : String(this == $p.name)\n" +
                 "then\n" +
-                "  modify($p) { setName(\"Mark\") }\n" +
+                "  modify($p) { setName(\"Mark\") }" +
                 "end\n" +
                 "rule R2 when\n" +
                 "  $p : Person(name == \"Mark\")\n" +
