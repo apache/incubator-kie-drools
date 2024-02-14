@@ -25,6 +25,7 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
+import org.drools.drl.parser.lang.DRL10Lexer;
 import org.drools.drl.parser.lang.DRL5Expressions;
 import org.drools.drl.parser.lang.DRL5Lexer;
 import org.drools.drl.parser.lang.DRL5Parser;
@@ -113,6 +114,8 @@ public class DRLFactory {
             case DRL6:
             case DRL6_STRICT:
                 return new DRL6Lexer(input);
+            case DRL10:
+                return new DRL10Lexer();
         }
         throw new RuntimeException("Unknown language level");
     }

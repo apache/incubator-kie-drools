@@ -24,6 +24,7 @@ import org.drools.compiler.lang.DumperContext;
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
+import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.mvel.evaluators.SetEvaluatorsDefinition;
 import org.junit.Before;
@@ -358,7 +359,7 @@ public class DescrDumperTest {
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {
-        DrlExprParser parser = new DrlExprParser(LanguageLevelOption.DRL6);
+        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL6);
         ConstraintConnectiveDescr result = parser.parse( constraint );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
