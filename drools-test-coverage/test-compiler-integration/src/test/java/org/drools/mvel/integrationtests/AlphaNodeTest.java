@@ -48,6 +48,8 @@ public class AlphaNodeTest {
 
     @Test
     public void testAlpha() {
+
+
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +

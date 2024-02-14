@@ -25,6 +25,7 @@ import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
+import org.drools.drl.parser.DrlExprParserFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class DRLExprParserTest {
     @Before
     public void setUp() throws Exception {
         new EvaluatorRegistry();
-        this.parser = new DrlExprParser(LanguageLevelOption.DRL6);
+        this.parser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL6);
     }
 
     @After
