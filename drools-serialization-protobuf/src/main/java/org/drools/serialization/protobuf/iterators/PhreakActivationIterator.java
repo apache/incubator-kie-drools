@@ -19,6 +19,7 @@
 package org.drools.serialization.protobuf.iterators;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -174,9 +175,9 @@ public class PhreakActivationIterator
             }
         }
 
-        ObjectSource os = lian.getObjectSource();
+        BaseNode os = lian.getObjectSource();
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
-            os = os.getParentObjectSource();
+            os = os.getParent();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
