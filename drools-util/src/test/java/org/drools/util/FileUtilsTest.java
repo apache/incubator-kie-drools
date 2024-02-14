@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -33,19 +34,34 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class FileUtilsTest {
 
-    private static final String TEST_FILE = "TestFile.txt";
+    public static final String TEST_FILE = "TestFile.txt";
     private static final String NOT_EXISTING_FILE = "NotExisting.txt";
+
+    private static final String EXISTING_DIRECTORY =  "subdir";
+
+    private static final String NOT_EXISTING_DIRECTORY = String.format(".%snotexisting", File.separator);
 
     @Test
     public void getFileExisting() {
         final File retrieved = FileUtils.getFile(TEST_FILE);
-        assertThat(retrieved).exists();
-        assertThat(retrieved.getName()).isEqualTo(TEST_FILE);
+        assertThat(retrieved).exists().hasName(TEST_FILE);
+    }
+
+    @Test
+    public void getFileExistingFromDirectory() {
+        final File retrieved = FileUtils.getFile(TEST_FILE, getSubdir());
+        assertThat(retrieved).exists().hasName(TEST_FILE);
+        assertThat(retrieved.getParentFile()).exists().isDirectory().hasName(EXISTING_DIRECTORY);
     }
 
     @Test
     public void getFileNotExisting() {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileUtils.getFile(NOT_EXISTING_FILE));
+    }
+
+    @Test
+    public void getFileNotExistingDirectory() {
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileUtils.getFile(TEST_FILE, NOT_EXISTING_DIRECTORY));
     }
 
     @Test
@@ -79,5 +95,14 @@ public class FileUtilsTest {
         FileUtils.deleteDirectory(tempDirectory);
         assertThat(Files.exists(tempDirectory)).isFalse();
         assertThat(Files.exists(tempFile)).isFalse();
+    }
+
+    private static String getSubdir() {
+        URL subdirResource =  FileUtilsTest.class.getClassLoader().getResource(EXISTING_DIRECTORY);
+        if (subdirResource == null) {
+            throw new RuntimeException("Failed to find subdir folder");
+        } else {
+            return subdirResource.getFile();
+        }
     }
 }
