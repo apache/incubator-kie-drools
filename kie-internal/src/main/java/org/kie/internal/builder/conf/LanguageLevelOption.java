@@ -25,7 +25,7 @@ import org.kie.api.conf.OptionKey;
  */
 public enum LanguageLevelOption implements SingleValueRuleBuilderOption {
 
-    DRL5(false), DRL6(false), DRL6_STRICT(true), DRL10(false);
+    DRL5(false), DRL6(false), DRL6_STRICT(true);
 
     private final boolean useJavaAnnotations;
 
