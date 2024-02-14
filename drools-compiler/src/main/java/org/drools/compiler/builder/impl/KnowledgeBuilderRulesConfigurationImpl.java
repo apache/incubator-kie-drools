@@ -127,6 +127,7 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
     }
 
     private void init() {
+
         setProperty( TrimCellsInDTableOption.PROPERTY_NAME,
                     getPropertyValue(TrimCellsInDTableOption.PROPERTY_NAME,
                                                        "true"));

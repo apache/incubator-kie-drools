@@ -34,7 +34,6 @@ import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.impl.Operator;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
@@ -138,7 +137,7 @@ public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter
     }
 
     private void processConstraint(StringBuilder sbuilder, ExprConstraintDescr base, boolean isInsideRelCons, DumperContext context) {
-        DrlExprParser expr = DrlExprParserFactory.getDrlExrParser(context.getRuleContext().getConfiguration().getOption(LanguageLevelOption.KEY));
+        DrlExprParser expr = new DrlExprParser( context.getRuleContext().getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = expr.parse( base.getExpression() );
         if ( result.getDescrs().size() == 1 ) {
             dump( sbuilder,

@@ -99,7 +99,6 @@ import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.ast.descr.ReturnValueRestrictionDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
@@ -1804,7 +1803,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final PatternDescr patternDescr,
                                                         final BaseDescr original,
                                                         final String expression) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
+        DrlExprParser parser = new DrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse(normalizeEval(expression));
         result.setResource(patternDescr.getResource());
         result.copyLocation(original);
