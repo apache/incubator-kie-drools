@@ -42,6 +42,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
@@ -105,6 +106,8 @@ import org.kie.dmn.model.v1_1.extensions.DecisionServices;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -211,7 +214,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
         DMNCompilerContext ctx = new DMNCompilerContext(feel);
         ctx.setRelativeResolver(relativeResolver);
-
+        List<DMNModel> toMerge = new ArrayList<>();
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {
                 if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
@@ -230,8 +233,15 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }, Function.identity());
                     if (located != null) {
                         String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-                        model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                        importFromModel(model, located, iAlias);
+                        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
+                        //  with original one,
+                        // because otherwise we would have to deal with clashing name aliases, or similar issues
+                        if (iAlias != null && !iAlias.isEmpty()) {
+                            model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                            importFromModel(model, located, iAlias);
+                        } else {
+                            toMerge.add(located);
+                        }
                     }
                 } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
                     processPMMLImport(model, i, relativeResolver);
@@ -249,6 +259,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
         }
 
+        toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
         return model;

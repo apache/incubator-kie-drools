@@ -67,7 +67,7 @@ public class DMNTypeRegistryV12 extends DMNTypeRegistryAbstract {
                                                                                                                     BuiltInType.CONTEXT));
 
     @Override
-    protected String feelNS() {
+    public String feelNS() {
         return KieDMNModelInstrumentedBase.URI_FEEL;
     }
 

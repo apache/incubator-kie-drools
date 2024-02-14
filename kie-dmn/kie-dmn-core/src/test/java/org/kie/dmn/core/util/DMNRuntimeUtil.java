@@ -117,6 +117,23 @@ public final class DMNRuntimeUtil {
         return runtime;
     }
 
+    public static DMNRuntime createRuntimeWithAdditionalResources(final File resourceFile, final File... additionalResourceFiles) {
+        final KieServices ks = KieServices.Factory.get();
+        Resource mainResource = ks.getResources().newFileSystemResource(resourceFile);
+        List<Resource> totalResources = new ArrayList<>();
+        totalResources.add(mainResource);
+        for ( File add : additionalResourceFiles ) {
+            totalResources.add( ks.getResources().newFileSystemResource(add) );
+        }
+        final KieContainer kieContainer = KieHelper.getKieContainer(
+                ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
+                totalResources.toArray(new Resource[] {}));
+
+        final DMNRuntime runtime = typeSafeGetKieRuntime(kieContainer);
+        assertThat(runtime).isNotNull();
+        return runtime;
+    }
+
     public static DMNRuntime typeSafeGetKieRuntime(final KieContainer kieContainer) {
         DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         ((DMNRuntimeImpl) dmnRuntime).setOption(new RuntimeTypeCheckOption(true));
