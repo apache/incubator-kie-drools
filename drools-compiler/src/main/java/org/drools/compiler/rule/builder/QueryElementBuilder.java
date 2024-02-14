@@ -46,7 +46,6 @@ import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
@@ -265,7 +264,7 @@ public class QueryElementBuilder
             } else {
                 // it must be a literal/expression
                 // it's an expression and thus an input
-                DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
+                DrlExprParser parser = new DrlExprParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
                 ConstraintConnectiveDescr bresult = parser.parse( bind.getExpression() );
                 if ( parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
@@ -396,7 +395,7 @@ public class QueryElementBuilder
     private ConstraintConnectiveDescr parseExpression( final RuleBuildContext context,
                                                        final PatternDescr patternDescr,
                                                        final String expression ) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
+        DrlExprParser parser = new DrlExprParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse( expression );
         if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
