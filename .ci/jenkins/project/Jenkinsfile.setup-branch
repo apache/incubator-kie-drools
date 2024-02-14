@@ -12,7 +12,7 @@ UNSTABLE_STAGES = [:]
 
 pipeline {
     agent {
-        label 'ubuntu'
+        label util.avoidFaultyNodes('ubuntu')
     }
 
     options {
