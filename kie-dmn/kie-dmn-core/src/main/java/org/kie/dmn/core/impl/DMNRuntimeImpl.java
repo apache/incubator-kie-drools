@@ -65,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.EVALUATING;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SKIPPED;
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
 import static org.kie.dmn.core.util.CoerceUtil.coerceValue;
 
 public class DMNRuntimeImpl
@@ -500,6 +501,9 @@ public class DMNRuntimeImpl
     private boolean walkIntoImportScope(DMNResultImpl result, DMNNode callerNode, DMNNode destinationNode) {
         if (result.getContext().scopeNamespace().isEmpty()) {
             if (destinationNode.getModelNamespace().equals(result.getModel().getNamespace())) {
+                return false;
+            } else if (isInUnnamedImport(destinationNode, (DMNModelImpl) result.getModel())) {
+                // the destinationNode is an unnamed import
                 return false;
             } else {
                 Optional<String> importAlias = callerNode.getModelImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
