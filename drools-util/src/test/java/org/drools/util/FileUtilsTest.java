@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class FileUtilsTest {
 
-    private static final String TEST_FILE = "TestFile.txt";
+    public static final String TEST_FILE = "TestFile.txt";
     private static final String NOT_EXISTING_FILE = "NotExisting.txt";
 
     private static final String EXISTING_DIRECTORY =  "subdir";
