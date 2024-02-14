@@ -271,28 +271,6 @@
         </plugins>
       </build>
     </profile>
-
-    <profile>
-      <id>DRL10</id>
-      <activation>
-        <property>
-          <name>DRL10</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <drools.lang.level>DRL10</drools.lang.level>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
 </project>
