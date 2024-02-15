@@ -19,6 +19,8 @@
 package org.kie.kogito.swf.tools.deployment;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -30,21 +32,56 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.ConfigurationBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.ShutdownContextBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.util.WebJarUtil;
 import io.quarkus.devconsole.spi.DevConsoleTemplateInfoBuildItem;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
+import io.quarkus.devui.spi.page.Page;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.vertx.http.deployment.NonApplicationRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
+import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConfig;
 
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
     private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
+
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public CardPageBuildItem pages(NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
+            ManagementInterfaceBuildTimeConfig managementInterfaceBuildTimeConfig,
+            LaunchModeBuildItem launchModeBuildItem,
+            ConfigurationBuildItem configurationBuildItem) throws UnsupportedEncodingException {
+
+        String uiPath = nonApplicationRootPathBuildItem.resolveManagementPath(BASE_RELATIVE_URL,
+                managementInterfaceBuildTimeConfig, launchModeBuildItem, true);
+
+        String devUIUrl = getProperty(configurationBuildItem, "kogito.dev-ui.url");
+        String devUIUrlQueryParam = devUIUrl != null ? "&devUIUrl=" + URLEncoder.encode(devUIUrl, "UTF-8") : "";
+
+        String dataIndexUrl = getProperty(configurationBuildItem, "kogito.data-index.url");
+        String dataIndexUrlQueryParam = dataIndexUrl != null ? "&dataIndexUrl=" + URLEncoder.encode(dataIndexUrl, "UTF-8") : "";
+
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+
+        cardPageBuildItem.addPage(Page.externalPageBuilder("Workflows")
+                .url(uiPath + "/index.html?page=Processes" + devUIUrlQueryParam + dataIndexUrlQueryParam, uiPath)
+                .isHtmlContent()
+                .icon("font-awesome-solid:diagram-project"));
+
+        cardPageBuildItem.addPage(Page.externalPageBuilder("Monitoring")
+                .url(uiPath + "/index.html?page=Monitoring" + devUIUrlQueryParam + dataIndexUrlQueryParam, uiPath)
+                .isHtmlContent()
+                .icon("font-awesome-solid:gauge-high"));
+
+        return cardPageBuildItem;
+    }
 
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
@@ -67,12 +104,6 @@ public class DevConsoleProcessor {
                 true);
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/resources/*")
-                .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
-                        shutdownContext))
-                .build());
-
-        routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
                 .route(BASE_RELATIVE_URL + "/*")
                 .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
@@ -86,5 +117,32 @@ public class DevConsoleProcessor {
             Capabilities capabilities) {
         devConsoleTemplateInfoBuildItemBuildProducer.produce(new DevConsoleTemplateInfoBuildItem("isDataIndexAvailable",
                 dataIndexServiceAvailableBuildItem.isPresent() || capabilities.isPresent(DATA_INDEX_CAPABILITY)));
+    }
+
+    private static String getProperty(ConfigurationBuildItem configurationBuildItem,
+            String propertyKey) {
+
+        String propertyValue = configurationBuildItem
+                .getReadResult()
+                .getAllBuildTimeValues()
+                .get(propertyKey);
+
+        if (propertyValue == null) {
+            propertyValue = configurationBuildItem
+                    .getReadResult()
+                    .getBuildTimeRunTimeValues()
+                    .get(propertyKey);
+        } else {
+            return propertyValue;
+        }
+
+        if (propertyValue == null) {
+            propertyValue = configurationBuildItem
+                    .getReadResult()
+                    .getRunTimeDefaultValues()
+                    .get(propertyKey);
+        }
+
+        return propertyValue;
     }
 }

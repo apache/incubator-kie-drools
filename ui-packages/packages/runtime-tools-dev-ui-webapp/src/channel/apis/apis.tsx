@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { OpenAPI } from 'openapi-types';
 import { GraphQL } from '@kogito-apps/consoles-common/dist/graphql';
 import {
   BulkProcessInstanceActionResponse,
@@ -542,38 +544,50 @@ export const getCustomDashboardContent = (name: string): Promise<string> => {
   });
 };
 
-export const getCustomWorkflowSchema = (
+export const getCustomWorkflowSchemaFromApi = async (
+  api: OpenAPI.Document,
+  workflowName: string
+): Promise<Record<string, any>> => {
+  let schema = {};
+
+  try {
+    const schemaFromRequestBody =
+      api.paths['/' + workflowName].post.requestBody.content['application/json']
+        .schema;
+
+    if (schemaFromRequestBody.type) {
+      schema = {
+        type: schemaFromRequestBody.type,
+        properties: schemaFromRequestBody.properties
+      };
+    } else {
+      schema = (api as any).components.schemas[workflowName + '_input'];
+    }
+  } catch (e) {
+    console.log(e);
+    schema = (api as any).components.schemas[workflowName + '_input'];
+  }
+
+  // Components can contain the content of internal refs ($ref)
+  // This keeps the refs working while avoiding circular refs with the workflow itself
+  if (schema) {
+    const { [workflowName + '_input']: _, ...schemas } =
+      (api as any).components?.schemas ?? {};
+    (schema as any)['components'] = { schemas };
+  }
+
+  return schema ?? null;
+};
+
+export const getCustomWorkflowSchema = async (
   devUIUrl: string,
   openApiPath: string,
   workflowName: string
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
-      .then((response: any) => {
-        let schema = {};
-        try {
-          const schemaFromRequestBody =
-            response.paths['/' + workflowName].post.requestBody.content[
-              'application/json'
-            ].schema;
-          /* istanbul ignore else*/
-          if (schemaFromRequestBody.type) {
-            schema = {
-              type: schemaFromRequestBody.type,
-              properties: schemaFromRequestBody.properties
-            };
-          } else {
-            schema = response.components.schemas[workflowName + '_input'];
-          }
-        } catch (e) {
-          console.log(e);
-          schema = response.components.schemas[workflowName + '_input'];
-        }
-        if (schema) {
-          resolve(schema);
-        } else {
-          resolve(null);
-        }
+      .then(async (response: any) => {
+        resolve(await getCustomWorkflowSchemaFromApi(response, workflowName));
       })
       .catch((err) => reject(err));
   });

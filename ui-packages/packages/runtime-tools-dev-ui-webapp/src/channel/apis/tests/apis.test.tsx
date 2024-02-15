@@ -1108,6 +1108,9 @@ describe('swf custom form tests', () => {
 
   it('get custom workflow schema - success - with workflowdata', async () => {
     const schema = {
+      components: {
+        schemas: {}
+      },
       type: 'object',
       properties: {
         name: {

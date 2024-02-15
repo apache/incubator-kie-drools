@@ -130,7 +130,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/classes/dev-static/webapp</outputDirectory>
+              <outputDirectory>${basedir}/target/classes/dev-static/resources/webapp</outputDirectory>
               <resources>
                 <resource>
                   <directory>${path.to.webapp.app}/dist/resources/webapp</directory>
@@ -143,6 +143,7 @@
               </resources>
             </configuration>
           </execution>
+
           <execution>
             <id>copy-envelope-resources</id>
             <phase>process-resources</phase>
@@ -150,7 +151,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/classes/dev-static/</outputDirectory>
+              <outputDirectory>${basedir}/target/classes/dev-static/resources</outputDirectory>
               <resources>
                 <resource>
                   <directory>${path.to.webapp.app}/dist/resources</directory>
@@ -170,6 +171,25 @@
                   <directory>${path.to.webapp.app}/dist/resources</directory>
                   <includes>
                     <include>diagram/</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>copy-index</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/dev-static</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/target/classes/static</directory>
+                  <includes>
+                    <include>index.html</include>
                   </includes>
                 </resource>
               </resources>

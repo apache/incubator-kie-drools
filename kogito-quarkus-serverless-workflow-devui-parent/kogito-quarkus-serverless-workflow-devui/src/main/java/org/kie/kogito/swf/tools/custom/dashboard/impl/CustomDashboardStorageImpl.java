@@ -90,6 +90,10 @@ public class CustomDashboardStorageImpl implements CustomDashboardStorage {
         } catch (Exception ex) {
             LOGGER.warn("Couldn't properly initialize CustomDashboardStorageImpl");
         } finally {
+            if (classLoaderCustomDashboardUrl == null) {
+                return;
+            }
+
             init(readCustomDashboardResources());
             String storageUrl = getStorageUrl(classLoaderCustomDashboardUrl);
             Thread t = new Thread(new DashboardFilesWatcher(reload(), storageUrl));

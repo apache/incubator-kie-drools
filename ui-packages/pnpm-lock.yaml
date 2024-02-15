@@ -1859,7 +1859,7 @@ importers:
     dependencies:
       '@apidevtools/swagger-parser':
         specifier: ^10.1.0
-        version: 10.1.0(openapi-types@9.3.1)
+        version: 10.1.0(openapi-types@7.2.3)
       '@babel/standalone':
         specifier: ^7.22.8
         version: 7.22.8
@@ -2138,8 +2138,8 @@ importers:
         specifier: ^2.0.22
         version: 2.0.22
       openapi-types:
-        specifier: ^9.3.1
-        version: 9.3.1
+        specifier: ^7.0.1
+        version: 7.2.3
       raw-loader:
         specifier: ^4.0.2
         version: 4.0.2(webpack@5.88.1)
@@ -3144,7 +3144,7 @@ packages:
     resolution: {integrity: sha512-QAkD5kK2b1WfjDS/UQn/qQkbwF31uqRjPTrsCs5ZG9BQGAkjwvqGFjjPqAuzac/IYzpPtRzjCP1WrTuAIjMrXg==}
     dev: false
 
-  /@apidevtools/swagger-parser@10.1.0(openapi-types@9.3.1):
+  /@apidevtools/swagger-parser@10.1.0(openapi-types@7.2.3):
     resolution: {integrity: sha512-9Kt7EuS/7WbMAUv2gSziqjvxwDbFSg3Xeyfuj5laUODX8o/k/CpsAKiQ8W7/R88eXFTMbJYg6+7uAmOWNKmwnw==}
     peerDependencies:
       openapi-types: '>=7'
@@ -3156,7 +3156,7 @@ packages:
       ajv: 8.12.0
       ajv-draft-04: 1.0.0(ajv@8.12.0)
       call-me-maybe: 1.0.2
-      openapi-types: 9.3.1
+      openapi-types: 7.2.3
     dev: false
 
   /@apollo/protobufjs@1.2.2:
@@ -14866,10 +14866,6 @@ packages:
 
   /openapi-types@7.2.3:
     resolution: {integrity: sha512-olbaNxz12R27+mTyJ/ZAFEfUruauHH27AkeQHDHRq5AF0LdNkK1SSV7EourXQDK+4aX7dv2HtyirAGK06WMAsA==}
-    dev: false
-
-  /openapi-types@9.3.1:
-    resolution: {integrity: sha512-/Yvsd2D7miYB4HLJ3hOOS0+vnowQpaT75FsHzr/y5M9P4q9bwa7RcbW2YdH6KZBn8ceLbKGnHxMZ1CHliGHUFw==}
 
   /optimism@0.10.3:
     resolution: {integrity: sha512-9A5pqGoQk49H6Vhjb9kPgAeeECfUDF6aIICbMDL23kDLStBn1MWk3YvcZ4xWF9CsSf6XEgvRLkXy4xof/56vVw==}

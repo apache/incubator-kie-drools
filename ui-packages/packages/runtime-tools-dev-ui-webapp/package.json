@@ -127,7 +127,7 @@
     "mini-css-extract-plugin": "^2.7.6",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "nodemon": "^2.0.22",
-    "openapi-types": "^9.3.1",
+    "openapi-types": "^7.0.1",
     "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
     "sass-loader": "^12.6.0",
