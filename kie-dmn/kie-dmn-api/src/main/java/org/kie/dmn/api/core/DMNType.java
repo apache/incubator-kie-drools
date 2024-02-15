@@ -102,7 +102,7 @@ import org.kie.dmn.model.api.ItemDefinition;
  * It is important to note that attribute can only be present when the type is specified by reference.
  * <h1>typeConstraints</h1>
  * As per the DMN specification, the {@link ItemDefinition#getTypeConstraints()} ()} attribute lists the possible values or ranges of values in the base type that are allowed in this ItemDefinition.
- * This is reflected in this DMN type {@link #getTypeConstraints()}.<br/>
+ * This is reflected in this DMN type {@link #getTypeConstraint()}.<br/>
  * <br/>
  * It is important to note that attribute can only be present when the type is specified by reference.
  * <h1>getFields</h1>
@@ -231,5 +231,5 @@ public interface DMNType
      */
     boolean isTypeConstraint(Object value);
 
-    List<DMNUnaryTest> getTypeConstraints();
+    List<DMNUnaryTest> getTypeConstraint();
 }

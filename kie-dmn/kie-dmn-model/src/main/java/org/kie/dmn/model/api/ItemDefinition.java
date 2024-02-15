@@ -38,9 +38,9 @@ public interface ItemDefinition extends NamedElement {
 
     void setAllowedValues(UnaryTests value);
 
-    UnaryTests getTypeConstraints();
+    UnaryTests getTypeConstraint();
 
-    void setTypeConstraints(UnaryTests value);
+    void setTypeConstraint(UnaryTests value);
 
     List<ItemDefinition> getItemComponent();
 

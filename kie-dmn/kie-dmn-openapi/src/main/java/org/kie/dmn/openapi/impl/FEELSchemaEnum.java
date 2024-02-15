@@ -73,7 +73,7 @@ public class FEELSchemaEnum {
             }
             schema.enumeration(uts);
         } else {
-            LOG.warn("Unable to parse generic value into the JSON Schema for enumeration");
+            LOG.warn("Unable to parse number value into the JSON Schema for enumeration");
         }
     }
 

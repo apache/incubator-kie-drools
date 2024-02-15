@@ -62,8 +62,4 @@ public class SimpleTypeImpl
         return getBaseType() != null ? getBaseType().isAssignableValue(o) : getFeelType().isAssignableValue (o);
     }
 
-    @Override
-    protected boolean internalIsTypeConstraint(Object o) {
-        return getBaseType() != null ? getBaseType().isTypeConstraint(o) : getFeelType().isTypeConstraint (o);
-    }
 }

@@ -141,7 +141,9 @@ public class CompositeTypeImpl
                 if ( !instance.containsKey(f.getKey()) ) {
                     return false; // It must have key named 'f.getKey()' like a Duck.
                 } else {
-                    if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
+                    DMNType dmnType = f.getValue();
+                    Object toCheck = instance.get(f.getKey());
+                    if ( !dmnType.isAssignableValue(toCheck)/* || !dmnType.isTypeConstraint(toCheck)*/) {
                         return false;
                     }
                 }
@@ -153,7 +155,11 @@ public class CompositeTypeImpl
             for ( Entry<String, DMNType> f : fields.entrySet() ) {
                 PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
                 if (fValue.isDefined()) {
-                    if (!f.getValue().isAssignableValue(fValue.getValueResult().getOrElseThrow(e -> new IllegalStateException(e)))) {
+                    DMNType dmnType = f.getValue();
+                    Object toCheck = fValue.getValueResult().getOrElseThrow(IllegalStateException::new);
+                    boolean isAllowedValue = dmnType.isAssignableValue(toCheck);
+                    //boolean isTypeConstraint = dmnType.isTypeConstraint(toCheck);
+                    if ( !isAllowedValue /*|| !isTypeConstraint*/) {
                         return false;
                     }
                 } else {
@@ -164,36 +170,4 @@ public class CompositeTypeImpl
         }
     }
 
-    @Override
-    protected boolean internalIsTypeConstraint(Object o) {
-        if (getBaseType() != null) {
-            return getBaseType().isTypeConstraint(o);
-        } else if (o instanceof Map<?, ?>) {
-            Map<?, ?> instance = (Map<?, ?>) o;
-            for ( Entry<String, DMNType> f : fields.entrySet() ) {
-                if ( !instance.containsKey(f.getKey()) ) {
-                    return false; // It must have key named 'f.getKey()' like a Duck.
-                } else {
-                    if ( !f.getValue().isTypeConstraint(instance.get(f.getKey())) ) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        } else if (o == null) {
-            return true; // a null-value can be assigned to any type.
-        } else {
-            for ( Entry<String, DMNType> f : fields.entrySet() ) {
-                PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
-                if (fValue.isDefined()) {
-                    if (!f.getValue().isTypeConstraint(fValue.getValueResult().getOrElseThrow(e -> new IllegalStateException(e)))) {
-                        return false;
-                    }
-                } else {
-                    return false; // It must <genericAccessor> like a Duck.
-                }
-            }
-            return true;
-        }
-    }
 }

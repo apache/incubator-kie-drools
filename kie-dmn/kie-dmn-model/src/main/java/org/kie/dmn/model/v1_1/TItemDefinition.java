@@ -57,12 +57,12 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     }
 
     @Override
-    public UnaryTests getTypeConstraints() {
+    public UnaryTests getTypeConstraint() {
         throw new UnsupportedOperationException("Since DMNv1.5");
     }
 
     @Override
-    public void setTypeConstraints(UnaryTests value) {
+    public void setTypeConstraint(UnaryTests value) {
         throw new UnsupportedOperationException("Since DMNv1.5");
     }
 
