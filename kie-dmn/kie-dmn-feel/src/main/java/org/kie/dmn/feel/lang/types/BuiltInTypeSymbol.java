@@ -48,11 +48,6 @@ public class BuiltInTypeSymbol
     }
 
     @Override
-    public boolean isTypeConstraint(Object value) {
-        return getType().isTypeConstraint(value);
-    }
-
-    @Override
     public boolean conformsTo(Type t) {
         return getType().conformsTo(t);
     }

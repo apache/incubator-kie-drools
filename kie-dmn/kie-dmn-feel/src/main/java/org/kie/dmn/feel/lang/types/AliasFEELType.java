@@ -49,10 +49,6 @@ public class AliasFEELType implements SimpleType {
         return wrapped.isAssignableValue(value);
     }
 
-    @Override
-    public boolean isTypeConstraint(Object value) {
-        return wrapped.isTypeConstraint(value);
-    }
 
     public BuiltInType getBuiltInType() {
         return wrapped;

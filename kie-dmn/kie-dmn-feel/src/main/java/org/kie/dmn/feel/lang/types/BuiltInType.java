@@ -182,14 +182,6 @@ public enum BuiltInType implements SimpleType {
     }
 
     @Override
-    public boolean isTypeConstraint(Object value) {
-        if ( value == null ) {
-            return true; // a null-value can be assigned to any type.
-        }
-        return isInstanceOf(value, this);
-    }
-
-    @Override
     public boolean conformsTo(Type t) {
         return t == UNKNOWN || this == t;
     }
