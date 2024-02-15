@@ -217,19 +217,16 @@ public interface DMNType
     
     /**
      * Check if the value passed as parameter can be assigned to this type.
+     * It checks
+     * 1. type itself
+     * 2. allowedValues
+     * 3. typeConstraint
      * @param value
      * @return if value can be assigned to the type represented by this type. If the parameter is null, returns true. 
      */
     boolean isAssignableValue(Object value);
 
     List<DMNUnaryTest> getAllowedValues();
-
-    /**
-     * Check if the value passed as parameter fulfill the typeConstraint to this type.
-     * @param value
-     * @return if value fulfill the typeConstraint represented by this type. If the parameter is null, returns true.
-     */
-    boolean isTypeConstraint(Object value);
 
     List<DMNUnaryTest> getTypeConstraint();
 }

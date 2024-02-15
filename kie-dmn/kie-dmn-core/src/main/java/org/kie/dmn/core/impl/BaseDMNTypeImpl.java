@@ -158,6 +158,7 @@ public abstract class BaseDMNTypeImpl
         if ( isCollection() && o instanceof Collection ) {
             Collection<Object> elements = (Collection) o;
             for ( Object e : elements ) {
+                // Do not dig inside collection for typeContraint check
                 if ( !internalIsInstanceOf(e) || !valueMatchesInUnaryTests(allowedValues, e) ) {
                     return false;
                 }
@@ -167,7 +168,8 @@ public abstract class BaseDMNTypeImpl
         // .. normal case, or collection of 1 element: singleton list
         // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
         // and vice-versa
-        return internalIsInstanceOf(o) && valueMatchesInUnaryTests(allowedValues, o);
+        // Also check typeConstraint for not-collection values
+        return internalIsInstanceOf(o) && valueMatchesInUnaryTests(allowedValues, o) && valueMatchesInUnaryTests(typeConstraint, o);
     }
     
     private boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests,  Object o) {
@@ -189,6 +191,7 @@ public abstract class BaseDMNTypeImpl
         if ( isCollection() && value instanceof Collection ) {
             Collection<Object> elements = (Collection) value;
             for ( Object e : elements ) {
+                // Do not dig inside collection for typeContraint check
                 if ( !internalIsAssignableValue(e) || !valueMatchesInUnaryTests(allowedValues, e) ) {
                     return false;
                 }
@@ -198,18 +201,8 @@ public abstract class BaseDMNTypeImpl
         // .. normal case, or collection of 1 element: singleton list
         // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
         // and vice-versa
-        return internalIsAssignableValue( value ) && valueMatchesInUnaryTests(allowedValues, value);
-    }
-
-    @Override
-    public boolean isTypeConstraint(Object value) {
-        if (value == null && typeConstraint == null) {
-            return true; // a null-value can be assigned to any type.
-        }
-        // .. normal case, or collection of 1 element: singleton list
-        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-        // and vice-versa
-        return internalIsAssignableValue( value ) && valueMatchesInUnaryTests(typeConstraint, value);
+        // Also check typeConstraint for not-collection values
+        return internalIsAssignableValue( value ) && valueMatchesInUnaryTests(allowedValues, value) && valueMatchesInUnaryTests(typeConstraint, value);
     }
     
     protected abstract boolean internalIsAssignableValue(Object o);

@@ -141,9 +141,7 @@ public class CompositeTypeImpl
                 if ( !instance.containsKey(f.getKey()) ) {
                     return false; // It must have key named 'f.getKey()' like a Duck.
                 } else {
-                    DMNType dmnType = f.getValue();
-                    Object toCheck = instance.get(f.getKey());
-                    if ( !dmnType.isAssignableValue(toCheck)/* || !dmnType.isTypeConstraint(toCheck)*/) {
+                    if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
                         return false;
                     }
                 }
@@ -155,11 +153,7 @@ public class CompositeTypeImpl
             for ( Entry<String, DMNType> f : fields.entrySet() ) {
                 PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
                 if (fValue.isDefined()) {
-                    DMNType dmnType = f.getValue();
-                    Object toCheck = fValue.getValueResult().getOrElseThrow(IllegalStateException::new);
-                    boolean isAllowedValue = dmnType.isAssignableValue(toCheck);
-                    //boolean isTypeConstraint = dmnType.isTypeConstraint(toCheck);
-                    if ( !isAllowedValue /*|| !isTypeConstraint*/) {
+                    if (!f.getValue().isAssignableValue(fValue.getValueResult().getOrElseThrow(e -> new IllegalStateException(e)))) {
                         return false;
                     }
                 } else {
@@ -169,5 +163,4 @@ public class CompositeTypeImpl
             return true;
         }
     }
-
 }
