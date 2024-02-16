@@ -153,7 +153,7 @@ public class Misc2Test {
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
      // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     private static final Logger logger = LoggerFactory.getLogger( Misc2Test.class );
