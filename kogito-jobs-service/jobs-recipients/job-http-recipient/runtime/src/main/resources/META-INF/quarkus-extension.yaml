@@ -17,8 +17,18 @@
 # under the License.
 #
 
-name: Job Http Recipient extension
+name: Kogito Job Http Recipient Quarkus Add-On
 description: Handle HTTP requests based on information from the job recipient.
 metadata:
   keywords:
-    - HTTP, HTTPRecipient
+    - kogito
+    - processes
+    - BPMN
+    - workflows
+    - jobs
+    - HTTP
+    - HTTPRecipient
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"
+  status: "stable"

@@ -133,6 +133,9 @@
             </goals>
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+              <capabilities>
+                <provides>org.sonataflow.quarkus.dev-ui</provides>
+              </capabilities>
             </configuration>
           </execution>
         </executions>

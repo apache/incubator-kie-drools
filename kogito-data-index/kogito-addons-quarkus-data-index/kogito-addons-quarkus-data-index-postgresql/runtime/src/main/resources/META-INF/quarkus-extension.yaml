@@ -17,12 +17,22 @@
 # under the License.
 #
 
-name: Kogito Addons Quarkus Data Index PostgreSQL
-description: Kogito Data Index PostgreSQL Add-On
+name: Kogito Data Index PostgreSQL Quarkus Add-On
+description: Runs the Kogito Data Index embedded with PostgreSQL persistence
 metadata:
   keywords:
     - data-index
     - kogito
+    - processes
+    - workflows
+    - tasks
+    - jobs
+    - BPMN
+    - postgresql
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"
+  config:
+    - "kogito.data-index."
+    - "kogito.dataindex."

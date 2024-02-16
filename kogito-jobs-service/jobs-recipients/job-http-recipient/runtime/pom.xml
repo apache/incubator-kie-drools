@@ -94,6 +94,9 @@
             </goals>
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+              <capabilities>
+                <provides>org.kie.kogito.jobs.http-recipient</provides>
+              </capabilities>
             </configuration>
           </execution>
         </executions>

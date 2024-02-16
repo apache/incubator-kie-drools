@@ -54,7 +54,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.data-index</provides>
+                <provides>org.kie.kogito.data-index.infinispan</provides>
               </capabilities>
             </configuration>
           </execution>

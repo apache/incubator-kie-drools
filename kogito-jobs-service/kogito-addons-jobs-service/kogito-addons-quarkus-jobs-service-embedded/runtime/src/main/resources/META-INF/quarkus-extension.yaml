@@ -17,12 +17,18 @@
 # under the License.
 #
 
-name: Jobs Service Embedded Quarkus Addon
+name: Kogito Jobs Service Embedded Quarkus Add-On
 description: Run Jobs Service embedded with the application.
 metadata:
   keywords:
-    - kogito-addons-quarkus-jobs-service-embedded
+    - kogito
+    - processes
+    - BPMN
+    - workflows
+    - jobs
   guide: https://quarkus.io/guides/kogito
   categories:
-    - "miscellaneous"
+    - "business-automation"
   status: "preview"
+  config:
+    - "kogito.job-service."

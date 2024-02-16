@@ -17,12 +17,18 @@
 # under the License.
 #
 
-name: Kogito Addons Quarkus Data Index Persistence PostgreSQL
-description: Kogito Data Index Persistence PostgreSQL Add-On
+name: Kogito Data Index Persistence PostgreSQL Quarkus Add-On
+description: Add-On to colocate the Data Index Persistence (PostgreSQL) in your application.
 metadata:
   keywords:
     - data-index
     - kogito
+    - processes
+    - workflows
+    - tasks
+    - jobs
+    - BPMN
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"

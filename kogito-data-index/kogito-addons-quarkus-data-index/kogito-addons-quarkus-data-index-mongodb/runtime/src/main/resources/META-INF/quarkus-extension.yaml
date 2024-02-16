@@ -17,12 +17,22 @@
 # under the License.
 #
 
-name: Kogito Addons Quarkus Data Index MongoDB
-description: Kogito Data Index MongoDB Add-On
+name: Kogito Data Index MongoDB Quarkus Add-On
+description: Runs the Kogito Data Index embedded with MongoDB persistence
 metadata:
   keywords:
     - data-index
     - kogito
+    - processes
+    - workflows
+    - tasks
+    - jobs
+    - BPMN
+    - mongodb
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"
+  config:
+    - "kogito.data-index."
+    - "kogito.dataindex."

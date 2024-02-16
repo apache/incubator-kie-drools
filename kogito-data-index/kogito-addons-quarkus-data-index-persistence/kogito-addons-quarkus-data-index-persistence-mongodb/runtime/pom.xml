@@ -54,7 +54,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.data-index.persistence</provides>
+                <provides>org.kie.kogito.data-index.persistence.mongodb</provides>
               </capabilities>
             </configuration>
           </execution>
