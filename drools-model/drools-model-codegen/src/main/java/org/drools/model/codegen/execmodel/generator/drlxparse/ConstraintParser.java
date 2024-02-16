@@ -202,7 +202,12 @@ public class ConstraintParser {
     private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {
         TypedDeclarationSpec decl = context.addDeclaration(bindId, getDeclarationType(drlx, singleResult));
         if (drlx.getExpr() instanceof NameExpr) {
-            decl.setBoundVariable( PrintUtil.printNode(drlx.getExpr()) );
+            decl.setBoundVariable(PrintUtil.printNode(drlx.getExpr()));
+        } else if (drlx.getExpr() instanceof EnclosedExpr) {
+            ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+            ExpressionTyper expressionTyper = new ExpressionTyper(context, singleResult.getPatternType(), bindId, false, expressionTyperContext);
+            TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(drlx.getExpr());
+            singleResult.setBoundExpr(typedExpressionResult.typedExpressionOrException());
         } else if (drlx.getExpr() instanceof BinaryExpr) {
             Expression leftMostExpression = getLeftMostExpression(drlx.getExpr().asBinaryExpr());
             decl.setBoundVariable(PrintUtil.printNode(leftMostExpression));
@@ -212,7 +217,7 @@ public class ConstraintParser {
                 ExpressionTyper expressionTyper = new ExpressionTyper(context, singleResult.getPatternType(), bindId, false, expressionTyperContext);
                 TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(leftMostExpression);
                 Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
-                if (!optLeft.isPresent()) {
+                if (optLeft.isEmpty()) {
                     throw new IllegalStateException("Cannot create TypedExpression for " + drlx.getExpr().asBinaryExpr().getLeft());
                 }
                 singleResult.setBoundExpr(optLeft.get());
