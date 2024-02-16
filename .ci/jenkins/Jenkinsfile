@@ -4,7 +4,7 @@ pr_check_script = null
 
 pipeline {
     agent {
-        label 'ubuntu'
+        label util.avoidFaultyNodes('ubuntu')
     }
     options {
         timestamps()

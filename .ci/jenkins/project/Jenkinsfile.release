@@ -18,7 +18,7 @@ releaseProperties = [:]
 
 pipeline {
     agent {
-        label 'ubuntu'
+        label util.avoidFaultyNodes('ubuntu')
     }
 
     environment {
