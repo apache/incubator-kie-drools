@@ -28,12 +28,13 @@ import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.kie.kogito.Model;
+import org.kie.kogito.internal.utils.KogitoTags;
 
 public class BpmnVariables implements Model {
 
-    public static final Predicate<Variable> OUTPUTS_ONLY = v -> v.hasTag(Variable.OUTPUT_TAG);
-    public static final Predicate<Variable> INPUTS_ONLY = v -> v.hasTag(Variable.INPUT_TAG);
-    public static final Predicate<Variable> INTERNAL_ONLY = v -> v.hasTag(Variable.INTERNAL_TAG);
+    public static final Predicate<Variable> OUTPUTS_ONLY = v -> v.hasTag(KogitoTags.OUTPUT_TAG);
+    public static final Predicate<Variable> INPUTS_ONLY = v -> v.hasTag(KogitoTags.INPUT_TAG);
+    public static final Predicate<Variable> INTERNAL_ONLY = v -> v.hasTag(KogitoTags.INTERNAL_TAG);
 
     private final Map<String, Object> variables = new HashMap<>();
 

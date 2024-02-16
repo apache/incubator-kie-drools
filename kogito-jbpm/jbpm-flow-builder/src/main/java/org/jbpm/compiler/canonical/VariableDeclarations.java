@@ -27,13 +27,14 @@ import java.util.function.Predicate;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
+import org.kie.kogito.internal.utils.KogitoTags;
 
 public class VariableDeclarations {
 
     public static VariableDeclarations of(VariableScope vscope) {
         HashMap<String, Variable> vs = new HashMap<>();
         for (Variable variable : vscope.getVariables()) {
-            if (variable.hasTag(Variable.INTERNAL_TAG)) {
+            if (variable.hasTag(KogitoTags.INTERNAL_TAG)) {
                 continue;
             }
 
@@ -44,12 +45,12 @@ public class VariableDeclarations {
 
     public static VariableDeclarations ofInput(VariableScope vscope) {
 
-        return of(vscope, variable -> variable.hasTag(Variable.INTERNAL_TAG) || variable.hasTag(Variable.OUTPUT_TAG));
+        return of(vscope, variable -> variable.hasTag(KogitoTags.INTERNAL_TAG) || variable.hasTag(KogitoTags.OUTPUT_TAG));
     }
 
     public static VariableDeclarations ofOutput(VariableScope vscope) {
 
-        return of(vscope, variable -> variable.hasTag(Variable.INTERNAL_TAG) || variable.hasTag(Variable.INPUT_TAG));
+        return of(vscope, variable -> variable.hasTag(KogitoTags.INTERNAL_TAG) || variable.hasTag(KogitoTags.INPUT_TAG));
     }
 
     public static VariableDeclarations of(VariableScope vscope, Predicate<Variable> filterOut) {

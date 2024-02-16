@@ -74,6 +74,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.kie.kogito.internal.utils.KogitoTags;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 
 public class ProcessInstanceEventBatch implements EventBatch {
@@ -120,7 +121,9 @@ public class ProcessInstanceEventBatch implements EventBatch {
     }
 
     private void handleProcessVariableEvent(ProcessVariableChangedEvent event) {
-
+        if (event.getTags().contains(KogitoTags.INTERNAL_TAG)) {
+            return;
+        }
         Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
         KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
         ProcessInstanceVariableEventBody.Builder builder = ProcessInstanceVariableEventBody.create()

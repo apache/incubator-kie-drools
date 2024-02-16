@@ -28,7 +28,6 @@ import java.util.Optional;
 
 import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
 import org.jbpm.process.core.context.exception.CompensationScope;
-import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
@@ -44,6 +43,7 @@ import org.jbpm.ruleflow.core.factory.SupportsAction;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.kogito.internal.utils.KogitoTags;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
@@ -423,7 +423,7 @@ public abstract class StateHandler<S extends State> {
             boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
 
         if (isTempVariable(actionVarName)) {
-            embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
+            embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), KogitoTags.VARIABLE_TAGS, KogitoTags.INTERNAL_TAG);
         }
         NodeFactory<?, ?> startNode, currentNode;
         if (fromStateExpr != null) {

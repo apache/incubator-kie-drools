@@ -27,6 +27,7 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.ForEachNode;
+import org.kie.kogito.internal.utils.KogitoTags;
 
 public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<ForEachNodeFactory<T>, T> {
 
@@ -99,7 +100,7 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     private ForEachNodeFactory<T> addVariable(String varRef, String variableName, DataType dataType, boolean eval) {
         Variable variable = getForEachNode().addContextVariable(varRef, variableName, dataType);
         variable.setMetaData(Metadata.EVAL_VARIABLE, eval);
-        variable.setMetaData(Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
+        variable.setMetaData(KogitoTags.VARIABLE_TAGS, KogitoTags.INTERNAL_TAG);
         return this;
     }
 

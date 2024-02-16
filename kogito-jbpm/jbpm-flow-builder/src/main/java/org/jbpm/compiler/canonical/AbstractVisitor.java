@@ -30,6 +30,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.internal.utils.KogitoTags;
 
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -87,12 +88,12 @@ public abstract class AbstractVisitor {
                 if (!visitedVariables.add(variable.getName())) {
                     continue;
                 }
-                String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
+                String tags = (String) variable.getMetaData(KogitoTags.VARIABLE_TAGS);
                 Object defaultValue = variable.getValue();
                 body.tryAddImportToParentCompilationUnit(variable.getType().getClass());
                 body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()),
                         new MethodCallExpr(DataTypeResolver.class.getName() + ".fromClass", new ClassExpr(parseClassOrInterfaceType(variable.getType().getStringType()).removeTypeArguments())),
-                        defaultValue != null ? new StringLiteralExpr(defaultValue.toString()) : new NullLiteralExpr(), new StringLiteralExpr(Variable.VARIABLE_TAGS),
+                        defaultValue != null ? new StringLiteralExpr(defaultValue.toString()) : new NullLiteralExpr(), new StringLiteralExpr(KogitoTags.VARIABLE_TAGS),
                         tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
             }
         }

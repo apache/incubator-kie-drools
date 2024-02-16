@@ -35,6 +35,7 @@ import org.jbpm.process.core.ValueObject;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.impl.coverter.CloneHelper;
 import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;
+import org.kie.kogito.internal.utils.KogitoTags;
 
 /**
  * Default implementation of a variable.
@@ -44,13 +45,6 @@ public class Variable implements TypeObject, ValueObject, Serializable {
 
     private static final long serialVersionUID = 510l;
 
-    public static final String VARIABLE_TAGS = "customTags";
-
-    public static final String READONLY_TAG = "readonly";
-    public static final String REQUIRED_TAG = "required";
-    public static final String INTERNAL_TAG = "internal";
-    public static final String INPUT_TAG = "input";
-    public static final String OUTPUT_TAG = "output";
     public static final String BUSINESS_RELEVANT = "business-relevant";
     public static final String TRACKED = "tracked";
     public static final Set<String> KOGITO_RESERVED = Set.of("id");
@@ -146,7 +140,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     public void setMetaData(String name, Object value) {
         this.metaData.put(name, value);
 
-        if (VARIABLE_TAGS.equals(name) && value != null) {
+        if (KogitoTags.VARIABLE_TAGS.equals(name) && value != null) {
             tags = Arrays.asList(value.toString().split(","));
         }
     }
@@ -165,8 +159,8 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     }
 
     public List<String> getTags() {
-        if (tags.isEmpty() && this.metaData.containsKey(VARIABLE_TAGS)) {
-            tags = Arrays.asList(metaData.get(VARIABLE_TAGS).toString().split(","));
+        if (tags.isEmpty() && this.metaData.containsKey(KogitoTags.VARIABLE_TAGS)) {
+            tags = Arrays.asList(metaData.get(KogitoTags.VARIABLE_TAGS).toString().split(","));
 
         }
         return tags;
