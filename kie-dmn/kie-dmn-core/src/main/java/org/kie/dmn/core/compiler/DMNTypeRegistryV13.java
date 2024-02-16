@@ -29,10 +29,7 @@ import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 
 public class DMNTypeRegistryV13 extends DMNTypeRegistryAbstract {
 
-    private static final DMNType UNKNOWN = new SimpleTypeImpl(KieDMNModelInstrumentedBase.URI_FEEL,
-                                                              BuiltInType.UNKNOWN.getName(),
-                                                              null, true, null, null,
-                                                              BuiltInType.UNKNOWN );
+    private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
 
     public DMNTypeRegistryV13(Map<String, QName> aliases) {
         super(aliases);

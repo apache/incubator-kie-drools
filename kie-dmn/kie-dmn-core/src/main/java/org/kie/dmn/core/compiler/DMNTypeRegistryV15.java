@@ -28,10 +28,7 @@ import java.util.Map;
 
 public class DMNTypeRegistryV15 extends DMNTypeRegistryAbstract {
 
-    private static final DMNType UNKNOWN = new SimpleTypeImpl(KieDMNModelInstrumentedBase.URI_FEEL,
-                                                              BuiltInType.UNKNOWN.getName(),
-                                                              null, true, null, null,
-                                                              BuiltInType.UNKNOWN );
+    private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
 
     public DMNTypeRegistryV15(Map<String, QName> aliases) {
         super(aliases);
