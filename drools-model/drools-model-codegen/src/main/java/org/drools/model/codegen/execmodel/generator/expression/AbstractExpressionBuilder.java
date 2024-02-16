@@ -115,8 +115,17 @@ public abstract class AbstractExpressionBuilder {
         } else {
             final TypedExpression boundExpr = drlxParseResult.getBoundExpr();
             // Can we unify it? Sometimes expression is in the left sometimes in expression
-            final Expression e = boundExpr != null ? findLeftmostExpression(boundExpr.getExpression()) : drlxParseResult.getExpr();
-            return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), e);
+            final Expression expression;
+            if (boundExpr != null) {
+                if (boundExpr.getExpression() instanceof EnclosedExpr) {
+                    expression = boundExpr.getExpression();
+                } else {
+                    expression = findLeftmostExpression(boundExpr.getExpression());
+                }
+            } else {
+                expression = drlxParseResult.getExpr();
+            }
+            return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), expression);
         }
     }
 
