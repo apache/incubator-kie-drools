@@ -159,65 +159,6 @@ public class Misc2Test {
     private static final Logger logger = LoggerFactory.getLogger( Misc2Test.class );
 
     @Test
-    public void testConstraintExpression() {
-        String str = "package constraintexpression\n" +
-                "\n" +
-                "import " + Address.class.getCanonicalName() + "\n" +
-                "\n" +
-                "rule \"r1\"\n" +
-                " dialect \"java\" \n" +
-                "when \n" +
-                "    $a : Address($booleanVariable: (street != null))\n" +
-                "then \n" +
-                "    System.out.println($booleanVariable); \n" +
-                "    System.out.println($a); \n" +
-                "end \n";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-        KieSession ksession = kbase.newKieSession();
-        try {
-            Address address = new Address();
-            address.setStreet("streetName");
-            ksession.insert(address);
-            int rulesFired = ksession.fireAllRules();
-            assertThat(rulesFired).isEqualTo(1);
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-//    @Test
-//    public void testConstraintExpressionBoundVariableUsedInOtherConstraint() {
-//        String str = "package constraintexpression\n" +
-//                "\n" +
-//                "import " + Address.class.getCanonicalName() + "\n" +
-//                "import " + Person.class.getCanonicalName() + "\n" +
-//                "\n" +
-//                "rule \"r1\"\n" +
-//                "when \n" +
-//                "    $a : Address($booleanVariable: (street == null))\n" +
-//                "    $p: Person(!$booleanVariable && name == \"someName\") \n" +
-//                "then \n" +
-//                "    System.out.println($booleanVariable); \n" +
-//                "    System.out.println($a); \n" +
-//                "end \n";
-//
-//        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-//        KieSession ksession = kbase.newKieSession();
-//        try {
-//            Address address = new Address();
-//            address.setStreet("streetname");
-//            Person person = new Person("someName");
-//            ksession.insert(address);
-//            ksession.insert(person);
-//            int rulesFired = ksession.fireAllRules();
-//            assertThat(rulesFired).isEqualTo(0);
-//        } finally {
-//            ksession.dispose();
-//        }
-//    }
-
-    @Test
     public void testUpdateWithNonEffectiveActivations() throws Exception {
         // JBRULES-3604
         String str = "package inheritance\n" +

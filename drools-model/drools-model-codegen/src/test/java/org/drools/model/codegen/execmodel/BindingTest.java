@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -474,5 +475,35 @@ public class BindingTest extends BaseModelTest {
         ksession.insert(p3);
         ksession.fireAllRules();
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void testConstraintExpression() {
+        String str = "package constraintexpression\n" +
+                "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import java.util.List; \n" +
+                "global List<Boolean> booleanListGlobal; \n" +
+                "rule \"r1\"\n" +
+                "when \n" +
+                "    $p : Person($booleanVariable: (name != null))\n" +
+                "then \n" +
+                "    System.out.println($booleanVariable); \n" +
+                "    System.out.println($p); \n" +
+                "    booleanListGlobal.add($booleanVariable); \n " +
+                "end \n";
+
+        KieSession ksession = getKieSession(str);
+        try {
+            final List<Boolean> booleanListGlobal = new ArrayList<>();
+            ksession.setGlobal("booleanListGlobal", booleanListGlobal);
+            Person person = new Person("someName");
+            ksession.insert(person);
+            int rulesFired = ksession.fireAllRules();
+            assertThat(rulesFired).isEqualTo(1);
+            assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.TRUE);
+        } finally {
+            ksession.dispose();
+        }
     }
 }
