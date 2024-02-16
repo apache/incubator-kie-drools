@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
