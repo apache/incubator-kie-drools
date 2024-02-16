@@ -203,7 +203,7 @@ public class ConstraintParser {
         TypedDeclarationSpec decl = context.addDeclaration(bindId, getDeclarationType(drlx, singleResult));
         if (drlx.getExpr() instanceof NameExpr) {
             decl.setBoundVariable(PrintUtil.printNode(drlx.getExpr()));
-        } else if (drlx.getExpr() instanceof EnclosedExpr) {
+        } else if (drlx.getExpr() instanceof EnclosedExpr && drlx.getBind() != null) {
             ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
             ExpressionTyper expressionTyper = new ExpressionTyper(context, singleResult.getPatternType(), bindId, false, expressionTyperContext);
             TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(drlx.getExpr());
