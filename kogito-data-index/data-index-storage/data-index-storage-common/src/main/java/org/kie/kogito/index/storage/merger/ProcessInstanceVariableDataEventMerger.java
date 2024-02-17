@@ -18,9 +18,6 @@
  */
 package org.kie.kogito.index.storage.merger;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
@@ -28,9 +25,6 @@ import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -44,23 +38,8 @@ public class ProcessInstanceVariableDataEventMerger extends ProcessInstanceEvent
     public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
         pi = getOrNew(pi, data);
         ProcessInstanceVariableDataEvent event = (ProcessInstanceVariableDataEvent) data;
-        try {
-            ProcessInstanceVariableEventBody body = event.getData();
-            ObjectMapper mapper = JsonUtils.getObjectMapper();
-
-            Map<String, Object> variables = null;
-            if (pi.getVariables() == null) {
-                variables = new HashMap<>();
-            } else {
-                variables = new HashMap<>(mapper.treeToValue(pi.getVariables(), HashMap.class));
-            }
-            variables.put(body.getVariableName(), body.getVariableValue());
-            pi.setVariables(mapper.valueToTree(variables));
-        } catch (JsonProcessingException e) {
-            LOGGER.error("error during unmarshalling variable instance", e);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("error during merging variable instance event", e);
-        }
+        ProcessInstanceVariableEventBody body = event.getData();
+        pi.setVariables(JsonUtils.mergeVariable(body.getVariableName(), body.getVariableValue(), pi.getVariables()));
         return pi;
     }
 }

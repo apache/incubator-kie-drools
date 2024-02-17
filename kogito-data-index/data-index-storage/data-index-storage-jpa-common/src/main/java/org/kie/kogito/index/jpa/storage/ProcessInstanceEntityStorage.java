@@ -38,13 +38,10 @@ import org.kie.kogito.index.jpa.model.NodeInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.jpa.model.ProcessInstanceErrorEntity;
+import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
-import org.kie.kogito.jackson.utils.JsonObjectUtils;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -203,13 +200,8 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
 
     private void indexVariable(ProcessInstanceVariableEventBody data) {
         ProcessInstanceEntity pi = findOrInit(data.getProcessId(), data.getProcessInstanceId());
-        ObjectNode node = pi.getVariables();
-        if (node == null) {
-            node = ObjectMapperFactory.get().createObjectNode();
-        }
-        node.set(data.getVariableName(), JsonObjectUtils.fromValue(data.getVariableValue()));
-        // Object node is not tracked, need explicit set
-        pi.setVariables(node);
+        pi.setVariables(JsonUtils.mergeVariable(data.getVariableName(), data.getVariableValue(), pi.getVariables()));
         repository.flush();
     }
+
 }
