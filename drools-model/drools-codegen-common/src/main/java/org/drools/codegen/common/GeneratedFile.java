@@ -62,12 +62,12 @@ public class GeneratedFile {
                 LOGGER.warn("STATIC_HTTP_RESOURCE is automatically placed under " + META_INF_RESOURCES + ". You don't need to specify the directory : {}", path);
             } else {
                 path = META_INF_RESOURCES_PATH.resolve(path);
-                pathAsString = path.toString().replace('\\', '/');
+                pathAsString = path.toString();
             }
         }
 
         this.path = path;
-        this.pathAsString = pathAsString;
+        this.pathAsString = pathAsString.replace('\\', '/');
         this.contents = contents;
     }
 
