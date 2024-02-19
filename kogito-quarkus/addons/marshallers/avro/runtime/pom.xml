@@ -60,6 +60,9 @@
             </goals>
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+              <capabilities>
+                <provides>org.kie.addons.marshallers.avro</provides>
+              </capabilities>
             </configuration>
           </execution>
         </executions>

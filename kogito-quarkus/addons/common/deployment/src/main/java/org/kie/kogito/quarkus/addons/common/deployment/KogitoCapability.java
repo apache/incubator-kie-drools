@@ -28,11 +28,11 @@ import static java.util.Arrays.asList;
 public final class KogitoCapability {
 
     public static final String KOGITO_GROUP_ID = "org.kie.kogito";
-    public static final KogitoCapability DECISIONS = new KogitoCapability("org.kie.kogito.decisions", "kogito-quarkus-decisions");
-    public static final KogitoCapability PROCESSES = new KogitoCapability("org.kie.kogito.processes", "kogito-quarkus-processes");
-    public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.kogito.predictions", "kogito-quarkus-predictions");
-    public static final KogitoCapability RULES = new KogitoCapability("org.kie.kogito.rules", "kogito-quarkus-rules");
-    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.kie.kogito.serverless-workflow", "kogito-quarkus-serverless-workflow");
+    public static final KogitoCapability DECISIONS = new KogitoCapability("org.drools.decisions", "kogito-quarkus-decisions");
+    public static final KogitoCapability PROCESSES = new KogitoCapability("org.jbpm.processes", "kogito-quarkus-processes");
+    public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.predictions", "kogito-quarkus-predictions");
+    public static final KogitoCapability RULES = new KogitoCapability("org.drools.rules", "kogito-quarkus-rules");
+    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.sonataflow.serverless-workflow", "kogito-quarkus-serverless-workflow");
 
     public static final List<KogitoCapability> ENGINES = asList(
             KogitoCapability.DECISIONS,

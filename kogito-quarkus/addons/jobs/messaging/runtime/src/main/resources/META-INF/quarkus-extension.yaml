@@ -17,15 +17,20 @@
 # under the License.
 #
 
-name: Kogito Add-On Jobs Service Messaging
+name: Kogito Jobs Service Messaging Add-On
 description: Kogito Add-On to interact with the Kogito Jobs Service using events via the reactive messaging api
 metadata:
   keywords:
     - kogito
-    - process
-    - bpmn
+    - processes
+    - BPMN
+    - workflows
     - jobs
   # TODO: add processes guide
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"
+  config:
+    - "kogito."

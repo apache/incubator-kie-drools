@@ -17,13 +17,17 @@
 # under the License.
 #
 
-name: Kogito Add-On Monitoring Elasticsearch
-description: Kogito Add-On for Elasticsearch Monitoring
+name: KIE Monitoring Elasticsearch Add-On
+description: KIE Add-On for Elasticsearch Monitoring
 metadata:
   keywords:
-    - kogito
+    - KIE
     - elasticsearch
     - monitoring
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"
+  config:
+    - "kogito.monitoring."
+    - "kogito.addon.monitoring.elastic."

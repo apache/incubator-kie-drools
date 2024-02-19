@@ -17,14 +17,18 @@
 # under the License.
 #
 
-name: Kogito Add-On Persistence Rocksdb
-description: Kogito Add-On support for persistence on Rocksdb
+name: KIE Persistence Rocksdb Add-On
+description: KIE Add-On support for persistence on Rocksdb
 metadata:
   keywords:
-    - kogito
+    - KIE
     - persistence
     - rocksdb
-    - process
-  guide: https://quarkus.io/guides/kogito
+    - processes
+    - BPMN
+    - workflows
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"

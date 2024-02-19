@@ -159,7 +159,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.serverless-workflow</provides>
+                <provides>org.sonataflow.serverless-workflow</provides>
               </capabilities>
             </configuration>
           </execution>

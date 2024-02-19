@@ -17,14 +17,18 @@
 # under the License.
 #
 
-name: Kogito Add-On Persistence Infinispan
-description: Kogito Add-On support for persistence on Infinispan
+name: KIE Persistence Infinispan Add-On
+description: KIE Add-On support for persistence on Infinispan
 metadata:
   keywords:
-    - kogito
+    - KIE
     - persistence
     - infinispan
-    - process
+    - processes
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"
+  config:
+    - "kogito.persistence."
+    - "kogito.persistence.infinispan."

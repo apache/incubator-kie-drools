@@ -18,13 +18,14 @@
 #
 
 ---
-name: "Kogito - Rules (DRL)"
+name: Drools Rules (DRL) Quarkus Extension
+description: Quarkus Extension to include the Drools Rules (DRL) engine.
 metadata:
   keywords:
-  - "kogito"
-  - "drools"
-  - "rules"
-  - "DRL"
-  guide: "https://quarkus.io/guides/kogito-drl"
+    - "drools"
+    - "rules"
+    - "DRL"
+  guide: "https://quarkus.io/guides/drools-drl"
   categories:
-  - "business-automation"
+    - "business-automation"
+  status: "stable"

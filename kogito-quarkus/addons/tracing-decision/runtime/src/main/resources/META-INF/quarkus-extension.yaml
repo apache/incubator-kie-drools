@@ -17,14 +17,17 @@
 # under the License.
 #
 
-name: Kogito Add-On Tracing Decision
-description: Kogito Add-On to enable tracing decisions projects
+name: KIE Tracing Decision Add-On
+description: KIE Add-On to enable tracing decisions projects
 metadata:
   keywords:
-    - kogito
+    - KIE
     - decisions
-    - dmn
+    - DMN
     - tracing
-  guide: https://quarkus.io/guides/kogito-dmn
+  guide: https://quarkus.io/guides/kie-dmn
   categories:
     - "business-automation"
+  status: "stable"
+  config:
+    - "kogito.addon.tracing.decision."

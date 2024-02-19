@@ -17,16 +17,21 @@
 # under the License.
 #
 
-name: Kogito Add-On Process Messaging
-description: Kogito Events handling for BPMN messages Add-On
+name: KIE Process Messaging Add-On
+description: KIE Events handling for BPMN messages Add-On
 metadata:
   keywords:
-    - kogito
+    - KIE
     - processes
     - messaging
     - cloudevents
-    - bpmn
+    - BPMN
+    - workflows
   # TODO: add processes guide
-  guide: https://quarkus.io/guides/kogito
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"
+  config:
+    - "kogito.quarkus.events."

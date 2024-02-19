@@ -18,16 +18,17 @@
 #
 
 ---
-name: "Kogito - Decisions (DMN)"
+name: Drools Decisions (DMN) Quarkus Extension
+description: Quarkus Extension to include the Drools Decisions (DMN) engine.
 metadata:
   keywords:
-  - "kogito"
-  - "drools"
-  - "decisions"
-  - "DMN"
-  guide: "https://quarkus.io/guides/kogito-dmn"
+    - "drools"
+    - "decisions"
+    - "DMN"
+  guide: "https://quarkus.io/guides/drools-dmn"
   categories:
-  - "business-automation"
+    - "business-automation"
+  status: "stable"
   codestart:
     name: "kogito-dmn-codestart"
     languages:

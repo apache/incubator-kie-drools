@@ -17,13 +17,16 @@
 # under the License.
 #
 
-name: Kogito Add-On Task Management
-description: Kogito Add-On Task Management REST API
+name: jBPM Task Management Add-On
+description: jBPM Add-On Task Management REST API
 metadata:
   keywords:
-    - kogito
-    - process
+    - jBPM
+    - processes
     - task
-  guide: https://quarkus.io/guides/kogito
+    - management
+    - BPMN
+  guide: https://quarkus.io/guides/jbpm
   categories:
     - "business-automation"
+  status: "stable"

@@ -17,15 +17,17 @@
 # under the License.
 #
 
-name: Kogito Add-On Events MongoDB
-description: Kogito Add-On for storing Kogito events log on MongoDB for later pushing via Debezium, allowing Outbox pattern implementation.
+name: KIE Events MongoDB Add-On
+description: KIE Add-On for storing events log on MongoDB for later pushing via Debezium, allowing Outbox pattern implementation.
 metadata:
   keywords:
-    - kogito
+    - KIE
     - persistence
     - mongodb
     - events
-    - process
+    - processes
+    - BPMN
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"

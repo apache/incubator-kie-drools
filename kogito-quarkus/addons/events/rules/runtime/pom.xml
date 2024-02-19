@@ -66,7 +66,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.events.rules</provides>
+                <provides>org.drools.addons.events.rules</provides>
               </capabilities>
             </configuration>
           </execution>

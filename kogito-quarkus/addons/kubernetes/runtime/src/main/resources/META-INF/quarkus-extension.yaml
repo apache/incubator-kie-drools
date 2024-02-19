@@ -17,13 +17,16 @@
 # under the License.
 #
 
-name: Kogito Add-On Kubernetes
-description: Adds support for Kubernetes integrations within Kogito engine.
+name: KIE Kubernetes Add-On
+description: Adds support for Kubernetes integrations within KIE engine.
 metadata:
   keywords:
-    - kogito
+    - KIE
     - kubernetes
     - knative
-  guide: https://quarkus.io/guides/kogito
+    - workflows
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"

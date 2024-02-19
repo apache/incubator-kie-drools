@@ -100,7 +100,7 @@
                         <configuration>
                             <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
                             <capabilities>
-                                <provides>org.kie.kogito.addons.explainability</provides>
+                                <provides>org.kie.addons.explainability</provides>
                             </capabilities>
                         </configuration>
                     </execution>

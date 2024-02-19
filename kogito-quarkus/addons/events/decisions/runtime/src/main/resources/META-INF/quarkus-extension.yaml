@@ -17,14 +17,15 @@
 # under the License.
 #
 
-name: Kogito Add-On Events Decisions
-description: Kogito Add-On for processing events on Decisions (DMN) based projects
+name: KIE Events Decisions Quarkus Add-On
+description: KIE Add-On for processing events on Decisions (DMN) based projects
 metadata:
   keywords:
-    - kogito
+    - KIE
     - decisions
     - DMN
     - Kafka
-  guide: https://quarkus.io/guides/kogito-dmn
+  guide: https://quarkus.io/guides/kie-dmn
   categories:
     - "business-automation"
+  status: "stable"

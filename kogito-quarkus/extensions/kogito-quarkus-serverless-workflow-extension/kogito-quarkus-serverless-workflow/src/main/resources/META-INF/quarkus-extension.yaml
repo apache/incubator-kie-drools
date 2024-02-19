@@ -1,16 +1,20 @@
 ---
-name: "Kogito - Serverless Workflow"
+name: SonataFlow Quarkus Extension
+description: Quarkus Extension to include the SonataFlow engine
 metadata:
   keywords:
-    - "kogito"
+    - "SonataFlow"
     - "serverless workflow"
     - "serverless"
-    - "workflow"
+    - "workflows"
     - "SW"
+    - "SWF"
   guide: "https://quarkus.io/guides/kogito"
   categories:
-    - "business-automation"
+    - "cloud"
   status: "preview"
+  config:
+    - "kogito."
   codestart:
     name: "kogito-serverless-workflow-codestart"
     languages:

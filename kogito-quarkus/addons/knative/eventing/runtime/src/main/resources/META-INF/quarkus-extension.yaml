@@ -17,21 +17,25 @@
 # under the License.
 #
 
-name: Kogito Add-On Knative Eventing
+name: KIE Knative Eventing Add-On
 description: Adds support for CloudEvents on top of HTTP and Knative env vars configuration.
 metadata:
   keywords:
-    - kogito
+    - KIE
     - processes
     - decisions
     - rules
-    - bpmn
+    - BPMN
     - drl
-    - dmn
+    - DMN
     - knative
     - eventing
     - cloudevents
-  # TODO: add processes guide
-  guide: https://quarkus.io/guides/kogito
+    - workflows
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"
+  config:
+    - "org.kie.kogito.addons.knative.eventing"

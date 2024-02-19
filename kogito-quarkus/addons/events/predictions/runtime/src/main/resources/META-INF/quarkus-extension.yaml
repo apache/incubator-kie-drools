@@ -17,14 +17,15 @@
 # under the License.
 #
 
-name: Kogito Add-On Events Predictions
-description: Kogito Add-On for processing events on Predictions (PMML) based projects
+name: KIE Events Predictions Add-On
+description: KIE Add-On for processing events on Predictions (PMML) based projects
 metadata:
   keywords:
-    - kogito
+    - KIE
     - predictions
     - PMML
     - Kafka
-  guide: https://quarkus.io/guides/kogito-pmml
+  guide: https://quarkus.io/guides/kie-pmml
   categories:
     - "business-automation"
+  status: "stable"

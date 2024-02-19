@@ -17,13 +17,19 @@
 # under the License.
 #
 
-name: Kogito Add-On Process SVG
-description: Kogito Add-On for SVG process generation
+name: KIE Process SVG Add-On
+description: KIE Add-On for SVG process generation
 metadata:
   keywords:
-    - kogito
-    - process
+    - KIE
+    - processes
     - svg
-  guide: https://quarkus.io/guides/kogito
+    - BPMN
+    - workflows
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: stable
+  config:
+    - "kogito.svg."

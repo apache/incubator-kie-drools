@@ -17,17 +17,19 @@
 # under the License.
 #
 
-name: Kogito Add-On User Tasks e-mail
-description: Kogito Add-On for e-mail support on Human Tasks.
+name: jBPM User Tasks e-mail Add-On
+description: jBPM Add-On for e-mail support on Human Tasks.
 metadata:
   keywords:
-    - kogito
+    - jBPM
     - processes
     - mail
     - e-mail
     - tasks
     - notification
+    - BPMN
   # TODO: add processes guide
-  guide: https://quarkus.io/guides/kogito
+  guide: https://quarkus.io/guides/jbpm
   categories:
     - "business-automation"
+  status: "stable"

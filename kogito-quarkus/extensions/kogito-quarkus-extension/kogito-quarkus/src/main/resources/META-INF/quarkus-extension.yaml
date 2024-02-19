@@ -18,16 +18,20 @@
 #
 
 ---
-name: "Kogito"
+name: jBPM and Drools Quarkus Extension
+description: Extension to add Business Automation Capabilities
 metadata:
   keywords:
-  - "kogito"
-  - "drools"
-  - "jbpm"
-  - "processes"
-  - "rules"
-  - "decisions"
-  - "DMN"
-  guide: "https://quarkus.io/guides/kogito"
+    - "drools"
+    - "jBPM"
+    - "processes"
+    - "rules"
+    - "decisions"
+    - "DMN"
+    - "BPMN"
+    - "workflows"
+  guide: "https://quarkus.io/guides/jbpm"
   categories:
-  - "business-automation"
+    - "business-automation"
+    - "cloud"
+  status: "stable"

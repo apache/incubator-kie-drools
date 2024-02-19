@@ -77,7 +77,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.persistence.filesystem</provides>
+                <provides>org.kie.addons.persistence.filesystem</provides>
               </capabilities>
             </configuration>
           </execution>

@@ -111,7 +111,7 @@
               </runnerParentFirstArtifacts>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.process.svg</provides>
+                <provides>org.kie.addons.process.svg</provides>
               </capabilities>
             </configuration>
           </execution>

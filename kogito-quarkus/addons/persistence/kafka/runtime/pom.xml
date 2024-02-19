@@ -136,7 +136,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.persistence.kafka</provides>
+                <provides>org.kie.addons.persistence.kafka</provides>
               </capabilities>
             </configuration>
           </execution>

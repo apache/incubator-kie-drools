@@ -81,7 +81,7 @@
                         <configuration>
                             <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
                             <capabilities>
-                                <provides>org.kie.kogito.rules</provides>
+                                <provides>org.drools.rules</provides>
                             </capabilities>
                         </configuration>
                     </execution>

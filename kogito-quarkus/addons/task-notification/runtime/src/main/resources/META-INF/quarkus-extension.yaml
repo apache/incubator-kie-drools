@@ -17,15 +17,16 @@
 # under the License.
 #
 
-name: Kogito Add-On Task Notification
-description: Kogito Add-On to handle tasks notifications
+name: jBPM Task Notification Add-On
+description: jBPM Add-On to handle tasks notifications
 metadata:
   keywords:
-    - kogito
-    - process
+    - jBPM
+    - processes
     - task
     - notification
     - BPMN
   guide: https://quarkus.io/guides/kogito
   categories:
     - "business-automation"
+  status: "stable"

@@ -96,7 +96,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.task.management</provides>
+                <provides>org.jbpm.addons.task.management</provides>
               </capabilities>
             </configuration>
           </execution>

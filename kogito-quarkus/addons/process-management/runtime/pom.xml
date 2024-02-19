@@ -106,7 +106,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.process.management</provides>
+                <provides>org.kie.addons.process.management</provides>
               </capabilities>
             </configuration>
           </execution>

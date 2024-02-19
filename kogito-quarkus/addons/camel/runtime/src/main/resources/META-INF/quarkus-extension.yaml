@@ -17,15 +17,16 @@
 # under the License.
 #
 
-name: Kogito Addons Quarkus Camel
-description: Add-on for Kogito Serverless Workflow to execute embedded Camel Routes as workflow functions.
+name: SonataFlow Camel Quarkus Add-On
+description: Add-on for SonataFlow to execute embedded Camel Routes as workflow functions.
 metadata:
   keywords:
-    - kogito
+    - sonataflow
     - camel
     - serverless
-    - workflow
+    - workflows
 #  guide: ...
   categories:
     - "integration"
+    - "cloud"
   status: "preview"

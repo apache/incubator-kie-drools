@@ -17,15 +17,15 @@
 # under the License.
 #
 
-name: Kogito Add-On Explainability
-description: Kogito Add-On to support explainability. Should be used only with the explainability service.
+name: KIE Explainability Add-On
+description: KIE Add-On to support explainability. Should be used only with the explainability service.
 metadata:
   keywords:
-    - kogito
+    - KIE
     - decisions
-    - dmn
+    - DMN
     - explainability
-  guide: https://quarkus.io/guides/kogito-dmn
+  guide: https://quarkus.io/guides/kie-dmn
   categories:
     - "business-automation"
-  unlisted: true
+  status: "stable"

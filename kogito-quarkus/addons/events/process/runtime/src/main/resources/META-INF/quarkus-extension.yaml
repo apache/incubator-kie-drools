@@ -17,15 +17,19 @@
 # under the License.
 #
 
-name: Kogito Add-On Events Process
-description: Kogito Add-On for Processes Events
+name: KIE Events Process Add-On
+description: KIE Add-On for Processes Events
 metadata:
   keywords:
-    - kogito
-    - bpmn
-    - process
+    - KIE
+    - BPMN
+    - processes
+    - workflows
     - events
-  # TODO: add process guide
-  guide: https://quarkus.io/guides/kogito
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"
+  config:
+    - "kogito.events."

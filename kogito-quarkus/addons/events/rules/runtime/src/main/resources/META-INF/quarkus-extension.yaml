@@ -17,15 +17,15 @@
 # under the License.
 #
 
-name: Kogito Add-On Events Rules
-description: Kogito Add-On for processing events on Rules (DRL) based projects
+name: Drools Events Rules Add-On
+description: Drools Add-On for processing events on Rules (DRL) based projects
 metadata:
   keywords:
-    - kogito
     - rules
     - drools
     - DRL
     - Kafka
-  guide: https://quarkus.io/guides/kogito-drl
+  guide: https://quarkus.io/guides/kie-drl
   categories:
     - "business-automation"
+  status: "stable"

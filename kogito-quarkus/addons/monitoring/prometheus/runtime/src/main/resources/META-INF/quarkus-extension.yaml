@@ -17,13 +17,16 @@
 # under the License.
 #
 
-name: Kogito Add-On Monitoring Prometheus
+name: KIE Monitoring Prometheus Add-On
 description: Kogito Add-On for Prometheus Monitoring
 metadata:
   keywords:
-    - kogito
+    - KIE
     - prometheus
     - monitoring
-  guide: https://quarkus.io/guides/kogito
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+  status: "stable"
+  config:
+    - "kogito.monitoring."

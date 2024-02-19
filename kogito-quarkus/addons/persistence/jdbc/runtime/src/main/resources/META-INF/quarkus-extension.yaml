@@ -17,14 +17,20 @@
 # under the License.
 #
 
-name: Kogito Add-On Persistence JDBC
-description: Kogito Add-On support for persistence on JDBC
+name: KIE Persistence JDBC Add-On
+description: KIE Add-On support for persistence on JDBC
 metadata:
   keywords:
-    - kogito
+    - KIE
     - persistence
     - jdbc
-    - process
-  guide: https://quarkus.io/guides/kogito
+    - processes
+    - BPMN
+    - workflows
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
+    - "cloud"
+  status: "stable"
+  config:
+    - "kogito.persistence"

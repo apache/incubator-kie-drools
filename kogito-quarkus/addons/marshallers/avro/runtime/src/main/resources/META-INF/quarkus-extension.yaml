@@ -17,21 +17,19 @@
 # under the License.
 #
 
-name: Kogito Jobs Service Knative Eventing Add-On
-description: Kogito Add-On to interact with the Kogito Jobs Service using events via the knative eventing system
+name: KIE Avro marshaller Add-On
+description: KIE Add-On to add Avro marshaller.
 metadata:
   keywords:
-    - kogito
+    - KIE
     - processes
     - BPMN
-    - knative
+    - eventing
+    - cloudevents
     - workflows
-    - jobs
-  # TODO: add processes guide
-  guide: https://quarkus.io/guides/kogito
+    - avro
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
     - "cloud"
   status: "stable"
-  config:
-    - "kogito."

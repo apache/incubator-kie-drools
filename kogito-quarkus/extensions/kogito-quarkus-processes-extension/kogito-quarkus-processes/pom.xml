@@ -76,7 +76,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.processes</provides>
+                <provides>org.jbpm.processes</provides>
               </capabilities>
             </configuration>
           </execution>

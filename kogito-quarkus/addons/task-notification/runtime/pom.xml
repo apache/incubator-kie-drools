@@ -30,7 +30,7 @@
   </parent>
   <artifactId>kogito-addons-quarkus-task-notification</artifactId>
   <name>Kogito Add-On Task Notification</name>
-  <description>Task notification addon for for Quarkus</description>
+  <description>Task notification addon for Quarkus</description>
 
 
     <properties>
@@ -99,7 +99,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.kie.kogito.addons.task.notification</provides>
+                <provides>org.jbpm.addons.task.notification</provides>
               </capabilities>
             </configuration>
           </execution>

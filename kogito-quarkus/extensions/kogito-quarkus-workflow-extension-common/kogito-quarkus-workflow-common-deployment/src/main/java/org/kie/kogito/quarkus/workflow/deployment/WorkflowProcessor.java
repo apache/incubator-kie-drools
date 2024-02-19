@@ -85,7 +85,7 @@ import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtil
 
 public abstract class WorkflowProcessor {
 
-    private static final String PERSISTENCE_CAPABILITY = "org.kie.kogito.addons.persistence";
+    private static final String PERSISTENCE_CAPABILITY = "org.kie.addons.persistence";
 
     public abstract FeatureBuildItem featureBuildItem();
 

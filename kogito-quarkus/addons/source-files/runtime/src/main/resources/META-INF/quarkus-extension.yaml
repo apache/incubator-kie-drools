@@ -17,21 +17,17 @@
 # under the License.
 #
 
-name: Kogito Jobs Service Knative Eventing Add-On
-description: Kogito Add-On to interact with the Kogito Jobs Service using events via the knative eventing system
+name: KIE Source Files Add-On
+description: KIE Add-On to Provide access to source files for Quarkus
 metadata:
   keywords:
-    - kogito
+    - KIE
     - processes
     - BPMN
-    - knative
     - workflows
-    - jobs
-  # TODO: add processes guide
-  guide: https://quarkus.io/guides/kogito
+    - source-files
+  guide: https://quarkus.io/guides/kie
   categories:
     - "business-automation"
     - "cloud"
-  status: "stable"
-  config:
-    - "kogito."
+  status: stable

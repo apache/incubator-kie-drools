@@ -106,7 +106,7 @@
                         <configuration>
                             <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
                             <capabilities>
-                                <provides>org.kie.kogito.decisions</provides>
+                                <provides>org.drools.decisions</provides>
                             </capabilities>
                         </configuration>
                     </execution>
