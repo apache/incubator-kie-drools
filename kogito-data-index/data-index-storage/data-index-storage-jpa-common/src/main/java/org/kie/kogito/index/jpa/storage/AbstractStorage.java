@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
-import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,8 +26,6 @@ import org.kie.kogito.persistence.api.Storage;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 import static java.util.stream.Collectors.toMap;
@@ -54,19 +51,7 @@ public abstract class AbstractStorage<K, E extends AbstractEntity, V> extends Ab
     @Override
     @Transactional
     public V put(K key, V value) {
-        //Pessimistic lock is used to lock the row to handle concurrency with an exiting registry
-        E persistedEntity = repository.findById(key, LockModeType.PESSIMISTIC_WRITE);
-        E newEntity = mapToEntity.apply(value);
-        if (persistedEntity != null) {
-            repository.getEntityManager().merge(newEntity);
-        } else {
-            try {
-                //to handle concurrency in case of a new registry persist flush and throw an exception to allow retry on the caller side
-                repository.persistAndFlush(newEntity);
-            } catch (PersistenceException e) {
-                throw new ConcurrentModificationException(e);
-            }
-        }
+        repository.getEntityManager().merge(mapToEntity.apply(value));
         return value;
     }
 

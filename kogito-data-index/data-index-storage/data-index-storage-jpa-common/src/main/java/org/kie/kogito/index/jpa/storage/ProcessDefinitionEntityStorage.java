@@ -18,20 +18,14 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
-import java.util.Optional;
-
 import org.kie.kogito.index.jpa.mapper.ProcessDefinitionEntityMapper;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntityRepository;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
@@ -42,7 +36,7 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
 
     @Inject
     public ProcessDefinitionEntityStorage(ProcessDefinitionEntityRepository repository, ProcessDefinitionEntityMapper mapper) {
-        super(new RepositoryAdapter(repository), ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
+        super(repository, ProcessDefinition.class, ProcessDefinitionEntity.class, mapper::mapToModel, mapper::mapToEntity, e -> new ProcessDefinitionKey(e.getId(),
                 e.getVersion()));
     }
 
@@ -52,37 +46,4 @@ public class ProcessDefinitionEntityStorage extends AbstractStorage<ProcessDefin
         return getRepository().count("id = ?1 and version = ?2", key.getId(), key.getVersion()) == 1;
     }
 
-    public static class RepositoryAdapter implements PanacheRepositoryBase<ProcessDefinitionEntity, ProcessDefinitionKey> {
-
-        ProcessDefinitionEntityRepository repository;
-
-        public RepositoryAdapter(ProcessDefinitionEntityRepository repository) {
-            this.repository = repository;
-        }
-
-        @Override
-        public boolean deleteById(ProcessDefinitionKey key) {
-            return repository.deleteById(key);
-        }
-
-        @Override
-        public Optional<ProcessDefinitionEntity> findByIdOptional(ProcessDefinitionKey key) {
-            return repository.findByIdOptional(key);
-        }
-
-        @Override
-        public ProcessDefinitionEntity findById(ProcessDefinitionKey s, LockModeType lockModeType) {
-            return repository.findById(s, lockModeType);
-        }
-
-        @Override
-        public void persist(ProcessDefinitionEntity entity) {
-            repository.persist(entity);
-        }
-
-        @Override
-        public EntityManager getEntityManager() {
-            return repository.getEntityManager();
-        }
-    }
 }
