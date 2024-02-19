@@ -71,18 +71,8 @@ public class GeneratedFile {
         this.contents = contents;
     }
 
-    /**
-     * It returns the relativePath in OS-Dependant format
-     */
     public String relativePath() {
         return pathAsString;
-    }
-
-    /**
-     * It returns the relativePath in POSIX format
-     */
-    public String relativePathPOSIX() {
-        return pathAsString.replace('\\', '/');
     }
 
     public Path path() {
