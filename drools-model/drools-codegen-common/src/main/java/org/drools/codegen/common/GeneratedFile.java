@@ -62,7 +62,7 @@ public class GeneratedFile {
                 LOGGER.warn("STATIC_HTTP_RESOURCE is automatically placed under " + META_INF_RESOURCES + ". You don't need to specify the directory : {}", path);
             } else {
                 path = META_INF_RESOURCES_PATH.resolve(path);
-                pathAsString = path.toString();
+                pathAsString = path.toString().replace('\\', '/');
             }
         }
 
@@ -71,8 +71,18 @@ public class GeneratedFile {
         this.contents = contents;
     }
 
+    /**
+     * It returns the relativePath in OS-Dependant format
+     */
     public String relativePath() {
         return pathAsString;
+    }
+
+    /**
+     * It returns the relativePath in POSIX format
+     */
+    public String relativePathPOSIX() {
+        return pathAsString.replace('\\', '/');
     }
 
     public Path path() {
