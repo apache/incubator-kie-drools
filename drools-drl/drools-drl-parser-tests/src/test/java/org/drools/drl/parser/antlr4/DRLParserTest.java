@@ -1,4 +1,4 @@
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.drl10.parser.DRLParserHelper.computeTokenIndex;
-import static org.drools.drl10.parser.DRLParserHelper.createDrlParser;
-import static org.drools.drl10.parser.DRLParserHelper.parse;
+import static org.drools.drl.parser.antlr4.DRLParserHelper.computeTokenIndex;
+import static org.drools.drl.parser.antlr4.DRLParserHelper.createDrlParser;
+import static org.drools.drl.parser.antlr4.DRLParserHelper.parse;
 
 class DRLParserTest {
 

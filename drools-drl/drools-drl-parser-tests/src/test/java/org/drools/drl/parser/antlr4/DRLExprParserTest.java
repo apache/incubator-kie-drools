@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +41,7 @@ public class DRLExprParserTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        this.parser = new Drl10ExprParser(LanguageLevelOption.DRL6);
+        this.parser = new Drl6ExprParserAntlr4(LanguageLevelOption.DRL6);
     }
 
     @AfterEach

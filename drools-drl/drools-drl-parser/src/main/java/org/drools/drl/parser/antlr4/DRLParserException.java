@@ -16,31 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl.parser.lang;
+package org.drools.drl.parser.antlr4;
 
-import java.util.List;
+public class DRLParserException extends RuntimeException {
 
-import org.antlr.runtime.Token;
-import org.drools.drl.parser.DroolsParserException;
-
-/**
- * No implementation because everything is handled by DRL10Parser
- */
-public class DRL10Lexer implements DRLLexer {
-
-    @Override
-    public String getSourceName() {
-        throw new UnsupportedOperationException("This method should not be called");
+    public DRLParserException() {
+        super();
     }
 
-    @Override
-    public Token nextToken() {
-        throw new UnsupportedOperationException("This method should not be called");
+    public DRLParserException(String message) {
+        super(message);
     }
-
-    @Override
-    public List<DroolsParserException> getErrors() {
-        throw new UnsupportedOperationException("This method should not be called");
-    }
-
 }

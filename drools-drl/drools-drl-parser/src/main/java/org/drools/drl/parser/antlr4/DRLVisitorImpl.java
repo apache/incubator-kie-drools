@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +58,11 @@ import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.UnitDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 
-import static org.drools.drl10.parser.DRLParserHelper.getTextWithoutErrorNode;
-import static org.drools.drl10.parser.ParserStringUtils.getTextPreservingWhitespace;
-import static org.drools.drl10.parser.ParserStringUtils.getTokenTextPreservingWhitespace;
-import static org.drools.drl10.parser.ParserStringUtils.safeStripStringDelimiters;
-import static org.drools.drl10.parser.ParserStringUtils.trimThen;
+import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
+import static org.drools.drl.parser.antlr4.ParserStringUtils.getTextPreservingWhitespace;
+import static org.drools.drl.parser.antlr4.ParserStringUtils.getTokenTextPreservingWhitespace;
+import static org.drools.drl.parser.antlr4.ParserStringUtils.safeStripStringDelimiters;
+import static org.drools.drl.parser.antlr4.ParserStringUtils.trimThen;
 import static org.drools.util.StringUtils.unescapeJava;
 
 /**
