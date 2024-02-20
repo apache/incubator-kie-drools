@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -416,11 +418,9 @@ public class ClasspathKieProject extends AbstractKieProject {
         }
 
         try {
-            urlPath = URLDecoder.decode( urlPath,
-                                         "UTF-8" );
+            urlPath = URLDecoder.decode( urlPath, "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
-            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8",
-                                                e );
+            throw new IllegalArgumentException( "Error decoding URL (" + url + ") using UTF-8", e );
         }
 
         log.debug("KieModule URL type=" + urlType + " url=" + urlPath);
@@ -429,38 +429,47 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     private static String getPathForVFS(URL url) {
-        Method m = null;
+        Method vfsGetPhysicalFileMethod = null;
         try {
-            m = Class.forName("org.jboss.vfs.VirtualFile").getMethod("getPhysicalFile");
+            vfsGetPhysicalFileMethod = Class.forName("org.jboss.vfs.VirtualFile").getMethod("getPhysicalFile");
         } catch (Exception e) {
             try {
                 // Try to retrieve the VirtualFile class also on TCCL
-                m = Class.forName("org.jboss.vfs.VirtualFile", true, Thread.currentThread().getContextClassLoader()).getMethod("getPhysicalFile");
+                vfsGetPhysicalFileMethod = Class.forName("org.jboss.vfs.VirtualFile", true, Thread.currentThread().getContextClassLoader()).getMethod("getPhysicalFile");
             } catch (Exception e1) {
                 // VirtualFile is not available on the classpath - ignore
                 log.warn( "Found virtual file " + url + " but org.jboss.vfs.VirtualFile is not available on the classpath" );
             }
         }
-        Method m2 = null;
+
+        Class vfsClass = null;
+        Method vfsGetChildMethod = null;
+        boolean useTccl = false;
+
         try {
-            m2 = Class.forName("org.jboss.vfs.VFS").getMethod("getChild", URI.class);
+            vfsClass = lookupVfsClass("org.jboss.vfs.VFS", useTccl);
+            vfsGetChildMethod = Class.forName("org.jboss.vfs.VFS").getMethod("getChild", URI.class);
         } catch (Exception e) {
             try {
                 // Try to retrieve the org.jboss.vfs.VFS class also on TCCL
-                m2 = Class.forName("org.jboss.vfs.VFS", true, Thread.currentThread().getContextClassLoader()).getMethod("getChild", URI.class);
+                useTccl = true;
+                vfsClass = lookupVfsClass("org.jboss.vfs.VFS", useTccl);
+                vfsGetChildMethod = vfsClass.getMethod("getChild", URI.class);
             } catch (Exception e1) {
                 // VFS is not available on the classpath - ignore
                 log.warn( "Found virtual file " + url + " but org.jboss.vfs.VFS is not available on the classpath" );
             }
         }
 
-        if (m == null || m2 == null) {
+        if (vfsGetPhysicalFileMethod == null || vfsGetChildMethod == null) {
             return url.getPath();
         }
 
         String path = null;
+        Object virtualFile = null;
         try {
-            File f = (File)m.invoke( m2.invoke(null, url.toURI()) );
+            virtualFile = vfsGetChildMethod.invoke( null, url.toURI() );
+            File f = (File) vfsGetPhysicalFileMethod.invoke( virtualFile );
             path = PortablePath.of(f.getPath()).asString();
         } catch (Exception e) {
             log.error( "Error when reading virtual file from " + url.toString(), e );
@@ -475,18 +484,11 @@ public class ClasspathKieProject extends AbstractKieProject {
             return path;
         }
 
-        int kModulePos = urlString.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length();
-        boolean isInJar = urlString.startsWith(".jar", kModulePos - 4);
-
         try {
-            if (isInJar && path.contains("contents/")) {
-                String jarName = urlString.substring(0, kModulePos);
-                jarName = jarName.substring(jarName.lastIndexOf('/')+1);
-                String jarFolderPath = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length() );
-                String jarPath = jarFolderPath + jarName;
-                path = new File(jarPath).exists() ? jarPath : jarFolderPath + "content";
-            } else if (path.endsWith("/" + KieModuleModelImpl.KMODULE_FILE_NAME)) {
-                path = path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length() );
+            path = rewriteVFSPath(path, urlString);
+            if (!Files.exists(Paths.get(path))) {
+                // see https://issues.redhat.com/browse/DROOLS-7608
+                path = rewriteVFSPathAfter_7_4_15(vfsClass, virtualFile, useTccl);
             }
 
             log.info( "Virtual file physical path = " + path );
@@ -495,6 +497,41 @@ public class ClasspathKieProject extends AbstractKieProject {
             log.error( "Error when reading virtual file from " + url, e );
         }
         return url.getPath();
+    }
+
+    private static String rewriteVFSPath(String path, String urlString) {
+        int kModulePos = urlString.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length();
+        boolean isInJar = urlString.startsWith(".jar", kModulePos - 4);
+
+        if (isInJar && path.contains("contents/")) {
+            String jarName = urlString.substring(0, kModulePos);
+            jarName = jarName.substring(jarName.lastIndexOf('/')+1);
+            String jarFolderPath = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length() );
+            String jarPath = jarFolderPath + jarName;
+            path = new File(jarPath).exists() ? jarPath : jarFolderPath + "content";
+        }
+        if (path.endsWith("/" + KieModuleModelImpl.KMODULE_FILE_NAME)) {
+            return path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length() );
+        }
+        return path;
+    }
+
+    private static String rewriteVFSPathAfter_7_4_15(Class vfsClass, Object virtualFile, boolean useTccl) throws Exception {
+        Method vfsGetMountMethod = vfsClass.getDeclaredMethod("getMount", lookupVfsClass("org.jboss.vfs.VirtualFile", useTccl));
+        vfsGetMountMethod.setAccessible(true);
+        Object mount = vfsGetMountMethod.invoke(null, virtualFile);
+
+        Method mountGetFileSystemMethod = lookupVfsClass("org.jboss.vfs.VFS$Mount", useTccl).getDeclaredMethod("getFileSystem");
+        mountGetFileSystemMethod.setAccessible(true);
+        Object fileSystem = mountGetFileSystemMethod.invoke(mount);
+
+        Method fileSystemGetMountSourceMethod = lookupVfsClass("org.jboss.vfs.spi.FileSystem", useTccl).getMethod("getMountSource");
+        File mountSource = (File) fileSystemGetMountSourceMethod.invoke(fileSystem);
+        return mountSource.getPath();
+    }
+
+    private static Class<?> lookupVfsClass(String classname, boolean useTccl) throws ClassNotFoundException {
+        return useTccl ? Class.forName(classname, true, Thread.currentThread().getContextClassLoader()) : Class.forName(classname);
     }
 
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
