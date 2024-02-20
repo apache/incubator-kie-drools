@@ -140,7 +140,7 @@
                         <configuration>
                             <visitor>true</visitor>
                             <listener>false</listener>
-                            <libDirectory>src/main/antlr4/org/drools/drl10/parser/</libDirectory>
+                            <libDirectory>src/main/antlr4/org/drools/drl/parser/antlr4</libDirectory>
                         </configuration>
                     </execution>
                 </executions>
