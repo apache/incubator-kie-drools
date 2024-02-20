@@ -155,7 +155,7 @@ public class DMNModelIOSets {
             if (ds.getDecisionService().getOutputDecision().size() == 1) {
                 String id = DMNCompilerImpl.getId(ds.getDecisionService().getOutputDecision().get(0));
                 DecisionNode outputDecision = model.getDecisionById(id);
-                this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, outputDecision != null ? outputDecision.getResultType() : ds.getResultType(), null);
+                this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null,  null, outputDecision != null ? outputDecision.getResultType() : ds.getResultType(), null);
                 if (outputDecision != null) {
                     outputDoc.put(outputDecision.getName(), outputDecision.getDecision().getDescription());
                 }
@@ -168,7 +168,7 @@ public class DMNModelIOSets {
                         os.addField(outputDecision.getName(), outputDecision.getResultType());
                         outputDoc.put(outputDecision.getName(), outputDecision.getDecision().getDescription());
                     } else {
-                        this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, ds.getResultType(), null);
+                        this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, null, ds.getResultType(), null);
                         return; // since cannot lookup correctly, just assign the model-defined DS variable type.
                     }
                 }

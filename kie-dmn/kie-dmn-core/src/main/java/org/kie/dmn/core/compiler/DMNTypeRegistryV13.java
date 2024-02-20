@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 
 public class DMNTypeRegistryV13 extends DMNTypeRegistryAbstract {

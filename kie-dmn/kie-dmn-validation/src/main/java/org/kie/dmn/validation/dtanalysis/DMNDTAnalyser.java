@@ -35,11 +35,11 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.core.ast.DMNBaseNode;
-import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.core.util.NamespaceUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -177,7 +177,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
     private void compileTableComputeColStringMissingEnum(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int iColIdx = 0; iColIdx < ddtaTable.inputCols(); iColIdx++) {
             InputClause ie = dt.getInput().get(iColIdx);
-            QName typeRef = DMNCompilerImpl.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), ie.getInputExpression().getTypeRef(), model.getNamespace());
+            QName typeRef = NamespaceUtil.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), ie.getInputExpression().getTypeRef(), model.getNamespace());
             if (SimpleType.STRING.equals(typeRef.getLocalPart()) && !ddtaTable.getInputs().get(iColIdx).isDiscreteDomain()) {
                 Interval infStringDomain = ddtaTable.getInputs().get(iColIdx).getDomainMinMax();
                 boolean areAllSinglePointOrAll = true;
@@ -326,7 +326,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             if (ie.getInputValues() != null) {
                 allowedValues = ie.getInputValues().getText();
             } else {
-                QName typeRef = DMNCompilerImpl.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), ie.getInputExpression().getTypeRef(), model.getNamespace());
+                QName typeRef = NamespaceUtil.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), ie.getInputExpression().getTypeRef(), model.getNamespace());
                 allowedValues = findAllowedValues(model, typeRef);
             }
             if (allowedValues != null) {
@@ -384,7 +384,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             } else {
                 QName outputTypeRef = (oe.getTypeRef() == null && dt.getOutput().size() == 1) ? dt.getTypeRef() : oe.getTypeRef();
                 if (outputTypeRef != null) {
-                    QName typeRef = DMNCompilerImpl.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), outputTypeRef, model.getNamespace());
+                    QName typeRef = NamespaceUtil.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), outputTypeRef, model.getNamespace());
                     allowedValues = findAllowedValues(model, typeRef);
                 }
             }

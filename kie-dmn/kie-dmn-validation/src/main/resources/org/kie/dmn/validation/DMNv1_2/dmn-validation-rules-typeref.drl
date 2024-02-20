@@ -26,7 +26,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
 
-import function org.kie.dmn.core.compiler.DMNCompilerImpl.getNamespaceAndName;
+import function org.kie.dmn.core.util.NamespaceUtil.getNamespaceAndName;
 import function java.util.Collections.emptyMap;
 
 import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;

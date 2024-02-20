@@ -101,7 +101,7 @@ import org.kie.dmn.model.api.ItemDefinition;
  * <br/>
  * It is important to note that attribute can only be present when the type is specified by reference.
  * <h1>typeConstraints</h1>
- * As per the DMN specification, the {@link ItemDefinition#getTypeConstraints()} ()} attribute lists the possible values or ranges of values in the base type that are allowed in this ItemDefinition.
+ * As per the DMN specification, the {@link ItemDefinition#getTypeConstraint()} ()} attribute lists the possible values or ranges of values in the base type that are allowed in this ItemDefinition.
  * This is reflected in this DMN type {@link #getTypeConstraint()}.<br/>
  * <br/>
  * It is important to note that attribute can only be present when the type is specified by reference.
@@ -209,7 +209,7 @@ public interface DMNType
     DMNType clone();
 
     /**
-     * Definition of `instance of` accordingly to FEEL specifications Table 49.
+     * Definition of `instance of` accordingly to FEEL specifications Table 61.
      * @param o
      * @return if o is instance of the type represented by this type. If the parameter is null, returns false. 
      */

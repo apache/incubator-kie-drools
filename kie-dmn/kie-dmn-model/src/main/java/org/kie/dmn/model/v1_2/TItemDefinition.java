@@ -59,16 +59,6 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     }
 
     @Override
-    public UnaryTests getTypeConstraint() {
-        return null;
-    }
-
-    @Override
-    public void setTypeConstraint(UnaryTests value) {
-        // no op
-    }
-
-    @Override
     public List<ItemDefinition> getItemComponent() {
         if (itemComponent == null) {
             itemComponent = new ArrayList<>();
