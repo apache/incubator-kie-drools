@@ -67,7 +67,7 @@ public class GeneratedFile {
         }
 
         this.path = path;
-        this.pathAsString = pathAsString;
+        this.pathAsString = pathAsString.replace('\\', '/');
         this.contents = contents;
     }
 
