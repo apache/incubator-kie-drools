@@ -121,7 +121,7 @@
     <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
     <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
     <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
-    <version.jakarta.json>1.1.6</version.jakarta.json>
+    <version.jakarta.json>1.1.5</version.jakarta.json>
     <version.jakarta.json-api>2.1.2</version.jakarta.json-api>
     <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
     <version.org.junit>5.9.3</version.org.junit>
