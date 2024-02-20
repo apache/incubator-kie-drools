@@ -262,10 +262,10 @@
     </profile>
 
     <profile>
-      <id>DRL10</id>
+      <id>disableNewParser</id>
       <activation>
         <property>
-          <name>DRL10</name>
+          <name>disableNewParser</name>
         </property>
       </activation>
       <build>
@@ -275,7 +275,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
-                <drools.lang.level>DRL10</drools.lang.level>
+                <drools.drl.antlr4.parser.enabled>false</drools.drl.antlr4.parser.enabled>
               </systemPropertyVariables>
             </configuration>
           </plugin>
