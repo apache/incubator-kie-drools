@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 
 import org.antlr.v4.runtime.CharStream;
@@ -57,6 +58,15 @@ public class DRLParserHelper {
     public static DRLParser createDrlParser(InputStream is) {
         try {
             CharStream charStream = CharStreams.fromStream(is);
+            return createDrlParser(charStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static DRLParser createDrlParser(Reader reader) {
+        try {
+            CharStream charStream = CharStreams.fromReader(reader);
             return createDrlParser(charStream);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

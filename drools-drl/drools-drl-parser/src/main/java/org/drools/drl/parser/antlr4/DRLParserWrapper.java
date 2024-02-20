@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.drl10.parser.DRLParserHelper.compilationUnitContext2PackageDescr;
+import static org.drools.drl.parser.antlr4.DRLParserHelper.compilationUnitContext2PackageDescr;
 
 /**
  * Wrapper for DRLParser. Somewhat duplicated from DRLParserHelper, but this class is instantiated and holds errors.
@@ -51,6 +52,14 @@ public class DRLParserWrapper {
      */
     public PackageDescr parse(InputStream is) {
         DRLParser drlParser = DRLParserHelper.createDrlParser(is);
+        return parse(drlParser);
+    }
+
+    /**
+     * Main entry point for parsing DRL
+     */
+    public PackageDescr parse(Reader reader) {
+        DRLParser drlParser = DRLParserHelper.createDrlParser(reader);
         return parse(drlParser);
     }
 
