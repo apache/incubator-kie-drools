@@ -131,7 +131,7 @@
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.2.0</version.black.ninia>
     <version.com.google.guava>32.0.0-jre</version.com.google.guava>
-    <version.apache.commons.commons-compress>1.24.0</version.apache.commons.commons-compress>
+    <version.apache.commons.commons-compress>1.26.0</version.apache.commons.commons-compress>
   </properties>
 
   <dependencyManagement>
