@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,13 +34,13 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
  * This is a helper class that provides helper methods to parse expressions
  * using both the DRLExpressions parser and the DRLExprTree parser.
  */
-public class Drl10ExprParser implements DrlExprParser {
+public class Drl6ExprParserAntlr4 implements DrlExprParser {
 
     private ParserHelper helper = null;
 
     private final LanguageLevelOption languageLevel;
 
-    public Drl10ExprParser(LanguageLevelOption languageLevel) {
+    public Drl6ExprParserAntlr4(LanguageLevelOption languageLevel) {
         this.languageLevel = languageLevel;
     }
 

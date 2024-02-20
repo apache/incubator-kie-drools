@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -358,7 +358,7 @@ public class DescrDumperTest {
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {
-        DrlExprParser parser = new Drl10ExprParser(LanguageLevelOption.DRL6);
+        DrlExprParser parser = new Drl6ExprParserAntlr4(LanguageLevelOption.DRL6);
         ConstraintConnectiveDescr result = parser.parse( constraint );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
