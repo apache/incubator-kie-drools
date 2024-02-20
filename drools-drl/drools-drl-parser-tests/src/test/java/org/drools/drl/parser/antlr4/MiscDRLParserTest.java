@@ -1,4 +1,4 @@
-package org.drools.drl10.parser;
+package org.drools.drl.parser.antlr4;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
-import org.drools.drl10.parser.DRLParserWrapper;
+import org.drools.drl.parser.antlr4.DRLParserWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
