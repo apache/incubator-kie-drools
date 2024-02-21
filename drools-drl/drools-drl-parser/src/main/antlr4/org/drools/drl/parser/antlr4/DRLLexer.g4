@@ -158,4 +158,9 @@ DrlUnicodeEscape
 mode RHS;
 RHS_WS : [ \t\r\n\u000C]+ -> channel(HIDDEN);
 DRL_RHS_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) {setText("end");} -> popMode;
-RHS_CHUNK : ~[ \t\r\n\u000C]+ ;
+RHS_CHUNK
+    : ~[ ;})\t\r\n\u000C]+ [;})]? // ; } ) could be a delimitter proceding 'end'
+    | SEMI
+    | RBRACE
+    | RPAREN
+    ;

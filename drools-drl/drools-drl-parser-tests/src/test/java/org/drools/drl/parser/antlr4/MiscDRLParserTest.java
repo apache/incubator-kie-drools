@@ -3440,4 +3440,53 @@ class MiscDRLParserTest {
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int rule = 10;");
     }
+
+    @Test
+    void semicolonEnd() {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    delete($s);end\n"; // no space after semicolon
+
+        PackageDescr packageDescr = parser.parse(text );
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("delete($s);");
+    }
+
+    @Test
+    void braceEnd() {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    modify($p) { setAge(2) }end\n"; // no space after right brace
+
+        System.out.println(text);
+
+        PackageDescr packageDescr = parser.parse(text );
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("modify($p) { setAge(2) }");
+    }
+
+    @Test
+    void parenthesisEnd() {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    retract($p)end\n"; // no space after right parenthesis
+
+        System.out.println(text);
+
+        PackageDescr packageDescr = parser.parse(text );
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("retract($p)");
+    }
 }
