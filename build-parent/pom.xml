@@ -199,7 +199,7 @@
 
     <version.net.byte-buddy>1.14.7</version.net.byte-buddy>
 
-    <version.org.postgresql>42.6.0</version.org.postgresql>
+    <version.org.postgresql>42.6.1</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.1.6</version.io.smallrye.jandex>
