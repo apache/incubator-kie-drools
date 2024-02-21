@@ -25,10 +25,6 @@
    </semantic:itemDefinition>
    <semantic:itemDefinition label="tInterest" name="tInterest">
       <semantic:typeRef>string</semantic:typeRef>
-<!--      <semantic:typeConstraint xmlns:triso="http://www.trisotech.com/2015/triso/modeling"-->
-<!--                              triso:constraintsType="enumeration">-->
-<!--         <semantic:text>count (Interests ) = 1 </semantic:text>-->
-<!--      </semantic:typeConstraint>-->
    </semantic:itemDefinition>
    <semantic:itemDefinition isCollection="true" label="tInterests" name="tInterests">
       <semantic:typeRef>tInterest</semantic:typeRef>
