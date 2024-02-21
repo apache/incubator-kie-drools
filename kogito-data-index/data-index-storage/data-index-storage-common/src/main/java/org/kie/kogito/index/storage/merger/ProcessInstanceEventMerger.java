@@ -19,17 +19,20 @@
 package org.kie.kogito.index.storage.merger;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.index.DateTimeUtils;
 import org.kie.kogito.index.model.ProcessInstance;
 
 public abstract class ProcessInstanceEventMerger implements Merger<ProcessInstanceDataEvent<?>, ProcessInstance> {
 
-    protected ProcessInstance getOrNew(ProcessInstance pi, ProcessInstanceDataEvent<?> event) {
+    protected ProcessInstance getOrNew(ProcessInstance pi, ProcessInstanceDataEvent<?> event, Date date) {
         if (pi == null) {
             pi = new ProcessInstance();
             pi.setId(event.getKogitoProcessInstanceId());
             pi.setProcessId(event.getKogitoProcessId());
+            pi.setLastUpdate(DateTimeUtils.toZonedDateTime(date));
             pi.setMilestones(new ArrayList<>());
             pi.setNodes(new ArrayList<>());
         }

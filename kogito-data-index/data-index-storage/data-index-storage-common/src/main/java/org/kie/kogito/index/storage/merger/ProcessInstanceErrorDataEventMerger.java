@@ -30,8 +30,8 @@ public class ProcessInstanceErrorDataEventMerger extends ProcessInstanceEventMer
 
     @Override
     public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
-        pi = getOrNew(pi, data);
         ProcessInstanceErrorDataEvent event = (ProcessInstanceErrorDataEvent) data;
+        pi = getOrNew(pi, data, event.getData().getEventDate());
         ProcessInstanceError error = new ProcessInstanceError();
         error.setMessage(event.getData().getErrorMessage());
         error.setNodeDefinitionId(event.getData().getNodeDefinitionId());

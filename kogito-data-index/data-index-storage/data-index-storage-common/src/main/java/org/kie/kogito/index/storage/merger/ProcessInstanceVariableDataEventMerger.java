@@ -23,22 +23,17 @@ import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
 import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.model.ProcessInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ProcessInstanceVariableDataEventMerger extends ProcessInstanceEventMerger {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInstanceVariableDataEventMerger.class);
-
-    @SuppressWarnings("unchecked")
     @Override
     public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
-        pi = getOrNew(pi, data);
         ProcessInstanceVariableDataEvent event = (ProcessInstanceVariableDataEvent) data;
         ProcessInstanceVariableEventBody body = event.getData();
+        pi = getOrNew(pi, data, body.getEventDate());
         pi.setVariables(JsonUtils.mergeVariable(body.getVariableName(), body.getVariableValue(), pi.getVariables()));
         return pi;
     }

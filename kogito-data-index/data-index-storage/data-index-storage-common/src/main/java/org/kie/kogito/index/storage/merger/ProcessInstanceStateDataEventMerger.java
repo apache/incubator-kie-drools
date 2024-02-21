@@ -39,8 +39,8 @@ public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMer
 
     @Override
     public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
-        pi = getOrNew(pi, data);
         ProcessInstanceStateDataEvent event = (ProcessInstanceStateDataEvent) data;
+        pi = getOrNew(pi, data, event.getData().getEventDate());
         LOGGER.debug("Value before merging: {}", pi);
         pi.setId(event.getData().getProcessInstanceId());
         pi.setVersion(event.getData().getProcessVersion());

@@ -47,8 +47,8 @@ public class ProcessInstanceNodeDataEventMerger extends ProcessInstanceEventMerg
 
     @Override
     public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
-        pi = getOrNew(pi, data);
         ProcessInstanceNodeDataEvent event = (ProcessInstanceNodeDataEvent) data;
+        pi = getOrNew(pi, data, event.getData().getEventDate());
 
         List<NodeInstance> nodeInstances = Optional.ofNullable(pi.getNodes()).orElse(new ArrayList<>());
 
