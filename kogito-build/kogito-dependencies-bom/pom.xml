@@ -16,7 +16,7 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.2.9.Final</version.io.quarkus>
+    <version.io.quarkus>3.2.10.Final</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>3.0.5</version.org.springframework.boot>
     <version.org.apache.kafka>3.4.0</version.org.apache.kafka>
@@ -89,7 +89,7 @@
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
-    <version.org.jboss.resteasy>6.2.4.Final</version.org.jboss.resteasy>
+    <version.org.jboss.resteasy>6.2.7.Final</version.org.jboss.resteasy>
     <version.org.keycloak>21.0.1</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
     <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
