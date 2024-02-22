@@ -210,7 +210,6 @@
     <module>kie-maven-plugin</module>
     <module>kie-archetypes</module>
     <module>drools-quarkus-extension</module>
-    <module>jpmml-migration-recipe</module>
     <module>drools-reliability</module>
     <module>drools-drlonyaml-parent</module>
   </modules>
