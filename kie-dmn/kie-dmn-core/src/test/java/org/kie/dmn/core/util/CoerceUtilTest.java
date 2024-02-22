@@ -25,6 +25,7 @@ public class CoerceUtilTest {
                                                   false,
                                                   null,
                                                   null,
+                                                  null,
                                                   BuiltInType.STRING);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
         assertNotNull(retrieved);
@@ -41,6 +42,7 @@ public class CoerceUtilTest {
                                                   true,
                                                   null,
                                                   null,
+                                                  null,
                                                   BuiltInType.STRING);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
         assertNotNull(retrieved);
@@ -51,6 +53,7 @@ public class CoerceUtilTest {
                                                   "string",
                                                   null,
                                                   false,
+                                                  null,
                                                   null,
                                                   null,
                                                   BuiltInType.STRING);
@@ -69,6 +72,7 @@ public class CoerceUtilTest {
                                                          false,
                                                          null,
                                                          null,
+                                                         null,
                                                          BuiltInType.STRING);
         retrieved = CoerceUtil.coerceValue(requiredType, value);
         assertEquals(value, retrieved);
@@ -82,6 +86,7 @@ public class CoerceUtilTest {
                                                   "date and time",
                                                   null,
                                                   false,
+                                                  null,
                                                   null,
                                                   null,
                                                   BuiltInType.DATE_TIME);
@@ -105,6 +110,7 @@ public class CoerceUtilTest {
                                                   false,
                                                   null,
                                                   null,
+                                                  null,
                                                   BuiltInType.DATE_TIME);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
         assertNotNull(retrieved);
@@ -114,6 +120,7 @@ public class CoerceUtilTest {
                                                   "date",
                                                   null,
                                                   false,
+                                                  null,
                                                   null,
                                                   null,
                                                   BuiltInType.DATE);
@@ -132,6 +139,7 @@ public class CoerceUtilTest {
                                                   false,
                                                   null,
                                                   null,
+                                                  null,
                                                   BuiltInType.STRING);
         Object retrieved = CoerceUtil.actualCoerceValue(requiredType, value);
         assertNotNull(retrieved);
@@ -145,6 +153,7 @@ public class CoerceUtilTest {
                                                   "date and time",
                                                   null,
                                                   false,
+                                                  null,
                                                   null,
                                                   null,
                                                   BuiltInType.DATE_TIME);
@@ -166,6 +175,7 @@ public class CoerceUtilTest {
                                                   "number",
                                                   null,
                                                   false,
+                                                  null,
                                                   null,
                                                   null,
                                                   BuiltInType.NUMBER);

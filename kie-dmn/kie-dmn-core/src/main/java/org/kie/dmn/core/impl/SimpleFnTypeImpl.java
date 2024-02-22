@@ -35,7 +35,7 @@ public class SimpleFnTypeImpl extends SimpleTypeImpl {
     private final FunctionItem fi;
 
     public SimpleFnTypeImpl(String namespace, String name, String id, Type feelType, Map<String, DMNType> params, DMNType returnType, FunctionItem fi) {
-        super(namespace, name, id, false, null, null, feelType);
+        super(namespace, name, id, false, null, null, null, feelType);
         this.params = new HashMap<>(params);
         this.returnType = returnType;
         this.fi = fi;

@@ -41,6 +41,7 @@ public abstract class BaseDMNTypeImpl
     private String          id;
     private boolean         collection;
     private List<UnaryTest> allowedValues;
+    private List<UnaryTest> typeConstraint;
     private DMNType         baseType;
     private Type            feelType;
     private DMNType         belongingType;
@@ -98,7 +99,12 @@ public abstract class BaseDMNTypeImpl
 
     @Override
     public List<DMNUnaryTest> getAllowedValues() {
-        return allowedValues != null ? Collections.unmodifiableList((List) allowedValues) : Collections.emptyList();
+        return allowedValues != null ? Collections.unmodifiableList(allowedValues) : Collections.emptyList();
+    }
+
+    @Override
+    public List<DMNUnaryTest> getTypeConstraint() {
+        return typeConstraint != null ? Collections.unmodifiableList(typeConstraint) : Collections.emptyList();
     }
     
     public List<UnaryTest> getAllowedValuesFEEL() {
@@ -108,6 +114,15 @@ public abstract class BaseDMNTypeImpl
     public void setAllowedValues(List<UnaryTest> allowedValues) {
         this.allowedValues = allowedValues;
     }
+
+    public List<UnaryTest> getTypeConstraintFEEL() {
+        return typeConstraint;
+    }
+
+    public void setTypeConstraint(List<UnaryTest> typeConstraints) {
+        this.typeConstraint = typeConstraints;
+    }
+
 
     @Override
     public DMNType getBaseType() {
@@ -134,58 +149,104 @@ public abstract class BaseDMNTypeImpl
     }
 
     @Override
-    public boolean isInstanceOf(Object o) {
-        if ( o == null ) {
+    public boolean isInstanceOf(Object value) {
+        if ( value == null ) {
             return false; // See FEEL specifications Table 49.
         }
+        Object toCheck = getObjectToCheck(value);
         // try first to recurse in case of Collection..
-        if ( isCollection() && o instanceof Collection ) {
-            Collection<Object> elements = (Collection) o;
+        if ( isCollection() && toCheck instanceof Collection elements) {
             for ( Object e : elements ) {
-                if ( !internalIsInstanceOf(e) || !valueMatchesInUnaryTests(e) ) {
+                // Do not dig inside collection for typeConstraint check
+                if ( !internalAllowedValueIsInstanceOf(e) || !valueMatchesInUnaryTests(allowedValues, e) ) {
                     return false;
                 }
             }
             return true;
         } 
-        // .. normal case, or collection of 1 element: singleton list
+        // .. normal case
+        boolean instanceOfAllowedValue = internalAllowedValueIsInstanceOf(toCheck);
+        // Also check typeConstraint for not-collection values
+        boolean instanceOfTypeConstraint = internalTypeConstraintIsInstanceOf(toCheck);
+        // Also check typeConstraint for not-collection values
+        return (instanceOfAllowedValue && valueMatchesInUnaryTests(allowedValues, toCheck))
+                && (instanceOfTypeConstraint && valueMatchesInUnaryTests(typeConstraint, toCheck));
+    }
+
+    private Object getObjectToCheck(Object value) {
         // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
         // and vice-versa
-        return internalIsInstanceOf(o) && valueMatchesInUnaryTests(o);
+        // For isCollection type, a single element can be converted to singleton collection
+        if (isCollection() && !(value instanceof Collection)) {
+            return Collections.singletonList(value);
+        }
+        if (!isCollection() && (value instanceof Collection collection) && collection.size() == 1) {
+            return collection.iterator().next();
+        }
+        return value;
     }
-    
-    private boolean valueMatchesInUnaryTests(Object o) {
-        if ( allowedValues == null || allowedValues.isEmpty() ) {
+
+    private boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests,  Object o) {
+        if ( unaryTests == null || unaryTests.isEmpty() ) {
             return true;
         } else {
-            return DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, EvalHelper.coerceNumber(o), null);
+            return DMNFEELHelper.valueMatchesInUnaryTests(unaryTests, EvalHelper.coerceNumber(o), null);
         }
     }
 
     protected abstract boolean internalIsInstanceOf(Object o);
+
+    protected boolean internalAllowedValueIsInstanceOf(Object o) {
+        return internalIsInstanceOf(o);
+    }
+
+    protected boolean internalTypeConstraintIsInstanceOf(Object o) {
+        return internalIsInstanceOf(o);
+    }
+
     
     @Override
     public boolean isAssignableValue(Object value) {
-        if (value == null && allowedValues == null) {
+        if (value == null && allowedValues == null && typeConstraint == null) {
             return true; // a null-value can be assigned to any type.
-        } 
+        }
+        Object toCheck = getObjectToCheck(value);
         // try first to recurse in case of Collection..
-        if ( isCollection() && value instanceof Collection ) {
-            Collection<Object> elements = (Collection) value;
+        if ( isCollection() && toCheck instanceof Collection elements) {
             for ( Object e : elements ) {
-                if ( !internalIsAssignableValue(e) || !valueMatchesInUnaryTests(e) ) {
+                // Do not dig inside collection for typeContraint check
+                if ( !internalAllowedValueIsAssignableValue(e) || !valueMatchesInUnaryTests(allowedValues, e) ) {
                     return false;
                 }
             }
-            return true;
+            // If it is a collection, we have to check the typeConstraint on the whole object
+            return internalTypeConstraintIsAssignableValue(toCheck) && valueMatchesInUnaryTests(typeConstraint, toCheck);
         } 
-        // .. normal case, or collection of 1 element: singleton list
-        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-        // and vice-versa
-        return internalIsAssignableValue( value ) && valueMatchesInUnaryTests(value);
+        // .. normal case
+        boolean assignableAllowedValue = internalAllowedValueIsAssignableValue(toCheck);
+        // Also check typeConstraint for not-collection values
+        boolean assignableTypeConstraint = internalTypeConstraintIsAssignableValue(toCheck);
+
+        return (assignableAllowedValue && valueMatchesInUnaryTests(allowedValues, toCheck)) &&
+                (assignableTypeConstraint && valueMatchesInUnaryTests(typeConstraint, toCheck));
     }
-    
-    protected abstract boolean internalIsAssignableValue(Object o);
+
+    /**
+     * This method relies mostly on <code>baseType</code>
+     * Different implementations may provide/extend the logic
+     * @param o
+     * @return
+     */
+    protected abstract boolean internalAllowedValueIsAssignableValue(Object o);
+
+    /**
+     * This method relies mostly on <code>feelType</code>
+     * Different implementations may provide/extend the logic, mostly depending on <code>isCollection</code> and, eventually, if a <code>MapBackedType</code> is provided
+     * @param o
+     * @return
+     */
+    protected abstract boolean internalTypeConstraintIsAssignableValue(Object o);
+
 
     public void setBelongingType(DMNType belongingType) {
         this.belongingType = belongingType;

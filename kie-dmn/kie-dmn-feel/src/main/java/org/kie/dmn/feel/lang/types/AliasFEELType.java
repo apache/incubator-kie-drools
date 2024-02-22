@@ -49,6 +49,7 @@ public class AliasFEELType implements SimpleType {
         return wrapped.isAssignableValue(value);
     }
 
+
     public BuiltInType getBuiltInType() {
         return wrapped;
     }
