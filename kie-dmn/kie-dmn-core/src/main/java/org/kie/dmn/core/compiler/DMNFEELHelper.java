@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import javax.xml.namespace.QName;
+
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -37,6 +41,7 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.core.util.NamespaceUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.CompiledExpression;
@@ -53,11 +58,10 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.ItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 public class DMNFEELHelper {
 
@@ -109,6 +113,10 @@ public class DMNFEELHelper {
 
             for ( UnaryTest t : unaryTests ) {
                 try {
+                    // allow usage of ? as place-holder inside UnaryTest
+                    if (!ctx.isDefined("?")) {
+                        ctx.setValue("?", value);
+                    }
                     Boolean applyT = t.apply( ctx, value );
                     // the unary test above can actually return null, so we have to handle it here
                     if ( applyT == null ) {
@@ -172,6 +180,24 @@ public class DMNFEELHelper {
             for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
                 variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
             }
+            // allow usage of ? as place-holder inside UnaryTest
+            if (!variableTypes.containsKey("?") && element instanceof ItemDefinition itemDef) {
+                String nameSpace;
+                String name;
+                if (itemDef.isIsCollection()) {
+                    nameSpace = model.getTypeRegistry().feelNS();
+                    name = "list";
+                } else {
+                    QName typeRef = itemDef.getTypeRef();
+                    QName nsAndName = NamespaceUtil.getNamespaceAndName(element, model.getImportAliasesForNS(), typeRef,
+                                                                        model.getNamespace());
+                    nameSpace = nsAndName.getNamespaceURI();
+                    name = nsAndName.getLocalPart();
+                }
+                BaseDMNTypeImpl toSet = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(nameSpace, name);
+                variableTypes.put("?", toSet.getFeelType());
+            }
+
             result = feel.evaluateUnaryTests( unaryTests, variableTypes );
         } catch( Throwable t ) {
             logger.error( "Error evaluating unary tests. Error will be reported in the model.", t );

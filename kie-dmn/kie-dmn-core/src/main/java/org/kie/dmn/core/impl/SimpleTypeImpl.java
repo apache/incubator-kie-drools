@@ -18,10 +18,12 @@
  */
 package org.kie.dmn.core.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 /**
@@ -30,17 +32,26 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 public class SimpleTypeImpl
         extends BaseDMNTypeImpl {
 
+
+    public static SimpleTypeImpl UNKNOWN_DMNTYPE(String uriFEEL) {
+        return new SimpleTypeImpl(uriFEEL,
+                                  BuiltInType.UNKNOWN.getName(),
+                                  null, true, null, null, null,
+                                  BuiltInType.UNKNOWN );
+    }
+
     public SimpleTypeImpl() {
-        this( null, null, null, false, null, null, null );
+        this( null, null, null, false, null, null,null, null );
     }
 
     public SimpleTypeImpl(String namespace, String name, String id) {
-        this( namespace, name, id, false, null, null, null );
+        this( namespace, name, id, false, null, null, null, null );
     }
 
-    public SimpleTypeImpl(String namespace, String name, String id, boolean isCollection, List<UnaryTest> allowedValues, DMNType baseType, Type feelType) {
+    public SimpleTypeImpl(String namespace, String name, String id, boolean isCollection, List<UnaryTest> allowedValues, List<UnaryTest> typeConstraint, DMNType baseType, Type feelType) {
         super(namespace, name, id, isCollection, baseType, feelType);
         setAllowedValues( allowedValues );
+        setTypeConstraint(typeConstraint);
     }
 
     @Override
@@ -49,7 +60,7 @@ public class SimpleTypeImpl
     }
 
     public BaseDMNTypeImpl clone() {
-        return new SimpleTypeImpl( getNamespace(), getName(), getId(), isCollection(), getAllowedValuesFEEL(), getBaseType(), getFeelType() );
+        return new SimpleTypeImpl( getNamespace(), getName(), getId(), isCollection(), getAllowedValuesFEEL(), getTypeConstraintFEEL(), getBaseType(), getFeelType() );
     }
 
     @Override
@@ -58,7 +69,22 @@ public class SimpleTypeImpl
     }
 
     @Override
-    protected boolean internalIsAssignableValue(Object o) {
-        return getBaseType() != null ? getBaseType().isAssignableValue(o) : getFeelType().isAssignableValue (o);
+    protected boolean internalAllowedValueIsInstanceOf(Object o) {
+        return getBaseType() != null ? getBaseType().isInstanceOf(o) : getFeelType().isInstanceOf(o);
+    }
+
+    @Override
+    protected boolean internalTypeConstraintIsInstanceOf(Object o) {
+        return getFeelType().isInstanceOf(o);
+    }
+
+    @Override
+    protected boolean internalAllowedValueIsAssignableValue(Object o) {
+        return getBaseType() != null ? getBaseType().isAssignableValue(o) : getFeelType().isAssignableValue(o);
+    }
+
+    @Override
+    protected boolean internalTypeConstraintIsAssignableValue(Object o) {
+        return isCollection() ? o instanceof Collection : getFeelType().isAssignableValue(o);
     }
 }
