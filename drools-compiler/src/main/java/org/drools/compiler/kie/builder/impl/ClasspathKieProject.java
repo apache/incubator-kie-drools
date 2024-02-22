@@ -508,7 +508,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             jarName = jarName.substring(jarName.lastIndexOf('/')+1);
             String jarFolderPath = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length() );
             String jarPath = jarFolderPath + jarName;
-            path = new File(jarPath).exists() ? jarPath : jarFolderPath + "content";
+            path = new File(jarPath).exists() ? jarPath : jarFolderPath + "contents";
         }
         if (path.endsWith("/" + KieModuleModelImpl.KMODULE_FILE_NAME)) {
             return path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString()).length() );
