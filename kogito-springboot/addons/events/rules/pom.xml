@@ -29,8 +29,9 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-springboot-events-rules</artifactId>
-  <name>Kogito :: Add-Ons :: Events :: Event-Driven Rules :: Spring Boot</name>
+  <groupId>org.drools</groupId>
+  <artifactId>drools-addons-springboot-events-rules</artifactId>
+  <name>Drools :: Add-Ons :: Events :: Event-Driven Rules :: Spring Boot</name>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.events.rules</java.module.name>

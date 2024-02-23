@@ -17,7 +17,7 @@ them in your project.
 | Explainability          | explainability-quarkus-addon                | kogito-addons-quarkus-explainability                | 1.8.0  | 
 | Jobs Management         | jobs-management-quarkus-addon               | kogito-addons-quarkus-jobs-management               | 1.8.0  | 
 | Knative Eventing        | knative-eventing-addon                      | kogito-addons-quarkus-knative-eventing              | 1.6.0  |
-| Mail                    | mail-quarkus-addon                          | kogito-addons-quarkus-mail                          | 1.8.0  |
+| Mail                    | mail-quarkus-addon                          | jbpm-addons-quarkus-mail                            | 1.8.0  |
 | Monitoring Core         | monitoring-core-quarkus-addon               | kogito-addons-quarkus-monitoring-core               | 1.8.0  | 
 | Monitoring Elastic      | monitoring-elastic-quarkus-addon            | kogito-addons-quarkus-monitoring-elastic            | 1.8.0  | 
 | Monitoring Prometheus   | monitoring-prometheus-quarkus-addon         | kogito-addons-quarkus-monitoring-prometheus         | 1.8.0  | 
@@ -31,8 +31,8 @@ them in your project.
 | Process Management      | process-management-addon                    | kogito-addons-quarkus-process-management            | 1.8.0  | 
 | Process SVG             | process-svg-quarkus-addon                   | kogito-addons-quarkus-process-svg                   | 1.8.0  | 
 | REST Exception Handler  | kogito-rest-exception-handler-quarkus       | kogito-addons-quarkus-rest-exception-handler        | 1.8.0  | 
-| Task Management         | task-management-quarkus-addon               | kogito-addons-quarkus-task-management               | 1.8.0  | 
-| Task Notification       | task-notification-quarkus-addon             | kogito-addons-quarkus-task-notification             | 1.8.0  | 
+| Task Management         | task-management-quarkus-addon               | jbpm-addons-quarkus-task-management                 | 1.8.0  | 
+| Task Notification       | task-notification-quarkus-addon             | jbpm-addons-quarkus-task-notification               | 1.8.0  | 
 | Tracing Decision        | tracing-decision-quarkus-addon              | kogito-addons-quarkus-tracing-decision              | 1.8.0  | 
 
 #### Spring Boot Add-ons
@@ -44,7 +44,7 @@ them in your project.
 | Events Kafka            | kogito-events-spring-boot-addon                | kogito-addons-springboot-events-process-kafka   | 1.8.0  |
 | Explainability          | explainability-springboot-addon                | kogito-addons-springboot-explainability         | 1.8.0  | 
 | Jobs Management         | jobs-management-springboot-addon               | kogito-addons-springboot-jobs-management        | 1.8.0  |
-| Mail                    | mail-springboot-addon                          | kogito-addons-springboot-mail                   | 1.8.0  |
+| Mail                    | mail-springboot-addon                          | jbpm-addons-springboot-mail                     | 1.8.0  |
 | Monitoring Core         | monitoring-core-springboot-addon               | kogito-addons-springboot-monitoring-core        | 1.8.0  | 
 | Monitoring Elastic      | monitoring-elastic-springboot-addon            | kogito-addons-springboot-monitoring-elastic     | 1.8.0  | 
 | Monitoring Prometheus   | monitoring-prometheus-springboot-addon         | kogito-addons-springboot-monitoring-prometheus  | 1.8.0  |
@@ -56,8 +56,8 @@ them in your project.
 | Persistence MongoDB     | kogito-addons-persistence-mongodb              | kogito-addons-springboot-persistence-mongodb    | 1.21.0 |
 | Persistence Postgresql  | kogito-addons-persistence-postgresql           | kogito-addons-springboot-persistence-postgresql | 1.21.0 |
 | REST Exception Handler  | kogito-rest-exception-handler-springboot       | kogito-addons-springboot-rest-exception-handler | 1.8.0  | 
-| Task Management         | task-management-springboot-addon               | kogito-addons-springboot-task-management        | 1.8.0  | 
-| Task Notification       | task-notification-springboot-addon             | kogito-addons-springboot-task-notification      | 1.8.0  | 
+| Task Management         | task-management-springboot-addon               | jbpm-addons-springboot-task-management          | 1.8.0  | 
+| Task Notification       | task-notification-springboot-addon             | jbpm-addons-springboot-task-notification        | 1.8.0  | 
 | Tracing Decision        | tracing-decision-springboot-addon              | kogito-addons-springboot-tracing-decision       | 1.8.0  | 
 
 #### Common Add-ons

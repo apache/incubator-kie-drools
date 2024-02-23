@@ -32,9 +32,9 @@ def startersToArtifactIds(String starters) {
         return []
     }
     def validStarters = [
-            [id: "processes", starter: "kogito-processes-spring-boot-starter"],
-            [id: "rules", starter: "kogito-rules-spring-boot-starter"],
-            [id: "decisions", starter: "kogito-decisions-spring-boot-starter"],
+            [id: "processes", starter: "jbpm-spring-boot-starter"],
+            [id: "rules", starter: "drools-rules-spring-boot-starter"],
+            [id: "decisions", starter: "drools-decisions-spring-boot-starter"],
             [id: "predictions", starter: "kogito-predictions-spring-boot-starter"]
     ]
     def startersList = starters.split(",")
@@ -46,6 +46,16 @@ def startersToArtifactIds(String starters) {
         }
         return found.starter
     }.findAll { it -> it != null }
+}
+
+def resolveAddonGroupId(String artifactId) {
+    switch (artifactId) {
+        case { artifactId.startsWith("drools-") }:
+            return "org.drools"
+        case { artifactId.startsWith("jbpm-") }:
+            return "org.jbpm"
+        default: return "org.kie.kogito"
+    }
 }
 
 /**
@@ -69,13 +79,13 @@ def addonsToArtifactsIds(String addons) {
             [id: "events-process-kafka", addon: "kogito-addons-springboot-events-process-kafka"],
             [id: "explainability", addon: "kogito-addons-springboot-explainability"],
             [id: "jobs-management", addon: "kogito-addons-springboot-jobs-management"],
-            [id: "mail", addon: "kogito-addons-springboot-mail"],
+            [id: "mail", addon: "jbpm-addons-springboot-mail"],
             [id: "monitoring-elastic", addon: "kogito-addons-springboot-monitoring-elastic"],
             [id: "monitoring-prometheus", addon: "kogito-addons-springboot-monitoring-prometheus"],
             [id: "process-management", addon: "kogito-addons-springboot-process-management"],
             [id: "process-svg", addon: "kogito-addons-springboot-process-svg"],
-            [id: "task-management", addon: "kogito-addons-springboot-task-management"],
-            [id: "task-notification", addon: "kogito-addons-springboot-task-notification"],
+            [id: "task-management", addon: "jbpm-addons-springboot-task-management"],
+            [id: "task-notification", addon: "jbpm-addons-springboot-task-notification"],
             [id: "tracing-decision", addon: "kogito-addons-springboot-tracing-decision"]
     ]
     def addonsList = addons.split(",")
@@ -95,16 +105,16 @@ def addonsToArtifactsIds(String addons) {
 def addDependenciesToPOM(String starters, String addons) {
     def artifacts = startersToArtifactIds(starters)
     if (artifacts.isEmpty()) {
-        artifacts << "kogito-spring-boot-starter"
+        artifacts << "jbpm-with-drools-spring-boot-starter"
     }
     artifacts = artifacts + addonsToArtifactsIds(addons)
     def dependencies = new StringBuilder()
     artifacts.each { artifact ->
-        dependencies <<
-                '    <dependency>\n' +
-                '       <groupId>org.kie.kogito</groupId>\n' +
-                '       <artifactId>' + artifact + '</artifactId>\n' +
-                '    </dependency>\n'
+            dependencies <<
+                    '    <dependency>\n' +
+                    '       <groupId>' + resolveAddonGroupId(artifact) + '</groupId>\n' +
+                    '       <artifactId>' + artifact + '</artifactId>\n' +
+                    '    </dependency>\n';
     }
     def pomPath = Paths.get(request.getOutputDirectory(), request.getArtifactId(), "pom.xml")
     def pomFile = Files.readString(pomPath).replace("    <!-- kogito dependencies -->", dependencies)

@@ -23,12 +23,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-task-notification-parent</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-addons-quarkus-task-notification-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-task-notification-deployment</artifactId>
-  <name>Kogito Add-On Task Notification - Deployment</name>
+  <artifactId>jbpm-addons-quarkus-task-notification-deployment</artifactId>
+  <name>jBPM Add-On Task Notification - Deployment</name>
 
     <properties>
        <java.module.name>org.kie.kogito.quarkus.task.notification.deployment</java.module.name>
@@ -36,8 +36,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-task-notification</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-quarkus-task-notification</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -29,9 +29,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-spring-boot-starter</artifactId>
-  <name>Kogito :: Spring Boot :: Starter</name>
-  <description>Spring Boot Starter for Kogito Runtimes. Contains every engine supported by Kogito (Decisions, Rules, Processes, Predictions and Serverless Workflows)</description>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-with-drools-spring-boot-starter</artifactId>
+  <name>jBPM with Drools :: Spring Boot :: Starter</name>
+  <description>Spring Boot Starter for jBPM with Drools Runtimes. Contains the following engines: Decisions, Rules, Processes, Predictions and Serverless Workflows</description>
 
     <properties>
         <java.module.name>org.kie.kogito.springboot.starter</java.module.name>
@@ -39,16 +40,16 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-rules-spring-boot-starter</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-rules-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-processes-spring-boot-starter</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-decisions-spring-boot-starter</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisions-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

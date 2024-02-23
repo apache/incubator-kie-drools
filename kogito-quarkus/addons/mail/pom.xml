@@ -29,8 +29,9 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-quarkus-mail-parent</artifactId>
-  <name>Kogito Add-On Mail - Parent</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-addons-quarkus-mail-parent</artifactId>
+  <name>jBPM Add-On Mail - Parent</name>
   <packaging>pom</packaging>
 
   <modules>

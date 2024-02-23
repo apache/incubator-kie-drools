@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-task-notification</artifactId>
-  <name>Kogito :: Add-Ons :: Task notification :: Spring Boot Addon</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-addons-springboot-task-notification</artifactId>
+  <name>jBPM :: Add-Ons :: Task notification :: Spring Boot Addon</name>
   <description>Task notification on Springboot</description>
 
   <properties>

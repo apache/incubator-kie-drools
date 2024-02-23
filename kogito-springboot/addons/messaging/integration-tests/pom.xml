@@ -92,8 +92,8 @@
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-decisions-spring-boot-starter</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisions-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

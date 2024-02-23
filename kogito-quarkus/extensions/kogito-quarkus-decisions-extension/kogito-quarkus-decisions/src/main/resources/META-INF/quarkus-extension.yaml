@@ -30,7 +30,7 @@ metadata:
     - "business-automation"
   status: "stable"
   codestart:
-    name: "kogito-dmn-codestart"
+    name: "drools-dmn-codestart"
     languages:
       - "java"
-    artifact: "org.kie.kogito:kogito-quarkus-decisions:codestarts:jar:${project.version}"
+    artifact: "org.drools:drools-quarkus-decisions:codestarts:jar:${project.version}"

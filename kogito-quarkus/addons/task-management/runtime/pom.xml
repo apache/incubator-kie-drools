@@ -24,12 +24,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-task-management-parent</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-addons-quarkus-task-management-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-task-management</artifactId>
-  <name>Kogito Add-On Task Management</name>
+  <artifactId>jbpm-addons-quarkus-task-management</artifactId>
+  <name>jBPM Add-On Task Management</name>
   <description>Management of process instances for Quarkus</description>
 
     <properties>

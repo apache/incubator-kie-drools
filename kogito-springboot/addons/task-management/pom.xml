@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-task-management</artifactId>
-  <name>Kogito :: Add-Ons :: Task Management :: Spring Boot Addon</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-addons-springboot-task-management</artifactId>
+  <name>jBPM :: Add-Ons :: Task Management :: Spring Boot Addon</name>
   <description>Management of human tasks for Spring Boot</description>
 
   <properties>

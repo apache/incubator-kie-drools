@@ -29,8 +29,10 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-quarkus-events-rules-parent</artifactId>
-  <name>Kogito Add-On Events Rules - Parent</name>
+  <groupId>org.drools</groupId>
+  <artifactId>drools-addons-quarkus-events-rules-parent</artifactId>
+
+  <name>Drools Add-On Events Rules - Parent</name>
   <packaging>pom</packaging>
 
   <modules>

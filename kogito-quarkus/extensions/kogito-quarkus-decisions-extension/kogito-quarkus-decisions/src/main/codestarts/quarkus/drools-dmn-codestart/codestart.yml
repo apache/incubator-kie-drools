@@ -17,14 +17,14 @@
 # under the License.
 #
 
-name: kogito-dmn-codestart
-ref: kogito-dmn
+name: drools-dmn-codestart
+ref: drools-dmn
 type: code
 tags: extension-codestart
 metadata:
-  title: Kogito DMN codestart
-  description: This is an example Kogito DMN Quarkus codestart, it contains a sample DMN model for REST code generation based on the model definition.
-  related-guide-section: https://quarkus.io/guides/kogito-dmn
+  title: Drools DMN codestart
+  description: This is an example Drools DMN Quarkus codestart, it contains a sample DMN model for REST code generation based on the model definition.
+  related-guide-section: https://quarkus.io/guides/drools-dmn
 language:
   base:
     test-dependencies:

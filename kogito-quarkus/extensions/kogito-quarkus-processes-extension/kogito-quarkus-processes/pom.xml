@@ -23,15 +23,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-quarkus-processes-extension</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>jbpm-quarkus-extension</artifactId>
+    <groupId>org.jbpm</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-quarkus-processes</artifactId>
-  <name>Kogito :: Quarkus Processes Extension :: Runtime</name>
-  <description>Add Kogito Processes capabilities - Includes Process (jBPM) Engine</description>
+  <artifactId>jbpm-quarkus</artifactId>
+  <name>jBPM :: Quarkus Extension :: Runtime</name>
+  <description>Add jBPM Processes capabilities - Includes Process (jBPM) Engine</description>
 
   <properties>
       <java.module.name>org.kie.kogito.core.process.incubation.quarkus.support</java.module.name>

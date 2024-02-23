@@ -58,8 +58,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency> <!-- make IT module to depend transitively on all deployments. -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-deployment</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -94,8 +94,8 @@
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

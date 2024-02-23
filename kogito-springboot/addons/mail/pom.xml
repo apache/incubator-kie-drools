@@ -29,7 +29,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-mail</artifactId>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-addons-springboot-mail</artifactId>
   <name>Kogito :: Add-Ons :: E-Mail :: Spring Boot Addon</name>
   <description>Sending e-mail on Springboot</description>
 

@@ -48,8 +48,8 @@
       <artifactId>cloudevents-json-jackson</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-quarkus-decisions</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -57,8 +57,8 @@
     </dependency>
     <!-- this is used implicitly by parallel builds so let's make Maven aware of it -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions-deployment</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-quarkus-decisions-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>

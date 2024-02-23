@@ -53,8 +53,8 @@
       <artifactId>kogito-addons-jobs-management-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-spring-boot-starter</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>

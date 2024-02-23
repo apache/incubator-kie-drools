@@ -28,9 +28,9 @@ assert Files.exists(projectPath.resolve("src/test/java/it/pkg/GreetingsTest.java
 assert Files.exists(projectPath.resolve("src/main/resources/TrafficViolation.dmn"))
 assert Files.exists(projectPath.resolve("src/test/java/it/pkg/TrafficViolationTest.java"))
 
-// Check starters in pom.xml - no starters specified, so kogito-spring-boot-starter should be added in the basic-project
+// Check starters in pom.xml - no starters specified, so jbpm-with-drools-spring-boot-starter should be added in the basic-project
 String pomContent = Files.readString(projectPath.resolve("pom.xml"))
-assert pomContent.contains("kogito-spring-boot-starter")
+assert pomContent.contains("jbpm-with-drools-spring-boot-starter")
 
 // Also no addons were specified
 assert !pomContent.contains("addon")

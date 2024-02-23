@@ -25,13 +25,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-processes-extension</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-quarkus-extension</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-quarkus-processes-integration-test-hot-reload</artifactId>
-    <name>Kogito :: Quarkus Processes Extension :: Integration Tests (Hot Reload)</name>
+    <artifactId>jbpm-quarkus-integration-test-hot-reload</artifactId>
+    <name>jBPM :: Quarkus Extension :: Integration Tests (Hot Reload)</name>
 
     <properties>
         <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5831 -->
@@ -53,8 +53,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-processes</artifactId>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -74,8 +74,8 @@
         </dependency>
         <!-- this is used implicitly by hot reload tests so let's make Maven aware of it -->
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-processes-deployment</artifactId>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus-deployment</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>

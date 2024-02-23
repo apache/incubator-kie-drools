@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>kogito-quarkus-rules-extension</artifactId>
-        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-quarkus-rules-extension</artifactId>
+        <groupId>org.drools</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kogito-quarkus-rules</artifactId>
-    <name>Kogito :: Quarkus Rules Extension :: Runtime</name>
+    <artifactId>drools-quarkus-rules</artifactId>
+    <name>Drools :: Quarkus Rules Extension :: Runtime</name>
     <description>Add Kogito rules (DRL) capabilities - Include Drools engine</description>
 
 

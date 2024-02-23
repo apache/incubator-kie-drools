@@ -25,13 +25,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-quarkus-extension</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-quarkus-deployment</artifactId>
-  <name>Kogito :: Quarkus Extension :: Deployment</name>
+  <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
+  <name>jBPM with Drools :: Quarkus Extension :: Deployment</name>
 
     <properties>
         <java.module.name>org.kie.kogito.quarkus.extension.deployment</java.module.name>
@@ -43,15 +43,14 @@
       <artifactId>kogito-quarkus-common-deployment</artifactId>
     </dependency>
 
-    <!-- kogito -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-processes-deployment</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-quarkus-deployment</artifactId>
     </dependency>
 
   </dependencies>
@@ -66,13 +65,13 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-quarkus-rules-deployment</artifactId>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-quarkus-rules-deployment</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-quarkus-decisions-deployment</artifactId>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-quarkus-decisions-deployment</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>

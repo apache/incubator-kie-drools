@@ -24,14 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-task-notification-parent</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-addons-quarkus-task-notification-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-task-notification</artifactId>
-  <name>Kogito Add-On Task Notification</name>
+  <artifactId>jbpm-addons-quarkus-task-notification</artifactId>
+  <name>jBPM Add-On Task Notification</name>
   <description>Task notification addon for Quarkus</description>
-
 
     <properties>
        <java.module.name>org.kie.kogito.quarkus.task.notification</java.module.name>

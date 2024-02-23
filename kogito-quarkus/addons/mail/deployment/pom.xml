@@ -23,12 +23,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-mail-parent</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-addons-quarkus-mail-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-mail-deployment</artifactId>
-  <name>Kogito Add-On Mail - Deployment</name>
+  <artifactId>jbpm-addons-quarkus-mail-deployment</artifactId>
+  <name>jBPM Add-On Mail - Deployment</name>
 
   <properties>
      <java.module.name>org.kie.kogito.quarkus.mail.deployment</java.module.name>
@@ -48,8 +48,8 @@
       <artifactId>quarkus-mailer-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-mail</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-quarkus-mail</artifactId>
     </dependency>
   </dependencies>
   <build>

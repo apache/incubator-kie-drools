@@ -60,8 +60,8 @@
       <dependencies>
         <!-- this is used implicitly by Maven parallel builds so let's make Maven aware of it -->
         <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-quarkus-deployment</artifactId>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
           <version>${project.version}</version>
           <type>pom</type>
           <scope>test</scope>

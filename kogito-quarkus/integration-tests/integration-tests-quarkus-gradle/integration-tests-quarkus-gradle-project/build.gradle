@@ -12,7 +12,7 @@ dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation "org.kie.kogito:kogito-bom:${kogitoVersion}"
 
-    implementation "org.kie.kogito:kogito-quarkus-processes:${kogitoVersion}"
+    implementation "org.jbpm:jbpm-quarkus:${kogitoVersion}"
     implementation 'io.quarkus:quarkus-arc'
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'

@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-task-notification-parent</artifactId>
-  <name>Kogito Add-On Task Notification - Parent</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-addons-quarkus-task-notification-parent</artifactId>
+  <name>jBPM Add-On Task Notification - Parent</name>
   <packaging>pom</packaging>
 
   <modules>

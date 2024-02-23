@@ -29,9 +29,11 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-decisions-spring-boot-starter</artifactId>
-  <name>Kogito :: Spring Boot :: Starter :: Decisions</name>
-  <description>Spring Boot Starter for Kogito Decisions (DMN). Contains everything you need to get started with Kogito Decisions!</description>
+  <groupId>org.drools</groupId>
+  <artifactId>drools-decisions-spring-boot-starter</artifactId>
+
+  <name>Drools :: Spring Boot :: Starter :: Decisions</name>
+  <description>Spring Boot Starter for Drools Decisions (DMN). Contains everything you need to get started with Drools Decisions!</description>
 
     <properties>
         <java.module.name>org.kie.kogito.springboot.starter.decision</java.module.name>

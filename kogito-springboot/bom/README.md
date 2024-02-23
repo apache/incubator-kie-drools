@@ -6,7 +6,7 @@ BOM ([Bill of Materials](https://maven.apache.org/guides/introduction/introducti
 
 This BOM goal is to include all Kogito Core and Spring Boot dependencies in one single file.
 
-Users are encouraged to use this BOM with the [Kogito Spring Boot Starter](../starters/kogito-spring-boot-starter).
+Users are encouraged to use this BOM with the [jBPM with Drools Spring Boot Starter](../starters/jbpm-with-drools-spring-boot-starter).
 
 ## How to use it
 

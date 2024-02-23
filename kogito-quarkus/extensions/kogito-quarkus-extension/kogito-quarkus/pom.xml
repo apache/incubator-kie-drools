@@ -25,14 +25,14 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-quarkus-extension</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-quarkus</artifactId>
-  <name>Kogito :: Quarkus Extension :: Runtime</name>
-  <description>Add business automation capabilities - processes and rules with Kogito (a toolkit that originates from projects Drools and jBPM)</description>
+  <artifactId>jbpm-with-drools-quarkus</artifactId>
+  <name>jBPM with Drools :: Quarkus Extension :: Runtime</name>
+  <description>Add business automation capabilities with Drools and jBPM engines.</description>
 
     <properties>
         <java.module.name>org.kie.kogito.quarkus.extension.runtime</java.module.name>
@@ -40,8 +40,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-processes</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-quarkus</artifactId>
     </dependency>
   </dependencies>
 
@@ -55,12 +55,12 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-quarkus-rules</artifactId>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-quarkus-rules</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-quarkus-decisions</artifactId>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-quarkus-decisions</artifactId>
         </dependency>
         <dependency>
           <groupId>org.kie.kogito</groupId>

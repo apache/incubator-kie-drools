@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-processes-spring-boot-starter</artifactId>
-  <name>Kogito :: Spring Boot :: Starter :: Processes</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-spring-boot-starter</artifactId>
+  <name>jBPM :: Spring Boot :: Starter :: Processes</name>
   <description>Spring Boot Starter for Kogito Processes (BPMN). Contains everything you need to get started with Kogito Processes!</description>
 
   <properties>

@@ -38,8 +38,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -80,8 +80,8 @@
     </dependency>
     <!-- this is used implicitly by parallel builds so let's make Maven aware of it -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-deployment</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>

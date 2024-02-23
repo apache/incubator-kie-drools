@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-quarkus-extension</artifactId>
-  <name>Kogito :: Quarkus Extension</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
+  <name>jBPM with Drools :: Quarkus Extension</name>
 
   <packaging>pom</packaging>
 

@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>kogito-quarkus-rules-extension</artifactId>
-        <groupId>org.kie.kogito</groupId>
+        <artifactId>drools-quarkus-rules-extension</artifactId>
+        <groupId>org.drools</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kogito-quarkus-rules-integration-test</artifactId>
-    <name>Kogito :: Quarkus Rules Extension :: Integration Tests</name>
+    <artifactId>drools-quarkus-rules-integration-test</artifactId>
+    <name>Drools :: Quarkus Rules Extension :: Integration Tests</name>
 
     <properties>
         <quarkus.test.list.include>true</quarkus.test.list.include>
@@ -51,8 +51,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-rules</artifactId>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-quarkus-rules</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -84,8 +84,8 @@
 
         <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-rules-deployment</artifactId>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-quarkus-rules-deployment</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>
