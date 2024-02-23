@@ -5,14 +5,9 @@ ecosystem:
     regexs:
     - drools.*
     - incubator-kie-drools.*
-  - name: kie-benchmarks
-    ignore_release: true
-    regexs:
-    - kie-benchmarks.*
-    - incubator-kie-benchmarks.*
 git:
   branches:
-  - name: main
+  - name: kie_issues_958
     main_branch: true
 seed:
   config_file:
@@ -23,7 +18,7 @@ seed:
         credentials_id: ASF_Cloudbees_Jenkins_ci-builds
         push:
           credentials_id: 84811880-2025-45b6-a44c-2f33bef30ad2
-      branch: main
+      branch: kie_issues_958
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
