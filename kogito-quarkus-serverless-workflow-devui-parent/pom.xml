@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Kogito Apps :: Serverless Workflow Quarkus Dev UI Extension</name>
-  <artifactId>kogito-quarkus-serverless-workflow-devui-parent</artifactId>
+  <name>Kogito Apps :: SonataFlow Quarkus Dev UI Extension</name>
+  <groupId>org.sonataflow</groupId>
+  <artifactId>sonataflow-quarkus-devui-parent</artifactId>
   <packaging>pom</packaging>
 
   <properties>

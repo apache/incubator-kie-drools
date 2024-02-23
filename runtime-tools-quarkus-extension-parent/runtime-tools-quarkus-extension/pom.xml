@@ -23,13 +23,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>runtime-tools-quarkus-extension-parent</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-quarkus-devui-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>runtime-tools-quarkus-extension</artifactId>
-  <name>Runtime Tools Quarkus Extension - Runtime</name>
-  <description>Runtime development tools for Kogito projects</description>
+  <artifactId>jbpm-quarkus-devui</artifactId>
+  <name>jBPM Quarkus DevUI - Runtime</name>
+  <description>Runtime development tools for jBPM projects</description>
   <dependencies>
 
     <dependency>

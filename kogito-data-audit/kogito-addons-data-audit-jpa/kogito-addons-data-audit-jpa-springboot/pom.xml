@@ -4,13 +4,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-data-audit-jpa</artifactId>
-        <groupId>org.kie.kogito</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
 
-
-    <artifactId>kogito-addons-data-audit-jpa-springboot</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-springboot-data-audit-jpa</artifactId>
     <name>Kogito Apps :: Data Audit :: JPA :: SpringBoot</name>
 
     <properties>
@@ -24,7 +24,7 @@
             <artifactId>data-audit-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-data-audit-jpa-common</artifactId>
         </dependency>
         <dependency>

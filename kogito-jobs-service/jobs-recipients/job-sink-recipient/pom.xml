@@ -29,9 +29,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>job-sink-recipient-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-quarkus-job-sink-recipient-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Kogito Apps :: Jobs Service :: Job Sink Recipient - Parent</name>
+    <name>Kogito Apps :: Jobs Service :: Kogito Add-Ons Quarkus Job Sink Recipient - Parent</name>
 
     <properties>
         <java.module.name>org.kie.kogito.job.recipient.sink.extension</java.module.name>

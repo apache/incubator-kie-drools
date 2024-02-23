@@ -9,7 +9,8 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-addons-data-audit-springboot</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-springboot-data-audit</artifactId>
 
     <name>Kogito Apps :: Data Audit :: SpringBoot</name>
 
@@ -73,8 +74,8 @@
             <dependencies>
                 <!-- test for jpa -->
                 <dependency>
-                    <groupId>org.kie.kogito</groupId>
-                    <artifactId>kogito-addons-data-audit-jpa-springboot</artifactId>
+                    <groupId>org.kie</groupId>
+                    <artifactId>kogito-addons-springboot-data-audit-jpa</artifactId>
                 </dependency>
             </dependencies>
         </profile>

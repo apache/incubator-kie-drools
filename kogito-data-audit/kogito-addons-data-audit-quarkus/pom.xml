@@ -9,8 +9,8 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-addons-data-audit-quarkus</artifactId>
-
+    <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-quarkus-data-audit</artifactId>
 
     <name>Kogito Apps :: Data Audit :: Quarkus</name>
 
@@ -114,8 +114,8 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.kie.kogito</groupId>
-                    <artifactId>kogito-addons-data-audit-jpa-quarkus</artifactId>
+                    <groupId>org.kie</groupId>
+                    <artifactId>kogito-addons-quarkus-data-audit-jpa</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

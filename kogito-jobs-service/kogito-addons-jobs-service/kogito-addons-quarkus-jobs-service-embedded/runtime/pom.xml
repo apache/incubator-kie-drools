@@ -23,12 +23,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-quarkus-jobs-service-embedded-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
-  <name>Jobs Service Embedded Quarkus Addon - Runtime</name>
+  <name>Jobs Service Embedded Quarkus Add-On - Runtime</name>
   <description>Run Jobs Service embedded with the application.</description>
   <dependencies>
     <dependency>
@@ -73,8 +73,8 @@
         <!-- embedded jobs service works hand in hand with the kogito-addons-quarkus-jobs-management,
              only the http recipient is needed -->
         <exclusion>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>job-sink-recipient</artifactId>
+          <groupId>org.kie</groupId>
+          <artifactId>kogito-addons-quarkus-job-sink-recipient</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -23,12 +23,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-quarkus-serverless-workflow-devui-parent</artifactId>
+    <groupId>org.sonataflow</groupId>
+    <artifactId>sonataflow-quarkus-devui-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-quarkus-serverless-workflow-devui</artifactId>
-  <name>Kogito Apps :: Serverless Workflow Quarkus Dev UI Extension :: Extension</name>
+  <artifactId>sonataflow-quarkus-devui</artifactId>
+  <name>Kogito Apps :: SonataFlow Quarkus Dev UI Extension :: Runtime</name>
   <description>Runtime development tools for Serverless Workflows</description>
   <dependencies>
 

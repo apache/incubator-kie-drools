@@ -23,19 +23,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-quarkus-jobs-service-embedded-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
   <artifactId>kogito-addons-quarkus-jobs-service-embedded-deployment</artifactId>
-  <name>Jobs Service Embedded Quarkus Addon - Deployment</name>
+  <name>Jobs Service Embedded Quarkus Add-On - Deployment</name>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
     </dependency>
     <dependency>
@@ -55,8 +55,8 @@
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>job-http-recipient-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-job-http-recipient-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

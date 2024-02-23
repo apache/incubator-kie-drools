@@ -28,6 +28,8 @@
         <artifactId>jobs-service</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
+
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-jobs-service</artifactId>
     <name>Kogito Apps :: Jobs :: Addons</name>
     <description>Kogito Jobs Addons Parent</description>

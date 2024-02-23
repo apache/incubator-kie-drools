@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Runtime Tools Quarkus Extension - Parent</name>
-  <artifactId>runtime-tools-quarkus-extension-parent</artifactId>
+  <name>jBPM Quarkus DevUI - Parent</name>
+  <groupId>org.jbpm</groupId>
+  <artifactId>jbpm-quarkus-devui-parent</artifactId>
   <packaging>pom</packaging>
 
   <properties>

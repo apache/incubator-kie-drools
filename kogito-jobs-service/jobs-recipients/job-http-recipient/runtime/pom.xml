@@ -23,12 +23,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>job-http-recipient-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kogito-addons-quarkus-job-http-recipient-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>job-http-recipient</artifactId>
-  <name>Kogito Apps :: Jobs Service :: Job Http Recipient - Runtime</name>
+  <artifactId>kogito-addons-quarkus-job-http-recipient</artifactId>
+  <name>Kogito Apps :: Jobs Service :: Kogito Add-Ons Quarkus Job Http Recipient - Runtime</name>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

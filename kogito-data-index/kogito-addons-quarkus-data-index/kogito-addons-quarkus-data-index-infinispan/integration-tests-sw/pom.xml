@@ -23,7 +23,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-quarkus-data-index-infinispan-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
@@ -44,7 +44,7 @@
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-index-infinispan</artifactId>
     </dependency>
     <dependency>
@@ -52,13 +52,13 @@
       <artifactId>kogito-addons-quarkus-persistence-infinispan</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow-devui</artifactId>
+      <groupId>org.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus-devui</artifactId>
     </dependency>
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow-devui-deployment</artifactId>
+      <groupId>org.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>
@@ -80,7 +80,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-index-infinispan-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>

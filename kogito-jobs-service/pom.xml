@@ -73,32 +73,32 @@
           <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>job-http-recipient</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kogito-addons-quarkus-job-http-recipient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kogito-addons-quarkus-job-http-recipient-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kogito-addons-quarkus-job-sink-recipient</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>job-http-recipient-deployment</artifactId>
+        <artifactId>kogito-addons-quarkus-job-sink-recipient-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>job-sink-recipient</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>job-sink-recipient-deployment</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-jobs-service-embedded-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>

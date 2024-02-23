@@ -10,6 +10,8 @@
     </parent>
 
     <packaging>pom</packaging>
+
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-data-audit-jpa</artifactId>
 
     <name>Kogito Apps :: Data Audit :: JPA</name>

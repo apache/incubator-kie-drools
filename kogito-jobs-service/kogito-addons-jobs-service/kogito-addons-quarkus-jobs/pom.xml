@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>kogito-addons-jobs-service</artifactId>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
 
     <artifactId>kogito-addons-quarkus-jobs</artifactId>
 
-    <name>Jobs Collocated Quarkus Addon - Runtime</name>
+    <name>Jobs Collocated Quarkus Add-On - Runtime</name>
     <description>Run Jobs Service embedded with the application.</description>
 
     <properties>

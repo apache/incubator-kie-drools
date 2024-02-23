@@ -54,12 +54,12 @@
       <artifactId>jobs-service-internal-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>job-http-recipient</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-job-http-recipient</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>job-sink-recipient</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-job-sink-recipient</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

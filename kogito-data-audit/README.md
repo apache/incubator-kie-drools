@@ -93,13 +93,13 @@ org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider: this allow the subsyste
 You need to add two different dependencies to your project (collocated service)
 
 	<dependency>
-	    <groupId>org.kie.kogito</groupId>
-	    <artifactId>kogito-addons-data-audit-<runtime></artifactId>
+	    <groupId>org.kie</groupId>
+	    <artifactId>kogito-addons-<runtime>-data-audit</artifactId>
 	    <version>${version}</version>
 	</dependency>
 	<dependency>
-	    <groupId>org.kie.kogito</groupId>
-	    <artifactId>kogito-addons-data-audit-jpa-<runtime></artifactId>
+	    <groupId>org.kie</groupId>
+	    <artifactId>kogito-addons-<runtime>-data-audit-jpa</artifactId>
 	    <version>${version}</version>
 	</dependency>
 
@@ -114,5 +114,5 @@ Each implementation might require additional dependencies. In our case for using
 	    <artifactId>quarkus-jdbc-h2</artifactId>
 	</dependency>
 
-No additional configuration is requires besides the default datasource use by the application already.
+No additional configuration is required besides the default datasource use by the application already.
 

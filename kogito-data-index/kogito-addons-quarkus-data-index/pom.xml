@@ -27,6 +27,8 @@
     <artifactId>data-index</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
+
+  <groupId>org.kie</groupId>
   <artifactId>kogito-addons-quarkus-data-index</artifactId>
   <name>Kogito Apps :: Kogito Addons Quarkus Data Index</name>
   <packaging>pom</packaging>
