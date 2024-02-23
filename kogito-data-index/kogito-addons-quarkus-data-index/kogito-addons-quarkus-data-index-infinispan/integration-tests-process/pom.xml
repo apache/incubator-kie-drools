@@ -32,8 +32,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-processes</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
