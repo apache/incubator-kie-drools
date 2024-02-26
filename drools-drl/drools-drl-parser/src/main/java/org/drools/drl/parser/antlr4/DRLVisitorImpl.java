@@ -126,8 +126,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             } else if (descr instanceof AttributeDescr) {
                 packageDescr.addAttribute((AttributeDescr) descr);
             } else if (descr instanceof RuleDescr) { // QueryDescr extends RuleDescr
-                packageDescr.addRule((RuleDescr) descr);
-                packageDescr.afterRuleAdded((RuleDescr) descr);
+                RuleDescr ruleDescr = (RuleDescr) descr;
+                packageDescr.addRule(ruleDescr);
+                packageDescr.afterRuleAdded(ruleDescr);
+                ruleDescr.setNamespace(packageDescr.getNamespace());
             }
         });
     }
