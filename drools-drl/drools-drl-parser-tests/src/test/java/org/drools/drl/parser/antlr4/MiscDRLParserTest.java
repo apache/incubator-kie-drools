@@ -3449,7 +3449,6 @@ class MiscDRLParserTest {
                 "    $s : String()\n" +
                 "then\n" +
                 "    delete($s);end\n"; // no space after semicolon
-
         PackageDescr packageDescr = parser.parse(text );
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
@@ -3464,9 +3463,6 @@ class MiscDRLParserTest {
                 "    $p : Person()\n" +
                 "then\n" +
                 "    modify($p) { setAge(2) }end\n"; // no space after right brace
-
-        System.out.println(text);
-
         PackageDescr packageDescr = parser.parse(text );
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
@@ -3481,12 +3477,47 @@ class MiscDRLParserTest {
                 "    $p : Person()\n" +
                 "then\n" +
                 "    retract($p)end\n"; // no space after right parenthesis
-
-        System.out.println(text);
-
-        PackageDescr packageDescr = parser.parse(text );
+        PackageDescr packageDescr = parser.parse(text);
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("retract($p)");
+    }
+
+    @Test
+    void singleQuoteInRhsWithSpace() {
+        String consequence = getResultConsequence("    System.out.println( 'singleQuoteInRhs' );\n");
+        assertThat(consequence)
+                .as("Single quote should be converted to double quote")
+                .isEqualToIgnoringWhitespace("System.out.println( \"singleQuoteInRhs\" );");
+    }
+
+    @Test
+    void singleQuoteInRhsWithoutSpace() {
+        String consequence = getResultConsequence("    System.out.println('singleQuoteInRhs');\n");
+        assertThat(consequence)
+                .as("Single quote should be converted to double quote")
+                .isEqualToIgnoringWhitespace("System.out.println( \"singleQuoteInRhs\" );");
+    }
+
+    @Test
+    void singleQuoteInDoubleQuoteInRhsWithoutSpace() {
+        String consequence = getResultConsequence("    System.out.println(\"There is '\" + $s + \"' in the workspace.\");\n");
+        assertThat(consequence)
+                .as("Single quote should not be converted to double quote in case of inside double quotes")
+                .isEqualToIgnoringWhitespace("System.out.println(\"There is '\" + $s + \"' in the workspace.\");");
+    }
+
+    private String getResultConsequence(String rhs) {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                rhs +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        return ruleDescr.getConsequence().toString();
     }
 }

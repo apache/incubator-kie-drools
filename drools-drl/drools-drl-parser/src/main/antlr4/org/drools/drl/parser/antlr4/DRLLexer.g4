@@ -158,9 +158,21 @@ DrlUnicodeEscape
 mode RHS;
 RHS_WS : [ \t\r\n\u000C]+ -> channel(HIDDEN);
 DRL_RHS_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) {setText("end");} -> popMode;
+
+RHS_STRING_LITERAL
+      // cannot reuse DRL_STRING_LITERAL because Actions are ignored in referenced rules
+    : ('"' ( DrlEscapeSequence | ~('\\'|'"') )* '"')
+    | ('\'' ( DrlEscapeSequence | ~('\\'|'\'') )* '\'') { setText( normalizeString( getText() ) ); }
+    ;
+
 RHS_CHUNK
-    : ~[ ;})\t\r\n\u000C]+ [;})]? // ; } ) could be a delimitter proceding 'end'
-    | SEMI
-    | RBRACE
+    : ~[ ()[\]{},;\t\r\n\u000C]+ // ;}) could be a delimitter proceding 'end'. ()[]{},; are delimiters to match RHS_STRING_LITERAL
+    | LPAREN
     | RPAREN
+    | LBRACK
+    | RBRACK
+    | LBRACE
+    | RBRACE
+    | COMMA
+    | SEMI
     ;
