@@ -263,7 +263,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         if (ctx.rhs() != null) {
             ruleDescr.setConsequenceLocation(ctx.rhs().getStart().getLine(), ctx.rhs().getStart().getCharPositionInLine()); // location of "then"
-            ruleDescr.setConsequence(trimThen(getTextPreservingWhitespace(ctx.rhs()))); // RHS is just a text
+            ruleDescr.setConsequence(trimThen(getTokenTextPreservingWhitespace(ctx.rhs(), tokenStream))); // RHS is just a text
         }
 
         return ruleDescr;

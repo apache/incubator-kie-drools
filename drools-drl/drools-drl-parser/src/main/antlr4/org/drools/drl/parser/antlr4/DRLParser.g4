@@ -428,7 +428,7 @@ lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
 
 rhs : DRL_THEN consequence ;
 
-consequence : RHS_CHUNK* ;
+consequence : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
