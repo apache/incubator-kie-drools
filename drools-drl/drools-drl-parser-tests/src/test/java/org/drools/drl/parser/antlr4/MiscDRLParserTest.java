@@ -3520,4 +3520,21 @@ class MiscDRLParserTest {
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         return ruleDescr.getConsequence().toString();
     }
+
+    void ruleDescrProperties() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    retract($p);\n" +
+                "end\n";
+
+        PackageDescr packageDescr = parser.parse(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+
+        assertThat(ruleDescr.getName()).isEqualTo("R1");
+        assertThat(ruleDescr.getNamespace()).isEqualTo("org.drools");
+    }
 }
