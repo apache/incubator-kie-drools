@@ -2,7 +2,6 @@
 
 **NOTE!:** Double-check the target branch for this PR.
 The default is `main` so it will target Drools 8 / Kogito.
-If this PR is targeted to `7.x`, this should be sent to `kiegroup/drools` repository, instead of `apache/incubator-kie-drools` repository.
 
 **Ports** If a forward-port or a backport is needed, paste the forward port PR here
 
