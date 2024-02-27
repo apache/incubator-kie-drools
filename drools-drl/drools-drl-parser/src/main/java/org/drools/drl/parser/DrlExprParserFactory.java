@@ -5,7 +5,7 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class DrlExprParserFactory {
 
-    public static DrlExprParser getDrlExrParser(LanguageLevelOption languageLevel) {
+    public static DrlExprParser getDrlExprParser(LanguageLevelOption languageLevel) {
         switch (languageLevel) {
             case DRL5:
             case DRL6:

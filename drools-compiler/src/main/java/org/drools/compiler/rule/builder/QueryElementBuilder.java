@@ -69,7 +69,7 @@ public class QueryElementBuilder
                                        BaseDescr descr ) {
         throw new UnsupportedOperationException();
     }
-    
+
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
                                        Pattern prefixPattern ) {
@@ -265,7 +265,7 @@ public class QueryElementBuilder
             } else {
                 // it must be a literal/expression
                 // it's an expression and thus an input
-                DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
+                DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
                 ConstraintConnectiveDescr bresult = parser.parse( bind.getExpression() );
                 if ( parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
@@ -396,7 +396,7 @@ public class QueryElementBuilder
     private ConstraintConnectiveDescr parseExpression( final RuleBuildContext context,
                                                        final PatternDescr patternDescr,
                                                        final String expression ) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
+        DrlExprParser parser = DrlExprParserFactory.getDrlExprParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse( expression );
         if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
