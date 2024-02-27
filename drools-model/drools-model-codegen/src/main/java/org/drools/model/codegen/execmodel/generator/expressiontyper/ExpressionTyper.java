@@ -43,6 +43,7 @@ import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -377,6 +378,10 @@ public class ExpressionTyper {
                 }
             }
             return of(new TypedExpression(drlxExpr, type));
+        }
+
+        if (drlxExpr instanceof ConditionalExpr) {
+            return of(new TypedExpression(drlxExpr, Boolean.class));
         }
 
         if (drlxExpr.isAssignExpr()) {
