@@ -24,6 +24,7 @@ import java.util.Optional;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -65,7 +66,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(drlxParseResult);
             context.addExpression(dslExpr);
-        } else if (drlxParseResult.isPredicate()) {
+        } else if (drlxParseResult.isPredicate() && !isEnclosedPredicateBoundToVariable(drlxParseResult)) {
             Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }

@@ -42,7 +42,7 @@ public class EvalExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.hasUnificationVariable()) {
             Expression dslExpr = buildUnificationExpression(drlxParseResult);
             context.addExpression(dslExpr);
-        } else if ( drlxParseResult.isPredicate() ) {
+        } else if ( drlxParseResult.isPredicate() && !isEnclosedPredicateBoundToVariable(drlxParseResult)) {
             Expression dslExpr = buildSingleExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }
