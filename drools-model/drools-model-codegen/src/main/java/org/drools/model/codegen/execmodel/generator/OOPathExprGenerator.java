@@ -198,7 +198,7 @@ public class OOPathExprGenerator {
                     expr.setScope( patternExpr );
                     patternExpr = expr;
                 }
-                if (singleDrlx.getExpr() != null && !(singleDrlx.getExpr() instanceof NameExpr)) {
+                if (singleDrlx.getExpr() != null && singleDrlx.isPredicate()) {
                     MethodCallExpr expr = expressionBuilder.buildExpressionWithIndexing( singleDrlx );
                     expr.setScope( patternExpr );
                     patternExpr = expr;
