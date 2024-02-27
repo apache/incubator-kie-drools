@@ -506,21 +506,23 @@ public class ConstraintParser {
         Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
 
         if (hasBind) {
-            return new SingleDrlxParseSuccess(patternType, bindingId, null, converted.getType() )
+            return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirstForBean(nameExpr.getNameAsString()) );
-        } else if (context.hasDeclaration( expression )) {
+        }
+
+        if (context.hasDeclaration( expression )) {
             Optional<TypedDeclarationSpec> declarationSpec = context.getTypedDeclarationById(expression);
             if (declarationSpec.isPresent()) {
                 return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printNode(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
             } else {
                 throw new IllegalArgumentException("Cannot find declaration specification by specified expression " + expression + "!");
             }
-        } else {
-            return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
-                    .addReactOnProperty( nameExpr.getNameAsString() )
-                    .setIsPredicate(true);
         }
+        
+        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
+                .addReactOnProperty( nameExpr.getNameAsString() )
+                .setIsPredicate(true);
     }
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {
