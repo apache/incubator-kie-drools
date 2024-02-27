@@ -22,13 +22,16 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.kie.kogito.event.CloudEventMarshaller;
+import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -40,8 +43,11 @@ class AssuredTestUtils {
     }
 
     static String startProcess(String flowName) {
-        String id = startProcessNoCheck(flowName);
+        return startProcess(flowName, Optional.empty());
+    }
 
+    static String startProcess(String flowName, Optional<String> businessKey) {
+        String id = startProcessNoCheck(flowName, businessKey);
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -52,11 +58,16 @@ class AssuredTestUtils {
     }
 
     static String startProcessNoCheck(String flowName) {
-        return given()
+        return startProcessNoCheck(flowName, Optional.empty());
+    }
+
+    static String startProcessNoCheck(String flowName, Optional<String> businessKey) {
+        RequestSpecification body = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
-                .post("/" + flowName)
+                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()));
+        businessKey.ifPresent(key -> body.queryParam("businessKey", key));
+        return body.post("/" + flowName)
                 .then()
                 .statusCode(201)
                 .extract().path("id");
@@ -73,15 +84,19 @@ class AssuredTestUtils {
                         .statusCode(404));
     }
 
-    static CloudEvent buildCloudEvent(String id, String type, CloudEventMarshaller<byte[]> marshaller) {
-        return CloudEventBuilder.v1()
+    static CloudEvent buildCloudEvent(String id, Optional<String> businessKey, String type, CloudEventMarshaller<byte[]> marshaller) {
+        io.cloudevents.core.v1.CloudEventBuilder builder = CloudEventBuilder.v1()
                 .withId(UUID.randomUUID().toString())
                 .withSource(URI.create(""))
                 .withType(type)
                 .withTime(OffsetDateTime.now())
-                .withExtension("kogitoprocrefid", id)
-                .withData(marshaller.cloudEventDataFactory().apply(Collections.singletonMap(type, "This has been injected by the event")))
-                .build();
+                .withData(marshaller.cloudEventDataFactory().apply(Collections.singletonMap(type, "This has been injected by the event")));
+        businessKey.ifPresentOrElse(key -> builder.withExtension(CloudEventExtensionConstants.BUSINESS_KEY, key), () -> builder.withExtension(CloudEventExtensionConstants.PROCESS_REFERENCE_ID, id));
+        return builder.build();
+    }
+
+    static CloudEvent buildCloudEvent(String id, String type, CloudEventMarshaller<byte[]> marshaller) {
+        return buildCloudEvent(id, Optional.empty(), type, marshaller);
     }
 
 }

@@ -21,6 +21,7 @@ package org.kie.kogito.quarkus.workflows;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,7 +58,7 @@ class EventFlowIT {
 
     @Test
     void testNotStartingEvent() throws IOException {
-        doIt("nonStartEvent", "move");
+        doIt("nonStartEvent", Optional.of("manolo"), "move");
     }
 
     @Test
@@ -108,15 +109,25 @@ class EventFlowIT {
     }
 
     private void sendEvents(String id, String... eventTypes) throws IOException {
+        sendEvents(id, Optional.empty(), eventTypes);
+    }
+
+    private void sendEvents(String id, Optional<String> businessKey, String... eventTypes) throws IOException {
         for (String eventType : eventTypes) {
             given()
                     .contentType(ContentType.JSON)
                     .when()
-                    .body(generateCloudEvent(id, eventType))
+                    .body(generateCloudEvent(id, businessKey, eventType))
                     .post("/" + eventType)
                     .then()
                     .statusCode(202);
         }
+    }
+
+    private void doIt(String flowName, Optional<String> businessKey, String... eventTypes) throws IOException {
+        String id = startProcess(flowName, businessKey);
+        sendEvents(id, businessKey, eventTypes);
+        waitForFinish(flowName, id, Duration.ofSeconds(15));
     }
 
     private void doIt(String flowName, String... eventTypes) throws IOException {
@@ -125,8 +136,8 @@ class EventFlowIT {
         waitForFinish(flowName, id, Duration.ofSeconds(15));
     }
 
-    private byte[] generateCloudEvent(String id, String type) throws IOException {
+    private byte[] generateCloudEvent(String id, Optional<String> businessKey, String type) throws IOException {
         CloudEventMarshaller<byte[]> marshaller = marshallers.getOrDefault(type, defaultMarshaller);
-        return marshaller.marshall(buildCloudEvent(id, type, marshaller));
+        return marshaller.marshall(buildCloudEvent(id, businessKey, type, marshaller));
     }
 }
