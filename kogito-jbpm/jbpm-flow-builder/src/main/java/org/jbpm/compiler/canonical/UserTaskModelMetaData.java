@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.regex.Matcher;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -199,13 +199,12 @@ public class UserTaskModelMetaData {
                     .orElse(processVariableScope.findVariable(entry.getValue()));
 
             if (variable == null) {
-                Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue());
-                if (matcher.find()) {
-                    variable = new Variable();
-                    variable.setName(entry.getKey());
-                    variable.setType(DataTypeResolver.fromType(inputTypes.get(entry.getKey()), Thread.currentThread().getContextClassLoader()));
-                } else {
-                    throw new IllegalStateException("Task " + humanTaskNode.getName() + " (input) " + entry.getKey() + " reference not existing variable " + entry.getValue());
+                variable = new Variable();
+                variable.setName(entry.getKey());
+                DataType type = DataTypeResolver.fromType(inputTypes.get(entry.getKey()), Thread.currentThread().getContextClassLoader());
+                variable.setType(type);
+                if (!PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue()).find()) {
+                    variable.setValue(type.readValue(entry.getValue()));
                 }
             }
 
@@ -313,14 +312,12 @@ public class UserTaskModelMetaData {
                     .orElse(processVariableScope.findVariable(entry.getValue()));
 
             if (variable == null) {
-                // check if given mapping is an expression
-                Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue());
-                if (matcher.find()) {
-                    variable = new Variable();
-                    variable.setName(entry.getKey());
-                    variable.setType(DataTypeResolver.fromType(outputTypes.get(entry.getKey()), Thread.currentThread().getContextClassLoader()));
-                } else {
-                    throw new IllegalStateException("Task " + humanTaskNode.getName() + " (output) " + entry.getKey() + " reference not existing variable " + entry.getValue());
+                variable = new Variable();
+                variable.setName(entry.getKey());
+                DataType type = DataTypeResolver.fromType(outputTypes.get(entry.getKey()), Thread.currentThread().getContextClassLoader());
+                variable.setType(type);
+                if (!PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue()).find()) {
+                    variable.setValue(type.readValue(entry.getValue()));
                 }
             }
 

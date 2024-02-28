@@ -128,12 +128,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         if (this.type.verifyDataType(value)) {
             this.value = value;
         } else {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("Value <");
-            sb.append(value);
-            sb.append("> is not valid for datatype: ");
-            sb.append(this.type);
-            throw new IllegalArgumentException(sb.toString());
+            throw new IllegalArgumentException("Value <" + value + "> of datatype: " + value.getClass() + " is not valid for datatype: " + type.getObjectClass());
         }
     }
 

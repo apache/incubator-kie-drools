@@ -151,6 +151,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
+        assertThat(workItem.getParameter("fixedValue")).isEqualTo("pepe");
         processInstance.completeWorkItem(workItem.getStringId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
         assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
     }
