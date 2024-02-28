@@ -268,4 +268,42 @@ public class DRLExprParserTest {
         assertThat(left.getExpression()).isEqualTo("a");
         assertThat(right.getExpression()).isEqualTo("b");
     }
+
+    @Test
+    public void selector_dot_super() {
+        String source = "SomeClass.super.getData() != null";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
+
+        RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
+        assertThat(expr.getOperator()).isEqualTo("!=");
+
+        AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
+        AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
+
+        assertThat(left.getExpression()).isEqualTo("SomeClass.super.getData()");
+        assertThat(right.getExpression()).isEqualTo("null");
+    }
+
+    @Test
+    public void selector_dot_identifier() {
+        String source = "getAddress().getCity().length() == 5";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
+
+        RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
+        assertThat(expr.getOperator()).isEqualTo("==");
+
+        AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
+        AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
+
+        assertThat(left.getExpression()).isEqualTo("getAddress().getCity().length()");
+        assertThat(right.getExpression()).isEqualTo("5");
+    }
 }
