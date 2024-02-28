@@ -32,8 +32,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+      <groupId>org.apache.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -52,12 +52,12 @@
       <artifactId>kogito-addons-quarkus-persistence-infinispan</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonataflow</groupId>
+      <groupId>org.apache.sonataflow</groupId>
       <artifactId>sonataflow-quarkus-devui</artifactId>
     </dependency>
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>
-      <groupId>org.sonataflow</groupId>
+      <groupId>org.apache.sonataflow</groupId>
       <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
