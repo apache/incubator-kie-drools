@@ -9,7 +9,7 @@ metadata:
     - "workflows"
     - "SW"
     - "SWF"
-  guide: "https://quarkus.io/guides/kogito"
+  guide: "https://quarkus.io/guides/sonataflow"
   categories:
     - "cloud"
   status: "preview"
@@ -19,4 +19,4 @@ metadata:
     name: "kogito-serverless-workflow-codestart"
     languages:
       - "java"
-    artifact: "org.kie.kogito:kogito-quarkus-serverless-workflow:codestarts:jar:${project.version}"
+    artifact: "org.apache.sonataflow:sonataflow-quarkus:codestarts:jar:${project.version}"

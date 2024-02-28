@@ -55,8 +55,8 @@
             <artifactId>quarkus-smallrye-openapi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+            <groupId>org.apache.sonataflow</groupId>
+            <artifactId>sonataflow-quarkus</artifactId>
         </dependency>
 
         <dependency>
@@ -117,8 +117,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
+            <groupId>org.apache.sonataflow</groupId>
+            <artifactId>sonataflow-quarkus-deployment</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

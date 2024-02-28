@@ -21,12 +21,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-serverless-workflow-python-parent</artifactId>
+    <groupId>org.apache.sonataflow</groupId>
+    <artifactId>sonataflow-addons-quarkus-python-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-serverless-workflow-python-deployment</artifactId>
-  <name>Kogito:: Addons :: Quarkus:: Serverless Workflow:: Python:: Deployment</name>
+  <artifactId>sonataflow-addons-quarkus-python-deployment</artifactId>
+  <name>SonataFlow:: Addons :: Quarkus:: Serverless Workflow:: Python:: Deployment</name>
   <description>Python support for serverless workflow</description>
 
     <properties>
@@ -36,8 +36,8 @@
   
   <dependencies>
   <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-serverless-workflow-python</artifactId>
+    <groupId>org.apache.sonataflow</groupId>
+    <artifactId>sonataflow-addons-quarkus-python</artifactId>
   </dependency>
   <dependency>
     <groupId>org.kie.kogito</groupId>

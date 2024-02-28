@@ -32,7 +32,7 @@ public final class KogitoCapability {
     public static final KogitoCapability PROCESSES = new KogitoCapability("org.jbpm.processes", "jbpm-quarkus");
     public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.predictions", "kogito-quarkus-predictions");
     public static final KogitoCapability RULES = new KogitoCapability("org.drools.rules", "drools-quarkus-rules");
-    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.sonataflow.serverless-workflow", "kogito-quarkus-serverless-workflow");
+    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.apache.sonataflow.serverless-workflow", "sonataflow-quarkus");
 
     public static final List<KogitoCapability> ENGINES = asList(
             KogitoCapability.DECISIONS,

@@ -1,15 +1,15 @@
-name: kogito-serverless-workflow-codestart
-ref: kogito-serverless-workflow
+name: sonataflow-serverless-workflow-codestart
+ref: sonataflow-serverless-workflow
 type: code
 tags: extension-codestart
 metadata:
-  title: Kogito Serverless Workflow codestart
+  title: SonataFlow Serverless Workflow codestart
   description: This is an example Kogito Serverless Workflow Quarkus codestart, it contains a sample Serverless Workflow definition for REST code generation.
-  related-guide-section: https://quarkus.io/guides/kogito
+  related-guide-section: https://quarkus.io/guides/sonataflow
 language:
   base:
     dependencies:
-      - org.kie.kogito:kogito-quarkus-serverless-workflow
+      - org.apache.sonataflow:sonataflow-quarkus
       - io.quarkus:quarkus-resteasy-jackson
     test-dependencies:
       - io.rest-assured:rest-assured

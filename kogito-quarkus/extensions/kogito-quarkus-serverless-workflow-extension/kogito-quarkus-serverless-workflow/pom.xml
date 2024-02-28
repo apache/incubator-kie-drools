@@ -3,15 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-quarkus-serverless-workflow-extension</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>sonataflow-quarkus-extension</artifactId>
+    <groupId>org.apache.sonataflow</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-quarkus-serverless-workflow</artifactId>
-  <name>Kogito :: Quarkus Serverless Workflow Extension :: Runtime</name>
-  <description>Add Kogito Serverless Workflows (SW) capabilities - Includes the Process engine capability</description>
+  <artifactId>sonataflow-quarkus</artifactId>
+  <name>SonataFlow :: Quarkus Serverless Workflow Extension :: Runtime</name>
+  <description>Add SonataFlow Serverless Workflows (SW) capabilities - Includes the Process engine capability</description>
 
   <properties>
         <java.module.name>org.kie.kogito.serverless.workflow</java.module.name>
@@ -159,7 +159,7 @@
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
               <capabilities>
-                <provides>org.sonataflow.serverless-workflow</provides>
+                <provides>org.apache.sonataflow.serverless-workflow</provides>
               </capabilities>
             </configuration>
           </execution>

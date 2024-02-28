@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 public class KogitoAddonsQuarkusCamelProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addons-quarkus-camel";
+    private static final String FEATURE = "sonataflow-addons-quarkus-camel";
 
     public KogitoAddonsQuarkusCamelProcessor() {
         super(KogitoCapability.SERVERLESS_WORKFLOW);

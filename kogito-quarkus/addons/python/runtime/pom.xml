@@ -22,13 +22,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-serverless-workflow-python-parent</artifactId>
+    <groupId>org.apache.sonataflow</groupId>
+    <artifactId>sonataflow-addons-quarkus-python-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <name>Kogito:: Addons :: Quarkus:: Serverless Workflow:: Python:: Runtime</name>
+  <name>SonataFlow:: Addons :: Quarkus:: Serverless Workflow:: Python:: Runtime</name>
   <description>Python support for serverless workflow</description>
-  <artifactId>kogito-addons-quarkus-serverless-workflow-python</artifactId>
+  <artifactId>sonataflow-addons-quarkus-python</artifactId>
   
     <properties>
        <java.module.name>org.kie.kogito.quarkus.serverless.workflow.python</java.module.name>
