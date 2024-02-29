@@ -19,7 +19,7 @@ As of 2024/02/27, we hit lots of test failures in existing drools unit tests. Th
 2. If you have an ASF committer role, assign yourself to the child issue. If you don't have the role, post a comment on the child issue that you are working on it so that we can avoid duplicated work.
 3. Create a feature branch based on the `dev-new-parser` branch.
 4. Fix the issue and make sure that the test in problem is passed and also all tests under `drools-drl-parser-tests` are passed.
-5. Add new tests to `drools-drl-parser-tests` to cover the issue. Hopefully, such a test would be a Descr comparison test. See `MiscDRLParserTest`.
+5. Add new tests to `drools-drl-parser-tests` to cover the issue. Hopefully, such a test would be a Descr comparison test. See `MiscDRLParserTest` and `DRLExprParserTest`.
 6. File a pull request to the `dev-new-parser` branch. **Be careful not to file a pull request to the `main` branch.**
 
 ## Additional notes
