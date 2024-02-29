@@ -58,7 +58,7 @@ public class ExprConstraintDescrVisitor {
 
     public void visit(ExprConstraintDescr descr) {
 
-        DrlExprParser drlExprParser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL5);
+        DrlExprParser drlExprParser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL5);
         ConstraintConnectiveDescr constraintConnectiveDescr = drlExprParser.parse(descr.getExpression());
 
         visit(constraintConnectiveDescr.getDescrs());

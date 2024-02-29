@@ -43,7 +43,7 @@ public class DRLExprParserTest {
     @Before
     public void setUp() throws Exception {
         new EvaluatorRegistry();
-        this.parser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL6);
+        this.parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
     }
 
     @After
@@ -182,7 +182,7 @@ public class DRLExprParserTest {
 
         AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
         assertThat(right.getExpression()).isEqualTo("value");
-        
+
         rel = (RelationalExprDescr) result.getDescrs().get( 1 );
         assertThat(rel.getOperator()).isEqualTo("<");
 
