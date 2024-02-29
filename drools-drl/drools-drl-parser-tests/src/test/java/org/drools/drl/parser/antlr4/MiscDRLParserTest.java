@@ -3115,7 +3115,7 @@ class MiscDRLParserTest {
 
     @Test
     public void parse_FromFollowedByQuery() throws Exception {
-        // the 'from' expression requires a ";" to disambiguate the "?" 
+        // the 'from' expression requires a ";" to disambiguate the "?"
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from $cheesery ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
@@ -3135,7 +3135,7 @@ class MiscDRLParserTest {
 
     @Test
     public void parse_FromWithTernaryFollowedByQuery() throws Exception {
-        // the 'from' expression requires a ";" to disambiguate the "?" 
+        // the 'from' expression requires a ";" to disambiguate the "?"
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from (isFull ? $cheesery : $market) ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
@@ -3521,6 +3521,7 @@ class MiscDRLParserTest {
         return ruleDescr.getConsequence().toString();
     }
 
+    @Test
     void ruleDescrProperties() {
         final String text = "package org.drools\n" +
                 "rule R1\n" +

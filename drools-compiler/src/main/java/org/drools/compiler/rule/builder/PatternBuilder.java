@@ -1803,7 +1803,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final PatternDescr patternDescr,
                                                         final BaseDescr original,
                                                         final String expression) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
+        DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse(normalizeEval(expression));
         result.setResource(patternDescr.getResource());
         result.copyLocation(original);
