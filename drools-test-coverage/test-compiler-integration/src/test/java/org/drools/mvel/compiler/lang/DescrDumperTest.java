@@ -359,7 +359,7 @@ public class DescrDumperTest {
     }
 
     public ConstraintConnectiveDescr parse( final String constraint ) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExrParser(LanguageLevelOption.DRL6);
+        DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
         ConstraintConnectiveDescr result = parser.parse( constraint );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
