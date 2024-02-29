@@ -774,7 +774,7 @@ extends_key
     ;
 
 super_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}? id=SUPER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 instanceof_key
