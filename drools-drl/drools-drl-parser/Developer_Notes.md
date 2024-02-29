@@ -2,7 +2,7 @@
 
 In this `dev-new-parser` branch, `drools-drl-parser` has 2 implementations of the DRL parser. The new parser is under development, and the old parser is used in the current drools code base.
 
-The old DRL parser is based on Antlr3 and contains lots of hard-coded logic in generated java codes, so it's hard to maintain. e.g. [DRL6Parser](https://github.com/apache/incubator-kie-drools/blob/main/drools-drl/drools-drl-parser/src/main/java/org/drools/drl/parser/lang/DRL6Parser.java). It is the reason why the new parser is being developed. The old parser resources is placed under `src/main/java/org/drools/drl/parser/lang` and `src/main/resources/org/drools/drl/parser`.
+The old DRL parser is based on Antlr3 and contains lots of hard-coded logic in generated java codes, so it's hard to maintain e.g. [DRL6Parser](https://github.com/apache/incubator-kie-drools/blob/main/drools-drl/drools-drl-parser/src/main/java/org/drools/drl/parser/lang/DRL6Parser.java). It is the reason why the new parser is being developed. The old parser resources are placed under `src/main/java/org/drools/drl/parser/lang` and `src/main/resources/org/drools/drl/parser`.
 
 The new DRL parser is based on Antlr4, which has Visitor and Listener support, so the parser would have cleaner separation between the parser syntax (`DRLParser.g4`) and Java code which generates Descr objects (`DRLVisitorImpl.java`). It would be easier to maintain and extend the parser. The new parser resources is placed under `src/main/java/org/drools/drl/parser/antlr4` and `src/main/antlr4/org/drools/drl/parser/antlr4`.
 
