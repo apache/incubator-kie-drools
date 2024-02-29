@@ -112,6 +112,11 @@ public interface ProcessEventListener
     default void onSignal(SignalEvent event) {}
 
     /**
+     * This listeners is triggered when a migration occurs
+     * @param event
+     */
+    default void onMigration(ProcessMigrationEvent event) { }
+    /**
      * This listener method is invoked when a message is sent
      * @param event
      */
