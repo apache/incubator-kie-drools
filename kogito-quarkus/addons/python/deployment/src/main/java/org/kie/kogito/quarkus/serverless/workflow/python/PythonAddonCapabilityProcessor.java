@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class PythonAddonCapabilityProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "sonataflow-addons-quarkus-python";
+    private static final String FEATURE = "kogito-addon-serverless-workflow-python";
 
     PythonAddonCapabilityProcessor() {
         super(KogitoCapability.SERVERLESS_WORKFLOW);

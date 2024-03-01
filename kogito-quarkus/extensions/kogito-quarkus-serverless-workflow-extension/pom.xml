@@ -29,9 +29,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.apache.sonataflow</groupId>
-  <artifactId>sonataflow-quarkus-extension</artifactId>
-  <name>SonataFlow :: Quarkus Serverless Workflow Extension</name>
+  <artifactId>kogito-quarkus-serverless-workflow-extension</artifactId>
+  <name>Kogito :: Quarkus Serverless Workflow Extension</name>
 
   <packaging>pom</packaging>
 

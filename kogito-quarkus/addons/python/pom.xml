@@ -25,9 +25,8 @@
     <artifactId>kogito-addons-quarkus-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <groupId>org.apache.sonataflow</groupId>
-  <artifactId>sonataflow-addons-quarkus-python-parent</artifactId>
-  <name>SonataFlow:: Addons :: Quarkus:: Serverless Workflow:: Python:: Parent</name>
+  <artifactId>kogito-addons-quarkus-serverless-workflow-python-parent</artifactId>
+  <name>Kogito:: Addons :: Quarkus:: Serverless Workflow:: Python:: Parent</name>
   <description>Serverless Workflow Python Quarkus Addons</description>
   <packaging>pom</packaging>
   <modules>

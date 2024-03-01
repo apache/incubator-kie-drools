@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>sonataflow-quarkus-extension</artifactId>
-    <groupId>org.apache.sonataflow</groupId>
+    <artifactId>kogito-quarkus-serverless-workflow-extension</artifactId>
+    <groupId>org.kie.kogito</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>sonataflow-quarkus-integration-test</artifactId>
-  <name>SonataFlow :: Quarkus Serverless Workflow Extension :: Integration Tests</name>
+  <artifactId>kogito-quarkus-serverless-workflow-integration-test</artifactId>
+  <name>Kogito :: Quarkus Serverless Workflow Extension :: Integration Tests</name>
 
   <properties>
     <quarkus.test.list.include>true</quarkus.test.list.include>
@@ -24,8 +24,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.sonataflow</groupId>
-      <artifactId>sonataflow-quarkus</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -122,8 +122,8 @@
 
     <!-- this is used implicitly by quarkus tests so let's make Maven aware of it -->
     <dependency>
-      <groupId>org.apache.sonataflow</groupId>
-      <artifactId>sonataflow-quarkus-deployment</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>
