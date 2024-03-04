@@ -4,7 +4,7 @@ In this `dev-new-parser` branch, `drools-drl-parser` has 2 implementations of th
 
 The old DRL parser is based on Antlr3 and contains lots of hard-coded logic in generated java codes, so it's hard to maintain. e.g. [DRL6Parser](https://github.com/apache/incubator-kie-drools/blob/main/drools-drl/drools-drl-parser/src/main/java/org/drools/drl/parser/lang/DRL6Parser.java). It is the reason why the new parser is being developed. The old parser resources is placed under `src/main/java/org/drools/drl/parser/lang` and `src/main/resources/org/drools/drl/parser`.
 
-The new DRL parser is based on Antlr4, which has Visitor and Listener support, so the parser would have cleaner separation between the parser syntax (`DRLParser.g4`) and Java code which generates Descr objects (`DRLVisitorImpl.java`). It would be easier to maintain and extend the parser. The new parser resources is placed under `src/main/java/org/drools/drl/parser/antlr4` and `src/main/antlr4/org/drools/drl/parser/antlr4`.
+The new DRL parser is based on Antlr4, which has Visitor and Listener support, so the parser would have cleaner separation between the parser syntax (`DRLParser.g4`) and Java code which generates Descr objects (`DRLVisitorImpl.java`). It would be easier to maintain and extend the parser. The new parser resources are placed under `src/main/java/org/drools/drl/parser/antlr4` and `src/main/antlr4/org/drools/drl/parser/antlr4`.
 
 ## The current status of the new parser development
 The new DRL parser doesn't introduce new syntax at the first stage. In order to keep the compatibility with the old parser, we make use of existing unit tests.
@@ -22,6 +22,34 @@ As of 2024/02/27, we hit lots of test failures in existing drools unit tests. Th
 5. Add new tests to `drools-drl-parser-tests` to cover the issue. Hopefully, such a test would be a Descr comparison test. See `MiscDRLParserTest`.
 6. File a pull request to the `dev-new-parser` branch. **Be careful not to file a pull request to the `main` branch.**
 
+## Design notes
+
+`org.drools.drl.parser.DrlParser` is a common entry point of the new/old parser implementations. Depending on a system property switch `drools.drl.antlr4.parser.enabled`, it chooses the new parser `org.drools.drl.parser.antlr4.DRLParserWrapper` or the old parser `org.drools.drl.parser.lang.DRL6Parser`.
+
+The responsibilities of a DRL parser are:
+
+1. Parse DRL text and generate an AST (abstract syntax tree)
+2. Using the AST, generate `Descr` objects which encapsulate information to be used in the later build phase. The top level object is `PackageDescr`.
+3. If there are any parse errors, populate `List<DroolsError> results`.
+
+Common to Antlr 3 and 4, Lexer/Parser java classes are generated from grammar files. For the new parser, grammar files are `DRLLexer.g4` and `DRLParser.g4`. For the old parser, the lexer grammar is `DRL6Lexer.g`, but the parser grammar `drl.g` had been removed from the repo long time ago (https://github.com/apache/incubator-kie-drools/commit/c2ef448d8ed2f935480b9576f4dc83ba7b007a9b) because we directly customized the generated `DRL6Parser.java`. We no longer generate `DRL6Parser.java` with Antlr3 tooling.
+
+With the Antlr3 old parser, we had to write the `Descr` object generation java code inside the parser grammar file (= parser actions). Eventually, we had gone to the direct java code customization, probably because some features were not feasible with parser actions.
+
+With the Antlr4 new parser, we can isolate java codes from `DRLParser.g4` to `DRLVisitorImpl.java` which visits the AST and generate the `Descr` objects. There is no need to customize generated java codes (e.g. `DRLLexer.java`, `DRLParser.java` under `target/generated-sources`). When we fix or expand the parser, we should edit java sources under `src/main/java/org/drools/drl/parser/antlr4` (e.g. `DRLVisitorImpl.java`, `DRLParserWrapper.jva`).
+
+---
+
+For `DRL6Expressions`, we take a little different approach. `DrlExprParserFactory` is a common entry point of the new/old **expression** parser implementations. Similar to `DrlParser`, depending on a system property switch `drools.drl.antlr4.parser.enabled`, it chooses the new parser `org.drools.drl.parser.antlr4.Drl6ExprParserAntlr4` or the old parser `org.drools.drl.parser.Drl6ExprParser`.
+
+The responsibilities of an expression parser are:
+
+1. Parse DRL constraint text and generate an AST
+2. Using the AST, generate `Descr` objects which encapsulate information to be used in the build phase. The top level object depends on the constraint.
+3. If there are any parse errors, store them to be retrieved by `List<DroolsParserException> getErrors()`
+
+As the old expression parser doesn't have the problem of "hard-coded", the new expression parser grammar file `DRL6Expressions.g4` is basically the same as the old `DRL6Expressions.g`, but just adjusted to work with Antlr4. So not using Visitor pattern at the moment. Applying Visitor pattern to the new expression parser is one of refactoring candidates.
+
 ## Additional notes
 
 - The new parser are consist of 2 important parsers.
@@ -38,6 +66,12 @@ As of 2024/02/27, we hit lots of test failures in existing drools unit tests. Th
 - As of 2024/02/27, the `dev-new-parser` branch even fails to build `kie-dmn-validation`. Please ignore the build failure until we fix the test failures of `drools-model-codegen`
 - `drools-model-codegen` is a good place to detect various test failures. Once we clean up the test failures of `drools-model-codegen`, we would tackle `kie-dmn-validation` build and `drools-test-coverage` tests.
 
+- `DRL5Parser` and `DRL6StrictParser` are minor variants, and they will likely be removed in the near feature.
+
+- About similar areas:
+  - `drools-compiler` contains `JavaParser` which was generated by `Java.g`. This is used by `drools-mvel` to execute java dialect. As `drools-mvel` is deprecated, it is not the scope of this new parser development.
+  - `drools-model/drools-mvel-parser` contains javacc based `mvel.jj` to parse constraint and RHS in executable models. It is good enough as it is, so not the scope of this new parser development.
+
 ### (Advanced) How was the new parser developed?
 
 **DRLParser**
@@ -49,7 +83,7 @@ As of 2024/02/27, we hit lots of test failures in existing drools unit tests. Th
 5. In `DRLParser.g4`, define parser rules with a prefix "drl" if the rule name conflicts with `JavaParser.g4`. Sometimes we need to do that, because such a rule may contain DRL keywords.
 6. (As of 2024/02/27) this parser doesn't deeply parse rule RHS (just multiple `RHS_CHUNK`s), because Drools passes RHS text to drools-compiler as-is. In case of developing DRL editors, we may need to integrate another Java LSP to support RHS code completion, etc.
 7. LHS constraint (e.g. `age > 30`) is also handled as text. Further processing will be done by `DRL6Expressions` parser in the later compiler phase.
-8. `DRLParser` processes a DRL text and produces an AST(abstract syntax tree). Then apply `DRLVisitorImpl` to generate PackageDescr following the visitor pattern. So the main work would be implementing `DRLParser.g4` and `DRLVisitorImpl`.
+8. `DRLParser` processes a DRL text and produces an AST. Then apply `DRLVisitorImpl` to generate PackageDescr following the visitor pattern. So the main work would be implementing `DRLParser.g4` and `DRLVisitorImpl`.
 9. Errors are handled by `DRLErrorListener`
 
 **DRL6Expressions**
