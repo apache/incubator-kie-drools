@@ -19,6 +19,8 @@
 package org.kie.kogito;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Represents data model type of objects that are usually descriptor of data holders.
@@ -28,5 +30,11 @@ public interface Model extends MapInput, MapOutput {
 
     default void update(Map<String, Object> params) {
         Models.fromMap(this, params);
+    }
+
+    default Map<String, Object> updatePartially(Map<String, Object> params) {
+        params = params.entrySet().stream().filter(e -> e.getValue() != null).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        update(params);
+        return params;
     }
 }

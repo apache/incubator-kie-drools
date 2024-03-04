@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -372,19 +371,20 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public T updateVariables(T updates) {
-        return updateVariables(bind(updates));
+        Map<String, Object> map = bind(updates);
+        variables.update(map);
+        return updateVariables(map);
     }
 
     @Override
     public T updateVariablesPartially(T updates) {
-        return updateVariables(bind(updates).entrySet().stream().filter(e -> e.getValue() != null).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+        return updateVariables(this.variables.updatePartially(bind(updates)));
     }
 
     private T updateVariables(Map<String, Object> map) {
         for (Entry<String, Object> entry : map.entrySet()) {
             processInstance().setVariable(entry.getKey(), entry.getValue());
         }
-        this.variables.update(map);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         return variables;
     }
@@ -704,6 +704,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 pInstance.setState(STATE_ACTIVE);
                 pInstance.internalSetErrorNodeId(null);
                 pInstance.internalSetErrorMessage(null);
+                org.kie.api.runtime.process.NodeInstanceContainer nodeInstanceContainer = ni.getNodeInstanceContainer();
+                if (nodeInstanceContainer instanceof NodeInstance) {
+                    ((NodeInstance) nodeInstanceContainer).internalSetTriggerTime(new Date());
+                }
                 ni.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
                 removeOnFinish();
             }

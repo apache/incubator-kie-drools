@@ -18,6 +18,7 @@
  */
 package org.jbpm.workflow.instance;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.jbpm.process.instance.ContextInstance;
@@ -51,6 +52,8 @@ public interface NodeInstance extends KogitoNodeInstance {
     int getSlaCompliance();
 
     String getSlaTimerId();
+
+    void internalSetTriggerTime(Date date);
 
     default KogitoProcessInstance getKogitoProcessInstance() {
         return (KogitoProcessInstance) getProcessInstance();

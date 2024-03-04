@@ -21,6 +21,7 @@ package org.kie.kogito.serverless.workflow.models;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.kogito.MapInput;
 import org.kie.kogito.MapInputId;
@@ -28,6 +29,7 @@ import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.jackson.utils.MergeUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 
@@ -80,13 +82,34 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
 
     @Override
     public void update(Map<String, Object> params) {
-        Map<String, Object> copy = mutableMap(params);
-        update((String) copy.remove("id"), copy);
+        update(params, w -> w);
+    }
+
+    @Override
+    public Map<String, Object> updatePartially(Map<String, Object> params) {
+        update(params, w -> MergeUtils.merge(w, this.workflowdata));
+        return toMap();
+    }
+
+    private void update(Map<String, Object> params, Function<JsonNode, JsonNode> merger) {
+        if (params.containsKey(SWFConstants.DEFAULT_WORKFLOW_VAR)) {
+            params = mutableMap(params);
+            this.workflowdata = merger.apply(JsonObjectUtils.fromValue(params.remove(SWFConstants.DEFAULT_WORKFLOW_VAR)));
+            this.additionalProperties = params;
+        } else {
+            this.workflowdata = merger.apply(JsonObjectUtils.fromValue(params));
+            this.additionalProperties = Collections.emptyMap();
+        }
+    }
+
+    private static Map<String, Object> mutableMap(Map<String, Object> map) {
+        return map instanceof HashMap ? map : new HashMap<>(map);
     }
 
     @Override
     public void fromMap(String id, Map<String, Object> params) {
-        update(id, mutableMap(params));
+        this.id = id;
+        update(params);
     }
 
     @Override
@@ -101,21 +124,6 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
         map.put(SWFConstants.DEFAULT_WORKFLOW_VAR, workflowdata);
         map.putAll(additionalProperties);
         return map;
-    }
-
-    private void update(String id, Map<String, Object> params) {
-        this.id = id;
-        if (params.containsKey(SWFConstants.DEFAULT_WORKFLOW_VAR)) {
-            this.workflowdata = JsonObjectUtils.fromValue(params.remove(SWFConstants.DEFAULT_WORKFLOW_VAR)).deepCopy();
-            this.additionalProperties = params;
-        } else {
-            this.workflowdata = JsonObjectUtils.fromValue(params);
-            this.additionalProperties = Collections.emptyMap();
-        }
-    }
-
-    private static Map<String, Object> mutableMap(Map<String, Object> map) {
-        return map instanceof HashMap ? map : new HashMap<>(map);
     }
 
     @Override

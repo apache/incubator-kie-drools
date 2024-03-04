@@ -1,0 +1,26 @@
+{
+  "id": "division",
+  "version": "1.0",
+  "name": "Workflow Expression example",
+  "start": "divide",
+  "functions": [
+    {
+      "name": "divide",
+      "type": "expression",
+      "operation": ".number1 / .number2"
+    }
+  ],
+  "states": [
+    {
+      "name": "divide",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "divide",
+          "functionRef": "divide"
+        }
+      ],
+      "end": true
+    }
+  ]
+}
