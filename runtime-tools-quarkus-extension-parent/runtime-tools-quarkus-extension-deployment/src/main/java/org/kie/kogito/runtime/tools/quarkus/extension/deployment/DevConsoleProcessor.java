@@ -46,7 +46,7 @@ import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.kie.kogito.runtime-tools-quarkus-extension";
+    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.jbpm.jbpm-quarkus-devui";
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @SuppressWarnings("unused")
@@ -66,8 +66,8 @@ public class DevConsoleProcessor {
             final ShutdownContextBuildItem shutdownContext,
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
         ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
-                "org.kie.kogito",
-                "runtime-tools-quarkus-extension-deployment");
+                "org.jbpm",
+                "jbpm-quarkus-devui-deployment");
 
         Path devConsoleStaticResourcesDeploymentPath = WebJarUtil.copyResourcesForDevOrTest(
                 liveReloadBuildItem,
