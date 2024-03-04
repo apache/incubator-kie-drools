@@ -2314,23 +2314,23 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.sonataflow</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>sonataflow-quarkus-devui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.sonataflow</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>sonataflow-quarkus-devui</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.sonataflow</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.sonataflow</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
