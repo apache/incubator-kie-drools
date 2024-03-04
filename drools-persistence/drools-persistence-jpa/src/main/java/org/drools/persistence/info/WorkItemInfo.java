@@ -55,7 +55,7 @@ public class WorkItemInfo implements PersistentWorkItem {
     private static final Logger logger = LoggerFactory.getLogger(WorkItemInfo.class);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="workItemInfoIdSeq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="workItemInfoIdSeq")
     private Long   workItemId;
 
     @Version

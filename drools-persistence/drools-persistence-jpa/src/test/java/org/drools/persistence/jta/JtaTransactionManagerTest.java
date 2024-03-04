@@ -35,7 +35,6 @@ import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.util.DroolsPersistenceUtil;
-import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -150,7 +149,7 @@ public class JtaTransactionManagerTest {
             tx.commit();
         }
         catch( Exception e ) { 
-            if( e instanceof RollbackException || e.getCause() instanceof TransientObjectException ) {
+            if ( e instanceof RollbackException  ) {
                 rollBackExceptionthrown = true;
 
                 if( tx.getStatus() == 1 ) {

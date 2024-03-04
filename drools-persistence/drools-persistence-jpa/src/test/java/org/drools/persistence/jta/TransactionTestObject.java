@@ -41,7 +41,7 @@ public class TransactionTestObject implements Serializable {
     private static final long serialVersionUID = 8991032325499307158L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO, generator="txTestIdSeq")
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="txTestIdSeq")
     @Column(name="ID")
     private Long id;
     

@@ -38,7 +38,7 @@ import org.drools.persistence.SessionMarshallingHelper;
 public class SessionInfo implements PersistentSession {
     
     private @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="sessionInfoIdSeq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="sessionInfoIdSeq")
     Long                        id;
 
     @Version
