@@ -51,6 +51,10 @@ public class ArithmeticCoercedExpression {
         this.operator = operator;
     }
 
+    /*
+     * This coercion only deals with String vs Numeric types.
+     * BigDecimal arithmetic operation is handled by ExpressionTyper.convertArithmeticBinaryToMethodCall()
+     */
     public ArithmeticCoercedExpressionResult coerce() {
 
         if (!requiresCoercion()) {

@@ -720,4 +720,96 @@ public class BigDecimalTest extends BaseModelTest {
         // BigDecimal("1.0") and BigDecimal("1.00") are considered as equal because exec-model uses EvaluationUtil.equals() which is based on compareTo()
         assertThat(result).contains(new BigDecimal("1.00"));
     }
+
+    @Test
+    public void bigDecimalCoercionInMethodArgument_shouldNotFailToBuild() {
+        // KIE-748
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BDFact.class.getCanonicalName() + ";\n" +
+                        "import static " + BigDecimalTest.class.getCanonicalName() + ".intToString;\n" +
+                        "rule \"Rule 1a\"\n" +
+                        "    when\n" +
+                        "        BDFact( intToString(value2 - 1) == \"2\" )\n" +
+                        "    then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BDFact bdFact = new BDFact();
+        bdFact.setValue2(new BigDecimal("3"));
+
+        ksession.insert(bdFact);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void bigDecimalCoercionInNestedMethodArgument_shouldNotFailToBuild() {
+        // KIE-748
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                     "import " + BDFact.class.getCanonicalName() + ";\n" +
+                     "import static " + BigDecimalTest.class.getCanonicalName() + ".intToString;\n" +
+                     "rule \"Rule 1a\"\n" +
+                     "    when\n" +
+                     "        BDFact( intToString(value1 * (value2 - 1)) == \"20\" )\n" +
+                     "    then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BDFact bdFact = new BDFact();
+        bdFact.setValue1(new BigDecimal("10"));
+        bdFact.setValue2(new BigDecimal("3"));
+
+        ksession.insert(bdFact);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    public static String intToString(int value) {
+        return Integer.toString(value);
+    }
+
+    @Test
+    public void bindVariableToBigDecimalCoercion2Operands_shouldBindCorrectResult() {
+        bindVariableToBigDecimalCoercion("$var : (1000 * value1)");
+    }
+
+    @Test
+    public void bindVariableToBigDecimalCoercion3Operands_shouldBindCorrectResult() {
+        bindVariableToBigDecimalCoercion("$var : (100000 * value1 / 100)");
+    }
+
+    @Test
+    public void bindVariableToBigDecimalCoercion3OperandsWithParentheses_shouldBindCorrectResult() {
+        bindVariableToBigDecimalCoercion("$var : ((100000 * value1) / 100)");
+    }
+
+    private void bindVariableToBigDecimalCoercion(String binding) {
+        // KIE-775
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BDFact.class.getCanonicalName() + ";\n" +
+                        "global java.util.List result;\n" +
+                        "rule R1\n" +
+                        "    when\n" +
+                        "        BDFact( " + binding +  " )\n" +
+                        "    then\n" +
+                        "        result.add($var);\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        BDFact bdFact = new BDFact();
+        bdFact.setValue1(new BigDecimal("80"));
+
+        ksession.insert(bdFact);
+        ksession.fireAllRules();
+
+        assertThat(result).contains(new BigDecimal("80000"));
+    }
 }
