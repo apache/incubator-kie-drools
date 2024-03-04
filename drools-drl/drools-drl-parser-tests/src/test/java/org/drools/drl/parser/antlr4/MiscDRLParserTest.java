@@ -39,11 +39,12 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
-import org.drools.drl.parser.antlr4.DRLParserWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -3537,5 +3538,75 @@ class MiscDRLParserTest {
 
         assertThat(ruleDescr.getName()).isEqualTo("R1");
         assertThat(ruleDescr.getNamespace()).isEqualTo("org.drools");
+    }
+
+    /**
+     * Each test input is a constraint expression covering one of the existing keywords. The test is successful if the parser has
+     * no errors and the descriptor's expression string is equal to the input.
+     *
+     * @param constraint expression using a keyword
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "country matches \"[a-z]*\"",
+            "country not matches \"[a-z]*\"",
+            "person memberOf $europeanDescendants",
+            "person not memberOf $europeanDescendants",
+            "countries contains \"UK\"",
+            "countries not contains \"UK\"",
+            "countries excludes \"UK\"",
+            "countries not excludes \"UK\"",
+            "firstName soundslike \"John\"",
+            "firstName not soundslike \"John\"",
+            "routingValue str[startsWith] \"R1\"",
+            "routingValue not str[startsWith] \"R1\""
+    })
+    void constraintKeywords(String constraint) {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person(" + constraint + ")\n" +
+                "then\n" +
+                "end\n";
+
+        PackageDescr packageDescr = parser.parse(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        AndDescr lhs = ruleDescr.getLhs();
+        PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get(0);
+        ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(exprConstraintDescr.getExpression()).isEqualToIgnoringWhitespace(constraint);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "country matches \"[a-z]*\" || matches \"[A-Z]*\"",
+            "country not matches \"[a-z]*\" || not matches \"[A-Z]*\"",
+            "person memberOf $europeanDescendants || memberOf $africanDescendants",
+            "person not memberOf $europeanDescendants || not memberOf $africanDescendants",
+            "countries contains \"UK\" || contains \"US\"",
+            "countries not contains \"UK\" || not contains \"US\"",
+            "countries excludes \"UK\" || excludes \"US\"",
+            "countries not excludes \"UK\" || not excludes \"US\"",
+            "firstName soundslike \"John\" || soundslike \"Paul\"",
+            "firstName not soundslike \"John\" && not soundslike \"Paul\"",
+            "routingValue str[startsWith] \"R1\" || str[startsWith] \"R2\"",
+            "routingValue not str[startsWith] \"R1\" && not str[startsWith] \"R2\""
+    })
+    void halfConstraintKeywords(String constraint) {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person(" + constraint + ")\n" +
+                "then\n" +
+                "end\n";
+
+        PackageDescr packageDescr = parser.parse(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        AndDescr lhs = ruleDescr.getLhs();
+        PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get(0);
+        ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(exprConstraintDescr.getExpression()).isEqualToIgnoringWhitespace(constraint);
     }
 }
