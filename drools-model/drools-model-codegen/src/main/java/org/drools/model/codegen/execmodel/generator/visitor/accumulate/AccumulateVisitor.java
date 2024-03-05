@@ -209,7 +209,7 @@ public class AccumulateVisitor {
         final Expression accumulateFunctionParameter = DrlxParseUtil.parseExpression(accumulateFunctionParameterStr).getExpr();
 
         if (accumulateFunctionParameter instanceof BinaryExpr || accumulateFunctionParameter instanceof UnaryExpr) {
-            return binaryOrUnaryExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameterStr);
+            return bindingParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameterStr);
         }
 
         if (parameterNeedsConvertionToMethodCallExpr(accumulateFunctionParameter)) {
@@ -414,7 +414,7 @@ public class AccumulateVisitor {
         return accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr() || accumulateFunctionParameter.isFieldAccessExpr();
     }
 
-    private Optional<NewBinding> binaryOrUnaryExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
+    private Optional<NewBinding> bindingParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
         final DrlxParseResult parseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, accumulateFunctionParameterStr);
 
         return parseResult.acceptWithReturnValue(new ParseResultVisitor<>() {
