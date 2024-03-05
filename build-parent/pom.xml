@@ -102,6 +102,7 @@
     <version.org.infinispan>14.0.13.Final</version.org.infinispan>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>6.0.1.Final</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.logging>3.5.3.Final</version.org.jboss.logging>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.0.3</version.org.eclipse.microprofile.config>
@@ -122,6 +123,7 @@
     <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
     <version.jakarta.json>1.1.5</version.jakarta.json>
     <version.jakarta.json-api>2.1.2</version.jakarta.json-api>
+    <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
     <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
     <version.org.junit>5.9.3</version.org.junit>
     <version.org.mvel>2.5.1.Final</version.org.mvel>
@@ -1246,12 +1248,12 @@
       <dependency>
         <groupId>org.apache.openjpa</groupId>
         <artifactId>openjpa</artifactId>
-        <version>4.0.0</version>
+        <version>${version.org.apache.openjpa}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
-        <version>3.5.3.Final</version>
+        <version>${version.org.jboss.logging}</version>
       </dependency>
     </dependencies>
 

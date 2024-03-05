@@ -73,30 +73,8 @@
           <additionalClasspathElements>
             <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
           </additionalClasspathElements>
+          <argLine>-javaagent:${settings.localRepository}/org/apache/openjpa/openjpa/${version.org.apache.openjpa}/openjpa-${version.org.apache.openjpa}.jar</argLine>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.openjpa</groupId>
-        <artifactId>openjpa-maven-plugin</artifactId>
-        <version>4.0.0</version>
-        <configuration>
-          <includes>org.drools.persistence.info.WorkItemInfo,
-            org.drools.persistence.info.SessionInfo,
-            org.drools.persistence.jta.TransactionTestObject
-            </includes>
-          <addDefaultConstructor>true</addDefaultConstructor>
-          <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
-        </configuration>
-        <executions>
-          <execution>
-            <id>enhancer</id>
-            <phase>process-test-classes</phase>
-            <goals>
-              <goal>test-enhance</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
