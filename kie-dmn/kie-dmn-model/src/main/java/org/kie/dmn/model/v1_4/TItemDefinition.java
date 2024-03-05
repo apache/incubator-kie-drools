@@ -60,16 +60,6 @@ public class TItemDefinition extends TNamedElement implements ItemDefinition {
     }
 
     @Override
-    public UnaryTests getTypeConstraint() {
-        throw new UnsupportedOperationException("Since DMNv1.5");
-    }
-
-    @Override
-    public void setTypeConstraint(UnaryTests value) {
-        throw new UnsupportedOperationException("Since DMNv1.5");
-    }
-
-    @Override
     public List<ItemDefinition> getItemComponent() {
         if (itemComponent == null) {
             itemComponent = new ArrayList<>();

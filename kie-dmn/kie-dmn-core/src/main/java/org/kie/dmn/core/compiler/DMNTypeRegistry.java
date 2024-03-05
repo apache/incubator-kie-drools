@@ -18,6 +18,8 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.util.Map;
+
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 
@@ -25,8 +27,12 @@ public interface DMNTypeRegistry extends FEELTypeRegistry {
 
     DMNType unknown();
 
+    Map<String, Map<String, DMNType>> getTypes();
+
     DMNType registerType(DMNType type);
 
     DMNType resolveType(String namespace, String name);
+
+    String feelNS();
 
 }

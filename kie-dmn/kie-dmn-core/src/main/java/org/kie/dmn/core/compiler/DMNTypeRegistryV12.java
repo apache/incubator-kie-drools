@@ -32,10 +32,7 @@ import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
 public class DMNTypeRegistryV12 extends DMNTypeRegistryAbstract {
 
-    private static final DMNType UNKNOWN = new SimpleTypeImpl(KieDMNModelInstrumentedBase.URI_FEEL,
-                                                              BuiltInType.UNKNOWN.getName(),
-                                                              null, true, null, null,
-                                                              BuiltInType.UNKNOWN );
+    private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
 
     public DMNTypeRegistryV12() {
         super(Collections.emptyMap());
@@ -67,7 +64,7 @@ public class DMNTypeRegistryV12 extends DMNTypeRegistryAbstract {
                                                                                                                     BuiltInType.CONTEXT));
 
     @Override
-    protected String feelNS() {
+    public String feelNS() {
         return KieDMNModelInstrumentedBase.URI_FEEL;
     }
 

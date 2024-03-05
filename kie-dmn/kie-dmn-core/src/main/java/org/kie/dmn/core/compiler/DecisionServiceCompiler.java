@@ -43,6 +43,7 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.core.util.NamespaceUtil;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
@@ -285,7 +286,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       fdReturnType);
             }
         } else if (ni.getDecisionService().getOutputDecision().size() > 1) {
-            final Function<QName, QName> lookupFn = (in) -> DMNCompilerImpl.getNamespaceAndName(ni.getDecisionService(), model.getImportAliasesForNS(), in, model.getNamespace());
+            final Function<QName, QName> lookupFn = (in) -> NamespaceUtil.getNamespaceAndName(ni.getDecisionService(), model.getImportAliasesForNS(), in, model.getNamespace());
             LinkedHashMap<String, QName> fdComposite = new LinkedHashMap<>();
             for (DecisionNode dn : outputDecisions) {
                 fdComposite.put(dn.getName(), lookupFn.apply(dn.getDecision().getVariable().getTypeRef()));

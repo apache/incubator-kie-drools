@@ -25,7 +25,11 @@ import org.kie.dmn.feel.lang.Type;
 
 public class GenListType implements SimpleType {
 
+    /**
+     * Represents the "generic" type of the current list
+     */
     private final Type gen;
+
 
     public GenListType(Type gen) {
         this.gen = gen;

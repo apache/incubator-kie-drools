@@ -40,7 +40,7 @@ public interface PhreakBuilder {
     void removeRule(TerminalNode tn, Collection<InternalWorkingMemory> wms, InternalRuleBase kBase);
 
     class Holder {
-        private static final boolean EAGER_SEGMENT_CREATION = Boolean.parseBoolean(getConfig("drools.useEagerSegmentCreation", "false"));
+        private static final boolean EAGER_SEGMENT_CREATION = Boolean.parseBoolean(getConfig("drools.useEagerSegmentCreation", "true"));
         private static final PhreakBuilder PHREAK_BUILDER = EAGER_SEGMENT_CREATION ? new EagerPhreakBuilder() : new LazyPhreakBuilder();
     }
 }

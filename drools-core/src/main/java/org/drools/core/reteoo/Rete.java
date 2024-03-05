@@ -19,7 +19,6 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,13 +55,9 @@ import org.drools.util.bitmask.BitMask;
  */
 public class Rete extends ObjectSource implements ObjectSink {
 
+    private final Map<EntryPointId, EntryPointNode> entryPoints = new HashMap<>();
 
-
-    private static final long               serialVersionUID = 510l;
-
-    private Map<EntryPointId, EntryPointNode> entryPoints;
-
-    private transient InternalRuleBase kBase;
+    private final InternalRuleBase kBase;
 
     public Rete() {
         this( null );
@@ -74,9 +69,7 @@ public class Rete extends ObjectSource implements ObjectSink {
 
     public Rete(InternalRuleBase kBase) {
         super( 0, RuleBasePartitionId.MAIN_PARTITION );
-        this.entryPoints = Collections.synchronizedMap( new HashMap<>() );
         this.kBase = kBase;
-
         hashcode = calculateHashCode();
     }
 

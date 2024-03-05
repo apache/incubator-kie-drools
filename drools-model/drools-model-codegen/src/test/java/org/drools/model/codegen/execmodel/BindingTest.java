@@ -475,4 +475,69 @@ public class BindingTest extends BaseModelTest {
         ksession.fireAllRules();
         assertThat(result).isEmpty();
     }
+
+    @Test
+    public void testConstraintExpression() {
+        String str = "package constraintexpression\n" +
+                "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import java.util.List; \n" +
+                "global List<Boolean> booleanListGlobal; \n" +
+                "rule \"r1\"\n" +
+                "when \n" +
+                "    $p : Person($booleanVariable: (name != null))\n" +
+                "then \n" +
+                "    System.out.println($booleanVariable); \n" +
+                "    System.out.println($p); \n" +
+                "    booleanListGlobal.add($booleanVariable); \n " +
+                "end \n";
+
+        KieSession ksession = getKieSession(str);
+        try {
+            final List<Boolean> booleanListGlobal = new ArrayList<>();
+            ksession.setGlobal("booleanListGlobal", booleanListGlobal);
+            Person person = new Person("someName");
+            ksession.insert(person);
+            int rulesFired = ksession.fireAllRules();
+            assertThat(rulesFired).isEqualTo(1);
+            assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.TRUE);
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    /**
+     * This test checks that a rule is not fired, when a binding is
+     * enclosed in parentheses. This is intentional behaviour, agreed in discussions,
+     * which may be revised in the future.
+     */
+    @Test
+    public void testIgnoreConstraintInParentheses() {
+        String str = "package constraintexpression\n" +
+                "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import java.util.List; \n" +
+                "global List<Boolean> booleanListGlobal; \n" +
+                "rule \"r1\"\n" +
+                "when \n" +
+                "    $p : Person($booleanVariable: (name == null))\n" +
+                "then \n" +
+                "    System.out.println($booleanVariable); \n" +
+                "    System.out.println($p); \n" +
+                "    booleanListGlobal.add($booleanVariable); \n " +
+                "end \n";
+
+        KieSession ksession = getKieSession(str);
+        try {
+            final List<Boolean> booleanListGlobal = new ArrayList<>();
+            ksession.setGlobal("booleanListGlobal", booleanListGlobal);
+            Person person = new Person("someName");
+            ksession.insert(person);
+            int rulesFired = ksession.fireAllRules();
+            assertThat(rulesFired).isEqualTo(1);
+            assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.FALSE);
+        } finally {
+            ksession.dispose();
+        }
+    }
 }

@@ -357,8 +357,26 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this.isPredicate;
     }
 
+    /*
+     * This method finds out, if the parse result is a predicate enclosed in parentheses, bound to a variable.
+     * Example: Person($booleanVariable: (name != null))
+     * This shouldn't apply to any other form of predicate. So e.g.
+     * Person($booleanVariable: (name != null) == "someName") should be properly generated as a constraint.
+     * After discussions, to align the executable model behaviour with the old non-executable model,
+     * such predicate is not generated as a rule constraint, and just bound to a variable. This behaviour needs more
+     * discussions to revisit this behaviour.
+     */
+    private boolean isEnclosedPredicateBoundToVariable() {
+        final TypedExpression boundExpr = getBoundExpr();
+        return boundExpr != null
+                && boundExpr.getExpression() instanceof EnclosedExpr
+                && getExprBinding() != null
+                && !getLeft().getExpression().equals(boundExpr.getExpression())
+                && !getRight().getExpression().equals(boundExpr.getExpression());
+    }
+
     public SingleDrlxParseSuccess setIsPredicate(boolean predicate) {
-        this.isPredicate = predicate;
+        this.isPredicate = predicate && !isEnclosedPredicateBoundToVariable();
         return this;
     }
 

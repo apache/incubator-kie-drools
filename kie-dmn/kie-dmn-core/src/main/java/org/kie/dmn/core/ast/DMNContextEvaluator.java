@@ -19,7 +19,6 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,6 +43,8 @@ import org.kie.dmn.model.api.ContextEntry;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.dmn.core.util.CoerceUtil.coerceValue;
 
 public class DMNContextEvaluator
         implements DMNExpressionEvaluator {
@@ -98,14 +99,7 @@ public class DMNContextEvaluator
                     }
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
-                        Object value = er.getResult();
-                        if( ! ed.getType().isCollection() && value instanceof Collection &&
-                            ((Collection)value).size()==1 ) {
-                            // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-                            // and vice-versa
-                            value = ((Collection)value).toArray()[0];
-                        }
-                        
+                        Object value = coerceValue(ed.getType(), er.getResult());
                         if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
                             if (!(ed.getContextEntry().getExpression() instanceof FunctionDefinition)) {
                                 // checking directly the result type...

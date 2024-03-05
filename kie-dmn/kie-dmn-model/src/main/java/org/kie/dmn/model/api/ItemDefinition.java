@@ -38,9 +38,15 @@ public interface ItemDefinition extends NamedElement {
 
     void setAllowedValues(UnaryTests value);
 
-    UnaryTests getTypeConstraint();
+    default UnaryTests getTypeConstraint() {
+        // Since DMN 1.5
+        return null;
+    }
 
-    void setTypeConstraint(UnaryTests value);
+    default void setTypeConstraint(UnaryTests value) {
+        // Since DMN 1.5
+        // no op
+    }
 
     List<ItemDefinition> getItemComponent();
 

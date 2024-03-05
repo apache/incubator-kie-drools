@@ -20,6 +20,7 @@ package org.kie.dmn.core.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class CompositeTypeImpl
     public CompositeTypeImpl clone() {
         return new CompositeTypeImpl( getNamespace(), getName(), getId(), isCollection(), new LinkedHashMap<>( fields), getBaseType(), getFeelType() );
     }
-    
+
     @Override
     protected boolean internalIsInstanceOf(Object o) {
         if (getBaseType() != null) {
@@ -132,35 +133,63 @@ public class CompositeTypeImpl
     }
 
     @Override
-    protected boolean internalIsAssignableValue(Object o) {
+    protected boolean internalAllowedValueIsAssignableValue(Object o) {
         if (getBaseType() != null) {
             return getBaseType().isAssignableValue(o);
-        } else if (o instanceof Map<?, ?>) {
-            Map<?, ?> instance = (Map<?, ?>) o;
-            for ( Entry<String, DMNType> f : fields.entrySet() ) {
-                if ( !instance.containsKey(f.getKey()) ) {
+        } else {
+            return internalCheckObject(o);
+        }
+    }
+
+    @Override
+    protected boolean internalTypeConstraintIsAssignableValue(Object o) {
+        return checkByCollection(o) || checkByElement(o);
+    }
+
+    private boolean internalCheckObject(Object o) {
+        return o == null || checkByMap(o) || checkByFields(o);
+    }
+
+    private boolean checkByCollection(Object o) {
+        // the check of contained elements is done inside BaseDMNType.isAssignableValue
+        // Here we have only to confirm a) current feel type is a list and b) given object is a collection
+        return isCollection() && getFeelType() instanceof GenListType && o instanceof Collection;
+    }
+
+    private boolean checkByElement(Object o) {
+        return getFeelType() instanceof MapBackedType ? checkByFields(o) : getFeelType().isAssignableValue(o);
+    }
+
+    private boolean checkByMap(Object o) {
+        if (o instanceof Map<?, ?> instance) {
+            for (Entry<String, DMNType> f : fields.entrySet()) {
+                if (!instance.containsKey(f.getKey())) {
                     return false; // It must have key named 'f.getKey()' like a Duck.
                 } else {
-                    if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
+                    if (!f.getValue().isAssignableValue(instance.get(f.getKey()))) {
                         return false;
                     }
                 }
             }
             return true;
-        } else if (o == null) {
-            return true; // a null-value can be assigned to any type.
         } else {
-            for ( Entry<String, DMNType> f : fields.entrySet() ) {
-                PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
-                if (fValue.isDefined()) {
-                    if (!f.getValue().isAssignableValue(fValue.getValueResult().getOrElseThrow(e -> new IllegalStateException(e)))) {
-                        return false;
-                    }
-                } else {
-                    return false; // It must <genericAccessor> like a Duck.
-                }
-            }
-            return true;
+            return false;
         }
+    }
+
+    private boolean checkByFields(Object o) {
+        for (Entry<String, DMNType> f : fields.entrySet()) {
+            PropertyValueResult fValue = EvalHelper.getDefinedValue(o, f.getKey());
+            if (fValue.isDefined()) {
+                Object valueResult = fValue.getValueResult().getOrElseThrow(IllegalStateException::new);
+                DMNType expectedType = f.getValue();
+                if (!expectedType.isAssignableValue(valueResult)) {
+                    return false;
+                }
+            } else {
+                return false; // It must <genericAccessor> like a Duck.
+            }
+        }
+        return true;
     }
 }

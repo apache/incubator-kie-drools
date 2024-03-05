@@ -32,6 +32,7 @@ import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
@@ -127,17 +128,24 @@ public class DMNTypeSchemas {
         }
         Schema schema = refOrBuiltinSchema(baseType);
         if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-            schema.addExtension(DMNOASConstants.X_DMN_ALLOWED_VALUES, t.getAllowedValuesFEEL().stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
-            if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
-                FEELSchemaEnum.parseNumberAllowedValuesIntoSchema(schema, t.getAllowedValues());
-            } else {
-                FEELSchemaEnum.parseAllowedValuesIntoSchema(schema, t.getAllowedValues());
-            }
+            parseSimpleType(DMNOASConstants.X_DMN_ALLOWED_VALUES, t, schema, t.getAllowedValuesFEEL(), t.getAllowedValues());
+        }
+        if (t.getTypeConstraint() != null && !t.getTypeConstraint().isEmpty()) {
+            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, t, schema, t.getTypeConstraintFEEL(), t.getAllowedValues());
         }
         schema = nestAsItemIfCollection(schema, t);
         schema.addExtension(X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
         processIoSetDoc(schema, t);
         return schema;
+    }
+
+    private void parseSimpleType(String schemaString, SimpleTypeImpl t, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
+        schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
+        if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
+            FEELSchemaEnum.parseNumbersIntoSchema(schema, dmnUnaryTests);
+        } else {
+            FEELSchemaEnum.parseValuesIntoSchema(schema, dmnUnaryTests);
+        }
     }
 
     private Schema schemaFromCompositeType(CompositeTypeImpl ct) {

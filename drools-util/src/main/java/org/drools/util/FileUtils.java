@@ -42,6 +42,7 @@ public class FileUtils {
 
     /**
      * Retrieve the <code>File</code> of the given <b>file</b>
+     * This method does not guarantee the returned file if multiple files, with same name, are present in different directories
      * @param fileName
      * @return
      */
@@ -50,6 +51,31 @@ public class FileUtils {
         File toReturn = ResourceHelper.getFileResourcesByExtension(extension)
                 .stream()
                 .filter(file -> file.getName().equals(fileName))
+                .findFirst()
+                .orElse(null);
+        if (toReturn == null) {
+            throw new IllegalArgumentException("Failed to find file " + fileName);
+        }
+        return toReturn;
+    }
+
+    /**
+     * Retrieve the <code>File</code> of the given <b>file</b>
+     * @param fileName
+     * @param parentDir
+     * @return
+     */
+    public static File getFile(String fileName, String parentDir) {
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+        File parentDirectory = new File(parentDir);
+        if (!parentDirectory.exists() || !parentDirectory.canRead() || !parentDirectory.isDirectory()) {
+            throw new IllegalArgumentException("Failed to find parent directory " + parentDir);
+        }
+        File toReturn = ResourceHelper.getFileResourcesByExtension(extension)
+                .stream()
+                .filter(file -> file.getName().equals(fileName) &&
+                        file.getParentFile() != null &&
+                        file.getParentFile().getAbsolutePath().equals(parentDirectory.getAbsolutePath()))
                 .findFirst()
                 .orElse(null);
         if (toReturn == null) {
@@ -70,6 +96,18 @@ public class FileUtils {
     }
 
     /**
+     * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
+     * @param fileName
+     * @param parentDir
+     * @return
+     * @throws IOException
+     */
+    public static FileInputStream getFileInputStream(String fileName, String parentDir) throws IOException {
+        File sourceFile = getFile(fileName, parentDir);
+        return new FileInputStream(sourceFile);
+    }
+
+    /**
      * Retrieve the <b>content</b> of the given <b>file</b>
      * @param fileName
      * @return
@@ -77,6 +115,22 @@ public class FileUtils {
      */
     public static String getFileContent(String fileName) throws IOException {
         File file = getFile(fileName);
+        Path path = file.toPath();
+        Stream<String> lines = Files.lines(path);
+        String toReturn = lines.collect(Collectors.joining("\n"));
+        lines.close();
+        return toReturn;
+    }
+
+    /**
+     * Retrieve the <b>content</b> of the given <b>file</b>
+     * @param fileName
+     * @param parentDir
+     * @return
+     * @throws IOException
+     */
+    public static String getFileContent(String fileName, String parentDir) throws IOException {
+        File file = getFile(fileName, parentDir);
         Path path = file.toPath();
         Stream<String> lines = Files.lines(path);
         String toReturn = lines.collect(Collectors.joining("\n"));
