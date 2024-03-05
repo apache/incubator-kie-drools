@@ -225,19 +225,17 @@ public class ExpressionTyper {
             TypedExpression left = optLeft.get();
             TypedExpression right = optRight.get();
 
-            // Can be a binary expression of non-numeric types, like String + customType, etc.
-            if (ClassUtils.isNumericClass(left.getRawClass()) || ClassUtils.isNumericClass(right.getRawClass())) {
-                ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
-                try {
-                    coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
-                } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
-                    logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
-                    return empty();
-                }
-
-                left = coerced.getCoercedLeft();
-                right = coerced.getCoercedRight();
+            // Coerce number and string if needed.
+            ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
+            try {
+                coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
+            } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
+                logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
+                return empty();
             }
+
+            left = coerced.getCoercedLeft();
+            right = coerced.getCoercedRight();
 
             final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
 

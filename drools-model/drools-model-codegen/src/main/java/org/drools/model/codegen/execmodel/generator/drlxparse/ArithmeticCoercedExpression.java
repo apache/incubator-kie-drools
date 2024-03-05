@@ -97,15 +97,7 @@ public class ArithmeticCoercedExpression {
         if (!arithmeticOperators.contains(operator)) {
             return false;
         }
-        final Class<?> leftClass = left.getRawClass();
-        final Class<?> rightClass = right.getRawClass();
-        if (leftClass == rightClass) {
-            return false;
-        }
-        if (isNumericClass(leftClass) && isNumericClass(rightClass)) {
-            return false;
-        }
-        return true;
+        return canCoerce(left.getRawClass(), right.getRawClass());
     }
 
     private boolean canCoerce(Class<?> leftClass, Class<?> rightClass) {
