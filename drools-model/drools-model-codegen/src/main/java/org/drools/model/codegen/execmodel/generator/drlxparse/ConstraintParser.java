@@ -48,7 +48,6 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import org.drools.util.DateUtils;
 import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.ParseExpressionErrorResult;
@@ -73,6 +72,7 @@ import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
+import org.drools.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,10 +95,6 @@ import static org.drools.model.codegen.execmodel.generator.ConstraintUtil.GREATE
 import static org.drools.model.codegen.execmodel.generator.ConstraintUtil.GREATER_THAN_PREFIX;
 import static org.drools.model.codegen.execmodel.generator.ConstraintUtil.LESS_OR_EQUAL_PREFIX;
 import static org.drools.model.codegen.execmodel.generator.ConstraintUtil.LESS_THAN_PREFIX;
-import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.convertArithmeticBinaryToMethodCall;
-import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.getBinaryTypeAfterConversion;
-import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.shouldConvertArithmeticBinaryToMethodCall;
-import static org.drools.util.StringUtils.lcFirstForBean;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.createConstraintCompiler;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getLiteralExpressionType;
@@ -108,9 +104,13 @@ import static org.drools.model.codegen.execmodel.generator.DslMethodNames.NOT_CA
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.model.codegen.execmodel.generator.drlxparse.MultipleDrlxParseSuccess.createMultipleDrlxParseSuccess;
 import static org.drools.model.codegen.execmodel.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
+import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.convertArithmeticBinaryToMethodCall;
+import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.getBinaryTypeAfterConversion;
+import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.shouldConvertArithmeticBinaryToMethodCall;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.mvel.parser.utils.AstUtils.isLogicalOperator;
+import static org.drools.util.StringUtils.lcFirstForBean;
 
 /**
  * Parses the MVEL String Constraint and compiles it to a Java Expression
@@ -512,7 +512,7 @@ public class ConstraintParser {
         }
 
         if (context.hasDeclaration( expression )) {
-            Optional<TypedDeclarationSpec> declarationSpec = context.getTypedDeclarationById(expression);
+            Optional<DeclarationSpec> declarationSpec = context.getDeclarationById(expression);
             if (declarationSpec.isPresent()) {
                 return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printNode(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
             } else {
