@@ -222,7 +222,7 @@ public class AccumulateVisitor {
             literalExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameter);
         } else {
             throw new AccumulateParsingFailedException(
-                    "The expression ù\"" + accumulateFunctionParameterStr +
+                    "The expression \"" + accumulateFunctionParameterStr +
                     "\" in function \"" + function.getFunction() +
                     "\" of type \"" + accumulateFunctionParameter.getClass().getSimpleName() +
                     "\" is not managed in " + this.getClass().getSimpleName());
