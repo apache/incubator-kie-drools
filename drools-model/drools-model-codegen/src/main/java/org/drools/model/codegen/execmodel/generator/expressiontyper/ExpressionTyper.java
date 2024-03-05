@@ -72,7 +72,7 @@ import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.UnificationTypedExpression;
-import org.drools.model.codegen.execmodel.generator.drlxparse.ArithmeticCoercedExpression;
+import org.drools.model.codegen.execmodel.generator.drlxparse.NumberAndStringArithmeticOperationCoercion;
 import org.drools.model.codegen.execmodel.generator.operatorspec.CustomOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.NativeOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.OperatorSpec;
@@ -95,8 +95,8 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
 import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
-import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils;
+import org.drools.util.Pair;
 import org.drools.util.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,21 +225,16 @@ public class ExpressionTyper {
             TypedExpression left = optLeft.get();
             TypedExpression right = optRight.get();
 
-            // Coerce number and string if needed.
-            if (ArithmeticCoercedExpression.requiresCoercion(operator, left, right)) {
-                ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
-                try {
-                    coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
-                } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
-                    logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
-                    return empty();
-                }
-
-                left = coerced.getCoercedLeft();
-                right = coerced.getCoercedRight();
+            final BinaryExpr combo;
+            final Pair<TypedExpression, TypedExpression> numberAndStringCoercionResult =
+                    NumberAndStringArithmeticOperationCoercion.coerceIfNeeded(operator, left, right);
+            if (numberAndStringCoercionResult.hasLeft()) {
+                left = numberAndStringCoercionResult.getLeft();
             }
-
-            final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
+            if (numberAndStringCoercionResult.hasRight()) {
+                right = numberAndStringCoercionResult.getRight();
+            }
+            combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
 
             if (shouldConvertArithmeticBinaryToMethodCall(operator, left.getType(), right.getType())) {
                 Expression expression = convertArithmeticBinaryToMethodCall(combo, of(typeCursor), ruleContext);

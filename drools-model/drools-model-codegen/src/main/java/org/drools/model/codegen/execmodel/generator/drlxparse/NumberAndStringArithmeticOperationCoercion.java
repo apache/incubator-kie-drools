@@ -20,6 +20,7 @@ package org.drools.model.codegen.execmodel.generator.drlxparse;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
+import org.drools.util.Pair;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.DIVIDE;
@@ -38,13 +40,20 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.REMAINDER;
 import static java.util.Arrays.asList;
 import static org.drools.util.ClassUtils.isNumericClass;
 
-public class ArithmeticCoercedExpression {
+public final class NumberAndStringArithmeticOperationCoercion {
 
-    private final TypedExpression left;
-    private final TypedExpression right;
-    private final Operator operator;
+    private NumberAndStringArithmeticOperationCoercion() {
+    }
 
     private static final Set<Operator> arithmeticOperators = new HashSet<>(asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER));
+
+    public static Pair<TypedExpression, TypedExpression> coerceIfNeeded(final Operator operator, final TypedExpression left, final TypedExpression right) {
+        if (requiresCoercion(operator, left, right)) {
+            return coerce(operator, left, right);
+        } else {
+            return new Pair<>(null, null);
+        }
+    }
 
     public static boolean requiresCoercion(final Operator operator, final TypedExpression left, final TypedExpression right) {
         if (!arithmeticOperators.contains(operator)) {
@@ -58,23 +67,17 @@ public class ArithmeticCoercedExpression {
                 rightClass == String.class && isNumericClass(leftClass);
     }
 
-    public ArithmeticCoercedExpression(TypedExpression left, TypedExpression right, Operator operator) {
-        this.left = left;
-        this.right = right;
-        this.operator = operator;
-    }
-
     /*
      * This coercion only deals with String vs Numeric types.
      * BigDecimal arithmetic operation is handled by ExpressionTyper.convertArithmeticBinaryToMethodCall()
      */
-    public ArithmeticCoercedExpressionResult coerce() {
+    private static Pair<TypedExpression, TypedExpression> coerce(final Operator operator, final TypedExpression left, final TypedExpression right) {
 
         final Class<?> leftClass = left.getRawClass();
         final Class<?> rightClass = right.getRawClass();
 
         if (!canCoerce(leftClass, rightClass)) {
-            throw new ArithmeticCoercedExpressionException(new InvalidExpressionErrorResult("Arithmetic operation requires compatible types. Found " + leftClass + " and " + rightClass));
+            throw new NumberAndStringArithmeticOperationCoercionException(new InvalidExpressionErrorResult("Arithmetic operation requires compatible types. Found " + leftClass + " and " + rightClass));
         }
 
         TypedExpression coercedLeft = left;
@@ -98,45 +101,26 @@ public class ArithmeticCoercedExpression {
             }
         }
 
-        return new ArithmeticCoercedExpressionResult(coercedLeft, coercedRight);
+        return new Pair<>(coercedLeft, coercedRight);
     }
 
-    private TypedExpression coerceToDouble(TypedExpression typedExpression) {
+    private static TypedExpression coerceToDouble(TypedExpression typedExpression) {
         final Expression expression = typedExpression.getExpression();
         TypedExpression coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(new NameExpr("Double"), "valueOf", nodeList(expression)));
         return coercedExpression.setType(BigDecimal.class);
     }
 
-    private TypedExpression coerceToString(TypedExpression typedExpression) {
+    private static TypedExpression coerceToString(TypedExpression typedExpression) {
         final Expression expression = typedExpression.getExpression();
         TypedExpression coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(new NameExpr("String"), "valueOf", nodeList(expression)));
         return coercedExpression.setType(String.class);
     }
 
-    public static class ArithmeticCoercedExpressionResult {
-
-        private final TypedExpression coercedLeft;
-        private final TypedExpression coercedRight;
-
-        public ArithmeticCoercedExpressionResult(TypedExpression left, TypedExpression coercedRight) {
-            this.coercedLeft = left;
-            this.coercedRight = coercedRight;
-        }
-
-        public TypedExpression getCoercedLeft() {
-            return coercedLeft;
-        }
-
-        public TypedExpression getCoercedRight() {
-            return coercedRight;
-        }
-    }
-
-    public static class ArithmeticCoercedExpressionException extends RuntimeException {
+    public static class NumberAndStringArithmeticOperationCoercionException extends RuntimeException {
 
         private final transient InvalidExpressionErrorResult invalidExpressionErrorResult;
 
-        ArithmeticCoercedExpressionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
+        NumberAndStringArithmeticOperationCoercionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
             this.invalidExpressionErrorResult = invalidExpressionErrorResult;
         }
 
