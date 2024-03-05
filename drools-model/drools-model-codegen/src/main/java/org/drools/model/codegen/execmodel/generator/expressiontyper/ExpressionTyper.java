@@ -226,16 +226,18 @@ public class ExpressionTyper {
             TypedExpression right = optRight.get();
 
             // Coerce number and string if needed.
-            ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
-            try {
-                coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
-            } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
-                logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
-                return empty();
-            }
+            if (ArithmeticCoercedExpression.requiresCoercion(operator, left, right)) {
+                ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
+                try {
+                    coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
+                } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
+                    logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
+                    return empty();
+                }
 
-            left = coerced.getCoercedLeft();
-            right = coerced.getCoercedRight();
+                left = coerced.getCoercedLeft();
+                right = coerced.getCoercedRight();
+            }
 
             final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
 

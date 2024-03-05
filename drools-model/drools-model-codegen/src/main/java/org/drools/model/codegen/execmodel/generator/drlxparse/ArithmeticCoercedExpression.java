@@ -46,6 +46,18 @@ public class ArithmeticCoercedExpression {
 
     private static final Set<Operator> arithmeticOperators = new HashSet<>(asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER));
 
+    public static boolean requiresCoercion(final Operator operator, final TypedExpression left, final TypedExpression right) {
+        if (!arithmeticOperators.contains(operator)) {
+            return false;
+        }
+        return canCoerce(left.getRawClass(), right.getRawClass());
+    }
+
+    private static boolean canCoerce(Class<?> leftClass, Class<?> rightClass) {
+        return leftClass == String.class && isNumericClass(rightClass) ||
+                rightClass == String.class && isNumericClass(leftClass);
+    }
+
     public ArithmeticCoercedExpression(TypedExpression left, TypedExpression right, Operator operator) {
         this.left = left;
         this.right = right;
@@ -57,10 +69,6 @@ public class ArithmeticCoercedExpression {
      * BigDecimal arithmetic operation is handled by ExpressionTyper.convertArithmeticBinaryToMethodCall()
      */
     public ArithmeticCoercedExpressionResult coerce() {
-
-        if (!requiresCoercion()) {
-            return new ArithmeticCoercedExpressionResult(left, right); // do not coerce
-        }
 
         final Class<?> leftClass = left.getRawClass();
         final Class<?> rightClass = right.getRawClass();
@@ -91,18 +99,6 @@ public class ArithmeticCoercedExpression {
         }
 
         return new ArithmeticCoercedExpressionResult(coercedLeft, coercedRight);
-    }
-
-    private boolean requiresCoercion() {
-        if (!arithmeticOperators.contains(operator)) {
-            return false;
-        }
-        return canCoerce(left.getRawClass(), right.getRawClass());
-    }
-
-    private boolean canCoerce(Class<?> leftClass, Class<?> rightClass) {
-        return leftClass == String.class && isNumericClass(rightClass) ||
-               rightClass == String.class && isNumericClass(leftClass);
     }
 
     private TypedExpression coerceToDouble(TypedExpression typedExpression) {
