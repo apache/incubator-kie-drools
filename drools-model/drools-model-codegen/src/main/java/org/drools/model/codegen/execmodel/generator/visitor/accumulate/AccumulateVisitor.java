@@ -189,7 +189,7 @@ public class AccumulateVisitor {
                 optNewBinding = parseFirstParameter( basePattern, input, function, functionDSL, bindingId );
             } else {
                 throw new AccumulateParsingFailedException(
-                        "Function \"" + function.getFunction() + "\" must have one parameter only");
+                        "Function \"" + function.getFunction() + "\" cannot have more than 1 parameter");
             }
 
             if ( bindingId != null ) {
