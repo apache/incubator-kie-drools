@@ -612,4 +612,30 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("Mario");
     }
+
+    @Test
+    public void testCoerceObjectToString() {
+        String str = "package constraintexpression\n" +
+                "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import java.util.List; \n" +
+                "rule \"r1\"\n" +
+                "when \n" +
+                "    $p: Person() \n" +
+                "    String(this == \"someString\" + $p)\n" +
+                "then \n" +
+                "    System.out.println($p); \n" +
+                "end \n";
+
+        KieSession ksession = getKieSession(str);
+        try {
+            Person person = new Person("someName");
+            ksession.insert(person);
+            ksession.insert(new String("someStringsomeName"));
+            int rulesFired = ksession.fireAllRules();
+            assertThat(rulesFired).isEqualTo(1);
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
