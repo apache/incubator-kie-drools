@@ -4222,7 +4222,6 @@ public class AccumulateTest extends BaseModelTest {
 
         Results results = createKieBuilder(str).getResults();
         if (testRunType.isExecutableModel()) {
-            System.out.println(results.getMessages(Message.Level.ERROR).get(0).getText());
             assertThat(results.getMessages(Message.Level.ERROR).get(0).getText().contains(
                     "Function \"sum\" cannot have more than 1 parameter")).isTrue();
         } else {
