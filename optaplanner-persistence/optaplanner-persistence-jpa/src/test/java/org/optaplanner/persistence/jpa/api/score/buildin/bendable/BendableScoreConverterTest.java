@@ -26,9 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
 class BendableScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test

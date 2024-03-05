@@ -26,9 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
 class HardMediumSoftScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test

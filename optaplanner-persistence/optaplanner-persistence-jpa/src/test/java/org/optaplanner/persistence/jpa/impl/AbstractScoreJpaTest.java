@@ -21,19 +21,24 @@ package org.optaplanner.persistence.jpa.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Persistence;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreJpaTest {
 
-    @Inject
+    @BeforeEach
+    void setUp() {
+        entityManagerFactory = Persistence.createEntityManagerFactory("test");
+    }
+
     EntityManagerFactory entityManagerFactory;
 
     protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> Long persistAndAssert(E jpaEntity) {

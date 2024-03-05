@@ -26,9 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
 class SimpleScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
