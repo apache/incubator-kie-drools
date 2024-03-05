@@ -770,72 +770,72 @@ assignmentOperator
 //                      KEYWORDS
 // --------------------------------------------------------
 extends_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=EXTENDS { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 super_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}? id=SUPER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=SUPER { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 instanceof_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=INSTANCEOF { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 boolean_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=BOOLEAN { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 char_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=CHAR { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 byte_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=BYTE { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 short_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=SHORT { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 int_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=INT { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 float_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=FLOAT { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 long_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=LONG { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 double_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=DOUBLE { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 void_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=VOID { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 this_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=THIS { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 class_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}? id=IDENTIFIER  { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=CLASS  { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 new_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=NEW { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 not_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}? id=DRL_NOT { helper.emit($id, DroolsEditorType.KEYWORD); }
+    : id=DRL_NOT { helper.emit($id, DroolsEditorType.KEYWORD); }
     ;
 
 in_key
-  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}? id=DRL_IN { helper.emit($id, DroolsEditorType.KEYWORD); }
-  ;
+    : id=DRL_IN { helper.emit($id, DroolsEditorType.KEYWORD); }
+    ;
 
 operator_key
   // TODO get rid of the DRL_MATCHES token or introduce DRL_CONTAINS etc. for consistency.

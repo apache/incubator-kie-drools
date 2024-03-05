@@ -30,6 +30,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
@@ -269,41 +271,58 @@ public class DRLExprParserTest {
         assertThat(right.getExpression()).isEqualTo("b");
     }
 
-    @Test
-    public void selector_dot_super() {
-        String source = "SomeClass.super.getData() != null";
+    /**
+     * Each test input is a simple expression covering one of the existing keywords. The test is successful if the parser has
+     * no errors and the descriptor's expression string is equal to the input.
+     *
+     * @param source expression using a keyword
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "(X<? extends Number>) x",
+            "SomeClass.super.getData()",
+            "(boolean) b",
+            "(char) c",
+            "(byte) b",
+            "(short) s",
+            "(int) i",
+            "(long) l",
+            "(float) f",
+            "(double) d",
+            "<Type>this()",
+            "Object[][].class.getName()",
+            "new<Integer>ArrayList<Integer>()"
+    })
+    void testKeywords(String source) {
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
         assertThat(result.getDescrs().size()).isEqualTo(1);
 
-        RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertThat(expr.getOperator()).isEqualTo("!=");
+        AtomicExprDescr expr = (AtomicExprDescr) result.getDescrs().get( 0 );
 
-        AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
-        AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
-
-        assertThat(left.getExpression()).isEqualTo("SomeClass.super.getData()");
-        assertThat(right.getExpression()).isEqualTo("null");
+        assertThat(expr.getExpression()).isEqualTo(source);
     }
 
     @Test
-    public void selector_dot_identifier() {
-        String source = "getAddress().getCity().length() == 5";
+    public void testKeyword_instanceof() {
+        String source = "a instanceof A";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
         assertThat(result.getDescrs().size()).isEqualTo(1);
 
+        // Unlike the other keywords, instanceof can only be used in a relational expression,
+        // so it needs to be tested differently.
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertThat(expr.getOperator()).isEqualTo("==");
+        assertThat(expr.getOperator()).isEqualTo("instanceof");
 
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
 
-        assertThat(left.getExpression()).isEqualTo("getAddress().getCity().length()");
-        assertThat(right.getExpression()).isEqualTo("5");
+        assertThat(left.getExpression()).isEqualTo("a");
+        assertThat(right.getExpression()).isEqualTo("A");
     }
 }
