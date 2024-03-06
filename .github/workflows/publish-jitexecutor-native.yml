@@ -1,6 +1,17 @@
 name: "Publish jitexecutor-native"
 
 on:
+  workflow_dispatch:
+    inputs:
+      kogito_runtime_version:
+        description: "Kogito Runtime version"
+        required: true
+      npm_version:
+        description: "NPM Version"
+        required: true
+      npm_tag:
+        description: "NPM Tag"
+        required: true
   schedule:
     - cron: '0 16 * * 0' # Every sunday at 4:00PM
 
@@ -21,10 +32,19 @@ jobs:
       - name: Set version
         id: version
         run: | 
-          VERSION="999-${{ steps.date.outputs.CURRENT_DATE }}"
-          echo "TAG=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "PROJECT_VERSION=$VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
-          echo "NPM_VERSION=999.0.0-${{ steps.date.outputs.CURRENT_DATE }}-SNAPSHOT" >> "$GITHUB_OUTPUT"
+          if [ ${{ github.event_name }} == "schedule" ]; then
+            VERSION="999-${{ steps.date.outputs.CURRENT_DATE }}"
+            echo "TAG=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "PROJECT_VERSION=$VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
+            echo "NPM_VERSION=999.0.0-${{ steps.date.outputs.CURRENT_DATE }}-SNAPSHOT" >> "$GITHUB_OUTPUT"
+            echo "NPM_TAG=dev" >> "$GITHUB_OUTPUT"
+          else
+            VERSION="${{ github.event.inputs.kogito_runtime_version }}"
+            echo "TAG=${VERSION//-SNAPSHOT/}" >> "$GITHUB_OUTPUT"
+            echo "PROJECT_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "NPM_VERSION=${{ github.event.inputs.npm_version }}" >> "$GITHUB_OUTPUT"
+            echo "NPM_TAG=${{ github.event.inputs.npm_tag }}" >> "$GITHUB_OUTPUT"
+          fi
         shell: bash
 
       - name: "Set long paths for Windows"
@@ -116,6 +136,7 @@ jobs:
     outputs:
       package_version: ${{ steps.version.outputs.PROJECT_VERSION }}
       npm_version: ${{ steps.version.outputs.NPM_VERSION }}
+      npm_tag: ${{ steps.version.outputs.NPM_TAG }}
 
   pack_and_publish:
     runs-on: ubuntu-latest
@@ -152,4 +173,4 @@ jobs:
           mv ./dist/win32/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner.exe ./dist/win32/jitexecutor.exe
           npm version ${{ needs.build_jitexecutor_native_binaries.outputs.npm_version }}
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish --access public
+          npm publish --tag ${{ needs.build_jitexecutor_native_binaries.outputs.npm_tag }} --access public
