@@ -839,6 +839,7 @@ in_key
 
 operator_key
   // At the moment, we list possible DRLLexer tokens here, but we may be able to improve this by isolating lexers. IDENTIFIER is required to accept custom operators
+  // We need to keep this semantic predicate for custom operators
   :      {(helper.isPluggableEvaluator(false))}? id=(IDENTIFIER|DRL_MATCHES|DRL_MEMBEROF|DRL_CONTAINS|DRL_EXCLUDES|DRL_SOUNDSLIKE|DRL_STR) { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
 
