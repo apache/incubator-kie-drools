@@ -35,12 +35,9 @@
     <class>org.optaplanner.persistence.jpa.api.score.buildin.bendablelong.BendableLongScoreConverterTest$BendableLongScoreConverterTestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreConverterTest$SimpleBigDecimalScoreConverterTestJpaEntity</class>
     <properties>
-      <property name="jakarta.persistence.schema-generation.database.action"
-                value="drop-and-create"/>
-      <property name="jakarta.persistence.jdbc.driver"
-                value="org.apache.derby.jdbc.EmbeddedDriver"/>
-      <property name="jakarta.persistence.jdbc.url"
-                value="jdbc:derby:db;create=true"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
     </properties>
   </persistence-unit>
 </persistence>
