@@ -24,9 +24,9 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ArithmeticCoecionTest extends BaseModelTest {
+public class NumberAndStringArithmeticOperationCoercionTest extends BaseModelTest {
 
-    public ArithmeticCoecionTest(RUN_TYPE testRunType) {
+    public NumberAndStringArithmeticOperationCoercionTest(RUN_TYPE testRunType) {
         super(testRunType);
     }
 
