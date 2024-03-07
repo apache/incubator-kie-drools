@@ -3561,7 +3561,7 @@ class MiscDRLParserTest {
             "routingValue str[startsWith] \"R1\"",
             "routingValue not str[startsWith] \"R1\""
     })
-    void constraintKeywords(String constraint) {
+    void constraintOperators(String constraint) {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
                 "when\n" +
