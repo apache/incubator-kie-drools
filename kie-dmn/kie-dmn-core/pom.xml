@@ -55,6 +55,13 @@
         <classifier>tests</classifier>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-test-resources</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -176,6 +183,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-test-resources</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

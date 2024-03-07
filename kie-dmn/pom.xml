@@ -54,6 +54,7 @@
     <module>kie-dmn-core-jsr223-jq</module>
     <module>kie-dmn-core-jsr223</module>
     <module>kie-dmn-ruleset2dmn-parent</module>
+    <module>kie-dmn-test-resources</module>
   </modules>
 
   <dependencyManagement>
