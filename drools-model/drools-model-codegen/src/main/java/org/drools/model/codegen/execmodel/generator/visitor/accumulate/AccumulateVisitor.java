@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -184,8 +185,11 @@ public class AccumulateVisitor {
             if ( function.getParams().length == 0 ) {
                 final AccumulateFunction optAccumulateFunction = getAccumulateFunction( function, Object.class );
                 zeroParameterFunction( basePattern, functionDSL, bindingId, optAccumulateFunction );
-            } else {
+            } else if (function.getParams().length == 1) {
                 optNewBinding = parseFirstParameter( basePattern, input, function, functionDSL, bindingId );
+            } else {
+                throw new AccumulateParsingFailedException(
+                        "Function \"" + function.getFunction() + "\" cannot have more than 1 parameter");
             }
 
             if ( bindingId != null ) {
@@ -204,8 +208,8 @@ public class AccumulateVisitor {
         final String accumulateFunctionParameterStr = function.getParams()[0];
         final Expression accumulateFunctionParameter = DrlxParseUtil.parseExpression(accumulateFunctionParameterStr).getExpr();
 
-        if (accumulateFunctionParameter instanceof BinaryExpr) {
-            return binaryExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameterStr);
+        if (accumulateFunctionParameter instanceof BinaryExpr || accumulateFunctionParameter instanceof UnaryExpr) {
+            return bindingParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameterStr);
         }
 
         if (parameterNeedsConvertionToMethodCallExpr(accumulateFunctionParameter)) {
@@ -217,7 +221,11 @@ public class AccumulateVisitor {
         } else if (accumulateFunctionParameter instanceof LiteralExpr) {
             literalExprParameter(basePattern, function, functionDSL, bindingId, accumulateFunctionParameter);
         } else {
-            throw new AccumulateParsingFailedException("Invalid expression " + accumulateFunctionParameterStr);
+            throw new AccumulateParsingFailedException(
+                    "The expression \"" + accumulateFunctionParameterStr +
+                    "\" in function \"" + function.getFunction() +
+                    "\" of type \"" + accumulateFunctionParameter.getClass().getSimpleName() +
+                    "\" is not managed in " + this.getClass().getSimpleName());
         }
 
         return Optional.empty();
@@ -406,10 +414,10 @@ public class AccumulateVisitor {
         return accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr() || accumulateFunctionParameter.isFieldAccessExpr();
     }
 
-    private Optional<NewBinding> binaryExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
+    private Optional<NewBinding> bindingParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
         final DrlxParseResult parseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, accumulateFunctionParameterStr);
 
-        Optional<NewBinding> optNewBinding = parseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<NewBinding>>() {
+        return parseResult.acceptWithReturnValue(new ParseResultVisitor<>() {
             @Override
             public Optional<NewBinding> onSuccess(DrlxParseSuccess drlxParseResult) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) drlxParseResult;
@@ -436,7 +444,6 @@ public class AccumulateVisitor {
                 return Optional.empty();
             }
         });
-        return optNewBinding;
     }
 
     private void zeroParameterFunction(PatternDescr basePattern, MethodCallExpr functionDSL, String bindingId, AccumulateFunction accumulateFunction) {
