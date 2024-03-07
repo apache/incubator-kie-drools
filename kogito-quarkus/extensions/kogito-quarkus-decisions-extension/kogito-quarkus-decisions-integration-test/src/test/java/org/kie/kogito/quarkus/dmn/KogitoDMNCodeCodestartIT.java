@@ -26,8 +26,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartData.QuarkusDataKey;
 import io.quarkus.devtools.testing.codestarts.QuarkusCodestartTest;
-import io.quarkus.maven.ArtifactCoords;
-import io.quarkus.maven.ArtifactKey;
+import io.quarkus.maven.dependency.ArtifactCoords;
+import io.quarkus.maven.dependency.ArtifactKey;
 
 import static io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartCatalog.Language.JAVA;
 
@@ -52,9 +52,7 @@ public class KogitoDMNCodeCodestartIT {
 
     @RegisterExtension
     public static QuarkusCodestartTest codestartTest = QuarkusCodestartTest.builder()
-            //.setupStandaloneExtensionTest("org.drools:drools-quarkus-decisions") //TODO Revert back once Quarkus LTS is upgraded to 2.10+
-            .standaloneExtensionCatalog()
-            .extension(ArtifactCoords.fromString("org.drools:drools-quarkus-decisions:" + projectVersion()))
+            .setupStandaloneExtensionTest("org.drools:drools-quarkus-decisions")
             .extension(ArtifactKey.fromString("io.quarkus:quarkus-resteasy-jackson")) // account for KOGITO-5817
             .extension(ArtifactCoords.fromString("org.assertj:assertj-core:" + assertjVersion()))
             .putData(QuarkusDataKey.APP_CONFIG, Map.of("quarkus.http.test-port", "0"))

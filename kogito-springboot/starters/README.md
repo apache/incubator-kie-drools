@@ -66,8 +66,8 @@ Adds Predictions (PMML) to your Kogito Spring Boot project:
 
 <dependencies>
   <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-predictions-spring-boot-starter</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-predictions-spring-boot-starter</artifactId>
   </dependency>
 </dependencies>
 ```

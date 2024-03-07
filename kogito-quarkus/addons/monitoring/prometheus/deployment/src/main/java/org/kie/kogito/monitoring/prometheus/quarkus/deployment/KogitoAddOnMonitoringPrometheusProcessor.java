@@ -25,7 +25,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnMonitoringPrometheusProcessor extends AnyEngineKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-monitoring-prometheus-extension";
+    private static final String FEATURE = "kie-addon-monitoring-prometheus-extension";
 
     @BuildStep
     FeatureBuildItem feature() {

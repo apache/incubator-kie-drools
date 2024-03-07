@@ -21,15 +21,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-quarkus-marshallers-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-marshallers-avro-parent</artifactId>
+  <artifactId>kie-addons-quarkus-marshallers-avro-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Add-Ons :: Quarkus :: Marshallers :: Avro :: Parent</name>
+  <name>KIE :: Add-Ons :: Quarkus :: Marshallers :: Avro :: Parent</name>
 
-  <description>Kogito Quarkus Avro Marshaller and Unmarshaller</description>
+  <description>KIE Quarkus Avro Marshaller and Unmarshaller</description>
 
   <modules>
     <module>runtime</module>

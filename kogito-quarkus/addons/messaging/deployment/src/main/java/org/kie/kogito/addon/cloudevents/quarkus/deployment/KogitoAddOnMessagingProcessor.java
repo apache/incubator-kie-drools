@@ -50,7 +50,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-messaging-extension";
+    private static final String FEATURE = "kie-addon-messaging-extension";
 
     @BuildStep
     FeatureBuildItem feature() {

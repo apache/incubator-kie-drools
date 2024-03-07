@@ -23,15 +23,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-quarkus-knative-eventing-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-quarkus-knative-eventing-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-knative-eventing</artifactId>
-  <name>Kogito Add-On Knative Eventing</name>
-  <description>Knative Eventing Kogito Add-On. Adds support for CloudEvents on top of HTTP and Knative env vars configuration.</description>
+  <artifactId>kie-addons-quarkus-knative-eventing</artifactId>
+  <name>KIE Add-On Knative Eventing</name>
+  <description>Knative Eventing KIE Add-On. Adds support for CloudEvents on top of HTTP and Knative env vars configuration.</description>
 
   <properties>
      <java.module.name>org.kie.kogito.addons.quarkus.knative.eventing</java.module.name>
@@ -39,8 +39,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -57,7 +57,7 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-index-health</artifactId>
     </dependency>
     <!-- Testing dependencies -->

@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnPersistenceMongoDBProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-persistence-mongodb-extension";
+    private static final String FEATURE = "kie-addon-persistence-mongodb-extension";
 
     KogitoAddOnPersistenceMongoDBProcessor() {
         super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);

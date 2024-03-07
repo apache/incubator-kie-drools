@@ -29,8 +29,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-quarkus-predictions-extension</artifactId>
-  <name>Kogito :: Quarkus Predictions Extension</name>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-quarkus-predictions-extension</artifactId>
+  <name>KIE :: Quarkus Predictions Extension</name>
 
   <packaging>pom</packaging>
 

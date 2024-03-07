@@ -35,7 +35,7 @@ def startersToArtifactIds(String starters) {
             [id: "processes", starter: "jbpm-spring-boot-starter"],
             [id: "rules", starter: "drools-rules-spring-boot-starter"],
             [id: "decisions", starter: "drools-decisions-spring-boot-starter"],
-            [id: "predictions", starter: "kogito-predictions-spring-boot-starter"]
+            [id: "predictions", starter: "kie-predictions-spring-boot-starter"]
     ]
     def startersList = starters.split(",")
     return startersList.collect { starterId ->
@@ -54,7 +54,9 @@ def resolveAddonGroupId(String artifactId) {
             return "org.drools"
         case { artifactId.startsWith("jbpm-") }:
             return "org.jbpm"
-        default: return "org.kie.kogito"
+        case { artifactId.startsWith("sonataflow-") }:
+            return "org.apache.sonataflow"
+        default: return "org.kie"
     }
 }
 
@@ -68,25 +70,25 @@ def addonsToArtifactsIds(String addons) {
     // this list should be maintained manually for now for each generic/spring boot add-on we create
     // see: https://issues.redhat.com/browse/KOGITO-5619
     def validAddons = [
-            [id: "persistence-filesystem", addon: "kogito-addons-springboot-persistence-filesystem"],
-            [id: "persistence-infinispan", addon: "kogito-addons-springboot-persistence-infinispan"],
-            [id: "persistence-jdbc", addon: "kogito-addons-springboot-persistence-jdbc"],
-            [id: "persistence-mongodb", addon: "kogito-addons-springboot-persistence-mongodb"],
-            [id: "persistence-postgresql", addon: "kogito-addons-springboot-persistence-postgresql"],
+            [id: "persistence-filesystem", addon: "kie-addons-springboot-persistence-filesystem"],
+            [id: "persistence-infinispan", addon: "kie-addons-springboot-persistence-infinispan"],
+            [id: "persistence-jdbc", addon: "kie-addons-springboot-persistence-jdbc"],
+            [id: "persistence-mongodb", addon: "kie-addons-springboot-persistence-mongodb"],
+            [id: "persistence-postgresql", addon: "kie-addons-springboot-persistence-postgresql"],
             [id: "human-task-prediction-api", addon: "kogito-addons-human-task-prediction-api"],
-            [id: "messaging", addon: "kogito-addons-springboot-messaging"],
-            [id: "events-decisions", addon: "kogito-addons-springboot-events-decisions"],
-            [id: "events-process-kafka", addon: "kogito-addons-springboot-events-process-kafka"],
-            [id: "explainability", addon: "kogito-addons-springboot-explainability"],
+            [id: "messaging", addon: "kie-addons-springboot-messaging"],
+            [id: "events-decisions", addon: "kie-addons-springboot-events-decisions"],
+            [id: "events-process-kafka", addon: "kie-addons-springboot-events-process-kafka"],
+            [id: "explainability", addon: "kie-addons-springboot-explainability"],
             [id: "jobs-management", addon: "kogito-addons-springboot-jobs-management"],
             [id: "mail", addon: "jbpm-addons-springboot-mail"],
-            [id: "monitoring-elastic", addon: "kogito-addons-springboot-monitoring-elastic"],
-            [id: "monitoring-prometheus", addon: "kogito-addons-springboot-monitoring-prometheus"],
-            [id: "process-management", addon: "kogito-addons-springboot-process-management"],
-            [id: "process-svg", addon: "kogito-addons-springboot-process-svg"],
+            [id: "monitoring-elastic", addon: "kie-addons-springboot-monitoring-elastic"],
+            [id: "monitoring-prometheus", addon: "kie-addons-springboot-monitoring-prometheus"],
+            [id: "process-management", addon: "kie-addons-springboot-process-management"],
+            [id: "process-svg", addon: "kie-addons-springboot-process-svg"],
             [id: "task-management", addon: "jbpm-addons-springboot-task-management"],
             [id: "task-notification", addon: "jbpm-addons-springboot-task-notification"],
-            [id: "tracing-decision", addon: "kogito-addons-springboot-tracing-decision"]
+            [id: "tracing-decision", addon: "kie-addons-springboot-tracing-decision"]
     ]
     def addonsList = addons.split(",")
     return addonsList.collect { addonId ->

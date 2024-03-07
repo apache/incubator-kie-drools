@@ -23,12 +23,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-kubernetes-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-kubernetes-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-kubernetes-deployment</artifactId>
-  <name>Kogito Add-On Kubernetes - Deployment</name>
+  <artifactId>kie-addons-quarkus-kubernetes-deployment</artifactId>
+  <name>KIE Add-On Kubernetes - Deployment</name>
 
   <properties>
      <java.module.name>org.kie.kogito.addons.quarkus.kubernetes</java.module.name>
@@ -45,12 +45,12 @@
       <artifactId>quarkus-cache-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-kubernetes</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-kubernetes</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -63,7 +63,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog</artifactId>
       <scope>test</scope>
     </dependency>

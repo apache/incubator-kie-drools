@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-quarkus-persistence-filesystem-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-quarkus-persistence-filesystem-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-persistence-filesystem</artifactId>
-  <name>Kogito Add-On Persistence FileSystem</name>
+  <artifactId>kie-addons-quarkus-persistence-filesystem</artifactId>
+  <name>KIE Add-On Persistence FileSystem</name>
 
   <description>FileSystem Persistence support for Quarkus</description>
 

@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnExplainabilityProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-explainability-extension";
+    private static final String FEATURE = "kie-addon-explainability-extension";
 
     KogitoAddOnExplainabilityProcessor() {
         super(KogitoCapability.DECISIONS);

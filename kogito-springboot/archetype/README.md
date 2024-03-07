@@ -37,7 +37,7 @@ The list of valid Kogito Spring Boot Starters are:
 1. [`decisions`](../starters/drools-decisions-spring-boot-starter)
 2. [`processes`](../starters/jbpm-spring-boot-starter)
 3. [`rules`](../starters/drools-rules-spring-boot-starter)
-4. [`predictions`](../starters/kogito-predictions-spring-boot-starter)
+4. [`predictions`](../starters/kie-predictions-spring-boot-starter)
 
 ## Adding Kogito Add-Ons
 
@@ -62,7 +62,7 @@ For a list of valid add-ons, see these listings:
 - [Runtime Independent Add-Ons](../../addons)
 
 Please note that you don't need to add the suffix `kogito-addons-springboot` to the name of the addon. For example, to
-include `kogito-addons-springboot-monitoring-prometheus` just use `monitoring-prometheus`. For runtime independent
+include `kie-addons-springboot-monitoring-prometheus` just use `monitoring-prometheus`. For runtime independent
 add-ons, just suppress the `kogito-addons` suffix. So for `kogito-addons-persistence-infinispan`
 use `persistence-infinispan`.
 

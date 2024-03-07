@@ -29,9 +29,10 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-predictions-spring-boot-starter</artifactId>
-  <name>Kogito :: Spring Boot :: Starter :: Predictions</name>
-  <description>Spring Boot Starter for Kogito Predictions (PMML). Contains everything you need to get started with Kogito Predictions!</description>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-predictions-spring-boot-starter</artifactId>
+  <name>KIE :: Spring Boot :: Starter :: Predictions</name>
+  <description>Spring Boot Starter for KIE Predictions (PMML). Contains everything you need to get started with KIE Predictions!</description>
 
   <properties>
     <java.module.name>org.kie.kogito.springboot.starter.predictions</java.module.name>

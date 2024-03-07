@@ -23,15 +23,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-springboot-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-rest-exception-handler</artifactId>
-  <name>Kogito :: Rest Exception Handler:: Spring Boot</name>
-  <description>Kogito exception handling for Spring Boot</description>
+  <artifactId>kie-addons-springboot-rest-exception-handler</artifactId>
+  <name>KIE :: Rest Exception Handler:: Spring Boot</name>
+  <description>KIE exception handling for Spring Boot</description>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.resource.exceptions</java.module.name>

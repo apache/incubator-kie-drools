@@ -23,13 +23,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-springboot-messaging-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-springboot-messaging-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-springboot-messaging</artifactId>
-  <name>Kogito :: Add-Ons :: Messaging :: Spring Boot</name>
-  <description>Kogito Events handling for Messaging Add-On (Spring Boot)</description>
+  <artifactId>kie-addons-springboot-messaging</artifactId>
+  <name>KIE :: Add-Ons :: Messaging :: Spring Boot</name>
+  <description>KIE Events handling for Messaging Add-On (Spring Boot)</description>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.addon.cloudevents</java.module.name>

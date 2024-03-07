@@ -23,14 +23,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-persistence-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-persistence-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-persistence-infinispan-parent</artifactId>
+  <artifactId>kie-addons-quarkus-persistence-infinispan-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Add-On Persistence Infinispan - Parent</name>
-  <description>Kogito Quarkus Persistence Infinispan Parent</description>
+  <name>KIE Add-On Persistence Infinispan - Parent</name>
+  <description>KIE Quarkus Persistence Infinispan Parent</description>
 
   <modules>
     <module>runtime</module>

@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnEventRulesProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-events-rules-extension";
+    private static final String FEATURE = "drools-addon-events-rules-extension";
 
     KogitoAddOnEventRulesProcessor() {
         super(KogitoCapability.RULES);

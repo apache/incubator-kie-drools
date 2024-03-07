@@ -50,8 +50,8 @@ your `pom.xml` file:
 
 <dependencies>
   <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-process-management</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-process-management</artifactId>
     <version>${kogito.version}</version>
   </dependency>
 </dependencies>

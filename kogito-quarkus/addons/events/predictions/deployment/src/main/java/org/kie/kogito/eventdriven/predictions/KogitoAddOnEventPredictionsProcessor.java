@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnEventPredictionsProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-events-predictions-extension";
+    private static final String FEATURE = "kie-addon-events-predictions-extension";
 
     KogitoAddOnEventPredictionsProcessor() {
         super(KogitoCapability.PREDICTIONS);

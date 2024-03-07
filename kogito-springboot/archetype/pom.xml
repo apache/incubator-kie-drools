@@ -59,8 +59,8 @@
       <artifactId>jbpm-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-monitoring-prometheus</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -74,8 +74,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-predictions-spring-boot-starter</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-predictions-spring-boot-starter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

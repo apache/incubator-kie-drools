@@ -28,7 +28,7 @@ import io.quarkus.deployment.builditem.RunTimeConfigurationDefaultBuildItem;
 
 class KogitoAddOnPersistenceKafkaProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-persistence-kafka-extension";
+    private static final String FEATURE = "kie-addon-persistence-kafka-extension";
     private static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
 
     KogitoAddOnPersistenceKafkaProcessor() {

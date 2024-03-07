@@ -24,14 +24,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-quarkus-common-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
-  <name>Kogito Add-On Common - Deployment</name>
-  <description>Common libraries meant to be used with Kogito Quarkus Add-Ons deployment modules</description>
+  <name>KIE Add-On Common - Deployment</name>
+  <description>Common libraries meant to be used with KIE Quarkus Add-Ons deployment modules</description>
 
   <properties>
      <java.module.name>org.kie.kogito.quarkus.addons.common.deployment</java.module.name>

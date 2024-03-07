@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-quarkus-tracing-decision-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-quarkus-tracing-decision-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-tracing-decision</artifactId>
-  <name>Kogito Add-On Tracing Decision</name>
+  <artifactId>kie-addons-quarkus-tracing-decision</artifactId>
+  <name>KIE Add-On Tracing Decision</name>
 
     <properties>
        <java.module.name>org.kie.kogito.quarkus.tracing.decision</java.module.name>
@@ -68,8 +68,8 @@
       <artifactId>kogito-addons-tracing-decision-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-explainability</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-explainability</artifactId>
     </dependency>
 
     <dependency>

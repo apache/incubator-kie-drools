@@ -26,13 +26,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-springboot-messaging-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-springboot-messaging-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-springboot-messaging-it</artifactId>
-  <name>Kogito :: Add-Ons :: Messaging :: Spring Boot (ITs)</name>
-  <description>Integration tests for for Messages AddOn (Spring Boot)</description>
+  <artifactId>kie-addons-springboot-messaging-it</artifactId>
+  <name>KIE :: Add-Ons :: Messaging :: Spring Boot (ITs)</name>
+  <description>Integration tests for Messages AddOn (Spring Boot)</description>
 
     <properties>
         <java.module.name>org.kie.kogito.addon.cloudevents.spring.tests</java.module.name>
@@ -96,8 +96,8 @@
       <artifactId>drools-decisions-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-messaging</artifactId>
     </dependency>
   </dependencies>
 

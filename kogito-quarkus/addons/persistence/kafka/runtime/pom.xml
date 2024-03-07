@@ -23,15 +23,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-persistence-kafka-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-persistence-kafka-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-persistence-kafka</artifactId>
-  <name>Kogito Add-On Persistence Kafka Streams</name>
-  <description>Kafka Streams based persistence for Kogito</description>
+  <artifactId>kie-addons-quarkus-persistence-kafka</artifactId>
+  <name>KIE Add-On Persistence Kafka Streams</name>
+  <description>Kafka Streams based persistence for KIE</description>
 
     <properties>
        <java.module.name>org.kie.kogito.persistence.quarkus.kafka</java.module.name>

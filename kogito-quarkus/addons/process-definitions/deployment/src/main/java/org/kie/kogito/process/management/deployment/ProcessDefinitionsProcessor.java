@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class ProcessDefinitionsProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-process-definitions-extension";
+    private static final String FEATURE = "kie-addon-process-definitions-extension";
 
     ProcessDefinitionsProcessor() {
         super(KogitoCapability.SERVERLESS_WORKFLOW);

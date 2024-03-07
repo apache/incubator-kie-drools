@@ -24,14 +24,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-springboot-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-events-parent</artifactId>
-  <name>Kogito :: Add-Ons :: Spring Boot :: Events - Parent</name>
-  <description>Parent Module for Kogito Spring Boot Events Addons</description>
+  <artifactId>kie-addons-springboot-events-parent</artifactId>
+  <name>KIE :: Add-Ons :: Spring Boot :: Events - Parent</name>
+  <description>Parent Module for KIE Spring Boot Events Addons</description>
   <packaging>pom</packaging>
 
   <modules>

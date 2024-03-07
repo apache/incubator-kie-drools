@@ -23,15 +23,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>kogito-quarkus-predictions-extension</artifactId>
-        <groupId>org.kie.kogito</groupId>
+        <artifactId>kie-quarkus-predictions-extension</artifactId>
+        <groupId>org.kie</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kogito-quarkus-predictions</artifactId>
-    <name>Kogito :: Quarkus Predictions Extension :: Runtime</name>
-    <description>Add Kogito predictions (PMML) capabilities - Include Drools PMML engine</description>
+    <artifactId>kie-quarkus-predictions</artifactId>
+    <name>KIE :: Quarkus Predictions Extension :: Runtime</name>
+    <description>Add KIE predictions (PMML) capabilities - Include Drools PMML engine</description>
 
     <properties>
         <java.module.name>org.kie.kogito.core.prediction.incubation.quarkus.support</java.module.name>

@@ -23,12 +23,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-events-mongodb-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-events-mongodb-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-events-mongodb-deployment</artifactId>
-  <name>Kogito Add-On Events MongoDB - Deployment</name>
+  <artifactId>kie-addons-quarkus-events-mongodb-deployment</artifactId>
+  <name>KIE Add-On Events MongoDB - Deployment</name>
 
   <properties>
      <java.module.name>org.kie.kogito.events.mongodb.deployment</java.module.name>
@@ -40,11 +40,11 @@
       <artifactId>quarkus-arc-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-events-mongodb</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-events-mongodb</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>

@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-springboot-events-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-springboot-events-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-springboot-events-predictions</artifactId>
-  <name>Kogito :: Add-Ons :: Events :: Event-Driven Predictions :: Spring Boot</name>
+  <artifactId>kie-addons-springboot-events-predictions</artifactId>
+  <name>KIE :: Add-Ons :: Events :: Event-Driven Predictions :: Spring Boot</name>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.events.predictions</java.module.name>
@@ -42,8 +42,8 @@
       <artifactId>kogito-addons-events-predictions</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>

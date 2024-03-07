@@ -23,15 +23,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-springboot-persistence-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-springboot-persistence-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <name>Kogito :: Add-Ons :: Persistence PostgreSQL :: Springboot</name>
+  <name>KIE :: Add-Ons :: Persistence PostgreSQL :: Springboot</name>
 
   <description>PostgreSQL persistence for Springboot</description>
-  <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
+  <artifactId>kie-addons-springboot-persistence-postgresql</artifactId>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.persistence.postgresql</java.module.name>

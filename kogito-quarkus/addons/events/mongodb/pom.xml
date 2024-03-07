@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-events-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-events-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-quarkus-events-mongodb-parent</artifactId>
-  <name>Kogito Add-On Events MongoDB - Parent</name>
+  <artifactId>kie-addons-quarkus-events-mongodb-parent</artifactId>
+  <name>KIE Add-On Events MongoDB - Parent</name>
   <packaging>pom</packaging>
 
   <modules>

@@ -23,13 +23,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-events-process-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-events-process-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-events-process</artifactId>
-  <name>Kogito Add-On Events Process</name>
-  <description>Kogito Add-On for runtime process events</description>
+  <artifactId>kie-addons-quarkus-events-process</artifactId>
+  <name>KIE Add-On Events Process</name>
+  <description>KIE Add-On for runtime process events</description>
 
   <properties>
      <java.module.name>org.kie.kogito.events</java.module.name>
@@ -45,7 +45,7 @@
       <artifactId>kogito-services</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-reactive-messaging</artifactId>
     </dependency>
     <dependency>

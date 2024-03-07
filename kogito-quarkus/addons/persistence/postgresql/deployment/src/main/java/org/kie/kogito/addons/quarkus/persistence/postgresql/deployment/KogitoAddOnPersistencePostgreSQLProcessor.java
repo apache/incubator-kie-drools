@@ -29,7 +29,7 @@ import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 
 class KogitoAddOnPersistencePostgreSQLProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-persistence-postgresql-extension";
+    private static final String FEATURE = "kie-addon-persistence-postgresql-extension";
 
     KogitoAddOnPersistencePostgreSQLProcessor() {
         super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);

@@ -24,7 +24,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-microprofile-config-service-catalog-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
@@ -68,11 +68,11 @@
             <artifactId>quarkus-resteasy-jackson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-knative-serving</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-microprofile-config-service-catalog</artifactId>
         </dependency>
 

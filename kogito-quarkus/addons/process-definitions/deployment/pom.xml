@@ -23,12 +23,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-process-definitions-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-process-definitions-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-process-definitions-deployment</artifactId>
-  <name>Kogito Add-On Process Definitions - Deployment</name>
+  <artifactId>kie-addons-quarkus-process-definitions-deployment</artifactId>
+  <name>KIE Add-On Process Definitions - Deployment</name>
 
     <properties>
        <java.module.name>org.kie.kogito.process.quarkus.definitions.deployment</java.module.name>
@@ -36,11 +36,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-process-definitions</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-definitions</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>

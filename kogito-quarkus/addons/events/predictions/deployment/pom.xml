@@ -23,12 +23,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-events-predictions-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-events-predictions-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-events-predictions-deployment</artifactId>
-  <name>Kogito Add-On Events Predictions - Deployment</name>
+  <artifactId>kie-addons-quarkus-events-predictions-deployment</artifactId>
+  <name>KIE Add-On Events Predictions - Deployment</name>
 
   <properties>
      <java.module.name>org.kie.kogito.eventdriven.predictions</java.module.name>
@@ -40,16 +40,16 @@
       <artifactId>quarkus-arc-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-messaging-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-events-predictions</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-events-predictions</artifactId>
     </dependency>
   </dependencies>
   <build>

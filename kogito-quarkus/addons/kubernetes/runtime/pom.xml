@@ -23,13 +23,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-kubernetes-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-kubernetes-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-kubernetes</artifactId>
-  <name>Kogito Add-On Kubernetes</name>
-  <description>Kubernetes Kogito Add-On. Adds support Kubernetes service discovery.</description>
+  <artifactId>kie-addons-quarkus-kubernetes</artifactId>
+  <name>KIE Add-On Kubernetes</name>
+  <description>Kubernetes KIE Add-On. Adds support Kubernetes service discovery.</description>
 
     <properties>
        <java.module.name>org.kie.kogito.addons.quarkus.k8s</java.module.name>
@@ -86,12 +86,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog</artifactId>
       <scope>test</scope>
     </dependency>

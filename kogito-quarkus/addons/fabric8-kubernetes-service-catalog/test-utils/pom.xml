@@ -24,7 +24,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>

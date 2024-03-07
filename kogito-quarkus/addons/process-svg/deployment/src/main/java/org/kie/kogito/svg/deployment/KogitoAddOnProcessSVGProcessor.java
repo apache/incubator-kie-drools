@@ -29,7 +29,7 @@ import static org.kie.kogito.svg.AbstractProcessSvgService.SVG_RELATIVE_PATH;
 
 class KogitoAddOnProcessSVGProcessor {
 
-    private static final String FEATURE = "kogito-addon-process-svg-extension";
+    private static final String FEATURE = "kie-addon-process-svg-extension";
 
     @BuildStep
     FeatureBuildItem feature() {

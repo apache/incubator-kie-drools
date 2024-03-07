@@ -24,8 +24,8 @@
       <artifactId>kogito-quarkus-workflow-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-rest-exception-handler</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-rest-exception-handler</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -71,8 +71,8 @@
 
     <!-- Support CloudEvents OotB -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

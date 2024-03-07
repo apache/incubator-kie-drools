@@ -23,12 +23,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-tracing-decision-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-tracing-decision-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-tracing-decision-deployment</artifactId>
-  <name>Kogito Add-On Tracing Decision - Deployment</name>
+  <artifactId>kie-addons-quarkus-tracing-decision-deployment</artifactId>
+  <name>KIE Add-On Tracing Decision - Deployment</name>
 
   <properties>
     <version.org.kie.kogito.trusty-service-postgresql>1.17.0</version.org.kie.kogito.trusty-service-postgresql>
@@ -37,11 +37,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-tracing-decision</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-tracing-decision</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>
@@ -49,8 +49,8 @@
       <artifactId>kogito-quarkus-extension-spi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-explainability-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-explainability-deployment</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

@@ -24,7 +24,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-knative-serving-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
@@ -38,12 +38,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-knative-serving</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-kubernetes-deployment</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-kubernetes-deployment</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>

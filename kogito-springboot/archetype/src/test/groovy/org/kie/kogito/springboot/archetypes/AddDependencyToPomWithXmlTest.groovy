@@ -42,7 +42,7 @@ class AddDependencyToPomWithXmlTest extends Specification {
 
         when:
         Node newDep = new Node(null, "dependency",
-                [groupId: "org.kie.kogito", artifactId: "kogito-addons-springboot-messaging", version: "999-SNAPSHOT"])
+                [groupId: "org.kie", artifactId: "kie-addons-springboot-messaging", version: "999-SNAPSHOT"])
         pomXml.dependencies[0].children().add(0, newDep)
 
         then:
@@ -58,7 +58,7 @@ class AddDependencyToPomWithXmlTest extends Specification {
         for (String artifact : artifacts) {
             Node depNode = new Node(null, "dependency")
             depNode.appendNode("version", null, '${kogito.version}')
-            depNode.appendNode("groupId", null, "org.kie.kogito")
+            depNode.appendNode("groupId", null, "org.kie")
             depNode.appendNode("artifactId", null, "kogito-addons-springboot-" + artifact)
             pomXml.dependencies[0].children().add(0, depNode)
         }

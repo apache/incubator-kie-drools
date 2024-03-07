@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-events-decisions-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-events-decisions-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-quarkus-events-decisions</artifactId>
-  <name>Kogito Add-On Events Decisions</name>
+  <artifactId>kie-addons-quarkus-events-decisions</artifactId>
+  <name>KIE Add-On Events Decisions</name>
 
   <properties>
      <java.module.name>org.kie.kogito.eventdriven.decision</java.module.name>
@@ -42,8 +42,8 @@
       <artifactId>kogito-addons-events-decisions</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

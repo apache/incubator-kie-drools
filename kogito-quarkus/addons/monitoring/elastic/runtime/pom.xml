@@ -23,14 +23,14 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-quarkus-monitoring-elastic-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-quarkus-monitoring-elastic-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-monitoring-elastic</artifactId>
-  <name>Kogito Add-On Monitoring Elastic</name>
+  <artifactId>kie-addons-quarkus-monitoring-elastic</artifactId>
+  <name>KIE Add-On Monitoring Elastic</name>
   <description>Monitoring Elastic Quarkus</description>
 
     <properties>
@@ -47,8 +47,8 @@
       <artifactId>kogito-addons-monitoring-elastic</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-monitoring-core</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-monitoring-core</artifactId>
     </dependency>
   </dependencies>
 

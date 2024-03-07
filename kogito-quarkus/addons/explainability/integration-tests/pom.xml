@@ -23,12 +23,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-explainability-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-explainability-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-explainability-it</artifactId>
-  <name>Kogito Add-On Explainability - Integration tests</name>
+  <artifactId>kie-addons-quarkus-explainability-it</artifactId>
+  <name>KIE Add-On Explainability - Integration tests</name>
 
   <properties>
      <java.module.name>org.kie.kogito.explainability.test</java.module.name>
@@ -52,8 +52,8 @@
       <artifactId>drools-quarkus-decisions</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-explainability</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-explainability</artifactId>
     </dependency>
     <!-- this is used implicitly by parallel builds so let's make Maven aware of it -->
     <dependency>
@@ -70,8 +70,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-explainability-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-explainability-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>

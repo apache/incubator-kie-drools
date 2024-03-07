@@ -23,12 +23,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-process-definitions-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-process-definitions-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-process-definitions</artifactId>
-  <name>Kogito Add-On Process Definitions</name>
+  <artifactId>kie-addons-quarkus-process-definitions</artifactId>
+  <name>KIE Add-On Process Definitions</name>
   <description>Allow deploying process definitions for Quarkus</description>
 
     <properties>
@@ -60,8 +60,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-persistence-rocksdb-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-persistence-rocksdb-deployment</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

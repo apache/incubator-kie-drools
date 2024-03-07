@@ -30,6 +30,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>org.kie</groupId>
   <artifactId>kogito-addons-quarkus-parent</artifactId>
   <name>Kogito :: Add-Ons :: Quarkus</name>
   <description>Parent Module for Kogito Quarkus Add-Ons. All add-ons are Quarkus Extensions.</description>

@@ -29,6 +29,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>org.kie</groupId>
   <artifactId>kogito-addons-springboot-parent</artifactId>
   <name>Kogito :: Add-Ons :: Spring Boot</name>
   <description>Parent Module for Kogito Spring Boot Addons</description>

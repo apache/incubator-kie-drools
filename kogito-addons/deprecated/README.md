@@ -7,58 +7,58 @@ them in your project.
 
 #### Quarkus Add-ons
 
-| Add-On Description      | Deprecated Artifact ID                      | New Artifact ID                                     | Since  | 
-|-------------------------|---------------------------------------------|-----------------------------------------------------|--------|
-| Cloud Events            | kogito-cloudevents-quarkus-addon            | kogito-addons-quarkus-messaging                     | 1.8.0  |
-| Cloud Events Common     | kogito-cloudevents-quarkus-common-addon     | kogito-addons-quarkus-messaging-common              | 1.8.0  |
-| Cloud Events Multi      | kogito-cloudevents-quarkus-multi-addon      | kogito-addons-quarkus-messaging                     | 1.8.0  | 
-| Events Decisions        | kogito-event-driven-decisions-quarkus-addon | kogito-addons-quarkus-events-decisions              | 1.8.0  | 
-| Events Smallrye         | kogito-events-reactive-messaging-addon      | kogito-addons-quarkus-events-process                | 1.8.0  |
-| Explainability          | explainability-quarkus-addon                | kogito-addons-quarkus-explainability                | 1.8.0  | 
-| Jobs Management         | jobs-management-quarkus-addon               | kogito-addons-quarkus-jobs-management               | 1.8.0  | 
-| Knative Eventing        | knative-eventing-addon                      | kogito-addons-quarkus-knative-eventing              | 1.6.0  |
-| Mail                    | mail-quarkus-addon                          | jbpm-addons-quarkus-mail                            | 1.8.0  |
-| Monitoring Core         | monitoring-core-quarkus-addon               | kogito-addons-quarkus-monitoring-core               | 1.8.0  | 
-| Monitoring Elastic      | monitoring-elastic-quarkus-addon            | kogito-addons-quarkus-monitoring-elastic            | 1.8.0  | 
-| Monitoring Prometheus   | monitoring-prometheus-quarkus-addon         | kogito-addons-quarkus-monitoring-prometheus         | 1.8.0  | 
-| Persistence ISPN Health | infinispan-quarkus-health-addon             | kogito-addons-quarkus-persistence-infinispan-health | 1.8.0  |
-| Persistence Infinispan  | kogito-addons-persistence-infinispan        | kogito-addons-quarkus-persistence-infinispan        | 1.12.0 |
-| Persistence Kafka       | kafka-persistence-addon                     | kogito-addons-quarkus-persistence-kafka             | 1.8.0  |
-| Persistence FileSystem  | kogito-addons-persistence-filesystem        | kogito-addons-quarkus-persistence-filesystem        | 1.12.0 |
-| Persistence JDBC        | kogito-addons-persistence-jdbc              | kogito-addons-quarkus-persistence-jdbc              | 1.12.0 |
-| Persistence MongoDB     | kogito-addons-persistence-mongodb           | kogito-addons-quarkus-persistence-mongodb           | 1.12.0 |
-| Persistence Postgresql  | kogito-addons-persistence-postgresql        | kogito-addons-quarkus-persistence-postgresql        | 1.12.0 |
-| Process Management      | process-management-addon                    | kogito-addons-quarkus-process-management            | 1.8.0  | 
-| Process SVG             | process-svg-quarkus-addon                   | kogito-addons-quarkus-process-svg                   | 1.8.0  | 
-| REST Exception Handler  | kogito-rest-exception-handler-quarkus       | kogito-addons-quarkus-rest-exception-handler        | 1.8.0  | 
-| Task Management         | task-management-quarkus-addon               | jbpm-addons-quarkus-task-management                 | 1.8.0  | 
-| Task Notification       | task-notification-quarkus-addon             | jbpm-addons-quarkus-task-notification               | 1.8.0  | 
-| Tracing Decision        | tracing-decision-quarkus-addon              | kogito-addons-quarkus-tracing-decision              | 1.8.0  | 
+| Add-On Description      | Deprecated Artifact ID                      | New Artifact ID                                  | Since  | 
+|-------------------------|---------------------------------------------|--------------------------------------------------|--------|
+| Cloud Events            | kogito-cloudevents-quarkus-addon            | kie-addons-quarkus-messaging                     | 1.8.0  |
+| Cloud Events Common     | kogito-cloudevents-quarkus-common-addon     | kie-addons-quarkus-messaging-common              | 1.8.0  |
+| Cloud Events Multi      | kogito-cloudevents-quarkus-multi-addon      | kie-addons-quarkus-messaging                     | 1.8.0  | 
+| Events Decisions        | kogito-event-driven-decisions-quarkus-addon | kie-addons-quarkus-events-decisions              | 1.8.0  | 
+| Events Smallrye         | kogito-events-reactive-messaging-addon      | kie-addons-quarkus-events-process                | 1.8.0  |
+| Explainability          | explainability-quarkus-addon                | kie-addons-quarkus-explainability                | 1.8.0  | 
+| Jobs Management         | jobs-management-quarkus-addon               | kogito-addons-quarkus-jobs-management            | 1.8.0  | 
+| Knative Eventing        | knative-eventing-addon                      | kie-addons-quarkus-knative-eventing              | 1.6.0  |
+| Mail                    | mail-quarkus-addon                          | jbpm-addons-quarkus-mail                         | 1.8.0  |
+| Monitoring Core         | monitoring-core-quarkus-addon               | kie-addons-quarkus-monitoring-core               | 1.8.0  | 
+| Monitoring Elastic      | monitoring-elastic-quarkus-addon            | kie-addons-quarkus-monitoring-elastic            | 1.8.0  | 
+| Monitoring Prometheus   | monitoring-prometheus-quarkus-addon         | kie-addons-quarkus-monitoring-prometheus         | 1.8.0  | 
+| Persistence ISPN Health | infinispan-quarkus-health-addon             | kie-addons-quarkus-persistence-infinispan-health | 1.8.0  |
+| Persistence Infinispan  | kogito-addons-persistence-infinispan        | kie-addons-quarkus-persistence-infinispan        | 1.12.0 |
+| Persistence Kafka       | kafka-persistence-addon                     | kie-addons-quarkus-persistence-kafka             | 1.8.0  |
+| Persistence FileSystem  | kogito-addons-persistence-filesystem        | kie-addons-quarkus-persistence-filesystem        | 1.12.0 |
+| Persistence JDBC        | kogito-addons-persistence-jdbc              | kie-addons-quarkus-persistence-jdbc              | 1.12.0 |
+| Persistence MongoDB     | kogito-addons-persistence-mongodb           | kie-addons-quarkus-persistence-mongodb           | 1.12.0 |
+| Persistence Postgresql  | kogito-addons-persistence-postgresql        | kie-addons-quarkus-persistence-postgresql        | 1.12.0 |
+| Process Management      | process-management-addon                    | kie-addons-quarkus-process-management            | 1.8.0  | 
+| Process SVG             | process-svg-quarkus-addon                   | kie-addons-quarkus-process-svg                   | 1.8.0  | 
+| REST Exception Handler  | kogito-rest-exception-handler-quarkus       | kie-addons-quarkus-rest-exception-handler        | 1.8.0  | 
+| Task Management         | task-management-quarkus-addon               | jbpm-addons-quarkus-task-management              | 1.8.0  | 
+| Task Notification       | task-notification-quarkus-addon             | jbpm-addons-quarkus-task-notification            | 1.8.0  | 
+| Tracing Decision        | tracing-decision-quarkus-addon              | kie-addons-quarkus-tracing-decision              | 1.8.0  | 
 
 #### Spring Boot Add-ons
 
-| Add-On Description      | Deprecated Artifact ID                         | New Artifact ID                                 | Since  | 
-|-------------------------|------------------------------------------------|-------------------------------------------------|--------|
-| Cloud Events            | kogito-cloudevents-spring-boot-addon           | kogito-addons-springboot-messaging              | 1.8.0  |
-| Events Decisions        | kogito-event-driven-decisions-springboot-addon | kogito-addons-springboot-events-decisions       | 1.8.0  |
-| Events Kafka            | kogito-events-spring-boot-addon                | kogito-addons-springboot-events-process-kafka   | 1.8.0  |
-| Explainability          | explainability-springboot-addon                | kogito-addons-springboot-explainability         | 1.8.0  | 
-| Jobs Management         | jobs-management-springboot-addon               | kogito-addons-springboot-jobs-management        | 1.8.0  |
-| Mail                    | mail-springboot-addon                          | jbpm-addons-springboot-mail                     | 1.8.0  |
-| Monitoring Core         | monitoring-core-springboot-addon               | kogito-addons-springboot-monitoring-core        | 1.8.0  | 
-| Monitoring Elastic      | monitoring-elastic-springboot-addon            | kogito-addons-springboot-monitoring-elastic     | 1.8.0  | 
-| Monitoring Prometheus   | monitoring-prometheus-springboot-addon         | kogito-addons-springboot-monitoring-prometheus  | 1.8.0  |
-| Process Management      | process-management-springboot-addon            | kogito-addons-springboot-process-management     | 1.8.0  | 
-| Process SVG             | process-svg-springboot-addon                   | kogito-addons-springboot-process-svg            | 1.8.0  |
-| Persistence File System | kogito-addons-persistence-filesystem           | kogito-addons-springboot-persistence-filesystem | 1.21.0 |
-| Persistence Infinispan  | kogito-addons-persistence-infinispan           | kogito-addons-springboot-persistence-infinispan | 1.21.0 |
-| Persistence JDBC        | kogito-addons-persistence-jdbc                 | kogito-addons-springboot-persistence-jdbc       | 1.21.0 |
-| Persistence MongoDB     | kogito-addons-persistence-mongodb              | kogito-addons-springboot-persistence-mongodb    | 1.21.0 |
-| Persistence Postgresql  | kogito-addons-persistence-postgresql           | kogito-addons-springboot-persistence-postgresql | 1.21.0 |
-| REST Exception Handler  | kogito-rest-exception-handler-springboot       | kogito-addons-springboot-rest-exception-handler | 1.8.0  | 
-| Task Management         | task-management-springboot-addon               | jbpm-addons-springboot-task-management          | 1.8.0  | 
-| Task Notification       | task-notification-springboot-addon             | jbpm-addons-springboot-task-notification        | 1.8.0  | 
-| Tracing Decision        | tracing-decision-springboot-addon              | kogito-addons-springboot-tracing-decision       | 1.8.0  | 
+| Add-On Description      | Deprecated Artifact ID                         | New Artifact ID                                | Since  | 
+|-------------------------|------------------------------------------------|------------------------------------------------|--------|
+| Cloud Events            | kogito-cloudevents-spring-boot-addon           | kie-addons-springboot-messaging                | 1.8.0  |
+| Events Decisions        | kogito-event-driven-decisions-springboot-addon | kie-addons-springboot-events-decisions         | 1.8.0  |
+| Events Kafka            | kogito-events-spring-boot-addon                | kie-addons-springboot-events-process-kafka     | 1.8.0  |
+| Explainability          | explainability-springboot-addon                | kie-addons-springboot-explainability           | 1.8.0  | 
+| Jobs Management         | jobs-management-springboot-addon               | kogito-addons-springboot-jobs-management       | 1.8.0  |
+| Mail                    | mail-springboot-addon                          | jbpm-addons-springboot-mail                    | 1.8.0  |
+| Monitoring Core         | monitoring-core-springboot-addon               | kie-addons-springboot-monitoring-core          | 1.8.0  | 
+| Monitoring Elastic      | monitoring-elastic-springboot-addon            | kie-addons-springboot-monitoring-elastic       | 1.8.0  | 
+| Monitoring Prometheus   | monitoring-prometheus-springboot-addon         | kie-addons-springboot-monitoring-prometheus    | 1.8.0  |
+| Process Management      | process-management-springboot-addon            | kie-addons-springboot-process-management       | 1.8.0  | 
+| Process SVG             | process-svg-springboot-addon                   | kie-addons-springboot-process-svg              | 1.8.0  |
+| Persistence File System | kogito-addons-persistence-filesystem           | kie-addons-springboot-persistence-filesystem   | 1.21.0 |
+| Persistence Infinispan  | kogito-addons-persistence-infinispan           | kie-addons-springboot-persistence-infinispan   | 1.21.0 |
+| Persistence JDBC        | kogito-addons-persistence-jdbc                 | kie-addons-springboot-persistence-jdbc         | 1.21.0 |
+| Persistence MongoDB     | kogito-addons-persistence-mongodb              | kie-addons-springboot-persistence-mongodb      | 1.21.0 |
+| Persistence Postgresql  | kogito-addons-persistence-postgresql           | kie-addons-springboot-persistence-postgresql   | 1.21.0 |
+| REST Exception Handler  | kogito-rest-exception-handler-springboot       | kie-addons-springboot-rest-exception-handler   | 1.8.0  | 
+| Task Management         | task-management-springboot-addon               | jbpm-addons-springboot-task-management         | 1.8.0  | 
+| Task Notification       | task-notification-springboot-addon             | jbpm-addons-springboot-task-notification       | 1.8.0  | 
+| Tracing Decision        | tracing-decision-springboot-addon              | kie-addons-springboot-tracing-decision         | 1.8.0  | 
 
 #### Common Add-ons
 

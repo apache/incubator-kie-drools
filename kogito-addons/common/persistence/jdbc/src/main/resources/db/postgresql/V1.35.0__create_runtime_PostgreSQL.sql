@@ -1,4 +1,4 @@
--- To be used with kogito-addons-quarkus-persistence-jdbc for Quarkus or kogito-addons-springboot-persistence-jdbc for SpringBoot
+-- To be used with kie-addons-quarkus-persistence-jdbc for Quarkus or kie-addons-springboot-persistence-jdbc for SpringBoot
 CREATE TABLE process_instances
 (
     id              character(36)     NOT NULL,

@@ -23,12 +23,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-springboot-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-springboot-process-svg</artifactId>
-  <name>Kogito :: Add-Ons :: Process SVG :: Spring Boot Addon</name>
+  <artifactId>kie-addons-springboot-process-svg</artifactId>
+  <name>KIE :: Add-Ons :: Process SVG :: Spring Boot Addon</name>
   <description>Springboot Addon to interact with Process SVG Service</description>
 
   <properties>

@@ -54,8 +54,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-management</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-process-management</artifactId>
     </dependency>
 
     <dependency>
@@ -64,13 +64,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-svg</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-process-svg</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-monitoring-prometheus</artifactId>
     </dependency>
 
     <dependency>

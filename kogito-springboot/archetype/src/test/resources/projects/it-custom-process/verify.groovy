@@ -34,4 +34,4 @@ assert pomContent.contains("jbpm-spring-boot-starter")
 assert !pomContent.contains("jbpm-with-drools-spring-boot-starter")
 
 // monitoring-prometheus addon was specified
-assert pomContent.contains("kogito-addons-springboot-monitoring-prometheus")
+assert pomContent.contains("kie-addons-springboot-monitoring-prometheus")

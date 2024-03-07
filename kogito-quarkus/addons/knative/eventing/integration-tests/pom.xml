@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-quarkus-knative-eventing-parent</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-quarkus-knative-eventing-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-addons-quarkus-knative-eventing-integration-tests</artifactId>
-    <name>Kogito Add-On Knative Eventing - Integration Tests</name>
+    <artifactId>kie-addons-quarkus-knative-eventing-integration-tests</artifactId>
+    <name>KIE Add-On Knative Eventing - Integration Tests</name>
 
   <properties>
      <java.module.name>org.kie.kogito.addons.quarkus.knative.eventing.test</java.module.name>
@@ -54,8 +54,8 @@
             <artifactId>kogito-quarkus-serverless-workflow</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-knative-eventing</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-knative-eventing</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

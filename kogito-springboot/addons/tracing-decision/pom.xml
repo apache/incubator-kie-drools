@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-springboot-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-tracing-decision</artifactId>
-  <name>Kogito :: Add-Ons :: Tracing :: Spring Boot</name>
+  <artifactId>kie-addons-springboot-tracing-decision</artifactId>
+  <name>KIE :: Add-Ons :: Tracing :: Spring Boot</name>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.task.tracing.decision</java.module.name>
@@ -43,8 +43,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-explainability</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-explainability</artifactId>
     </dependency>
 
     <dependency>

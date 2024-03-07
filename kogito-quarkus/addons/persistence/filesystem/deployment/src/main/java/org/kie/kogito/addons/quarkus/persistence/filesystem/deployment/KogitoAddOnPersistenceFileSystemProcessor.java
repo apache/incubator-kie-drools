@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnPersistenceFileSystemProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-persistence-filesystem-extension";
+    private static final String FEATURE = "kie-addon-persistence-filesystem-extension";
 
     KogitoAddOnPersistenceFileSystemProcessor() {
         super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);

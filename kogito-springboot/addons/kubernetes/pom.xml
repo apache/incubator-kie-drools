@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-springboot-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-springboot-kubernetes</artifactId>
-  <name>Kogito :: Add-Ons :: Spring Boot :: Kubernetes</name>
+  <artifactId>kie-addons-springboot-kubernetes</artifactId>
+  <name>KIE :: Add-Ons :: Spring Boot :: Kubernetes</name>
 
   <properties>
       <java.module.name>org.kie.kogito.springboot.addons.springboot.k8s</java.module.name>

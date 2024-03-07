@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnEventMongoDBProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-events-mongodb-extension";
+    private static final String FEATURE = "kie-addon-events-mongodb-extension";
 
     @BuildStep
     FeatureBuildItem feature() {

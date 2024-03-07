@@ -25,7 +25,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnMonitoringElasticProcessor extends AnyEngineKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-monitoring-elastic-extension";
+    private static final String FEATURE = "kie-addon-monitoring-elastic-extension";
 
     @BuildStep
     FeatureBuildItem feature() {

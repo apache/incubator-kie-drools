@@ -21,8 +21,8 @@ To enable this events publisher, make sure dependency for the Kafka events publi
 2. Springboot:
 ```xml
 <dependency>
-  <groupId>org.kie.kogito</groupId>
-  <artifactId>kogito-addons-springboot-events-kafka</artifactId>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-addons-springboot-events-kafka</artifactId>
 </dependency>
 ```
 
@@ -31,15 +31,15 @@ Then add the following dependency for MongoDB events publisher:
 1. Quarkus:
 ```xml
 <dependency>
-  <groupId>org.kie.kogito</groupId>
-  <artifactId>kogito-addons-quarkus-events-mongodb</artifactId>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-addons-quarkus-events-mongodb</artifactId>
 </dependency>
 ```
 
 2. Springboot:
 ```xml
 <dependency>
-  <groupId>org.kie.kogito</groupId>
-  <artifactId>kogito-addons-springboot-events-mongodb</artifactId>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-addons-springboot-events-mongodb</artifactId>
 </dependency>
 ```

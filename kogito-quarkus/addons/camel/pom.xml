@@ -24,11 +24,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-quarkus-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-addons-quarkus-camel-parent</artifactId>
   <name>Kogito :: Add-Ons :: Quarkus :: Camel :: Parent</name>
   <description>Kogito Quarkus Camel Integration with Serverless Workflow</description>

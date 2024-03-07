@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnTracingDecisionProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-tracing-decision-extension";
+    private static final String FEATURE = "kie-addon-tracing-decision-extension";
 
     KogitoAddOnTracingDecisionProcessor() {
         super(KogitoCapability.DECISIONS);

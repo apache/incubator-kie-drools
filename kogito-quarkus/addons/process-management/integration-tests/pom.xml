@@ -21,12 +21,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-process-management-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-process-management-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-process-management-integration-tests</artifactId>
-  <name>Kogito:: Addons :: Quarkus:: Process Management :: Integration Test</name>
+  <artifactId>kie-addons-quarkus-process-management-integration-tests</artifactId>
+  <name>KIE:: Addons :: Quarkus:: Process Management :: Integration Test</name>
   <description>Process Management addon testing Testing</description>
 
     <properties>
@@ -55,8 +55,8 @@
       <artifactId>kogito-quarkus-serverless-workflow</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-process-management</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

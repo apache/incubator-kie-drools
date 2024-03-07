@@ -33,7 +33,7 @@ import io.quarkus.deployment.builditem.RunTimeConfigBuilderBuildItem;
 
 class KogitoAddOnKubernetesProcessor extends AnyEngineKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-kubernetes-extension";
+    private static final String FEATURE = "kie-addon-kubernetes-extension";
 
     @BuildStep
     FeatureBuildItem feature() {

@@ -63,8 +63,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-process-management-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-management-deployment</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

@@ -27,7 +27,7 @@ import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 
 class KogitoAddOnPersistenceRocksDBProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-persistence-rocksdb-extension";
+    private static final String FEATURE = "kie-addon-persistence-rocksdb-extension";
 
     KogitoAddOnPersistenceRocksDBProcessor() {
         super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);

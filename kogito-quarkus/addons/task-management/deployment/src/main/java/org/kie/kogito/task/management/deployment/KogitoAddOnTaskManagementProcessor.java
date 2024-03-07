@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnTaskManagementProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-task-management-extension";
+    private static final String FEATURE = "jbpm-addon-task-management-extension";
 
     KogitoAddOnTaskManagementProcessor() {
         super(KogitoCapability.PROCESSES);

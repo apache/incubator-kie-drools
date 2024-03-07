@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnMailProcessor extends RequireCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-mail-extension";
+    private static final String FEATURE = "jbpm-addon-mail-extension";
 
     KogitoAddOnMailProcessor() {
         super(KogitoCapability.PROCESSES);

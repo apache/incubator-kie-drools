@@ -23,14 +23,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-marshallers-avro-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-quarkus-marshallers-avro-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-quarkus-marshallers-avro-deployment</artifactId>
-  <name>Kogito :: Add-Ons :: Quarkus :: Marshallers :: Avro :: Deployment</name>
-  <description>Kogito Quarkus Marshallers Unmarshaller for Avro deployment</description>
+  <artifactId>kie-addons-quarkus-marshallers-avro-deployment</artifactId>
+  <name>KIE :: Add-Ons :: Quarkus :: Marshallers :: Avro :: Deployment</name>
+  <description>KIE Quarkus Marshallers Unmarshaller for Avro deployment</description>
 
   <properties>
      <java.module.name>org.kie.kogito.addon.avro.quarkus.deployment</java.module.name>
@@ -38,8 +38,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-marshallers-avro</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-marshallers-avro</artifactId>
     </dependency>
  
      <dependency>

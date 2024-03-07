@@ -24,12 +24,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>kogito-addons-quarkus-source-files-parent</artifactId>
-        <groupId>org.kie.kogito</groupId>
+        <artifactId>kie-addons-quarkus-source-files-parent</artifactId>
+        <groupId>org.kie</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
-    <artifactId>kogito-addons-quarkus-source-files-deployment</artifactId>
-    <name>Kogito Add-On Source Files - Deployment</name>
+    <artifactId>kie-addons-quarkus-source-files-deployment</artifactId>
+    <name>KIE Add-On Source Files - Deployment</name>
 
     <properties>
        <java.module.name>org.kie.kogito.quarkus.addon.source.files.deployment</java.module.name>
@@ -37,11 +37,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-source-files</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-source-files</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
         </dependency>
         <dependency>

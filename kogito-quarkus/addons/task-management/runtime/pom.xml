@@ -42,8 +42,8 @@
       <artifactId>kogito-addons-task-management</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-rest-exception-handler</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-rest-exception-handler</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

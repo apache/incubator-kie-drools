@@ -38,8 +38,8 @@
       <artifactId>jbpm-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-persistence-postgresql</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-persistence-postgresql</artifactId>
     </dependency>
     <!-- Adding PostgreSQL JDBC because of Flyway -->
     <dependency>
@@ -51,8 +51,8 @@
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-management</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

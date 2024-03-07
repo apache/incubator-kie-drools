@@ -23,14 +23,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-quarkus-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-messaging-parent</artifactId>
+  <artifactId>kie-addons-quarkus-messaging-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Add-On Messaging - Parent</name>
-  <description>Kogito Quarkus Messaging Parent</description>
+  <name>KIE Add-On Messaging - Parent</name>
+  <description>KIE Quarkus Messaging Parent</description>
 
   <modules>
     <module>common</module>

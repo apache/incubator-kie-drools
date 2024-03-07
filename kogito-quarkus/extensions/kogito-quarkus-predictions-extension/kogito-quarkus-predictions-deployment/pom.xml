@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>kogito-quarkus-predictions-extension</artifactId>
-        <groupId>org.kie.kogito</groupId>
+        <artifactId>kie-quarkus-predictions-extension</artifactId>
+        <groupId>org.kie</groupId>
         <version>999-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kogito-quarkus-predictions-deployment</artifactId>
-    <name>Kogito :: Quarkus Predictions Extension :: Deployment</name>
+    <artifactId>kie-quarkus-predictions-deployment</artifactId>
+    <name>KIE :: Quarkus Predictions Extension :: Deployment</name>
 
     <properties>
         <java.module.name>org.kie.kogito.quarkus.predictions.deployment</java.module.name>
@@ -43,8 +43,8 @@
             <artifactId>kogito-quarkus-common-deployment</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-predictions</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-quarkus-predictions</artifactId>
         </dependency>
 
         <!-- codegen dependencies -->

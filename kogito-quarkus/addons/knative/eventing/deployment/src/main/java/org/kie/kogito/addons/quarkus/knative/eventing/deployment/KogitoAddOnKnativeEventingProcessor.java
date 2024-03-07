@@ -57,7 +57,7 @@ import static org.kie.kogito.addons.quarkus.knative.eventing.KnativeEventingConf
 
 public class KogitoAddOnKnativeEventingProcessor extends AnyEngineKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-knative-eventing-extension";
+    private static final String FEATURE = "kie-addon-knative-eventing-extension";
     /**
      * Name of the generated file
      */

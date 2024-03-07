@@ -23,7 +23,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-quarkus-knative-serving-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
@@ -39,8 +39,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-kubernetes</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-kubernetes</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -89,19 +89,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie</groupId>
             <artifactId>kogito-addons-quarkus-fabric8-kubernetes-service-catalog-test-utils</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- this is used implicitly by Maven parallel builds so let's make Maven aware of it -->
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-kubernetes-deployment</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-kubernetes-deployment</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>

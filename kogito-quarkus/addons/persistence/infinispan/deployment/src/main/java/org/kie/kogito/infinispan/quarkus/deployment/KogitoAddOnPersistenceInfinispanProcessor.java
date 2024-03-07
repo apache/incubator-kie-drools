@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class KogitoAddOnPersistenceInfinispanProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
-    private static final String FEATURE = "kogito-addon-persistence-infinispan-extension";
+    private static final String FEATURE = "kie-addon-persistence-infinispan-extension";
 
     KogitoAddOnPersistenceInfinispanProcessor() {
         super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
