@@ -3544,7 +3544,7 @@ class MiscDRLParserTest {
      * Each test input is a constraint expression covering one of the existing keywords. The test is successful if the parser has
      * no errors and the descriptor's expression string is equal to the input.
      *
-     * @param constraint expression using a keyword
+     * @param constraint expression using an operator
      */
     @ParameterizedTest
     @ValueSource(strings = {
