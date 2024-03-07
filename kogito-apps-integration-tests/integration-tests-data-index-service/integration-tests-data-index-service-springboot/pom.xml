@@ -58,24 +58,24 @@
       <artifactId>integration-tests-data-index-service-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-events-process-kafka</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-events-process-kafka</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-management</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-addons-springboot-task-management</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-svg</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-process-svg</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-persistence-filesystem</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-persistence-filesystem</artifactId>
     </dependency>
     <dependency>
       <groupId>io.rest-assured</groupId>

@@ -68,8 +68,8 @@
             <artifactId>infinispan-query-dsl</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-quarkus-persistence-infinispan-health</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-persistence-infinispan-health</artifactId>
         </dependency>
 
         <!-- Testing -->

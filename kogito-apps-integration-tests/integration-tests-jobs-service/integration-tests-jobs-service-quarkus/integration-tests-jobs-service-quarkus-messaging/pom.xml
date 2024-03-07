@@ -34,7 +34,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-jobs-messaging</artifactId>
     </dependency>
     <dependency>
@@ -54,12 +54,12 @@
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-events-process</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-events-process</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -67,8 +67,8 @@
     </dependency>
     <!-- Used to enable the proto generation set in the data-index -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-persistence-filesystem</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-persistence-filesystem</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

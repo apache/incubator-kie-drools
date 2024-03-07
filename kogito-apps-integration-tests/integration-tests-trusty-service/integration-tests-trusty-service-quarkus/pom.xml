@@ -40,8 +40,8 @@
       <artifactId>jbpm-with-drools-quarkus</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-tracing-decision</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-tracing-decision</artifactId>
     </dependency>
 
     <!-- Build container image -->

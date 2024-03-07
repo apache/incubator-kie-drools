@@ -48,8 +48,8 @@
       <artifactId>kogito-addons-quarkus-data-index-infinispan</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-persistence-infinispan</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-persistence-infinispan</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

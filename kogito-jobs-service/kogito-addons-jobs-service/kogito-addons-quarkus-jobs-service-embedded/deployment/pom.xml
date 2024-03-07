@@ -39,7 +39,7 @@
       <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-jobs-management-deployment</artifactId>
     </dependency>
     <dependency>
@@ -51,7 +51,7 @@
       <artifactId>quarkus-resteasy-mutiny-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-common-deployment</artifactId>
     </dependency>
     <dependency>

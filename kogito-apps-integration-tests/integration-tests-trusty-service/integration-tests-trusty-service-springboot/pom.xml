@@ -60,8 +60,8 @@
       <artifactId>jbpm-with-drools-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-tracing-decision</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-springboot-tracing-decision</artifactId>
     </dependency>
 
     <dependency>
