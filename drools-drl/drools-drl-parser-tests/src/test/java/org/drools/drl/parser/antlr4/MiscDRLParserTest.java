@@ -3593,7 +3593,7 @@ class MiscDRLParserTest {
             "routingValue str[startsWith] \"R1\" || str[startsWith] \"R2\"",
             "routingValue not str[startsWith] \"R1\" && not str[startsWith] \"R2\""
     })
-    void halfConstraintKeywords(String constraint) {
+    void halfConstraintOperators(String constraint) {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
                 "when\n" +
