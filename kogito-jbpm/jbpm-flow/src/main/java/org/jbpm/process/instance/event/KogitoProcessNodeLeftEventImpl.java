@@ -23,24 +23,17 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
-public class KogitoProcessNodeLeftEventImpl extends ProcessEvent implements ProcessNodeLeftEvent {
+public class KogitoProcessNodeLeftEventImpl extends AbstractProcessNodeEvent implements ProcessNodeLeftEvent {
 
     private static final long serialVersionUID = 510l;
 
-    private NodeInstance nodeInstance;
-
     public KogitoProcessNodeLeftEventImpl(NodeInstance nodeInstance, KieRuntime kruntime, String identity) {
-        super(nodeInstance.getProcessInstance(), kruntime, identity);
-        this.nodeInstance = nodeInstance;
-    }
-
-    public NodeInstance getNodeInstance() {
-        return nodeInstance;
+        super(nodeInstance, nodeInstance.getProcessInstance(), kruntime, identity);
     }
 
     @Override
     public String toString() {
-        return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + ((KogitoNodeInstance) nodeInstance).getStringId()
+        return "==>[ProcessNodeLeft(nodeId=" + getNodeInstance().getNodeId() + "; id=" + ((KogitoNodeInstance) getNodeInstance()).getStringId()
                 + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
 }

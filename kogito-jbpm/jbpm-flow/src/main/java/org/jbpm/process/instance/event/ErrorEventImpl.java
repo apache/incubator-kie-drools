@@ -18,37 +18,29 @@
  */
 package org.jbpm.process.instance.event;
 
-import org.kie.api.event.process.SignalEvent;
+import org.kie.api.event.process.ErrorEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public class SignalEventImpl extends AbstractProcessNodeEvent implements SignalEvent {
+public class ErrorEventImpl extends AbstractProcessNodeEvent implements ErrorEvent {
 
     private static final long serialVersionUID = 1L;
-    private final String signalName;
-    private final Object signalObject;
+    private final Exception exception;
 
-    public SignalEventImpl(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
-            String signalName, Object signalObject, String identity) {
-        super(nodeInstance, instance, kruntime, identity);
-        this.signalName = signalName;
-        this.signalObject = signalObject;
+    public ErrorEventImpl(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
+            Exception exception) {
+        super(nodeInstance, instance, kruntime);
+        this.exception = exception;
     }
 
     @Override
-    public String getSignalName() {
-        return signalName;
-    }
-
-    @Override
-    public Object getSignal() {
-        return signalObject;
+    public Exception getException() {
+        return exception;
     }
 
     @Override
     public String toString() {
-        return "SignalEventImpl [nodeInstance=" + getNodeInstance() + ", signalName=" + signalName + ", signalObject=" +
-                signalObject + "]";
+        return "ErrorEventImpl [nodeInstance=" + getNodeInstance() + ", exception=" + exception + "]";
     }
 }

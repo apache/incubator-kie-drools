@@ -23,24 +23,17 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public class MessageEventImpl extends ProcessEvent implements MessageEvent {
+public class MessageEventImpl extends AbstractProcessNodeEvent implements MessageEvent {
 
     private static final long serialVersionUID = 1L;
-    private NodeInstance nodeInstance;
-    private String messageName;
-    private Object messageObject;
+    private final String messageName;
+    private final Object messageObject;
 
     public MessageEventImpl(ProcessInstance instance, KieRuntime kruntime, NodeInstance nodeInstance,
             String messageName, Object messageObject, String identity) {
-        super(instance, kruntime, identity);
-        this.nodeInstance = nodeInstance;
+        super(nodeInstance, instance, kruntime, identity);
         this.messageName = messageName;
         this.messageObject = messageObject;
-    }
-
-    @Override
-    public NodeInstance getNodeInstance() {
-        return nodeInstance;
     }
 
     @Override
@@ -55,7 +48,7 @@ public class MessageEventImpl extends ProcessEvent implements MessageEvent {
 
     @Override
     public String toString() {
-        return "MessageEventImpl [nodeInstance=" + nodeInstance + ", messageName=" + messageName + ", messageObject=" +
+        return "MessageEventImpl [nodeInstance=" + getNodeInstance() + ", messageName=" + messageName + ", messageObject=" +
                 messageObject + "]";
     }
 }

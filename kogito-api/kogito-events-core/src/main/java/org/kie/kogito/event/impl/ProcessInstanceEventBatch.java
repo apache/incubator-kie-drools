@@ -19,13 +19,15 @@
 package org.kie.kogito.event.impl;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeSet;
 
+import org.kie.api.event.process.ErrorEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessNodeEvent;
@@ -38,7 +40,6 @@ import org.kie.api.event.usertask.UserTaskAssignmentEvent;
 import org.kie.api.event.usertask.UserTaskAttachmentEvent;
 import org.kie.api.event.usertask.UserTaskCommentEvent;
 import org.kie.api.event.usertask.UserTaskDeadlineEvent;
-import org.kie.api.event.usertask.UserTaskEvent;
 import org.kie.api.event.usertask.UserTaskStateEvent;
 import org.kie.api.event.usertask.UserTaskVariableEvent;
 import org.kie.kogito.Addons;
@@ -70,7 +71,6 @@ import org.kie.kogito.event.usertask.UserTaskInstanceVariableDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceVariableEventBody;
 import org.kie.kogito.internal.process.event.KogitoProcessVariableChangedEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
@@ -86,25 +86,19 @@ public class ProcessInstanceEventBatch implements EventBatch {
     public ProcessInstanceEventBatch(String service, Addons addons) {
         this.service = service;
         this.addons = addons != null ? addons : Addons.EMTPY;
-        this.processedEvents = new ArrayList<>();
+        this.processedEvents = new TreeSet<>(new Comparator<DataEvent<?>>() {
+            @Override
+            public int compare(DataEvent<?> event1, DataEvent<?> event2) {
+                return event2 instanceof ProcessInstanceStateDataEvent &&
+                        ((ProcessInstanceStateDataEvent) event2).getData().getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_ENDED
+                        || event1 instanceof ProcessInstanceStateDataEvent &&
+                                ((ProcessInstanceStateDataEvent) event1).getData().getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_STARTED ? -1 : 1;
+            }
+        });
     }
 
     @Override
-    public void append(Object rawEvent) {
-        if (rawEvent instanceof ProcessEvent) {
-            addDataEvent((ProcessEvent) rawEvent);
-        } else if (rawEvent instanceof UserTaskEvent) {
-            addDataEvent((UserTaskEvent) rawEvent);
-        }
-    }
-
-    @Override
-    public Collection<DataEvent<?>> events() {
-        return processedEvents;
-    }
-
-    private void addDataEvent(ProcessEvent event) {
-        // process events
+    public void append(Object event) {
         if (event instanceof ProcessStartedEvent) {
             handleProcessStateEvent((ProcessStartedEvent) event);
         } else if (event instanceof ProcessCompletedEvent) {
@@ -117,7 +111,26 @@ public class ProcessInstanceEventBatch implements EventBatch {
             handleProcesssNodeEvent((SLAViolatedEvent) event);
         } else if (event instanceof ProcessVariableChangedEvent) {
             handleProcessVariableEvent((ProcessVariableChangedEvent) event);
+        } else if (event instanceof ErrorEvent) {
+            handleErrorEvent((ErrorEvent) event);
+        } else if (event instanceof UserTaskStateEvent) {
+            handleUserTaskStateEvent((UserTaskStateEvent) event);
+        } else if (event instanceof UserTaskDeadlineEvent) {
+            handleUserTaskDeadlineEvent((UserTaskDeadlineEvent) event);
+        } else if (event instanceof UserTaskAssignmentEvent) {
+            handleUserTaskAssignmentEvent((UserTaskAssignmentEvent) event);
+        } else if (event instanceof UserTaskVariableEvent) {
+            handleUserTaskVariableEvent((UserTaskVariableEvent) event);
+        } else if (event instanceof UserTaskAttachmentEvent) {
+            handleUserTaskAttachmentEvent((UserTaskAttachmentEvent) event);
+        } else if (event instanceof UserTaskCommentEvent) {
+            handleUserTaskCommentEvent((UserTaskCommentEvent) event);
         }
+    }
+
+    @Override
+    public Collection<DataEvent<?>> events() {
+        return processedEvents;
     }
 
     private void handleProcessVariableEvent(ProcessVariableChangedEvent event) {
@@ -245,52 +258,31 @@ public class ProcessInstanceEventBatch implements EventBatch {
         return piEvent;
     }
 
-    private void handleProcessStateEvent(ProcessCompletedEvent event) {
-
-        processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_ENDED));
-
+    private void handleErrorEvent(ErrorEvent event) {
         KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
-        if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
-            ProcessInstanceErrorEventBody errorBody = ProcessInstanceErrorEventBody.create()
-                    .eventDate(new Date())
-                    .eventUser(event.getEventIdentity())
-                    .processInstanceId(pi.getId())
-                    .processId(pi.getProcessId())
-                    .processVersion(pi.getProcessVersion())
-                    .nodeDefinitionId(pi.getNodeIdInError())
-                    .nodeInstanceId(pi.getNodeInstanceIdInError())
-                    .errorMessage(pi.getErrorMessage())
-                    .build();
-            Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
-            ProcessInstanceErrorDataEvent piEvent =
-                    new ProcessInstanceErrorDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, errorBody);
-            piEvent.setKogitoBusinessKey(pi.getBusinessKey());
-            processedEvents.add(piEvent);
-        }
+        ProcessInstanceErrorEventBody errorBody = ProcessInstanceErrorEventBody.create()
+                .eventDate(new Date())
+                .eventUser(event.getEventIdentity())
+                .processInstanceId(pi.getId())
+                .processId(pi.getProcessId())
+                .processVersion(pi.getProcessVersion())
+                .nodeDefinitionId(pi.getNodeIdInError())
+                .nodeInstanceId(pi.getNodeInstanceIdInError())
+                .errorMessage(pi.getErrorMessage())
+                .build();
+        Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
+        ProcessInstanceErrorDataEvent piEvent =
+                new ProcessInstanceErrorDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, errorBody);
+        piEvent.setKogitoBusinessKey(pi.getBusinessKey());
+        processedEvents.add(piEvent);
+    }
+
+    private void handleProcessStateEvent(ProcessCompletedEvent event) {
+        processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_ENDED));
     }
 
     private void handleProcessStateEvent(ProcessStartedEvent event) {
         processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_STARTED));
-
-        KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
-        if (pi.getState() == KogitoProcessInstance.STATE_ERROR) {
-            ProcessInstanceErrorEventBody errorBody = ProcessInstanceErrorEventBody.create()
-                    .eventDate(new Date())
-                    .eventUser(event.getEventIdentity())
-                    .processInstanceId(pi.getId())
-                    .processId(pi.getProcessId())
-                    .processVersion(pi.getProcessVersion())
-                    .nodeDefinitionId(pi.getNodeIdInError())
-                    .nodeInstanceId(pi.getNodeInstanceIdInError())
-                    .errorMessage(pi.getErrorMessage())
-                    .build();
-            Map<String, Object> metadata = buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
-            ProcessInstanceErrorDataEvent piEvent =
-                    new ProcessInstanceErrorDataEvent(buildSource(event.getProcessInstance().getProcessId()), addons.toString(), event.getEventIdentity(), metadata, errorBody);
-            piEvent.setKogitoBusinessKey(pi.getBusinessKey());
-            processedEvents.add(piEvent);
-        }
-
     }
 
     private ProcessInstanceStateDataEvent toProcessInstanceStateEvent(ProcessEvent event, int eventType) {
@@ -337,23 +329,6 @@ public class ProcessInstanceEventBatch implements EventBatch {
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_ID_META_DATA, pi.getRootProcessId());
         metadata.put(ProcessInstanceEventMetadata.ROOT_PROCESS_INSTANCE_ID_META_DATA, pi.getRootProcessInstanceId());
         return metadata;
-    }
-
-    private void addDataEvent(UserTaskEvent event) {
-        // this should go in another event types
-        if (event instanceof UserTaskStateEvent) {
-            handleUserTaskStateEvent((UserTaskStateEvent) event);
-        } else if (event instanceof UserTaskDeadlineEvent) {
-            handleUserTaskDeadlineEvent((UserTaskDeadlineEvent) event);
-        } else if (event instanceof UserTaskAssignmentEvent) {
-            handleUserTaskAssignmentEvent((UserTaskAssignmentEvent) event);
-        } else if (event instanceof UserTaskVariableEvent) {
-            handleUserTaskVariableEvent((UserTaskVariableEvent) event);
-        } else if (event instanceof UserTaskAttachmentEvent) {
-            handleUserTaskAttachmentEvent((UserTaskAttachmentEvent) event);
-        } else if (event instanceof UserTaskCommentEvent) {
-            handleUserTaskCommentEvent((UserTaskCommentEvent) event);
-        }
     }
 
     private void handleUserTaskCommentEvent(UserTaskCommentEvent event) {

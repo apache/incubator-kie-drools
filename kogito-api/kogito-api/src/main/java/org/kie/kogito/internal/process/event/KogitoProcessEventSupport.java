@@ -158,12 +158,11 @@ public interface KogitoProcessEventSupport {
             KieRuntime kruntime,
             Comment addedComment);
 
-    // 
-
     void reset();
 
     void addEventListener(KogitoProcessEventListener listener);
 
     void removeEventListener(KogitoProcessEventListener listener);
 
+    void fireOnError(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, Exception exception);
 }

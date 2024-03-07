@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.uow.events;
 
+import org.kie.api.event.process.ErrorEvent;
 import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
@@ -59,12 +60,11 @@ public class UnitOfWorkProcessEventListener extends DefaultKogitoProcessEventLis
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
-
+        intercept(event);
     }
 
     @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
-        intercept(event);
     }
 
     @Override
@@ -190,6 +190,11 @@ public class UnitOfWorkProcessEventListener extends DefaultKogitoProcessEventLis
 
     @Override
     public void onUserTaskOutputVariable(UserTaskVariableEvent event) {
+        intercept(event);
+    }
+
+    @Override
+    public void onError(ErrorEvent event) {
         intercept(event);
     }
 

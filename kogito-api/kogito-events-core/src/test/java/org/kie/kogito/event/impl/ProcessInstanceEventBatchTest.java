@@ -19,6 +19,25 @@
 package org.kie.kogito.event.impl;
 
 import org.junit.jupiter.api.Test;
+import org.kie.api.event.process.ErrorEvent;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessEvent;
+import org.kie.api.event.process.ProcessNodeEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.mockito.Mockito;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
@@ -49,4 +68,41 @@ public class ProcessInstanceEventBatchTest {
         assertThat(batch.extractRuntimeSource(singletonMap(PROCESS_ID_META_DATA, "demo.orders"))).isEqualTo("http://localhost:8080/orders");
     }
 
+    @Test
+    public void testEventSorting() {
+        ProcessInstanceEventBatch batch = new ProcessInstanceEventBatch("", null);
+        KogitoWorkflowProcess process = Mockito.mock(KogitoWorkflowProcess.class);
+        KogitoWorkflowProcessInstance processInstance = Mockito.mock(KogitoWorkflowProcessInstance.class);
+        KogitoNodeInstance nodeInstance = Mockito.mock(KogitoNodeInstance.class);
+        KogitoNode node = Mockito.mock(KogitoNode.class);
+        Mockito.when(processInstance.getProcess()).thenReturn(process);
+        Mockito.when(nodeInstance.getNode()).thenReturn(node);
+        batch.append(mockEvent(ProcessVariableChangedEvent.class, processInstance));
+        batch.append(mockEvent(ProcessNodeTriggeredEvent.class, processInstance, nodeInstance));
+        batch.append(mockEvent(ProcessNodeLeftEvent.class, processInstance, nodeInstance));
+        batch.append(mockEvent(ProcessStartedEvent.class, processInstance));
+        batch.append(mockEvent(ProcessNodeTriggeredEvent.class, processInstance, nodeInstance));
+        batch.append(mockEvent(ProcessNodeLeftEvent.class, processInstance, nodeInstance));
+        batch.append(mockEvent(ErrorEvent.class, processInstance, nodeInstance));
+        batch.append(mockEvent(ProcessCompletedEvent.class, processInstance));
+        batch.append(mockEvent(ProcessNodeTriggeredEvent.class, processInstance, nodeInstance));
+        batch.append(mockEvent(ProcessNodeLeftEvent.class, processInstance, nodeInstance));
+        assertThat(batch.processedEvents).hasExactlyElementsOfTypes(ProcessInstanceStateDataEvent.class, ProcessInstanceVariableDataEvent.class, ProcessInstanceNodeDataEvent.class,
+                ProcessInstanceNodeDataEvent.class,
+                ProcessInstanceNodeDataEvent.class, ProcessInstanceNodeDataEvent.class, ProcessInstanceErrorDataEvent.class, ProcessInstanceNodeDataEvent.class, ProcessInstanceNodeDataEvent.class,
+                ProcessInstanceStateDataEvent.class);
+    }
+
+    private <T extends ProcessEvent> T mockEvent(Class<T> clazz, ProcessInstance processInstance) {
+        T event = Mockito.mock(clazz);
+        Mockito.when(event.getProcessInstance()).thenReturn(processInstance);
+        return event;
+    }
+
+    private <T extends ProcessNodeEvent> T mockEvent(Class<T> clazz, ProcessInstance processInstance, NodeInstance nodeInstance) {
+        T event = Mockito.mock(clazz);
+        Mockito.when(event.getProcessInstance()).thenReturn(processInstance);
+        Mockito.when(event.getNodeInstance()).thenReturn(nodeInstance);
+        return event;
+    }
 }

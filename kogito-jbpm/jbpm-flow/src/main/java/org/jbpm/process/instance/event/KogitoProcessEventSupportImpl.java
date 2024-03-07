@@ -367,4 +367,10 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
         this.clear();
     }
 
+    @Override
+    public void fireOnError(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, Exception exception) {
+        ErrorEventImpl event = new ErrorEventImpl(instance, kruntime, nodeInstance, exception);
+        notifyAllListeners(l -> l.onError(event));
+    }
+
 }
