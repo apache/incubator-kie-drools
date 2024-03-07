@@ -129,6 +129,8 @@ positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
 nestedConstraint : ( IDENTIFIER ( DOT | HASH ) )* IDENTIFIER DOT LPAREN constraints RPAREN ;
+
+// TBD: constraint parsing could be delegated to DRL6ExpressionParser
 conditionalOrExpression : left=conditionalAndExpression (OR right=conditionalAndExpression)* ;
 conditionalAndExpression : left=inclusiveOrExpression (AND right=inclusiveOrExpression)* ;
 inclusiveOrExpression : left=exclusiveOrExpression (BITOR right=exclusiveOrExpression)* ;
@@ -149,8 +151,17 @@ relationalOperator
     | GE
     | GT
     | LT
+    | drlRelationalOperator
     | temporalOperator
     ;
+
+drlRelationalOperator
+    : DRL_NOT? DRL_MATCHES
+    | DRL_NOT? DRL_MEMBEROF
+    | DRL_NOT? DRL_CONTAINS
+    | DRL_NOT? DRL_EXCLUDES
+    | DRL_NOT? DRL_SOUNDSLIKE
+    | DRL_NOT? DRL_STR LBRACK IDENTIFIER RBRACK ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
 functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters block ;
@@ -200,6 +211,10 @@ drlKeywords
     | DRL_FROM
     | DRL_MATCHES
     | DRL_MEMBEROF
+    | DRL_CONTAINS
+    | DRL_EXCLUDES
+    | DRL_SOUNDSLIKE
+    | DRL_STR
     | DRL_ACCUMULATE
     | DRL_ACC
     | DRL_INIT
@@ -249,13 +264,9 @@ drlExpression
     | drlExpression bop=(MUL|DIV|MOD) drlExpression
     | drlExpression bop=(ADD|SUB) drlExpression
     | drlExpression (LT LT | GT GT GT | GT GT) drlExpression
-    | drlExpression bop=(LE | GE | GT | LT) drlExpression
-    | drlExpression temporalOperator drlExpression
     | drlExpression bop=INSTANCEOF (typeType | pattern)
-    | drlExpression bop=DRL_MATCHES drlExpression
-    | drlExpression DRL_NOT? DRL_MEMBEROF drlExpression
+    | drlExpression relationalOperator drlExpression
     | drlExpression bop=DRL_UNIFY drlExpression
-    | drlExpression bop=(EQUAL | NOTEQUAL) drlExpression
     | drlExpression bop=BITAND drlExpression
     | drlExpression bop=CARET drlExpression
     | drlExpression bop=BITOR drlExpression
