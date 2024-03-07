@@ -45,8 +45,6 @@ DRL_NOT : 'not';
 DRL_IN : 'in';
 DRL_FROM : 'from';
 DRL_COLLECT : 'collect';
-DRL_MATCHES : 'matches';
-DRL_MEMBEROF : 'memberOf';
 DRL_ACCUMULATE : 'accumulate';
 DRL_ACC : 'acc';
 DRL_INIT : 'init';
@@ -57,6 +55,14 @@ DRL_ENTRY_POINT : 'entry-point';
 DRL_EVAL : 'eval';
 DRL_FORALL : 'forall';
 DRL_OVER : 'over';
+
+// constraint operators
+DRL_MATCHES : 'matches';
+DRL_MEMBEROF : 'memberOf';
+DRL_CONTAINS : 'contains';
+DRL_EXCLUDES : 'excludes';
+DRL_SOUNDSLIKE : 'soundslike';
+DRL_STR : 'str';
 
 // temporal operators
 DRL_AFTER : 'after';
