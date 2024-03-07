@@ -33,6 +33,7 @@ import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.index.CommonUtils;
 import org.kie.kogito.index.jpa.mapper.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.jpa.model.MilestoneEntity;
 import org.kie.kogito.index.jpa.model.NodeInstanceEntity;
@@ -116,6 +117,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         }
         errorEntity.setMessage(error.getErrorMessage());
         errorEntity.setNodeDefinitionId(error.getNodeDefinitionId());
+        pi.setState(CommonUtils.ERROR_STATE);
         repository.flush();
     }
 

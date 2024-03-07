@@ -22,6 +22,7 @@ import java.util.Set;
 
 public class CommonUtils {
 
+    public static final int ERROR_STATE = 5;
     private static final Set<String> finalStates = Set.of("Completed", "Aborted");
 
     public static boolean isTaskCompleted(String status) {
