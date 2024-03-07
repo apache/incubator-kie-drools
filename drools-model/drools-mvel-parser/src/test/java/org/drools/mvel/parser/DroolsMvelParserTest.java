@@ -183,6 +183,22 @@ public class DroolsMvelParserTest {
     }
 
     @Test
+    public void testConstantUnaryExpression() {
+        String expr = "-49";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertThat(printNode(expression)).isEqualTo(expr);
+        assertThat(expression.isUnaryExpr()).isTrue();
+    }
+
+    @Test
+    public void testVariableUnaryExpression() {
+        String expr = "-$a";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertThat(printNode(expression)).isEqualTo(expr);
+        assertThat(expression.isUnaryExpr()).isTrue();
+    }
+
+    @Test
     public void testDotFreeEnclosedWithNameExpr() {
         String expr = "(something after $a)";
         Expression expression = parseExpression( parser, expr ).getExpr();
@@ -402,10 +418,12 @@ public class DroolsMvelParserTest {
         BinaryExpr first = (BinaryExpr) comboExpr.getLeft();
         assertThat(toString(first.getLeft())).isEqualTo("value");
         assertThat(toString(first.getRight())).isEqualTo("-2");
+        assertThat(first.getRight().isUnaryExpr()).isTrue();
         assertThat(first.getOperator()).isEqualTo(Operator.GREATER);
 
         HalfBinaryExpr second = (HalfBinaryExpr) comboExpr.getRight();
         assertThat(toString(second.getRight())).isEqualTo("-1");
+        assertThat(second.getRight().isUnaryExpr()).isTrue();
         assertThat(second.getOperator()).isEqualTo(HalfBinaryExpr.Operator.LESS);
     }
 
