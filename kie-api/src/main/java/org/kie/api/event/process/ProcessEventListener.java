@@ -116,4 +116,10 @@ public interface ProcessEventListener
      * @param event
      */
     default void onMessage(MessageEvent event) {}
+    
+    /**
+     * This listener method is invoked when an error is captured
+     * @param event
+     */
+    default void onError (ErrorEvent event) {}
 }
