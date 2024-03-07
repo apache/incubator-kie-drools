@@ -231,6 +231,14 @@ public class ParserHelper {
         return text2Validate != null && DroolsSoftKeywords.isOperator(text2Validate, negated);
     }
 
+    /**
+     * Check if the next token is a registered operator.
+     * The registry is dynamic, so we can add custom operators dynamically.
+     * @see org.drools.drl.parser.impl.Operator#addOperatorToRegistry(String, boolean)
+     *
+     * @param negated true if the operator needs to support negation
+     * @return true if the next token is a registered operator
+     */
     public boolean isPluggableEvaluator( boolean negated ) {
         return isPluggableEvaluator( 1,
                                      negated );

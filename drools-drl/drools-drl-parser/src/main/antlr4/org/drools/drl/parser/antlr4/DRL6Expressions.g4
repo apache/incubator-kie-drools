@@ -838,10 +838,11 @@ in_key
     ;
 
 operator_key
-  // TODO get rid of the DRL_MATCHES token or introduce DRL_CONTAINS etc. for consistency.
-  :      {(helper.isPluggableEvaluator(false))}? id=(IDENTIFIER|DRL_MATCHES) { helper.emit($id, DroolsEditorType.KEYWORD); }
+  // At the moment, we list possible DRLLexer tokens here, but we may be able to improve this by isolating lexers. IDENTIFIER is required to accept custom operators
+  // We need to keep this semantic predicate for custom operators
+  :      {(helper.isPluggableEvaluator(false))}? id=(IDENTIFIER|DRL_MATCHES|DRL_MEMBEROF|DRL_CONTAINS|DRL_EXCLUDES|DRL_SOUNDSLIKE|DRL_STR) { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(true))}? id=(IDENTIFIER|DRL_MATCHES|DRL_MEMBEROF|DRL_CONTAINS|DRL_EXCLUDES|DRL_SOUNDSLIKE|DRL_STR) { helper.emit($id, DroolsEditorType.KEYWORD); }
   ;
