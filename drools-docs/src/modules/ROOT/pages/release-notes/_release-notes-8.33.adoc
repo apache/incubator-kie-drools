@@ -1,5 +1,0 @@
-== 8.33.0.Final release notes
-
-=== `drools-engine` or `drools-ruleunits-engine` dependency is enough to generate the executable model
-
-In order to generate the executable model with `kie-maven-plugin`, `drools-model-compiler` was required in prior versions, but starting from {PRODUCT} 8.33, `drools-engine` or `drools-ruleunits-engine` dependency is enough to generate the executable model.

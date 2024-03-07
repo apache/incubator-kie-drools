@@ -1,5 +1,0 @@
-== 8.32.0.Final release notes
-
-=== 'with' statement is retired
-
-'with' statement is no longer supported in DRL. It should be easily rewritten with valid Java syntax.

@@ -54,7 +54,7 @@ Each rule must have a unique name within the rule unit. If you use the same rule
 
 [id="new-and-traditional-syntax_{context}"]
 == New and traditional syntax
-In Drools 8, we promote a new DRL syntax based on rule unit, data source, and OOPath. Hence, you will see such a new syntax in DRL syntax examples. However, Drools 8 still fully supports traditional DRL syntax that has been used in version 7 and prior.
+In Drools 10, we promote a new DRL syntax based on rule unit, data source, and OOPath. Hence, you will see such a new syntax in DRL syntax examples. However, Drools 10 still fully supports traditional DRL syntax that has been used in prior versions.
 
 .Example rule for loan application with traditional syntax
 [source]

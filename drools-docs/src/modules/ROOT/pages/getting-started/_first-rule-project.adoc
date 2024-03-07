@@ -11,7 +11,7 @@ This guide walks you through the process of creating a simple Drools application
 
 == Creating a project with maven archetype
 
-You can choose a style of rule project from Rule Unit or traditional style. Rule Unit is a new style that is recommended for microservices and cloud native applications. Traditional style is the same as Drools 7. Both styles are supported in Drools 8.
+You can choose a style of rule project from Rule Unit or traditional style. Rule Unit is a new style that is recommended for microservices and cloud native applications. The traditional style has been used since Drools 7. Both styles are supported in Drools 10.
 
 === Rule Unit style
 
