@@ -2,7 +2,7 @@
 
 = Rule Unit API
 
-Previous sections in this chapter explained traditional KIE APIs to use {RULE_ENGINE}. However, as introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], Rule Unit is a new and recommended style for implementing rules in {PRODUCT} 8.
+Previous sections in this chapter explained traditional KIE APIs to use {RULE_ENGINE}. However, as introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], Rule Unit is a new and recommended style for implementing rules since {PRODUCT} 8.
 
 A rule unit is an atomic module defining a set of rules and a set of strongly typed *data sources* through which the facts processed by the rules are inserted. The *data sources* of 2 kinds: `DataStream` and `DataStore` which will be described later in this section.
 
