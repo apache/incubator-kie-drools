@@ -93,7 +93,6 @@ public class WorkflowEventIT {
                 Map data = (Map) event.getData();
                 if ("secure".equals(data.get("processId"))) {
                     if (event.getType().equals("ProcessInstanceStateDataEvent")) {
-                        assertEquals("ProcessInstanceStateEvent", event.getType());
                         assertEquals("/secure", event.getSource().toString());
                         assertEquals("secure", event.getKogitoProcessId());
                         assertEquals("1.0", event.getKogitoProcessInstanceVersion());

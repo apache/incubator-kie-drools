@@ -147,7 +147,7 @@ public class PublishEventIT extends AbstractCodegenIT {
     }
 
     private Optional<DataEvent<?>> findProcessInstanceEvent(List<DataEvent<?>> events, int state) {
-        return events.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).filter(e -> ((ProcessInstanceStateEventBody) e.getData()).getState() == state).findAny();
+        return events.stream().filter(ProcessInstanceStateDataEvent.class::isInstance).filter(e -> ((ProcessInstanceStateEventBody) e.getData()).getEventType() == state).findAny();
     }
 
     private List<ProcessInstanceNodeEventBody> findNodeInstanceEvents(List<DataEvent<?>> events, int eventType) {
