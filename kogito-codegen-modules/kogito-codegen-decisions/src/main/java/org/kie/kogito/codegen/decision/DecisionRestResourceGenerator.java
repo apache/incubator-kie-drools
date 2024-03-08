@@ -62,6 +62,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static java.util.function.Predicate.not;
+import static org.kie.kogito.codegen.decision.CodegenUtils.getDefinitionsFileFromModel;
 
 public class DecisionRestResourceGenerator {
 
@@ -203,7 +204,7 @@ public class DecisionRestResourceGenerator {
             inputRef = withOASResult.getNamingPolicy().getRef(identifyInputSet);
             outputRef = withOASResult.getNamingPolicy().getRef(identifyOutputSet);
         }
-        final String DMN_DEFINITIONS_JSON = "/dmnDefinitions.json";
+        final String DMN_DEFINITIONS_JSON = "/" + getDefinitionsFileFromModel(dmnModel);
         // MP / Quarkus
         final String Q_CTX_PATH = context.getApplicationProperty("quarkus.http.root-path").filter(not("/"::equals)).orElse("");
         processAnnForRef(dmnMethod,

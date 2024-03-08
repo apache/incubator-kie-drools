@@ -28,6 +28,8 @@ import io.swagger.v3.parser.core.models.ParseOptions;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -78,14 +80,23 @@ class OASTest extends BaseRestTest {
         OpenAPI openAPI = result.getOpenAPI();
         PathItem p1 = openAPI.getPaths().get("/" + DMN_MODEL_NAME);
         assertThat(p1).isNotNull();
-        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
-        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
+        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/basicAdd.json#");
+        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/basicAdd.json#");
     }
 
-    @Test
-    public void testOASdmnDefinitions() {
+    @ParameterizedTest
+    @ValueSource(strings = {"basicAdd",
+            "DScoercion",
+            "ElementAtIndex",
+            "FaceMask",
+            "Hospitals",
+            "HospitalStatus",
+            "java_function_context",
+            "OneOfEachType",
+            "StatusService"})
+    public void testOASdmnDefinitions(String name) {
         RestAssured.given()
-                .get("/dmnDefinitions.json")
+                .get("/" + name + ".json")
                 .then()
                 .statusCode(200)
                 .body("definitions", aMapWithSize(greaterThan(0)));

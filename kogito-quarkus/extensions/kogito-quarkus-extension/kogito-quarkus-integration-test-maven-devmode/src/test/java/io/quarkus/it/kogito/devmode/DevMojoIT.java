@@ -448,7 +448,7 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
 
         // static resource
         given().baseUri("http://localhost:" + httpPort)
-                .get("/dmnDefinitions.json")
+                .get("/hello.json")
                 .then()
                 .statusCode(200)
                 .body("definitions", aMapWithSize(greaterThan(0)));

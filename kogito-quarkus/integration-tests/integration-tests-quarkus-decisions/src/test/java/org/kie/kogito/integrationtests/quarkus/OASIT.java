@@ -20,8 +20,6 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.net.URL;
 
-import org.junit.jupiter.api.Test;
-
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -30,6 +28,9 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import io.swagger.v3.parser.core.models.ParseOptions;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
@@ -77,14 +78,23 @@ class OASIT {
         OpenAPI openAPI = result.getOpenAPI();
         PathItem p1 = openAPI.getPaths().get("/" + DMN_MODEL_NAME);
         assertThat(p1).isNotNull();
-        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
-        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/dmnDefinitions.json#");
+        assertThat(p1.getPost().getRequestBody().getContent().get("application/json").getSchema().get$ref()).startsWith("/basicAdd.json#");
+        assertThat(p1.getPost().getResponses().getDefault().getContent().get("application/json").getSchema().get$ref()).startsWith("/basicAdd.json#");
     }
 
-    @Test
-    public void testOASdmnDefinitions() {
+    @ParameterizedTest
+    @ValueSource(strings = { "basicAdd",
+            "DScoercion",
+            "ElementAtIndex",
+            "FaceMask",
+            "Hospitals",
+            "HospitalStatus",
+            "java_function_context",
+            "OneOfEachType",
+            "StatusService" })
+    public void testOASdmnDefinitions(String name) {
         RestAssured.given()
-                .get("/dmnDefinitions.json")
+                .get("/" + name + ".json")
                 .then()
                 .statusCode(200)
                 .body("definitions", aMapWithSize(greaterThan(0)));

@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -66,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.decision.CodegenUtils.getDefinitionsFileFromModel;
 
 public class DecisionCodegen extends AbstractGenerator {
 
@@ -134,22 +134,11 @@ public class DecisionCodegen extends AbstractGenerator {
         List<DecisionRestResourceGenerator> rgs = new ArrayList<>(); // REST resources
         List<DMNModel> models = resources.stream().map(DMNResource::getDmnModel).collect(Collectors.toList());
 
-        DMNOASResult oasResult = null;
-        try {
-            Comparator<DMNModel> nsNameComparator = Comparator.comparing(DMNModel::getNamespace).thenComparing(DMNModel::getName);
-            List<DMNModel> orderedModels = new ArrayList<>(models);
-            Collections.sort(orderedModels, nsNameComparator);
-            oasResult = DMNOASGeneratorFactory.generator(orderedModels).build();
-            String jsonContent = new ObjectMapper().writeValueAsString(oasResult.getJsonSchemaNode());
-            storeFile(GeneratedFileType.STATIC_HTTP_RESOURCE, "dmnDefinitions.json", jsonContent);
-        } catch (Exception e) {
-            LOGGER.error("Error while trying to generate OpenAPI specification for the DMN models", e);
-        }
-
         for (DMNModel model : models) {
             if (model.getName() == null || model.getName().isEmpty()) {
                 throw new RuntimeException("Model name should not be empty");
             }
+            DMNOASResult oasResult = generateAndStoreDefinitionsJson(model);
 
             boolean stronglyTypedEnabled = Optional.ofNullable(context())
                     .flatMap(c -> c.getApplicationProperty(STRONGLY_TYPED_CONFIGURATION_KEY))
@@ -196,6 +185,19 @@ public class DecisionCodegen extends AbstractGenerator {
             final DecisionCloudEventMetaFactoryGenerator ceMetaFactoryGenerator = new DecisionCloudEventMetaFactoryGenerator(context(), models);
             storeFile(REST_TYPE, ceMetaFactoryGenerator.generatedFilePath(), ceMetaFactoryGenerator.generate());
         }
+    }
+
+    private DMNOASResult generateAndStoreDefinitionsJson(DMNModel dmnModel) {
+        DMNOASResult toReturn = null;
+        try {
+            toReturn = DMNOASGeneratorFactory.generator(Collections.singleton(dmnModel)).build();
+            String jsonContent = new ObjectMapper().writeValueAsString(toReturn.getJsonSchemaNode());
+            final String DMN_DEFINITIONS_JSON = getDefinitionsFileFromModel(dmnModel);
+            storeFile(GeneratedFileType.STATIC_HTTP_RESOURCE, DMN_DEFINITIONS_JSON, jsonContent);
+        } catch (Exception e) {
+            LOGGER.error("Error while trying to generate OpenAPI specification for the DMN models", e);
+        }
+        return toReturn;
     }
 
     private void generateAndStoreDecisionModelResourcesProvider() {
