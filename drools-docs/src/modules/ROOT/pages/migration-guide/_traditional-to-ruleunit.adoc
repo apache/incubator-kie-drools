@@ -1,10 +1,12 @@
 [id='traditional-to-ruleunit_{context}']
 
-= Migrate to {PRODUCT} 8
+= Migrate to {PRODUCT} 10
 
-This guide explains how to migrate {PRODUCT} 7 projects to {PRODUCT} 8 projects.
+Firstly, migration from {PRODUCT} 8 to {PRODUCT} 10 is very simple. You just need to change the version in `pom.xml`. All APIs and DRL syntax are compatible.
 
-Firstly, {PRODUCT} 8 supports {PRODUCT} 7 APIs and DRL syntax, so basically you don't need to change your Java codes and rule assets. However, there are some cautions in `pom.xml`.
+This guide rather focuses on how to migrate from {PRODUCT} 7 projects to {PRODUCT} 10 projects.
+
+{PRODUCT} 10 supports {PRODUCT} 7 APIs and DRL syntax, so basically you don't need to change your Java codes and rule assets. However, there are some cautions in `pom.xml`.
 
 Typical {PRODUCT} 6 or early 7 projects have pom dependencies like this.
 
@@ -36,11 +38,11 @@ But since {PRODUCT} 7.45.0, `drools-engine` and `drools-engine-classic` have bee
     </dependency>
 ----
 
-{PRODUCT} 8 made some module refactoring, so you may find some difficulty in collecting dependencies. This aggregator dependency would help.
+Some module refactoring were made during the version upgrades, so you may find some difficulty in collecting dependencies. This aggregator dependency would help.
 
 == Rule Unit
 
-As introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], using Rule Units is a recommended style for implementing rules in {PRODUCT} 8. It will require some modifications to your codebase, but if you are going to develop cloud-native applications, Rule Units are strongly recommended, because {KOGITO} also works with Rule Units.
+As introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], using Rule Units is a recommended style for implementing rules in {PRODUCT} 10. It will require some modifications to your codebase, but if you are going to develop cloud-native applications, Rule Units are strongly recommended, because {KOGITO} also works with Rule Units.
 
 .Rule Unit pom.xml
 [xml,subs=attributes+]

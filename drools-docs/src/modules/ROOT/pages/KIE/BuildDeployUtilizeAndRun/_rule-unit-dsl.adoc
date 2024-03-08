@@ -2,7 +2,7 @@
 
 = Rule Unit DSL
 
-In addition to the standard Rule Unit API, {PRODUCT} 8 offers an alternative way of writing rules in combination with Rule Unit.
+In addition to the standard Rule Unit API, {PRODUCT} offers an alternative way of writing rules in combination with Rule Unit.
 You can now define the rules for Rule Units using a dedicated set of Java APIs.
 
 TIP: As an end-user, you can think of the Rule Unit DSL as an alternative to DRL, in order to define your rules with an internal DSL using Java.

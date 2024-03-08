@@ -7,59 +7,21 @@ include::../_artifacts/document-attributes.adoc[]
 [id='{context}']
 = Release Notes
 
-This chapter contains the release notes for the {PRODUCT} 8-series.
+This chapter contains the release notes for the {PRODUCT} 10-series.
 
-For the release notes of the _previous releases_, you can refer to the {PRODUCT} documentation of link:https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#droolsreleasenoteschapter[version 7].
+For the release notes of the _previous releases_, you can refer to the {PRODUCT} documentation of link:https://docs.drools.org/8.44.0.Final/drools-docs/drools/release-notes/index.html[version 8].
 
-include::_release-notes-8.40.adoc[leveloffset=0]
+// This is a placeholder for adding the release notes per minor version
+// include::_release-notes-10.0.adoc[leveloffset=0]
 
-include::_release-notes-8.33.adoc[leveloffset=0]
-
-include::_release-notes-8.32.adoc[leveloffset=0]
-
-include::_release-notes-8.31.adoc[leveloffset=0]
-
-== Drools 8-series release notes
-
-Drools 8-series is a natural evolution of the 7.x-stream, incorporating many features and lessons learned integrating with Kogito and many cloud-native use cases.
-
-=== Rule Unit
-
-Rule Unit is a central paradigm in the Drools 8-series.
-You can refer the xref:migration-guide/index.adoc[Migration guide chapter] for more information about Rule Unit.
+== Drools 10-series release notes
 
 === Minimum requirements update
 
-JDK 11 is now the minimum Java version required to compile Drools and make use of Drools.
+JDK 17 is now the minimum Java version required to compile Drools and make use of Drools.
 
-Maven `3.8.6` is now the minimum Maven version required to build Drools from source, or using `kie-ci` APIs.
+Maven `3.8.6` is the minimum Maven version required to build Drools from source, or using `kie-ci` APIs.
 
 === `drools-mvel` and `drools-engine-classic` are deprecated
 
-`drools-mvel` is now deprecated in favor of the executable model. It also means `drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. You can still use MVEL syntax in your rules, so it doesn't affect how to write rules.
-
-=== Spreadsheet decision tables file extensions
-
-All the files with `.xls`, `.xlsx` and `.csv` extensions were considered and parsed as decision tables. In general, this was a too strong assumption, breaking projects containing random excel files that are not decision tables and generating artificial compile-time errors. To prevent such problems the filename extension policy has been changed, considering and processing files as decision tables only if their extension is prepended with `.drl`. In other words, **only** files with `.drl.xls`, `.drl.xlsx`, and `.drl.csv` extensions will now be compiled as decision tables. For example: `rules.drl.xls` is a valid extension and will be included for rule compilation when found in a KJAR based project.
-
-=== Security Manager deprecation
-
-The {PRODUCT} features related to the JDK Security Manager will not be further developed, as starting with JDK17, the Java Platform has deprecated the Security Manager for removal.
-You can refer the xref:KIE/index.adoc#_securitymanager[Security Manager chapter] for more information.
-
-=== KIE Marshallers notice
-
-The `KieMarshallers` are still present and working as expected on the release of the Drools 8-series, however we are currently exploring alternative solutions more idiomatic to cloud-native use cases.
-
-=== {KIE_SERVER} is retired
-{KIE_SERVER} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#kie-server_migration-guide[Migration guide chapter].
-
-=== {BUSINESS_CENTRAL} is retired
-{BUSINESS_CENTRAL} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#business-central_migration-guide[Migration guide chapter].
-
-=== OSGi support is retired
-{PRODUCT} 8 no longer provides out of the box OSGi support in its modules.
-
-== Previous release notes
-
-For the release notes of the previous releases, you can refer the {PRODUCT} documentation of link:https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#droolsreleasenoteschapter[version 7]. 
+`drools-mvel` is deprecated since Drools 8 in favor of the executable model. It also means drools-engine` is recommended instead of deprecated `drools-engine-classic` that contains `drools-mvel`. You can still use MVEL syntax in your rules, so it doesn't affect how to write rules.

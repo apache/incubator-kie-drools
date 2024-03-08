@@ -453,7 +453,7 @@ The `KieResources` provides many convenient factory methods to convert an ``Inpu
 .KieResources
 image::KIE/BuildDeployUtilizeAndRun/KieResources.png[align="center"]
 
-NOTE: `URLResource` is no longer available with Drools 8 series, to ensure a more reproducible knowledge base build (avoiding remote URLs) and for better security. If you used `URLResource` in the past, you can manage the local-fetch of the remote resource externally to your Drools application, so to limit Drools build concerns to local resources containing knowledge assets.
+NOTE: `URLResource` is no longer available since Drools 8, to ensure a more reproducible knowledge base build (avoiding remote URLs) and for better security. If you used `URLResource` in the past, you can manage the local-fetch of the remote resource externally to your Drools application, so to limit Drools build concerns to local resources containing knowledge assets.
 
 Normally the type of a `Resource` can be inferred from the extension of the name used to add it to the ``KieFileSystem``.
 However it also possible to not follow the Kie conventions about file extensions and explicitly assign a specific `ResourceType` to a `Resource` as shown below:

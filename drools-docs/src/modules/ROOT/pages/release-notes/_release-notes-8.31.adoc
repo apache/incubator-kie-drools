@@ -1,5 +1,0 @@
-== 8.31.0.Final release notes
-
-=== Security Manager support is removed
-
-Following the JDK Security Manager deprecation for removal in Java 17, since version 8.31.0.Final {PRODUCT} no longer allows to define a Security Manager for constraints evaluation and consequences execution.
