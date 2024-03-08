@@ -53,6 +53,9 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
 
     private DMNRuntime dmnRuntime = initDmnRuntime();
 
+    private static final String targetFolder = File.separator + "target" + File.separator;
+    private static final String generatedResourcesFolder = targetFolder + "generated-resources" + File.separator;
+
     @Override
     protected Map<String, Object> executeScenario(KieContainer kieContainer,
             ScenarioRunnerData scenarioRunnerData,
@@ -102,8 +105,9 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
     }
 
     private boolean filterResource(Path path, String extension) {
-        String targetFolder = File.separator + "target" + File.separator;
-        return path.toString().endsWith(extension) && !path.toString().contains(targetFolder) && Files.isRegularFile(path);
+        return path.toString().endsWith(extension) &&
+                (path.toString().contains(generatedResourcesFolder) || !(path.toString().contains(targetFolder)))
+                && Files.isRegularFile(path);
     }
 
 }

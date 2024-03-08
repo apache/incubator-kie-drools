@@ -18,7 +18,9 @@
  */
 package org.kie.kogito.quarkus.common.deployment;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -64,6 +67,8 @@ import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.paths.PathCollection;
+import io.quarkus.paths.PathList;
 import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
@@ -102,9 +107,10 @@ public class KogitoAssetsProcessor {
     @BuildStep
     public KogitoBuildContextBuildItem generateKogitoBuildContext(List<KogitoBuildContextAttributeBuildItem> attributes) {
         // configure the application generator
+        PathCollection rootPaths = getRootPaths( root.getResolvedPaths());
         KogitoBuildContext context =
                 kogitoBuildContext(outputTargetBuildItem.getOutputDirectory(),
-                        root.getResolvedPaths(),
+                        rootPaths,
                         combinedIndexBuildItem.getIndex(),
                         curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
         attributes.forEach(attribute -> context.addContextAttribute(attribute.getName(), attribute.getValue()));
@@ -210,6 +216,28 @@ public class KogitoAssetsProcessor {
     public EfestoGeneratedClassBuildItem reflectiveEfestoGeneratedClassBuildItem(KogitoGeneratedSourcesBuildItem kogitoGeneratedSourcesBuildItem) {
         LOGGER.debugf("reflectiveEfestoGeneratedClassBuildItem %s", kogitoGeneratedSourcesBuildItem);
         return new EfestoGeneratedClassBuildItem(kogitoGeneratedSourcesBuildItem.getGeneratedFiles());
+    }
+
+    static PathCollection getRootPaths(PathCollection resolvedPaths) {
+        AtomicReference<PathCollection> toReturnRef = new AtomicReference<>(resolvedPaths);
+        if (resolvedPaths.stream().noneMatch(path -> path.endsWith(File.separator + "generated-resources"))) {
+            Optional<Path> optClassesPath =
+                    resolvedPaths.stream().filter(path -> {
+                        String fullPath = path.toString();
+                        String dir = fullPath.substring(fullPath.lastIndexOf(File.separator) + 1);
+                        return dir.equals("classes");
+                    }).findFirst();
+            optClassesPath.ifPresent(classesPath -> {
+                Path toAdd = Path.of(classesPath.toString().replace(File.separator + "classes",
+                        File.separator +
+                                "generated" +
+                                "-resources"));
+                List<Path> prevPaths = toReturnRef.get().stream().collect(Collectors.toList());
+                prevPaths.add(toAdd);
+                toReturnRef.set(PathList.from(prevPaths));
+            });
+        }
+        return toReturnRef.get();
     }
 
     private Collection<GeneratedFile> collectGeneratedFiles(KogitoGeneratedSourcesBuildItem sources, List<KogitoAddonsPreGeneratedSourcesBuildItem> preSources,
