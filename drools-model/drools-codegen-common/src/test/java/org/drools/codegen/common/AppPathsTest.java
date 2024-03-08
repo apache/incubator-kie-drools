@@ -77,7 +77,8 @@ public class AppPathsTest {
 
     private void getResourceFilesTest(AppPaths toCheck, String projectDirPath, boolean isGradle, boolean isTestDir) {
         File[] retrieved = toCheck.getResourceFiles();
-        assertEquals(1, retrieved.length, "AppPathsTest.getResourceFilesTest");
+        int expected = isGradle ? 1 : 2;
+        assertEquals(expected, retrieved.length, "AppPathsTest.getResourceFilesTest");
         String expectedPath;
         String sourceDir =  isTestDir ? "test" : "main";
         if (isGradle) {
@@ -86,6 +87,10 @@ public class AppPathsTest {
             expectedPath = String.format("%s/src/%s/resources", projectDirPath, sourceDir).replace("/", File.separator);
         }
         assertEquals(new File(expectedPath), retrieved[0], "AppPathsTest.getResourceFilesTest");
+        if (!isGradle) {
+            expectedPath = String.format("%s/target/generated-resources", projectDirPath).replace("/", File.separator);
+            assertEquals(new File(expectedPath), retrieved[1], "AppPathsTest.getResourceFilesTest");
+        }
     }
 
     private void getResourcePathsTest(AppPaths toCheck, String projectDirPath, boolean isGradle, boolean isTestDir) {

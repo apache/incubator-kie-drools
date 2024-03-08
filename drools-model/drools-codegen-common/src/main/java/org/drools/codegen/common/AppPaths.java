@@ -109,7 +109,15 @@ public class AppPaths {
     }
 
     public File[] getResourceFiles() {
-        return projectPaths.stream().map(p -> p.resolve(resourcesPath).toFile()).toArray(File[]::new);
+        File[] toReturn = projectPaths.stream().map(p -> p.resolve(resourcesPath).toFile()).toArray(File[]::new);
+        if (generatedResourcesPath != null) {
+            File[] generatedResourcesFiles =  projectPaths.stream().map(p -> p.resolve(generatedResourcesPath).toFile()).toArray(File[]::new);
+            File[] newToReturn = new File[toReturn.length + generatedResourcesFiles.length];
+            System.arraycopy( toReturn, 0, newToReturn, 0, toReturn.length );
+            System.arraycopy( generatedResourcesFiles, 0, newToReturn, toReturn.length, generatedResourcesFiles.length );
+            toReturn = newToReturn;
+        }
+        return toReturn;
     }
 
     public Path[] getResourcePaths() {
