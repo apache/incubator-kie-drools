@@ -30,7 +30,6 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.drools</groupId>
     <artifactId>drools-codegen-common</artifactId>
 
     <name>Drools :: Codegen :: Common</name>
@@ -44,5 +43,20 @@
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
         </dependency>
+        <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-api</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <scope>test</scope>
+        </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
 </project>
