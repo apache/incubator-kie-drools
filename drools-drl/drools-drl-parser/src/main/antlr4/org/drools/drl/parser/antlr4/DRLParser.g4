@@ -253,6 +253,7 @@ drlExpression
        | SUPER superSuffix
        | explicitGenericInvocation
       )
+    | drlExpression NULL_SAFE_DOT ( drlIdentifier | methodCall )
     | drlExpression LBRACK drlExpression RBRACK
     | DRL_EVAL LPAREN conditionalOrExpression RPAREN
     | methodCall
