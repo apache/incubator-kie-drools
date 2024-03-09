@@ -3609,4 +3609,34 @@ class MiscDRLParserTest {
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
         assertThat(exprConstraintDescr.getExpression()).isEqualToIgnoringWhitespace(constraint);
     }
+
+    @Test
+    void nullSafeDereferencing() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person(address!.city == $city)\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("address!.city == $city");
+    }
+
+    @Test
+    void nullSafeDereferencingMethodCall() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person(address!.city!.startsWith(\"M\"))\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("address!.city!.startsWith(\"M\")");
+    }
 }
