@@ -23,6 +23,7 @@ import java.util.Collection;
 import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
@@ -64,7 +65,12 @@ public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
 
             if (nodeDefinitionId.equals(node.getMetaData().get(UNIQUE_ID))) {
                 if (nodeContainer instanceof Node) {
-                    return ((NodeInstanceContainer) getNodeInstance((Node) nodeContainer)).getNodeInstance(node);
+                    Collection<KogitoNodeInstance> nodeInstances = getKogitoNodeInstances(ni -> ni.getNode().getId() == (((Node) nodeContainer).getId()), true);
+                    if (nodeInstances.isEmpty()) {
+                        return ((NodeInstanceContainer) getNodeInstance((Node) nodeContainer)).getNodeInstance(node);
+                    } else {
+                        return ((NodeInstanceContainer) nodeInstances.iterator().next()).getNodeInstance(node);
+                    }
                 } else {
                     return getNodeInstance(node);
                 }

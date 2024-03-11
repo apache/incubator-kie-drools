@@ -53,6 +53,12 @@ class RetriggerIT {
                 .accept(ContentType.JSON).when()
                 .post("/management/processes/division/instances/{id}/retrigger", id)
                 .then().statusCode(200).body("workflowdata.response", is(2));
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON).when()
+                .get("/division/{id}", id)
+                .then().statusCode(404);
     }
 
 }
