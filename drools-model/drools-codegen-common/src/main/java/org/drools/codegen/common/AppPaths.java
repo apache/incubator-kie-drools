@@ -22,6 +22,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -41,17 +42,34 @@ public class AppPaths {
 
     public static final String TARGET_DIR = "target";
 
+    public static final String SRC_DIR = "src";
+
+    public static final String RESOURCES_DIR = "resources";
+
+    public static final String GENERATED_RESOURCES_DIR = "generated-resources";
+
+    public static final String MAIN_DIR = "main";
+    public static final String TEST_DIR = "test";
+
     private final Set<Path> projectPaths = new LinkedHashSet<>();
     private final Collection<Path> classesPaths = new ArrayList<>();
 
     private final boolean isJar;
-    private final BuildTool bt;
-    private final Path resourcesPath;
-    private final Path generatedResourcesPath;
     private final Path outputTarget;
 
+    private final Path[] paths;
+
+    private final Path firstProjectPath;
+
+    private final Path[] jarPaths;
+
+    private final Path[] resourcePaths;
+    private final File[] resourceFiles;
+
+    private final Path[] sourcePaths;
+
     public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), "main", outputTarget);
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), MAIN_DIR, outputTarget);
     }
 
     /**
@@ -61,7 +79,7 @@ public class AppPaths {
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), "test", Paths.get(projectDir.toString(), TARGET_DIR));
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), TEST_DIR, Paths.get(projectDir.toString(), TARGET_DIR));
     }
 
     /**
@@ -74,66 +92,43 @@ public class AppPaths {
     protected AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
             String resourcesBasePath, Path outputTarget) {
         this.isJar = isJar;
-        this.bt = bt;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
         this.outputTarget = outputTarget;
-        if (bt == BuildTool.GRADLE) {
-            resourcesPath = Paths.get(""); // no prefix required
-            generatedResourcesPath = null;
-        } else {
-            resourcesPath = Paths.get("src", resourcesBasePath, "resources");
-            generatedResourcesPath = Paths.get(TARGET_DIR, "generated-resources");
-        }
+        firstProjectPath = getFirstProjectPath(this.projectPaths, outputTarget, bt);
+        jarPaths = getJarPaths(isJar, this.classesPaths);
+        resourcePaths = getResourcePaths(this.projectPaths, resourcesBasePath, bt);
+        paths = isJar ? jarPaths : resourcePaths;
+        resourceFiles = getResourceFiles(resourcePaths);
+        sourcePaths = getSourcePaths(this.projectPaths);
     }
 
     public Path[] getPaths() {
-        if (isJar) {
-            return getJarPaths();
-        } else {
-            return getResourcePaths();
-        }
+        return paths;
     }
 
     public Path getFirstProjectPath() {
-        return bt == BuildTool.MAVEN
-               ? projectPaths.iterator().next()
-               : outputTarget;
+        return firstProjectPath;
     }
 
-    private Path[] getJarPaths() {
+    public Path[] getJarPaths() {
         if (!isJar) {
             throw new IllegalStateException("Not a jar");
+        } else {
+            return jarPaths;
         }
-        return classesPaths.toArray(new Path[classesPaths.size()]);
     }
 
     public File[] getResourceFiles() {
-        File[] toReturn = projectPaths.stream().map(p -> p.resolve(resourcesPath).toFile()).toArray(File[]::new);
-        if (generatedResourcesPath != null) {
-            File[] generatedResourcesFiles =  projectPaths.stream().map(p -> p.resolve(generatedResourcesPath).toFile()).toArray(File[]::new);
-            File[] newToReturn = new File[toReturn.length + generatedResourcesFiles.length];
-            System.arraycopy( toReturn, 0, newToReturn, 0, toReturn.length );
-            System.arraycopy( generatedResourcesFiles, 0, newToReturn, toReturn.length, generatedResourcesFiles.length );
-            toReturn = newToReturn;
-        }
-        return toReturn;
+        return resourceFiles;
     }
 
     public Path[] getResourcePaths() {
-        Path[] toReturn = transformPaths(projectPaths, p -> p.resolve(resourcesPath));
-        if (generatedResourcesPath != null) {
-            Path[] generatedResourcesPaths = transformPaths(projectPaths, p -> p.resolve(generatedResourcesPath));
-            Path[] newToReturn = new Path[toReturn.length + generatedResourcesPaths.length];
-            System.arraycopy( toReturn, 0, newToReturn, 0, toReturn.length );
-            System.arraycopy( generatedResourcesPaths, 0, newToReturn, toReturn.length, generatedResourcesPaths.length );
-            toReturn = newToReturn;
-        }
-        return toReturn;
+        return resourcePaths;
     }
 
     public Path[] getSourcePaths() {
-        return transformPaths(projectPaths, p -> p.resolve("src"));
+        return sourcePaths;
     }
 
     public Collection<Path> getClassesPaths() {
@@ -144,10 +139,6 @@ public class AppPaths {
         return outputTarget;
     }
 
-    private Path[] transformPaths(Collection<Path> paths, UnaryOperator<Path> f) {
-        return paths.stream().map(f).toArray(Path[]::new);
-    }
-
     @Override
     public String toString() {
         return "AppPaths{" +
@@ -156,4 +147,44 @@ public class AppPaths {
                 ", isJar=" + isJar +
                 '}';
     }
+
+    static Path getFirstProjectPath(Set<Path> innerProjectPaths, Path innerOutputTarget, BuildTool innerBt) {
+        return innerBt == BuildTool.MAVEN
+                ? innerProjectPaths.iterator().next()
+                : innerOutputTarget;
+    }
+
+    static Path[] getJarPaths(boolean isInnerJar, Collection<Path> innerClassesPaths) {
+        return isInnerJar ? innerClassesPaths.toArray(new Path[0]) : null;
+    }
+
+    static Path[] getResourcePaths(Set<Path> innerProjectPaths, String resourcesBasePath, BuildTool innerBt) {
+        Path[] toReturn;
+        if (innerBt == BuildTool.GRADLE) {
+            toReturn = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get("")));
+        } else {
+            toReturn = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(SRC_DIR, resourcesBasePath,
+                                                                                  RESOURCES_DIR)));
+            Path[] generatedResourcesPaths = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(TARGET_DIR,
+                                                                                                        GENERATED_RESOURCES_DIR)));
+            Path[] newToReturn = new Path[toReturn.length + generatedResourcesPaths.length];
+            System.arraycopy(toReturn, 0, newToReturn, 0, toReturn.length);
+            System.arraycopy(generatedResourcesPaths, 0, newToReturn, toReturn.length, generatedResourcesPaths.length);
+            toReturn = newToReturn;
+        }
+        return toReturn;
+    }
+
+    static File[] getResourceFiles(Path[] innerResourcePaths) {
+        return Arrays.stream(innerResourcePaths).map(Path::toFile).toArray(File[]::new);
+    }
+
+    static Path[] getSourcePaths(Set<Path> innerProjectPaths) {
+        return transformPaths(innerProjectPaths, p -> p.resolve(SRC_DIR));
+    }
+
+    static Path[] transformPaths(Collection<Path> paths, UnaryOperator<Path> f) {
+        return paths.stream().map(f).toArray(Path[]::new);
+    }
+
 }
