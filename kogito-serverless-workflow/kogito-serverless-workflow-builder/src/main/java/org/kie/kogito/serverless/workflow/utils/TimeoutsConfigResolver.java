@@ -30,7 +30,10 @@ import io.serverlessworkflow.api.timeouts.TimeoutsDefinition;
 public class TimeoutsConfigResolver {
 
     private static final String NON_NEGATIVE_DURATION_MUST_BE_PROVIDED =
-            "When configured, it must be set with a greater than zero ISO 8601 time duration. For example PT30S. Or a valid expression, for example $CONST.myDuration, where 'myDuration' is defined in the constant section of the workflow";
+            "When configured, it must be set with a greater than zero ISO 8601 time duration. For example PT30S." +
+                    " Or a valid expression, for example $CONST.myDuration, where 'myDuration' is defined in the constant section of the workflow." +
+                    " Note: month based durations like P2M (period of two months) are not valid since the month duration might vary." +
+                    " In that case you can use PT60D instead.";
 
     private static final String INVALID_EVENT_TIMEOUT_FOR_STATE_ERROR = "An invalid \"eventTimeout\": \"%s\" configuration was provided for the state \"%s\" in the serverless workflow: \"%s\"." +
             NON_NEGATIVE_DURATION_MUST_BE_PROVIDED;

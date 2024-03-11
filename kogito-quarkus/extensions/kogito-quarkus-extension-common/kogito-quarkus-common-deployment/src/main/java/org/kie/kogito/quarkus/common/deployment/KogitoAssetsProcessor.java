@@ -107,7 +107,7 @@ public class KogitoAssetsProcessor {
     @BuildStep
     public KogitoBuildContextBuildItem generateKogitoBuildContext(List<KogitoBuildContextAttributeBuildItem> attributes) {
         // configure the application generator
-        PathCollection rootPaths = getRootPaths( root.getResolvedPaths());
+        PathCollection rootPaths = getRootPaths(root.getResolvedPaths());
         KogitoBuildContext context =
                 kogitoBuildContext(outputTargetBuildItem.getOutputDirectory(),
                         rootPaths,
