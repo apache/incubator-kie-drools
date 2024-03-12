@@ -75,7 +75,7 @@ public class AppPaths {
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), TEST_DIR, Path.of(projectDir.toString(), TARGET_DIR));
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), TEST_DIR, projectDir.resolve(TARGET_DIR));
     }
 
     /**
