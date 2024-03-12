@@ -18,14 +18,14 @@
  */
 package org.drools.persistence.jpa;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import jakarta.persistence.OptimisticLockException;
 import org.drools.commands.impl.AbstractInterceptor;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.persistence.OptimisticLockException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ExecutableInterceptor that is capable of retrying command execution. It is intended to retry only if right exception
@@ -58,14 +58,14 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
     private static final ThreadLocal<AtomicInteger> invocationsCounter = new ThreadLocal<>();
 
     public OptimisticLockRetryInterceptor() {
-        String clazz = System.getProperty("org.kie.optlock.exclass", "org.hibernate.StaleObjectStateException");
+        String clazz = System.getProperty("org.kie.optlock.exclass", "org.apache.openjpa.persistence.OptimisticLockException");
         try {
             targetExceptionClass = Class.forName(clazz);
         } catch (ClassNotFoundException e) {
             logger.error("Optimistic locking exception class not found {}", clazz, e);
         }
 
-        clazz = System.getProperty("org.kie.constraint.exclass", "org.hibernate.exception.ConstraintViolationException");
+        clazz = System.getProperty("org.kie.constraint.exclass", "org.apache.openjpa.util.InvalidStateException");
         try {
             targetConstraintViolationExceptionClass = Class.forName(clazz);
         } catch (ClassNotFoundException e) {

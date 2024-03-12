@@ -45,7 +45,6 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
     protected ScopeImpl feelTypesScope = new ScopeImpl(); // no parent scope, intentional.
     protected Map<String, ScopeImpl> feelTypesScopeChildLU = new HashMap<>();
 
-    protected abstract String feelNS();
 
     public DMNTypeRegistryAbstract(Map<String, QName> aliases) {
         this.aliases = aliases;
@@ -65,11 +64,11 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
                     // already added, skip it
                     continue;
                 } else if( type == BuiltInType.LIST ) {
-                    feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, false, null, unknown(), type);
+                    feelPrimitiveType = new SimpleTypeImpl(feelNamespace, name, null, false, null, null, unknown(), type);
                 } else if( type == BuiltInType.CONTEXT ) {
                     feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
                 } else {
-                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, type );
+                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, null, null, type );
                 }
                 feelTypes.put( name, feelPrimitiveType );
                 feelTypesScope.define(new TypeSymbol(name, type));
@@ -91,6 +90,11 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
         } else {
             throw new IllegalStateException("Inconsistent state when resolving for qns: " + qns.toString());
         }
+    }
+
+    @Override
+    public Map<String, Map<String, DMNType>> getTypes() {
+        return types;
     }
 
     protected void registerAsFEELType(DMNType dmnType) {

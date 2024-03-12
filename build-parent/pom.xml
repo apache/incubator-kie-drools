@@ -74,7 +74,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.4</version.info.picocli>
     <version.io.micrometer>1.11.1</version.io.micrometer>
-    <version.io.quarkus>3.2.9.Final</version.io.quarkus>
+    <version.io.quarkus>3.2.10.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.4.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -90,7 +90,7 @@
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
-    <version.org.apache.poi>5.1.0</version.org.apache.poi>
+    <version.org.apache.poi>5.2.5</version.org.apache.poi>
     <version.org.apache.tomcat.tomcat-dbcp>10.1.7</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.assertj>3.23.1</version.org.assertj>
     <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
@@ -98,11 +98,11 @@
     <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>1.3</version.org.hamcrest>
-    <version.org.hibernate>6.2.13.Final</version.org.hibernate>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.infinispan>14.0.13.Final</version.org.infinispan>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>6.0.1.Final</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.logging>3.5.3.Final</version.org.jboss.logging>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.0.3</version.org.eclipse.microprofile.config>
@@ -121,8 +121,9 @@
     <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
     <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
     <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
-    <version.jakarta.json>1.1.2</version.jakarta.json>
+    <version.jakarta.json>1.1.5</version.jakarta.json>
     <version.jakarta.json-api>2.1.2</version.jakarta.json-api>
+    <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
     <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
     <version.org.junit>5.9.3</version.org.junit>
     <version.org.mvel>2.5.1.Final</version.org.mvel>
@@ -171,7 +172,7 @@
     <version.plugin.annotations>3.7.1</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.3.4</version.shared.utils>
-    <version.common.compress>1.24.0</version.common.compress>
+    <version.common.compress>1.26.0</version.common.compress>
     <version.common.exec>1.3</version.common.exec>
     <!-- -->
     <!-- Jacoco plugin configurations -->
@@ -202,7 +203,7 @@
     <version.org.postgresql>42.6.0</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.1.2</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex>3.1.6</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.25.3</version.com.github.javaparser>
@@ -373,11 +374,6 @@
       <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
-        <version>${version.com.thoughtworks.xstream}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>
-        <artifactId>xstream-hibernate</artifactId>
         <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
 
@@ -778,23 +774,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hibernate.orm</groupId>
-        <artifactId>hibernate-envers</artifactId>
-        <version>${version.org.hibernate}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate.orm</groupId>
-        <artifactId>hibernate-jpamodelgen</artifactId>
-        <version>${version.org.hibernate}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>${version.org.javassist}</version>
@@ -1099,29 +1078,6 @@
         <scope>test</scope>
       </dependency>
 
-      <dependency>
-        <groupId>org.hibernate.orm</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>${version.org.hibernate}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.transaction</groupId>
-            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>javax.activation-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
       <!-- Required for Errai Dynamic Bean validation  -->
       <dependency>
         <groupId>jakarta.validation</groupId>
@@ -1287,6 +1243,17 @@
         <groupId>org.eclipse.microprofile.config</groupId>
         <artifactId>microprofile-config-api</artifactId>
         <version>${version.org.eclipse.microprofile.config}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+        <version>${version.org.apache.openjpa}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${version.org.jboss.logging}</version>
       </dependency>
     </dependencies>
 

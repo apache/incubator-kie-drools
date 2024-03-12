@@ -202,7 +202,12 @@ public class ConstraintParser {
     private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {
         TypedDeclarationSpec decl = context.addDeclaration(bindId, getDeclarationType(drlx, singleResult));
         if (drlx.getExpr() instanceof NameExpr) {
-            decl.setBoundVariable( PrintUtil.printNode(drlx.getExpr()) );
+            decl.setBoundVariable(PrintUtil.printNode(drlx.getExpr()));
+        } else if (drlx.getExpr() instanceof EnclosedExpr && drlx.getBind() != null) {
+            ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
+            ExpressionTyper expressionTyper = new ExpressionTyper(context, singleResult.getPatternType(), bindId, false, expressionTyperContext);
+            TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(drlx.getExpr());
+            singleResult.setBoundExpr(typedExpressionResult.typedExpressionOrException());
         } else if (drlx.getExpr() instanceof BinaryExpr) {
             Expression leftMostExpression = getLeftMostExpression(drlx.getExpr().asBinaryExpr());
             decl.setBoundVariable(PrintUtil.printNode(leftMostExpression));
@@ -212,7 +217,7 @@ public class ConstraintParser {
                 ExpressionTyper expressionTyper = new ExpressionTyper(context, singleResult.getPatternType(), bindId, false, expressionTyperContext);
                 TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(leftMostExpression);
                 Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
-                if (!optLeft.isPresent()) {
+                if (optLeft.isEmpty()) {
                     throw new IllegalStateException("Cannot create TypedExpression for " + drlx.getExpr().asBinaryExpr().getLeft());
                 }
                 singleResult.setBoundExpr(optLeft.get());
@@ -501,21 +506,23 @@ public class ConstraintParser {
         Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
 
         if (hasBind) {
-            return new SingleDrlxParseSuccess(patternType, bindingId, null, converted.getType() )
+            return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirstForBean(nameExpr.getNameAsString()) );
-        } else if (context.hasDeclaration( expression )) {
+        }
+
+        if (context.hasDeclaration( expression )) {
             Optional<TypedDeclarationSpec> declarationSpec = context.getTypedDeclarationById(expression);
             if (declarationSpec.isPresent()) {
                 return new SingleDrlxParseSuccess(patternType, bindingId, context.getVarExpr(printNode(drlxExpr)), declarationSpec.get().getDeclarationClass() ).setIsPredicate(true);
             } else {
                 throw new IllegalArgumentException("Cannot find declaration specification by specified expression " + expression + "!");
             }
-        } else {
-            return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
-                    .addReactOnProperty( nameExpr.getNameAsString() )
-                    .setIsPredicate(true);
         }
+        
+        return new SingleDrlxParseSuccess(patternType, bindingId, withThis, converted.getType() )
+                .addReactOnProperty( nameExpr.getNameAsString() )
+                .setIsPredicate(true);
     }
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId ) {

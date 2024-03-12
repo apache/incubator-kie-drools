@@ -60,6 +60,8 @@ import org.drools.model.codegen.execmodel.domain.StockTick;
 import org.drools.model.codegen.execmodel.domain.TargetPolicy;
 import org.drools.model.codegen.execmodel.oopathdtables.InternationalAddress;
 import org.junit.Test;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -4203,5 +4205,80 @@ public class AccumulateTest extends BaseModelTest {
         results = getObjectsIntoList(ksession, Result.class);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results).containsExactlyInAnyOrder(new Result(0), new Result(75));
+    }
+
+    @Test
+    public void testAccumulateSumMultipleParametersExpression() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  accumulate ( $i : Integer() and $p: Person ( name.length >= $i ); \n" +
+                "                $sum : sum($p.getAge(), $p.getName())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        Results results = createKieBuilder(str).getResults();
+        if (testRunType.isExecutableModel()) {
+            assertThat(results.getMessages(Message.Level.ERROR).get(0).getText().contains(
+                    "Function \"sum\" cannot have more than 1 parameter")).isTrue();
+        } else {
+            // At this time, this error is thrown with executable model only.
+            assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isTrue();
+        }
+    }
+
+    @Test
+    public void testAccumulateSumUnaryExpression() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                "                $sum : sum(-$p.getAge()) \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession kieSession = getKieSession( str );
+
+        kieSession.insert(new Person("Mark", 37));
+        kieSession.insert(new Person("Edson", 35));
+        kieSession.insert(new Person("Mario", 40));
+
+        kieSession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(kieSession, Result.class);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(-77);
+    }
+
+    @Test
+    public void testAccumulateSumBinaryExpWithNestedUnaryExpression() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  accumulate ( $p: Person ( getName().startsWith(\"M\") ); \n" +
+                "                $sum : sum(-$p.getAge() + $p.getAge()) \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession kieSession = getKieSession( str );
+
+        kieSession.insert(new Person("Mark", 37));
+        kieSession.insert(new Person("Edson", 35));
+        kieSession.insert(new Person("Mario", 40));
+
+        kieSession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(kieSession, Result.class);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.iterator().next().getValue()).isEqualTo(0);
     }
 }

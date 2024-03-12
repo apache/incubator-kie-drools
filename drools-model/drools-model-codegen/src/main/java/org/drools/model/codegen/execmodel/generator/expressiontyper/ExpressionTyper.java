@@ -44,6 +44,7 @@ import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -71,7 +72,7 @@ import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.UnificationTypedExpression;
-import org.drools.model.codegen.execmodel.generator.drlxparse.ArithmeticCoercedExpression;
+import org.drools.model.codegen.execmodel.generator.drlxparse.NumberAndStringArithmeticOperationCoercion;
 import org.drools.model.codegen.execmodel.generator.operatorspec.CustomOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.NativeOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.OperatorSpec;
@@ -95,6 +96,7 @@ import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
 import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
 import org.drools.util.MethodUtils;
+import org.drools.util.Pair;
 import org.drools.util.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,18 +225,16 @@ public class ExpressionTyper {
             TypedExpression left = optLeft.get();
             TypedExpression right = optRight.get();
 
-            ArithmeticCoercedExpression.ArithmeticCoercedExpressionResult coerced;
-            try {
-                coerced = new ArithmeticCoercedExpression(left, right, operator).coerce();
-            } catch (ArithmeticCoercedExpression.ArithmeticCoercedExpressionException e) {
-                logger.error("Failed to coerce : {}", e.getInvalidExpressionErrorResult());
-                return empty();
+            final BinaryExpr combo;
+            final Pair<TypedExpression, TypedExpression> numberAndStringCoercionResult =
+                    NumberAndStringArithmeticOperationCoercion.coerceIfNeeded(operator, left, right);
+            if (numberAndStringCoercionResult.hasLeft()) {
+                left = numberAndStringCoercionResult.getLeft();
             }
-
-            left = coerced.getCoercedLeft();
-            right = coerced.getCoercedRight();
-
-            final BinaryExpr combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
+            if (numberAndStringCoercionResult.hasRight()) {
+                right = numberAndStringCoercionResult.getRight();
+            }
+            combo = new BinaryExpr(left.getExpression(), right.getExpression(), operator);
 
             if (shouldConvertArithmeticBinaryToMethodCall(operator, left.getType(), right.getType())) {
                 Expression expression = convertArithmeticBinaryToMethodCall(combo, of(typeCursor), ruleContext);
@@ -378,6 +378,10 @@ public class ExpressionTyper {
                 }
             }
             return of(new TypedExpression(drlxExpr, type));
+        }
+
+        if (drlxExpr instanceof ConditionalExpr) {
+            return of(new TypedExpression(drlxExpr, Boolean.class));
         }
 
         if (drlxExpr.isAssignExpr()) {

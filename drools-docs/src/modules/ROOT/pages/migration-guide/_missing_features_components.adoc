@@ -3,7 +3,7 @@
 [id='kie-server_{context}']
 == {KIE_SERVER}
 
-{KIE_SERVER} is retired and no longer a component of {PRODUCT} 8. If your system is working on {KIE_SERVER} with {PRODUCT} 7, consider migration to https://kogito.kie.org/[{KOGITO}].
+{KIE_SERVER} is retired and no longer a component since {PRODUCT} 8. If your system is working on {KIE_SERVER} with {PRODUCT} 7, consider migration to https://kogito.kie.org/[{KOGITO}].
 
 While {KIE_SERVER} hosts multiple kjar containers, One {KOGITO} instance hosts one domain service. Hence, you would create {KOGITO} project per kjar container, which would be microservice style.
 
@@ -12,7 +12,7 @@ You can find the detailed migration steps in the next sections, xref:con-migrati
 [id='business-central_{context}']
 == {BUSINESS_CENTRAL}
 
-{BUSINESS_CENTRAL} is retired and no longer a component of {PRODUCT} 8. For asset management, the usual version control system is recommended, for example, git. For editors, https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle[VS Code Kogito extension] is recommended.
+{BUSINESS_CENTRAL} is retired and no longer a component since {PRODUCT} 8. For asset management, the usual version control system is recommended, for example, git. For editors, https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle[VS Code Kogito extension] is recommended.
 
 [id='bpmn-integration_{context}']
 == BPMN integration / Rule flow

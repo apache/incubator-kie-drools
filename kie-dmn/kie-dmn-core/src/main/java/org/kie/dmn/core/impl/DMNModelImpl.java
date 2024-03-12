@@ -70,6 +70,8 @@ import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
     
@@ -205,12 +207,19 @@ public class DMNModelImpl
     }
 
     private String computeDRGElementModelLocalId(DMNNode node) {
+        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
+        // Here, if the node comes from an unnamed imported model, then it is stored only with its id, to be looked for
+        // as if defined in the model itself
         if (node.getModelNamespace().equals(definitions.getNamespace())) {
+            return node.getId();
+        } else if (isInUnnamedImport(node, this)) {
+            // the node is an unnamed import
             return node.getId();
         } else {
             return node.getModelNamespace() + "#" + node.getId();
         }
     }
+
 
     @Override
     public DecisionNode getDecisionById(String id) {

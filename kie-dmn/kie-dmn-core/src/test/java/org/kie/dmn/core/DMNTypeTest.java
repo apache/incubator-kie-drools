@@ -93,7 +93,7 @@ public class DMNTypeTest {
         final String testNS = "testDROOLS2357";
 
         final FEEL feel = FEEL.newInstance();
-        final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), FEEL_STRING, BuiltInType.STRING));
+        final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), null, FEEL_STRING, BuiltInType.STRING));
 
         assertThat(tDecision1.isAssignableValue("a")).isTrue();
         assertThat(tDecision1.isAssignableValue(Collections.singletonList("a"))).isTrue();
@@ -103,6 +103,22 @@ public class DMNTypeTest {
         assertThat(tDecision1.isAssignableValue(Arrays.asList("a", "e"))).isTrue();
 
         assertThat(tDecision1.isAssignableValue(Arrays.asList("a", "e", "zzz"))).isFalse();
+    }
+
+    @Test
+    public void testTypeConstraintForASimpleTypeCollection() {
+        // incubator-kie-issues#926
+        final String testNS = "testINCUBATORKIEISSUES926";
+
+        final FEEL feel = FEEL.newInstance();
+        final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfStrings", null, true, null, feel.evaluateUnaryTests("count (?) > 1"), FEEL_STRING, BuiltInType.LIST));
+
+        assertThat(tDecision1.isAssignableValue("asdvfsd")).isFalse();
+        assertThat(tDecision1.isAssignableValue("zds")).isFalse();
+
+        assertThat(tDecision1.isAssignableValue(Collections.singletonList("asdfsd"))).isFalse();
+        assertThat(tDecision1.isAssignableValue(Arrays.asList("ae", "efew"))).isTrue();
+        assertThat(tDecision1.isAssignableValue(Arrays.asList("sda", "de", "z"))).isTrue();
     }
 
 }

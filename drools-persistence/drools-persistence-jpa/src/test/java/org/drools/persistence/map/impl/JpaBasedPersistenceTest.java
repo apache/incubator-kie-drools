@@ -18,6 +18,11 @@
  */
 package org.drools.persistence.map.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
+import jakarta.persistence.EntityManagerFactory;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -33,11 +38,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.persistence.EntityManagerFactory;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
 
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
@@ -115,7 +115,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
         if( useTransactions ) { 
             transactionOwner = txm.begin();
         }
-        long savedSessionsCount =  emf.createEntityManager().createQuery( "FROM SessionInfo" ).getResultList().size();
+        long savedSessionsCount =  emf.createEntityManager().createQuery( "SELECT DISTINCT id FROM SessionInfo AS id" ).getResultList().size();
         if( useTransactions ) { 
             txm.commit(transactionOwner);
         }

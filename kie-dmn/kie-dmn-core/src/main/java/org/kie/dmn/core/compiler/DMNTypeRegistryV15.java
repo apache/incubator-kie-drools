@@ -20,7 +20,6 @@ package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
 import javax.xml.namespace.QName;
@@ -28,10 +27,8 @@ import java.util.Map;
 
 public class DMNTypeRegistryV15 extends DMNTypeRegistryAbstract {
 
-    private static final DMNType UNKNOWN = new SimpleTypeImpl(KieDMNModelInstrumentedBase.URI_FEEL,
-                                                              BuiltInType.UNKNOWN.getName(),
-                                                              null, true, null, null,
-                                                              BuiltInType.UNKNOWN );
+    private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
+
 
     public DMNTypeRegistryV15(Map<String, QName> aliases) {
         super(aliases);
@@ -43,7 +40,7 @@ public class DMNTypeRegistryV15 extends DMNTypeRegistryAbstract {
     }
 
     @Override
-    protected String feelNS() {
+    public String feelNS() {
         return KieDMNModelInstrumentedBase.URI_FEEL;
     }
 }

@@ -36,7 +36,7 @@ public class FEELSchemaEnum {
 
     private static final Logger LOG = LoggerFactory.getLogger(FEELSchemaEnum.class);
 
-    public static void parseAllowedValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
+    public static void parseValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
         List<Object> expectLiterals = evaluateUnaryTests(list);
         if (expectLiterals.contains(null)) {
             schema.setNullable(true);
@@ -45,11 +45,11 @@ public class FEELSchemaEnum {
         if (allLiterals) {
             schema.enumeration(expectLiterals);
         } else {
-            LOG.warn("Unable to parse generic allowed value into the JSON Schema for enumeration");
+            LOG.warn("Unable to parse generic value into the JSON Schema for enumeration");
         }
     }
     
-    public static void parseNumberAllowedValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
+    public static void parseNumbersIntoSchema(Schema schema, List<DMNUnaryTest> list) {
         List<Object> uts = evaluateUnaryTests(list); // we leverage the property of the *base* FEEL grammar(non visited by ASTVisitor, only the ParseTree->AST Visitor) that `>x` is a Range
         boolean allowNull = uts.remove(null);
         if (allowNull) {
@@ -73,7 +73,7 @@ public class FEELSchemaEnum {
             }
             schema.enumeration(uts);
         } else {
-            LOG.warn("Unable to parse generic allowed value into the JSON Schema for enumeration");
+            LOG.warn("Unable to parse number value into the JSON Schema for enumeration");
         }
     }
 

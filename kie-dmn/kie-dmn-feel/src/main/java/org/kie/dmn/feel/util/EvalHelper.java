@@ -24,7 +24,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -191,6 +193,10 @@ public class EvalHelper {
         }
     }
 
+    public static ZonedDateTime coerceDateTime(final LocalDate value) {
+        return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
+    }
+
     public static Boolean getBooleanOrNull(Object value) {
         if (!(value instanceof Boolean)) {
             return null;
@@ -281,6 +287,11 @@ public class EvalHelper {
 
     public static class PropertyValueResult implements FEELPropertyAccessible.AbstractPropertyValueResult {
 
+        // This exception is used to signal an undefined property for notDefined(). This method may be many times when
+        // evaluating a decision, so a single instance is being cached to avoid the cost of creating the stack trace
+        // each time.
+        private static final Exception undefinedPropertyException = new UnsupportedOperationException("Property was not defined.");
+
         private final boolean defined;
         private final Either<Exception, Object> valueResult;
 
@@ -290,7 +301,7 @@ public class EvalHelper {
         }
 
         public static PropertyValueResult notDefined() {
-            return new PropertyValueResult(false, Either.ofLeft(new UnsupportedOperationException("Property was not defined.")));
+            return new PropertyValueResult(false, Either.ofLeft(undefinedPropertyException));
         }
 
         public static PropertyValueResult of(Either<Exception, Object> valueResult) {

@@ -47,6 +47,7 @@ public class AppPaths {
     private final boolean isJar;
     private final BuildTool bt;
     private final Path resourcesPath;
+    private final Path generatedResourcesPath;
     private final Path outputTarget;
 
     public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
@@ -79,8 +80,10 @@ public class AppPaths {
         this.outputTarget = outputTarget;
         if (bt == BuildTool.GRADLE) {
             resourcesPath = Paths.get(""); // no prefix required
+            generatedResourcesPath = null;
         } else {
             resourcesPath = Paths.get("src", resourcesBasePath, "resources");
+            generatedResourcesPath = Paths.get(TARGET_DIR, "generated-resources");
         }
     }
 
@@ -106,11 +109,27 @@ public class AppPaths {
     }
 
     public File[] getResourceFiles() {
-        return projectPaths.stream().map(p -> p.resolve(resourcesPath).toFile()).toArray(File[]::new);
+        File[] toReturn = projectPaths.stream().map(p -> p.resolve(resourcesPath).toFile()).toArray(File[]::new);
+        if (generatedResourcesPath != null) {
+            File[] generatedResourcesFiles =  projectPaths.stream().map(p -> p.resolve(generatedResourcesPath).toFile()).toArray(File[]::new);
+            File[] newToReturn = new File[toReturn.length + generatedResourcesFiles.length];
+            System.arraycopy( toReturn, 0, newToReturn, 0, toReturn.length );
+            System.arraycopy( generatedResourcesFiles, 0, newToReturn, toReturn.length, generatedResourcesFiles.length );
+            toReturn = newToReturn;
+        }
+        return toReturn;
     }
 
     public Path[] getResourcePaths() {
-        return transformPaths(projectPaths, p -> p.resolve(resourcesPath));
+        Path[] toReturn = transformPaths(projectPaths, p -> p.resolve(resourcesPath));
+        if (generatedResourcesPath != null) {
+            Path[] generatedResourcesPaths = transformPaths(projectPaths, p -> p.resolve(generatedResourcesPath));
+            Path[] newToReturn = new Path[toReturn.length + generatedResourcesPaths.length];
+            System.arraycopy( toReturn, 0, newToReturn, 0, toReturn.length );
+            System.arraycopy( generatedResourcesPaths, 0, newToReturn, toReturn.length, generatedResourcesPaths.length );
+            toReturn = newToReturn;
+        }
+        return toReturn;
     }
 
     public Path[] getSourcePaths() {

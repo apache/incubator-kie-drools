@@ -34,14 +34,11 @@ public class DMNTypeRegistryV11 extends DMNTypeRegistryAbstract {
     }
 
     @Override
-    protected String feelNS() {
+    public String feelNS() {
         return KieDMNModelInstrumentedBase.URI_FEEL;
     }
 
-    private static final DMNType UNKNOWN = new SimpleTypeImpl(KieDMNModelInstrumentedBase.URI_FEEL,
-                                                              BuiltInType.UNKNOWN.getName(),
-                                                              null, true, null, null,
-                                                              BuiltInType.UNKNOWN );
+    private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
 
     @Override
     public DMNType unknown() {
