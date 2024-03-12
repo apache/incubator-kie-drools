@@ -27,12 +27,12 @@ import static java.util.Arrays.asList;
  */
 public final class KogitoCapability {
 
-    public static final String KOGITO_GROUP_ID = "org.kie.kogito";
-    public static final KogitoCapability DECISIONS = new KogitoCapability("org.drools.decisions", "drools-quarkus-decisions");
-    public static final KogitoCapability PROCESSES = new KogitoCapability("org.jbpm.processes", "jbpm-quarkus");
-    public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.predictions", "kie-quarkus-predictions");
-    public static final KogitoCapability RULES = new KogitoCapability("org.drools.rules", "drools-quarkus-rules");
-    public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.sonataflow.serverless-workflow", "kogito-quarkus-serverless-workflow");
+    public static final KogitoCapability DECISIONS = new KogitoCapability("org.drools.decisions", new KogitoCapabilityExtension("org.drools", "drools-quarkus-decisions"));
+    public static final KogitoCapability PROCESSES = new KogitoCapability("org.jbpm.processes", new KogitoCapabilityExtension("org.jbpm", "jbpm-quarkus"));
+    public static final KogitoCapability PREDICTIONS = new KogitoCapability("org.kie.predictions", new KogitoCapabilityExtension("org.kie", "kie-quarkus-predictions"));
+    public static final KogitoCapability RULES = new KogitoCapability("org.drools.rules", new KogitoCapabilityExtension("org.drools", "drools-quarkus-rules"));
+    public static final KogitoCapability SERVERLESS_WORKFLOW =
+            new KogitoCapability("org.apache.kie.sonataflow.serverless-workflow", new KogitoCapabilityExtension("org.apache.kie.sonataflow", "sonataflow-quarkus"));
 
     public static final List<KogitoCapability> ENGINES = asList(
             KogitoCapability.DECISIONS,
@@ -42,9 +42,9 @@ public final class KogitoCapability {
             KogitoCapability.SERVERLESS_WORKFLOW);
 
     private final String capability;
-    private final String offeredBy;
+    private final KogitoCapabilityExtension offeredBy;
 
-    public KogitoCapability(final String capability, final String offeredBy) {
+    public KogitoCapability(final String capability, final KogitoCapabilityExtension offeredBy) {
         this.capability = capability;
         this.offeredBy = offeredBy;
     }
@@ -53,7 +53,7 @@ public final class KogitoCapability {
         return capability;
     }
 
-    public String getOfferedBy() {
+    public KogitoCapabilityExtension getOfferedBy() {
         return offeredBy;
     }
 }

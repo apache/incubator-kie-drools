@@ -21,12 +21,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-quarkus-serverless-workflow-python-parent</artifactId>
+    <groupId>org.apache.kie.sonataflow</groupId>
+    <artifactId>sonataflow-addons-quarkus-python-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-quarkus-serverless-workflow-python-integration-tests</artifactId>
-  <name>Kogito:: Addons :: Quarkus:: Serverless Workflow:: Python:: Integration Test</name>
+  <artifactId>sonataflow-addons-quarkus-python-integration-tests</artifactId>
+  <name>SonataFlow:: Addons :: Quarkus:: Serverless Workflow:: Python:: Integration Test</name>
   <description>Serverless Workflow Python Quarkus Addons Testing</description>
 
 
@@ -46,12 +46,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-serverless-workflow-python</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-addons-quarkus-python</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -63,8 +63,8 @@
     </dependency>
      <!-- hack for CI to work -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus-deployment</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>test</scope>

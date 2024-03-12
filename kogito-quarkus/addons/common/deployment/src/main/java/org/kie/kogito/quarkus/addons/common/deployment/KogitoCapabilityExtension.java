@@ -16,25 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.addons.quarkus.camel.deployment;
+package org.kie.kogito.quarkus.addons.common.deployment;
 
-import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
+public class KogitoCapabilityExtension {
 
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
+    private String groupId;
+    private String artifactId;
 
-public class KogitoAddonsQuarkusCamelProcessor extends RequireCapabilityKogitoAddOnProcessor {
-
-    private static final String FEATURE = "sonataflow-addons-quarkus-camel";
-
-    public KogitoAddonsQuarkusCamelProcessor() {
-        super(KogitoCapability.SERVERLESS_WORKFLOW);
+    public KogitoCapabilityExtension(String groupId, String artifactId) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
     }
 
-    @BuildStep
-    FeatureBuildItem feature() {
-        return new FeatureBuildItem(FEATURE);
+    public String getGroupId() {
+        return groupId;
     }
 
+    public String getArtifactId() {
+        return artifactId;
+    }
 }

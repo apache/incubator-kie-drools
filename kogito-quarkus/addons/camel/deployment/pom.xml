@@ -23,8 +23,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-quarkus-camel-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>sonataflow-addons-quarkus-camel-parent</artifactId>
+    <groupId>org.apache.kie.sonataflow</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -33,21 +33,21 @@
      <java.module.name>org.kie.kogito.addons.quarkus.camel.deployment</java.module.name>
   </properties>
 
-  <name>Kogito :: Add-Ons :: Quarkus :: Camel :: Deployment</name>
-  <description>Kogito Quarkus Camel Integration with Serverless Workflow</description>
-  <artifactId>kogito-addons-quarkus-camel-deployment</artifactId>
+  <name>SonataFlow :: Add-Ons :: Quarkus :: Camel :: Deployment</name>
+  <description>SonataFlow Quarkus Camel Integration with Serverless Workflow</description>
+  <artifactId>sonataflow-addons-quarkus-camel-deployment</artifactId>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc-deployment</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-camel</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-addons-quarkus-camel</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>

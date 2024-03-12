@@ -24,13 +24,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-serverless-workflow-extension</artifactId>
+        <groupId>org.apache.kie.sonataflow</groupId>
+        <artifactId>sonataflow-quarkus-extension</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kogito-quarkus-serverless-workflow-extension-live-reload-test</artifactId>
-    <name>Kogito :: Quarkus Serverless Workflow Extension :: Live Reload Tests</name>
+    <artifactId>sonataflow-quarkus-extension-live-reload-test</artifactId>
+    <name>SonataFlow :: Quarkus Serverless Workflow Extension :: Live Reload Tests</name>
 
   <properties>
         <java.module.name>org.kie.kogito.quarkus.serverless.workflow.deployment.livereload</java.module.name>
@@ -38,8 +38,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+            <groupId>org.apache.kie.sonataflow</groupId>
+            <artifactId>sonataflow-quarkus</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -105,8 +105,8 @@
 
         <!-- these are used implicitly by quarkus tests so let's make Maven aware of them -->
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
+            <groupId>org.apache.kie.sonataflow</groupId>
+            <artifactId>sonataflow-quarkus-deployment</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
             <scope>test</scope>

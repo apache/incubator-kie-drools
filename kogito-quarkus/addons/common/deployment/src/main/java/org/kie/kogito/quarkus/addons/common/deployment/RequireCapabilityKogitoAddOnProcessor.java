@@ -84,9 +84,9 @@ public abstract class RequireCapabilityKogitoAddOnProcessor {
         missingCapabilities.forEach(c -> {
             sb.append("\t - ").append(c.getCapability()).append("\n");
             sb.append("\t\t offered by the artifact ")
-                    .append(KogitoCapability.KOGITO_GROUP_ID)
+                    .append(c.getOfferedBy().getGroupId())
                     .append(":")
-                    .append(c.getOfferedBy())
+                    .append(c.getOfferedBy().getArtifactId())
                     .append("\n");
         });
         sb.append("Add the above artifacts in your project's pom.xml file");
