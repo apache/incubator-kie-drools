@@ -95,7 +95,7 @@ public class AppPaths {
         this.outputTarget = outputTarget;
         firstProjectPath = getFirstProjectPath(this.projectPaths, outputTarget, bt);
         resourcePaths = getResourcePaths(this.projectPaths, resourcesBasePath, bt);
-        paths = isJar ? getJarPaths(isJar, this.classesPaths) : resourcePaths;
+        paths = isJar ? getJarPaths(this.classesPaths) : resourcePaths;
         resourceFiles = getResourceFiles(resourcePaths);
         sourcePaths = getSourcePaths(this.projectPaths);
     }
@@ -143,12 +143,8 @@ public class AppPaths {
                 : innerOutputTarget;
     }
 
-    static Path[] getJarPaths(boolean isInnerJar, Collection<Path> innerClassesPaths) {
-        if (!isInnerJar) {
-            throw new IllegalStateException("Not a jar");
-        } else {
-            return innerClassesPaths.toArray(new Path[0]);
-        }
+    static Path[] getJarPaths(Collection<Path> innerClassesPaths) {
+        return innerClassesPaths.toArray(new Path[0]);
     }
 
     static Path[] getResourcePaths(Set<Path> innerProjectPaths, String resourcesBasePath, BuildTool innerBt) {
