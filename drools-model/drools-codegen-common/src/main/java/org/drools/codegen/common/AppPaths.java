@@ -20,14 +20,12 @@ package org.drools.codegen.common;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 
 public class AppPaths {
 
@@ -77,7 +75,7 @@ public class AppPaths {
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), TEST_DIR, Paths.get(projectDir.toString(), TARGET_DIR));
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), TEST_DIR, Path.of(projectDir.toString(), TARGET_DIR));
     }
 
     /**
@@ -150,12 +148,10 @@ public class AppPaths {
     static Path[] getResourcePaths(Set<Path> innerProjectPaths, String resourcesBasePath, BuildTool innerBt) {
         Path[] toReturn;
         if (innerBt == BuildTool.GRADLE) {
-            toReturn = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get("")));
+            toReturn = transformPaths(innerProjectPaths, Path.of(""));
         } else {
-            toReturn = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(SRC_DIR, resourcesBasePath,
-                                                                                  RESOURCES_DIR)));
-            Path[] generatedResourcesPaths = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(TARGET_DIR,
-                                                                                                        GENERATED_RESOURCES_DIR)));
+            toReturn = transformPaths(innerProjectPaths, Path.of(SRC_DIR, resourcesBasePath, RESOURCES_DIR));
+            Path[] generatedResourcesPaths = transformPaths(innerProjectPaths, Path.of(TARGET_DIR, GENERATED_RESOURCES_DIR));
             Path[] newToReturn = new Path[toReturn.length + generatedResourcesPaths.length];
             System.arraycopy(toReturn, 0, newToReturn, 0, toReturn.length);
             System.arraycopy(generatedResourcesPaths, 0, newToReturn, toReturn.length, generatedResourcesPaths.length);
@@ -169,11 +165,11 @@ public class AppPaths {
     }
 
     static Path[] getSourcePaths(Set<Path> innerProjectPaths) {
-        return transformPaths(innerProjectPaths, p -> p.resolve(SRC_DIR));
+        return transformPaths(innerProjectPaths, Path.of(SRC_DIR));
     }
 
-    static Path[] transformPaths(Collection<Path> paths, UnaryOperator<Path> f) {
-        return paths.stream().map(f).toArray(Path[]::new);
+    static Path[] transformPaths(Collection<Path> paths, Path pathToResolve) {
+        return paths.stream().map(p -> p.resolve(pathToResolve)).toArray(Path[]::new);
     }
 
 }
