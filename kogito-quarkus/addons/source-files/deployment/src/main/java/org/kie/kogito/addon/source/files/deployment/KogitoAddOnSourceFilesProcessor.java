@@ -87,11 +87,13 @@ class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcesso
 
         for (File resourceFile : resourcePaths) {
             Path resourcePath = resourceFile.toPath();
-            try (Stream<Path> walkedPaths = Files.walk(resourcePath)) {
-                walkedPaths.filter(this::isSourceFile)
-                        .map(resourcePath::relativize)
-                        .map(Path::toString)
-                        .forEach(sourceFiles::add);
+            if (Files.exists(resourcePath)) {
+                try (Stream<Path> walkedPaths = Files.walk(resourcePath)) {
+                    walkedPaths.filter(this::isSourceFile)
+                            .map(resourcePath::relativize)
+                            .map(Path::toString)
+                            .forEach(sourceFiles::add);
+                }
             }
         }
 
