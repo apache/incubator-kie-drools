@@ -996,23 +996,23 @@
 
             <!-- SonataFlow Quarkus Dev UI -->
             <dependency>
-                <groupId>org.kie.kogito</groupId>
+                <groupId>org.apache.kie.sonataflow</groupId>
                 <artifactId>sonataflow-quarkus-devui</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.kie.kogito</groupId>
+                <groupId>org.apache.kie.sonataflow</groupId>
                 <artifactId>sonataflow-quarkus-devui</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
             <dependency>
-                <groupId>org.kie.kogito</groupId>
+                <groupId>org.apache.kie.sonataflow</groupId>
                 <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.kie.kogito</groupId>
+                <groupId>org.apache.kie.sonataflow</groupId>
                 <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>

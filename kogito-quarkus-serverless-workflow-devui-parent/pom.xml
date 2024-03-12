@@ -30,6 +30,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Kogito Apps :: SonataFlow Quarkus Dev UI Extension</name>
+  <groupId>org.apache.kie.sonataflow</groupId>
   <artifactId>sonataflow-quarkus-devui-parent</artifactId>
   <packaging>pom</packaging>
 

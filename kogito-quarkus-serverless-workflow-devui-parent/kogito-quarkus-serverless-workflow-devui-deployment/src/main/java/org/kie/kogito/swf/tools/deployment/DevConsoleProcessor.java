@@ -50,7 +50,7 @@ import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConf
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.kie.kogito.sonataflow-quarkus-devui";
+    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.apache.kie.sonataflow.sonataflow-quarkus-devui";
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @BuildStep(onlyIf = IsDevelopment.class)
@@ -92,7 +92,7 @@ public class DevConsoleProcessor {
             final ShutdownContextBuildItem shutdownContext,
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
         ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
-                "org.kie.kogito",
+                "org.apache.kie.sonataflow",
                 "sonataflow-quarkus-devui-deployment");
 
         Path devConsoleStaticResourcesDeploymentPath = WebJarUtil.copyResourcesForDevOrTest(
