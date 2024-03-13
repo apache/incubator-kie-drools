@@ -18,6 +18,10 @@
  */
 package org.drools.quarkus.deployment;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -32,23 +36,20 @@ import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
+import jakarta.inject.Inject;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.model.codegen.execmodel.PackageModel;
+import org.drools.model.codegen.project.RuleCodegen;
 import org.drools.quarkus.util.deployment.GlobalsBuildItem;
 import org.drools.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
 import org.drools.quarkus.util.deployment.PatternsTypesBuildItem;
-import org.drools.model.codegen.execmodel.PackageModel;
-import org.drools.model.codegen.project.RuleCodegen;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Inject;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import static org.drools.model.codegen.project.RuleCodegen.ofResources;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.compileGeneratedSources;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.createDroolsBuildContext;
@@ -57,7 +58,6 @@ import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.getH
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.getRuleUnitDefProducerSource;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.registerResources;
 import static org.drools.quarkus.util.deployment.DroolsQuarkusResourceUtils.toClassName;
-import static org.drools.model.codegen.project.RuleCodegen.ofResources;
 
 public class DroolsAssetsProcessor {
 
@@ -74,7 +74,7 @@ public class DroolsAssetsProcessor {
     @Inject
     OutputTargetBuildItem outputTargetBuildItem;
 
-    private static final String FEATURE = "drools-quarkus-extension";
+    private static final String FEATURE = "drools";
 
     @BuildStep
     public FeatureBuildItem feature() {
