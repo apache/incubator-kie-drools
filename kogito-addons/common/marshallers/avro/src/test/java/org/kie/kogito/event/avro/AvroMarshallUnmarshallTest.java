@@ -61,4 +61,9 @@ class AvroMarshallUnmarshallTest {
     void testJsonNodeCloudEventMarshaller() throws IOException {
         testCloudEventMarshalling(getJsonNodeCloudEvent(), JsonNode.class, new AvroCloudEventMarshaller(avroUtils), new AvroCloudEventUnmarshallerFactory(avroUtils));
     }
+
+    @Test
+    void testGeneratedPojoMarshaller() throws IOException {
+        testEventMarshalling(Person.newBuilder().setAge(0).setName("Pepe").build(), new AvroEventMarshaller(avroUtils), new AvroEventUnmarshaller(avroUtils));
+    }
 }

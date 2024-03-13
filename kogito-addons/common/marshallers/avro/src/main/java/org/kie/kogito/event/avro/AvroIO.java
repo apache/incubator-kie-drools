@@ -167,6 +167,7 @@ public class AvroIO {
 
     private static final AvroMapper getAvroMapper() {
         AvroMapper mapper = new AvroMapper();
+        mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
         mapper.findAndRegisterModules().registerModule(new SimpleModule().addSerializer(Utf8.class, new JsonSerializer<Utf8>() {
             @Override
             public void serialize(Utf8 value, JsonGenerator gen, SerializerProvider serializers) throws IOException {

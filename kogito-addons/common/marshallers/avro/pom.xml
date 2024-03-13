@@ -72,5 +72,29 @@
     </dependency>
 
   </dependencies>
-
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${version.org.apache.avro}</version>
+        <executions>
+          <execution>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.basedir}/src/test/avro/</sourceDirectory>
+              <fieldVisibility>PRIVATE</fieldVisibility>
+              <includes>
+                <include>**/*.avsc</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+       </plugin>
+    </plugins>
+  </build>
 </project>
