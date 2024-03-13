@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <dmn:definitions xmlns="http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F"
+                   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                   xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                   xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                   xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+                   id="_A064B2A1-5F58-4C94-9B25-11A5C43E1749"
+                   name="For Loop Dates Evaluate"
+                   typeLanguage="http://www.omg.org/spec/DMN/20230324/FEEL/"
+                   namespace="http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_C0D7B89C-EC6A-4F03-B397-90225007E578" name="Insert a name" isCollection="false">
+    <dmn:typeRef>Any</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition isCollection="true" label="tDates" name="tDates">
+    <dmn:typeRef>date</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_4FC2D161-03F2-43D0-86EA-5653C13AFD52" name="forloopdates">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4608E42A-977F-4786-AD2A-DE62804DECBA" name="forloopdates" typeRef="tDates"/>
+    <dmn:literalExpression id="_3BC54643-D567-4148-8931-7A5892E5863F">
+      <dmn:text>for x in @"2021-01-01"..@"2021-01-03" return x+1</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_F5A87DF2-BE2E-4509-AD80-353EA8891F42" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_3BC54643-D567-4148-8931-7A5892E5863F">
+            <kie:width>338</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_4FC2D161-03F2-43D0-86EA-5653C13AFD52" dmnElementRef="_4FC2D161-03F2-43D0-86EA-5653C13AFD52" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="386" y="114" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -18,24 +18,31 @@
  */
 package org.kie.dmn.validation.v1_5;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
-import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMN15ValidationsTest {
 
@@ -46,24 +53,59 @@ public class DMN15ValidationsTest {
 
     @Test
     public void unnamedImportValidation() {
-        Resource importedModelResource = new ClassPathResource("Imported_Model_Unamed.dmn",
-                                                                this.getClass() );
-        printString(importedModelResource);
-        Resource importingModelResource = new ClassPathResource("Importing_EmptyNamed_Model.dmn",
-                                                                this.getClass() );
-        printString(importingModelResource);
-        List<DMNMessage> dmnMessages = validatorBuilder.theseModels(importedModelResource, importingModelResource);
+        String importedModelFileName = "Imported_Model_Unamed.dmn";
+        String importingModelFileName = "Importing_EmptyNamed_Model.dmn";
+        String modelName = "Importing empty-named Model";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        validate(importedModelFileName, importingModelFileName);
+        Map<String, Object> inputData = Map.of("A Person", prototype(entry("name", "Hugh"), entry("age", 32)));
+        evaluate(modelNamespace, modelName, importingModelFileName, inputData, importedModelFileName);
+    }
+
+    @Test
+    public void forLoopDatesEvaluateValidation() {
+        String modelFileName = "ForLoopDatesEvaluate.dmn";
+        String modelName = "For Loop Dates Evaluate";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
+        validate(modelFileName);
+        evaluate(modelNamespace, modelName, modelFileName, Collections.EMPTY_MAP);
+    }
+
+    @Test
+    public void listReplaceEvaluateValidation() {
+        String modelFileName = "ListReplaceEvaluate.dmn";
+        String modelName = "List Replace Evaluate";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
+        validate(modelFileName);
+        evaluate(modelNamespace, modelName, modelFileName, Collections.EMPTY_MAP);
+    }
+
+    private void validate(String modelFileName, String... otherFileNames) {
+        List<String> allModelsFileNames = new ArrayList<>();
+        allModelsFileNames.add(modelFileName);
+        allModelsFileNames.addAll(List.of(otherFileNames));
+        Resource[] resources = allModelsFileNames.stream()
+                .map(fileName -> new ClassPathResource(fileName,
+                                                       this.getClass()))
+                .toArray(value -> new Resource[allModelsFileNames.size()]);
+        List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
         assertNotNull(dmnMessages);
         dmnMessages.forEach(dmnMessage -> LOG.error(dmnMessage.toString()));
         assertTrue(dmnMessages.isEmpty());
     }
 
-    private void printString(Resource toPRint) {
-        try (InputStream is = toPRint.getInputStream()) {
-            String xml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            LOG.error(xml);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void evaluate(String modelNamespace, String modelName, String modelFileName,
+                          Map<String, Object> inputData, String... otherFileNames) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(modelFileName,
+                                                                                       this.getClass(),
+                                                                                       otherFileNames);
+        final DMNModel dmnModel = runtime.getModel(modelNamespace,
+                                                   modelName);
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNContext ctx = runtime.newContext();
+        inputData.forEach(ctx::set);
+        DMNResult toReturn = runtime.evaluateAll(dmnModel, ctx);
+        assertThat(toReturn.hasErrors()).as(DMNRuntimeUtil.formatMessages(toReturn.getMessages())).isFalse();
     }
 }

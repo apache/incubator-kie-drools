@@ -46,13 +46,6 @@
     </dmn:literalExpression>
   </dmn:decision>
 
-  <dmn:decisionService id="_70386614-9838-420b-a2ae-ff901ada63fb"
-                            name="Remote Greeting Service">
-    <dmn:description>Remote Greeting Service</dmn:description>
-    <dmn:variable name="Remote Greeting Hello" typeRef="string"/>
-    <dmn:outputDecision href="#_230bb7e6-cf68-4b87-8f7f-c9fb7cc2b920"/>
-  </dmn:decisionService>
-
   <dmn:businessKnowledgeModel id="_32543811-b499-4608-b784-6c6f294b1c58" name="Say Hello">
     <dmn:variable id="_a8eb10e1-30e6-40d8-a564-a868f4e0af34"
                        name="Say Hello"
@@ -67,20 +60,4 @@
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
 
-  <dmn:decision id="_230bb7e6-cf68-4b87-8f7f-c9fb7cc2b920" name="Local Greeting">
-    <dmn:variable id="_ecc6e0bb-a0af-4e99-aac6-5b8bed09c550"
-                       name="Local Greeting"
-                       typeRef="string"/>
-    <dmn:informationRequirement>
-      <dmn:requiredInput href="#_51190b90-924d-479b-872b-4c6f3486c2de"/>
-    </dmn:informationRequirement>
-    <dmn:knowledgeRequirement>
-      <dmn:requiredKnowledge href="#_32543811-b499-4608-b784-6c6f294b1c58"/>
-    </dmn:knowledgeRequirement>
-    <dmn:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
-                                id="_d7e6836b-8491-487a-a653-5735daa85be2"
-                                triso:unparsed="true">
-      <dmn:text>Local Hello( A Person )</dmn:text>
-    </dmn:literalExpression>
-  </dmn:decision>
 </dmn:definitions>
