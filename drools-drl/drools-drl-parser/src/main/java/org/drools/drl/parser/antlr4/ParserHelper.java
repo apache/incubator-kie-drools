@@ -120,11 +120,9 @@ public class ParserHelper {
     private final LanguageLevelOption                 languageLevel;
 
     public ParserHelper(TokenStream input,
-                        RecognizerSharedState state,
                         LanguageLevelOption languageLevel) {
         this.errorMessageFactory = new DroolsParserExceptionFactory( paraphrases, languageLevel );
         this.input = input;
-        this.state = state;
         this.languageLevel = languageLevel;
     }
 
@@ -360,15 +358,8 @@ public class ParserHelper {
                              DroolsSoftKeywords.DIRECT );
     }
 
-    public void reportError( RecognitionException ex ) {
-        // if we've already reported an error and have not matched a token
-        // yet successfully, don't report any errors.
-        if ( state.errorRecovery ) {
-            return;
-        }
-        state.errorRecovery = true;
-
-        errors.add( errorMessageFactory.createDroolsException( ex ) );
+    public void reportError(Object offendingSymbol, int line, int charPositionInLine, String message, RecognitionException ex ) {
+        errors.add( errorMessageFactory.createDroolsException( offendingSymbol, line, charPositionInLine, message, ex ) );
     }
 
     public void reportError( Exception e ) {

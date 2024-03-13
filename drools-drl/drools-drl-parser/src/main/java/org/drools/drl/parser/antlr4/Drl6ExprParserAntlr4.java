@@ -21,9 +21,11 @@ package org.drools.drl.parser.antlr4;
 import java.util.Collections;
 import java.util.List;
 
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.parser.DrlExprParser;
@@ -47,11 +49,16 @@ public class Drl6ExprParserAntlr4 implements DrlExprParser {
     /** Parse an expression from text */
     public ConstraintConnectiveDescr parse(final String text) {
         ConstraintConnectiveDescr constraint = null;
-        try {
             DRLLexer lexer = new DRLLexer(CharStreams.fromString(text));
             CommonTokenStream input = new CommonTokenStream(lexer);
-            helper = new ParserHelper(input, null, languageLevel);
+            helper = new ParserHelper(input, languageLevel);
             DRLExpressions parser = new DRL6Expressions(input, helper);
+            parser.addErrorListener(new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                    helper.reportError(offendingSymbol, line, charPositionInLine, msg, e);
+                }
+            });
             parser.setBuildDescr(true);
             parser.setLeftMostExpr(null); // setting initial value just in case
             BaseDescr expr = parser.conditionalOrExpressionDescr();
@@ -59,9 +66,6 @@ public class Drl6ExprParserAntlr4 implements DrlExprParser {
                 constraint = ConstraintConnectiveDescr.newAnd();
                 constraint.addOrMerge(expr);
             }
-        } catch (RecognitionException e) {
-            helper.reportError(e);
-        }
         return constraint;
     }
 
