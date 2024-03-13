@@ -58,11 +58,11 @@ public class ParserTest {
         // check that its getting it from the ruleDescr
         assertThat(stiltonError.getDescr().getLine()).isEqualTo(stiltonError.getLine());
         // check the absolute error line number (there are more).
-        assertThat(stiltonError.getLine()).isEqualTo(26);
+        assertThat(stiltonError.getLine()).isEqualTo(30);
 
         final DescrBuildError poisonError = (DescrBuildError) errors[1];
         assertThat(poisonError.getMessage().contains("Poison")).isTrue();
-        assertThat(poisonError.getLine()).isEqualTo(28);
+        assertThat(poisonError.getLine()).isEqualTo(32);
 
         final KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         final JavaConfiguration javaConf = (JavaConfiguration) cfg.getDialectConfiguration("java");
