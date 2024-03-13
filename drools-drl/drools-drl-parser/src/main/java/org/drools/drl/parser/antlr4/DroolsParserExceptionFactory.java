@@ -20,13 +20,12 @@ package org.drools.drl.parser.antlr4;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.antlr.v4.runtime.FailedPredicateException;
+import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
@@ -42,8 +41,6 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
  * @see DroolsParserException
  */
 public class DroolsParserExceptionFactory {
-    public final static String                        NO_VIABLE_ALT_MESSAGE                   = "Line %1$d:%2$d no viable alternative at input '%3$s'%4$s";
-    public final static String                        FAILED_PREDICATE_MESSAGE                = "Line %1$d:%2$d rule '%3$s' failed predicate: {%4$s}?%5$s";
     public final static String                        TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE = "Line %1$d:%2$d trailing semi-colon not allowed%3$s";
     public final static String                        PARSER_LOCATION_MESSAGE_COMPLETE        = " in %1$s %2$s";
     public final static String                        PARSER_LOCATION_MESSAGE_PART            = " in %1$s";
@@ -103,58 +100,45 @@ public class DroolsParserExceptionFactory {
     /**
      * This method creates a DroolsParserException full of information.
      *
-     * @param e
-     *            original exception
+     * @param offendingSymbol
+     * @param line
+     * @param charPositionInLine
+     * @param e original exception
      * @return DroolsParserException filled.
      */
-    public DroolsParserException createDroolsException( RecognitionException e ) {
-        List<String> codeAndMessage = createErrorMessage( e );
-        return new DroolsParserException( codeAndMessage.get( 1 ),
-                                          codeAndMessage
-                                                  .get( 0 ),
-                                          // TODO verify this is correct
-                                          e.getOffendingToken().getLine(),
-                                          e.getOffendingToken().getCharPositionInLine(),
-                                          e.getOffendingToken().getStartIndex(),
+    public DroolsParserException createDroolsException(Object offendingSymbol, int line, int charPositionInLine, String message, RecognitionException e ) {
+        return new DroolsParserException( determineErrorCode( e ),
+                                          String.format("Line %d:%d %s", line, charPositionInLine, message),
+                                          line,
+                                          charPositionInLine,
+                                          determineStartingIndex(offendingSymbol),
                                           e );
     }
 
+    private int determineStartingIndex(Object offendingSymbol) {
+        if (offendingSymbol instanceof Token) {
+            return ((Token) offendingSymbol).getStartIndex();
+        }
+        return -1;
+    }
+
     /**
-     * This will take a RecognitionException, and create a sensible error
-     * message out of it
+     * Determines the error code based on a specific subtype of RecognitionException.
      */
-    private List<String> createErrorMessage( RecognitionException e ) {
-        List<String> codeAndMessage = new ArrayList<>( 2 );
-        String message;
+    private String determineErrorCode( RecognitionException e ) {
+        if (e == null) {
+            return "ERR 109";
+        }
+        if ( e instanceof InputMismatchException) {
+            return "ERR 102";
+        }
         if ( e instanceof NoViableAltException ) {
-            // NoViableAltException nvae = (NoViableAltException) e;
-            message = String.format(
-                                     NO_VIABLE_ALT_MESSAGE,
-                                    // TODO verify this is correct
-                                     e.getOffendingToken().getLine(),
-                                     e.getOffendingToken().getCharPositionInLine(),
-                                     getBetterToken( e.getOffendingToken() ),
-                                     formatParserLocation() );
-            codeAndMessage.add( message );
-            codeAndMessage.add( "ERR 101" );
-        } else if ( e instanceof FailedPredicateException ) {
-            FailedPredicateException fpe = (FailedPredicateException) e;
-            String ruleName = fpe.getRecognizer().getRuleNames()[fpe.getRuleIndex()];
-            message = String.format(
-                                     FAILED_PREDICATE_MESSAGE,
-                                     // TODO verify this is correct
-                                     e.getOffendingToken().getLine(),
-                                     e.getOffendingToken().getCharPositionInLine(),
-                                     ruleName,
-                                     fpe.getPredicate(),
-                                     formatParserLocation() );
-            codeAndMessage.add( message );
-            codeAndMessage.add( "ERR 103" );
+            return "ERR 101";
         }
-        if ( codeAndMessage.get( 0 ).length() == 0 ) {
-            codeAndMessage.add( "?????" );
+        if ( e instanceof FailedPredicateException ) {
+            return "ERR 103";
         }
-        return codeAndMessage;
+        throw new IllegalArgumentException("Unexpected exception type: " + e);
     }
 
     public DroolsParserException createDroolsException( Exception e,

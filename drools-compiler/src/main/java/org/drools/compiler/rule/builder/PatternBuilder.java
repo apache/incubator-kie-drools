@@ -1806,8 +1806,6 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final String expression) {
         DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse(normalizeEval(expression));
-        result.setResource(patternDescr.getResource());
-        result.copyLocation(original);
         if (parser.hasErrors()) {
             for (DroolsParserException error : parser.getErrors()) {
                 registerDescrBuildError(context, patternDescr,
@@ -1815,6 +1813,8 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
             }
             return null;
         }
+        result.setResource(patternDescr.getResource());
+        result.copyLocation(original);
         return result;
     }
 

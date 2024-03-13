@@ -26,6 +26,7 @@ import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
+import org.drools.drl.parser.DroolsParserException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -324,5 +325,51 @@ public class DRLExprParserTest {
 
         assertThat(left.getExpression()).isEqualTo("a");
         assertThat(right.getExpression()).isEqualTo("A");
+    }
+
+    @Test
+    public void testMismatchedInput() {
+        String source = "+";
+        parser.parse(source);
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrors()).hasSize(1);
+        DroolsParserException exception = parser.getErrors().get(0);
+        assertThat(exception.getErrorCode()).isEqualTo("ERR 102");
+        assertThat(exception.getLineNumber()).isEqualTo(1);
+        assertThat(exception.getColumn()).isEqualTo(1);
+        assertThat(exception.getOffset()).isEqualTo(1);
+        assertThat(exception.getMessage())
+                .startsWithIgnoringCase("[ERR 102] Line 1:1 mismatched input '<EOF>' expecting ")
+                .contains("TIME_INTERVAL", "DRL_STRING_LITERAL", "?/", "boolean", "byte", "char", "double", "float", "int", "long", "new", "short", "super", "DECIMAL_LITERAL", "HEX_LITERAL", "FLOAT_LITERAL", "BOOL_LITERAL", "STRING_LITERAL", "null", "(", "[", ".", "<", "!", "~", "++", "--", "+", "-", "*", "/", "IDENTIFIER");
+    }
+
+    @Test
+    public void testExtraneousInput() {
+        String source = "a +; b";
+        parser.parse(source);
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrors()).hasSize(1);
+        DroolsParserException exception = parser.getErrors().get(0);
+        assertThat(exception.getErrorCode()).isEqualTo("ERR 109");
+        assertThat(exception.getLineNumber()).isEqualTo(1);
+        assertThat(exception.getColumn()).isEqualTo(3);
+        assertThat(exception.getOffset()).isEqualTo(3);
+        assertThat(exception.getMessage())
+                .startsWithIgnoringCase("[ERR 109] Line 1:3 extraneous input ';' expecting ")
+                .contains("TIME_INTERVAL", "DRL_STRING_LITERAL", "?/", "boolean", "byte", "char", "double", "float", "int", "long", "new", "short", "super", "DECIMAL_LITERAL", "HEX_LITERAL", "FLOAT_LITERAL", "BOOL_LITERAL", "STRING_LITERAL", "null", "(", "[", ".", "<", "!", "~", "++", "--", "+", "-", "*", "/", "IDENTIFIER");
+    }
+    @Test
+    public void testNoViableAlt() {
+        String source = "a~a";
+        parser.parse(source);
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrors()).hasSize(1);
+        DroolsParserException exception = parser.getErrors().get(0);
+        assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
+        assertThat(exception.getLineNumber()).isEqualTo(1);
+        assertThat(exception.getColumn()).isEqualTo(2);
+        assertThat(exception.getOffset()).isEqualTo(2);
+        assertThat(exception.getMessage())
+                .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input 'a'");
     }
 }
