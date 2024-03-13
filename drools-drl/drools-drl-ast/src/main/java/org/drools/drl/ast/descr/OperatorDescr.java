@@ -55,7 +55,7 @@ public class OperatorDescr extends BaseDescr {
     }
 
     public void setOperator( String operator ) {
-        this.operator = operator.trim();
+        this.operator = operator != null ? operator.trim() : null;
     }
 
     public boolean isNegated() {
