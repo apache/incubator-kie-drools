@@ -64,6 +64,17 @@ then
                      $b.getParentDRDElement().getIdentifierString() );
 end
 
+rule NAME_EMPTY
+when
+    $ne : NamedElement( !(this instanceof Import),
+                        !FEELParser.isVariableNameEmpty( name ) )
+then
+    java.util.List<FEELEvent> errors = FEELParser.checkVariableNameEmpty( $ne.getName() );
+    if ( ! errors.isEmpty() ) {
+        reporter.report( DMNMessage.Severity.ERROR,  $ne , Msg.INVALID_NAME, $ne.getName(), errors.get( 0 ).getMessage() );
+    }
+end
+
 rule NAME_INVALID
 when
     $ne : NamedElement( parent != null,

@@ -95,11 +95,15 @@ public class FEELParser {
         return isVariableNameValid(namePart);
     }
 
+    public static boolean isVariableNameEmpty( String source ) {
+        return checkVariableNameEmpty( source ).isEmpty();
+    }
+
     public static boolean isVariableNameValid( String source ) {
         return checkVariableName( source ).isEmpty();
     }
 
-    public static List<FEELEvent> checkVariableName( String source ) {
+    public static List<FEELEvent> checkVariableNameEmpty( String source ) {
         if( source == null || source.isEmpty() ) {
             return Collections.singletonList( new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
                                                                     Msg.createMessage( Msg.INVALID_VARIABLE_NAME_EMPTY ),
@@ -107,6 +111,15 @@ public class FEELParser {
                                                                     0,
                                                                     0,
                                                                     null ) );
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public static List<FEELEvent> checkVariableName( String source ) {
+        if( source == null || source.isEmpty() ) {
+            // We check validity of empty name with checkVariableNameEmpty
+            return Collections.emptyList();
         }
         CharStream input = CharStreams.fromString(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
@@ -120,8 +133,8 @@ public class FEELParser {
         FEEL_1_1Parser.NameDefinitionWithEOFContext nameDef = parser.nameDefinitionWithEOF(); // be sure to align below parser.getRuleInvocationStack().contains("nameDefinition...
 
         if( ! errorChecker.hasErrors() &&
-            nameDef != null &&
-            source.trim().equals( parser.getHelper().getOriginalText( nameDef ) ) ) {
+                nameDef != null &&
+                source.trim().equals( parser.getHelper().getOriginalText( nameDef ) ) ) {
             return Collections.emptyList();
         }
         return errorChecker.getErrors();
