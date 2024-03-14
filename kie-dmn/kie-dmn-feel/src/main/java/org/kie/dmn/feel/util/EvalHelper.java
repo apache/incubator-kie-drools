@@ -795,11 +795,3 @@ public class EvalHelper {
         }
     }
 }
-
-/*
-        if (left instanceof Number && right instanceof Number) {
-            Comparable<Number> l = (Comparable<Number>) coerceNumber(left);
-            Comparable<Number> r = (Comparable<Number>) coerceNumber(right);
-            return op.test(l, r);
-        }
- */
