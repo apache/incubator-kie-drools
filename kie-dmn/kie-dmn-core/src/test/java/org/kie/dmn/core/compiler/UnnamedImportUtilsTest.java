@@ -32,7 +32,7 @@ public class UnnamedImportUtilsTest {
                                                                                        this.getClass(),
                                                                                        "Imported_Model_Unamed.dmn");
 
-        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
                                                         "Imported Model");
         assertThat(importedModel).isNotNull();
         final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
@@ -47,11 +47,11 @@ public class UnnamedImportUtilsTest {
 
     @Test
     public void isInUnnamedImportFalse() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_EmptyNamed_Model.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Named_Model.dmn",
                                                                                        this.getClass(),
                                                                                        "Imported_Model_Unamed.dmn");
 
-        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
                                                         "Imported Model");
         assertThat(importedModel).isNotNull();
         final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",

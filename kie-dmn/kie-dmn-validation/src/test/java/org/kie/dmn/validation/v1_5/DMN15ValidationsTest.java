@@ -80,6 +80,34 @@ public class DMN15ValidationsTest {
         evaluate(modelNamespace, modelName, modelFileName, Collections.EMPTY_MAP);
     }
 
+    @Test
+    public void negationOfDurationEvaluateValidation() {
+        String modelFileName = "NegationOfDurationEvaluate.dmn";
+        String modelName = "Negation of Duration Evaluate";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
+        validate(modelFileName);
+        evaluate(modelNamespace, modelName, modelFileName, Collections.EMPTY_MAP);
+    }
+
+    @Test
+    public void dateToDateTimeFunctionValidation() {
+        String modelFileName = "DateToDateTimeFunction.dmn";
+        String modelName = "new-file";
+        String modelNamespace = "https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE";
+        validate(modelFileName);
+        evaluate(modelNamespace, modelName, modelFileName, Collections.EMPTY_MAP);
+    }
+
+    @Test
+    public void typeConstraintsChecksValidation() {
+        String modelFileName = "TypeConstraintsChecks.dmn";
+        String modelName = "TypeConstraintsChecks";
+        String modelNamespace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
+        validate(modelFileName);
+        Map<String, Object> inputData = Map.of("p1", prototype(entry("Name", "P1"), entry("Interests", Collections.singletonList("Golf"))));
+        evaluate(modelNamespace, modelName, modelFileName, inputData);
+    }
+
     private void validate(String modelFileName, String... otherFileNames) {
         List<String> allModelsFileNames = new ArrayList<>();
         allModelsFileNames.add(modelFileName);
