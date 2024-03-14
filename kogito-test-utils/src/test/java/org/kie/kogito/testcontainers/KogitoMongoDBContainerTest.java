@@ -20,8 +20,10 @@ package org.kie.kogito.testcontainers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -51,6 +53,7 @@ class KogitoMongoDBContainerTest {
 
     @Test
     void shouldGetDockerImageName() {
+        assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Aborting test: docker env not found");
         assertThat(container.getDockerImageName()).isEqualTo(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME));
     }
 }
