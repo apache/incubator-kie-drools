@@ -51,6 +51,29 @@ public class DMN15ValidationsTest {
     static final DMNValidator validator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
     static final DMNValidator.ValidatorBuilder validatorBuilder = validator.validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA, DMNValidator.Validation.VALIDATE_MODEL);
 
+
+    @Test
+    public void overridingUnnamedImportValidation() {
+        String importedModelFileName = "Imported_Model_Unamed.dmn";
+        String importingModelFileName = "Importing_OverridingEmptyNamed_Model.dmn";
+        String modelName = "Importing empty-named Model";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        validate(importedModelFileName, importingModelFileName);
+        Map<String, Object> inputData = Map.of("A Person", prototype(entry("name", "Hugh"), entry("age", 32)));
+        evaluate(modelNamespace, modelName, importingModelFileName, inputData, importedModelFileName);
+    }
+
+    @Test
+    public void namedImportValidation() {
+        String importedModelFileName = "Imported_Model_Unamed.dmn";
+        String importingModelFileName = "Importing_Named_Model.dmn";
+        String modelName = "Importing named Model";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        validate(importedModelFileName, importingModelFileName);
+        Map<String, Object> inputData = Map.of("A Person", prototype(entry("name", "Hugh"), entry("age", 32)));
+        evaluate(modelNamespace, modelName, importingModelFileName, inputData, importedModelFileName);
+    }
+
     @Test
     public void unnamedImportValidation() {
         String importedModelFileName = "Imported_Model_Unamed.dmn";

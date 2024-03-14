@@ -548,7 +548,8 @@ public class DMNValidatorImpl implements DMNValidator {
             Source s = new StreamSource(new StringReader(xml));
             validateSchema(s, usingSchema);
         } catch (Exception e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
+            String errorMessage = String.format("%s - %s", path, e.getMessage());
+            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
         }
         return problems;
     }
