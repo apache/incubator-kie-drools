@@ -859,7 +859,7 @@ public class RuleParserTest {
 
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
-        assertThat(rule.getConsequenceLine()).isEqualTo(22);
+        assertThat(rule.getConsequenceLine()).isEqualTo(26);
         assertThat(rule.getConsequencePattern()).isEqualTo(2);
 
         final AndDescr lhs = rule.getLhs();
@@ -952,7 +952,7 @@ public class RuleParserTest {
 
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
-        assertThat(rule.getConsequenceLine()).isEqualTo(22);
+        assertThat(rule.getConsequenceLine()).isEqualTo(26);
         assertThat(rule.getConsequencePattern()).isEqualTo(2);
 
         final AndDescr lhs = rule.getLhs();
@@ -975,9 +975,9 @@ public class RuleParserTest {
         final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
         assertThat(third.getObjectType()).isEqualTo("Baz");
 
-        assertThat(first.getLine()).isEqualTo(19);
-        assertThat(second.getLine()).isEqualTo(20);
-        assertThat(third.getLine()).isEqualTo(21);
+        assertThat(first.getLine()).isEqualTo(23);
+        assertThat(second.getLine()).isEqualTo(24);
+        assertThat(third.getLine()).isEqualTo(25);
     }
 
     @Test
@@ -1663,7 +1663,7 @@ public class RuleParserTest {
         assertThat(func.getReturnType()).isEqualTo("String");
         assertThat(func.getParameterNames().size()).isEqualTo(2);
         assertThat(func.getParameterTypes().size()).isEqualTo(2);
-        assertThat(func.getLine()).isEqualTo(19);
+        assertThat(func.getLine()).isEqualTo(23);
         assertThat(func.getColumn()).isEqualTo(0);
 
         assertThat(func.getParameterTypes().get(0)).isEqualTo("String");
@@ -2022,8 +2022,8 @@ public class RuleParserTest {
                                                                "test_EndPosition.drl" );
         final RuleDescr rule = pkg.getRules().get(0);
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(col.getLine()).isEqualTo(21);
-        assertThat(col.getEndLine()).isEqualTo(23);
+        assertThat(col.getLine()).isEqualTo(25);
+        assertThat(col.getEndLine()).isEqualTo(27);
     }
 
     @Test
