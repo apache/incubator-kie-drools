@@ -82,13 +82,10 @@ public class DecisionValidation {
             LOG.info("DMN Validation was set to DISABLED, skipping VALIDATE_SCHEMA, VALIDATE_MODEL.");
             return;
         }
-        List<DMNMessage> schemaModelValidations = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()))
+        List<DMNMessage> schemaModelValidations = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()))
                 .validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA,
                         DMNValidator.Validation.VALIDATE_MODEL)
-                .theseModels(resources.stream()
-                        .map(DecisionValidation::resourceToReader)
-                        .collect(Collectors.toList())
-                        .toArray(new Reader[] {}));
+                .theseModels(resources.toArray(new Resource[] {}));
         logValidationMessages(schemaModelValidations, DecisionValidation::extractMsgPrefix, DMNMessage::getText);
         processMessagesHandleErrors(validateOption, schemaModelValidations);
     }
@@ -187,18 +184,17 @@ public class DecisionValidation {
     }
 
     private static void processMessagesHandleErrors(ValidationOption validateOption, Collection<DMNMessage> messages) {
-        List<DMNMessage> errors = messages.stream().filter(m -> m.getLevel() == Level.ERROR).collect(Collectors.toList());
+        List<DMNMessage> errors = messages.stream().filter(m -> m.getLevel() == Level.ERROR).toList();
         if (!errors.isEmpty()) {
             if (validateOption != ValidationOption.IGNORE) {
                 StringBuilder sb = new StringBuilder("DMN Validation schema and model validation contained errors").append("\n");
                 sb.append("You may configure ").append(DecisionCodegen.VALIDATION_CONFIGURATION_KEY).append("=IGNORE to ignore validation errors").append("\n");
                 sb.append("DMN Validation errors:").append("\n");
-                sb.append(errors.stream().map(m -> modelName(m) + ": " + m.getMessage()).collect(Collectors.joining(",\n")));
+                sb.append(errors.stream().map(m -> modelName(m) + ": " + m.getText()).collect(Collectors.joining(",\n")));
                 LOG.error(sb.toString());
                 throw new RuntimeException(sb.toString());
             } else {
                 LOG.warn("DMN Validation encountered errors but validation configuration was set to IGNORE, continuing with no blocking error.");
-                return;
             }
         }
     }

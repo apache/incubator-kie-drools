@@ -1,196 +1,63 @@
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="decision" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_9efe7fc6-f41b-422c-accd-95dcaaa67a39" name="" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="decision">
-  <dmn:extensionElements/>
-  <dmn:itemDefinition id="_77BCBBC4-3599-49B2-9C72-EF94037F83FC" name="tAddress" isCollection="false">
-    <dmn:itemComponent id="_2c4e3950-8304-4f47-b04a-3d440df9ef82" name="street" isCollection="false">
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns="http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44"
+                 xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                 xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                 xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                 xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                 xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                 xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 exporter="DMN Modeler"
+                 exporterVersion="6.0.3.201802231629"
+                 id="_f27bb64b-6fc7-4e1f-9848-11ba35e0df44"
+                 name=""
+                 namespace="http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44">
+  <dmn:extensionElements>
+  </dmn:extensionElements>
+  <dmn:itemDefinition id="_63824D3F-9173-446D-A940-6A7F0FA056BB" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_9bb0759c-b3c1-482f-87f5-c047dc65cef0" name="name">
       <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
-    <dmn:itemComponent id="_629c8baf-7b05-4144-949c-22bafd14c0fb" name="city" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_c766b628-2079-4e01-81ba-c2e79cb0dbf5" name="zipCode" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_49d284b2-1ff1-4b8a-b533-ac12c49146a0" name="country" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-  </dmn:itemDefinition>
-  <dmn:itemDefinition id="_F3190760-6356-4CEB-A694-433F2E2ECB13" name="tEmployee" isCollection="false">
-    <dmn:itemComponent id="_19795644-4d75-4618-9922-6e3009294f27" name="firstName" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_8af0d078-2fa5-4929-9821-d3c6328330d1" name="lastName" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_67a5b40e-7616-41f7-857e-8e74ff2ea9d0" name="personalId" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_4004aa03-31c6-4aee-8b7a-2120b679d6f9" name="birthDate" isCollection="false">
-      <dmn:typeRef>Any</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_26e93058-1683-427e-b013-7159fcaafe81" name="address" isCollection="false">
-      <dmn:typeRef>tAddress</dmn:typeRef>
-    </dmn:itemComponent>
-  </dmn:itemDefinition>
-  <dmn:itemDefinition id="_D30FD01A-1017-4D96-B59F-0B73ADC8D7B2" name="tPayroll" isCollection="false">
-    <dmn:itemComponent id="_cddacc9c-69a7-44bf-bb6a-500754af2ea1" name="vacationDays" isCollection="false">
+    <dmn:itemComponent id="_929acc15-101c-4e49-9b11-494fff411e50" name="age">
       <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
-    <dmn:itemComponent id="_9bae87e7-0171-40c3-9f14-187268bd70ce" name="taxRate" isCollection="false">
-      <dmn:typeRef>number</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_98ccb461-70dc-45fc-9a73-f5fa6ea4efa6" name="paymentDate" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_9180ce6c-817a-4769-81a6-a99bace8fa3a" name="employee" isCollection="false">
-      <dmn:typeRef>tEmployee</dmn:typeRef>
-    </dmn:itemComponent>
   </dmn:itemDefinition>
-  <dmn:inputData id="_89e85ee4-f052-4977-bee5-a3b81a600c6c" name="employee">
-    <dmn:extensionElements/>
-    <dmn:variable id="_682874bf-b580-4a33-858d-7c1c4c8b9f3e" name="employee"/>
+
+  <dmn:inputData id="_51190b90-924d-479b-872b-4c6f3486c2de" name="An Imported Person">
+    <dmn:variable id="_44a44de4-c0ab-408e-9ba9-983d8ec2f6c6"
+                  name="An Imported Person"
+                  typeRef="tPerson"/>
   </dmn:inputData>
-  <dmn:decision id="_eac3ef9e-37de-4dca-8802-ee08ded9e268" name="vacationDays">
-    <dmn:extensionElements/>
-    <dmn:variable id="_92a674f9-ebf5-4605-aa18-4731239cffe2" name="vacationDays" typeRef="number"/>
-    <dmn:informationRequirement id="_5e303927-d1c9-403c-a1b2-2af72044737d">
-      <dmn:requiredInput href="#_89e85ee4-f052-4977-bee5-a3b81a600c6c"/>
+  <dmn:decision id="_bf4a9628-15ae-4887-97f2-7099426cb61g" name="Remote Greeting">
+    <dmn:variable id="_ecc6e0bb-a0af-4e99-aac6-5b8bed09c549"
+                  name="Remote Greeting"
+                  typeRef="string"/>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#_51190b90-924d-479b-872b-4c6f3486c2de"/>
     </dmn:informationRequirement>
-    <dmn:decisionTable id="_c7a83474-a6bc-49c6-8296-4428c9285f4d" typeRef="number" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" outputLabel="vacationDays">
-      <dmn:input id="_22cc8d8b-037c-4d0b-a00d-9e0943b1278a">
-        <dmn:inputExpression id="_8B01AC29-3610-4661-92FE-C0B8A6EFA828" typeRef="string">
-          <dmn:text>employee.address.country</dmn:text>
-        </dmn:inputExpression>
-      </dmn:input>
-      <dmn:output id="_ebc17c96-82c4-4373-ac30-4dbae4b4c886">
-        <dmn:defaultOutputEntry id="_F6809D61-1EE0-439B-8B00-3590D3922529">
-          <dmn:text>15</dmn:text>
-        </dmn:defaultOutputEntry>
-      </dmn:output>
-      <dmn:rule id="_a346eaa2-d5f3-48b7-8623-348e53b26d4c">
-        <dmn:inputEntry id="_94a86171-b02d-493a-b3a7-f333402dfe71">
-          <dmn:text>"US"</dmn:text>
-        </dmn:inputEntry>
-        <dmn:outputEntry id="_f42f5ec5-0f78-4a82-b769-9027ef1545f8">
-          <dmn:text>10</dmn:text>
-        </dmn:outputEntry>
-      </dmn:rule>
-      <dmn:rule id="_f2778f91-68e7-4af8-bbd8-7ba73c0ad3d0">
-        <dmn:inputEntry id="_13ea8161-c6c9-4810-a50f-59b639c74729">
-          <dmn:text>"IT"</dmn:text>
-        </dmn:inputEntry>
-        <dmn:outputEntry id="_311804d4-3ecb-4a9d-9674-5e96a600058f">
-          <dmn:text>20</dmn:text>
-        </dmn:outputEntry>
-      </dmn:rule>
-    </dmn:decisionTable>
+    <dmn:knowledgeRequirement>
+      <dmn:requiredKnowledge href="#_32543811-b499-4608-b784-6c6f294b1c58"/>
+    </dmn:knowledgeRequirement>
+    <dmn:literalExpression xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                           id="_d7e6836b-8491-487a-a653-5735daa85bf2"
+                           triso:unparsed="true">
+      <dmn:text>Say Hello( An Imported Person )</dmn:text>
+    </dmn:literalExpression>
   </dmn:decision>
-  <dmn:decision id="_5b8d18fb-39d8-4f5c-84a0-b79913b7aded" name="compute Payroll">
-    <dmn:extensionElements/>
-    <dmn:variable id="_81066090-2dba-43d3-89ca-8144b20d73b8" name="compute Payroll" typeRef="tPayroll"/>
-    <dmn:informationRequirement id="_de1a99cb-c0c9-4e58-be9c-dc619e856fa6">
-      <dmn:requiredDecision href="#_eac3ef9e-37de-4dca-8802-ee08ded9e268"/>
-    </dmn:informationRequirement>
-    <dmn:informationRequirement id="_621c38e6-638b-4907-bbc4-e7daf9d4272d">
-      <dmn:requiredInput href="#_89e85ee4-f052-4977-bee5-a3b81a600c6c"/>
-    </dmn:informationRequirement>
-    <dmn:context id="_d1950d38-3f02-4339-af1b-aaeeed847baa" typeRef="tPayroll">
-      <dmn:contextEntry>
-        <dmn:variable id="_7a08f51d-28b5-4cd0-b508-8eaaedfcf48b" name="employee"/>
-        <dmn:literalExpression id="_590f5f1d-bc73-43e4-8b87-1b18ee5b5d8d">
-          <dmn:text>employee</dmn:text>
-        </dmn:literalExpression>
-      </dmn:contextEntry>
-      <dmn:contextEntry>
-        <dmn:variable id="_065dbf8c-b4a0-4e1c-8484-2e7933907796" name="paymentDate" typeRef="string"/>
-        <dmn:literalExpression id="_02d83b5e-33ff-4075-8edc-de24f4c5bd57">
-          <dmn:text>null</dmn:text>
-        </dmn:literalExpression>
-      </dmn:contextEntry>
-      <dmn:contextEntry>
-        <dmn:variable id="_fd31c524-408d-453a-9849-f7a5a35e469c" name="vacationDays" typeRef="number"/>
-        <dmn:literalExpression id="_5ec20766-f390-4a66-b146-8f6c2239ceb5">
-          <dmn:text>vacationDays</dmn:text>
-        </dmn:literalExpression>
-      </dmn:contextEntry>
-      <dmn:contextEntry>
-        <dmn:variable id="_d1845af2-3a42-44b6-9037-b76f71b71193" name="taxRate" typeRef="number"/>
-        <dmn:literalExpression id="_3db60313-218f-4384-b34c-8188afb3d0a8">
-          <dmn:text>null</dmn:text>
-        </dmn:literalExpression>
-      </dmn:contextEntry>
-    </dmn:context>
-  </dmn:decision>
-  <dmn:decisionService id="_fcf22829-0fd8-4f41-919e-3e909f01fbff" name="days">
-    <dmn:extensionElements/>
-    <dmn:variable id="_8ea3497e-8969-4aa6-9a39-254e4e8edea5" name="days" typeRef="Any"/>
-    <dmn:outputDecision href="#_5b8d18fb-39d8-4f5c-84a0-b79913b7aded"/>
-    <dmn:encapsulatedDecision href="#_eac3ef9e-37de-4dca-8802-ee08ded9e268"/>
-    <dmn:inputData href="#_89e85ee4-f052-4977-bee5-a3b81a600c6c"/>
-  </dmn:decisionService>
-  <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
-      <di:extension>
-        <kie:ComponentsWidthsExtension>
-          <kie:ComponentWidths dmnElementRef="_c7a83474-a6bc-49c6-8296-4428c9285f4d"/>
-          <kie:ComponentWidths dmnElementRef="_d1950d38-3f02-4339-af1b-aaeeed847baa"/>
-          <kie:ComponentWidths dmnElementRef="_590f5f1d-bc73-43e4-8b87-1b18ee5b5d8d"/>
-          <kie:ComponentWidths dmnElementRef="_02d83b5e-33ff-4075-8edc-de24f4c5bd57"/>
-          <kie:ComponentWidths dmnElementRef="_5ec20766-f390-4a66-b146-8f6c2239ceb5"/>
-          <kie:ComponentWidths dmnElementRef="_3db60313-218f-4384-b34c-8188afb3d0a8"/>
-        </kie:ComponentsWidthsExtension>
-      </di:extension>
-      <dmndi:DMNShape xmlns:p0="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnshape-_89e85ee4-f052-4977-bee5-a3b81a600c6c" dmnElementRef="p0:_89e85ee4-f052-4977-bee5-a3b81a600c6c" isCollapsed="false">
-        <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
-        </dmndi:DMNStyle>
-        <dc:Bounds x="260" y="320.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
-        <dmndi:DMNLabel/>
-      </dmndi:DMNShape>
-      <dmndi:DMNShape xmlns:p1="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnshape-_eac3ef9e-37de-4dca-8802-ee08ded9e268" dmnElementRef="p1:_eac3ef9e-37de-4dca-8802-ee08ded9e268" isCollapsed="false">
-        <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
-        </dmndi:DMNStyle>
-        <dc:Bounds x="951.7411708831787" y="348" width="153" height="60"/>
-        <dmndi:DMNLabel/>
-      </dmndi:DMNShape>
-      <dmndi:DMNShape xmlns:p2="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnshape-_5b8d18fb-39d8-4f5c-84a0-b79913b7aded" dmnElementRef="p2:_5b8d18fb-39d8-4f5c-84a0-b79913b7aded" isCollapsed="false">
-        <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
-        </dmndi:DMNStyle>
-        <dc:Bounds x="828.7411708831787" y="228" width="153" height="60"/>
-        <dmndi:DMNLabel/>
-      </dmndi:DMNShape>
-      <dmndi:DMNShape xmlns:p3="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnshape-_fcf22829-0fd8-4f41-919e-3e909f01fbff" dmnElementRef="p3:_fcf22829-0fd8-4f41-919e-3e909f01fbff" isCollapsed="false">
-        <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
-        </dmndi:DMNStyle>
-        <dc:Bounds x="192.5" y="49" width="367.7411708831787" height="250"/>
-        <dmndi:DMNLabel/>
-        <dmndi:DMNDecisionServiceDividerLine>
-          <di:waypoint x="192.5" y="178"/>
-          <di:waypoint x="560.2411708831787" y="178"/>
-        </dmndi:DMNDecisionServiceDividerLine>
-      </dmndi:DMNShape>
-      <dmndi:DMNEdge xmlns:p4="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnedge-_5e303927-d1c9-403c-a1b2-2af72044737d" dmnElementRef="p4:_5e303927-d1c9-403c-a1b2-2af72044737d">
-        <di:waypoint x="396.2379722595215" y="350.99999618530273"/>
-        <di:waypoint x="1028.2411708831787" y="408"/>
-      </dmndi:DMNEdge>
-      <dmndi:DMNEdge xmlns:p5="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnedge-_de1a99cb-c0c9-4e58-be9c-dc619e856fa6" dmnElementRef="p5:_de1a99cb-c0c9-4e58-be9c-dc619e856fa6">
-        <di:waypoint x="1028.2411708831787" y="348"/>
-        <di:waypoint x="955.2411708831787" y="288"/>
-      </dmndi:DMNEdge>
-      <dmndi:DMNEdge xmlns:p6="http://www.trisotech.com/definitions/_9efe7fc6-f41b-422c-accd-95dcaaa67a39" id="dmnedge-_621c38e6-638b-4907-bbc4-e7daf9d4272d" dmnElementRef="p6:_621c38e6-638b-4907-bbc4-e7daf9d4272d">
-        <di:waypoint x="327.7379722595215" y="320.99999618530273"/>
-        <di:waypoint x="905.2411708831787" y="288"/>
-      </dmndi:DMNEdge>
-    </dmndi:DMNDiagram>
-  </dmndi:DMNDI>
+
+  <dmn:businessKnowledgeModel id="_32543811-b499-4608-b784-6c6f294b1c58" name="Say Hello">
+    <dmn:variable id="_a8eb10e1-30e6-40d8-a564-a868f4e0af34"
+                  name="Say Hello"
+                  typeRef="string"/>
+    <dmn:encapsulatedLogic kind="FEEL" id="_acbb96c9-34a3-4628-8179-dfc5f583e695">
+      <dmn:formalParameter id="_4a626f74-2ecc-4759-b76a-04baec6b795d"
+                           name="Person"
+                           typeRef="tPerson"/>
+      <dmn:literalExpression id="_c173a894-3719-4d2f-a365-25850e217310">
+        <dmn:text>"Hello " + Person.name + "!"</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+
 </dmn:definitions>
