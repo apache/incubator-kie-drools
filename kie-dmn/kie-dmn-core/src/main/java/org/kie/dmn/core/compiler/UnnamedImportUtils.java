@@ -51,6 +51,17 @@ public class UnnamedImportUtils {
         // Here we try to put all the definitions from the "imported" model inside the parent one
         Definitions parentDefinitions = parentModel.getDefinitions();
         Definitions mergedDefinitions = mergedModel.getDefinitions();
+
+        mergeDefinitions(parentDefinitions, mergedDefinitions);
+
+        mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
+                                                                 stringDMNTypeMap.values().
+                                                                         forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
+    }
+
+    public static void mergeDefinitions(Definitions parentDefinitions, Definitions mergedDefinitions) {
+        // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
+        // Here we try to put all the definitions from the "imported" model inside the parent one
         parentDefinitions.getArtifact().addAll(mergedDefinitions.getArtifact());
 
         addIfNotPresent(parentDefinitions.getDecisionService(), mergedDefinitions.getDecisionService());
@@ -59,9 +70,6 @@ public class UnnamedImportUtils {
         addIfNotPresent(parentDefinitions.getImport(), mergedDefinitions.getImport());
         addIfNotPresent(parentDefinitions.getItemDefinition(), mergedDefinitions.getItemDefinition());
         mergedDefinitions.getChildren().forEach(parentDefinitions::addChildren);
-        mergedModel.getTypeRegistry().getTypes().forEach((s, stringDMNTypeMap) ->
-                                                                 stringDMNTypeMap.values().
-                                                                         forEach(dmnType -> parentModel.getTypeRegistry().registerType(dmnType)));
     }
 
     static <T extends NamedElement> void addIfNotPresent(Collection<T> target, Collection<T> source) {

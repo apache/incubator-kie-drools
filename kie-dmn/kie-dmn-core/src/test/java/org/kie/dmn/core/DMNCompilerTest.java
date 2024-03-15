@@ -278,7 +278,7 @@ public class DMNCompilerTest extends BaseVariantTest {
                                                                         this.getClass(),
                                                                         "Imported_Model_Unamed.dmn");
 
-        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
                                                         "Imported Model");
         assertThat(importedModel).isNotNull();
         for (final DMNMessage message : importedModel.getMessages()) {
@@ -324,7 +324,7 @@ public class DMNCompilerTest extends BaseVariantTest {
                                                                         this.getClass(),
                                                                         "Imported_Model_Unamed.dmn");
 
-        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36",
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
                                                         "Imported Model");
         assertThat(importedModel).isNotNull();
         for (final DMNMessage message : importedModel.getMessages()) {
