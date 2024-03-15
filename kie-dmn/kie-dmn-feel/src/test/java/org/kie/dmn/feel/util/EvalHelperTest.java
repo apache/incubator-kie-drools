@@ -20,6 +20,7 @@ package org.kie.dmn.feel.util;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.junit.Test;
 import org.kie.dmn.feel.lang.FEELProperty;
@@ -70,6 +71,22 @@ public class EvalHelperTest {
         assertThat(EvalHelper.getGenericAccessor(TestPojo.class, "aProperty")).as("getGenericAccessor should work on Java bean accessors.").isEqualTo(expectedAccessor);
 
         assertThat(EvalHelper.getGenericAccessor(TestPojo.class, "feelPropertyIdentifier")).as("getGenericAccessor should work for methods annotated with '@FEELProperty'.").isEqualTo(expectedAccessor);
+    }
+
+    @Test
+    public void testNumericValuesComparative() {
+        assertThat(EvalHelper.compare(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, (l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(EvalHelper.compare(1.0, 2.0, null, (l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(EvalHelper.compare(1, 2, null, (l, r) -> l.compareTo(r) > 0)).isFalse();
+        assertThat(EvalHelper.compare(BigDecimal.valueOf(1), 2, null, (l, r) -> l.compareTo(r) > 0)).isFalse();
+        assertThat(EvalHelper.compare(1, BigDecimal.valueOf(2), null, (l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(EvalHelper.compare(BigDecimal.valueOf(1), 2.3, null, (l, r) -> l.compareTo(r) == 0)).isFalse();
+        assertThat(EvalHelper.compare(1.2, BigDecimal.valueOf(1.2), null, (l, r) -> l.compareTo(r) == 0)).isTrue();
+        assertThat(EvalHelper.compare(BigDecimal.valueOf(1), 0L, null, (l, r) -> l.compareTo(r) > 0)).isTrue();
+        assertThat(EvalHelper.compare(10L, BigDecimal.valueOf(2), null, (l, r) -> l.compareTo(r) < 0)).isFalse();
+        assertThat(EvalHelper.compare(BigInteger.valueOf(1), BigInteger.valueOf(2), null, (l, r) -> l.compareTo(r) == 0)).isFalse();
+        assertThat(EvalHelper.compare(BigInteger.valueOf(1), 2, null, (l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(EvalHelper.compare(BigInteger.valueOf(1), 2.3, null, (l, r) -> l.compareTo(r) == 0)).isFalse();
     }
 
     private static class TestPojo {

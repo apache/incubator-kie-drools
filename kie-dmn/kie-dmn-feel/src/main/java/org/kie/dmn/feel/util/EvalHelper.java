@@ -546,12 +546,14 @@ public class EvalHelper {
     public static Boolean compare(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
         if ( left == null || right == null ) {
             return null;
-        } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
+        }
+        if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
             Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
             Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
             return op.test( l, r );
-        } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
+        }
+        if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
             // Handle specific cases when both time / datetime
             TemporalAccessor l = (TemporalAccessor) left;
             TemporalAccessor r = (TemporalAccessor) right;
@@ -559,15 +561,20 @@ public class EvalHelper {
                 return op.test(valuet(l), valuet(r));
             } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
                 return op.test(valuedt(l, r.query(TemporalQueries.zone())), valuedt(r, l.query(TemporalQueries.zone())));
-            } // fallback; continue:
+            }
+        }
+        if (left instanceof Number && right instanceof Number) {
+            // Handle specific cases when both are Number, converting both to BigDecimal
+            BigDecimal l = getBigDecimalOrNull(left);
+            BigDecimal r = getBigDecimalOrNull(right);
+            return op.test(l, r);
         }
         // last fallback:
         if ((left instanceof String && right instanceof String) ||
-            (left instanceof Number && right instanceof Number) ||
             (left instanceof Boolean && right instanceof Boolean) ||
             (left instanceof Comparable && left.getClass().isAssignableFrom(right.getClass()))) {
-            Comparable l = (Comparable) left;
-            Comparable r = (Comparable) right;
+            Comparable<?> l = (Comparable<?>) left;
+            Comparable<?> r = (Comparable<?>) right;
             return op.test(l, r);
         }
         return null;
