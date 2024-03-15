@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.traits.compiler.CommonTraitTest;
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.traits.core.factmodel.TraitableMap;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.base.factmodel.traits.Traitable;

@@ -20,7 +20,7 @@ package org.drools.core.process;
 
 import java.util.Collection;
 
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.process.CaseData;

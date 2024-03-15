@@ -21,7 +21,7 @@ package org.drools.verifier.data;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.verifier.components.EntryPoint;
