@@ -28,7 +28,7 @@ mvn archetype:generate \
     -DarchetypeArtifactId=kogito-spring-boot-archetype \
     -DarchetypeVersion=2.0.0-SNAPSHOT \
     -DgroupId=com.company \
-    -DartifactId=sample-kogito
+    -DartifactId=sample-kogito \
     -Dstarters=decisions,rules,processes
 ```
 
@@ -52,7 +52,7 @@ mvn archetype:generate \
     -DarchetypeArtifactId=kogito-spring-boot-archetype \
     -DarchetypeVersion=2.0.0-SNAPSHOT \
     -DgroupId=com.company \
-    -DartifactId=sample-kogito
+    -DartifactId=sample-kogito \
     -Daddons=monitoring-prometheus,persistence-infinispan
 ```
 
