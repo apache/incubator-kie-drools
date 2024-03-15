@@ -138,6 +138,13 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME) && p.getSourceId().equals("_5e43b55c-888e-443c-b1b9-80e4aa6746bd"))).isTrue();
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME) && p.getSourceId().equals("_b1e4588e-9ce1-4474-8e4e-48dbcdb7524b"))).isTrue();
     }
+
+    @Test
+    public void testNAME_EMPTY_empty_model_name() {
+        List<DMNMessage> validate = validator.validate( getReader( "EmptyModelName.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
+        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME) && p.getSourceId().equals("_f27bb64b-6fc7-4e1f-9848-11ba35e0df44"))).isTrue();
+    }
     
     @Test
     public void testDRGELEM_NOT_UNIQUE() {
