@@ -128,7 +128,7 @@ jobs:
           mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
 
       - name: "Upload JIT Executor binary"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jitexecutor_${{ runner.os }}
           path: ./jitexecutor/jitexecutor-runner/target/jitexecutor-runner-${{ steps.version.outputs.PROJECT_VERSION }}-run*
