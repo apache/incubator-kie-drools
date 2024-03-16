@@ -60,7 +60,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     public void create(String id, ProcessInstance instance) {
         LOGGER.debug("Creating process instance id: {}, processId: {}, processVersion: {}", id, process.id(), process.version());
         if (isActive(instance)) {
-            repository.insertInternal(process.id(), process.version(), UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+            repository.insertInternal(process.id(), process.version(), UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.businessKey());
         } else {
             LOGGER.warn("Skipping create of process instance id: {}, state: {}", id, instance.status());
         }
@@ -99,6 +99,12 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     public Optional<ProcessInstance<?>> findById(String id, ProcessInstanceReadMode mode) {
         LOGGER.debug("Find process instance id: {}, mode: {}", id, mode);
         return repository.findByIdInternal(process.id(), process.version(), UUID.fromString(id)).map(r -> unmarshall(r, mode));
+    }
+
+    @Override
+    public Optional<ProcessInstance<?>> findByBusinessKey(String businessKey, ProcessInstanceReadMode mode) {
+        LOGGER.debug("Find process instance using business Key : {}", businessKey);
+        return repository.findByBusinessKey(process.id(), process.version(), businessKey).map(r -> unmarshall(r, mode));
     }
 
     @Override

@@ -25,8 +25,10 @@ import java.util.stream.Stream;
 abstract class Repository {
 
     static final String INSERT = "INSERT INTO process_instances (id, payload, process_id, process_version, version) VALUES (?, ?, ?, ?, ?)";
+    static final String INSERT_BUSINESS_KEY = "INSERT INTO business_key_mapping (business_key,process_instance_id) VALUES (?,?)";
     static final String FIND_ALL = "SELECT payload, version FROM process_instances WHERE process_id = ?";
     static final String FIND_BY_ID = "SELECT payload, version FROM process_instances WHERE process_id = ? and id = ?";
+    static final String FIND_BY_BUSINESS_KEY = "SELECT payload, version FROM process_instances INNER JOIN business_key_mapping ON id = process_instance_id WHERE business_key = ? and process_id = ?";
     static final String UPDATE = "UPDATE process_instances SET payload = ? WHERE process_id = ? and id = ?";
     static final String UPDATE_WITH_LOCK = "UPDATE process_instances SET payload = ?, version = ? WHERE process_id = ? and id = ? and version = ?";
     static final String DELETE = "DELETE FROM process_instances WHERE process_id = ? and id = ?";
@@ -51,7 +53,7 @@ abstract class Repository {
         }
     }
 
-    abstract void insertInternal(String processId, String processVersion, UUID id, byte[] payload);
+    abstract void insertInternal(String processId, String processVersion, UUID id, byte[] payload, String businessKey);
 
     abstract void updateInternal(String processId, String processVersion, UUID id, byte[] payload);
 
@@ -60,6 +62,8 @@ abstract class Repository {
     abstract boolean deleteInternal(String processId, String processVersion, UUID id);
 
     abstract Optional<Record> findByIdInternal(String processId, String processVersion, UUID id);
+
+    abstract Optional<Record> findByBusinessKey(String processId, String processVersion, String businessKey);
 
     abstract Stream<Record> findAllInternal(String processId, String processVersion);
 

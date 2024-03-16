@@ -152,13 +152,14 @@ abstract class AbstractProcessInstancesIT {
     @Test
     void testBasicFlow() {
         var factory = new TestProcessInstancesFactory(getDataSource(), lock());
+        final String businessKey = "manolo";
         BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test",
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(businessKey, BpmnVariables.create(singletonMap("test",
                 "test")));
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
-        Optional<?> foundOne = processInstances.findById(processInstance.id());
+        Optional<?> foundOne = processInstances.findByBusinessKey(businessKey);
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         processInstances.update(processInstance.id(), instanceOne);
 
