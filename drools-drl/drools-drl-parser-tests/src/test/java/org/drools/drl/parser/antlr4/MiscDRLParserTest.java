@@ -3655,6 +3655,7 @@ class MiscDRLParserTest {
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("$containsL : address!.city.contains(\"L\")");
     }
 
+    @Test
     void groupedConstraints() {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
