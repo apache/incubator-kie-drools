@@ -162,6 +162,76 @@ typeArgument
     |	QUESTION ((extends_key | super_key) type)?
     ;
 
+// matches any drl keywords
+drlKeywords returns [Token token]
+    : DRL_UNIT
+    | DRL_FUNCTION
+    | DRL_GLOBAL
+    | DRL_DECLARE
+    | DRL_RULE
+    | DRL_QUERY
+    | DRL_WHEN
+    | DRL_THEN
+    | DRL_END
+    | DRL_AND
+    | DRL_OR
+    | DRL_EXISTS
+    | DRL_NOT
+    | DRL_IN
+    | DRL_FROM
+    | DRL_MATCHES
+    | DRL_MEMBEROF
+    | DRL_CONTAINS
+    | DRL_EXCLUDES
+    | DRL_SOUNDSLIKE
+    | DRL_STR
+    | DRL_ACCUMULATE
+    | DRL_ACC
+    | DRL_INIT
+    | DRL_ACTION
+    | DRL_REVERSE
+    | DRL_RESULT
+    | DRL_ENTRY_POINT
+    | DRL_EVAL
+    | DRL_SALIENCE
+    | DRL_ENABLED
+    | DRL_NO_LOOP
+    | DRL_AUTO_FOCUS
+    | DRL_LOCK_ON_ACTIVE
+    | DRL_REFRACT
+    | DRL_DIRECT
+    | DRL_AGENDA_GROUP
+    | DRL_ACTIVATION_GROUP
+    | DRL_RULEFLOW_GROUP
+    | DRL_DATE_EFFECTIVE
+    | DRL_DATE_EXPIRES
+    | DRL_DIALECT
+    | DRL_CALENDARS
+    | DRL_TIMER
+    | DRL_DURATION
+    ;
+
+// matches any identifiers including acceptable java keywords (defined in JavaParser.g4) and drl keywords
+drlIdentifier returns [Token token]
+    : drlKeywords
+    | IDENTIFIER
+    | MODULE
+    | OPEN
+    | REQUIRES
+    | EXPORTS
+    | OPENS
+    | TO
+    | USES
+    | PROVIDES
+    | WITH
+    | TRANSITIVE
+    | YIELD
+    | SEALED
+    | PERMITS
+    | RECORD
+    | VAR
+    ;
+
 // --------------------------------------------------------
 //                      EXPRESSIONS
 // --------------------------------------------------------
@@ -608,18 +678,18 @@ primary returns [BaseDescr result]
     //|   void_key DOT class_key
     |   inlineMapExpression
     |   inlineListExpression
-    |   i1=IDENTIFIER { helper.emit($i1, DroolsEditorType.IDENTIFIER); }
+    |   i1=drlIdentifier { helper.emit($i1.token, DroolsEditorType.IDENTIFIER); }
         (
-            ( d=DOT i2=IDENTIFIER { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            ( d=DOT i2=drlIdentifier { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($i2.token, DroolsEditorType.IDENTIFIER); } )
             |
             ( d=(DOT|NULL_SAFE_DOT) LPAREN { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($LPAREN, DroolsEditorType.SYMBOL); }
                                     expression (COMMA { helper.emit($COMMA, DroolsEditorType.SYMBOL); } expression)*
                                     RPAREN { helper.emit($RPAREN, DroolsEditorType.SYMBOL); }
             )
             |
-            ( h=HASH i2=IDENTIFIER { helper.emit($h, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            ( h=HASH i2=drlIdentifier { helper.emit($h, DroolsEditorType.SYMBOL); helper.emit($i2.token, DroolsEditorType.IDENTIFIER); } )
             |
-            ( n=NULL_SAFE_DOT i2=IDENTIFIER { helper.emit($n, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            ( n=NULL_SAFE_DOT i2=drlIdentifier { helper.emit($n, DroolsEditorType.SYMBOL); helper.emit($i2.token, DroolsEditorType.IDENTIFIER); } )
         )* (identifierSuffix)?
     ;
 
