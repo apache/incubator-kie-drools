@@ -3639,4 +3639,19 @@ class MiscDRLParserTest {
         ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("address!.city!.startsWith(\"M\")");
     }
+
+    @Test
+    void nullSafeDereferencingMethodCallBindVariable() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person( $containsL : address!.city.contains(\"L\") )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("$containsL : address!.city.contains(\"L\")");
+    }
 }

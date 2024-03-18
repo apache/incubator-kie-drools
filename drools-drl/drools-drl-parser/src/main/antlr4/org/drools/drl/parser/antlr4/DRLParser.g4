@@ -247,16 +247,16 @@ drlExpression
     | drlExpression bop=DOT
       (
          drlIdentifier
-       | methodCall
+       | drlMethodCall
        | THIS
        | NEW nonWildcardTypeArguments? innerCreator
        | SUPER superSuffix
        | explicitGenericInvocation
       )
-    | drlExpression NULL_SAFE_DOT ( drlIdentifier | methodCall )
+    | drlExpression NULL_SAFE_DOT ( drlIdentifier | drlMethodCall )
     | drlExpression LBRACK drlExpression RBRACK
     | DRL_EVAL LPAREN conditionalOrExpression RPAREN
-    | methodCall
+    | drlMethodCall
     | NEW drlCreator
     | LPAREN annotation* typeType (BITAND typeType)* RPAREN drlExpression
     | drlExpression postfix=(INC | DEC)
@@ -284,6 +284,13 @@ drlExpression
     | drlExpression COLONCOLON typeArguments? drlIdentifier
     | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
+    ;
+
+/* extending JavaParser methodCall in order to accept drl keywords as method name */
+drlMethodCall
+    : drlIdentifier LPAREN expressionList? RPAREN
+    | THIS LPAREN expressionList? RPAREN
+    | SUPER LPAREN expressionList? RPAREN
     ;
 
 temporalOperator : DRL_NOT? bop=(DRL_AFTER | DRL_BEFORE | DRL_COINCIDES | DRL_DURING | DRL_INCLUDES | DRL_FINISHES | DRL_FINISHED_BY | DRL_MEETS | DRL_MET_BY | DRL_OVERLAPS | DRL_OVERLAPPED_BY | DRL_STARTS | DRL_STARTED_BY) timeAmount? ;
