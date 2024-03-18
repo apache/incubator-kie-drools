@@ -37,16 +37,15 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
-import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
@@ -168,7 +167,7 @@ public abstract class BaseModelTest {
     }
 
     public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
-        return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect(Collectors.toList());
+        return ksession.getInstancesOf(clazz).stream().collect(Collectors.toList());
     }
 
     protected void createAndDeployJar( KieServices ks, ReleaseId releaseId, String... drls ) {
