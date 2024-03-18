@@ -317,6 +317,7 @@ public class DRLExprParserTest {
             "(long) l",
             "(float) f",
             "(double) d",
+            "this",
             "<Type>this()",
             "Object[][].class.getName()",
             "new<Integer>ArrayList<Integer>()"
