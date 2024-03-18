@@ -37,7 +37,7 @@
     <version.com.github.javaparser>3.25.1</version.com.github.javaparser>
     <version.com.fasterxml.jackson.datatype>2.15.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.18.0</version.com.github.victools>
-    <version.com.github.tomakehurst.wiremock>2.33.2</version.com.github.tomakehurst.wiremock>
+    <version.com.github.tomakehurst.wiremock>2.35.1</version.com.github.tomakehurst.wiremock>
     <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
     <!-- We don't use gson directly. This is just to align versions of transitive dependencies -->
     <version.com.google.gson>2.10.1</version.com.google.gson>
