@@ -213,6 +213,33 @@ public class DRLExprParserTest {
     }
 
     @Test
+    public void testDrlKeywordMethodCall() throws Exception {
+        String source = "x.contains( 1, a )";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
+
+        AtomicExprDescr descr = (AtomicExprDescr) result.getDescrs().get( 0 );
+        assertThat(descr.getExpression()).isEqualTo("x.contains( 1, a )");
+    }
+
+    @Test
+    public void testDrlKeywordMethodCallBinding() throws Exception {
+        String source = "$x : x.contains( 1, a )";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
+        assertThat(result.getDescrs().size()).isEqualTo(1);
+
+        BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
+        assertThat(bind.getVariable()).isEqualTo("$x");
+        assertThat(bind.getExpression()).isEqualTo("x.contains( 1, a )");
+    }
+
+    @Test
     public void testDeepBinding() throws Exception {
         String source = "($a : a > $b : b[10].prop || 10 != 20) && $x : someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
