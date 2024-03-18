@@ -78,4 +78,13 @@ public class Antlr4ParserStringUtils {
             throw new DRLParserException("rhs has to start with 'then' : rhs = " + rhs);
         }
     }
+
+    public static String stripBracesFromBlock(String text) {
+        text = text.trim();
+        if (text.length() >= 2 && text.startsWith("{") && text.endsWith("}")) {
+            return text.substring(1, text.length() - 1);
+        } else {
+            throw new DRLParserException("block has to start with '{' and end with '}' : block = " + text);
+        }
+    }
 }

@@ -164,7 +164,7 @@ drlRelationalOperator
     | DRL_NOT? DRL_STR LBRACK IDENTIFIER RBRACK ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
-functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters block ;
+functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock ;
 
 
 /* extending JavaParser qualifiedName */
@@ -512,3 +512,37 @@ drlVariableInitializer
  drlArrayInitializer
      : LBRACE (drlVariableInitializer (COMMA drlVariableInitializer)* (COMMA)? )? RBRACE
      ;
+
+/* extending JavaParser block */
+drlBlock
+    : LBRACE drlBlockStatement* RBRACE
+    ;
+/* extending JavaParser blockStatement */
+drlBlockStatement
+    : localVariableDeclaration SEMI
+    | drlStatement
+    | localTypeDeclaration
+    ;
+
+/* extending JavaParser statements */
+drlStatement
+    : blockLabel=block
+    | ASSERT drlExpression (COLON drlExpression)? SEMI
+    | IF parExpression drlStatement (ELSE drlStatement)?
+    | FOR LPAREN forControl RPAREN drlStatement
+    | WHILE parExpression drlStatement
+    | DO drlStatement WHILE parExpression SEMI
+    | TRY block (catchClause+ finallyBlock? | finallyBlock)
+    | TRY resourceSpecification block catchClause* finallyBlock?
+    | SWITCH parExpression LBRACE switchBlockStatementGroup* switchLabel* RBRACE
+    | SYNCHRONIZED parExpression block
+    | RETURN drlExpression? SEMI
+    | THROW drlExpression SEMI
+    | BREAK drlIdentifier? SEMI
+    | CONTINUE drlIdentifier? SEMI
+    | YIELD drlExpression SEMI // Java17
+    | SEMI
+    | statementExpression=drlExpression SEMI
+    | switchExpression SEMI? // Java17
+    | identifierLabel=drlIdentifier COLON drlStatement
+    ;
