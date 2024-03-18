@@ -30,7 +30,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -99,7 +98,7 @@ public class TestUtil {
     }
 
     public static <T> List<T> getObjectsIntoList( KieSession ksession, Class<T> clazz) {
-        return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect( Collectors.toList());
+        return ksession.getInstancesOf(clazz).stream().collect( Collectors.toList());
     }
 
     public static void createAndDeployJar( KieServices ks, ReleaseId releaseId, String... drls ) {

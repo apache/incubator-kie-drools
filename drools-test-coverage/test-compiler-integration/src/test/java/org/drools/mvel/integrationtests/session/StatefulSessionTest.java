@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.CheeseEqual;
