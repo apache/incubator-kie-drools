@@ -146,19 +146,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "Download Windows binary"
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: jitexecutor_Windows
           path: ./.github/supporting-files/publish_jitexecutor_native/dist/win32
 
       - name: "Download macOS binary"
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: jitexecutor_macOS
           path: ./.github/supporting-files/publish_jitexecutor_native/dist/darwin
 
       - name: "Download Linux binary"
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: jitexecutor_Linux
           path: ./.github/supporting-files/publish_jitexecutor_native/dist/linux
