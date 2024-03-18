@@ -656,7 +656,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         Token prefixEndToken = tokenStream.get(ctx.LPAREN().getSymbol().getTokenIndex() - 1);
         String prefix = tokenStream.getText(prefixStartToken, prefixEndToken);
         List<ExprConstraintDescr> exprConstraintDescr = visitConstraints(ctx.constraints());
-        exprConstraintDescr.stream().forEach(d -> d.setText(appendPrefix(prefix, d.getText())));
+        exprConstraintDescr.forEach(d -> d.setText(appendPrefix(prefix, d.getText())));
         return exprConstraintDescr;
     }
 
