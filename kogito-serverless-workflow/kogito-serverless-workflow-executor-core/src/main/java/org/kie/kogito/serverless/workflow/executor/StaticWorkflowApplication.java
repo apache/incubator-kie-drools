@@ -20,10 +20,13 @@ package org.kie.kogito.serverless.workflow.executor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -46,6 +49,7 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.config.StaticConfigBean;
 import org.kie.kogito.event.impl.EventFactoryUtils;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -120,28 +124,74 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         }
     }
 
-    public static StaticWorkflowApplication create() {
-        Properties properties = new Properties();
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties")) {
-            if (is != null) {
-                properties.load(is);
+    public static class WorkflowApplicationBuilder {
+
+        private Map<String, Object> properties;
+        private Collection<KogitoProcessEventListener> listeners = new ArrayList<>();
+
+        private WorkflowApplicationBuilder() {
+        }
+
+        public WorkflowApplicationBuilder withProperties(Map<String, Object> properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public WorkflowApplicationBuilder withEventListener(KogitoProcessEventListener listener, KogitoProcessEventListener... extraListeners) {
+            listeners.add(listener);
+            for (KogitoProcessEventListener extraListener : extraListeners) {
+                listeners.add(extraListener);
+            }
+            return this;
+        }
+
+        public StaticWorkflowApplication build() {
+            if (properties == null) {
+                this.properties = loadApplicationDotProperties();
+            }
+            Map<String, SynchronousQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
+            listeners.add(new StaticCompletionEventListener(queues));
+            StaticWorkflowApplication application = new StaticWorkflowApplication(properties, queues, listeners);
+            application.applicationRegisters.forEach(register -> register.register(application));
+            return application;
+        }
+    }
+
+    private static Map<String, Object> loadApplicationDotProperties() {
+        Map<String, Object> allProperties = new HashMap<>();
+        try {
+            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("application.properties");
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                try (InputStream is = url.openStream()) {
+                    Properties fileProperties = new Properties();
+                    fileProperties.load(is);
+                    fileProperties.entrySet().forEach(e -> allProperties.put(e.getKey().toString(), e.getValue()));
+                } catch (IOException io) {
+                    logger.info("Error loading properties from URL {}", url, io);
+                }
             }
         } catch (IOException io) {
-            logger.warn("Error loading application.properties from classpath", io);
+            logger.warn("Error searching for application.properties in classpath", io);
         }
-        return create((Map) properties);
+        return allProperties;
+    }
+
+    public static WorkflowApplicationBuilder builder() {
+        return new WorkflowApplicationBuilder();
+    }
+
+    public static StaticWorkflowApplication create() {
+        return builder().build();
     }
 
     public static StaticWorkflowApplication create(Map<String, Object> properties) {
-        Map<String, SynchronousQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
-        StaticWorkflowApplication application = new StaticWorkflowApplication(properties, queues);
-        application.applicationRegisters.forEach(register -> register.register(application));
-        return application;
+        return builder().withProperties(properties).build();
     }
 
-    private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues) {
+    private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues, Collection<KogitoProcessEventListener> listeners) {
         super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(new CachedWorkItemHandlerConfig(),
-                new DefaultProcessEventListenerConfig(new StaticCompletionEventListener(queues)),
+                new DefaultProcessEventListenerConfig(listeners),
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), new StaticConfigBean()));
         if (!properties.isEmpty()) {
             ConfigResolverHolder.setConfigResolver(MultiSourceConfigResolver.withSystemProperties(properties));

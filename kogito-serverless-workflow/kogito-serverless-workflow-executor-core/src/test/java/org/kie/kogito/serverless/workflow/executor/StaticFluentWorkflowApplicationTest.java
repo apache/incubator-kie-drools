@@ -23,8 +23,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
@@ -67,9 +70,15 @@ public class StaticFluentWorkflowApplicationTest {
     @Test
     void helloWorld() {
         final String GREETING_STRING = "Hello World!!!";
-        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+        AtomicBoolean completed = new AtomicBoolean(false);
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.builder().withEventListener(new DefaultKogitoProcessEventListener() {
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                completed.set(true);
+            }
+        }).build()) {
             Workflow workflow = workflow("HelloWorld").start(inject(new TextNode(GREETING_STRING))).end().build();
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
+            assertThat(completed.get()).isTrue();
         }
     }
 
