@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
@@ -59,10 +60,11 @@ import org.drools.drl.ast.descr.UnitDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 
 import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
-import static org.drools.drl.parser.antlr4.ParserStringUtils.getTextPreservingWhitespace;
-import static org.drools.drl.parser.antlr4.ParserStringUtils.getTokenTextPreservingWhitespace;
-import static org.drools.drl.parser.antlr4.ParserStringUtils.safeStripStringDelimiters;
-import static org.drools.drl.parser.antlr4.ParserStringUtils.trimThen;
+import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTextPreservingWhitespace;
+import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextPreservingWhitespace;
+import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.safeStripStringDelimiters;
+import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.trimThen;
+import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
 import static org.drools.util.StringUtils.unescapeJava;
 
 /**
@@ -533,7 +535,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         behaviorDescr.setType(ctx.DRL_WINDOW().getText());
         behaviorDescr.setSubType(ctx.IDENTIFIER().getText());
         List<DRLParser.DrlExpressionContext> drlExpressionContexts = ctx.expressionList().drlExpression();
-        List<String> parameters = drlExpressionContexts.stream().map(ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
+        List<String> parameters = drlExpressionContexts.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
         behaviorDescr.setParameters(parameters);
         return behaviorDescr;
     }
@@ -620,17 +622,42 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     /**
-     * Takes one constraint as String and create ExprConstraintDescr
+     * Takes one constraint as String and create ExprConstraintDescr.
+     * In case of nested constraint, it could be multiple ExprConstraintDescr objects.
      */
     @Override
-    public ExprConstraintDescr visitConstraint(DRLParser.ConstraintContext ctx) {
+    public List<ExprConstraintDescr> visitConstraint(DRLParser.ConstraintContext ctx) {
+        List<ExprConstraintDescr> descrList = new ArrayList<>();
+        if (ctx.nestedConstraint() != null) {
+            // nested constraint requires special string manipulation
+            return visitNestedConstraint(ctx.nestedConstraint());
+        }
+        // get a simple constraint as String
         String constraint = visitConstraintChildren(ctx);
         if (!constraint.isEmpty()) {
             ExprConstraintDescr constraintDescr = new ExprConstraintDescr(constraint);
             constraintDescr.setType(ExprConstraintDescr.Type.NAMED);
-            return constraintDescr;
+            descrList.add(constraintDescr);
+            return descrList;
         }
-        return null;
+        return descrList;
+    }
+
+    /**
+     * Append a prefix to nested constraints.
+     * For example,
+     *     address.(city.startsWith("I"), city.length() == 5)
+     * becomes
+     *     address.city.startsWith("I"), address.city.length() == 5
+     */
+    @Override
+    public List<ExprConstraintDescr> visitNestedConstraint(DRLParser.NestedConstraintContext ctx) {
+        Token prefixStartToken = ctx.start;
+        Token prefixEndToken = tokenStream.get(ctx.LPAREN().getSymbol().getTokenIndex() - 1);
+        String prefix = tokenStream.getText(prefixStartToken, prefixEndToken);
+        List<ExprConstraintDescr> exprConstraintDescr = visitConstraints(ctx.constraints());
+        exprConstraintDescr.forEach(d -> d.setText(appendPrefix(prefix, d.getText())));
+        return exprConstraintDescr;
     }
 
     @Override
@@ -797,6 +824,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             Object childResult = c.accept(this);
             if (childResult instanceof BaseDescr) {
                 aggregator.add((BaseDescr) childResult);
+            } else if (childResult instanceof List) {
+                aggregator.addAll((List<BaseDescr>) childResult);
             }
         }
         return aggregator;

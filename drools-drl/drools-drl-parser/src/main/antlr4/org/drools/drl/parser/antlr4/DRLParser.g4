@@ -128,7 +128,7 @@ lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints?
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
-nestedConstraint : ( IDENTIFIER ( DOT | HASH ) )* IDENTIFIER DOT LPAREN constraints RPAREN ;
+nestedConstraint : ( IDENTIFIER ( DOT | NULL_SAFE_DOT | HASH ) )* IDENTIFIER (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
 
 // TBD: constraint parsing could be delegated to DRL6ExpressionParser
 conditionalOrExpression : left=conditionalAndExpression (OR right=conditionalAndExpression)* ;

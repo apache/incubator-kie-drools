@@ -23,12 +23,12 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 
 /**
- * Collection of String utilities used by DRLParser.
- * This may be merged in drools-util
+ * Collection of String utilities used by antlr4 DRLParser.
  */
-public class ParserStringUtils {
+public class Antlr4ParserStringUtils {
 
-    private ParserStringUtils() {
+    private Antlr4ParserStringUtils() {
+        // Private constructor to prevent instantiation.
     }
 
     /**
