@@ -49,4 +49,12 @@ public class ResourceWithURI {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "ResourceWithURI{" +
+                "URI='" + URI + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

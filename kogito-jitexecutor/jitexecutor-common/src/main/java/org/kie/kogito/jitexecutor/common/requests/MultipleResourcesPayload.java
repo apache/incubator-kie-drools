@@ -48,4 +48,12 @@ public class MultipleResourcesPayload {
     public void setResources(List<ResourceWithURI> resources) {
         this.resources = resources;
     }
+
+    @Override
+    public String toString() {
+        return "MultipleResourcesPayload{" +
+                "mainURI='" + mainURI + '\'' +
+                ", resources=" + resources +
+                '}';
+    }
 }

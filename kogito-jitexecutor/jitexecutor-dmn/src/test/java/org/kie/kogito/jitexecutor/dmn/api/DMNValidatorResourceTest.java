@@ -38,6 +38,7 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
@@ -66,7 +67,7 @@ public class DMNValidatorResourceTest {
                 .extract()
                 .asString();
 
-        LOG.info("Validate response: {}", response);
+        LOG.debug("Validate response: {}", response);
         List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(1, messages.size());
         assertTrue(messages.stream().anyMatch(m -> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
@@ -87,9 +88,9 @@ public class DMNValidatorResourceTest {
                 .extract()
                 .asString();
 
-        LOG.info("Validate response: {}", response);
+        LOG.debug("Validate response: {}", response);
         List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
-        assertTrue(messages.size() > 0);
+        assertFalse(messages.isEmpty());
         assertTrue(messages.stream().anyMatch(m -> m.getSourceId().equals("_E7994A2B-1189-4BE5-9382-891D48E87D47") &&
                 m.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)));
     }

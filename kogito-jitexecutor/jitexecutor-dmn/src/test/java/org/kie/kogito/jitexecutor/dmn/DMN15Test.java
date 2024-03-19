@@ -109,7 +109,7 @@ class DMN15Test {
                 .statusCode(200)
                 .extract()
                 .asString();
-        LOG.info("Validate response: {}", response);
+        LOG.debug("Validate response: {}", response);
         List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(0, messages.size());
 
@@ -217,7 +217,7 @@ class DMN15Test {
                 .statusCode(200)
                 .extract()
                 .asString();
-        LOG.info("Validate response: {}", response);
+        LOG.debug("Validate response: {}", response);
         List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(0, messages.size());
     }

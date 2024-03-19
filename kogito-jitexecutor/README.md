@@ -168,6 +168,11 @@ The native mode is supported by this application. You can create the native Quar
 mvn clean package -DskipTests -Pnative
 ```
 
+end execute with
+```bash
+jitexecutor-runner/target/jitexecutor-runner-999-SNAPSHOT-runner
+```
+
 ## Multiple models
 
 Each endpoint does support a multiple DMN models variant of the payload; this is helpful for the use-case where the main model to be evaluated has some DMN-import references to other DMNs.
