@@ -3739,4 +3739,20 @@ class MiscDRLParserTest {
         assertThat(function.getParameterNames().get(0)).isEqualTo("s");
         assertThat(function.getBody()).isEqualToIgnoringWhitespace( "String result = s + \"*\"; return result;");
     }
+
+    @Test
+    void lhsPatternAnnotation() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person( age < 50 ) @watch(!age)\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        AnnotationDescr annotationDescr = patternDescr.getAnnotations().iterator().next();
+        assertThat(annotationDescr.getName()).isEqualTo("watch");
+        assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!age");
+    }
 }

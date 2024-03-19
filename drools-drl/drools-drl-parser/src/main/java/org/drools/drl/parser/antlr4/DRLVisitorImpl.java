@@ -496,6 +496,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             patternSourceDescr.setResource(patternDescr.getResource());
             patternDescr.setSource(patternSourceDescr);
         }
+        ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(patternDescr::addAnnotation);
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.positionalConstraints(), ctx.constraints());
         constraintDescrList.forEach(descr -> addToPatternDescr(patternDescr, descr));
         return patternDescr;
