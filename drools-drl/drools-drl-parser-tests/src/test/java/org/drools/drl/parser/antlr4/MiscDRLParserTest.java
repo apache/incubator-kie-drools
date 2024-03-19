@@ -3654,4 +3654,38 @@ class MiscDRLParserTest {
         ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("$containsL : address!.city.contains(\"L\")");
     }
+
+    @Test
+    void groupedConstraints() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person( address.(city.startsWith(\"I\") && city.length() == 5  ) )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(constraintDescr.toString())
+                .as("prefix should be appended to each element")
+                .isEqualToIgnoringWhitespace("address.city.startsWith(\"I\") && address.city.length() == 5");
+    }
+
+    @Test
+    void groupedConstraintsWithNullSafeDereferencing() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person( address!.(city!.startsWith(\"I\") && city!.length() == 5  ) )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        assertThat(constraintDescr.toString())
+                .as("prefix should be appended to each element")
+                .isEqualToIgnoringWhitespace("address!.city!.startsWith(\"I\") && address!.city!.length() == 5");
+    }
 }
