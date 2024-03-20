@@ -459,7 +459,7 @@ type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER ty
 drlArguments : LPAREN drlArgument (COMMA drlArgument)* RPAREN ;
 drlArgument : ( stringId | floatLiteral | BOOL_LITERAL | NULL_LITERAL ) ;
 
-drlAnnotation : AT name=drlQualifiedName (LPAREN ( drlElementValuePairs | drlElementValue )? RPAREN)? ;
+drlAnnotation : AT name=drlQualifiedName ((LPAREN ( drlElementValuePairs | drlElementValue )? RPAREN) | chunk)? ;
 
 drlElementValuePairs : drlElementValuePair (COMMA drlElementValuePair)* ;
 drlElementValuePair : key=drlIdentifier ASSIGN value=drlElementValue ;

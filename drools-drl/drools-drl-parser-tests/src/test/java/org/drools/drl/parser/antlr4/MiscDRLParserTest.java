@@ -3745,7 +3745,7 @@ class MiscDRLParserTest {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
                 "when\n" +
-                "    $p : Person( age < 50 ) @watch(!age)\n" +
+                "    $p : Person( name == \"Mario\" ) @watch(!*, age)\n" +
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
@@ -3753,6 +3753,6 @@ class MiscDRLParserTest {
         PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
         AnnotationDescr annotationDescr = patternDescr.getAnnotations().iterator().next();
         assertThat(annotationDescr.getName()).isEqualTo("watch");
-        assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!age");
+        assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
     }
 }
