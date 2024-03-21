@@ -62,7 +62,6 @@ import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTextPreservingWhitespace;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextPreservingWhitespace;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.safeStripStringDelimiters;
-import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.stripBracesFromBlock;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.trimThen;
 import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
@@ -194,7 +193,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 functionDescr.addParameter(typeTypeContext.getText(), variableDeclaratorIdContext.getText());
             });
         }
-        functionDescr.setBody(stripBracesFromBlock(getTextPreservingWhitespace(ctx.drlBlock())));
+        functionDescr.setBody(getTextPreservingWhitespace(ctx.drlBlock().drlBlockStatement()));
         return functionDescr;
     }
 

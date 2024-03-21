@@ -380,7 +380,7 @@ fromAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                  RPAREN (SEMI)?
                  ;
 
-blockStatements : blockStatement* ;
+blockStatements : drlBlockStatement* ;
 
 /*
 accumulateFunction := label? ID parameters
@@ -519,23 +519,23 @@ drlBlock
     ;
 /* extending JavaParser blockStatement */
 drlBlockStatement
-    : localVariableDeclaration SEMI
+    : drlLocalVariableDeclaration SEMI
     | drlStatement
     | localTypeDeclaration
     ;
 
-/* extending JavaParser statements */
+/* extending JavaParser statement */
 drlStatement
-    : blockLabel=block
+    : blockLabel=drlBlock
     | ASSERT drlExpression (COLON drlExpression)? SEMI
     | IF parExpression drlStatement (ELSE drlStatement)?
     | FOR LPAREN forControl RPAREN drlStatement
     | WHILE parExpression drlStatement
     | DO drlStatement WHILE parExpression SEMI
-    | TRY block (catchClause+ finallyBlock? | finallyBlock)
-    | TRY resourceSpecification block catchClause* finallyBlock?
+    | TRY drlBlock (catchClause+ finallyBlock? | finallyBlock)
+    | TRY resourceSpecification drlBlock catchClause* finallyBlock?
     | SWITCH parExpression LBRACE switchBlockStatementGroup* switchLabel* RBRACE
-    | SYNCHRONIZED parExpression block
+    | SYNCHRONIZED parExpression drlBlock
     | RETURN drlExpression? SEMI
     | THROW drlExpression SEMI
     | BREAK drlIdentifier? SEMI
@@ -545,4 +545,24 @@ drlStatement
     | statementExpression=drlExpression SEMI
     | switchExpression SEMI? // Java17
     | identifierLabel=drlIdentifier COLON drlStatement
+    ;
+
+/* extending JavaParser localVariableDeclaration */
+drlLocalVariableDeclaration
+    : variableModifier* (typeType drlVariableDeclarators | VAR drlIdentifier ASSIGN expression)
+    ;
+
+/* extending JavaParser variableDeclarators */
+drlVariableDeclarators
+    : drlVariableDeclarator (COMMA drlVariableDeclarator)*
+    ;
+
+/* extending JavaParser variableDeclarator */
+drlVariableDeclarator
+    : drlVariableDeclaratorId (ASSIGN drlVariableInitializer)?
+    ;
+
+/* extending JavaParser variableDeclaratorId */
+drlVariableDeclaratorId
+    : drlIdentifier (LBRACK RBRACK)*
     ;

@@ -18,6 +18,9 @@
  */
 package org.drools.drl.parser.antlr4;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
@@ -60,6 +63,13 @@ public class Antlr4ParserStringUtils {
     }
 
     /**
+     * Get text from List of ParserRuleContext's CharStream without trimming whitespace
+     */
+    public static String getTextPreservingWhitespace(List<? extends ParserRuleContext> ctx) {
+        return ctx.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.joining());
+    }
+
+    /**
      * Get text from ParserRuleContext's CharStream without trimming whitespace
      * tokenStream is required to get hidden channel token (e.g. whitespace).
      * Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
@@ -79,12 +89,4 @@ public class Antlr4ParserStringUtils {
         }
     }
 
-    public static String stripBracesFromBlock(String text) {
-        text = text.trim();
-        if (text.length() >= 2 && text.startsWith("{") && text.endsWith("}")) {
-            return text.substring(1, text.length() - 1);
-        } else {
-            throw new DRLParserException("block has to start with '{' and end with '}' : block = " + text);
-        }
-    }
 }

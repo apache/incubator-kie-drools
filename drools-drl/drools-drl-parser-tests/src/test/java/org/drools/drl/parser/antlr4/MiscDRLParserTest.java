@@ -3718,4 +3718,22 @@ class MiscDRLParserTest {
         assertThat(function.getParameterNames().get(0)).isEqualTo("s");
         assertThat(function.getBody()).isEqualToIgnoringWhitespace( "return s + \"*\";");
     }
+
+    @Test
+    public void functionWithMultipleBlockStatements() {
+        final String text = "function String star(String s) {\n" +
+                "    String result = s + \"*\";\n" +
+                "    return result;\n" +
+                "}";
+        PackageDescr packageDescr = parser.parse(text);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        FunctionDescr function = packageDescr.getFunctions().get( 0 );
+
+        assertThat(function.getName()).isEqualTo("star");
+        assertThat(function.getReturnType()).isEqualTo("String");
+        assertThat(function.getParameterTypes().get(0)).isEqualTo("String");
+        assertThat(function.getParameterNames().get(0)).isEqualTo("s");
+        assertThat(function.getBody()).isEqualToIgnoringWhitespace( "String result = s + \"*\"; return result;");
+    }
 }
