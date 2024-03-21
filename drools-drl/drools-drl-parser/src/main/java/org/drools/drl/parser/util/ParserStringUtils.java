@@ -28,6 +28,31 @@ public class ParserStringUtils {
     }
 
     /**
+     * Strip string delimiters (e.g. "foo" -> foo)
+     */
+    public static String safeStripStringDelimiters(String value) {
+        if (value != null) {
+            value = value.trim();
+            if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
+                value = value.substring(1, value.length() - 1);
+            }
+        }
+        return value;
+    }
+
+    public static String safeStripDelimiters(String value, String left, String right) {
+        if (value != null) {
+            value = value.trim();
+            if (value.length() >= left.length() + right.length() &&
+                    value.startsWith(left) && value.endsWith(right)) {
+                value = value.substring(left.length(),
+                        value.length() - right.length());
+            }
+        }
+        return value;
+    }
+
+    /**
      * Append a prefix to a grouped constraint.
      * Even if the constraint contains || and/or &&, append the prefix to each element.
      */

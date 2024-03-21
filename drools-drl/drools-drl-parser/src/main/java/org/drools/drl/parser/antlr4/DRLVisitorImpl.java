@@ -61,10 +61,11 @@ import org.drools.drl.ast.descr.WindowDeclarationDescr;
 
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTextPreservingWhitespace;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextPreservingWhitespace;
-import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.safeStripStringDelimiters;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.trimThen;
 import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
+import static org.drools.drl.parser.util.ParserStringUtils.safeStripDelimiters;
+import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
 import static org.drools.util.StringUtils.unescapeJava;
 
 /**
@@ -322,6 +323,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AnnotationDescr annotationDescr = new AnnotationDescr(ctx.name.getText());
         if (ctx.drlElementValue() != null) {
             annotationDescr.setValue(getTextPreservingWhitespace(ctx.drlElementValue())); // single value
+        } else if (ctx.chunk() != null) {
+            annotationDescr.setValue(safeStripDelimiters(getTextPreservingWhitespace(ctx.chunk()), "(", ")"));
         } else if (ctx.drlElementValuePairs() != null) {
             visitDrlElementValuePairs(ctx.drlElementValuePairs(), annotationDescr); // multiple values
         }
@@ -496,6 +499,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             patternSourceDescr.setResource(patternDescr.getResource());
             patternDescr.setSource(patternSourceDescr);
         }
+        ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(patternDescr::addAnnotation);
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.positionalConstraints(), ctx.constraints());
         constraintDescrList.forEach(descr -> addToPatternDescr(patternDescr, descr));
         return patternDescr;

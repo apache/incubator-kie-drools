@@ -35,19 +35,6 @@ public class Antlr4ParserStringUtils {
     }
 
     /**
-     * Strip string delimiters (e.g. "foo" -> foo)
-     */
-    public static String safeStripStringDelimiters(String value) {
-        if (value != null) {
-            value = value.trim();
-            if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
-                value = value.substring(1, value.length() - 1);
-            }
-        }
-        return value;
-    }
-
-    /**
      * Get text from ParserRuleContext's CharStream without trimming whitespace
      */
     public static String getTextPreservingWhitespace(ParserRuleContext ctx) {
