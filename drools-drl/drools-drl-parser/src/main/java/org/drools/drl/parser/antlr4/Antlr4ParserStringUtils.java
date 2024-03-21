@@ -18,6 +18,9 @@
  */
 package org.drools.drl.parser.antlr4;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
@@ -60,6 +63,13 @@ public class Antlr4ParserStringUtils {
     }
 
     /**
+     * Get text from List of ParserRuleContext's CharStream without trimming whitespace
+     */
+    public static String getTextPreservingWhitespace(List<? extends ParserRuleContext> ctx) {
+        return ctx.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.joining());
+    }
+
+    /**
      * Get text from ParserRuleContext's CharStream without trimming whitespace
      * tokenStream is required to get hidden channel token (e.g. whitespace).
      * Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
@@ -78,4 +88,5 @@ public class Antlr4ParserStringUtils {
             throw new DRLParserException("rhs has to start with 'then' : rhs = " + rhs);
         }
     }
+
 }
