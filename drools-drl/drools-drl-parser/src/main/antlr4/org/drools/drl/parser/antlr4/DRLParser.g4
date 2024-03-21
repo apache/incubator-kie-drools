@@ -124,7 +124,7 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
              ( QUESTION? qualifiedIdentifier LPAREN positionalConstraints? constraints? RPAREN (OVER patternFilter)? (FROM patternSource)? ) ;
 */
 
-lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN (DRL_OVER patternFilter)? (DRL_FROM patternSource)? ;
+lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN drlAnnotation* (DRL_OVER patternFilter)? (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
@@ -459,7 +459,7 @@ type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER ty
 drlArguments : LPAREN drlArgument (COMMA drlArgument)* RPAREN ;
 drlArgument : ( stringId | floatLiteral | BOOL_LITERAL | NULL_LITERAL ) ;
 
-drlAnnotation : AT name=drlQualifiedName (LPAREN ( drlElementValuePairs | drlElementValue )? RPAREN)? ;
+drlAnnotation : AT name=drlQualifiedName ((LPAREN ( drlElementValuePairs | drlElementValue )? RPAREN) | chunk)? ;
 
 drlElementValuePairs : drlElementValuePair (COMMA drlElementValuePair)* ;
 drlElementValuePair : key=drlIdentifier ASSIGN value=drlElementValue ;

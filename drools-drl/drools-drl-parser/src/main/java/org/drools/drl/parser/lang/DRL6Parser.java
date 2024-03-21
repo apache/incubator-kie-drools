@@ -86,6 +86,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
+import static org.drools.drl.parser.util.ParserStringUtils.safeStripDelimiters;
+import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
 
 public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
@@ -5190,31 +5192,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
         // TODO: implement this error recovery strategy
         return false;
-    }
-
-    private String safeStripDelimiters(String value,
-            String left,
-            String right) {
-        if (value != null) {
-            value = value.trim();
-            if (value.length() >= left.length() + right.length() &&
-                    value.startsWith(left) && value.endsWith(right)) {
-                value = value.substring(left.length(),
-                        value.length() - right.length());
-            }
-        }
-        return value;
-    }
-
-    private String safeStripStringDelimiters(String value) {
-        if (value != null) {
-            value = value.trim();
-            if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
-                value = value.substring(1,
-                        value.length() - 1);
-            }
-        }
-        return value;
     }
 
 }
