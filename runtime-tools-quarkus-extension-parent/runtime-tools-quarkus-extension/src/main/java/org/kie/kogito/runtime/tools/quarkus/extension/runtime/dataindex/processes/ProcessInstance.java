@@ -16,17 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.deployment;
 
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
+package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.processes;
 
-class ServerlessWorkflowQuarkusExtensionProcessor {
+public class ProcessInstance {
 
-    private static final String FEATURE = "sonataflow-quarkus-devui";
+    private String id;
 
-    @BuildStep
-    FeatureBuildItem feature() {
-        return new FeatureBuildItem(FEATURE);
+    public ProcessInstance() {
+    }
+
+    public ProcessInstance(final String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }

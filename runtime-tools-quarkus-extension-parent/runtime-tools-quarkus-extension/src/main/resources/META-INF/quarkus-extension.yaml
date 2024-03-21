@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: jBPM Runtime Tools Quarkus Dev UI
+name: jBPM Quarkus Dev UI
 description: Enables the jBPM Runtime tools in Quarkus Dev UI
 metadata:
   keywords:

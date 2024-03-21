@@ -16,27 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.runtime.tools.quarkus.extension.runtime.user;
+
+package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.jobs;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class UserInfo {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private List<User> users;
+public class JobsData {
 
-    public UserInfo(final List<User> users) {
-        this.users = users;
+    @JsonProperty("Jobs")
+    private List<Job> jobsList;
+
+    public JobsData() {
     }
 
-    public List<User> getUsers() {
-        return users;
+    public JobsData(final List<Job> jobsList) {
+        this.jobsList = jobsList;
     }
 
-    public String getArrayRepresentation() {
-        return "[ "
-                + users.stream().map(user -> "{ id: '" + user.getId() + "', groups: [" + user.getGroups().stream().map(group -> "'" + group + "'").collect(Collectors.joining(", ")) + "] }")
-                        .collect(Collectors.joining(", "))
-                + " ]";
+    public List<Job> getJobs() {
+        return jobsList;
+    }
+
+    public void setJobs(final List<Job> jobsList) {
+        this.jobsList = jobsList;
     }
 }

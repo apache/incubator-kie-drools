@@ -23,7 +23,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class RuntimeToolsQuarkusExtensionProcessor {
 
-    private static final String FEATURE = "kogito-processes-devui";
+    private static final String FEATURE = "jbpm-quarkus-devui";
 
     @BuildStep
     FeatureBuildItem feature() {

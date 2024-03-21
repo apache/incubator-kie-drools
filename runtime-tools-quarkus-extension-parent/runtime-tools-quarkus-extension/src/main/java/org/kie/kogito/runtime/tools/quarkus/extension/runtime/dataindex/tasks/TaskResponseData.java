@@ -16,27 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.runtime.tools.quarkus.extension.runtime.user;
+
+package org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.tasks;
 
 import java.util.List;
 
-public class User {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private String id;
+public class TaskResponseData {
 
-    private List<String> groups;
+    @JsonProperty("UserTaskInstances")
+    private List<Task> tasks;
 
-    public User(final String id,
-            final List<String> groups) {
-        this.id = id;
-        this.groups = groups;
+    public TaskResponseData() {
     }
 
-    public String getId() {
-        return id;
+    public TaskResponseData(final List<Task> tasks) {
+        this.tasks = tasks;
     }
 
-    public List<String> getGroups() {
-        return groups;
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(final List<Task> userTaskInstancesList) {
+        this.tasks = userTaskInstancesList;
     }
 }
