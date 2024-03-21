@@ -46,7 +46,7 @@ If you want to learn more about building native executables, please consult http
 
 ## Packaging together with the React app
 
-The application makes use of a separately developed [React UI application](../ui-packages/packages/management-console/package.json). The JS based frontend can be built as part of the build of this project by using the profile defined in dependency [ui-packages](../ui-packages/pom.xml), invoked by default. Using the property `-Dskip.ui.build` as in following command you can skip the build of UI and use what is already built in the respective package:
+The application makes use of a separately developed [React UI application](../ui-packages/packages/management-console-webapp/package.json). The JS based frontend can be built as part of the build of this project by using the profile defined in dependency [ui-packages](../ui-packages/pom.xml), invoked by default. Using the property `-Dskip.ui.build` as in following command you can skip the build of UI and use what is already built in the respective package:
 ```
 mvn package -Dskip.ui.build
 ```
