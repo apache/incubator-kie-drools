@@ -780,6 +780,9 @@ class MiscDRLParserTest {
 
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
+        assertThat(rule.getStartCharacter()).isEqualTo(803);
+        assertThat(rule.getEndCharacter()).isEqualTo(996);
+
         assertThat(rule.getConsequenceLine()).isEqualTo(22);
         assertThat(rule.getConsequencePattern()).isEqualTo(2);
 

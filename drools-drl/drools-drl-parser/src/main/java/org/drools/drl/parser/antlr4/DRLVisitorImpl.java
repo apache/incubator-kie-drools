@@ -270,6 +270,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             ruleDescr.setConsequence(trimThen(getTokenTextPreservingWhitespace(ctx.rhs(), tokenStream))); // RHS is just a text
         }
 
+        populateStartEnd(ruleDescr, ctx);
         return ruleDescr;
     }
 
