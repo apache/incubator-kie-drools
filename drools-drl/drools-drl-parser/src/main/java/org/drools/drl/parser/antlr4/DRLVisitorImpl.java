@@ -548,7 +548,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public FromDescr visitFromExpression(DRLParser.FromExpressionContext ctx) {
         FromDescr fromDescr = new FromDescr();
-        fromDescr.setDataSource(new MVELExprDescr(ctx.getText()));
+        fromDescr.setDataSource(new MVELExprDescr(getTextPreservingWhitespace(ctx)));
         return fromDescr;
     }
 
