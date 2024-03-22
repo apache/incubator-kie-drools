@@ -3755,4 +3755,19 @@ class MiscDRLParserTest {
         assertThat(annotationDescr.getName()).isEqualTo("watch");
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
     }
+
+    @Test
+    void fromNew() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person() from new Person(\"John\", 30)\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        FromDescr fromDescr = (FromDescr) patternDescr.getSource();
+        assertThat(fromDescr.getDataSource().toString()).isEqualTo("new Person(\"John\", 30)");
+    }
 }
