@@ -291,7 +291,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testAllowedValuesChecksInsideCollection() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "AllowedValuesChecksInsideCollection.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
                 "AllowedValuesChecksInsideCollection" );
@@ -325,7 +325,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testTypeConstraintsChecks() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "TypeConstraintsChecks.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/TypeConstraintsChecks.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
                 "TypeConstraintsChecks" );

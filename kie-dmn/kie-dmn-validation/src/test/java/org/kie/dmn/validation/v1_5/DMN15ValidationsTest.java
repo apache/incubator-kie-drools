@@ -54,8 +54,8 @@ public class DMN15ValidationsTest {
 
     @Test
     public void overridingUnnamedImportValidation() {
-        String importedModelFileName = "Imported_Model_Unamed.dmn";
-        String importingModelFileName = "Importing_OverridingEmptyNamed_Model.dmn";
+        String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
+        String importingModelFileName = "valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn";
         String modelName = "Importing empty-named Model";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
         validate(importedModelFileName, importingModelFileName);
@@ -65,8 +65,8 @@ public class DMN15ValidationsTest {
 
     @Test
     public void namedImportValidation() {
-        String importedModelFileName = "Imported_Model_Unamed.dmn";
-        String importingModelFileName = "Importing_Named_Model.dmn";
+        String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
+        String importingModelFileName = "valid_models/DMNv1_5/Importing_Named_Model.dmn";
         String modelName = "Importing named Model";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
         validate(importedModelFileName, importingModelFileName);
@@ -76,8 +76,8 @@ public class DMN15ValidationsTest {
 
     @Test
     public void unnamedImportValidation() {
-        String importedModelFileName = "Imported_Model_Unamed.dmn";
-        String importingModelFileName = "Importing_EmptyNamed_Model.dmn";
+        String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
+        String importingModelFileName = "valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn";
         String modelName = "Importing empty-named Model";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
         validate(importedModelFileName, importingModelFileName);
@@ -87,7 +87,7 @@ public class DMN15ValidationsTest {
 
     @Test
     public void forLoopDatesEvaluateValidation() {
-        String modelFileName = "ForLoopDatesEvaluate.dmn";
+        String modelFileName = "valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn";
         String modelName = "For Loop Dates Evaluate";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
         validate(modelFileName);
@@ -96,7 +96,7 @@ public class DMN15ValidationsTest {
 
     @Test
     public void listReplaceEvaluateValidation() {
-        String modelFileName = "ListReplaceEvaluate.dmn";
+        String modelFileName = "valid_models/DMNv1_5/ListReplaceEvaluate.dmn";
         String modelName = "List Replace Evaluate";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
         validate(modelFileName);
@@ -105,7 +105,7 @@ public class DMN15ValidationsTest {
 
     @Test
     public void negationOfDurationEvaluateValidation() {
-        String modelFileName = "NegationOfDurationEvaluate.dmn";
+        String modelFileName = "valid_models/DMNv1_5/NegationOfDurationEvaluate.dmn";
         String modelName = "Negation of Duration Evaluate";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
         validate(modelFileName);
@@ -114,7 +114,7 @@ public class DMN15ValidationsTest {
 
     @Test
     public void dateToDateTimeFunctionValidation() {
-        String modelFileName = "DateToDateTimeFunction.dmn";
+        String modelFileName = "valid_models/DMNv1_5/DateToDateTimeFunction.dmn";
         String modelName = "new-file";
         String modelNamespace = "https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE";
         validate(modelFileName);
@@ -123,7 +123,7 @@ public class DMN15ValidationsTest {
 
     @Test
     public void typeConstraintsChecksValidation() {
-        String modelFileName = "TypeConstraintsChecks.dmn";
+        String modelFileName = "valid_models/DMNv1_5/TypeConstraintsChecks.dmn";
         String modelName = "TypeConstraintsChecks";
         String modelNamespace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
         validate(modelFileName);
