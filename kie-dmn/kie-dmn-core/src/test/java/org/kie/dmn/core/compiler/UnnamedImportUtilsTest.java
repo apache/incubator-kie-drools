@@ -27,10 +27,10 @@ public class UnnamedImportUtilsTest {
 
     @Test
     public void isInUnnamedImportTrue() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_EmptyNamed_Model" +
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_EmptyNamed_Model" +
                                                                                                ".dmn",
                                                                                        this.getClass(),
-                                                                                       "Imported_Model_Unamed.dmn");
+                                                                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
 
         final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
                                                         "Imported Model");
@@ -47,9 +47,9 @@ public class UnnamedImportUtilsTest {
 
     @Test
     public void isInUnnamedImportFalse() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Named_Model.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_Named_Model.dmn",
                                                                                        this.getClass(),
-                                                                                       "Imported_Model_Unamed.dmn");
+                                                                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
 
         final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
                                                         "Imported Model");
@@ -67,7 +67,7 @@ public class UnnamedImportUtilsTest {
     @Test
     public void addIfNotPresentTrue() throws IOException {
         URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
-                "Imported_Model_Unamed.dmn");
+                "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
         assertNotNull(importedModelFileResource);
         try (InputStream is = importedModelFileResource.openStream()) {
             String xml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
@@ -82,16 +82,16 @@ public class UnnamedImportUtilsTest {
 
     @Test
     public void addIfNotPresentFalse() throws IOException {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_EmptyNamed_Model.dmn",
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
                                                                                        this.getClass(),
-                                                                                       "Imported_Model_Unamed.dmn");
+                                                                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
         final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
                                                                            "Importing empty-named Model");
         assertThat(importingModel).isNotNull();
 
         Definitions importingDefinitions = importingModel.getDefinitions();
         URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
-                "Imported_Model_Unamed.dmn");
+                "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
         assertNotNull(importedModelFileResource);
         try (InputStream is = importedModelFileResource.openStream()) {
             String importedXml = new String(is.readAllBytes(), StandardCharsets.UTF_8);

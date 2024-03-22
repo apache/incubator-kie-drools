@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="xls2dmn_741b355c-685c-4827-b13a-833da8321da4" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" name="xls2dmn" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="xls2dmn_741b355c-685c-4827-b13a-833da8321da4" exporter="kie-dmn-xls2dmn">
+  <dmn:inputData id="id_FICO_32Score" name="FICO Score">
+    <dmn:variable id="idvar_FICO_32Score" name="FICO Score" typeRef="number"></dmn:variable>
+  </dmn:inputData>
+  <dmn:inputData id="id_DTI_32Ratio" name="DTI Ratio">
+    <dmn:variable id="idvar_DTI_32Ratio" name="DTI Ratio" typeRef="number"></dmn:variable>
+  </dmn:inputData>
+  <dmn:inputData id="id_PITI_32Ratio" name="PITI Ratio">
+    <dmn:variable id="idvar_PITI_32Ratio" name="PITI Ratio" typeRef="number"></dmn:variable>
+  </dmn:inputData>
+  <dmn:decision id="d_Loan_32Approval" name="Loan Approval">
+    <dmn:variable id="dvar_Loan_32Approval" name="Loan Approval"></dmn:variable>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_FICO_32Score"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement>
+      <dmn:requiredDecision href="#d_DTI_32Rating"></dmn:requiredDecision>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement>
+      <dmn:requiredDecision href="#d_PITI_32Rating"></dmn:requiredDecision>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="ddt_Loan_32Approval" hitPolicy="ANY" preferredOrientation="Rule-as-Row" outputLabel="Loan Approval">
+      <dmn:input label="FICO Score">
+        <dmn:inputExpression>
+          <dmn:text>FICO Score</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input label="DTI Rating">
+        <dmn:inputExpression>
+          <dmn:text>DTI Rating</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input label="PITI Rating">
+        <dmn:inputExpression>
+          <dmn:text>PITI Rating</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output></dmn:output>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&lt;=750</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Not approved"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"Bad"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Not approved"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"Bad"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Not approved"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&gt;750</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"Good"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry>
+          <dmn:text>"Good"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Approved"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="d_DTI_32Rating" name="DTI Rating">
+    <dmn:variable id="dvar_DTI_32Rating" name="DTI Rating"></dmn:variable>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_DTI_32Ratio"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="ddt_DTI_32Rating" hitPolicy="ANY" preferredOrientation="Rule-as-Row" outputLabel="DTI Rating">
+      <dmn:input label="DTI Ratio">
+        <dmn:inputExpression>
+          <dmn:text>DTI Ratio</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output></dmn:output>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&lt;=0.20</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Good"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&gt;0.20</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Bad"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="d_PITI_32Rating" name="PITI Rating">
+    <dmn:variable id="dvar_PITI_32Rating" name="PITI Rating"></dmn:variable>
+    <dmn:informationRequirement>
+      <dmn:requiredInput href="#id_PITI_32Ratio"></dmn:requiredInput>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="ddt_PITI_32Rating" hitPolicy="ANY" preferredOrientation="Rule-as-Row" outputLabel="PITI Rating">
+      <dmn:input label="PITI Ratio">
+        <dmn:inputExpression>
+          <dmn:text>PITI Ratio</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output></dmn:output>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&lt;=0.28</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Good"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule>
+        <dmn:inputEntry>
+          <dmn:text>&gt;0.28</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry>
+          <dmn:text>"Bad"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>
