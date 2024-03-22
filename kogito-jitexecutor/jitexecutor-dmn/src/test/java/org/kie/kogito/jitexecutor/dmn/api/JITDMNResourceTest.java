@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.util.IoUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
@@ -32,6 +31,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModelFromIoUtils;
 
 @QuarkusTest
 public class JITDMNResourceTest {
@@ -41,8 +41,8 @@ public class JITDMNResourceTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        model = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/test.dmn")));
-        modelWithExtensionElements = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/testWithExtensionElements.dmn")));
+        model = getModelFromIoUtils("invalid_models/DMNv1_x/test.dmn");
+        modelWithExtensionElements = getModelFromIoUtils("valid_models/DMNv1_x/testWithExtensionElements.dmn");
     }
 
     @Test

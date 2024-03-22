@@ -20,16 +20,14 @@ package org.kie.kogito.jitexecutor.dmn;
 
 import java.io.IOException;
 
-import org.drools.util.IoUtils;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModel;
 
 @QuarkusTest
 public class OneOfEachTypeTest {
@@ -40,7 +38,7 @@ public class OneOfEachTypeTest {
 
     @Test
     public void allTypes() throws IOException {
-        String model = new ObjectMapper().writeValueAsString(new String(IoUtils.readBytesFromInputStream(OneOfEachTypeTest.class.getResourceAsStream("/OneOfEachType.dmn"))));
+        String model = getModel("valid_models/DMNv1_x/OneOfEachType.dmn");
         String payload = "{ \"model\": " + model + ", \"context\": {\n" +
                 "    \"InputBoolean\": true,\n" +
                 "    \"InputDate\": \"2020-04-02\",\n" +

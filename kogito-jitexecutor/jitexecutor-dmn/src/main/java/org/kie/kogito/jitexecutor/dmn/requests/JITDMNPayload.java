@@ -73,7 +73,7 @@ public class JITDMNPayload extends MultipleResourcesPayload {
         return "JITDMNPayload{" +
                 "model='" + model + '\'' +
                 ", context=" + context +
-                '}';
+                "} " + super.toString();
     }
 
     private void consistencyChecks() {

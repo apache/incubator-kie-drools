@@ -21,7 +21,6 @@ package org.kie.kogito.jitexecutor.dmn.api;
 import java.io.IOException;
 import java.util.List;
 
-import org.drools.util.IoUtils;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage;
@@ -40,6 +39,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModelFromIoUtils;
 
 @QuarkusTest
 public class DMNValidatorResourceTest {
@@ -55,7 +55,7 @@ public class DMNValidatorResourceTest {
 
     @Test
     public void test() throws IOException {
-        final String MODEL = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/loan.dmn")));
+        final String MODEL = getModelFromIoUtils("valid_models/DMNv1_x/loan.dmn");
         String response = given()
                 .contentType(ContentType.XML)
                 .body(MODEL)
@@ -76,7 +76,7 @@ public class DMNValidatorResourceTest {
 
     @Test
     public void testOverlap() throws IOException {
-        final String MODEL = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/loan_withOverlap.dmn")));
+        final String MODEL = getModelFromIoUtils("invalid_models/DMNv1_x/loan_withOverlap.dmn");
         String response = given()
                 .contentType(ContentType.XML)
                 .body(MODEL)

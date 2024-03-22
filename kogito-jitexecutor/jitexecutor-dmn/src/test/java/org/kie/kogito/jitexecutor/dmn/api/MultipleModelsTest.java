@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.util.IoUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -54,21 +53,22 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModelFromIoUtils;
 
 @QuarkusTest
 public class MultipleModelsTest {
     private static final Logger LOG = LoggerFactory.getLogger(MultipleModelsTest.class);
 
-    private static final String URI1 = "/multiple/importing.dmn";
-    private static final String URI2 = "/multiple/stdlib.dmn";
+    private static final String URI1 = "invalid_models/DMNv1_x/multiple/importing.dmn";
+    private static final String URI2 = "valid_models/DMNv1_x/multiple/stdlib.dmn";
     private static ResourceWithURI model1;
     private static ResourceWithURI model2;
 
-    private static final String XAIURI1 = "/test.dmn";
+    private static final String XAIURI1 = "invalid_models/DMNv1_x/test.dmn";
     private static ResourceWithURI xaimodel1;
 
-    private static final String CH11URI1 = "/multiple/Chapter 11 Example.dmn";
-    private static final String CH11URI2 = "/multiple/Financial.dmn";
+    private static final String CH11URI1 = "invalid_models/DMNv1_x/multiple/Chapter 11 Example.dmn";
+    private static final String CH11URI2 = "valid_models/DMNv1_x/multiple/Financial.dmn";
     private static ResourceWithURI ch11model1;
     private static ResourceWithURI ch11model2;
 
@@ -90,15 +90,15 @@ public class MultipleModelsTest {
     @BeforeAll
     public static void setup() throws IOException {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        model1 = new ResourceWithURI(URI1, new String(IoUtils.readBytesFromInputStream(MultipleModelsTest.class.getResourceAsStream(URI1))));
-        model2 = new ResourceWithURI(URI2, new String(IoUtils.readBytesFromInputStream(MultipleModelsTest.class.getResourceAsStream(URI2))));
-        xaimodel1 = new ResourceWithURI(XAIURI1, new String(IoUtils.readBytesFromInputStream(MultipleModelsTest.class.getResourceAsStream(XAIURI1))));
-        ch11model1 = new ResourceWithURI(CH11URI1, new String(IoUtils.readBytesFromInputStream(MultipleModelsTest.class.getResourceAsStream(CH11URI1))));
-        ch11model2 = new ResourceWithURI(CH11URI2, new String(IoUtils.readBytesFromInputStream(MultipleModelsTest.class.getResourceAsStream(CH11URI2))));
+        model1 = new ResourceWithURI(URI1, getModelFromIoUtils(URI1));
+        model2 = new ResourceWithURI(URI2, getModelFromIoUtils(URI2));
+        xaimodel1 = new ResourceWithURI(XAIURI1, getModelFromIoUtils(XAIURI1));
+        ch11model1 = new ResourceWithURI(CH11URI1, getModelFromIoUtils(CH11URI1));
+        ch11model2 = new ResourceWithURI(CH11URI2, getModelFromIoUtils(CH11URI2));
     }
 
     @Test
-    public void testForm() {
+    void testForm() {
         given()
                 .contentType(ContentType.JSON)
                 .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
@@ -109,7 +109,7 @@ public class MultipleModelsTest {
     }
 
     @Test
-    public void testSchema() {
+    void testSchema() {
         given()
                 .contentType(ContentType.JSON)
                 .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
@@ -120,7 +120,7 @@ public class MultipleModelsTest {
     }
 
     @Test
-    public void testjitEndpoint() {
+    void testjitEndpoint() {
         JITDMNPayload jitdmnpayload = new JITDMNPayload(URI1, List.of(model1, model2), buildContext());
         given()
                 .contentType(ContentType.JSON)
@@ -131,12 +131,8 @@ public class MultipleModelsTest {
                 .body("'my decision'", is("Ciao, John Doe (age:47)."));
     }
 
-    private Map<String, Object> buildContext() {
-        return Map.of("a person", Map.of("full name", "John Doe", "age", 47));
-    }
-
     @Test
-    public void testjitdmnResultEndpoint() {
+    void testjitdmnResultEndpoint() {
         JITDMNPayload jitdmnpayload = new JITDMNPayload(URI1, List.of(model1, model2), buildContext());
         given()
                 .contentType(ContentType.JSON)
@@ -148,7 +144,7 @@ public class MultipleModelsTest {
     }
 
     @Test
-    public void testValidation() throws IOException {
+    void testValidation() throws IOException {
         String response = given()
                 .contentType(ContentType.JSON)
                 .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
@@ -166,7 +162,7 @@ public class MultipleModelsTest {
     }
 
     @Test
-    public void testjitExplainabilityEndpoint() {
+    void testjitExplainabilityEndpoint() {
         JITDMNPayload jitdmnpayload = new JITDMNPayload(XAIURI1, List.of(xaimodel1, model1, model2), Map.of("FICO Score", 800, "DTI Ratio", .1, "PITI Ratio", .1));
         given()
                 .contentType(ContentType.JSON)
@@ -178,7 +174,7 @@ public class MultipleModelsTest {
     }
 
     @Test
-    public void testjitEndpointCH11() {
+    void testjitEndpointCH11() {
         JITDMNPayload jitdmnpayload = new JITDMNPayload(CH11URI1, List.of(ch11model1, ch11model2), buildCH11Context());
         given()
                 .contentType(ContentType.JSON)
@@ -190,7 +186,7 @@ public class MultipleModelsTest {
     }
 
     @Test
-    public void testjitdmnResultEndpointCH11() {
+    void testjitdmnResultEndpointCH11() {
         JITDMNPayload jitdmnpayload = new JITDMNPayload(CH11URI1, List.of(ch11model1, ch11model2), buildCH11Context());
         given()
                 .contentType(ContentType.JSON)
@@ -201,27 +197,8 @@ public class MultipleModelsTest {
                 .body("dmnContext.Strategy", is("THROUGH"));
     }
 
-    private Map<String, Object> buildCH11Context() {
-        Map<String, Object> context = new HashMap<>();
-        context.put("Applicant data", Map.of("Age", 51,
-                "MartitalStatus", "M", // typo is present in DMNv1.3
-                "EmploymentStatus", "EMPLOYED",
-                "ExistingCustomer", false,
-                "Monthly", Map.of("Income", 100_000,
-                        "Repayments", 2_500,
-                        "Expenses", 10_000)));
-        context.put("Bureau data", Map.of("Bankrupt", false,
-                "CreditScore", 600));
-        context.put("Requested product", Map.of("ProductType", "STANDARD LOAN",
-                "Rate", 0.08d,
-                "Term", 36,
-                "Amount", 100_00));
-        context.put("Supporting documents", null);
-        return context;
-    }
-
     @Test
-    public void testjitdmnResultEndpointCH11_withErrors() throws Exception {
+    void testjitdmnResultEndpointCH11_withErrors() throws Exception {
         Map<String, Object> context = new HashMap<>(); // will omit `Applicant data` intentionally.
         context.put("Bureau data", Map.of("Bankrupt", false,
                 "CreditScore", 600));
@@ -241,6 +218,29 @@ public class MultipleModelsTest {
                 .asString();
         JITDMNResult result = MAPPER.readValue(response, JITDMNResult.class);
         assertThat(result.getMessages()).isNotEmpty().allMatch(m -> m.getPath().equals(CH11URI1));
+    }
+
+    private Map<String, Object> buildContext() {
+        return Map.of("a person", Map.of("full name", "John Doe", "age", 47));
+    }
+
+    private Map<String, Object> buildCH11Context() {
+        Map<String, Object> context = new HashMap<>();
+        context.put("Applicant data", Map.of("Age", 51,
+                "MartitalStatus", "M", // typo is present in DMNv1.3
+                "EmploymentStatus", "EMPLOYED",
+                "ExistingCustomer", false,
+                "Monthly", Map.of("Income", 100_000,
+                        "Repayments", 2_500,
+                        "Expenses", 10_000)));
+        context.put("Bureau data", Map.of("Bankrupt", false,
+                "CreditScore", 600));
+        context.put("Requested product", Map.of("ProductType", "STANDARD LOAN",
+                "Rate", 0.08d,
+                "Term", 36,
+                "Amount", 100_00));
+        context.put("Supporting documents", null);
+        return context;
     }
 
 }

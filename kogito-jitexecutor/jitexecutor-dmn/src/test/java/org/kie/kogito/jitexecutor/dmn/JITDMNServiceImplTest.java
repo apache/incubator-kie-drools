@@ -23,13 +23,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.util.IoUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.jitexecutor.dmn.api.JITDMNResourceTest;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult;
+
+import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModelFromIoUtils;
 
 public class JITDMNServiceImplTest {
 
@@ -38,7 +38,7 @@ public class JITDMNServiceImplTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        model = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/test.dmn")));
+        model = getModelFromIoUtils("invalid_models/DMNv1_x/test.dmn");
         jitdmnService = new JITDMNServiceImpl(300, 1);
     }
 
@@ -58,7 +58,7 @@ public class JITDMNServiceImplTest {
 
     @Test
     public void testExplainability() throws IOException {
-        String allTypesModel = new String(IoUtils.readBytesFromInputStream(JITDMNResourceTest.class.getResourceAsStream("/allTypes.dmn")));
+        String allTypesModel = getModelFromIoUtils("valid_models/DMNv1_x/allTypes.dmn");
 
         Map<String, Object> context = new HashMap<>();
         context.put("stringInput", "test");
