@@ -321,6 +321,7 @@ drlLiteral
     | BOOL_LITERAL
     | NULL_LITERAL
     | TEXT_BLOCK // Java17
+    | TIME_INTERVAL
     ;
 
 inlineListExpression

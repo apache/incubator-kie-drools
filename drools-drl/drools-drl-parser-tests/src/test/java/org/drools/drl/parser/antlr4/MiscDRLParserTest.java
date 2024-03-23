@@ -3749,9 +3749,12 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
         AnnotationDescr annotationDescr = patternDescr.getAnnotations().iterator().next();
+
         assertThat(annotationDescr.getName()).isEqualTo("watch");
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
     }
@@ -3769,5 +3772,25 @@ class MiscDRLParserTest {
         PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
         FromDescr fromDescr = (FromDescr) patternDescr.getSource();
         assertThat(fromDescr.getDataSource().toString()).isEqualTo("new Person(\"John\", 30)");
+    }
+
+    @Test
+    public void expiresWithTimeLiteralValue() {
+        String text = "package org.drools\n" +
+                "declare StockFact\n" +
+                "    @role( value = event )\n" +
+                "    @expires( value = 2s, policy = TIME_SOFT )\n" +
+                "end";
+
+        PackageDescr packageDescr = parser.parse(text);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        AnnotationDescr annotationDescr = packageDescr
+                .getTypeDeclarations().get(0)
+                .getAnnotation("expires");
+
+        assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("2s");
+        assertThat(annotationDescr.getValueAsString("value")).isEqualTo("2s");
+        assertThat(annotationDescr.getValueAsString("policy")).isEqualTo("TIME_SOFT");
     }
 }
