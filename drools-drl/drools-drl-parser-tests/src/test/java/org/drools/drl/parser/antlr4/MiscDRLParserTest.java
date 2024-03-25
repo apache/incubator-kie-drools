@@ -3391,7 +3391,6 @@ class MiscDRLParserTest {
         assertThat(bd.getParameters().get(1)).isEqualTo("$s.symbol");
     }
 
-    @Disabled("Priority : Mid | Implement using declared window. Not written in docs, but unit tests found.")
     @Test
     public void parse_WindowUsage() throws Exception {
         final String text = "package org.drools\n" +

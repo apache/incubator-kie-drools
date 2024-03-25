@@ -58,6 +58,7 @@ import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.UnitDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
+import org.drools.drl.ast.descr.WindowReferenceDescr;
 
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTextPreservingWhitespace;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextPreservingWhitespace;
@@ -589,6 +590,11 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public EntryPointDescr visitFromEntryPoint(DRLParser.FromEntryPointContext ctx) {
         return new EntryPointDescr(safeStripStringDelimiters(ctx.stringId().getText()));
+    }
+
+    @Override
+    public WindowReferenceDescr visitFromWindow(DRLParser.FromWindowContext ctx) {
+        return new WindowReferenceDescr(ctx.IDENTIFIER().getText());
     }
 
     /**
