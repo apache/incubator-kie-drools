@@ -1907,6 +1907,24 @@ class MiscDRLParserTest {
         assertThat(at.getValue()).isEqualTo("true");
     }
 
+    @Test
+    public void parse_Timer() throws Exception {
+        final RuleDescr rule = parseAndGetFirstRuleDescrFromFile("rule_timer_attribute.drl" );
+        assertThat(rule.getName()).isEqualTo("simple_rule");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+
+        final Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertThat(attrs.size()).isEqualTo(2);
+
+        AttributeDescr at = (AttributeDescr) attrs.get( "timer" );
+        assertThat(at.getName()).isEqualTo("timer");
+        assertThat(at.getValue()).isEqualTo("int: 0 1; start=1_000_000, repeat-limit=0");
+
+        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        assertThat(at.getName()).isEqualTo("lock-on-active");
+        assertThat(at.getValue()).isEqualTo("true");
+    }
+
     @Disabled("Priority : Low | Not written in docs nor other unit tests. Drop the support?")
     @Test
     public void parse_Attributes_alternateSyntax() throws Exception {
@@ -3157,7 +3175,6 @@ class MiscDRLParserTest {
 
     }
 
-    @Disabled("Priority : Low | Implement multi-value annotation. Not written in docs")
     @Test
     public void parse_MultiValueAnnotationsBackwardCompatibility() throws Exception {
         // multiple values with no keys are parsed as a single value

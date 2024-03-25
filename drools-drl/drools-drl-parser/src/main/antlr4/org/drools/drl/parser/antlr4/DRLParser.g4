@@ -460,7 +460,7 @@ type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER ty
 drlArguments : LPAREN drlArgument (COMMA drlArgument)* RPAREN ;
 drlArgument : ( stringId | floatLiteral | BOOL_LITERAL | NULL_LITERAL ) ;
 
-drlAnnotation : AT name=drlQualifiedName ((LPAREN ( drlElementValuePairs | drlElementValue )? RPAREN) | chunk)? ;
+drlAnnotation : AT name=drlQualifiedName (LPAREN ( drlElementValuePairs | drlElementValue | chunk )? RPAREN)? ;
 
 drlElementValuePairs : drlElementValuePair (COMMA drlElementValuePair)* ;
 drlElementValuePair : key=drlIdentifier ASSIGN value=drlElementValue ;
@@ -475,11 +475,11 @@ attribute : name=( 'salience' | 'enabled' ) conditionalOrExpression #expressionA
           | name=( 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL? #booleanAttribute
           | name=( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL #stringAttribute
           | name='calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
-          | name='timer' ( DECIMAL_LITERAL | chunk ) #intOrChunkAttribute
+          | name='timer' ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
           | name='duration' ( DECIMAL_LITERAL | TIME_INTERVAL | LPAREN TIME_INTERVAL RPAREN ) #durationAttribute
           ;
 
-chunk : LPAREN .+? RPAREN;
+chunk : .+?;
 
 assignmentOperator : ASSIGN
                    |   ADD_ASSIGN
