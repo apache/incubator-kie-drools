@@ -64,7 +64,6 @@ import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextP
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.trimThen;
 import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
-import static org.drools.drl.parser.util.ParserStringUtils.safeStripDelimiters;
 import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
 import static org.drools.util.StringUtils.unescapeJava;
 
@@ -323,10 +322,11 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AnnotationDescr annotationDescr = new AnnotationDescr(ctx.name.getText());
         if (ctx.drlElementValue() != null) {
             annotationDescr.setValue(getTextPreservingWhitespace(ctx.drlElementValue())); // single value
-        } else if (ctx.chunk() != null) {
-            annotationDescr.setValue(safeStripDelimiters(getTextPreservingWhitespace(ctx.chunk()), "(", ")"));
         } else if (ctx.drlElementValuePairs() != null) {
             visitDrlElementValuePairs(ctx.drlElementValuePairs(), annotationDescr); // multiple values
+        } else if (ctx.chunk() != null) {
+            // A chunk that is neither a single value nor a list of key-value pairs. For example `!*, age` in `@watch(!*, age)`.
+            annotationDescr.setValue(getTextPreservingWhitespace(ctx.chunk()));
         }
         return annotationDescr;
     }
