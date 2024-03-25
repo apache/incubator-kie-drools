@@ -388,7 +388,7 @@ public class DRLExprParserTest {
     }
     @Test
     public void testNoViableAlt() {
-        String source = "a~a";
+        String source = "x.int";
         parser.parse(source);
         assertThat(parser.hasErrors()).isTrue();
         assertThat(parser.getErrors()).hasSize(1);
@@ -398,6 +398,6 @@ public class DRLExprParserTest {
         assertThat(exception.getColumn()).isEqualTo(2);
         assertThat(exception.getOffset()).isEqualTo(2);
         assertThat(exception.getMessage())
-                .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input 'a'");
+                .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input '.int'");
     }
 }
