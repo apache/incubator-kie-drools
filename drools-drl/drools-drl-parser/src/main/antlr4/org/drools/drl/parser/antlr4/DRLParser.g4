@@ -67,7 +67,7 @@ entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* ;
 
 // windowDeclaration := WINDOW ID annotation* lhsPatternBind END
 
-windowDeclaration : DRL_WINDOW name=stringId drlAnnotation* lhsPatternBind ;
+windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind ;
 
 // field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
 
@@ -361,6 +361,7 @@ patternFilter : DRL_WINDOW COLON IDENTIFIER LPAREN expressionList RPAREN ;
 patternSource : fromAccumulate
               | fromCollect
               | fromEntryPoint
+              | fromWindow
               | fromExpression
               ;
 
@@ -393,6 +394,9 @@ accumulateFunction : label? IDENTIFIER LPAREN drlExpression RPAREN;
 fromCollect : DRL_COLLECT LPAREN lhsPatternBind RPAREN ;
 
 fromEntryPoint : DRL_ENTRY_POINT stringId ;
+
+// fromWindow := WINDOW ID
+fromWindow : DRL_WINDOW IDENTIFIER ;
 
 /*
  lhsExists := EXISTS
