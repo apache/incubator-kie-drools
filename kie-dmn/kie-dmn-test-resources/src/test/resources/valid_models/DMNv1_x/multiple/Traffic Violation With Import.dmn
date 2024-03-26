@@ -1,34 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
-                 xmlns="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF"
-                 xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-                 xmlns:kie="http://www.drools.org/kie/dmn/1.2"
-                 xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
-                 xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
-                 xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-                 id="_1C792953-80DB-4B32-99EB-25FBE32BAF9E"
-                 name="Traffic Violation"
-                 expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-                 typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-                 namespace="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_1C792953-80DB-4B32-99EB-25FBE32BAF9E" name="Traffic Violation" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF">
   <dmn:extensionElements/>
-  <dmn:itemDefinition id="_63824D3F-9173-446D-A940-6A7F0FA056BB" name="tDriver" isCollection="false">
-    <dmn:itemComponent id="_9DAB5DAA-3B44-4F6D-87F2-95125FB2FEE4" name="Name" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_856BA8FA-EF7B-4DF9-A1EE-E28263CE9955" name="Age" isCollection="false">
-      <dmn:typeRef>number</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_FDC2CE03-D465-47C2-A311-98944E8CC23F" name="State" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_D6FD34C4-00DC-4C79-B1BF-BBCF6FC9B6D7" name="City" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-    <dmn:itemComponent id="_7110FE7E-1A38-4C39-B0EB-AEEF06BA37F4" name="Points" isCollection="false">
-      <dmn:typeRef>number</dmn:typeRef>
-    </dmn:itemComponent>
-  </dmn:itemDefinition>
+  <dmn:import xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                   xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                   importType="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL"
+                   namespace="http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
+                   name="Imported Traffic Violation"
+                   drools:modelName="Imported Traffic Violation"
+                   triso:fileId="_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"
+                   triso:fileName="Imported_Traffic_Violation"/>
   <dmn:itemDefinition id="_40731093-0642-4588-9183-1660FC55053B" name="tViolation" isCollection="false">
     <dmn:itemComponent id="_39E88D9F-AE53-47AD-B3DE-8AB38D4F50B3" name="Code" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
@@ -137,7 +117,7 @@
     </dmn:decisionTable>
   </dmn:decision>
   <dmn:inputData id="_1F9350D7-146D-46F1-85D8-15B5B68AF22A" name="Driver">
-    <dmn:variable id="_A80F16DF-0DB4-43A2-B041-32900B1A3F3D" name="Driver" typeRef="tDriver"/>
+    <dmn:variable id="_A80F16DF-0DB4-43A2-B041-32900B1A3F3D" name="Driver" typeRef="Imported Traffic Violation.tDriver"/>
   </dmn:inputData>
   <dmn:decision id="_8A408366-D8E9-4626-ABF3-5F69AA01F880" name="Should the driver be suspended?">
     <dmn:question>Should the driver be suspended due to points on his license?</dmn:question>
