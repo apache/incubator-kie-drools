@@ -3638,9 +3638,7 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
-        RuleDescr ruleDescr = packageDescr.getRules().get(0);
-        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
-        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("address!.city == $city");
     }
 
@@ -3653,9 +3651,7 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
-        RuleDescr ruleDescr = packageDescr.getRules().get(0);
-        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
-        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("address!.city!.startsWith(\"M\")");
     }
 
@@ -3668,9 +3664,7 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
-        RuleDescr ruleDescr = packageDescr.getRules().get(0);
-        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
-        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("$containsL : address!.city.contains(\"L\")");
     }
 
@@ -3683,9 +3677,7 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
-        RuleDescr ruleDescr = packageDescr.getRules().get(0);
-        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
-        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
         assertThat(constraintDescr.toString())
                 .as("prefix should be appended to each element")
                 .isEqualToIgnoringWhitespace("address.city.startsWith(\"I\") && address.city.length() == 5");
@@ -3700,9 +3692,7 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
-        RuleDescr ruleDescr = packageDescr.getRules().get(0);
-        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
-        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
         assertThat(constraintDescr.toString())
                 .as("prefix should be appended to each element")
                 .isEqualToIgnoringWhitespace("address!.city!.startsWith(\"I\") && address!.city!.length() == 5");
@@ -3808,5 +3798,65 @@ class MiscDRLParserTest {
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("2s");
         assertThat(annotationDescr.getValueAsString("value")).isEqualTo("2s");
         assertThat(annotationDescr.getValueAsString("policy")).isEqualTo("TIME_SOFT");
+    }
+
+    @Test
+    void ooPath() {
+        final String text = "package org.drools\n" +
+                "rule R when\n" +
+                " $man: Man( /wife/children[age > 10] )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString())
+                .isEqualToIgnoringWhitespace("/wife/children[age > 10]");
+    }
+
+    private static ExprConstraintDescr getFirstExprConstraintDescr(PackageDescr packageDescr) {
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        ExprConstraintDescr constraintDescr = (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+        return constraintDescr;
+    }
+
+    @Test
+    void ooPathWithBindingInBrackets() {
+        final String text = "package org.drools\n" +
+                "rule R when\n" +
+                " Man( /wife[$age : age] )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString())
+                .isEqualToIgnoringWhitespace("/wife[$age : age]");
+    }
+
+    @Test
+    void ooPathWithBindingInParentheses() {
+        final String text = "package org.drools\n" +
+                "rule R when\n" +
+                " Man( $toy: /wife/children[age > 10]/toys )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString())
+                .isEqualToIgnoringWhitespace("$toy: /wife/children[age > 10]/toys");
+    }
+
+    @Test
+    void ooPathWithBackReference() {
+        final String text = "package org.drools\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children/toys[ name.length == ../name.length ] )\n" +
+                "then\n" +
+                "end\n";
+
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString())
+                .isEqualToIgnoringWhitespace("$toy: /wife/children/toys[ name.length == ../name.length ]");
     }
 }

@@ -127,7 +127,7 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
 lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN drlAnnotation* (DRL_OVER patternFilter)? (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
-constraint : ( nestedConstraint | conditionalOrExpression ) ;
+constraint : ( nestedConstraint | conditionalOrExpression | xpathPrimary) ;
 nestedConstraint : ( IDENTIFIER ( DOT | NULL_SAFE_DOT | HASH ) )* IDENTIFIER (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
 
 // TBD: constraint parsing could be delegated to DRL6ExpressionParser
@@ -143,6 +143,12 @@ relationalExpression : left=drlExpression (right=orRestriction)* ;
 orRestriction : left=andRestriction (OR right=andRestriction)* ;
 andRestriction : left=singleRestriction (AND right=singleRestriction)* ;
 singleRestriction : op=relationalOperator drlExpression ;
+
+// OOPath
+xpathSeparator : DIV | QUESTION_DIV ;
+xpathPrimary : label? xpathChunk+ ;
+xpathChunk : xpathSeparator drlIdentifier (DOT drlIdentifier)* (HASH drlIdentifier)? (LBRACK xpathExpressionList RBRACK)? ;
+xpathExpressionList : label? drlExpression (COMMA label? drlExpression)* ;
 
 relationalOperator
     : EQUAL
@@ -284,7 +290,13 @@ drlExpression
     | drlExpression COLONCOLON typeArguments? drlIdentifier
     | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
+
+    // OOPath feature
+    | backReferenceExpression
     ;
+
+backReferenceExpression : (DOT DOT DIV)+  drlExpression ;
+
 
 /* extending JavaParser methodCall in order to accept drl keywords as method name */
 drlMethodCall
