@@ -93,6 +93,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         }
         List<BaseDescr> descrList = visitDescrChildren(ctx);
         applyChildrenDescrs(packageDescr, descrList);
+        populateStartEnd(packageDescr, ctx);
         return packageDescr;
     }
 
@@ -139,7 +140,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public UnitDescr visitUnitdef(DRLParser.UnitdefContext ctx) {
-        return new UnitDescr(ctx.name.getText());
+        UnitDescr unitDescr = new UnitDescr(ctx.name.getText());
+        populateStartEnd(unitDescr, ctx);
+        return unitDescr;
     }
 
     @Override
@@ -170,6 +173,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AccumulateImportDescr accumulateImportDescr = new AccumulateImportDescr();
         accumulateImportDescr.setTarget(ctx.drlQualifiedName().getText());
         accumulateImportDescr.setFunctionName(ctx.IDENTIFIER().getText());
+        populateStartEnd(accumulateImportDescr, ctx);
         return accumulateImportDescr;
     }
 
@@ -195,6 +199,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             });
         }
         functionDescr.setBody(getTextPreservingWhitespace(ctx.drlBlock().drlBlockStatement()));
+        populateStartEnd(functionDescr, ctx);
         return functionDescr;
     }
 
@@ -215,6 +220,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         ctx.field().stream()
                 .map(this::visitField)
                 .forEach(typeDeclarationDescr::addField);
+        populateStartEnd(typeDeclarationDescr, ctx);
         return typeDeclarationDescr;
     }
 
@@ -225,6 +231,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
                 .forEach(entryPointDeclarationDescr::addAnnotation);
+        populateStartEnd(entryPointDeclarationDescr, ctx);
         return entryPointDeclarationDescr;
     }
 
@@ -236,6 +243,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .map(this::visitDrlAnnotation)
                 .forEach(windowDeclarationDescr::addAnnotation);
         windowDeclarationDescr.setPattern((PatternDescr) visitLhsPatternBind(ctx.lhsPatternBind()));
+        populateStartEnd(windowDeclarationDescr, ctx);
         return windowDeclarationDescr;
     }
 
@@ -315,6 +323,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         slimLhsRootDescr(queryDescr.getLhs());
 
+        populateStartEnd(queryDescr, ctx);
         return queryDescr;
     }
 
@@ -329,6 +338,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             // A chunk that is neither a single value nor a list of key-value pairs. For example `!*, age` in `@watch(!*, age)`.
             annotationDescr.setValue(getTextPreservingWhitespace(ctx.chunk()));
         }
+        populateStartEnd(annotationDescr, ctx);
         return annotationDescr;
     }
 
@@ -343,6 +353,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
                 .forEach(typeFieldDescr::addAnnotation);
+        populateStartEnd(typeFieldDescr, ctx);
         return typeFieldDescr;
     }
 
@@ -359,6 +370,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
         attributeDescr.setValue(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
         attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
+        populateStartEnd(attributeDescr, ctx);
         return attributeDescr;
     }
 
@@ -367,6 +379,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
         attributeDescr.setValue(ctx.BOOL_LITERAL() != null ? ctx.BOOL_LITERAL().getText() : "true");
         attributeDescr.setType(AttributeDescr.Type.BOOLEAN);
+        populateStartEnd(attributeDescr, ctx);
         return attributeDescr;
     }
 
@@ -375,6 +388,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AttributeDescr attributeDescr = new AttributeDescr(ctx.name.getText());
         attributeDescr.setValue(unescapeJava(safeStripStringDelimiters(ctx.DRL_STRING_LITERAL().getText())));
         attributeDescr.setType(AttributeDescr.Type.STRING);
+        populateStartEnd(attributeDescr, ctx);
         return attributeDescr;
     }
 
@@ -386,6 +400,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .collect(Collectors.toList());
         attributeDescr.setValue(createStringList(valueList));
         attributeDescr.setType(AttributeDescr.Type.LIST);
+        populateStartEnd(attributeDescr, ctx);
         return attributeDescr;
     }
 
@@ -412,6 +427,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             attributeDescr.setValue(getTextPreservingWhitespace(ctx.chunk()));
             attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
         }
+        populateStartEnd(attributeDescr, ctx);
         return attributeDescr;
     }
 
@@ -425,6 +441,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             attributeDescr.setValue(unescapeJava(safeStripStringDelimiters(ctx.TIME_INTERVAL().getText())));
             attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
         }
+        populateStartEnd(attributeDescr, ctx);
         return attributeDescr;
     }
 
@@ -480,6 +497,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                     orDescr.addDescr(patternDescr);
                 });
 
+        populateStartEnd(orDescr, ctx);
         return orDescr;
     }
 
@@ -500,6 +518,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             patternSourceDescr.setResource(patternDescr.getResource());
             patternDescr.setSource(patternSourceDescr);
         }
+
+        populateStartEnd(patternDescr, ctx);
+
         ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(patternDescr::addAnnotation);
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.positionalConstraints(), ctx.constraints());
         constraintDescrList.forEach(descr -> addToPatternDescr(patternDescr, descr));
@@ -515,6 +536,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public ForallDescr visitLhsForall(DRLParser.LhsForallContext ctx) {
         ForallDescr forallDescr = new ForallDescr();
         visitDescrChildren(ctx).forEach(forallDescr::addDescr);
+        populateStartEnd(forallDescr, ctx);
         return forallDescr;
     }
 
@@ -532,6 +554,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         patternDescr.setSource(accumulateDescr);
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
         constraintDescrList.forEach(patternDescr::addConstraint);
+
+        populateStartEnd(accumulateDescr, ctx);
         return patternDescr;
     }
 
@@ -543,6 +567,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         List<DRLParser.DrlExpressionContext> drlExpressionContexts = ctx.expressionList().drlExpression();
         List<String> parameters = drlExpressionContexts.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
         behaviorDescr.setParameters(parameters);
+        populateStartEnd(behaviorDescr, ctx);
         return behaviorDescr;
     }
 
@@ -550,6 +575,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public FromDescr visitFromExpression(DRLParser.FromExpressionContext ctx) {
         FromDescr fromDescr = new FromDescr();
         fromDescr.setDataSource(new MVELExprDescr(getTextPreservingWhitespace(ctx)));
+        populateStartEnd(fromDescr, ctx);
         return fromDescr;
     }
 
@@ -557,6 +583,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public CollectDescr visitFromCollect(DRLParser.FromCollectContext ctx) {
         CollectDescr collectDescr = new CollectDescr();
         collectDescr.setInputPattern((PatternDescr) visitLhsPatternBind(ctx.lhsPatternBind()));
+        populateStartEnd(collectDescr, ctx);
         return collectDescr;
     }
 
@@ -576,6 +603,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             // accumulate function
             accumulateDescr.addFunction(visitAccumulateFunction(ctx.accumulateFunction()));
         }
+        populateStartEnd(accumulateDescr, ctx);
         return accumulateDescr;
     }
 
@@ -648,6 +676,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         if (!constraint.isEmpty()) {
             ExprConstraintDescr constraintDescr = new ExprConstraintDescr(constraint);
             constraintDescr.setType(ExprConstraintDescr.Type.NAMED);
+            populateStartEnd(constraintDescr, ctx);
             descrList.add(constraintDescr);
             return descrList;
         }
@@ -692,6 +721,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             BaseDescr descr = visitLhsPatternBind(ctx.lhsPatternBind());
             existsDescr.addDescr(descr);
         }
+        populateStartEnd(existsDescr, ctx);
         return existsDescr;
     }
 
@@ -711,12 +741,15 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             BaseDescr descr = visitLhsPatternBind(ctx.lhsPatternBind());
             notDescr.addDescr(descr);
         }
+        populateStartEnd(notDescr, ctx);
         return notDescr;
     }
 
     @Override
     public EvalDescr visitLhsEval(DRLParser.LhsEvalContext ctx) {
-        return new EvalDescr(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
+        EvalDescr evalDescr = new EvalDescr(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
+        populateStartEnd(evalDescr, ctx);
+        return evalDescr;
     }
 
     @Override
@@ -744,6 +777,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             // So, we need to flatten it so that OrDescr has A(), B() and C() as children.
             List<BaseDescr> flattenedDescrs = flattenOrDescr(descrList);
             flattenedDescrs.forEach(orDescr::addDescr);
+            populateStartEnd(orDescr, ctx);
             return orDescr;
         }
     }
@@ -786,6 +820,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             // So, we need to flatten it so that AndDescr has A(), B() and C() as children.
             List<BaseDescr> flattenedDescrs = flattenAndDescr(descrList);
             flattenedDescrs.forEach(andDescr::addDescr);
+            populateStartEnd(andDescr, ctx);
             return andDescr;
         }
     }
@@ -820,6 +855,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         // TODO: Current DRL6Parser adds +1 for EndCharacter but it doesn't look reasonable. At the moment, I don't add. Instead, I fix unit tests.
         //       I will revisit if this is the right approach.
         descr.setEndCharacter(ctx.getStop().getStopIndex());
+        descr.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        descr.setEndLocation(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine());
     }
 
     /**
