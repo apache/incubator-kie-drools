@@ -48,8 +48,8 @@
       <artifactId>kie-addons-springboot-rest-exception-handler</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-task-management</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-task-management</artifactId>
     </dependency>
 
     <!-- test dependencies -->

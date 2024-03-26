@@ -28,6 +28,9 @@
     <version>999-SNAPSHOT</version>
     <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
   </parent>
+
+  <groupId>org.kie</groupId>
+
   <artifactId>kogito-addons</artifactId>
   <packaging>pom</packaging>
   <name>Kogito :: Add-Ons</name>

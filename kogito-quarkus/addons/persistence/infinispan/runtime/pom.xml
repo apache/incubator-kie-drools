@@ -45,8 +45,8 @@
     </dependency>
     <!-- TODO: for now we have the common Infinispan Add-On added as a dependency, but ideally we should stick with Quarkus way. -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-infinispan</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-persistence-infinispan</artifactId>
     </dependency>
   </dependencies>
 

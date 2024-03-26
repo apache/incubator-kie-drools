@@ -78,8 +78,8 @@
       <scope>test</scope>
     </dependency>
       <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-rocksdb</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-persistence-rocksdb</artifactId>
       <scope>test</scope>
     </dependency>
        <dependency>

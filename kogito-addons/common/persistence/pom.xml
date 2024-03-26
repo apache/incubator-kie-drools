@@ -22,15 +22,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-common-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-persistence-parent</artifactId>
+  <artifactId>kie-addons-persistence-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Add-Ons :: Persistence :: Parent</name>
+  <name>KIE :: Add-Ons :: Persistence :: Parent</name>
 
-  <description>Kogito Persistence Add-Ons Implementations</description>
+  <description>KIE Persistence Add-Ons Implementations</description>
 
   <modules>
     <module>jdbc</module>

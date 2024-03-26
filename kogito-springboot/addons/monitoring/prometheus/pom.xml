@@ -39,8 +39,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-monitoring-prometheus</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-monitoring-prometheus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

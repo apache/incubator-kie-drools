@@ -38,8 +38,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-marshallers-avro</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-marshallers-avro</artifactId>
     </dependency>
      <dependency>
       <groupId>org.kie.kogito</groupId>

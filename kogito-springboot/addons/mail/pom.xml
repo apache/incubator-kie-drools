@@ -50,8 +50,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-mail</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-mail</artifactId>
     </dependency>
 
     <dependency>

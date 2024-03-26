@@ -40,8 +40,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-events-mongodb</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-events-mongodb</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -23,12 +23,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-common-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-monitoring-parent</artifactId>
-  <name>Kogito :: Add-Ons :: Monitoring</name>
+  <artifactId>kie-addons-monitoring-parent</artifactId>
+  <name>KIE :: Add-Ons :: Monitoring</name>
   <packaging>pom</packaging>
 
   <description>Monitoring addons for runtime</description>

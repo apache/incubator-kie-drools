@@ -25,14 +25,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-events-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-events-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kogito-addons-events-mongodb</artifactId>
-  <name>Kogito :: Add-Ons :: Events :: MongoDB</name>
-  <description>Common addon for Kogito Events based on MongoDB</description>
+  <artifactId>kie-addons-events-mongodb</artifactId>
+  <name>KIE :: Add-Ons :: Events :: MongoDB</name>
+  <description>Common addon for KIE Events based on MongoDB</description>
 
   <properties>
     <java.module.name>org.kie.kogito.events.mongodb</java.module.name>
@@ -44,8 +44,8 @@
       <artifactId>kogito-events-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-mongodb</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-persistence-mongodb</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

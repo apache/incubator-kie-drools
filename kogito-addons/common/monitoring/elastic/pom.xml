@@ -23,15 +23,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-monitoring-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-monitoring-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-monitoring-elastic</artifactId>
+  <artifactId>kie-addons-monitoring-elastic</artifactId>
 
-  <name>Kogito :: Add-Ons :: Monitoring Elastic Common</name>
+  <name>KIE :: Add-Ons :: Monitoring Elastic Common</name>
   <description>Monitoring Elastic Core</description>
 
   <properties>
@@ -40,8 +40,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-monitoring-core</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-monitoring-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.micrometer</groupId>
@@ -65,8 +65,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-monitoring-core</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-monitoring-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

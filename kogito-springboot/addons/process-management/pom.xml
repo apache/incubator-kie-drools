@@ -44,8 +44,8 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-process-management</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-process-management</artifactId>
     </dependency>
 
     <!-- test dependencies -->

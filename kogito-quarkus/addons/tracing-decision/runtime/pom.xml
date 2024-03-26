@@ -64,8 +64,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-tracing-decision-common</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-tracing-decision-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

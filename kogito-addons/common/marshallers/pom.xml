@@ -21,15 +21,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kogito-addons-common-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-marshallers-parent</artifactId>
+  <artifactId>kie-addons-marshallers-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Add-Ons :: Marshallers :: Parent</name>
+  <name>KIE :: Add-Ons :: Marshallers :: Parent</name>
 
-  <description>Kogito Marshallers and Unmarshallers</description>
+  <description>KIE Marshallers and Unmarshallers</description>
 
   <modules>
     <module>avro</module>

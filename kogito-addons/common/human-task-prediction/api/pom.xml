@@ -23,14 +23,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-human-task-prediction-parent</artifactId>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-addons-human-task-prediction-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-human-task-prediction-api</artifactId>
-  <name>Kogito :: Add-Ons :: Predictions :: API</name>
+  <artifactId>jbpm-addons-human-task-prediction-api</artifactId>
+  <name>jBPM :: Add-Ons :: Predictions :: API</name>
 
-  <description>Kogito Predictions API</description>
+  <description>jBPM Predictions API</description>
 
   <properties>
     <java.module.name>org.kie.kogito.prediction.api</java.module.name>

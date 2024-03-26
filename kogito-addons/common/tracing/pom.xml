@@ -24,14 +24,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-common-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-tracing-parent</artifactId>
+  <artifactId>kie-addons-tracing-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Add-Ons :: Tracing</name>
+  <name>KIE :: Add-Ons :: Tracing</name>
 
   <modules>
     <module>typedvalue-api</module>

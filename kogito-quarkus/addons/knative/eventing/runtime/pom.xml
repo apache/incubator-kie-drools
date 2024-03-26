@@ -43,7 +43,7 @@
       <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-knative-eventing</artifactId>
     </dependency>
     <dependency>

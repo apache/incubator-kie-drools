@@ -40,6 +40,6 @@ class KogitoAddOnPersistenceRocksDBProcessor extends OneOfCapabilityKogitoAddOnP
 
     @BuildStep
     IndexDependencyBuildItem addClassToIndex() {
-        return new IndexDependencyBuildItem("org.kie.kogito", "kogito-addons-persistence-rocksdb");
+        return new IndexDependencyBuildItem("org.kie", "kie-addons-persistence-rocksdb");
     }
 }

@@ -55,7 +55,7 @@
       <artifactId>kogito-services</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-jobs-api</artifactId>
     </dependency>
     <!-- Test dependencies -->

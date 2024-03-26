@@ -38,8 +38,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-kubernetes-service-catalog</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-kubernetes-service-catalog</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -60,8 +60,8 @@
             <artifactId>microprofile-config-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-kubernetes-service-catalog</artifactId>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-kubernetes-service-catalog</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

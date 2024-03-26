@@ -45,8 +45,8 @@
     </dependency>
     <!-- TODO: for now we have the common persistence Add-On added as a dependency, but ideally we should stick with Quarkus way. -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-mongodb</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-persistence-mongodb</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

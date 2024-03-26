@@ -64,29 +64,29 @@ them in your project.
 
 > [1] Commons Add-ons that are not supposed to be used by end user's projects.
 
-| Add-On Description          | Deprecated Artifact ID               | New Artifact ID                           | Since | 
-|-----------------------------|--------------------------------------|-------------------------------------------|-------|
-| Cloud Events Utils [1]      | cloudevents-utils                    | kogito-events-api (incorporated to core)  | 1.8.0 |
-| Cloud Events [1]            | kogito-cloudevents-common-addon      | kogito-addons-cloudevents                 | 1.8.0 |
-| Events Decisions [1]        | kogito-event-driven-decisions-common | kogito-addons-events-decisions            | 1.8.0 |
-| Explainability [1]          | explainability-addon-common          | kogito-addons-explainability              | 1.8.0 |
-| Human Task Prediction API   | kogito-task-prediction-api           | kogito-addons-human-task-prediction-api   | 1.8.0 |
-| Human Task Prediction Smile | kogito-task-prediction-smile-addon   | kogito-addons-human-task-prediction-smile | 1.8.0 |
-| Jobs Api [1]                | jobs-api                             | kogito-addons-jobs-api                    | 1.8.0 |
-| Jobs Management [1]         | jobs-management-common               | kogito-addons-jobs-management-common      | 1.8.0 |
-| Mail [1]                    | mail-common-addon                    | kogito-addons-mail                        | 1.8.0 |
-| Monitoring [1]              | monitoring-core-common               | kogito-addons-monitoring-core             | 1.8.0 |
-| Monitoring Elastic [1]      | monitoring-elastic-common            | kogito-addons-monitoring-elastic          | 1.8.0 |
-| Monitoring Prometheus [1]   | monitoring-prometheus-common         | kogito-addons-monitoring-core             | 1.8.0 |
-| Persistence File System     | filesystem-persistence-addon         | kogito-addons-persistence-filesystem      | 1.8.0 | 
-| Persistence Infinispan      | infinispan-persistence-addon         | kogito-addons-persistence-infinispan      | 1.8.0 |
-| Persistence JDBC            | jdbc-persistence-addon               | kogito-addons-persistence-jdbc            | 1.8.0 |
-| Persistence MongoDB         | mongodb-persistence-addon            | kogito-addons-persistence-mongodb         | 1.8.0 | 
-| Persistence PostgreSQL      | postgresql-persistence-addon         | kogito-addons-persistence-postgresql      | 1.8.0 |
-| Process Management [1]      | process-management-common            | kogito-addons-process-management          | 1.8.0 | 
-| Process SVG [1]             | process-svg-common                   | kogito-addons-process-svg                 | 1.8.0 | 
-| REST Exception Handler [1]  | kogito-rest-exception-handler-common | kogito-addons-rest-exception-handler      | 1.8.0 | 
-| Task Management [1]         | task-management-common               | kogito-addons-task-management             | 1.8.0 | 
-| Tracing Decision API [1]    | tracing-decision-api                 | kogito-addons-tracing-decision-api        | 1.8.0 | 
-| Tracing Decision Common [1] | tracing-decision-common              | kogito-addons-tracing-decision-common     | 1.8.0 | 
-| Tracing TypedValue API [1]  | typedvalue-api                       | kogito-addons-tracing-typedvalue-api      | 1.8.0 |
+| Add-On Description          | Deprecated Artifact ID               | New Artifact ID                          | Since | 
+|-----------------------------|--------------------------------------|------------------------------------------|-------|
+| Cloud Events Utils [1]      | cloudevents-utils                    | kogito-events-api (incorporated to core) | 1.8.0 |
+| Cloud Events [1]            | kogito-cloudevents-common-addon      | kogito-addons-cloudevents                | 1.8.0 |
+| Events Decisions [1]        | kogito-event-driven-decisions-common | kie-addons-events-decisions              | 1.8.0 |
+| Explainability [1]          | explainability-addon-common          | kie-addons-explainability                | 1.8.0 |
+| Human Task Prediction API   | kogito-task-prediction-api           | jbpm-addons-human-task-prediction-api    | 1.8.0 |
+| Human Task Prediction Smile | kogito-task-prediction-smile-addon   | jbpm-addons-human-task-prediction-smile  | 1.8.0 |
+| Jobs Api [1]                | jobs-api                             | kogito-addons-jobs-api                   | 1.8.0 |
+| Jobs Management [1]         | jobs-management-common               | kogito-addons-jobs-management-common     | 1.8.0 |
+| Mail [1]                    | mail-common-addon                    | jbpm-addons-mail                         | 1.8.0 |
+| Monitoring [1]              | monitoring-core-common               | kie-addons-monitoring-core               | 1.8.0 |
+| Monitoring Elastic [1]      | monitoring-elastic-common            | kie-addons-monitoring-elastic            | 1.8.0 |
+| Monitoring Prometheus [1]   | monitoring-prometheus-common         | kie-addons-monitoring-core               | 1.8.0 |
+| Persistence File System     | filesystem-persistence-addon         | kie-addons-persistence-filesystem        | 1.8.0 | 
+| Persistence Infinispan      | infinispan-persistence-addon         | kie-addons-persistence-infinispan        | 1.8.0 |
+| Persistence JDBC            | jdbc-persistence-addon               | kie-addons-persistence-jdbc              | 1.8.0 |
+| Persistence MongoDB         | mongodb-persistence-addon            | kie-addons-persistence-mongodb           | 1.8.0 | 
+| Persistence PostgreSQL      | postgresql-persistence-addon         | kie-addons-persistence-postgresql        | 1.8.0 |
+| Process Management [1]      | process-management-common            | kie-addons-process-management            | 1.8.0 | 
+| Process SVG [1]             | process-svg-common                   | kie-addons-process-svg                   | 1.8.0 | 
+| REST Exception Handler [1]  | kogito-rest-exception-handler-common | kie-addons-rest-exception-handler        | 1.8.0 | 
+| Task Management [1]         | task-management-common               | jbpm-addons-task-management              | 1.8.0 | 
+| Tracing Decision API [1]    | tracing-decision-api                 | kogito-addons-tracing-decision-api       | 1.8.0 | 
+| Tracing Decision Common [1] | tracing-decision-common              | kie-addons-tracing-decision-common       | 1.8.0 | 
+| Tracing TypedValue API [1]  | typedvalue-api                       | kie-addons-tracing-typedvalue-api        | 1.8.0 |

@@ -43,8 +43,8 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-rest-exception-handler</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-rest-exception-handler</artifactId>
     </dependency>
     <!-- test dependencies -->
     <dependency>

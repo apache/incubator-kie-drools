@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-tracing-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-tracing-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-tracing-api</artifactId>
-  <name>Kogito :: Add-Ons :: Tracing :: API</name>
+  <artifactId>kie-addons-tracing-api</artifactId>
+  <name>KIE :: Add-Ons :: Tracing :: API</name>
 
   <properties>
     <java.module.name>org.kie.kogito.tracing</java.module.name>
@@ -42,8 +42,8 @@
       <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-tracing-typedvalue-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-tracing-typedvalue-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.cloudevents</groupId>

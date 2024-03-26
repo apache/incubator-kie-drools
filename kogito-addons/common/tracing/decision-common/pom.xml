@@ -23,14 +23,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-addons-tracing-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <artifactId>kie-addons-tracing-parent</artifactId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-tracing-decision-common</artifactId>
-  <name>Kogito :: Add-Ons :: Tracing :: Common</name>
+  <artifactId>kie-addons-tracing-decision-common</artifactId>
+  <name>KIE :: Add-Ons :: Tracing :: Common</name>
 
   <properties>
     <java.module.name>org.kie.kogito.tracing.decision</java.module.name>
@@ -43,8 +43,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-tracing-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-tracing-api</artifactId>
     </dependency>
 
     <dependency>
@@ -53,8 +53,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-explainability</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-explainability</artifactId>
     </dependency>
 
     <dependency>

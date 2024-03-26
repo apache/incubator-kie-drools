@@ -1,6 +1,6 @@
 # Kogito Persistence Add-ons
 
-The Kogito Persistence Add-ons adds persistence capability to Kogito projects.See 
+The KIE Persistence Add-ons adds persistence capability to Kogito projects.See 
 the [official documentation](https://docs.jboss.org/kogito/release/latest/html_single/#con-persistence_kogito-developing-process-services)
 to find out more.
 

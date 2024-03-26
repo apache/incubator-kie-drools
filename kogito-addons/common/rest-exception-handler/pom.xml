@@ -24,13 +24,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-common-parent</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-rest-exception-handler</artifactId>
-  <name>Kogito :: Rest Exception Handler :: Common</name>
+  <artifactId>kie-addons-rest-exception-handler</artifactId>
+  <name>KIE :: Rest Exception Handler :: Common</name>
 
   <properties>
       <java.module.name>org.kie.kogito.resource.exceptions</java.module.name>

@@ -220,24 +220,24 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-messaging</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-messaging</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-messaging</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-messaging</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-marshallers-avro</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-marshallers-avro</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-marshallers-avro</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-marshallers-avro</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -258,12 +258,12 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-knative-eventing</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-knative-eventing</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
@@ -292,25 +292,25 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-kubernetes</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-kubernetes</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-kubernetes</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-kubernetes</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-kubernetes-service-catalog</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-kubernetes-service-catalog</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-kubernetes-service-catalog</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-kubernetes-service-catalog</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -622,13 +622,13 @@
 
       <!-- Monitoring addon     -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-prometheus</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-prometheus</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-prometheus</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-prometheus</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -667,19 +667,19 @@
       </dependency>
 
        <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-core</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-core</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-core</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-core</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
@@ -707,13 +707,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-elastic</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-elastic</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-elastic</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-monitoring-elastic</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -765,13 +765,13 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-infinispan</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-infinispan</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-infinispan</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-infinispan</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -787,13 +787,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-rocksdb</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-rocksdb</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-rocksdb</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-rocksdb</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -986,25 +986,25 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-postgresql</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-postgresql</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-postgresql</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-postgresql</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-filesystem</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-filesystem</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-filesystem</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-filesystem</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1020,13 +1020,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-mongodb</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-mongodb</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-mongodb</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-mongodb</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1042,13 +1042,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-jdbc</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-jdbc</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-persistence-jdbc</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-persistence-jdbc</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1086,13 +1086,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-mongodb</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-events-mongodb</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-mongodb</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-events-mongodb</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1130,13 +1130,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-process-management</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-process-management</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-process-management</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-process-management</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1220,13 +1220,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-task-management</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-task-management</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-task-management</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-task-management</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1297,13 +1297,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-mail</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-mail</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-mail</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-mail</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1341,13 +1341,13 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-rest-exception-handler</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-rest-exception-handler</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-rest-exception-handler</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-rest-exception-handler</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1376,19 +1376,19 @@
 
       <!-- Process SVG addon     -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-process-svg</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-process-svg</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-process-svg</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-process-svg</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-process-svg</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-process-svg</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
@@ -1428,18 +1428,18 @@
 
       <!--  Jobs management addon    -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-jobs-management-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-jobs-management-common</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-jobs-management-common</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
@@ -1621,37 +1621,37 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-jobs-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie</groupId>
         <artifactId>kogito-addons-jobs-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-human-task-prediction-api</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-human-task-prediction-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-human-task-prediction-api</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-human-task-prediction-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-human-task-prediction-smile</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-human-task-prediction-smile</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-human-task-prediction-smile</artifactId>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-human-task-prediction-smile</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -2538,24 +2538,24 @@
 
       <!-- Tracing -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-tracing-api</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-tracing-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-tracing-api</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-tracing-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-tracing-decision-common</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-tracing-decision-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-tracing-decision-common</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-tracing-decision-common</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -2593,26 +2593,26 @@
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-tracing-typedvalue-api</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-tracing-typedvalue-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-tracing-typedvalue-api</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-tracing-typedvalue-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <!-- Explainability -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-explainability</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-explainability</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-explainability</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-explainability</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -2654,13 +2654,13 @@
 
       <!-- event-driven decisions -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-decisions</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-events-decisions</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-decisions</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-events-decisions</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -2700,13 +2700,13 @@
 
       <!-- event-driven predictions -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-predictions</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-events-predictions</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-predictions</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-events-predictions</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -2746,13 +2746,13 @@
 
       <!-- event-driven rules -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-rules</artifactId>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-addons-events-rules</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-events-rules</artifactId>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-addons-events-rules</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

@@ -23,13 +23,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-persistence-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-persistence-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-persistence-infinispan</artifactId>
-  <name>Kogito :: Add-Ons :: Persistence :: Infinispan</name>
-  <description>Infinispan based persistence for Kogito</description>
+  <artifactId>kie-addons-persistence-infinispan</artifactId>
+  <name>KIE :: Add-Ons :: Persistence :: Infinispan</name>
+  <description>Infinispan based persistence for KIE</description>
 
   <properties>
     <java.module.name>org.kie.kogito.infinispan</java.module.name>

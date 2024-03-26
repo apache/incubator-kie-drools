@@ -38,8 +38,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-events-decisions</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-events-decisions</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

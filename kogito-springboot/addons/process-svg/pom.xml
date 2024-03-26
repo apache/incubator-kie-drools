@@ -37,8 +37,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-process-svg</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-process-svg</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -88,8 +88,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-process-svg</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-process-svg</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

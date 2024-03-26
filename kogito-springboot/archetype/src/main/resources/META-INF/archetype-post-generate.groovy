@@ -75,7 +75,7 @@ def addonsToArtifactsIds(String addons) {
             [id: "persistence-jdbc", addon: "kie-addons-springboot-persistence-jdbc"],
             [id: "persistence-mongodb", addon: "kie-addons-springboot-persistence-mongodb"],
             [id: "persistence-postgresql", addon: "kie-addons-springboot-persistence-postgresql"],
-            [id: "human-task-prediction-api", addon: "kogito-addons-human-task-prediction-api"],
+            [id: "human-task-prediction-api", addon: "jbpm-addons-human-task-prediction-api"],
             [id: "messaging", addon: "kie-addons-springboot-messaging"],
             [id: "events-decisions", addon: "kie-addons-springboot-events-decisions"],
             [id: "events-process-kafka", addon: "kie-addons-springboot-events-process-kafka"],

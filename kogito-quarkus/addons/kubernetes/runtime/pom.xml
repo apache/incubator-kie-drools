@@ -37,8 +37,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-kubernetes-service-catalog</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-kubernetes-service-catalog</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -57,8 +57,8 @@
       <artifactId>kubernetes-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-kubernetes</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-kubernetes</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

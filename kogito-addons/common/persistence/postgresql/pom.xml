@@ -21,14 +21,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-addons-persistence-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-addons-persistence-parent</artifactId>
     <version>999-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-addons-persistence-postgresql</artifactId>
-  <name>Kogito :: Add-Ons :: Persistence :: PostgreSQL</name>
+  <artifactId>kie-addons-persistence-postgresql</artifactId>
+  <name>KIE :: Add-Ons :: Persistence :: PostgreSQL</name>
 
-  <description>PostgreSQL based persistence for Kogito</description>
+  <description>PostgreSQL based persistence for KIE</description>
   <properties>
     <path.to.jdbc.addon>../jdbc</path.to.jdbc.addon>
     <path.to.script.folder>src/main/resources/db</path.to.script.folder>
@@ -132,7 +132,7 @@
           </filesets>
         </configuration>
       </plugin>
-<!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kogito-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
+<!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kie-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>

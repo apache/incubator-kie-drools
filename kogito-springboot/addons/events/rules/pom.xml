@@ -39,8 +39,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-events-rules</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-addons-events-rules</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

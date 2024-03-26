@@ -47,8 +47,8 @@
       <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-explainability</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-explainability</artifactId>
     </dependency>
 
     <dependency>
