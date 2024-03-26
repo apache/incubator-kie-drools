@@ -54,8 +54,8 @@
       <artifactId>kogito-events-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-tracing-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-tracing-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
