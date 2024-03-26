@@ -864,7 +864,6 @@ class MiscDRLParserTest {
 // Failing tests are annotated with @Disabled. We can fix issues one by one
 //-------------------------------------------------------------------------
 
-    @Disabled("Priority : Mid | implement Descr lineNumber")
     @Test
     public void parse_LineNumberInAST() throws Exception {
         // also see testSimpleExpander to see how this works with an expander
@@ -1687,7 +1686,6 @@ class MiscDRLParserTest {
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type == $likes");
     }
 
-    @Disabled("Priority : Mid | Implement Descr lineNumber")
     @Test
     public void parse_Functions() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
@@ -1703,7 +1701,7 @@ class MiscDRLParserTest {
         assertThat(func.getReturnType()).isEqualTo("String");
         assertThat(func.getParameterNames().size()).isEqualTo(2);
         assertThat(func.getParameterTypes().size()).isEqualTo(2);
-        assertThat(func.getLine()).isEqualTo(19);
+        assertThat(func.getLine()).isEqualTo(21);
         assertThat(func.getColumn()).isEqualTo(0);
 
         assertThat(func.getParameterTypes().get(0)).isEqualTo("String");
@@ -2070,15 +2068,14 @@ class MiscDRLParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
     }
 
-    @Disabled("Priority : Mid | implement Descr lineNumber")
     @Test
     public void parse_EndPosition() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "test_EndPosition.drl" );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(col.getLine()).isEqualTo(21);
-        assertThat(col.getEndLine()).isEqualTo(23);
+        assertThat(col.getLine()).isEqualTo(23);
+        assertThat(col.getEndLine()).isEqualTo(25);
     }
 
     @Test
