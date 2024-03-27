@@ -144,6 +144,12 @@ orRestriction : left=andRestriction (OR right=andRestriction)* ;
 andRestriction : left=singleRestriction (AND right=singleRestriction)* ;
 singleRestriction : op=relationalOperator drlExpression ;
 
+// OOPath
+xpathSeparator : DIV | QUESTION_DIV ;
+xpathPrimary : label? xpathChunk+ ;
+xpathChunk : xpathSeparator drlIdentifier (DOT drlIdentifier)* (HASH drlIdentifier)? (LBRACK xpathExpressionList RBRACK)? ;
+xpathExpressionList : label? drlExpression (COMMA label? drlExpression)* ;
+
 relationalOperator
     : EQUAL
     | NOTEQUAL
@@ -284,7 +290,14 @@ drlExpression
     | drlExpression COLONCOLON typeArguments? drlIdentifier
     | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
+
+    // OOPath
+    | xpathPrimary
+    | backReferenceExpression
     ;
+
+backReferenceExpression : (DOT DOT DIV)+  drlExpression ;
+
 
 /* extending JavaParser methodCall in order to accept drl keywords as method name */
 drlMethodCall
