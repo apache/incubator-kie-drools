@@ -127,7 +127,7 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
 lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN drlAnnotation* (DRL_OVER patternFilter)? (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
-constraint : ( nestedConstraint | conditionalOrExpression | xpathPrimary) ;
+constraint : ( nestedConstraint | conditionalOrExpression ) ;
 nestedConstraint : ( IDENTIFIER ( DOT | NULL_SAFE_DOT | HASH ) )* IDENTIFIER (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
 
 // TBD: constraint parsing could be delegated to DRL6ExpressionParser
@@ -291,7 +291,8 @@ drlExpression
     | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
 
-    // OOPath feature
+    // OOPath
+    | xpathPrimary
     | backReferenceExpression
     ;
 

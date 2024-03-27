@@ -3859,4 +3859,18 @@ class MiscDRLParserTest {
         assertThat(constraintDescr.toString())
                 .isEqualToIgnoringWhitespace("$toy: /wife/children/toys[ name.length == ../name.length ]");
     }
+
+    @Test
+    void ooPathMixedWithStandardConstraint() {
+        final String text = "package org.drools\n" +
+                "rule R when\n" +
+                "  Man( /wife[$age : age] && age > $age )\n" +
+                "then\n" +
+                "end\n";
+
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString())
+                .isEqualToIgnoringWhitespace("/wife[$age : age] && age > $age");
+    }
 }
