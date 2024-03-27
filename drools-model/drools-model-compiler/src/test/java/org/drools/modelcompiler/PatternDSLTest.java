@@ -376,9 +376,8 @@ public class PatternDSLTest {
 
         ksession.fireAllRules();
 
-        Collection<Result> results = (Collection<Result>) ksession.getObjects( new ClassObjectFilter( Result.class ) );
-        assertThat(results.size()).isEqualTo(1);
-        assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
+        Result result = ksession.getSingleInstanceOf( Result.class );
+        assertThat(result.getValue()).isEqualTo("Mario");
     }
 
     @Test
@@ -1132,6 +1131,6 @@ public class PatternDSLTest {
     }
 
     public static <T> List<T> getObjectsIntoList(KieSession ksession, Class<T> clazz) {
-        return (List<T>) ksession.getObjects(new ClassObjectFilter(clazz)).stream().collect(Collectors.toList());
+        return ksession.getInstancesOf(clazz).stream().collect(Collectors.toList());
     }
 }

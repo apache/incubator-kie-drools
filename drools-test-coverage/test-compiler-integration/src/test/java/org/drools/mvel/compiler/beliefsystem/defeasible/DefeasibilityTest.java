@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.BeliefSystemType;
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;

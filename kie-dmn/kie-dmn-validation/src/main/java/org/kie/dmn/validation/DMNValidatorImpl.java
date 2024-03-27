@@ -73,6 +73,7 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.Import;
 import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.InternalDMNDTAnalyserFactory;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
@@ -84,6 +85,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.core.compiler.UnnamedImportUtils.mergeDefinitions;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
@@ -546,7 +548,8 @@ public class DMNValidatorImpl implements DMNValidator {
             Source s = new StreamSource(new StringReader(xml));
             validateSchema(s, usingSchema);
         } catch (Exception e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
+            String errorMessage = String.format("%s - %s", path, e.getMessage());
+            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
         }
         return problems;
     }
@@ -580,6 +583,19 @@ public class DMNValidatorImpl implements DMNValidator {
     
     private List<DMNMessage> validateModel(DMNResource mainModel, List<DMNResource> otherModels) {
         Definitions mainDefinitions = mainModel.getDefinitions();
+        List<String> unnamedImports = mainDefinitions.getImport().stream()
+                .filter(anImport -> anImport.getName() == null || anImport.getName().isEmpty())
+                .map(Import::getNamespace)
+                .toList();
+        List<Definitions> otherModelsDefinitions = new ArrayList<>();
+        otherModels.forEach(dmnResource -> {
+            Definitions other = dmnResource.getDefinitions();
+            if (unnamedImports.contains(dmnResource.getModelID().getNamespaceURI())) {
+                mergeDefinitions(mainDefinitions, other);
+            }
+            otherModelsDefinitions.add(other);
+        });
+
         StatelessKieSession kieSession = mainDefinitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase ? kb11.newStatelessKieSession() : kb12.newStatelessKieSession();
         MessageReporter reporter = new MessageReporter(mainModel);
         kieSession.setGlobal( "reporter", reporter );
@@ -589,7 +605,7 @@ public class DMNValidatorImpl implements DMNValidator {
                        .filter(d -> !(d instanceof DecisionService &&
                                Boolean.parseBoolean(d.getAdditionalAttributes().get(new QName("http://www.trisotech.com/2015/triso/modeling", "dynamicDecisionService")))))
                        .collect(toList());
-        List<Definitions> otherModelsDefinitions = otherModels.stream().map(DMNResource::getDefinitions).collect(Collectors.toList());
+
         BatchExecutionCommand batch = CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements, "DEFAULT", false, "DEFAULT"),
                                                                                      CommandFactory.newInsertElements(otherModelsDefinitions, "DMNImports", false, "DMNImports")));
         kieSession.execute(batch);

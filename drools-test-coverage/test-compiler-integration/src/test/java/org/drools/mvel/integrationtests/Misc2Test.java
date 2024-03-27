@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 import org.drools.base.base.ValueResolver;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;

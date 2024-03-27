@@ -1,0 +1,45 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_6A8FBF20-4F01-4097-A2BB-A28495F90E03" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_81135579-9168-4A90-8B44-5EE01B52E65E" name="stdlib" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_6A8FBF20-4F01-4097-A2BB-A28495F90E03">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_519FC477-FD19-47A3-89B6-AC30444E8CCC" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_904D4302-0654-4D04-888A-2B15945B9362" name="full name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_A38DC949-2DF2-4834-8B16-A4F15E168F39" name="age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:businessKnowledgeModel id="_641B6A2D-4686-4BBB-A4E4-6AB2216FBF89" name="bkm1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_257D8A72-CB23-4E12-82CA-9E36D997A540" name="bkm1"/>
+    <dmn:encapsulatedLogic id="_EBC8D4FD-2556-4FDE-8EF1-B3BC59739521" kind="FEEL">
+      <dmn:formalParameter id="_789F9722-2A5D-47A1-9AC7-7EDF7D29175F" name="p" typeRef="tPerson"/>
+      <dmn:literalExpression id="_C9929CCE-37D1-45E6-A676-E72935D72059">
+        <dmn:text>(if p.age &gt; 47 then "Hello, " else "Ciao, ") + p.full name</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_786EAA40-6574-4D87-BCB7-12754E566174" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C9929CCE-37D1-45E6-A676-E72935D72059">
+            <kie:width>560</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_EBC8D4FD-2556-4FDE-8EF1-B3BC59739521">
+            <kie:width>50</kie:width>
+            <kie:width>560</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_641B6A2D-4686-4BBB-A4E4-6AB2216FBF89" dmnElementRef="_641B6A2D-4686-4BBB-A4E4-6AB2216FBF89" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="522" y="177" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

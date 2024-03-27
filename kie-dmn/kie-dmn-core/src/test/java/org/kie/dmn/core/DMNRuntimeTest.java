@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -662,7 +661,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDateToDateTimeFunction() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DateToDateTimeFunction.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/DateToDateTimeFunction.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE",
                                                    "new-file");
         assertThat(dmnModel).isNotNull();

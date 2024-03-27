@@ -19,7 +19,9 @@
 package org.kie.api.runtime.rule;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.ObjectFilter;
 
 /**
@@ -153,6 +155,34 @@ public interface EntryPoint {
     Collection<? extends Object> getObjects(ObjectFilter filter);
 
     /**
+     * Returns a Collection of objects in this entry-point that are instances of the given class.
+     * @param clazz the class of objects to be retrieved
+     * @return all facts from this entry-point that are instance of the given class.
+     */
+    default <T> Collection<T> getInstancesOf(Class<T> clazz) {
+        return (Collection<T>) getObjects(new ClassObjectFilter(clazz));
+    }
+
+    /**
+     * Returns the only object in this entry-point that is an instance of the given class.
+     * @param clazz the class of object to be retrieved
+     * @return the only object from this entry-point that is an instance of the given class.
+     * @throws NoSuchElementException if there isn't any object of the given class in this entry-point
+     * @throws IllegalStateException if there is more than one object of the given class in this entry-point
+     */
+    default <T> T getSingleInstanceOf(Class<T> clazz) {
+        Collection<T> ts = (Collection<T>) getObjects(new ClassObjectFilter(clazz));
+        int size = ts.size();
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        if (size > 1) {
+            throw new IllegalStateException("Found " + size + " instances instead of the expected single one");
+        }
+        return ts.iterator().next();
+    }
+
+    /**
      * @return all <code>FactHandle</code>s from the current session.
      */
     <T extends FactHandle> Collection< T > getFactHandles();
@@ -168,5 +198,4 @@ public interface EntryPoint {
      * @return the total number of facts currently in this entry point
      */
     long getFactCount();
-
 }

@@ -9,16 +9,21 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.drools.codegen.common.AppPaths.GENERATED_RESOURCES_DIR;
+import static org.drools.codegen.common.AppPaths.MAIN_DIR;
+import static org.drools.codegen.common.AppPaths.RESOURCES_DIR;
+import static org.drools.codegen.common.AppPaths.SRC_DIR;
 import static org.drools.codegen.common.AppPaths.TARGET_DIR;
+import static org.drools.codegen.common.AppPaths.TEST_DIR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Execution(ExecutionMode.SAME_THREAD)
-public class AppPathsTest {
+class AppPathsTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    public void fromProjectDir(boolean withGradle) {
+    void fromProjectDir(boolean withGradle) {
         String projectDirPath = "projectDir";
         String outputTargetPath = "outputTarget";
         Path projectDir = Path.of(projectDirPath);
@@ -40,7 +45,7 @@ public class AppPathsTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    public void fromTestDir(boolean withGradle) {
+    void fromTestDir(boolean withGradle) {
         String projectDirPath = "projectDir";
         String outputTargetPath = String.format("%s/%s", projectDirPath, TARGET_DIR).replace("/", File.separator);
         Path projectDir = Path.of(projectDirPath);
@@ -80,15 +85,15 @@ public class AppPathsTest {
         int expected = isGradle ? 1 : 2;
         assertEquals(expected, retrieved.length, "AppPathsTest.getResourceFilesTest");
         String expectedPath;
-        String sourceDir =  isTestDir ? "test" : "main";
+        String sourceDir =  isTestDir ? TEST_DIR : MAIN_DIR;
         if (isGradle) {
             expectedPath = projectDirPath;
         } else {
-            expectedPath = String.format("%s/src/%s/resources", projectDirPath, sourceDir).replace("/", File.separator);
+            expectedPath = String.format("%s/%s/%s/%s", projectDirPath, SRC_DIR, sourceDir, RESOURCES_DIR).replace("/", File.separator);
         }
         assertEquals(new File(expectedPath), retrieved[0], "AppPathsTest.getResourceFilesTest");
         if (!isGradle) {
-            expectedPath = String.format("%s/target/generated-resources", projectDirPath).replace("/", File.separator);
+            expectedPath = String.format("%s/%s/%s", projectDirPath, TARGET_DIR, GENERATED_RESOURCES_DIR).replace("/", File.separator);
             assertEquals(new File(expectedPath), retrieved[1], "AppPathsTest.getResourceFilesTest");
         }
     }

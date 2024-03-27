@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.model.Model;
 import org.drools.model.codegen.ExecutableModelProject;
@@ -431,7 +431,7 @@ public abstract class ReliabilityTestBasics {
     }
 
     protected Optional<Person> getPersonByName(KieSession kieSession, String name) {
-        return kieSession.getObjects(new ClassObjectFilter(Person.class))
+        return kieSession.getInstancesOf( Person.class )
                 .stream()
                 .map(Person.class::cast)
                 .filter(p -> p.getName().equals(name) ).findFirst();
