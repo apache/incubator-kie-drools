@@ -4,7 +4,7 @@
                       xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
                       xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
                       xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-                      xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:dmn="http://www.omg.org/spec/DMN/20230324/MODEL/"
                       xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
                       xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

@@ -69,7 +69,7 @@
           <dmn:text>((Client.existing payments + Loan.installment) / Client.salary) * 100</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id="_6919B10D-0B12-4B5E-9DF5-1A90F166CF9A" typeRef="string">
+      <dmn:output id="_6919B10D-0B12-4B5E-9DF5-1A90F166CF9A">
         <dmn:defaultOutputEntry id="_F19ECF67-98FC-4041-B8A0-E1A39C2BD0D9">
           <dmn:text>"No"</dmn:text>
         </dmn:defaultOutputEntry>
@@ -207,7 +207,7 @@
           <dmn:text>Bribe</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id="_AB79DAA1-1365-4310-9C4A-62568955A63A" typeRef="number"/>
+      <dmn:output id="_AB79DAA1-1365-4310-9C4A-62568955A63A" />
       <dmn:rule id="_4EF36921-0EC0-4B0C-9C64-E8CD3AD508A4">
         <dmn:inputEntry id="_2B4416F8-E16D-48C5-B32F-0F104953712D">
           <dmn:text>&lt;= 100</dmn:text>
@@ -246,7 +246,7 @@
           <dmn:text>Judgement</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id="_E4346355-A3C9-4982-AC03-62A9BA707EEF" typeRef="boolean"/>
+      <dmn:output id="_E4346355-A3C9-4982-AC03-62A9BA707EEF" />
       <dmn:rule id="_D514CAC3-693C-48DB-8CA2-507B9EE2118A">
         <dmn:inputEntry id="_EA171464-55E0-41CD-8774-F08428C75BD8">
           <dmn:text>100</dmn:text>
