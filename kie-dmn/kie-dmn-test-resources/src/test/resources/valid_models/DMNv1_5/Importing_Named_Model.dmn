@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmn:definitions xmlns="http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc"
-                      xmlns:dc="https://www.omg.org/spec/DMN/20230324/DC/"
-                      xmlns:di="https://www.omg.org/spec/DMN/20230324/DI/"
-                      xmlns:dmndi="http://www.omg.org/spec/DMN/20230324/DMNDI/"
-                      xmlns:feel="http://www.omg.org/spec/DMN/20230324/FEEL/"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
                       xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
                       xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
                       xmlns:xsd="http://www.w3.org/2001/XMLSchema"
