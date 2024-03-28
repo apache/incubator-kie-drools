@@ -197,6 +197,7 @@ drlIdentifier
     | PERMITS
     | RECORD
     | VAR
+    | THIS
     ;
 
 drlKeywords
@@ -258,6 +259,7 @@ drlExpression
        | NEW nonWildcardTypeArguments? innerCreator
        | SUPER superSuffix
        | explicitGenericInvocation
+       | inlineCast
       )
     | drlExpression NULL_SAFE_DOT ( drlIdentifier | drlMethodCall )
     | drlExpression LBRACK drlExpression RBRACK
@@ -321,7 +323,10 @@ drlPrimary
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
     | inlineMapExpression
+    | inlineCast
     ;
+
+inlineCast : drlIdentifier HASH drlIdentifier ;
 
 /* extending JavaParser literal */
 drlLiteral
