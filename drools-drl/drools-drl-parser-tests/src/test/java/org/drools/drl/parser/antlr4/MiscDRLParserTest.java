@@ -3870,4 +3870,43 @@ class MiscDRLParserTest {
         assertThat(constraintDescr.toString())
                 .isEqualToIgnoringWhitespace("/wife[$age : age] && age > $age");
     }
+
+    @Test
+    void inlineCast() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  $a : ICA( someB#ICB.onlyConcrete() == \"Hello\" )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("someB#ICB.onlyConcrete() == \"Hello\"");
+    }
+
+    @Test
+    void inlineCastMultiple() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  $a : ICA( someB#ICB.someC#ICC.onlyConcrete() == \"Hello\" )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("someB#ICB.someC#ICC.onlyConcrete() == \"Hello\"");
+    }
+
+    @Test
+    void inlineCastThis() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "  $o : Object( this#Person.name == \"Mark\" )\n" +
+                "then\n" +
+                "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("this#Person.name == \"Mark\"");
+    }
 }
