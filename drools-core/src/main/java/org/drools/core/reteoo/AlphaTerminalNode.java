@@ -65,7 +65,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
 
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode     rtn       = ( TerminalNode ) sinks[i];
-            ObjectTypeNodeId otnId     = rtn.getLeftInputOtnId();
+            ObjectTypeNodeId otnId     = rtn.getInputOtnId();
             TupleImpl        leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 
             RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
@@ -74,7 +74,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
             if ( leftTuple != null && leftTuple.getInputOtnId().equals(otnId) ) {
                 modifyPreviousTuples.removeLeftTuple(partitionId);
                 leftTuple.reAdd();
-                if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
+                if ( context.getModificationMask().intersects( rtn.getInferredMask()) ) {
                     leftTuple.setPropagationContext( context );
                     PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, leftTuple );
                     if (leftTuple.isFullMatch()) {
@@ -82,7 +82,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                     }
                 }
             } else {
-                if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
+                if ( context.getModificationMask().intersects( rtn.getInferredMask()) ) {
                     leftTuple = TupleFactory.createLeftTuple( rtn, factHandle, true );
                     leftTuple.setPropagationContext( context );
                     PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, leftTuple );
