@@ -379,7 +379,7 @@ end
 
 rule "Using a declared Enum"
   when
-    $emp : /employees[ dayOff == DaysOfWeek.MONDAY ]
+    $emp : /employees[ dayOff == DaysOfWeek.MON ]
   then
     ...
 end

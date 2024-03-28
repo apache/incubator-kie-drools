@@ -16,7 +16,7 @@ end
 
 rule "Using a declared Enum"
 when
-   $emp : Employee( dayOff == DaysOfWeek.MONDAY )
+   $emp : Employee( dayOff == DaysOfWeek.MON )
 then
    ...
 end
