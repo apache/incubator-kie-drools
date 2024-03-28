@@ -230,6 +230,7 @@ drlIdentifier returns [Token token]
     | PERMITS
     | RECORD
     | VAR
+    | THIS
     ;
 
 // --------------------------------------------------------
@@ -671,7 +672,6 @@ primary returns [BaseDescr result]
     :	expr=parExpression {  if( buildDescr  ) { $result = $expr.result; }  }
     |   nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
     |   literal { if( buildDescr  ) { $result = new AtomicExprDescr( $literal.text, true ); }  }
-    |   this_key (DOT drlIdentifier)* identifierSuffix?
     |   super_key superSuffix
     |   new_key creator
     |   primitiveType (LBRACK RBRACK)* DOT class_key
