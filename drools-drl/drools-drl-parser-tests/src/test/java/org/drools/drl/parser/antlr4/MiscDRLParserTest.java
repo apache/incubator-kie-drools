@@ -3876,12 +3876,12 @@ class MiscDRLParserTest {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
                 "when\n" +
-                "  $a : ICA( someB#ICB.someC#ICC.onlyConcrete() == \"Hello\" )\n" +
+                "  $a : ICA( someB#ICB.onlyConcrete() == \"Hello\" )\n" +
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parser.parse(text);
         ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
-        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("someB#ICB.someC#ICC.onlyConcrete() == \"Hello\"");
+        assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("someB#ICB.onlyConcrete() == \"Hello\"");
     }
 
     @Test
