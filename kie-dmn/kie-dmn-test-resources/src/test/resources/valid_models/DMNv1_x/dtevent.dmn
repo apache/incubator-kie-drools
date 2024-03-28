@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                 xmlns="myNS"
+                 xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                 xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+                 xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+                 xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                 xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                 id="_496881D6-3E81-41AB-AC25-0FFEEA995859"
+                 name="dtevent"
+                 typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                 namespace="myNS">
+  <dmn:extensionElements/>
+  <dmn:inputData id="_4DB9B6B9-42BF-4D9A-B8AC-ADC6CC4604B7" name="a">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1D4D1639-EDFD-4594-BEC5-7763445DA001" name="a" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:inputData id="_959902C9-B2BE-45D7-81A3-B7C5ED6104E6" name="b">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A0060C65-8524-428C-9401-3519E79608DB" name="b" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_FBCF7934-519C-413F-BE99-552BA15FF94C" name="my decision">
+    <dmn:extensionElements/>
+    <dmn:variable id="_8CBA7A30-CA37-4835-9AED-DC22E9AB8948" name="my decision" typeRef="Any"/>
+    <dmn:informationRequirement id="_7281F77F-163B-43AF-8253-D97B92138388">
+      <dmn:requiredInput href="#_4DB9B6B9-42BF-4D9A-B8AC-ADC6CC4604B7"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_1CD7938E-DD94-457E-9C63-2D02C747885D">
+      <dmn:requiredInput href="#_959902C9-B2BE-45D7-81A3-B7C5ED6104E6"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_0D3D5266-F43C-4EA4-9DE1-185AAC157521">
+      <dmn:contextEntry>
+        <dmn:variable id="_B861D847-0BE9-4580-8DD0-836B6699963E" name="e1" typeRef="Any"/>
+        <dmn:decisionTable id="_24DA98D6-34A6-4267-9667-1DA91C0AF5FA" hitPolicy="COLLECT" preferredOrientation="Rule-as-Row">
+          <dmn:input id="_B4AAC2AE-D2E8-4F15-864E-DC52C422CEFB">
+            <dmn:inputExpression id="_88223E6D-BFA1-4ACF-9CBD-4B9C27447C90" typeRef="number">
+              <dmn:text>a</dmn:text>
+            </dmn:inputExpression>
+          </dmn:input>
+          <dmn:input id="_A7EC5858-1A46-4663-A0B1-DB448EE9A352">
+            <dmn:inputExpression id="_D5339336-5EB3-4A62-8693-4748AB1A3A19" typeRef="number">
+              <dmn:text>b</dmn:text>
+            </dmn:inputExpression>
+          </dmn:input>
+          <dmn:output id="_C4384681-54E0-44C9-9282-E2AC02095306"/>
+          <dmn:annotation name="desc"/>
+          <dmn:rule id="_FB4E58FE-2C5A-4C69-BC5C-C2E9EC20CDE0">
+            <dmn:inputEntry id="_47766213-F781-403A-BE8F-489B67BD9D8D">
+              <dmn:text>&gt;0</dmn:text>
+            </dmn:inputEntry>
+            <dmn:inputEntry id="_80A53FD1-C334-48BE-B956-479870278A16">
+              <dmn:text>-</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_B546D9B8-597D-48BE-8133-E49F3B014E36">
+              <dmn:text>"a gt 0"</dmn:text>
+            </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text/>
+            </dmn:annotationEntry>
+          </dmn:rule>
+          <dmn:rule id="_840AF4C2-F662-4933-AF39-35F53997072C">
+            <dmn:inputEntry id="_5232B38B-15AF-4AEA-B956-979667B915CC">
+              <dmn:text>-</dmn:text>
+            </dmn:inputEntry>
+            <dmn:inputEntry id="_6F16D8A8-86C8-473C-9EA5-688A35FEE012">
+              <dmn:text>&gt;0</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_32D74A1E-2AC3-433F-AEB1-4273EE45E99F">
+              <dmn:text>"b gt 0"</dmn:text>
+            </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text/>
+            </dmn:annotationEntry>
+          </dmn:rule>
+          <dmn:rule id="_19505B53-F102-4F16-90ED-C88B28924EA2">
+            <dmn:inputEntry id="_4667FCD8-AE9D-4D25-95EC-403FCF0ADE8B">
+              <dmn:text>&gt;0</dmn:text>
+            </dmn:inputEntry>
+            <dmn:inputEntry id="_D557DA8F-B5D9-4873-AB17-FE3A8CDFED5C">
+              <dmn:text>&gt;0</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_62127397-7828-40CC-8E2C-7E6B3CBB5EC9">
+              <dmn:text>"a and b gt 0"</dmn:text>
+            </dmn:outputEntry>
+            <dmn:annotationEntry>
+              <dmn:text/>
+            </dmn:annotationEntry>
+          </dmn:rule>
+        </dmn:decisionTable>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_924FEB34-7E83-4175-816C-228BE55C363A" name="e2" typeRef="Any"/>
+        <dmn:context id="_BBB1D557-2141-4877-8192-EB6A4A1C1103">
+          <dmn:contextEntry>
+            <dmn:variable id="_5502E2EF-DC2D-45FD-B8A4-D8633EC18940" name="e1" typeRef="Any"/>
+            <dmn:decisionTable id="_24DA98D6-34A6-4267-9667-1DA91C0AF5F9" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+              <dmn:input id="_66A396AD-9744-4515-9410-2498165DC8A8">
+                <dmn:inputExpression id="_5A974D08-9B03-4E5A-B54F-8B92404A7994" typeRef="number">
+                  <dmn:text>a</dmn:text>
+                </dmn:inputExpression>
+              </dmn:input>
+              <dmn:output id="_83D64086-8924-4993-AC61-E185F951E766"/>
+              <dmn:annotation name="desc"/>
+              <dmn:rule id="_22520488-D4EB-4EA9-8D48-10D9914A87D3">
+                <dmn:inputEntry id="_58109C32-AB31-40D0-85E5-CB808E64AF1A">
+                  <dmn:text>&gt;0</dmn:text>
+                </dmn:inputEntry>
+                <dmn:outputEntry id="_0E5AE068-DC0F-4934-80E4-9369567EA68E">
+                  <dmn:text>"r1"</dmn:text>
+                </dmn:outputEntry>
+                <dmn:annotationEntry>
+                  <dmn:text/>
+                </dmn:annotationEntry>
+              </dmn:rule>
+              <dmn:rule id="_AB80D2FC-AC8C-4EC5-9B24-1152B220E517">
+                <dmn:inputEntry id="_FC396A02-B2EC-4F2D-9A5F-AD898684BACA">
+                  <dmn:text>&lt;=0</dmn:text>
+                </dmn:inputEntry>
+                <dmn:outputEntry id="_4D62C340-AE19-4B36-AD1E-09E674C87606">
+                  <dmn:text>"r2"</dmn:text>
+                </dmn:outputEntry>
+                <dmn:annotationEntry>
+                  <dmn:text/>
+                </dmn:annotationEntry>
+              </dmn:rule>
+            </dmn:decisionTable>
+          </dmn:contextEntry>
+          <dmn:contextEntry>
+            <dmn:literalExpression id="_8CC7F07C-40D3-4D3A-922E-DCCA43B44741">
+              <dmn:text>e1</dmn:text>
+            </dmn:literalExpression>
+          </dmn:contextEntry>
+        </dmn:context>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+</dmn:definitions>
