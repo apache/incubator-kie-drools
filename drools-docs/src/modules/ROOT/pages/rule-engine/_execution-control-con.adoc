@@ -87,7 +87,7 @@ then
 end
 ----
 
-For this example, the rules in the `"report"` agenda group must always be executed first and the rules in the `"calculation"` agenda group must always be executed second. Any remaining rules in other agenda groups can then be executed. Therefore, the `"report"` and `"calculation"` groups must receive the focus to be executed in that order, before other rules can be executed:
+For this example, the rules in the `"calculation"` agenda group must always be executed first and the rules in the `"report"` agenda group must always be executed second. Any remaining rules in other agenda groups can then be executed. Therefore, the `"report"` and `"calculation"` groups must receive the focus to be executed in reverse order (due to the fact that the agenda groups are placed on a stack), before other rules can be executed:
 
 .Set the focus for the order of agenda group execution
 [source,java]
