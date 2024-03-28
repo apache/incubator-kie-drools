@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.core.process.WorkItem;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class WorkItemImpl implements WorkItem, Serializable {
 
@@ -37,7 +38,7 @@ public class WorkItemImpl implements WorkItem, Serializable {
     private String processInstanceId;
     private String deploymentId;
     private long nodeInstanceId;
-    private long nodeId;
+    private WorkflowElementIdentifier nodeId;
     
     public void setId(long id) {
         this.id = id;
@@ -121,11 +122,13 @@ public class WorkItemImpl implements WorkItem, Serializable {
         this.nodeInstanceId = nodeInstanceId;
     }
 
-    public long getNodeId() {
+    @Override
+    public WorkflowElementIdentifier getNodeId() {
         return nodeId;
     }
 
-    public void setNodeId(long nodeId) {
+    @Override
+    public void setNodeId(WorkflowElementIdentifier nodeId) {
         this.nodeId = nodeId;
     }
 

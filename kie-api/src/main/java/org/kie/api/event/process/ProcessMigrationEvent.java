@@ -16,9 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.runtime.manager.audit.query;
+package org.kie.api.event.process;
 
-
-public interface ErrorInfoDeleteBuilder extends AuditDateDeleteBuilder<ErrorInfoDeleteBuilder> {
+/**
+ * An event when a process instance has been started.
+ */
+public interface ProcessMigrationEvent
+    extends
+    ProcessEvent {
 
 }
