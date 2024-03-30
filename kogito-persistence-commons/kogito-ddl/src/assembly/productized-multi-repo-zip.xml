@@ -31,7 +31,7 @@
             <unpack>true</unpack>
             <outputDirectory>.</outputDirectory>
             <includes>
-                <include>org.kie.kogito:kogito-ddl-runtimes:zip:db-scripts</include>
+                <include>org.kie:kie-ddl-runtimes:zip:db-scripts</include>
             </includes>
         </dependencySet>
     </dependencySets>
