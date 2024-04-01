@@ -50,7 +50,8 @@ declaredef : DRL_DECLARE (
                          | entryPointDeclaration
                          | windowDeclaration
                          | typeDeclaration
-                         ) DRL_END SEMI?;
+                         )
+                         ; // DRL_END belongs to entryPointDeclaration etc.
 
 /*
  * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
@@ -59,15 +60,15 @@ declaredef : DRL_DECLARE (
  *                     END
  */
 
-typeDeclaration : DRL_TRAIT? name=drlQualifiedName (EXTENDS superType=drlQualifiedName)? drlAnnotation* field* ;
+typeDeclaration : DRL_TRAIT? name=drlQualifiedName (EXTENDS superType=drlQualifiedName)? drlAnnotation* field* DRL_END SEMI?;
 
 // entryPointDeclaration := ENTRY-POINT stringId annotation* END
 
-entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* ;
+entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* DRL_END SEMI?;
 
 // windowDeclaration := WINDOW ID annotation* lhsPatternBind END
 
-windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind ;
+windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind DRL_END SEMI?;
 
 // field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
 
