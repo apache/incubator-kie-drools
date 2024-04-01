@@ -19,6 +19,10 @@
 package org.drools.drl.parser.antlr4;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
@@ -27,11 +31,13 @@ import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
@@ -212,9 +218,22 @@ public class DRLExprParserTest {
         assertThat(bind.getExpression()).isEqualTo("y[z].foo");
     }
 
-    @Test
-    public void testDrlKeywordMethodCall() throws Exception {
-        String source = "x.contains( 1, a )";
+    private static final List<Operator.BuiltInOperator> nonKeywordBuiltInOperators = Arrays.asList(
+            Operator.BuiltInOperator.EQUAL,
+            Operator.BuiltInOperator.NOT_EQUAL,
+            Operator.BuiltInOperator.LESS,
+            Operator.BuiltInOperator.LESS_OR_EQUAL,
+            Operator.BuiltInOperator.GREATER,
+            Operator.BuiltInOperator.GREATER_OR_EQUAL
+    );
+
+    @ParameterizedTest
+    @EnumSource(Operator.BuiltInOperator.class)
+    public void testDrlKeywordMethodCall(Operator.BuiltInOperator operator) throws Exception {
+        // Skip operators that cannot be used as method names (==, !=, <, etc.).
+        assumeFalse(nonKeywordBuiltInOperators.contains(operator));
+
+        String source = String.format("x.%s( 1, a )", operator.getSymbol());
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -222,12 +241,18 @@ public class DRLExprParserTest {
         assertThat(result.getDescrs().size()).isEqualTo(1);
 
         AtomicExprDescr descr = (AtomicExprDescr) result.getDescrs().get( 0 );
-        assertThat(descr.getExpression()).isEqualTo("x.contains( 1, a )");
+        assertThat(descr.getExpression()).isEqualTo(source);
     }
 
-    @Test
-    public void testDrlKeywordMethodCallBinding() throws Exception {
-        String source = "$x : x.contains( 1, a )";
+    @ParameterizedTest
+    @EnumSource(Operator.BuiltInOperator.class)
+    public void testDrlKeywordMethodCallBinding(Operator.BuiltInOperator operator) throws Exception {
+        // Skip operators that cannot be used as method names (==, !=, <, etc.).
+        assumeFalse(nonKeywordBuiltInOperators.contains(operator));
+
+        String expressionSource = String.format("x.%s( 1, a )", operator.getSymbol());
+        String bindingVariableSource = "$x";
+        String source = bindingVariableSource + " : " + expressionSource;
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -235,8 +260,8 @@ public class DRLExprParserTest {
         assertThat(result.getDescrs().size()).isEqualTo(1);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
-        assertThat(bind.getVariable()).isEqualTo("$x");
-        assertThat(bind.getExpression()).isEqualTo("x.contains( 1, a )");
+        assertThat(bind.getVariable()).isEqualTo(bindingVariableSource);
+        assertThat(bind.getExpression()).isEqualTo(expressionSource);
     }
 
     @Test

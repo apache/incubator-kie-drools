@@ -142,7 +142,7 @@ inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COM
 relationalExpression : left=drlExpression (right=orRestriction)* ;
 orRestriction : left=andRestriction (OR right=andRestriction)* ;
 andRestriction : left=singleRestriction (AND right=singleRestriction)* ;
-singleRestriction : op=relationalOperator drlExpression ;
+singleRestriction : op=relationalOperator squareArguments? drlExpression ;
 
 // OOPath
 xpathSeparator : DIV | QUESTION_DIV ;
@@ -161,13 +161,7 @@ relationalOperator
     | temporalOperator
     ;
 
-drlRelationalOperator
-    : DRL_NOT? DRL_MATCHES
-    | DRL_NOT? DRL_MEMBEROF
-    | DRL_NOT? DRL_CONTAINS
-    | DRL_NOT? DRL_EXCLUDES
-    | DRL_NOT? DRL_SOUNDSLIKE
-    | DRL_NOT? DRL_STR LBRACK IDENTIFIER RBRACK ;
+drlRelationalOperator : DRL_NOT? builtInOperator ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
 functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock ;
@@ -201,7 +195,8 @@ drlIdentifier
     ;
 
 drlKeywords
-    : DRL_UNIT
+    : builtInOperator
+    | DRL_UNIT
     | DRL_FUNCTION
     | DRL_GLOBAL
     | DRL_DECLARE
@@ -216,12 +211,6 @@ drlKeywords
     | DRL_NOT
     | DRL_IN
     | DRL_FROM
-    | DRL_MATCHES
-    | DRL_MEMBEROF
-    | DRL_CONTAINS
-    | DRL_EXCLUDES
-    | DRL_SOUNDSLIKE
-    | DRL_STR
     | DRL_ACCUMULATE
     | DRL_ACC
     | DRL_INIT
@@ -246,6 +235,28 @@ drlKeywords
     | DRL_CALENDARS
     | DRL_TIMER
     | DRL_DURATION
+    ;
+
+builtInOperator
+    : DRL_CONTAINS
+    | DRL_EXCLUDES
+    | DRL_MATCHES
+    | DRL_MEMBEROF
+    | DRL_SOUNDSLIKE
+    | DRL_AFTER
+    | DRL_BEFORE
+    | DRL_COINCIDES
+    | DRL_DURING
+    | DRL_FINISHED_BY
+    | DRL_FINISHES
+    | DRL_INCLUDES
+    | DRL_MEETS
+    | DRL_MET_BY
+    | DRL_OVERLAPPED_BY
+    | DRL_OVERLAPS
+    | DRL_STARTED_BY
+    | DRL_STARTS
+    | DRL_STR
     ;
 
 /* extending JavaParser expression */
@@ -341,6 +352,8 @@ drlLiteral
     | TEXT_BLOCK // Java17
     | TIME_INTERVAL
     ;
+
+squareArguments : LBRACK expressionList? RBRACK ;
 
 inlineListExpression
     :   LBRACK expressionList? RBRACK
