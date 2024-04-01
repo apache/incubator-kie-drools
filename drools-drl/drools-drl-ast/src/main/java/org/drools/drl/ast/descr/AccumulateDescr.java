@@ -47,6 +47,13 @@ public class AccumulateDescr extends PatternSourceDescr
     private String                            className;
     private List<AccumulateFunctionCallDescr> functions        = null;
 
+    public AccumulateDescr() {
+    }
+
+    public AccumulateDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     @SuppressWarnings("unchecked")
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {

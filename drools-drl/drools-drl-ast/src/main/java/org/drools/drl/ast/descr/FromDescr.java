@@ -29,6 +29,13 @@ public class FromDescr extends PatternSourceDescr
     private static final long serialVersionUID = 510l;
     private DeclarativeInvokerDescr dataSource;
 
+    public FromDescr() {
+    }
+
+    public FromDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public DeclarativeInvokerDescr getDataSource() {
         return this.dataSource;
     }

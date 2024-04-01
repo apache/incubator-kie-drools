@@ -287,7 +287,7 @@ public class KnowledgeBuilderTest {
     public void testNoPackageName() throws Exception {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         try {
-            builder.addPackage( new PackageDescr( null ) );
+            builder.addPackage( new PackageDescr( (String) null ) );
             fail( "should have errored here." );
         } catch ( final RuntimeException e ) {
             assertThat(e.getMessage()).isNotNull();

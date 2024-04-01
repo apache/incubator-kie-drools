@@ -77,7 +77,7 @@ public class PackageDescrTest {
         PackageDescr descr = builder.getDescr();
 
         ImportDescr importDescr = new ImportDescr(className);
-        ImportDescr badImportDescr = new ImportDescr(null);
+        ImportDescr badImportDescr = new ImportDescr((String) null);
 
         assertThat(descr.getImports().contains(importDescr)).isTrue();
 

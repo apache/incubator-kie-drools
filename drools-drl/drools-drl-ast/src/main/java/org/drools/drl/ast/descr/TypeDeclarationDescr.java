@@ -34,7 +34,7 @@ public class TypeDeclarationDescr
     private boolean                      trait;
 
     public TypeDeclarationDescr() {
-        this( null );
+        this((String) null);
     }
 
     public TypeDeclarationDescr(final String typeName) {
@@ -43,6 +43,10 @@ public class TypeDeclarationDescr
 
     public TypeDeclarationDescr(final String typeName, final String typeNamespace) {
         super( typeName, typeNamespace );
+    }
+
+    public TypeDeclarationDescr(BasicDescrContext ctx) {
+        super(ctx);
     }
 
     @SuppressWarnings("unchecked")

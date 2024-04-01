@@ -63,6 +63,10 @@ public class PatternDescr extends AnnotatedBaseDescr
         this.query = isQuery; 
     }
 
+    public PatternDescr(BasicDescrContext context) {
+        super(context);
+    }
+
     public void setIdentifier( final String identifier ) {
         this.identifier = identifier;
     }

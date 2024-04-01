@@ -43,6 +43,11 @@ public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
         this.annotations = new HashMap<>();
     }
 
+    public AnnotatedBaseDescr(BasicDescrContext ctx) {
+        super(ctx);
+        this.annotations = new HashMap<>();
+    }
+
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );

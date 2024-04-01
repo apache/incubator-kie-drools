@@ -45,6 +45,18 @@ public class BaseDescr
     private Resource          resource;
     private String            namespace        = "";
 
+    public BaseDescr() {
+    }
+
+    protected BaseDescr(BasicDescrContext ctx) {
+        this.startCharacter = ctx.getStartCharacter();
+        this.endCharacter = ctx.getEndCharacter();
+        this.line = ctx.getLine();
+        this.column = ctx.getColumn();
+        this.endLine = ctx.getEndLine();
+        this.endColumn = ctx.getEndColumn();
+    }
+
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         startCharacter = in.readInt();

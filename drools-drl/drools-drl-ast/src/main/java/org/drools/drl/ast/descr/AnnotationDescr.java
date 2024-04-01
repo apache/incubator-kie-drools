@@ -62,6 +62,11 @@ public class AnnotationDescr extends AnnotatedBaseDescr implements Supplier<Map<
         this.values.put(VALUE, value);
     }
 
+    public AnnotationDescr(BasicDescrContext context) {
+        super(context);
+        this.values = new HashMap<>();
+    }
+
     @Override
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
@@ -81,6 +86,10 @@ public class AnnotationDescr extends AnnotatedBaseDescr implements Supplier<Map<
         out.writeObject(fullyQualifiedName);
         out.writeBoolean(duplicated);
         out.writeBoolean(strict);
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {

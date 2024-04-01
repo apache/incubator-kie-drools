@@ -32,6 +32,10 @@ public class WindowDeclarationDescr extends AnnotatedBaseDescr {
         super();
     }
 
+    public WindowDeclarationDescr(BasicDescrContext context) {
+        super(context);
+    }
+
     @Override
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {

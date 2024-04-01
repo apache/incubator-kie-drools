@@ -43,6 +43,10 @@ public class QueryDescr extends RuleDescr {
         super( ruleName,
                documentation );
     }
+
+    public QueryDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
     
     public void addParameter( String type, String variable ) {
         if( parameterTypes == Collections.EMPTY_LIST ) {

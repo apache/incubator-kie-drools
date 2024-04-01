@@ -52,6 +52,14 @@ public class AttributeDescr extends BaseDescr {
         this.type = type;
     }
 
+    public AttributeDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
+    public void setName( final String name ) {
+        this.name = name;
+    }
+
     public String getName() {
         return this.name;
     }

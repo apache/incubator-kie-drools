@@ -24,4 +24,11 @@ package org.drools.drl.ast.descr;
 public class PatternSourceDescr extends BaseDescr {
 
     private static final long serialVersionUID = 510l;
+
+    protected PatternSourceDescr() {
+    }
+
+    protected PatternSourceDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
 }

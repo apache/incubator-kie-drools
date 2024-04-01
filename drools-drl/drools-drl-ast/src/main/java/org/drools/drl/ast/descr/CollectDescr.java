@@ -35,6 +35,13 @@ public class CollectDescr extends PatternSourceDescr
     private PatternDescr       inputPattern;
     private String             classMethodName;
 
+    public CollectDescr() {
+    }
+
+    public CollectDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public int getLine() {
         return this.inputPattern.getLine();
     }
