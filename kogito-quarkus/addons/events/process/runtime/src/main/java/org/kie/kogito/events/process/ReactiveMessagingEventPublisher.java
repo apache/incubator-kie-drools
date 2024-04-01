@@ -25,6 +25,8 @@ import java.util.function.BiConsumer;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow.Strategy;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.MessageDecoratorProvider;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
@@ -52,6 +54,7 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
 
     @Inject
     @Channel(PROCESS_INSTANCES_TOPIC_NAME)
+    @OnOverflow(Strategy.UNBOUNDED_BUFFER)
     MutinyEmitter<String> processInstancesEventsEmitter;
     private BiConsumer<MutinyEmitter<String>, Message<String>> processInstanceConsumer;
 
