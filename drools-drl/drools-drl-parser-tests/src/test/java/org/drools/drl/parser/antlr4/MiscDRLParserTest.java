@@ -3909,4 +3909,74 @@ class MiscDRLParserTest {
         ExprConstraintDescr constraintDescr = getFirstExprConstraintDescr(packageDescr);
         assertThat(constraintDescr.toString()).isEqualToIgnoringWhitespace("this#Person.name == \"Mark\"");
     }
+
+    @Test
+    public void queryArgumentWithoutType() throws Exception {
+        final String text = "package org.drools\n" +
+                "query olderThan( $age )\n" +
+                "    $p : Person(age > (Integer)$age)\n" +
+                "end ";
+        final QueryDescr query = parseAndGetFirstQueryDescr(text);
+
+        assertThat(query).isNotNull();
+        assertThat(query.getName()).isEqualTo("olderThan");
+        assertThat(query.getParameterTypes()).containsExactly("Object");
+        assertThat(query.getParameters()).containsExactly("$age");
+    }
+
+    @Test
+    public void queryMultipleArguments() throws Exception {
+        final String text = "package org.drools\n" +
+                "query olderThan( String $name, int $age )\n" +
+                "    $p : Person(age > $age)\n" +
+                "end ";
+        final QueryDescr query = parseAndGetFirstQueryDescr(text);
+
+        assertThat(query).isNotNull();
+        assertThat(query.getName()).isEqualTo("olderThan");
+        assertThat(query.getParameterTypes()).containsExactly("String", "int");
+        assertThat(query.getParameters()).containsExactly("$name", "$age");
+    }
+
+    @Test
+    public void queryArrayArgument() throws Exception {
+        final String text = "package org.drools\n" +
+                "query olderThan( int[] $ages )\n" +
+                "    $p : Person(age > $ages[0])\n" +
+                "end ";
+        final QueryDescr query = parseAndGetFirstQueryDescr(text);
+
+        assertThat(query).isNotNull();
+        assertThat(query.getName()).isEqualTo("olderThan");
+        assertThat(query.getParameterTypes()).containsExactly("int[]");
+        assertThat(query.getParameters()).containsExactly("$ages");
+    }
+
+    @Test
+    public void queryZeroArgument() throws Exception {
+        final String text = "package org.drools\n" +
+                "query olderThan()\n" +
+                "    $p : Person()\n" +
+                "end ";
+        final QueryDescr query = parseAndGetFirstQueryDescr(text);
+
+        assertThat(query).isNotNull();
+        assertThat(query.getName()).isEqualTo("olderThan");
+        assertThat(query.getParameterTypes()).isEmpty();
+        assertThat(query.getParameters()).isEmpty();
+    }
+
+    @Test
+    public void queryNoArgument() throws Exception {
+        final String text = "package org.drools\n" +
+                "query olderThan\n" +
+                "    $p : Person()\n" +
+                "end ";
+        final QueryDescr query = parseAndGetFirstQueryDescr(text);
+
+        assertThat(query).isNotNull();
+        assertThat(query.getName()).isEqualTo("olderThan");
+        assertThat(query.getParameterTypes()).isEmpty();
+        assertThat(query.getParameters()).isEmpty();
+    }
 }

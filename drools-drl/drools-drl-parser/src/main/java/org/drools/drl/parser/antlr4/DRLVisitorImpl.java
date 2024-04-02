@@ -304,14 +304,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public QueryDescr visitQuerydef(DRLParser.QuerydefContext ctx) {
         QueryDescr queryDescr = new QueryDescr(safeStripStringDelimiters(ctx.name.getText()));
 
-        DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
-        if (formalParametersContext != null) {
-            DRLParser.FormalParameterListContext formalParameterListContext = formalParametersContext.formalParameterList();
-            List<DRLParser.FormalParameterContext> formalParameterContexts = formalParameterListContext.formalParameter();
-            formalParameterContexts.forEach(formalParameterContext -> {
-                DRLParser.TypeTypeContext typeTypeContext = formalParameterContext.typeType();
-                DRLParser.VariableDeclaratorIdContext variableDeclaratorIdContext = formalParameterContext.variableDeclaratorId();
-                queryDescr.addParameter(typeTypeContext.getText(), variableDeclaratorIdContext.getText());
+        DRLParser.ParametersContext parametersContext = ctx.parameters();
+        if (parametersContext != null) {
+            List<DRLParser.ParameterContext> parameterContexts = parametersContext.parameter();
+            parameterContexts.forEach(parameterContext -> {
+                String type = parameterContext.type() != null ? parameterContext.type().getText() : "Object"; // default type is Object
+                String name = parameterContext.drlIdentifier().getText();
+                queryDescr.addParameter(type, name);
             });
         }
 

@@ -79,7 +79,13 @@ ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* a
 
 // query := QUERY stringId parameters? annotation* lhsExpression END
 
-querydef : DRL_QUERY name=stringId formalParameters? drlAnnotation* lhsExpression+ DRL_END SEMI?;
+querydef : DRL_QUERY name=stringId parameters? drlAnnotation* lhsExpression+ DRL_END SEMI?;
+
+// parameters := LEFT_PAREN ( parameter ( COMMA parameter )* )? RIGHT_PAREN
+parameters : LPAREN ( parameter ( COMMA parameter )* )? RPAREN ;
+
+// parameter := ({requiresType}?=>type)? ID (LEFT_SQUARE RIGHT_SQUARE)*
+parameter : type? drlIdentifier ; // type is optional. Removed (LEFT_SQUARE RIGHT_SQUARE)* as it doesn't make sense in the grammar
 
 lhs : DRL_WHEN lhsExpression* ;
 
