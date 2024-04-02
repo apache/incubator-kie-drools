@@ -162,9 +162,32 @@ typeArgument
     |	QUESTION ((extends_key | super_key) type)?
     ;
 
+// matches any identifiers including acceptable java keywords (defined in JavaParser.g4) and drl keywords
+drlIdentifier returns [Token token]
+    : drlKeywords
+    | IDENTIFIER
+    | MODULE
+    | OPEN
+    | REQUIRES
+    | EXPORTS
+    | OPENS
+    | TO
+    | USES
+    | PROVIDES
+    | WITH
+    | TRANSITIVE
+    | YIELD
+    | SEALED
+    | PERMITS
+    | RECORD
+    | VAR
+    | THIS
+    ;
+
 // matches any drl keywords
 drlKeywords returns [Token token]
-    : DRL_UNIT
+    : builtInOperator
+    | DRL_UNIT
     | DRL_FUNCTION
     | DRL_GLOBAL
     | DRL_DECLARE
@@ -179,12 +202,6 @@ drlKeywords returns [Token token]
     | DRL_NOT
     | DRL_IN
     | DRL_FROM
-    | DRL_MATCHES
-    | DRL_MEMBEROF
-    | DRL_CONTAINS
-    | DRL_EXCLUDES
-    | DRL_SOUNDSLIKE
-    | DRL_STR
     | DRL_ACCUMULATE
     | DRL_ACC
     | DRL_INIT
@@ -211,26 +228,26 @@ drlKeywords returns [Token token]
     | DRL_DURATION
     ;
 
-// matches any identifiers including acceptable java keywords (defined in JavaParser.g4) and drl keywords
-drlIdentifier returns [Token token]
-    : drlKeywords
-    | IDENTIFIER
-    | MODULE
-    | OPEN
-    | REQUIRES
-    | EXPORTS
-    | OPENS
-    | TO
-    | USES
-    | PROVIDES
-    | WITH
-    | TRANSITIVE
-    | YIELD
-    | SEALED
-    | PERMITS
-    | RECORD
-    | VAR
-    | THIS
+builtInOperator returns[Token token]
+    : DRL_CONTAINS
+    | DRL_EXCLUDES
+    | DRL_MATCHES
+    | DRL_MEMBEROF
+    | DRL_SOUNDSLIKE
+    | DRL_AFTER
+    | DRL_BEFORE
+    | DRL_COINCIDES
+    | DRL_DURING
+    | DRL_FINISHED_BY
+    | DRL_FINISHES
+    | DRL_INCLUDES
+    | DRL_MEETS
+    | DRL_MET_BY
+    | DRL_OVERLAPPED_BY
+    | DRL_OVERLAPS
+    | DRL_STARTED_BY
+    | DRL_STARTS
+    | DRL_STR
     ;
 
 // --------------------------------------------------------
@@ -908,11 +925,12 @@ in_key
     ;
 
 operator_key
-  // At the moment, we list possible DRLLexer tokens here, but we may be able to improve this by isolating lexers. IDENTIFIER is required to accept custom operators
-  // We need to keep this semantic predicate for custom operators
-  :      {(helper.isPluggableEvaluator(false))}? id=(IDENTIFIER|DRL_MATCHES|DRL_MEMBEROF|DRL_CONTAINS|DRL_EXCLUDES|DRL_SOUNDSLIKE|DRL_STR) { helper.emit($id, DroolsEditorType.KEYWORD); }
+  // IDENTIFIER is required to accept custom operators. We need to keep this semantic predicate for custom operators
+  :      {(helper.isPluggableEvaluator(false))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  |      op=builtInOperator { helper.emit($op.token, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}? id=(IDENTIFIER|DRL_MATCHES|DRL_MEMBEROF|DRL_CONTAINS|DRL_EXCLUDES|DRL_SOUNDSLIKE|DRL_STR) { helper.emit($id, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(true))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  |      op=builtInOperator { helper.emit($op.token, DroolsEditorType.KEYWORD); }
   ;
