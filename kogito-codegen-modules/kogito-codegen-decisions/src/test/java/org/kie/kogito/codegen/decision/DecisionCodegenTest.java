@@ -212,7 +212,7 @@ public class DecisionCodegenTest {
     public void emptyName(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-empty-name", contextBuilder);
         RuntimeException re = Assertions.assertThrows(RuntimeException.class, codeGenerator::generate);
-        String expected = "DMN: Invalid name '': Name cannot be null or empty (DMN id: _f27bb64b-6fc7-4e1f-9848-11ba35e0df44, The listed name is not a valid FEEL identifier)";
+        String expected = "DMN: Invalid name '': Name cannot be null or empty (DMN id: _9efe7fc6-f41b-422c-accd-95dcaaa67a39, The listed name is not a valid FEEL identifier)";
         assertTrue(re.getMessage().contains(expected));
     }
 
