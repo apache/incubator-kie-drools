@@ -344,7 +344,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public TypeFieldDescr visitField(DRLParser.FieldContext ctx) {
         TypeFieldDescr typeFieldDescr = new TypeFieldDescr();
-        typeFieldDescr.setFieldName(ctx.label().IDENTIFIER().getText());
+        typeFieldDescr.setFieldName(ctx.label().drlIdentifier().getText());
         typeFieldDescr.setPattern(new PatternDescr(ctx.type().getText()));
         if (ctx.ASSIGN() != null) {
             typeFieldDescr.setInitExpr(getTextPreservingWhitespace(ctx.initExpr));
@@ -475,7 +475,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         PatternDescr patternDescr = (PatternDescr)patternDescrList.get(0);
 
         if (ctx.label() != null) {
-            patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
+            patternDescr.setIdentifier(ctx.label().drlIdentifier().getText());
         } else if (ctx.unif() != null) {
             patternDescr.setIdentifier(ctx.unif().IDENTIFIER().getText());
             patternDescr.setUnification(true);
@@ -491,7 +491,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .map(PatternDescr.class::cast)
                 .forEach(patternDescr -> {
                     if (ctx.label() != null) {
-                        patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
+                        patternDescr.setIdentifier(ctx.label().drlIdentifier().getText());
                     }
                     orDescr.addDescr(patternDescr);
                 });
@@ -609,7 +609,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
         String function = ctx.IDENTIFIER().getText();
-        String bind = ctx.label() == null ? null : ctx.label().IDENTIFIER().getText();
+        String bind = ctx.label() == null ? null : ctx.label().drlIdentifier().getText();
         String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
     }
