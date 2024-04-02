@@ -1980,7 +1980,6 @@ class MiscDRLParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
     }
 
-    @Disabled("Priority : Low | Implement soundslike")
     @Test
     public void parse_SoundsLike() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
