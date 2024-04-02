@@ -198,6 +198,7 @@ drlIdentifier
     | RECORD
     | VAR
     | THIS
+    | PACKAGE
     ;
 
 drlKeywords

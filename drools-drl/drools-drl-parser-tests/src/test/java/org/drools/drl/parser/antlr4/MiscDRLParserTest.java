@@ -3978,4 +3978,24 @@ class MiscDRLParserTest {
         assertThat(query.getParameterTypes()).isEmpty();
         assertThat(query.getParameters()).isEmpty();
     }
+
+    @Test
+    public void packageInQualifiedName() throws Exception {
+        String pkgName = "org.drools.package";
+        String text = "package " + pkgName + "\n" +
+                "rule R\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "end\n";
+
+
+        PackageDescr pkg = parser.parse(text);
+        assertThat(parser.hasErrors()).as(parser.getErrorMessages().toString()).isFalse();
+
+        assertThat(pkg.getName()).isEqualTo(pkgName);
+        assertThat(pkg.getRules()).hasSize(1);
+
+        assertThat(pkg.getRules().get(0).getName()).isEqualTo("R");
+    }
 }
