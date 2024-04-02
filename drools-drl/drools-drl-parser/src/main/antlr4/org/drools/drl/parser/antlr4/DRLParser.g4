@@ -50,7 +50,7 @@ declaredef : DRL_DECLARE (
                          | entryPointDeclaration
                          | windowDeclaration
                          | typeDeclaration
-                         ) DRL_END ;
+                         ) DRL_END SEMI?;
 
 /*
  * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
