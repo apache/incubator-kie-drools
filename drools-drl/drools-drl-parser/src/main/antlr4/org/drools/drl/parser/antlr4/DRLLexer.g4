@@ -31,6 +31,7 @@ DRL_UNIT : 'unit';
 DRL_FUNCTION : 'function';
 DRL_GLOBAL : 'global';
 DRL_DECLARE : 'declare';
+DRL_TRAIT : 'trait';
 DRL_RULE : 'rule';
 DRL_QUERY : 'query';
 DRL_WHEN : 'when';
