@@ -18,6 +18,13 @@
  */
 package org.drools.serialization.protobuf.iterators;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -26,13 +33,24 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleImpl;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-
-import java.util.*;
 
 public class PhreakActivationIterator
     implements
@@ -208,7 +226,7 @@ public class PhreakActivationIterator
                 }
             } else if ( peer.getFirstChild() != null ) {
                 for (TupleImpl childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
-                    collectFromLeftInput(childLt, internalMatches, nodeSet, reteEvaluator);
+                    collectFromPeers(childLt, internalMatches, nodeSet, reteEvaluator);
                 }
             } else if (peer.getSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
                 internalMatches.add((InternalMatch) peer);
