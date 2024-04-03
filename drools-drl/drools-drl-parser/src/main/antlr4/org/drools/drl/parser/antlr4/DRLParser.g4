@@ -50,7 +50,7 @@ declaredef : DRL_DECLARE (
                          | entryPointDeclaration
                          | windowDeclaration
                          | typeDeclaration
-                         ) DRL_END ;
+                         ) DRL_END SEMI?;
 
 /*
  * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
@@ -533,7 +533,7 @@ assignmentOperator : ASSIGN
                    |   MOD_ASSIGN
                    |   LT LT ASSIGN ;
 
-label : IDENTIFIER COLON ;
+label : drlIdentifier COLON ;
 unif : IDENTIFIER DRL_UNIFY ;
 
 /* extending JavaParser variableInitializer */
