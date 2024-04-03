@@ -46,6 +46,7 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.util.PatternConstants;
+import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -311,7 +312,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
         List<Connection> connections = null;
         if (node != null) {
-            if ("true".equals(System.getProperty("jbpm.enable.multi.con")) && ((NodeImpl) node).getConstraints().size() > 0) {
+            if ("true".equals(System.getProperty("jbpm.enable.multi.con")) && !((NodeImpl) node).getConstraints().isEmpty()) {
                 int priority;
                 connections = ((NodeImpl) node).getDefaultOutgoingConnections();
                 boolean found = false;
@@ -323,13 +324,17 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                     Connection selectedConnection = null;
                     ConstraintEvaluator selectedConstraint = null;
                     for (final Connection connection : outgoingCopy) {
-                        ConstraintEvaluator constraint = (ConstraintEvaluator) ((NodeImpl) node).getConstraint(connection);
-                        if (constraint != null
-                                && constraint.getPriority() < priority
-                                && !constraint.isDefault()) {
-                            priority = constraint.getPriority();
-                            selectedConnection = connection;
-                            selectedConstraint = constraint;
+                        Collection<Constraint> constraints = ((NodeImpl) node).getConstraints(connection);
+                        if (constraints != null) {
+                            for (Constraint constraint : constraints) {
+                                if (constraint instanceof ConstraintEvaluator && constraint.getPriority() < priority
+                                        && !constraint.isDefault()) {
+                                    priority = constraint.getPriority();
+                                    selectedConnection = connection;
+                                    selectedConstraint = (ConstraintEvaluator) constraint;
+                                }
+
+                            }
                         }
                     }
                     if (selectedConstraint == null) {
@@ -352,10 +357,17 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 }
                 if (!found) {
                     for (final Connection connection : connections) {
-                        ConstraintEvaluator constraint = (ConstraintEvaluator) ((NodeImpl) node).getConstraint(connection);
-                        if (constraint.isDefault()) {
-                            triggerConnection(connection);
-                            found = true;
+                        Collection<Constraint> constraints = ((NodeImpl) node).getConstraints(connection);
+                        if (constraints != null) {
+                            for (Constraint constraint : constraints) {
+                                if (constraint.isDefault()) {
+                                    triggerConnection(connection);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (found) {
                             break;
                         }
                     }

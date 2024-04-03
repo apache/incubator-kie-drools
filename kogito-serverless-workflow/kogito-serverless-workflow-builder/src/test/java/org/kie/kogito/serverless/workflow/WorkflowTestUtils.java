@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -150,6 +151,7 @@ public class WorkflowTestUtils {
 
     public static void assertConstraintIsDefault(Split splitNode, String constraintName) {
         Constraint constraint = splitNode.getConstraints().values().stream()
+                .flatMap(Collection::stream)
                 .filter(c -> constraintName.equals(c.getName()))
                 .findFirst().orElse(null);
         assertThat(constraint)

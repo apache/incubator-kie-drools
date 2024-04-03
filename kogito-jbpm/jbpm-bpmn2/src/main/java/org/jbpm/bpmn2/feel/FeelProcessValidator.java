@@ -19,6 +19,7 @@
 package org.jbpm.bpmn2.feel;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,15 +64,17 @@ public class FeelProcessValidator extends RuleFlowProcessValidator {
         Arrays.stream(nodes).filter(n -> n instanceof Split).forEach(node -> {
             final Split split = (Split) node;
             if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
-                for (Map.Entry<ConnectionRef, Constraint> entry : split.getConstraints().entrySet()) {
-                    if (entry.getValue() != null && "FEEL".equals(entry.getValue().getDialect())) {
-                        try {
-                            verifyFEELbyCompilingExpression(process.getVariableScope(), entry.getValue().getConstraint());
-                        } catch (FeelCompilationException ex) {
-                            addErrorMessage(process,
-                                    node,
-                                    errors,
-                                    format("Invalid FEEL expression: '%s'.", entry.getValue().getConstraint()));
+                for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : split.getConstraints().entrySet()) {
+                    for (Constraint constraint : entry.getValue()) {
+                        if (constraint != null && "FEEL".equals(constraint.getDialect())) {
+                            try {
+                                verifyFEELbyCompilingExpression(process.getVariableScope(), constraint.getConstraint());
+                            } catch (FeelCompilationException ex) {
+                                addErrorMessage(process,
+                                        node,
+                                        errors,
+                                        format("Invalid FEEL expression: '%s'.", constraint.getConstraint()));
+                            }
                         }
                     }
                 }

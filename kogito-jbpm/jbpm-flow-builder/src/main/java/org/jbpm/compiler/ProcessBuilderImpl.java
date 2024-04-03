@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -330,11 +331,14 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 Split split = (Split) nodes[i];
                 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
                     for (Connection connection : split.getDefaultOutgoingConnections()) {
-                        Constraint constraint = split.getConstraint(connection);
-                        if (constraint != null && "rule".equals(constraint.getType())) {
-                            builder.append(createSplitRule(process,
-                                    connection,
-                                    split.getConstraint(connection).getConstraint()));
+                        Collection<Constraint> constraints = split.getConstraints(connection);
+                        if (constraints != null) {
+                            for (Constraint constraint : constraints)
+                                if (constraint != null && "rule".equals(constraint.getType())) {
+                                    builder.append(createSplitRule(process,
+                                            connection,
+                                            constraint.getConstraint()));
+                                }
                         }
                     }
                 }
@@ -385,7 +389,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                     key.getNodeId() + "-" + key.getToType() + "\" @Propagation(EAGER) \n" +
                     "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
                     "    when \n" +
-                    "      " + state.getConstraints().get(key).getConstraint() + "\n" +
+                    "      " + state.internalGetConstraint(key).getConstraint() + "\n" +
                     "    then \n" +
                     "end \n\n";
         }
@@ -426,8 +430,10 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 
     private String createStateRules(Process process, StateNode state) {
         StringBuilder result = new StringBuilder();
-        for (Map.Entry<ConnectionRef, Constraint> entry : state.getConstraints().entrySet()) {
-            result.append(createStateRule(process, state, entry.getKey(), entry.getValue()));
+        for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : state.getConstraints().entrySet()) {
+            for (Constraint constraint : entry.getValue()) {
+                result.append(createStateRule(process, state, entry.getKey(), constraint));
+            }
         }
         return result.toString();
     }

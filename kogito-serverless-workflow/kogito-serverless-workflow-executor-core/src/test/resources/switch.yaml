@@ -1,0 +1,32 @@
+version: 1.0.0
+specVersion: "0.8"
+id: Switch test
+name: Switch test
+start: switch test
+states:
+  - name: switch test
+    type: switch
+    dataConditions:
+      - name: Branch1-Name
+        condition: .condition1
+        transition: branch1
+      - name: Branch2-Name
+        condition: .condition2
+        transition: branch1
+
+    defaultCondition:
+      transition: default
+
+  - name: branch1
+    type: inject
+    data:
+      output: branch1
+    end: true
+
+
+  - name: default
+    type: inject
+    data:
+      output: default
+    end: true
+ 

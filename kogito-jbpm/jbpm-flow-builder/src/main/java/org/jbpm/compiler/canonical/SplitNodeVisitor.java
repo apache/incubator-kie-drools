@@ -18,6 +18,7 @@
  */
 package org.jbpm.compiler.canonical;
 
+import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
@@ -61,45 +62,49 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
         visitMetaData(node.getMetaData(), body, getNodeId(node));
 
         if (node.getType() == Split.TYPE_OR || node.getType() == Split.TYPE_XOR) {
-            for (Entry<ConnectionRef, Constraint> entry : node.getConstraints().entrySet()) {
+            for (Entry<ConnectionRef, Collection<Constraint>> entry : node.getConstraints().entrySet()) {
                 if (entry.getValue() != null) {
-                    Expression returnValueEvaluator;
-                    if (entry.getValue() instanceof ReturnValueConstraintEvaluator && ((ReturnValueConstraintEvaluator) entry.getValue()).getReturnValueEvaluator() instanceof Supplier) {
-                        returnValueEvaluator = ((Supplier<Expression>) ((ReturnValueConstraintEvaluator) entry.getValue()).getReturnValueEvaluator()).get();
-                    } else if ("FEEL".equals(entry.getValue().getDialect())) {
-                        returnValueEvaluator = buildFEELReturnValueEvaluator(entry);
-                    } else {
-                        BlockStmt actionBody = new BlockStmt();
-                        LambdaExpr lambda = new LambdaExpr(
-                                new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
-                                actionBody);
+                    for (Constraint constraint : entry.getValue()) {
+                        if (constraint != null) {
+                            Expression returnValueEvaluator;
+                            if (constraint instanceof ReturnValueConstraintEvaluator && ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator() instanceof Supplier) {
+                                returnValueEvaluator = ((Supplier<Expression>) ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator()).get();
+                            } else if ("FEEL".equals(constraint.getDialect())) {
+                                returnValueEvaluator = buildFEELReturnValueEvaluator(constraint);
+                            } else {
+                                BlockStmt actionBody = new BlockStmt();
+                                LambdaExpr lambda = new LambdaExpr(
+                                        new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
+                                        actionBody);
 
-                        for (Variable v : variableScope.getVariables()) {
-                            actionBody.addStatement(makeAssignment(v));
+                                for (Variable v : variableScope.getVariables()) {
+                                    actionBody.addStatement(makeAssignment(v));
+                                }
+
+                                BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + constraint.getConstraint() + "}");
+                                blockStmt.getStatements().forEach(actionBody::addStatement);
+
+                                returnValueEvaluator = lambda;
+                            }
+                            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
+                                    new LongLiteralExpr(entry.getKey().getNodeId()),
+                                    new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
+                                    new StringLiteralExpr(entry.getKey().getToType()),
+                                    new StringLiteralExpr(constraint.getDialect()),
+                                    returnValueEvaluator,
+                                    new IntegerLiteralExpr(constraint.getPriority()),
+                                    new BooleanLiteralExpr(constraint.isDefault())));
                         }
-
-                        BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + entry.getValue().getConstraint() + "}");
-                        blockStmt.getStatements().forEach(actionBody::addStatement);
-
-                        returnValueEvaluator = lambda;
                     }
-                    body.addStatement(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
-                            new LongLiteralExpr(entry.getKey().getNodeId()),
-                            new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
-                            new StringLiteralExpr(entry.getKey().getToType()),
-                            new StringLiteralExpr(entry.getValue().getDialect()),
-                            returnValueEvaluator,
-                            new IntegerLiteralExpr(entry.getValue().getPriority()),
-                            new BooleanLiteralExpr(entry.getValue().isDefault())));
                 }
             }
         }
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
-    public static ObjectCreationExpr buildFEELReturnValueEvaluator(Entry<ConnectionRef, Constraint> entry) {
+    private static ObjectCreationExpr buildFEELReturnValueEvaluator(Constraint constraint) {
         return new ObjectCreationExpr(null,
                 StaticJavaParser.parseClassOrInterfaceType("org.jbpm.bpmn2.feel.FeelReturnValueEvaluator"),
-                new NodeList<>(new StringLiteralExpr(entry.getValue().getConstraint())));
+                new NodeList<>(new StringLiteralExpr(constraint.getConstraint())));
     }
 }

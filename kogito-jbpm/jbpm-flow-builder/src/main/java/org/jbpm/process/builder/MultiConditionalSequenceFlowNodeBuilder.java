@@ -18,8 +18,9 @@
  */
 package org.jbpm.process.builder;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.drools.drl.ast.descr.ProcessDescr;
@@ -30,7 +31,6 @@ import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.process.instance.impl.RuleConstraintEvaluator;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
-import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Split;
 import org.kie.api.definition.process.Connection;
@@ -42,19 +42,16 @@ public class MultiConditionalSequenceFlowNodeBuilder implements ProcessNodeBuild
     public void build(Process process, ProcessDescr processDescr,
             ProcessBuildContext context, Node node) {
 
-        Map<ConnectionRef, Constraint> constraints = ((NodeImpl) node).getConstraints();
-
         // exclude split as it is handled with separate builder and nodes with non conditional sequence flows
-        if (node instanceof Split || constraints.size() == 0) {
+        if (node instanceof Split) {
             return;
         }
 
         // we need to clone the map, so we can update the original while iterating.
-        Map<ConnectionRef, Constraint> map = new HashMap<>(constraints);
-        for (Iterator<Map.Entry<ConnectionRef, Constraint>> it = map.entrySet().iterator(); it.hasNext();) {
-            Map.Entry<ConnectionRef, Constraint> entry = it.next();
+        for (Iterator<Map.Entry<ConnectionRef, Collection<Constraint>>> it = ((NodeImpl) node).getConstraints().entrySet().iterator(); it.hasNext();) {
+            Map.Entry<ConnectionRef, Collection<Constraint>> entry = it.next();
             ConnectionRef connection = entry.getKey();
-            ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
+            Collection<Constraint> constraints = new LinkedList<>(entry.getValue());
             Connection outgoingConnection = null;
             for (Connection out : ((NodeImpl) node).getDefaultOutgoingConnections()) {
                 if (out.getToType().equals(connection.getToType())
@@ -65,27 +62,31 @@ public class MultiConditionalSequenceFlowNodeBuilder implements ProcessNodeBuild
             if (outgoingConnection == null) {
                 throw new IllegalArgumentException("Could not find outgoing connection");
             }
-            if ("rule".equals(constraint.getType())) {
-                RuleConstraintEvaluator ruleConstraint = new RuleConstraintEvaluator();
-                ruleConstraint.setDialect(constraint.getDialect());
-                ruleConstraint.setName(constraint.getName());
-                ruleConstraint.setPriority(constraint.getPriority());
-                ruleConstraint.setDefault(constraint.isDefault());
-                ((NodeImpl) node).setConstraint(outgoingConnection, ruleConstraint);
-            } else if ("code".equals(constraint.getType())) {
-                ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
-                returnValueConstraint.setDialect(constraint.getDialect());
-                returnValueConstraint.setName(constraint.getName());
-                returnValueConstraint.setPriority(constraint.getPriority());
-                returnValueConstraint.setDefault(constraint.isDefault());
-                ((NodeImpl) node).setConstraint(outgoingConnection, returnValueConstraint);
+            for (Constraint constraint : constraints) {
+                if (constraint != null) {
+                    if ("rule".equals(constraint.getType())) {
+                        RuleConstraintEvaluator ruleConstraint = new RuleConstraintEvaluator();
+                        ruleConstraint.setDialect(constraint.getDialect());
+                        ruleConstraint.setName(constraint.getName());
+                        ruleConstraint.setPriority(constraint.getPriority());
+                        ruleConstraint.setDefault(constraint.isDefault());
+                        ((NodeImpl) node).setConstraint(outgoingConnection, ruleConstraint);
+                    } else if ("code".equals(constraint.getType())) {
+                        ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
+                        returnValueConstraint.setDialect(constraint.getDialect());
+                        returnValueConstraint.setName(constraint.getName());
+                        returnValueConstraint.setPriority(constraint.getPriority());
+                        returnValueConstraint.setDefault(constraint.isDefault());
+                        ((NodeImpl) node).setConstraint(outgoingConnection, returnValueConstraint);
 
-                ReturnValueDescr returnValueDescr = new ReturnValueDescr();
-                returnValueDescr.setText(constraint.getConstraint());
-                returnValueDescr.setResource(processDescr.getResource());
+                        ReturnValueDescr returnValueDescr = new ReturnValueDescr();
+                        returnValueDescr.setText(constraint.getConstraint());
+                        returnValueDescr.setResource(processDescr.getResource());
 
-                ProcessDialect dialect = ProcessDialectRegistry.getDialect(constraint.getDialect());
-                dialect.getReturnValueEvaluatorBuilder().build(context, returnValueConstraint, returnValueDescr, (NodeImpl) node);
+                        ProcessDialect dialect = ProcessDialectRegistry.getDialect(constraint.getDialect());
+                        dialect.getReturnValueEvaluatorBuilder().build(context, returnValueConstraint, returnValueDescr, (NodeImpl) node);
+                    }
+                }
             }
         }
 

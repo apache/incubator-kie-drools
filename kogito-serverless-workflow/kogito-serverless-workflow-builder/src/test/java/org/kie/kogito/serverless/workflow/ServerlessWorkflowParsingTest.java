@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.ruleflow.core.Metadata;
@@ -577,12 +578,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(split.getType()).isEqualTo(2);
         assertThat(split.getConstraints()).hasSize(2);
 
-        boolean haveDefaultConstraint = false;
-        for (Constraint constraint : split.getConstraints().values()) {
-            haveDefaultConstraint = haveDefaultConstraint || constraint.isDefault();
-        }
-
-        assertThat(haveDefaultConstraint).isTrue();
+        assertHaveDefaultConstraint(split);
     }
 
     @ParameterizedTest
@@ -603,12 +599,11 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(split.getType()).isEqualTo(2);
         assertThat(split.getConstraints()).hasSize(2);
 
-        boolean haveDefaultConstraint = false;
-        for (Constraint constraint : split.getConstraints().values()) {
-            haveDefaultConstraint = haveDefaultConstraint || constraint.isDefault();
-        }
+        assertHaveDefaultConstraint(split);
+    }
 
-        assertThat(haveDefaultConstraint).isTrue();
+    private void assertHaveDefaultConstraint(Split split) {
+        assertThat(split.getConstraints().values().stream().flatMap(Collection::stream).anyMatch(Constraint::isDefault)).isTrue();
     }
 
     @ParameterizedTest

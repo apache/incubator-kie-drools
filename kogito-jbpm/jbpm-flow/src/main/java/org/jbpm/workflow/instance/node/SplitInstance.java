@@ -19,6 +19,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
+import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
@@ -83,21 +85,25 @@ public class SplitInstance extends NodeInstanceImpl {
                 Connection selected = null;
                 for (final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext();) {
                     final Connection connection = iterator.next();
-                    ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint(connection);
-                    if (constraint != null && constraint.getPriority() < priority && !constraint.isDefault()) {
-                        try {
-                            if (constraint.evaluate(this,
-                                    connection,
-                                    constraint)) {
-                                selected = connection;
-                                priority = constraint.getPriority();
+                    Collection<Constraint> constraints = split.getConstraints(connection);
+                    if (constraints != null) {
+                        for (Constraint constraint : constraints) {
+                            if (constraint instanceof ConstraintEvaluator && constraint.getPriority() < priority && !constraint.isDefault()) {
+                                try {
+                                    if (((ConstraintEvaluator) constraint).evaluate(this,
+                                            connection,
+                                            constraint)) {
+                                        selected = connection;
+                                        priority = constraint.getPriority();
+                                    }
+                                } catch (RuntimeException e) {
+                                    throw new RuntimeException(
+                                            "Exception when trying to evaluate constraint "
+                                                    + constraint.getName() + " in split "
+                                                    + split.getName(),
+                                            e);
+                                }
                             }
-                        } catch (RuntimeException e) {
-                            throw new RuntimeException(
-                                    "Exception when trying to evaluate constraint "
-                                            + constraint.getName() + " in split "
-                                            + split.getName(),
-                                    e);
                         }
                     }
                 }
@@ -133,14 +139,16 @@ public class SplitInstance extends NodeInstanceImpl {
                     ConstraintEvaluator selectedConstraint = null;
                     for (final Iterator<Connection> iterator = outgoingCopy.iterator(); iterator.hasNext();) {
                         final Connection connection = iterator.next();
-                        ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint(connection);
-
-                        if (constraint != null
-                                && constraint.getPriority() < priority
-                                && !constraint.isDefault()) {
-                            priority = constraint.getPriority();
-                            selectedConnection = connection;
-                            selectedConstraint = constraint;
+                        Collection<Constraint> constraints = split.getConstraints(connection);
+                        if (constraints != null) {
+                            for (Constraint constraint : constraints) {
+                                if (constraint instanceof ConstraintEvaluator && constraint.getPriority() < priority
+                                        && !constraint.isDefault()) {
+                                    priority = constraint.getPriority();
+                                    selectedConnection = connection;
+                                    selectedConstraint = (ConstraintEvaluator) constraint;
+                                }
+                            }
                         }
                     }
                     if (selectedConstraint == null) {
@@ -163,13 +171,22 @@ public class SplitInstance extends NodeInstanceImpl {
                     triggerNodeInstance(nodeInstance.getNodeInstance(), nodeInstance.getToType());
                 }
                 if (!found) {
-                    for (final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext();) {
+                    final Iterator<Connection> iterator = outgoing.iterator();
+                    while (!found && iterator.hasNext()) {
                         final Connection connection = iterator.next();
-                        ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint(connection);
-                        if (constraint != null && constraint.isDefault() || split.isDefault(connection)) {
+                        Collection<Constraint> constraints = split.getConstraints(connection);
+                        if (constraints != null) {
+                            for (Constraint constraint : constraints) {
+                                if (constraint != null && constraint.isDefault()) {
+                                    triggerConnection(connection);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!found && split.isDefault(connection)) {
                             triggerConnection(connection);
                             found = true;
-                            break;
                         }
                     }
                 }

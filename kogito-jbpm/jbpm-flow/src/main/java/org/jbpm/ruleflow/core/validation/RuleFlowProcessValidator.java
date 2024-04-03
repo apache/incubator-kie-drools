@@ -20,6 +20,7 @@ package org.jbpm.ruleflow.core.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,6 +44,7 @@ import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -268,10 +270,8 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
                     for (final Iterator<Connection> it = split.getDefaultOutgoingConnections().iterator(); it.hasNext();) {
                         final Connection connection = it.next();
-                        if (split.getConstraint(connection) == null && !split.isDefault(connection)
-                                || (!split.isDefault(connection)
-                                        && (split.getConstraint(connection).getConstraint() == null
-                                                || split.getConstraint(connection).getConstraint().trim().length() == 0))) {
+                        Collection<Constraint> constraints = split.getConstraints(connection);
+                        if ((constraints == null || constraints.stream().allMatch(c -> c == null || c.getConstraint() == null || c.getConstraint().isBlank())) && !split.isDefault(connection)) {
                             addErrorMessage(process,
                                     node,
                                     errors,

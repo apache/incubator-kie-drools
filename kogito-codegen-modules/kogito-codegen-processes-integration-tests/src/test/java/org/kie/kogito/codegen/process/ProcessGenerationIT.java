@@ -532,11 +532,11 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             assertThat(cNode.getConstraints()).isNull();
             return;
         }
-        Map<ConnectionRef, Constraint> expected = eNode.getConstraints();
-        Map<ConnectionRef, Constraint> current = cNode.getConstraints();
+        Map<ConnectionRef, Collection<Constraint>> expected = eNode.getConstraints();
+        Map<ConnectionRef, Collection<Constraint>> current = cNode.getConstraints();
         assertThat(current).hasSameSizeAs(expected);
         expected.forEach((conn, constraint) -> {
-            Optional<Map.Entry<ConnectionRef, Constraint>> currentEntry = current.entrySet()
+            Optional<Map.Entry<ConnectionRef, Collection<Constraint>>> currentEntry = current.entrySet()
                     .stream()
                     .filter(e -> e.getKey().getConnectionId() == null && conn.getConnectionId() == null ||
                             e.getKey().getConnectionId().equals(conn.getConnectionId()))
@@ -545,13 +545,15 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             ConnectionRef currentConn = currentEntry.get().getKey();
             assertThat(currentConn.getNodeId()).isEqualTo(conn.getNodeId());
             assertThat(currentConn.getToType()).isEqualTo(conn.getToType());
-            Constraint currentConstraint = currentEntry.get().getValue();
+            Collection<Constraint> constraints = currentEntry.get().getValue();
             if (constraint == null) {
-                assertThat(currentConstraint).isNull();
+                assertThat(constraints).isNull();
             } else {
+                Constraint currentConstraint = constraints.iterator().next();
+                Constraint expectedConstraint = constraint.iterator().next();
                 assertThat(currentConstraint).isNotNull();
-                assertThat(currentConstraint.getPriority()).isEqualTo(constraint.getPriority());
-                assertThat(currentConstraint.getDialect()).isEqualTo(constraint.getDialect());
+                assertThat(currentConstraint.getPriority()).isEqualTo(expectedConstraint.getPriority());
+                assertThat(currentConstraint.getDialect()).isEqualTo(expectedConstraint.getDialect());
                 assertThat(currentConstraint.getName()).isEqualTo(conn.getConnectionId());
                 assertThat(currentConstraint.getType()).isEqualTo(CONNECTION_DEFAULT_TYPE);
             }

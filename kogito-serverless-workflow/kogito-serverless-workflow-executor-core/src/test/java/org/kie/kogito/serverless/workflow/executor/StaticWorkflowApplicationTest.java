@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +75,19 @@ class StaticWorkflowApplicationTest {
         workflow = getWorkflow(reader, WorkflowFormat.JSON);
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
+        }
+    }
+
+    @Test
+    void switchFile() throws IOException {
+        try (
+                StaticWorkflowApplication application = StaticWorkflowApplication.create();
+                Reader reader = new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("switch.yaml"))) {
+            Workflow workflow = ServerlessWorkflowUtils.getWorkflow(reader, WorkflowFormat.YAML);
+            assertThat(application.execute(workflow, Map.of("condition1", false, "condition2", false)).getWorkflowdata().get("output")).isEqualTo(new TextNode("default"));
+            assertThat(application.execute(workflow, Map.of("condition1", true, "condition2", false)).getWorkflowdata().get("output")).isEqualTo(new TextNode("branch1"));
+            assertThat(application.execute(workflow, Map.of("condition1", false, "condition2", true)).getWorkflowdata().get("output")).isEqualTo(new TextNode("branch1"));
+            assertThat(application.execute(workflow, Map.of("condition1", true, "condition2", true)).getWorkflowdata().get("output")).isEqualTo(new TextNode("branch1"));
         }
     }
 

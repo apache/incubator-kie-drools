@@ -18,6 +18,8 @@
  */
 package org.jbpm.workflow.instance.node;
 
+import java.util.Collection;
+
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.jbpm.workflow.core.Constraint;
@@ -50,17 +52,22 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         Connection selected = null;
         int priority = Integer.MAX_VALUE;
         for (Connection connection : stateNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
-            Constraint constraint = stateNode.getConstraint(connection);
-            if (constraint != null && constraint.getPriority() < priority) {
-                String rule = "RuleFlowStateNode-" + getProcessInstance().getProcessId() + "-" +
-                        getStateNode().getUniqueId() + "-" +
-                        connection.getTo().getId() + "-" +
-                        connection.getToType();
-                boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-                        .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getStringId());
-                if (isActive) {
-                    selected = connection;
-                    priority = constraint.getPriority();
+            Collection<Constraint> constraints = stateNode.getConstraints(connection);
+
+            if (constraints != null) {
+                for (Constraint constraint : constraints) {
+                    if (constraint.getPriority() < priority) {
+                        String rule = "RuleFlowStateNode-" + getProcessInstance().getProcessId() + "-" +
+                                getStateNode().getUniqueId() + "-" +
+                                connection.getTo().getId() + "-" +
+                                connection.getToType();
+                        boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                                .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getStringId());
+                        if (isActive) {
+                            selected = connection;
+                            priority = constraint.getPriority();
+                        }
+                    }
                 }
             }
         }
@@ -71,6 +78,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             addTriggerListener();
             addActivationListener();
         }
+
     }
 
     @Override
@@ -84,14 +92,19 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             if (event instanceof String) {
                 for (Connection connection : getStateNode().getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
                     boolean selected = false;
-                    Constraint constraint = getStateNode().getConstraint(connection);
-                    if (constraint == null) {
+                    Collection<Constraint> constraints = getStateNode().getConstraints(connection);
+                    if (constraints == null) {
                         if (event.equals(connection.getTo().getName())) {
                             selected = true;
                         }
-                    } else if (event.equals(constraint.getName())) {
-                        selected = true;
-                    }
+                    } else
+                        for (Constraint constraint : constraints) {
+
+                            if (event.equals(constraint.getName())) {
+                                selected = true;
+                                break;
+                            }
+                        }
                     if (selected) {
                         triggerEvent(ExtendedNodeImpl.EVENT_NODE_EXIT);
                         removeEventListeners();
@@ -146,14 +159,15 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
     public void activationCreated(MatchCreatedEvent event) {
         Connection selected = null;
         for (Connection connection : getNode().getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
-            Constraint constraint = getStateNode().getConstraint(connection);
-            if (constraint != null) {
+            Collection<Constraint> constraints = getStateNode().getConstraints(connection);
+            if (constraints != null) {
                 String constraintName = getActivationEventType() + "-"
                         + connection.getTo().getId() + "-" + connection.getToType();
                 if (constraintName.equals(event.getMatch().getRule().getName())
                         && checkProcessInstance((InternalMatch) event.getMatch())) {
                     selected = connection;
                 }
+
             }
         }
         if (selected != null) {

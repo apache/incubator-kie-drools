@@ -18,8 +18,7 @@
  */
 package org.jbpm.workflow.core.node;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Collection;
 
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
@@ -86,23 +85,24 @@ public class Split extends NodeImpl implements Constrainable {
 
         if (this.type == TYPE_OR || this.type == TYPE_XOR) {
             ConnectionRef ref = new ConnectionRef((String) connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
-            Constraint constraint = this.constraints.get(ref);
+            Collection<Constraint> constraints = this.constraints.get(ref);
+            if (constraints != null) {
+                for (Constraint constraint : constraints) {
+                    if (constraint != null) {
+                        return constraint.isDefault();
+                    }
+                }
+            }
             String defaultConnection = (String) getMetaData().get("Default");
             String connectionId = (String) connection.getMetaData().get("UniqueId");
-            if (constraint != null) {
-                return constraint.isDefault();
-            } else if (constraint == null && connectionId.equals(defaultConnection)) {
-                return true;
-            } else {
-                return false;
-            }
+            return connectionId.equals(defaultConnection);
         }
         throw new UnsupportedOperationException("Constraints are " +
                 "only supported with XOR or OR split types, not with: " + getType());
     }
 
     @Override
-    public Constraint getConstraint(final Connection connection) {
+    public Collection<Constraint> getConstraints(final Connection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("connection is null");
         }
@@ -113,11 +113,6 @@ public class Split extends NodeImpl implements Constrainable {
         }
         throw new UnsupportedOperationException("Constraints are " +
                 "only supported with XOR or OR split types, not with: " + getType());
-    }
-
-    @Override
-    public Constraint internalGetConstraint(final ConnectionRef ref) {
-        return this.constraints.get(ref);
     }
 
     @Override
@@ -137,20 +132,6 @@ public class Split extends NodeImpl implements Constrainable {
             throw new UnsupportedOperationException("Constraints are " +
                     "only supported with XOR or OR split types, not with type:" + getType());
         }
-    }
-
-    @Override
-    public void addConstraint(ConnectionRef connectionRef, Constraint constraint) {
-        if (connectionRef == null) {
-            throw new IllegalArgumentException(
-                    "A split node only accepts constraints linked to a connection");
-        }
-        this.constraints.put(connectionRef, constraint);
-    }
-
-    @Override
-    public Map<ConnectionRef, Constraint> getConstraints() {
-        return Collections.unmodifiableMap(this.constraints);
     }
 
     @Override

@@ -18,6 +18,7 @@
  */
 package org.jbpm.bpmn2.xml;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.jbpm.workflow.core.Constraint;
@@ -48,26 +49,30 @@ public class SplitHandler extends AbstractNodeHandler {
             case Split.TYPE_XOR:
                 type = "exclusiveGateway";
                 writeNode(type, node, xmlDump, metaDataType);
-                for (Map.Entry<ConnectionRef, Constraint> entry : split.getConstraints().entrySet()) {
-                    if (entry.getValue() != null && entry.getValue().isDefault()) {
-                        xmlDump.append("default=\"" +
-                                XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
-                                XmlBPMNProcessDumper.getUniqueNodeId(node.getParentContainer().getNode(entry.getKey().getNodeId())) +
-                                "\" ");
-                        break;
+                for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : split.getConstraints().entrySet()) {
+                    for (Constraint constraint : entry.getValue()) {
+                        if (constraint != null && constraint.isDefault()) {
+                            xmlDump.append("default=\"" +
+                                    XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
+                                    XmlBPMNProcessDumper.getUniqueNodeId(node.getParentContainer().getNode(entry.getKey().getNodeId())) +
+                                    "\" ");
+                            break;
+                        }
                     }
                 }
                 break;
             case Split.TYPE_OR:
                 type = "inclusiveGateway";
                 writeNode(type, node, xmlDump, metaDataType);
-                for (Map.Entry<ConnectionRef, Constraint> entry : split.getConstraints().entrySet()) {
-                    if (entry.getValue() != null && entry.getValue().isDefault()) {
-                        xmlDump.append("default=\"" +
-                                XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
-                                XmlBPMNProcessDumper.getUniqueNodeId(node.getParentContainer().getNode(entry.getKey().getNodeId())) +
-                                "\" ");
-                        break;
+                for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : split.getConstraints().entrySet()) {
+                    for (Constraint constraint : entry.getValue()) {
+                        if (constraint != null && constraint.isDefault()) {
+                            xmlDump.append("default=\"" +
+                                    XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
+                                    XmlBPMNProcessDumper.getUniqueNodeId(node.getParentContainer().getNode(entry.getKey().getNodeId())) +
+                                    "\" ");
+                            break;
+                        }
                     }
                 }
                 break;
