@@ -211,6 +211,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public TypeDeclarationDescr visitTypeDeclaration(DRLParser.TypeDeclarationContext ctx) {
         TypeDeclarationDescr typeDeclarationDescr = new TypeDeclarationDescr(ctx.name.getText());
+        if (ctx.DRL_TRAIT() != null) {
+            typeDeclarationDescr.setTrait(true);
+        }
         if (ctx.EXTENDS() != null) {
             typeDeclarationDescr.addSuperType(ctx.superType.getText());
         }
