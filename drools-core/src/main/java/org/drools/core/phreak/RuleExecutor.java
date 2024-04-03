@@ -37,6 +37,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
 import org.drools.core.util.index.TupleList;
@@ -50,20 +51,22 @@ public class RuleExecutor {
 
     protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
-    private final PathMemory           pmem;
-    private final RuleAgendaItem       ruleAgendaItem;
-    private final TupleList            tupleList;
+    private final PathMemory pmem;
+    private final RuleAgendaItem ruleAgendaItem;
+    private final TupleList activeMatches;
+    private final LinkedList<TupleImpl> dormantMatches;
     private final Queue<InternalMatch> queue;
-    private volatile boolean           dirty;
-    private final boolean              declarativeAgendaEnabled;
-    private boolean                    fireExitedEarly;
+    private volatile boolean dirty;
+    private final boolean declarativeAgendaEnabled;
+    private boolean fireExitedEarly;
 
     public RuleExecutor(final PathMemory pmem,
             RuleAgendaItem ruleAgendaItem,
             boolean declarativeAgendaEnabled) {
         this.pmem = pmem;
         this.ruleAgendaItem = ruleAgendaItem;
-        this.tupleList = new TupleList();
+        this.activeMatches = new TupleList();
+        this.dormantMatches = new LinkedList<>();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         this.queue = ruleAgendaItem.getRule().getSalience().isDynamic() ? QueueFactory.createQueue(MatchConflictResolver.INSTANCE) : null;
     }
@@ -89,9 +92,9 @@ public class RuleExecutor {
 
     private int doDirectFirings(ActivationsManager activationsManager, AgendaFilter filter, ReteEvaluator reteEvaluator) {
         RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
-        int directFirings = tupleList.size();
+        int directFirings = activeMatches.size();
 
-        for (TupleImpl tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
+        for (TupleImpl tuple = activeMatches.getFirst(); tuple != null; tuple = activeMatches.getFirst()) {
             if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                 directFirings--;
             } else {
@@ -114,7 +117,7 @@ public class RuleExecutor {
     private int fire( ReteEvaluator reteEvaluator, ActivationsManager activationsManager, AgendaFilter filter, int fireCount, int fireLimit) {
         int localFireCount = 0;
 
-        if (!tupleList.isEmpty()) {
+        if (!activeMatches.isEmpty()) {
             if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
                 RuleAgendaItem nextRule = activationsManager.peekNextRule();
@@ -187,17 +190,18 @@ public class RuleExecutor {
     }
 
     private TupleImpl getNextTuple() {
-        if (tupleList.isEmpty()) {
+        if (activeMatches.isEmpty()) {
             return null;
         }
         TupleImpl leftTuple;
         if (queue != null) {
             leftTuple = (TupleImpl) queue.dequeue();
-            tupleList.remove(leftTuple);
+            activeMatches.remove(leftTuple);
         } else {
-            leftTuple = tupleList.removeFirst();
+            leftTuple = activeMatches.removeFirst();
             ((InternalMatch) leftTuple).setQueued(false);
         }
+        dormantMatches.add(leftTuple);
         return leftTuple;
     }
 
@@ -206,7 +210,7 @@ public class RuleExecutor {
     }
 
     public void removeRuleAgendaItemWhenEmpty(ReteEvaluator reteEvaluator) {
-        if (!dirty && tupleList.isEmpty()) {
+        if (!dirty && activeMatches.isEmpty()) {
             if (log.isTraceEnabled()) {
                 log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
             }
@@ -282,13 +286,17 @@ public class RuleExecutor {
         return RuleAgendaConflictResolver.doCompare(ruleAgendaItem, nextRule) >= 0;
     }
 
-    public TupleList getLeftTupleList() {
-        return tupleList;
+    public TupleList getActiveMatches() {
+        return activeMatches;
+    }
+
+    public LinkedList<TupleImpl> getDormantMatches() {
+        return dormantMatches;
     }
 
     public void addLeftTuple(TupleImpl tuple) {
         ((RuleTerminalNodeLeftTuple) tuple).setQueued(true);
-        this.tupleList.add(tuple);
+        this.activeMatches.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
         }
@@ -302,7 +310,7 @@ public class RuleExecutor {
 
     public void removeLeftTuple(TupleImpl tuple) {
         ((RuleTerminalNodeLeftTuple) tuple).setQueued(false);
-        this.tupleList.remove(tuple);
+        this.activeMatches.remove(tuple);
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
         }
@@ -328,8 +336,8 @@ public class RuleExecutor {
     }
 
     public void cancel(ReteEvaluator reteEvaluator, EventSupport es) {
-        while (!tupleList.isEmpty()) {
-            RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) tupleList.removeFirst();
+        while (!activeMatches.isEmpty()) {
+            RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) activeMatches.removeFirst();
             if (queue != null) {
                 queue.dequeue(rtnLt);
             }

@@ -42,8 +42,10 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
@@ -51,6 +53,7 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
 
 public class PhreakActivationIterator
     implements
@@ -82,21 +85,33 @@ public class PhreakActivationIterator
         }
     }
 
-    public static List<RuleTerminalNode> populateRuleTerminalNodes(InternalRuleBase kbase, Set<RuleTerminalNode>  nodeSet) {
-        Collection<TerminalNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
+    public static List<InternalMatch> collectAgendaItems(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
+        List<InternalMatch> internalMatches = new ArrayList<>();
 
-        for (TerminalNode[] nodeArray : nodesWithArray) {
+        for (TerminalNode[] nodeArray : kbase.getReteooBuilder().getTerminalNodes().values()) {
             for (TerminalNode node : nodeArray) {
                 if (node.getType() == NodeTypeEnums.RuleTerminalNode) {
-                    nodeSet.add((RuleTerminalNode) node);
+                    PathMemory pathMemory = (PathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
+                    if (pathMemory != null && pathMemory.getRuleAgendaItem() != null) {
+                        LinkedList<TupleImpl> dormantMatches = pathMemory.getRuleAgendaItem().getRuleExecutor().getDormantMatches();
+                        for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) dormantMatches.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
+                            internalMatches.add(lt);
+                        }
+                        LinkedList<TupleImpl> activeMatches = pathMemory.getRuleAgendaItem().getRuleExecutor().getActiveMatches();
+                        for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) activeMatches.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
+                            internalMatches.add(lt);
+                        }
+                    }
                 }
             }
         }
 
-        return Arrays.asList(nodeSet.toArray(new RuleTerminalNode[nodeSet.size()]));
+        return internalMatches;
     }
 
-    public static List<InternalMatch> collectAgendaItems(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
+    // --- OLD
+
+    public static List<InternalMatch> collectAgendaItems_OLD(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
         Set<RuleTerminalNode> nodeSet = new HashSet<>();
         List<RuleTerminalNode> nodeList = populateRuleTerminalNodes(kbase, nodeSet);
 
@@ -111,7 +126,21 @@ public class PhreakActivationIterator
         return internalMatches;
     }
 
-    public static void processLeftTuples(LeftTupleSource node, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
+    private static List<RuleTerminalNode> populateRuleTerminalNodes(InternalRuleBase kbase, Set<RuleTerminalNode> nodeSet) {
+        Collection<TerminalNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
+
+        for (TerminalNode[] nodeArray : nodesWithArray) {
+            for (TerminalNode node : nodeArray) {
+                if (node.getType() == NodeTypeEnums.RuleTerminalNode) {
+                    nodeSet.add((RuleTerminalNode) node);
+                }
+            }
+        }
+
+        return Arrays.asList(nodeSet.toArray(new RuleTerminalNode[nodeSet.size()]));
+    }
+
+    private static void processLeftTuples(LeftTupleSource node, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         LeftTupleSource node1 = node;
         while (!NodeTypeEnums.isLeftInputAdapterNode((node1))) {
             node1 = node1.getLeftTupleSource();
