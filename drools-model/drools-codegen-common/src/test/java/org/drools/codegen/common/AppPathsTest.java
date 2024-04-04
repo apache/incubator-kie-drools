@@ -25,15 +25,16 @@ class AppPathsTest {
     @ValueSource(booleans = {true, false})
     void fromProjectDir(boolean withGradle) {
         String projectDirPath = "projectDir";
-        String outputTargetPath = "outputTarget";
+        String outputTargetPath;
         Path projectDir = Path.of(projectDirPath);
-        Path outputTarget = Path.of(outputTargetPath);
         if (withGradle) {
+            outputTargetPath = "./build";
             System.setProperty("org.gradle.appname", "gradle-impl");
         } else {
+            outputTargetPath = "./target";
             System.clearProperty("org.gradle.appname");
         }
-        AppPaths retrieved = AppPaths.fromProjectDir(projectDir, outputTarget);
+        AppPaths retrieved = AppPaths.fromProjectDir(projectDir);
         getPathsTest(retrieved, projectDirPath, withGradle, false);
         getFirstProjectPathTest(retrieved, projectDirPath, outputTargetPath, withGradle);
         getResourceFilesTest(retrieved, projectDirPath, withGradle, false);

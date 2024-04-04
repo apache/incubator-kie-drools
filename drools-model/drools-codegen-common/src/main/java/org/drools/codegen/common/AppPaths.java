@@ -32,15 +32,28 @@ import java.util.function.UnaryOperator;
 public class AppPaths {
 
     public enum BuildTool {
-        MAVEN,
-        GRADLE;
+        MAVEN("target"),
+        GRADLE("build");
+
+        private final String outputDirectory;
+
+        BuildTool(String build) {
+            this.outputDirectory = build;
+        }
 
         public static AppPaths.BuildTool findBuildTool() {
             return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
         }
+
     }
 
-    public static final String TARGET_DIR = "target";
+    public static final String TARGET_DIR;
+
+    static {
+        System.out.println("Setting target dir");
+        TARGET_DIR = BuildTool.findBuildTool().outputDirectory;
+        System.out.println("TARGET_DIR = " + TARGET_DIR);
+    }
 
     public static final String SRC_DIR = "src";
 
@@ -66,9 +79,14 @@ public class AppPaths {
 
     private final Path[] sourcePaths;
 
-    public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), MAIN_DIR, outputTarget);
+    public static AppPaths fromProjectDir(Path projectDir) {
+        BuildTool bt = BuildTool.findBuildTool();
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, bt, MAIN_DIR, Paths.get(".", bt.outputDirectory));
     }
+
+//    public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
+//        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), MAIN_DIR, outputTarget);
+//    }
 
     /**
      * Builder to be used only for tests, where <b>all</b> resources must be present in "src/test/resources" directory
