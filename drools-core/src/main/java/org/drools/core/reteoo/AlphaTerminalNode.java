@@ -66,7 +66,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
         for (int i = 0; i < sinks.length; i++) {
             TerminalNode rtn = ( TerminalNode ) sinks[i];
             ObjectTypeNodeId otnId = rtn.getLeftInputOtnId();
-            RuleTerminalNodeLeftTuple leftTuple = (RuleTerminalNodeLeftTuple) processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
+            TupleImpl leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
 
             RuleAgendaItem agendaItem = getRuleAgendaItem( reteEvaluator, activationsManager, rtn, true );
             RuleExecutor executor = agendaItem.getRuleExecutor();
@@ -76,16 +76,16 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 leftTuple.reAdd();
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, (RuleTerminalNodeLeftTuple) leftTuple );
                     if (leftTuple.isFullMatch()) {
                         ((InternalMatch) leftTuple).setActive(true);
                     }
                 }
             } else {
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
-                    leftTuple = (RuleTerminalNodeLeftTuple) TupleFactory.createLeftTuple( rtn, factHandle, true );
+                    leftTuple = TupleFactory.createLeftTuple( rtn, factHandle, true );
                     leftTuple.setPropagationContext( context );
-                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, leftTuple );
+                    PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, activationsManager, agendaItem, (RuleTerminalNodeLeftTuple) leftTuple );
                 }
             }
         }

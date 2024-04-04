@@ -98,7 +98,7 @@ public class PhreakRuleTerminalNode {
                                          RuleTerminalNodeLeftTuple leftTuple) {
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
-            executor.addLeftTuple(leftTuple, false);
+            executor.addLeftTuple(leftTuple);
             return;
         }
 
@@ -135,7 +135,7 @@ public class PhreakRuleTerminalNode {
             return;
         }
 
-        executor.addLeftTuple( leftTuple, false );
+        executor.addLeftTuple( leftTuple );
 
         activationsManager.addItemToActivationGroup( leftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
@@ -192,7 +192,7 @@ public class PhreakRuleTerminalNode {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {
-                executor.addLeftTuple( leftTuple, true );
+                executor.modifyLeftTuple( leftTuple );
                 reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
             }
             return;
@@ -239,7 +239,7 @@ public class PhreakRuleTerminalNode {
                     activationsManager.getAgendaEventSupport().fireActivationCreated( leftTuple, reteEvaluator );
 
                     leftTuple.update( salienceInt, pctx );
-                    executor.addLeftTuple( leftTuple, leftTuple.getStagedType() == TupleImpl.NONE );
+                    executor.modifyLeftTuple( leftTuple );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
                 }
             }
