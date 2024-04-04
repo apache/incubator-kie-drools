@@ -94,11 +94,11 @@ public class RuleExecutor {
         RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
         int directFirings = activeMatches.size();
 
-        for (TupleImpl tuple = activeMatches.getFirst(); tuple != null; tuple = activeMatches.getFirst()) {
+        for (RuleTerminalNodeLeftTuple tuple = (RuleTerminalNodeLeftTuple) activeMatches.getFirst(); tuple != null; tuple = (RuleTerminalNodeLeftTuple) activeMatches.getFirst()) {
             if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                 directFirings--;
             } else {
-                fireActivationEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
+                fireActivationEvent(reteEvaluator, activationsManager, tuple, tuple.getConsequence());
             }
             removeLeftTuple( tuple );
         }
@@ -298,25 +298,25 @@ public class RuleExecutor {
         dormantMatches.add(tuple);
     }
 
-    public void addLeftTuple(TupleImpl tuple, boolean onUpdate) {
+    public void addLeftTuple(RuleTerminalNodeLeftTuple tuple, boolean onUpdate) {
         if (onUpdate) {
             dormantMatches.remove(tuple);
         }
-        ((RuleTerminalNodeLeftTuple) tuple).setQueued(true);
+        tuple.setQueued(true);
         this.activeMatches.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
         }
     }
 
-    public void addQueuedLeftTuple(Tuple tuple) {
+    public void addQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.enqueue((InternalMatch) tuple);
+        queue.enqueue(tuple);
         updateSalience(currentSalience);
     }
 
-    public void removeLeftTuple(TupleImpl tuple) {
-        ((RuleTerminalNodeLeftTuple) tuple).setQueued(false);
+    public void removeLeftTuple(RuleTerminalNodeLeftTuple tuple) {
+        tuple.setQueued(false);
         activeMatches.remove(tuple);
         if (tuple.getStagedType() != Tuple.DELETE) {
             dormantMatches.add(tuple);
@@ -326,9 +326,9 @@ public class RuleExecutor {
         }
     }
 
-    private void removeQueuedLeftTuple(Tuple tuple) {
+    private void removeQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.dequeue(((InternalMatch) tuple));
+        queue.dequeue(tuple);
         updateSalience(currentSalience);
     }
 

@@ -26,8 +26,6 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleExecutor;
@@ -144,7 +142,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                 }
             }
             RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
-            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( reteEvaluator ), ruleExecutor, leftTuple);
+            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualActivationsManager( reteEvaluator ), ruleExecutor, (RuleTerminalNodeLeftTuple) leftTuple);
         }
     }
 

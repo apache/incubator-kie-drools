@@ -81,7 +81,7 @@ public class ModifyPreviousTuples {
         } else {
             ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
             PathMemory pathMemory = reteEvaluator.getNodeMemory( (TerminalNode) leftTuple.getSink() );
-            PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
+            PhreakRuleTerminalNode.doLeftDelete(activationsManager, pathMemory.getRuleAgendaItem().getRuleExecutor(), (RuleTerminalNodeLeftTuple) leftTuple);
         }
     }
 
