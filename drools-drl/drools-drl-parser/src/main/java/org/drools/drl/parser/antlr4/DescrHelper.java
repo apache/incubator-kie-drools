@@ -34,15 +34,7 @@ public class DescrHelper {
         // Private constructor to prevent instantiation.
     }
 
-    /**
-     * Initializes a BaseDescr instance with common properties from the given context.
-     * DRLVisitor implementations should always use this method to initialize BaseDescr instances.
-     */
-    public static <T extends BaseDescr> T init(T descr, ParserRuleContext ctx) {
-        return populateCommonProperties(descr, ctx);
-    }
-
-    private static <T extends BaseDescr> T populateCommonProperties(T descr, ParserRuleContext ctx) {
+    public static <T extends BaseDescr> T populateCommonProperties(T descr, ParserRuleContext ctx) {
         descr.setStartCharacter(ctx.getStart().getStartIndex());
         // TODO: Current DRL6Parser adds +1 for EndCharacter but it doesn't look reasonable. At the moment, I don't add. Instead, I fix unit tests.
         //       I will revisit if this is the right approach.

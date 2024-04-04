@@ -87,7 +87,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      */
     @Override
     public PackageDescr visitCompilationUnit(DRLParser.CompilationUnitContext ctx) {
-        PackageDescr packageDescr = DescrHelper.init(new PackageDescr(), ctx);
+        PackageDescr packageDescr = BaseDescrFactory.builder(new PackageDescr())
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.packagedef() != null) {
             packageDescr.setName(getTextWithoutErrorNode(ctx.packagedef().name));
         }
@@ -139,23 +141,31 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public UnitDescr visitUnitdef(DRLParser.UnitdefContext ctx) {
-        return DescrHelper.init(new UnitDescr(ctx.name.getText()), ctx);
+        return BaseDescrFactory.builder(new UnitDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
     }
 
     @Override
     public GlobalDescr visitGlobaldef(DRLParser.GlobaldefContext ctx) {
-        return DescrHelper.init(new GlobalDescr(ctx.drlIdentifier().getText(), ctx.type().getText()), ctx);
+        return BaseDescrFactory.builder(new GlobalDescr(ctx.drlIdentifier().getText(), ctx.type().getText()))
+                .withParserRuleContext(ctx)
+                .build();
     }
 
     @Override
     public ImportDescr visitImportStandardDef(DRLParser.ImportStandardDefContext ctx) {
         String target = ctx.drlQualifiedName().getText() + (ctx.MUL() != null ? ".*" : "");
         if (ctx.DRL_FUNCTION() != null || ctx.STATIC() != null) {
-            FunctionImportDescr functionImportDescr = DescrHelper.init(new FunctionImportDescr(), ctx);
+            FunctionImportDescr functionImportDescr = BaseDescrFactory.builder(new FunctionImportDescr())
+                    .withParserRuleContext(ctx)
+                    .build();
             functionImportDescr.setTarget(target);
             return functionImportDescr;
         } else {
-            ImportDescr importDescr = DescrHelper.init(new ImportDescr(), ctx);
+            ImportDescr importDescr = BaseDescrFactory.builder(new ImportDescr())
+                    .withParserRuleContext(ctx)
+                    .build();
             importDescr.setTarget(target);
             return importDescr;
         }
@@ -163,7 +173,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AccumulateImportDescr visitImportAccumulateDef(DRLParser.ImportAccumulateDefContext ctx) {
-        AccumulateImportDescr accumulateImportDescr = DescrHelper.init(new AccumulateImportDescr(), ctx);
+        AccumulateImportDescr accumulateImportDescr = BaseDescrFactory.builder(new AccumulateImportDescr())
+                .withParserRuleContext(ctx)
+                .build();
         accumulateImportDescr.setTarget(ctx.drlQualifiedName().getText());
         accumulateImportDescr.setFunctionName(ctx.IDENTIFIER().getText());
         return accumulateImportDescr;
@@ -171,7 +183,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public FunctionDescr visitFunctiondef(DRLParser.FunctiondefContext ctx) {
-        FunctionDescr functionDescr = DescrHelper.init(new FunctionDescr(), ctx);
+        FunctionDescr functionDescr = BaseDescrFactory.builder(new FunctionDescr())
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.typeTypeOrVoid() != null) {
             functionDescr.setReturnType(ctx.typeTypeOrVoid().getText());
         } else {
@@ -201,7 +215,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public TypeDeclarationDescr visitTypeDeclaration(DRLParser.TypeDeclarationContext ctx) {
-        TypeDeclarationDescr typeDeclarationDescr = DescrHelper.init(new TypeDeclarationDescr(ctx.name.getText()), ctx);
+        TypeDeclarationDescr typeDeclarationDescr = BaseDescrFactory.builder(new TypeDeclarationDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.DRL_TRAIT() != null) {
             typeDeclarationDescr.setTrait(true);
         }
@@ -221,7 +237,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public EntryPointDeclarationDescr visitEntryPointDeclaration(DRLParser.EntryPointDeclarationContext ctx) {
-        EntryPointDeclarationDescr entryPointDeclarationDescr = DescrHelper.init(new EntryPointDeclarationDescr(), ctx);
+        EntryPointDeclarationDescr entryPointDeclarationDescr = BaseDescrFactory.builder(new EntryPointDeclarationDescr())
+                .withParserRuleContext(ctx)
+                .build();
         entryPointDeclarationDescr.setEntryPointId(ctx.name.getText());
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
@@ -231,7 +249,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public WindowDeclarationDescr visitWindowDeclaration(DRLParser.WindowDeclarationContext ctx) {
-        WindowDeclarationDescr windowDeclarationDescr = DescrHelper.init(new WindowDeclarationDescr(), ctx);
+        WindowDeclarationDescr windowDeclarationDescr = BaseDescrFactory.builder(new WindowDeclarationDescr())
+                .withParserRuleContext(ctx)
+                .build();
         windowDeclarationDescr.setName(ctx.name.getText());
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
@@ -245,7 +265,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      */
     @Override
     public RuleDescr visitRuledef(DRLParser.RuledefContext ctx) {
-        RuleDescr ruleDescr = DescrHelper.init(new RuleDescr(safeStripStringDelimiters(ctx.name.getText())), ctx);
+        RuleDescr ruleDescr = BaseDescrFactory.builder(new RuleDescr(safeStripStringDelimiters(ctx.name.getText())))
+                .withParserRuleContext(ctx)
+                .build();
 
         if (ctx.EXTENDS() != null) {
             ruleDescr.setParentName(safeStripStringDelimiters(ctx.parentName.getText()));
@@ -296,7 +318,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public QueryDescr visitQuerydef(DRLParser.QuerydefContext ctx) {
-        QueryDescr queryDescr = DescrHelper.init(new QueryDescr(safeStripStringDelimiters(ctx.name.getText())), ctx);
+        QueryDescr queryDescr = BaseDescrFactory.builder(new QueryDescr(safeStripStringDelimiters(ctx.name.getText())))
+                .withParserRuleContext(ctx)
+                .build();
 
         DRLParser.ParametersContext parametersContext = ctx.parameters();
         if (parametersContext != null) {
@@ -321,7 +345,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AnnotationDescr visitDrlAnnotation(DRLParser.DrlAnnotationContext ctx) {
-        AnnotationDescr annotationDescr = DescrHelper.init(new AnnotationDescr(ctx.name.getText()), ctx);
+        AnnotationDescr annotationDescr = BaseDescrFactory.builder(new AnnotationDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.drlElementValue() != null) {
             annotationDescr.setValue(getTextPreservingWhitespace(ctx.drlElementValue())); // single value
         } else if (ctx.drlElementValuePairs() != null) {
@@ -335,7 +361,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public TypeFieldDescr visitField(DRLParser.FieldContext ctx) {
-        TypeFieldDescr typeFieldDescr = DescrHelper.init(new TypeFieldDescr(), ctx);
+        TypeFieldDescr typeFieldDescr = BaseDescrFactory.builder(new TypeFieldDescr())
+                .withParserRuleContext(ctx)
+                .build();
         typeFieldDescr.setFieldName(ctx.label().drlIdentifier().getText());
         typeFieldDescr.setPattern(new PatternDescr(ctx.type().getText()));
         if (ctx.ASSIGN() != null) {
@@ -357,7 +385,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AttributeDescr visitExpressionAttribute(DRLParser.ExpressionAttributeContext ctx) {
-        AttributeDescr attributeDescr = DescrHelper.init(new AttributeDescr(ctx.name.getText()), ctx);
+        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         attributeDescr.setValue(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
         attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
         return attributeDescr;
@@ -365,7 +395,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AttributeDescr visitBooleanAttribute(DRLParser.BooleanAttributeContext ctx) {
-        AttributeDescr attributeDescr = DescrHelper.init(new AttributeDescr(ctx.name.getText()), ctx);
+        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         attributeDescr.setValue(ctx.BOOL_LITERAL() != null ? ctx.BOOL_LITERAL().getText() : "true");
         attributeDescr.setType(AttributeDescr.Type.BOOLEAN);
         return attributeDescr;
@@ -373,7 +405,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AttributeDescr visitStringAttribute(DRLParser.StringAttributeContext ctx) {
-        AttributeDescr attributeDescr = DescrHelper.init(new AttributeDescr(ctx.name.getText()), ctx);
+        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         attributeDescr.setValue(unescapeJava(safeStripStringDelimiters(ctx.DRL_STRING_LITERAL().getText())));
         attributeDescr.setType(AttributeDescr.Type.STRING);
         return attributeDescr;
@@ -381,7 +415,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AttributeDescr visitStringListAttribute(DRLParser.StringListAttributeContext ctx) {
-        AttributeDescr attributeDescr = DescrHelper.init(new AttributeDescr(ctx.name.getText()), ctx);
+        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         List<String> valueList = ctx.DRL_STRING_LITERAL().stream()
                 .map(ParseTree::getText)
                 .collect(Collectors.toList());
@@ -405,7 +441,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AttributeDescr visitIntOrChunkAttribute(DRLParser.IntOrChunkAttributeContext ctx) {
-        AttributeDescr attributeDescr = DescrHelper.init(new AttributeDescr(ctx.name.getText()), ctx);
+        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.DECIMAL_LITERAL() != null) {
             attributeDescr.setValue(ctx.DECIMAL_LITERAL().getText());
             attributeDescr.setType(AttributeDescr.Type.NUMBER);
@@ -418,7 +456,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AttributeDescr visitDurationAttribute(DRLParser.DurationAttributeContext ctx) {
-        AttributeDescr attributeDescr = DescrHelper.init(new AttributeDescr(ctx.name.getText()), ctx);
+        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.DECIMAL_LITERAL() != null) {
             attributeDescr.setValue(ctx.DECIMAL_LITERAL().getText());
             attributeDescr.setType(AttributeDescr.Type.NUMBER);
@@ -470,7 +510,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     private OrDescr getOrDescrWithMultiplePatternDescr(DRLParser.LhsPatternBindContext ctx) {
-        OrDescr orDescr = DescrHelper.init(new OrDescr(), ctx);
+        OrDescr orDescr = BaseDescrFactory.builder(new OrDescr())
+                .withParserRuleContext(ctx)
+                .build();
         List<BaseDescr> descrList = visitDescrChildren(ctx);
         descrList.stream()
                 .filter(PatternDescr.class::isInstance)
@@ -490,7 +532,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      */
     @Override
     public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
-        PatternDescr patternDescr = DescrHelper.init(new PatternDescr(ctx.objectType.getText()), ctx);
+        PatternDescr patternDescr = BaseDescrFactory.builder(new PatternDescr(ctx.objectType.getText()))
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.QUESTION() != null) {
             patternDescr.setQuery(true);
         }
@@ -516,14 +560,18 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public ForallDescr visitLhsForall(DRLParser.LhsForallContext ctx) {
-        ForallDescr forallDescr = DescrHelper.init(new ForallDescr(), ctx);
+        ForallDescr forallDescr = BaseDescrFactory.builder(new ForallDescr())
+                .withParserRuleContext(ctx)
+                .build();
         visitDescrChildren(ctx).forEach(forallDescr::addDescr);
         return forallDescr;
     }
 
     @Override
     public PatternDescr visitLhsAccumulate(DRLParser.LhsAccumulateContext ctx) {
-        AccumulateDescr accumulateDescr = DescrHelper.init(new AccumulateDescr(), ctx);
+        AccumulateDescr accumulateDescr = BaseDescrFactory.builder(new AccumulateDescr())
+                .withParserRuleContext(ctx)
+                .build();
         accumulateDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
 
         // accumulate function
@@ -541,7 +589,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public BehaviorDescr visitPatternFilter(DRLParser.PatternFilterContext ctx) {
-        BehaviorDescr behaviorDescr = DescrHelper.init(new BehaviorDescr(), ctx);
+        BehaviorDescr behaviorDescr = BaseDescrFactory.builder(new BehaviorDescr())
+                .withParserRuleContext(ctx)
+                .build();
         behaviorDescr.setType(ctx.DRL_WINDOW().getText());
         behaviorDescr.setSubType(ctx.IDENTIFIER().getText());
         List<DRLParser.DrlExpressionContext> drlExpressionContexts = ctx.expressionList().drlExpression();
@@ -552,21 +602,27 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public FromDescr visitFromExpression(DRLParser.FromExpressionContext ctx) {
-        FromDescr fromDescr = DescrHelper.init(new FromDescr(), ctx);
+        FromDescr fromDescr = BaseDescrFactory.builder(new FromDescr())
+                .withParserRuleContext(ctx)
+                .build();
         fromDescr.setDataSource(new MVELExprDescr(getTextPreservingWhitespace(ctx)));
         return fromDescr;
     }
 
     @Override
     public CollectDescr visitFromCollect(DRLParser.FromCollectContext ctx) {
-        CollectDescr collectDescr = DescrHelper.init(new CollectDescr(), ctx);
+        CollectDescr collectDescr = BaseDescrFactory.builder(new CollectDescr())
+                .withParserRuleContext(ctx)
+                .build();
         collectDescr.setInputPattern((PatternDescr) visitLhsPatternBind(ctx.lhsPatternBind()));
         return collectDescr;
     }
 
     @Override
     public AccumulateDescr visitFromAccumulate(DRLParser.FromAccumulateContext ctx) {
-        AccumulateDescr accumulateDescr = DescrHelper.init(new AccumulateDescr(), ctx);
+        AccumulateDescr accumulateDescr = BaseDescrFactory.builder(new AccumulateDescr())
+                .withParserRuleContext(ctx)
+                .build();
         accumulateDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
         if (ctx.DRL_INIT() != null) {
             // inline custom accumulate
@@ -593,12 +649,16 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public EntryPointDescr visitFromEntryPoint(DRLParser.FromEntryPointContext ctx) {
-        return DescrHelper.init(new EntryPointDescr(safeStripStringDelimiters(ctx.stringId().getText())), ctx);
+        return BaseDescrFactory.builder(new EntryPointDescr(safeStripStringDelimiters(ctx.stringId().getText())))
+                .withParserRuleContext(ctx)
+                .build();
     }
 
     @Override
     public WindowReferenceDescr visitFromWindow(DRLParser.FromWindowContext ctx) {
-        return DescrHelper.init(new WindowReferenceDescr(ctx.IDENTIFIER().getText()), ctx);
+        return BaseDescrFactory.builder(new WindowReferenceDescr(ctx.IDENTIFIER().getText()))
+                .withParserRuleContext(ctx)
+                .build();
     }
 
     /**
@@ -650,7 +710,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         // get a simple constraint as String
         String constraint = visitConstraintChildren(ctx);
         if (!constraint.isEmpty()) {
-            ExprConstraintDescr constraintDescr = DescrHelper.init(new ExprConstraintDescr(constraint), ctx);
+            ExprConstraintDescr constraintDescr = BaseDescrFactory.builder(new ExprConstraintDescr(constraint))
+                .withParserRuleContext(ctx)
+                .build();
             constraintDescr.setType(ExprConstraintDescr.Type.NAMED);
             descrList.add(constraintDescr);
             return descrList;
@@ -682,7 +744,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public ExistsDescr visitLhsExists(DRLParser.LhsExistsContext ctx) {
-        ExistsDescr existsDescr = DescrHelper.init(new ExistsDescr(), ctx);
+        ExistsDescr existsDescr = BaseDescrFactory.builder(new ExistsDescr())
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.lhsExpression() != null) {
             // exists( A() or B() )
             List<BaseDescr> baseDescrs = visitDescrChildren(ctx);
@@ -701,7 +765,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public NotDescr visitLhsNot(DRLParser.LhsNotContext ctx) {
-        NotDescr notDescr = DescrHelper.init(new NotDescr(), ctx);
+        NotDescr notDescr = BaseDescrFactory.builder(new NotDescr())
+                .withParserRuleContext(ctx)
+                .build();
         if (ctx.lhsExpression() != null) {
             // not ( A() or B() )
             List<BaseDescr> baseDescrs = visitDescrChildren(ctx);
@@ -720,7 +786,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public EvalDescr visitLhsEval(DRLParser.LhsEvalContext ctx) {
-        return DescrHelper.init(new EvalDescr(getTextPreservingWhitespace(ctx.conditionalOrExpression())), ctx);
+        return BaseDescrFactory.builder(new EvalDescr(getTextPreservingWhitespace(ctx.conditionalOrExpression())))
+                .withParserRuleContext(ctx)
+                .build();
     }
 
     @Override
@@ -737,7 +805,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             // Avoid nested OrDescr
             return descrList.get(0).getDescr();
         } else {
-            OrDescr orDescr = DescrHelper.init(new OrDescr(), ctx);
+            OrDescr orDescr = BaseDescrFactory.builder(new OrDescr())
+                .withParserRuleContext(ctx)
+                .build();
             // For example, in case of A() or B() or C(),
             // Parser creates AST like this:
             //  lhsOr
@@ -779,7 +849,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             // Avoid nested AndDescr
             return descrList.get(0).getDescr();
         } else {
-            AndDescr andDescr = DescrHelper.init(new AndDescr(), ctx);
+            AndDescr andDescr = BaseDescrFactory.builder(new AndDescr())
+                .withParserRuleContext(ctx)
+                .build();
             // For example, in case of A() and B() and C(),
             // Parser creates AST like this:
             //  lhsAnd
