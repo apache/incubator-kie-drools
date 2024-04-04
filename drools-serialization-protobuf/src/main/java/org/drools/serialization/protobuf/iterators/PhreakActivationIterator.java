@@ -31,6 +31,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
@@ -53,7 +54,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
 
 public class PhreakActivationIterator
     implements
@@ -61,7 +61,7 @@ public class PhreakActivationIterator
 
     private java.util.Iterator<InternalMatch> agendaItemIter;
 
-    List<InternalMatch> internalMatches;
+    private List<InternalMatch> internalMatches;
 
     PhreakActivationIterator() {
 
@@ -70,6 +70,7 @@ public class PhreakActivationIterator
     private PhreakActivationIterator(ReteEvaluator reteEvaluator,
                                      InternalRuleBase kbase) {
         internalMatches = collectAgendaItems(kbase, reteEvaluator);
+//        List<InternalMatch> internalMatches_OLD = collectAgendaItems_OLD(kbase, reteEvaluator);
         agendaItemIter =  internalMatches.iterator();
     }
 
@@ -85,7 +86,7 @@ public class PhreakActivationIterator
         }
     }
 
-    public static List<InternalMatch> collectAgendaItems(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
+    private static List<InternalMatch> collectAgendaItems(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
         List<InternalMatch> internalMatches = new ArrayList<>();
 
         for (TerminalNode[] nodeArray : kbase.getReteooBuilder().getTerminalNodes().values()) {
@@ -93,12 +94,11 @@ public class PhreakActivationIterator
                 if (node.getType() == NodeTypeEnums.RuleTerminalNode) {
                     PathMemory pathMemory = (PathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
                     if (pathMemory != null && pathMemory.getRuleAgendaItem() != null) {
-                        LinkedList<TupleImpl> dormantMatches = pathMemory.getRuleAgendaItem().getRuleExecutor().getDormantMatches();
-                        for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) dormantMatches.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
+                        RuleExecutor ruleExecutor = pathMemory.getRuleAgendaItem().getRuleExecutor();
+                        for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) ruleExecutor.getDormantMatches().getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
                             internalMatches.add(lt);
                         }
-                        LinkedList<TupleImpl> activeMatches = pathMemory.getRuleAgendaItem().getRuleExecutor().getActiveMatches();
-                        for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) activeMatches.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
+                        for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) ruleExecutor.getActiveMatches().getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
                             internalMatches.add(lt);
                         }
                     }
@@ -111,7 +111,7 @@ public class PhreakActivationIterator
 
     // --- OLD
 
-    public static List<InternalMatch> collectAgendaItems_OLD(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
+    private static List<InternalMatch> collectAgendaItems_OLD(InternalRuleBase kbase, ReteEvaluator reteEvaluator) {
         Set<RuleTerminalNode> nodeSet = new HashSet<>();
         List<RuleTerminalNode> nodeList = populateRuleTerminalNodes(kbase, nodeSet);
 

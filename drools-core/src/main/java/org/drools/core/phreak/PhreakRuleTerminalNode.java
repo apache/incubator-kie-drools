@@ -19,6 +19,7 @@
 package org.drools.core.phreak;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
@@ -26,12 +27,11 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.NotNodeLeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.definition.rule.Rule;
@@ -98,7 +98,7 @@ public class PhreakRuleTerminalNode {
                                          TupleImpl leftTuple) {
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
-            executor.addLeftTuple(leftTuple);
+            executor.addLeftTuple(leftTuple, false);
             return;
         }
 
@@ -129,16 +129,29 @@ public class PhreakRuleTerminalNode {
         }
 
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple )) {
-            // only relevant for seralization, to not refire Matches already fired
+            // only relevant for serialization, to not refire Matches already fired
+            if (!triggeredByInitialFact(leftTuple)) {
+                executor.addDormantLeftTuple( leftTuple );
+            }
             return;
         }
 
-        executor.addLeftTuple( leftTuple );
+        executor.addLeftTuple( leftTuple, false );
 
         activationsManager.addItemToActivationGroup( rtnLeftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
             insertAndStageActivation( reteEvaluator, rtnLeftTuple );
         }
+    }
+
+    private static boolean triggeredByInitialFact(TupleImpl leftTuple) {
+        if (leftTuple == null) {
+            return false;
+        }
+        if (leftTuple instanceof NotNodeLeftTuple && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().getObject() == InitialFactImpl.getInstance()) {
+            return true;
+        }
+        return triggeredByInitialFact(leftTuple.getParent());
     }
 
     private static void insertAndStageActivation(ReteEvaluator reteEvaluator, InternalMatch internalMatch) {
@@ -181,7 +194,7 @@ public class PhreakRuleTerminalNode {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!rtnLeftTuple.isQueued() ) {
-                executor.addLeftTuple( leftTuple );
+                executor.addLeftTuple( leftTuple, true );
                 reteEvaluator.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
             }
             return;
@@ -207,6 +220,9 @@ public class PhreakRuleTerminalNode {
         
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple)) {
             // only relevant for serialization, to not re-fire Matches already fired
+            if (!triggeredByInitialFact(leftTuple)) {
+                executor.addDormantLeftTuple(leftTuple);
+            }
             return;
         }
         
@@ -225,7 +241,7 @@ public class PhreakRuleTerminalNode {
                     activationsManager.getAgendaEventSupport().fireActivationCreated( rtnLeftTuple, reteEvaluator );
 
                     rtnLeftTuple.update( salienceInt, pctx );
-                    executor.addLeftTuple( leftTuple );
+                    executor.addLeftTuple( leftTuple, leftTuple.getStagedType() == TupleImpl.NONE );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
                 }
             }

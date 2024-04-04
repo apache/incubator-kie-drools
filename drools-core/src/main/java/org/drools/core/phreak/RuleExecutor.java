@@ -294,7 +294,14 @@ public class RuleExecutor {
         return dormantMatches;
     }
 
-    public void addLeftTuple(TupleImpl tuple) {
+    public void addDormantLeftTuple(TupleImpl tuple) {
+        dormantMatches.add(tuple);
+    }
+
+    public void addLeftTuple(TupleImpl tuple, boolean onUpdate) {
+        if (onUpdate) {
+            dormantMatches.remove(tuple);
+        }
         ((RuleTerminalNodeLeftTuple) tuple).setQueued(true);
         this.activeMatches.add(tuple);
         if (queue != null) {
@@ -310,7 +317,10 @@ public class RuleExecutor {
 
     public void removeLeftTuple(TupleImpl tuple) {
         ((RuleTerminalNodeLeftTuple) tuple).setQueued(false);
-        this.activeMatches.remove(tuple);
+        activeMatches.remove(tuple);
+        if (tuple.getStagedType() != Tuple.DELETE) {
+            dormantMatches.add(tuple);
+        }
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
         }
