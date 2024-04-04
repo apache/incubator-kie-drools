@@ -49,6 +49,12 @@ public class FunctionDescr extends BaseDescr implements Namespaceable {
         this.dialect = "java";
     }
 
+    public FunctionDescr(BasicDescrContext ctx) {
+        super(ctx);
+        this.returnType = "void";
+        this.dialect = "java";
+    }
+
     public String getName() {
         return this.name;
     }

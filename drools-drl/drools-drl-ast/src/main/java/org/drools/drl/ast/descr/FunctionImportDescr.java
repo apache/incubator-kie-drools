@@ -28,6 +28,10 @@ public class FunctionImportDescr extends ImportDescr {
     public FunctionImportDescr() {
     }
 
+    public FunctionImportDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public String toString() {
         return "import function " + this.getTarget();
     }

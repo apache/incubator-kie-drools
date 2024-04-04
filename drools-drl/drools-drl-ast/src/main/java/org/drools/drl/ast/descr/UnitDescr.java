@@ -28,11 +28,15 @@ public class UnitDescr extends BaseDescr {
     private String            target;
 
     public UnitDescr() {
-        this( null );
+        this((String) null);
     }
 
     public UnitDescr( final String clazzName ) {
         this.target = clazzName;
+    }
+
+    public UnitDescr(BasicDescrContext ctx) {
+        super(ctx);
     }
 
     public String getTarget() {

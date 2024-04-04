@@ -28,11 +28,15 @@ public class ImportDescr extends BaseDescr {
     private String            target;
 
     public ImportDescr() {
-        this( null );
+        this((String) null);
     }
 
     public ImportDescr(final String clazzName) {
         this.target = clazzName;
+    }
+
+    public ImportDescr(BasicDescrContext ctx) {
+        super(ctx);
     }
 
     public String getTarget() {

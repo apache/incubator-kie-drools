@@ -33,6 +33,10 @@ public class EntryPointDescr extends PatternSourceDescr {
     public EntryPointDescr( String id ) {
         this.setText( id );
     }
+
+    public EntryPointDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
     
     public void setEntryId( String id ) {
         this.setText( id );

@@ -48,6 +48,9 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         this.type = new QualifiedName( typeName, typeNamespace );
     }
 
+    public AbstractClassTypeDeclarationDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
 
     @SuppressWarnings("unchecked")
     @Override

@@ -34,6 +34,10 @@ public class OrDescr extends AnnotatedBaseDescr
         addDescr(baseDescr);
     }
 
+    public OrDescr(BasicDescrContext context) {
+        super(context);
+    }
+
     public void insertBeforeLast( final Class<?> clazz,
                                   final BaseDescr baseDescr ) {
         if ( clazz.isInstance( baseDescr ) ) {

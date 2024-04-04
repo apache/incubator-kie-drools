@@ -35,6 +35,10 @@ public class NotDescr extends AnnotatedBaseDescr
         addDescr( descr );
     }
 
+    public NotDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
     }

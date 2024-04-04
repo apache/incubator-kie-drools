@@ -29,6 +29,10 @@ public class AccumulateImportDescr extends ImportDescr {
 
     public AccumulateImportDescr() {
     }
+
+    public AccumulateImportDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
     
     public String getFunctionName() {
         return functionName;

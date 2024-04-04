@@ -39,6 +39,10 @@ public class GlobalDescr extends BaseDescr {
         this.type = type;
     }
 
+    public GlobalDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     /**
      * @return the identifier
      */

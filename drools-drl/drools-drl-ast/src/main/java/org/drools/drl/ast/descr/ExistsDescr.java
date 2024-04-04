@@ -34,6 +34,10 @@ public class ExistsDescr extends AnnotatedBaseDescr
         addDescr( baseDescr );
     }
 
+    public ExistsDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
     }

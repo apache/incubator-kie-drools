@@ -36,6 +36,11 @@ public class ForallDescr extends BaseDescr
         this.patterns = new ArrayList<>( 2 );
     }
 
+    public ForallDescr(BasicDescrContext context) {
+        super(context);
+        this.patterns = new ArrayList<>( 2 );
+    }
+
     /* (non-Javadoc)
      * @see org.kie.lang.descr.ConditionalElementDescr#addDescr(org.kie.lang.descr.BaseDescr)
      */

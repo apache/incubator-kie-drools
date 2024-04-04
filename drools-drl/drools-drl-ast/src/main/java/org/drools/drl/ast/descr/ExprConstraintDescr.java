@@ -38,6 +38,10 @@ public class ExprConstraintDescr extends BaseDescr implements ExpressionDescr {
     public ExprConstraintDescr(final String expr) {
         setText( expr );
     }
+
+    public ExprConstraintDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
     
     public void setExpression( final String expr ) {
         setText( expr );

@@ -41,6 +41,10 @@ public class BehaviorDescr extends BaseDescr {
         setText(type);
     }
 
+    public BehaviorDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     /**
      * @return the type
      */

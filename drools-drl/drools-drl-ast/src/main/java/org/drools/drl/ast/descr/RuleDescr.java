@@ -72,6 +72,14 @@ public class RuleDescr extends AnnotatedBaseDescr {
         this.consequence = "";
     }
 
+    public RuleDescr(BasicDescrContext ctx) {
+        super(ctx);
+        this.attributes = new LinkedHashMap<>();
+        this.namedConsequence = new HashMap<>();
+        this.lhs = new AndDescr();
+        this.consequence = "";
+    }
+
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {

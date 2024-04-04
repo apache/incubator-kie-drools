@@ -31,6 +31,10 @@ public class EntryPointDeclarationDescr extends AnnotatedBaseDescr {
         super();
     }
 
+    public EntryPointDeclarationDescr(BasicDescrContext context) {
+        super(context);
+    }
+
     @Override
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {

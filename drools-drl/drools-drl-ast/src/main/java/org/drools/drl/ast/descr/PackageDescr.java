@@ -72,6 +72,12 @@ public class PackageDescr extends BaseDescr
         this.documentation = documentation;
     }
 
+    public PackageDescr(BasicDescrContext ctx) {
+        super(ctx);
+        setNamespace("");
+        this.documentation = "";
+    }
+
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {

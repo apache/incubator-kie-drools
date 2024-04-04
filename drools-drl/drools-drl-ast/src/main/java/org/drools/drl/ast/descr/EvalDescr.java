@@ -38,6 +38,10 @@ public class EvalDescr extends BaseDescr
         this.content = content;
     }
 
+    public EvalDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public Object getContent() {
         return this.content;
     }

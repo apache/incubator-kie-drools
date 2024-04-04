@@ -35,6 +35,10 @@ public class AndDescr extends AnnotatedBaseDescr
         addDescr(baseDescr);
     }
 
+    public AndDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
     }

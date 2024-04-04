@@ -19,34 +19,19 @@
 package org.drools.drl.ast.descr;
 
 /**
- * A pattern source descriptor for windows
+ * This is an interface to provide basic context information for Descr object.
  */
-public class WindowReferenceDescr extends PatternSourceDescr {
+public interface BasicDescrContext {
 
-    private static final long serialVersionUID = 150l;
-    
-    public WindowReferenceDescr() {
-    }
-    
-    public WindowReferenceDescr( String name ) {
-        this.setText( name );
-    }
+    int getStartCharacter();
 
-    public WindowReferenceDescr(BasicDescrContext ctx) {
-        super(ctx);
-    }
-    
-    public void setName( String name ) {
-        this.setText( name );
-    }
-    
-    public String getName() {
-        return this.getText();
-    }
-    
-    @Override
-    public String toString() {
-        return "from window \""+getName()+"\"";
-    }
+    int getEndCharacter();
 
+    int getLine();
+
+    int getColumn();
+
+    int getEndLine();
+
+    int getEndColumn();
 }

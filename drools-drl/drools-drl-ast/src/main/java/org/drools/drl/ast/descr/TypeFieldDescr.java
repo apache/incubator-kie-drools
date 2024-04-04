@@ -37,7 +37,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
     private boolean                      recursive;
 
     public TypeFieldDescr() {
-        this( null );
+        this((String) null);
     }
 
     public TypeFieldDescr(final String fieldName) {
@@ -49,7 +49,11 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         this( fieldName );
         this.pattern = pat;
     }
-    
+
+    public TypeFieldDescr(BasicDescrContext ctx) {
+        super(ctx);
+    }
+
     @Override
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
