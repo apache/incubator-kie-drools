@@ -34,6 +34,7 @@ import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.QualifiedName;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
@@ -3977,5 +3978,23 @@ class MiscDRLParserTest {
         assertThat(query.getName()).isEqualTo("olderThan");
         assertThat(query.getParameterTypes()).isEmpty();
         assertThat(query.getParameters()).isEmpty();
+    }
+
+    @Test
+    public void traitExtendsMultiple() throws Exception {
+        final String source = "declare trait FatherTrait extends com.sample.ParentTrait, UncleTrait, org.test.GrandParentTrait end";
+
+        PackageDescr pkg = parser.parse(source);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
+
+        assertThat(declarations).hasSize(1);
+        TypeDeclarationDescr trait = declarations.get(0);
+        assertThat(trait.getSuperTypeName()).isEqualTo("ParentTrait");
+        assertThat(trait.getSuperTypeNamespace()).isEqualTo("com.sample");
+        assertThat(trait.getSuperTypes())
+                .map(QualifiedName::getFullName)
+                .containsExactlyInAnyOrder("com.sample.ParentTrait", "UncleTrait", "org.test.GrandParentTrait");
     }
 }
