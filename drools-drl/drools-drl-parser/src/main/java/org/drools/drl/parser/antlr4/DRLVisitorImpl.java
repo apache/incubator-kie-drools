@@ -215,7 +215,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             typeDeclarationDescr.setTrait(true);
         }
         if (ctx.EXTENDS() != null) {
-            typeDeclarationDescr.addSuperType(ctx.superType.getText());
+            for (DRLParser.DrlQualifiedNameContext superType : ctx.superTypes) {
+                typeDeclarationDescr.addSuperType(superType.getText());
+            }
         }
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
