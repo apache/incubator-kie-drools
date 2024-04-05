@@ -28,13 +28,13 @@ import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.drools.io.ClassPathResource;
 import org.drools.io.FileSystemResource;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -535,12 +535,9 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void validateAllValidSharedModels() throws URISyntaxException, IOException {
         String modelFilesPath = "valid_models";
-        URL modelFilesUrl =
-                Collections.list(Thread.currentThread().getContextClassLoader().getResources(modelFilesPath))
-                .stream()
-                .filter(url -> url.getProtocol().equals("file"))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve " + modelFilesPath));
+        ClassPathResource classPathResource = new ClassPathResource(modelFilesPath,
+                                                                    ValidatorTest.class.getClassLoader());
+        URL modelFilesUrl = classPathResource.getURL();
         Path modelsPath = Path.of(modelFilesUrl.toURI());
         testDirectory(modelsPath);
     }
