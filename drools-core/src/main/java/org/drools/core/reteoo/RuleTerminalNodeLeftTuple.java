@@ -223,7 +223,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public void dequeue() {
-        ruleAgendaItem.getRuleExecutor().removeLeftTuple(this);
+        ruleAgendaItem.getRuleExecutor().removeActiveTuple(this);
     }
 
     public void remove() {

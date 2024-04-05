@@ -788,6 +788,11 @@ public class NamedConsequencesTest {
         public void setStatus(Status status) {
             this.status = status;
         }
+
+        @Override
+        public String toString() {
+            return "Fact(" + id + ")";
+        }
     }
 
     @Test

@@ -100,7 +100,7 @@ public class RuleExecutor {
             } else {
                 fireActivationEvent(reteEvaluator, activationsManager, tuple, tuple.getConsequence());
             }
-            removeLeftTuple( tuple );
+            removeActiveTuple(tuple );
         }
         ruleAgendaItem.remove();
         return directFirings;
@@ -201,6 +201,9 @@ public class RuleExecutor {
             leftTuple = activeMatches.removeFirst();
             ((InternalMatch) leftTuple).setQueued(false);
         }
+        if (((RuleTerminalNodeLeftTuple) leftTuple).isDormant()) {
+            throw new IllegalStateException();
+        }
         dormantMatches.add(leftTuple);
         ((RuleTerminalNodeLeftTuple) leftTuple).setDormant(true);
         return leftTuple;
@@ -295,25 +298,58 @@ public class RuleExecutor {
         return dormantMatches;
     }
 
-    public void addDormantLeftTuple(RuleTerminalNodeLeftTuple tuple) {
+    public void addDormantTuple(RuleTerminalNodeLeftTuple tuple) {
+        if (tuple.isDormant()) {
+            throw new IllegalStateException();
+        }
         dormantMatches.add(tuple);
         tuple.setDormant(true);
     }
 
-    public void modifyLeftTuple(RuleTerminalNodeLeftTuple tuple) {
+    public void removeDormantTuple(RuleTerminalNodeLeftTuple tuple) {
+//        if (tuple.getStagedType() == Tuple.DELETE || tuple.getStagedType() == Tuple.NONE) {
+        if (tuple.getStagedType() == Tuple.DELETE) {
+            if (!tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
+            dormantMatches.remove(tuple);
+            tuple.setDormant(false);
+        }
+    }
+
+    public void addActiveTuple(RuleTerminalNodeLeftTuple tuple) {
+        tuple.setQueued(true);
+        if (tuple.isDormant()) {
+            throw new IllegalStateException();
+        }
+        this.activeMatches.add(tuple);
+        if (queue != null) {
+            addQueuedLeftTuple(tuple);
+        }
+    }
+
+    public void modifyActiveTuple(RuleTerminalNodeLeftTuple tuple) {
         if (!tuple.isDormant()) {
             throw new IllegalStateException();
         }
         dormantMatches.remove(tuple);
         tuple.setDormant(false);
-        addLeftTuple(tuple);
+        addActiveTuple(tuple);
     }
 
-    public void addLeftTuple(RuleTerminalNodeLeftTuple tuple) {
-        tuple.setQueued(true);
-        this.activeMatches.add(tuple);
+    public void removeActiveTuple(RuleTerminalNodeLeftTuple tuple) {
+        tuple.setQueued(false);
+        activeMatches.remove(tuple);
+//        if (tuple.getStagedType() == Tuple.DELETE || tuple.getStagedType() == Tuple.NONE) {
+        if (tuple.getStagedType() == Tuple.NONE) {
+            if (tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
+            dormantMatches.add(tuple);
+            tuple.setDormant(true);
+        }
         if (queue != null) {
-            addQueuedLeftTuple(tuple);
+            removeQueuedLeftTuple(tuple);
         }
     }
 
@@ -321,18 +357,6 @@ public class RuleExecutor {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
         queue.enqueue(tuple);
         updateSalience(currentSalience);
-    }
-
-    public void removeLeftTuple(RuleTerminalNodeLeftTuple tuple) {
-        tuple.setQueued(false);
-        activeMatches.remove(tuple);
-        if (tuple.getStagedType() != Tuple.DELETE) {
-            dormantMatches.add(tuple);
-            tuple.setDormant(true);
-        }
-        if (queue != null) {
-            removeQueuedLeftTuple(tuple);
-        }
     }
 
     private void removeQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {

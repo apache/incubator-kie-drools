@@ -1515,20 +1515,17 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(1);
 
-        ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
 
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
 
-        ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(3);
 
         // should not grow any further
-        ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(3);
     }

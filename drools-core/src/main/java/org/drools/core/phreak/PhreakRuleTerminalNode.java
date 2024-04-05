@@ -19,7 +19,6 @@
 package org.drools.core.phreak;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
@@ -27,7 +26,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.NotNodeLeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -98,7 +96,7 @@ public class PhreakRuleTerminalNode {
                                          RuleTerminalNodeLeftTuple leftTuple) {
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
-            executor.addLeftTuple(leftTuple);
+            executor.addActiveTuple(leftTuple);
             return;
         }
 
@@ -129,28 +127,16 @@ public class PhreakRuleTerminalNode {
 
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( leftTuple )) {
             // only relevant for serialization, to not refire Matches already fired
-            if (!triggeredByInitialFact(leftTuple)) {
-                executor.addDormantLeftTuple( leftTuple );
-            }
+            executor.addDormantTuple(leftTuple );
             return;
         }
 
-        executor.addLeftTuple( leftTuple );
+        executor.addActiveTuple(leftTuple );
 
         activationsManager.addItemToActivationGroup( leftTuple );
         if ( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
             insertAndStageActivation( reteEvaluator, leftTuple );
         }
-    }
-
-    private static boolean triggeredByInitialFact(TupleImpl leftTuple) {
-        if (leftTuple == null) {
-            return false;
-        }
-        if (leftTuple instanceof NotNodeLeftTuple && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().getObject() == InitialFactImpl.getInstance()) {
-            return true;
-        }
-        return triggeredByInitialFact(leftTuple.getParent());
     }
 
     private static void insertAndStageActivation(ReteEvaluator reteEvaluator, InternalMatch internalMatch) {
@@ -192,7 +178,7 @@ public class PhreakRuleTerminalNode {
 
         if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!leftTuple.isQueued() ) {
-                executor.modifyLeftTuple( leftTuple );
+                executor.modifyActiveTuple(leftTuple );
                 reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
             }
             return;
@@ -218,9 +204,7 @@ public class PhreakRuleTerminalNode {
         
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( leftTuple)) {
             // only relevant for serialization, to not re-fire Matches already fired
-            if (!triggeredByInitialFact(leftTuple)) {
-                executor.addDormantLeftTuple(leftTuple);
-            }
+            executor.addDormantTuple(leftTuple);
             return;
         }
         
@@ -239,7 +223,7 @@ public class PhreakRuleTerminalNode {
                     activationsManager.getAgendaEventSupport().fireActivationCreated( leftTuple, reteEvaluator );
 
                     leftTuple.update( salienceInt, pctx );
-                    executor.modifyLeftTuple( leftTuple );
+                    executor.modifyActiveTuple(leftTuple );
                     reteEvaluator.getRuleEventSupport().onUpdateMatch( leftTuple );
                 }
             }
@@ -283,15 +267,15 @@ public class PhreakRuleTerminalNode {
 
         if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire
-            executor.removeLeftTuple(leftTuple);
+            executor.removeActiveTuple( leftTuple );
+        } else if ( !leftTuple.isQueued() ) {
+            executor.removeDormantTuple( leftTuple );
         }
 
         leftTuple.setContextObject( null );
     }
 
-    private static boolean blockedByLockOnActive(RuleImpl rule,
-                                          PropagationContext pctx,
-                                          InternalAgendaGroup agendaGroup) {
+    private static boolean blockedByLockOnActive(RuleImpl rule, PropagationContext pctx, InternalAgendaGroup agendaGroup) {
         if ( rule.isLockOnActive() ) {
             long handleRecency = pctx.getFactHandle().getRecency();
             boolean isActive = agendaGroup.isActive();
@@ -301,9 +285,8 @@ public class PhreakRuleTerminalNode {
             if ( isActive && activatedForRecency < handleRecency &&
                  agendaGroup.getAutoFocusActivator() != pctx ) {
                 return true;
-            } else {
-                return clearedForRecency != -1 && clearedForRecency >= handleRecency;
             }
+            return clearedForRecency != -1 && clearedForRecency >= handleRecency;
 
         }
         return false;

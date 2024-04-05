@@ -134,7 +134,7 @@ public class PhreakBranchNode {
                 if (newRtn == null) {
                     // old exits, new does not, so delete
                     if ( branchTuples.rtnLeftTuple.getMemory() != null ) {
-                        executor.removeLeftTuple(branchTuples.rtnLeftTuple);
+                        executor.removeActiveTuple(branchTuples.rtnLeftTuple);
                     }
                     PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);
 
@@ -145,7 +145,7 @@ public class PhreakBranchNode {
                 } else {
                     // old and new on different branches, delete one and insert the other
                     if ( branchTuples.rtnLeftTuple.getMemory() != null ) {
-                        executor.removeLeftTuple(branchTuples.rtnLeftTuple);
+                        executor.removeActiveTuple(branchTuples.rtnLeftTuple);
                     }
                     PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);
 
@@ -200,7 +200,7 @@ public class PhreakBranchNode {
 
             if (branchTuples.rtnLeftTuple != null) {
                 if ( branchTuples.rtnLeftTuple.getMemory() != null ) {
-                    executor.removeLeftTuple(branchTuples.rtnLeftTuple);
+                    executor.removeActiveTuple(branchTuples.rtnLeftTuple);
                 }
                 PhreakRuleTerminalNode.doLeftDelete(activationsManager, executor, branchTuples.rtnLeftTuple);
             }
