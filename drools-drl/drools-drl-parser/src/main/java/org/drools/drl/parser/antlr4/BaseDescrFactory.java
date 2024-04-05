@@ -48,7 +48,7 @@ public class BaseDescrFactory {
          * Initializes a BaseDescr instance with common properties from the given context.
          * DRLVisitor implementations should always use this method to initialize BaseDescr instances.
          */
-        public Builder withParserRuleContext(ParserRuleContext ctx) {
+        public Builder<T> withParserRuleContext(ParserRuleContext ctx) {
             populateCommonProperties(toReturn, ctx);
             return this;
         }
