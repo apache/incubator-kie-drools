@@ -264,7 +264,7 @@ class KnativeServingAddonIT {
                 .accept(ContentType.JSON).when()
                 .post("/serviceNotFound")
                 .then()
-                .statusCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
+                .statusCode(HttpURLConnection.HTTP_NOT_FOUND);
     }
 
     @Test

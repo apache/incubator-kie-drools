@@ -176,16 +176,13 @@ public abstract class BaseExceptionsHandler<T> {
     public <R extends Exception, U> T mapException(R exception) {
         FunctionHolder<T, U> holder = (FunctionHolder<T, U>) mapper.getOrDefault(exception.getClass(), defaultHolder);
         U body = holder.getContentGenerator().apply(exception);
-        if (exception instanceof ProcessInstanceExecutionException || exception instanceof WorkItemExecutionException) {
-            Throwable rootCause = exception.getCause();
-
-            while (rootCause != null) {
-                if (mapper.containsKey(rootCause.getClass())) {
-                    holder = (FunctionHolder<T, U>) mapper.get(rootCause.getClass());
-                    break;
-                }
-                rootCause = rootCause.getCause();
+        Throwable rootCause = exception.getCause();
+        while (rootCause != null) {
+            if (mapper.containsKey(rootCause.getClass())) {
+                holder = (FunctionHolder<T, U>) mapper.get(rootCause.getClass());
+                exception = (R) rootCause;
             }
+            rootCause = rootCause.getCause();
         }
         return holder.getResponseGenerator().apply(exception).apply(body);
     }
