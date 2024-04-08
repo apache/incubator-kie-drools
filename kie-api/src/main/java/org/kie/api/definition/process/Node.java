@@ -25,19 +25,7 @@ import java.util.Map;
  * A Node represents an activity in the process flow chart.
  * Many different predefined nodes are supported out-of-the-box.
  */
-public interface Node {
-
-    /**
-     * The id of the node.  This is unique within its NodeContainer.
-     * @return the id of the node
-     */
-    long getId();
-
-    /**
-     * the node id in the bpmn
-     * @return
-     */
-    String getNodeUniqueId();
+public interface Node extends WorkflowElement  {
 
     /**
      * The name of the node

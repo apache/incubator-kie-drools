@@ -20,6 +20,8 @@ package org.drools.core.process;
 
 import java.util.Map;
 
+import org.kie.api.definition.process.WorkflowElementIdentifier;
+
 public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
 
     void setName(String name);
@@ -38,11 +40,11 @@ public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
 
     void setNodeInstanceId(long deploymentId);
 
-    void setNodeId(long deploymentId);
+    void setNodeId(WorkflowElementIdentifier nodeIdentifier);
 
     String getDeploymentId();
 
     long getNodeInstanceId();
 
-    long getNodeId();
+    WorkflowElementIdentifier getNodeId();
 }
