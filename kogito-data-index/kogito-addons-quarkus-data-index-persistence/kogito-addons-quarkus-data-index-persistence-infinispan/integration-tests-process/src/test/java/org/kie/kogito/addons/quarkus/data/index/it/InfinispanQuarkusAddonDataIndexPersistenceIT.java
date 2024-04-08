@@ -63,10 +63,10 @@ class InfinispanQuarkusAddonDataIndexPersistenceIT {
                 .body("data.ProcessDefinitions[0].addons", hasItem("infinispan-persistence"))
                 .body("data.ProcessDefinitions[0].source", is(not(emptyOrNullString())))
                 .body("data.ProcessDefinitions[0].nodes.size()", is(2))
-                .body("data.ProcessDefinitions[0].nodes[0].id", is("1"))
+                .body("data.ProcessDefinitions[0].nodes[0].id", is("_B3241ACF-97BE-443B-A49F-964AB3DD006C"))
                 .body("data.ProcessDefinitions[0].nodes[0].name", is("End"))
                 .body("data.ProcessDefinitions[0].nodes[0].type", is("EndNode"))
-                .body("data.ProcessDefinitions[0].nodes[0].uniqueId", is("1"))
+                .body("data.ProcessDefinitions[0].nodes[0].uniqueId", is("_B3241ACF-97BE-443B-A49F-964AB3DD006C"))
                 .body("data.ProcessDefinitions[0].nodes[0].metadata.UniqueId", is("_B3241ACF-97BE-443B-A49F-964AB3DD006C"));
 
         given().contentType(ContentType.JSON)

@@ -56,6 +56,7 @@ import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
 import org.kie.kogito.event.process.ProcessInstanceSLADataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
@@ -64,7 +65,6 @@ import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceVariableDataEvent;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,29 +95,17 @@ public class JPADataAuditStore implements DataAuditStore {
         log.setRoles(event.getData().getRoles());
 
         EntityManager entityManager = context.getContext();
-        switch (event.getData().getState()) {
-            case KogitoProcessInstance.STATE_ACTIVE:
+        switch (event.getData().getEventType()) {
+            case ProcessInstanceStateEventBody.EVENT_TYPE_STARTED:
                 log.setEventType(ProcessStateLogType.ACTIVE);
                 entityManager.persist(log);
                 break;
-            case KogitoProcessInstance.STATE_ABORTED:
-                log.setEventType(ProcessStateLogType.ABORTED);
-                entityManager.persist(log);
-                break;
-            case KogitoProcessInstance.STATE_COMPLETED:
+            case ProcessInstanceStateEventBody.EVENT_TYPE_ENDED:
                 log.setEventType(ProcessStateLogType.COMPLETED);
                 entityManager.persist(log);
                 break;
-            case KogitoProcessInstance.STATE_PENDING:
-                log.setEventType(ProcessStateLogType.PENDING);
-                entityManager.persist(log);
-                break;
-            case KogitoProcessInstance.STATE_SUSPENDED:
-                log.setEventType(ProcessStateLogType.SUSPENDING);
-                entityManager.persist(log);
-                break;
-            case KogitoProcessInstance.STATE_ERROR:
-                log.setEventType(ProcessStateLogType.ERROR);
+            case ProcessInstanceStateEventBody.EVENT_TYPE_MIGRATED:
+                log.setEventType(ProcessStateLogType.MIGRATED);
                 entityManager.persist(log);
                 break;
         }

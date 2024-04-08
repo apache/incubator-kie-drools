@@ -157,7 +157,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             List<org.kie.api.definition.process.Node> nodes = ((KogitoWorkflowProcess) ((AbstractProcess<?>) process).get()).getNodesRecursively();
             List<Node> list = nodes.stream().map(n -> {
                 Node data = new Node();
-                data.setId(String.valueOf(n.getId()));
+                data.setId(n.getId().toExternalFormat());
                 data.setUniqueId(((org.jbpm.workflow.core.Node) n).getUniqueId());
                 data.setMetadata(n.getMetaData() == null ? null : mapMetadata(n));
                 data.setType(n.getClass().getSimpleName());

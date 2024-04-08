@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.jobs.embedded;
 
+import java.util.Optional;
+
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.jobs.service.api.Recipient;
@@ -53,12 +55,21 @@ public class EmbeddedJobExecutor implements JobExecutor {
         RecipientInstance recipientModel = (RecipientInstance) jobDetails.getRecipient();
         InVMRecipient recipient = (InVMRecipient) recipientModel.getRecipient();
         String timerId = recipient.getPayload().getData().timerId();
-        String processId = recipient.getPayload().getData().processId();
-        Process<? extends Model> process = processes.processById(processId);
         String processInstanceId = recipient.getPayload().getData().processInstanceId();
+        Optional<Process<? extends Model>> process = processes.processByProcessInstanceId(processInstanceId);
+        if (process.isEmpty()) {
+            return Uni.createFrom().item(
+                    JobExecutionResponse.builder()
+                            .code("401")
+                            .jobId(jobDetails.getId())
+                            .now()
+                            .message("job does not belong to this container")
+                            .build());
+        }
+
         Integer limit = jobDetails.getRetries();
 
-        TriggerJobCommand command = new TriggerJobCommand(processInstanceId, correlationId, timerId, limit, process, application.unitOfWorkManager());
+        TriggerJobCommand command = new TriggerJobCommand(processInstanceId, correlationId, timerId, limit, process.get(), application.unitOfWorkManager());
 
         return Uni.createFrom().item(command::execute)
                 .onFailure()

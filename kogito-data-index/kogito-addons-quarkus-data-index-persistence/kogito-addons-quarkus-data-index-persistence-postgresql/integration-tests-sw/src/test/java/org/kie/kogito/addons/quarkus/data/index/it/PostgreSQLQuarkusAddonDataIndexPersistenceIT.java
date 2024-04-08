@@ -74,7 +74,7 @@ class PostgreSQLQuarkusAddonDataIndexPersistenceIT {
                 .body("data.ProcessDefinitions[0].nodes[0].name", is("Start"))
                 .body("data.ProcessDefinitions[0].nodes[0].type", is("StartNode"))
                 .body("data.ProcessDefinitions[0].nodes[0].uniqueId", is("1"))
-                .body("data.ProcessDefinitions[0].nodes[0].metadata.UniqueId", is("_jbpm-unique-0"))
+                .body("data.ProcessDefinitions[0].nodes[0].metadata.UniqueId", is("1"))
                 .extract().path("data.ProcessDefinitions[0].source");
 
         assertThat(JsonPath.from(source).getString("id")).isEqualTo("greet");
