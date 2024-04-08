@@ -24,18 +24,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
-import org.drools.io.FileSystemResource;
+import org.drools.io.ClassPathResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message.Level;
@@ -533,40 +528,34 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void validateAllValidSharedModels() throws URISyntaxException, IOException {
-        String modelFilesPath = "valid_models";
-        URL modelFilesUrl =
-                Collections.list(Thread.currentThread().getContextClassLoader().getResources(modelFilesPath))
+    public void validateAllValidSharedModels() throws IOException {
+        String modelFilesPath = "valid_models/";
+        URL modelFilesJarURL = Collections.list(Thread.currentThread().getContextClassLoader().getResources(
+                "valid_models/"))
                 .stream()
-                .filter(url -> url.getProtocol().equals("file"))
+                .filter(url -> url.getProtocol().equals("jar"))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve " + modelFilesPath));
-        Path modelsPath = Path.of(modelFilesUrl.toURI());
-        testDirectory(modelsPath);
+                .orElseThrow(() -> new RuntimeException("Failed to retrieve jar containing " + modelFilesPath));
+        String modelFilesJarFile = modelFilesJarURL.getFile();
+        String jarPath = modelFilesJarFile.substring(modelFilesJarFile.lastIndexOf(":") + 1,
+                                                     modelFilesJarFile.lastIndexOf("!"));
+        final JarFile jarFile = new JarFile(new File(jarPath));
+        testDirectoryInJar(jarFile, modelFilesPath);
     }
 
-    private void testDirectory(Path modelsPath) {
-        try (DirectoryStream<Path> pathIterator = Files.newDirectoryStream(modelsPath)) {
-            Map<Boolean, List<Path>> allFiles = StreamSupport.stream(pathIterator.spliterator(), false)
-                    .collect(Collectors.groupingBy(path -> path.toFile().isDirectory()));
-            if (allFiles.containsKey(true)) {
-                allFiles.get(true).forEach(this::testDirectory);
-            }
-            if (allFiles.containsKey(false)) {
-                testFiles(allFiles.get(false));
-            }
-        } catch (IOException | DirectoryIteratorException e) {
-            String messageToShow = e.getMessage() != null && !e.getMessage().isEmpty() ? e.getMessage() : String.format("Unable to navigate directory %s", modelsPath);
-            LOGGER.error(messageToShow);
-            LOGGER.debug(messageToShow, e);
-            fail(messageToShow);
-        }
+    private void testDirectoryInJar(JarFile jarFile, String directory) {
+        List<String> allFiles = Collections.list(jarFile.entries())
+                .stream()
+                .filter(entry -> entry.getName().startsWith(directory) && !entry.isDirectory())
+                .map(ZipEntry::getName)
+                .toList();
+        testFiles(allFiles);
     }
 
-    private void testFiles(List<Path> modelPaths) {
-        Resource[] resources = modelPaths.stream()
-                .map(path -> new FileSystemResource(path.toFile()))
-                .toArray(value -> new Resource[modelPaths.size()]);
+    private void testFiles(List<String> modelFiles) {
+        Resource[] resources = modelFiles.stream()
+                .map(ClassPathResource::new)
+                .toArray(value -> new Resource[modelFiles.size()]);
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
         assertNotNull(dmnMessages);
         dmnMessages.forEach(dmnMessage -> LOGGER.error(dmnMessage.toString()));
