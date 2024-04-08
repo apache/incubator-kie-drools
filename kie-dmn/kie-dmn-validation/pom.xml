@@ -181,40 +181,8 @@
       <testResource>
         <directory>src/test/resources</directory>
       </testResource>
-      <testResource>
-        <directory>${project.build.directory}/generated-test-resources</directory>
-      </testResource>
     </testResources>
     <plugins>
-      <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>${dependency-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.kie</groupId>
-                  <artifactId>kie-dmn-test-resources</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>tests</classifier>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/generated-test-resources</outputDirectory>
-                  <includes>valid_models/**/*.dmn</includes>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
