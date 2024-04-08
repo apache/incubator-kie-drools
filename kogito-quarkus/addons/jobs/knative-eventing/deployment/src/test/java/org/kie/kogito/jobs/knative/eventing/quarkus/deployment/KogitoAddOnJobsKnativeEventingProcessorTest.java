@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.AsyncEventNode;
@@ -182,7 +183,7 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
     private static KogitoWorkflowProcess mockProcess1() {
         Node startNode = new StartNode();
         Node timerNode = new TimerNode();
-        timerNode.setId(1);
+        timerNode.setId(WorkflowElementIdentifierFactory.fromExternalFormat(1L));
         Node endNode = new EndNode();
         return mockProcess(PROCESS1_ID, startNode, timerNode, endNode);
     }
@@ -204,7 +205,7 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
     private static KogitoWorkflowProcess mockProcess3() {
         Node startNode = new StartNode();
         Node timerNode = new TimerNode();
-        timerNode.setId(1);
+        timerNode.setId(WorkflowElementIdentifierFactory.fromExternalFormat(1L));
         Node endNode = new EndNode();
         return mockProcess(PROCESS3_ID, startNode, timerNode, endNode);
     }

@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -191,7 +190,6 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
 
         // for unique id's of nodes, start with one to avoid returning wrong nodes for dynamic nodes
-        parser.getMetaData().put("idGen", new AtomicInteger(1));
         parser.getMetaData().put("CurrentProcessDefinition", process);
         process.getCorrelationManager().setClassLoader(parser.getClassLoader());
         return process;
@@ -368,7 +366,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         Node node = null;
         // try looking for a node with same "UniqueId" (in metadata)
         for (Node containerNode : nodeContainer.getNodes()) {
-            if (nodeRef.equals(containerNode.getMetaData().get("UniqueId"))) {
+            if (nodeRef.equals(containerNode.getUniqueId())) {
                 node = containerNode;
                 break;
             }
@@ -410,7 +408,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         source, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
                         target, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
                 result.setMetaData("bendpoints", connection.getBendpoints());
-                result.setMetaData("UniqueId", connection.getId());
+                result.setMetaData(Metadata.UNIQUE_ID, connection.getId());
 
                 if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) {
                     NodeImpl nodeImpl = (NodeImpl) source;
@@ -443,7 +441,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         // 
                         if (!(attachedNode instanceof StateBasedNode) && !type.equals("Compensation")) {
                             throw new ProcessParsingValidationException("Boundary events are supported only on StateBasedNode, found node: "
-                                    + attachedNode.getClass().getName() + " [" + attachedNode.getMetaData().get("UniqueId") + "]");
+                                    + attachedNode.getClass().getName() + " [" + attachedNode.getUniqueId() + "]");
                         }
 
                         if (type.startsWith("Escalation")) {
@@ -544,7 +542,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
-            DroolsConsequenceAction consequenceAction = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId(),
+            DroolsConsequenceAction consequenceAction = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId().toExternalFormat(),
                     kcontext -> kcontext.getNodeInstance().getStringId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
             compositeNode.addTimer(timer, consequenceAction);
         } else if (timeCycle != null) {
@@ -560,13 +558,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             String finalTimeCycle = timeCycle;
 
             DroolsConsequenceAction action =
-                    createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + finalTimeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId(),
+                    createJavaAction(new SignalProcessInstanceAction(
+                            "Timer-" + attachedTo + "-" + finalTimeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId().toExternalFormat(),
                             kcontext -> kcontext.getNodeInstance().getStringId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
             compositeNode.addTimer(timer, action);
         } else if (timeDate != null) {
             timer.setDate(timeDate);
             timer.setTimeType(Timer.TIME_DATE);
-            DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId(),
+            DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId().toExternalFormat(),
                     kcontext -> kcontext.getNodeInstance().getStringId(), SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
             compositeNode.addTimer(timer, action);
         }
@@ -678,7 +677,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
                     // connect boundary event to compensation activity
                     ConnectionImpl connection = new ConnectionImpl(sourceNode, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, targetNode, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-                    connection.setMetaData("UniqueId", null);
+                    connection.setMetaData(Metadata.UNIQUE_ID, null);
                     connection.setMetaData("hidden", true);
                     connection.setMetaData("association", true);
 
@@ -712,7 +711,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         // - event node is boundary event node
         if (!(source instanceof BoundaryEventNode)) {
             throw new ProcessParsingValidationException("(Compensation) activities may only be associated with Boundary Event Nodes (not with" +
-                    source.getClass().getSimpleName() + " nodes [node " + ((String) source.getMetaData().get("UniqueId")) + "].");
+                    source.getClass().getSimpleName() + " nodes [node " + source.getUniqueId() + "].");
         }
         BoundaryEventNode eventNode = (BoundaryEventNode) source;
 
@@ -731,7 +730,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
 
         if (!compensationCheckPassed) {
-            throw new ProcessParsingValidationException("An Event [" + ((String) eventNode.getMetaData("UniqueId"))
+            throw new ProcessParsingValidationException("An Event [" + eventNode.getUniqueId()
                     + "] linked from an association [" + association.getId()
                     + "] must be a (Boundary) Compensation Event.");
         }
@@ -751,13 +750,13 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         String attachedToId = eventNode.getAttachedToNodeId();
         Node attachedToNode = null;
         for (Node node : eventNode.getParentContainer().getNodes()) {
-            if (attachedToId.equals(node.getMetaData().get("UniqueId"))) {
+            if (attachedToId.equals(node.getUniqueId())) {
                 attachedToNode = node;
                 break;
             }
         }
         if (attachedToNode == null) {
-            throw new ProcessParsingValidationException("Boundary Event [" + ((String) eventNode.getMetaData("UniqueId"))
+            throw new ProcessParsingValidationException("Boundary Event [" + eventNode.getUniqueId()
                     + "] is not attached to a node [" + attachedToId + "] that can be found.");
         }
         if (!(attachedToNode instanceof RuleSetNode
@@ -766,7 +765,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 || attachedToNode instanceof HumanTaskNode
                 || attachedToNode instanceof CompositeNode
                 || attachedToNode instanceof SubProcessNode)) {
-            throw new ProcessParsingValidationException("Compensation Boundary Event [" + ((String) eventNode.getMetaData("UniqueId"))
+            throw new ProcessParsingValidationException("Compensation Boundary Event [" + eventNode.getUniqueId()
                     + "] must be attached to a task or sub-process.");
         }
 
@@ -783,7 +782,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
         if (!compensationCheckPassed) {
             throw new ProcessParsingValidationException("An Activity ["
-                    + ((String) ((NodeImpl) target).getMetaData("UniqueId")) +
+                    + ((NodeImpl) target).getUniqueId() +
                     "] associated with a Boundary Compensation Event must be a Task or a (non-Event) Sub-Process");
         }
 
@@ -808,9 +807,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
         if (!compensationCheckPassed) {
             throw new ProcessParsingValidationException("A Compensation Activity ["
-                    + ((String) targetNode.getMetaData("UniqueId"))
+                    + targetNode.getUniqueId()
                     + "] may not have any outgoing connection ["
-                    + (String) outgoingConnection.getMetaData("UniqueId") + "]");
+                    + (String) outgoingConnection.getUniqueId() + "]");
         }
     }
 
@@ -908,7 +907,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             if (isForCompensationObj == null) {
                                                 eventSubProcessNode.setMetaData("isForCompensation", true);
                                                 logger.warn("Overriding empty value of \"isForCompensation\" attribute on Event Sub-Process [{}] and setting it to true.",
-                                                        eventSubProcessNode.getMetaData("UniqueId"));
+                                                        eventSubProcessNode.getUniqueId());
                                             }
                                             String compensationHandlerId = "";
                                             if (subProcess instanceof RuleFlowProcess) {
@@ -918,7 +917,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             }
                                             if (subProcess instanceof Node) {
                                                 parentSubProcess = ((KogitoNode) subProcess).getParentContainer();
-                                                compensationHandlerId = (String) ((CompositeNode) subProcess).getMetaData(Metadata.UNIQUE_ID);
+                                                compensationHandlerId = (String) ((CompositeNode) subProcess).getUniqueId();
                                             }
                                             // 2. The event filter (never fires, purely for dumping purposes) has already been added
 
@@ -949,7 +948,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             } else if (node instanceof EventNode) {
                 final EventNode eventNode = (EventNode) node;
                 if (!(eventNode instanceof BoundaryEventNode) && eventNode.getDefaultIncomingConnections().isEmpty()) {
-                    throw new ProcessParsingValidationException("Event node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection");
+                    throw new ProcessParsingValidationException("Event node '" + node.getName() + "' [" + node.getId().toExternalFormat() + "] has no incoming connection");
                 }
             }
         }
@@ -968,7 +967,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     private void assignLanes(NodeContainer nodeContainer, Map<String, String> laneMapping) {
         for (Node node : nodeContainer.getNodes()) {
             String lane = null;
-            String uniqueId = (String) node.getMetaData().get("UniqueId");
+            String uniqueId = node.getUniqueId();
             if (uniqueId != null) {
                 lane = laneMapping.get(uniqueId);
             } else {
@@ -1078,7 +1077,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             if (nodeParent instanceof RuleFlowProcess) {
                 parentId = ((RuleFlowProcess) nodeParent).getId();
             } else {
-                parentId = (String) ((NodeImpl) nodeParent).getMetaData("UniqueId");
+                parentId = ((NodeImpl) nodeParent).getUniqueId();
             }
 
             String compensationEvent;

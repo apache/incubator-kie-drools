@@ -19,6 +19,9 @@
 package org.jbpm.workflow.core.impl;
 
 import java.io.Serializable;
+import java.util.Objects;
+
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class ConnectionRef implements Serializable {
 
@@ -26,14 +29,14 @@ public class ConnectionRef implements Serializable {
 
     private String connectionId;
     private String toType;
-    private long nodeId;
+    private WorkflowElementIdentifier nodeId;
 
-    public ConnectionRef(long nodeId, String toType) {
+    public ConnectionRef(WorkflowElementIdentifier nodeId, String toType) {
         this.nodeId = nodeId;
         this.toType = toType;
     }
 
-    public ConnectionRef(String connectionId, long nodeId, String toType) {
+    public ConnectionRef(String connectionId, WorkflowElementIdentifier nodeId, String toType) {
         this.connectionId = connectionId;
         this.nodeId = nodeId;
         this.toType = toType;
@@ -43,7 +46,7 @@ public class ConnectionRef implements Serializable {
         return toType;
     }
 
-    public long getNodeId() {
+    public WorkflowElementIdentifier getNodeId() {
         return nodeId;
     }
 
@@ -53,12 +56,7 @@ public class ConnectionRef implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((connectionId == null) ? 0 : connectionId.hashCode());
-        result = prime * result + (int) (nodeId ^ (nodeId >>> 32));
-        result = prime * result + ((toType == null) ? 0 : toType.hashCode());
-        return result;
+        return Objects.hash(connectionId, nodeId, toType);
     }
 
     @Override
@@ -70,19 +68,7 @@ public class ConnectionRef implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         ConnectionRef other = (ConnectionRef) obj;
-        if (connectionId == null) {
-            if (other.connectionId != null)
-                return false;
-        } else if (!connectionId.equals(other.connectionId))
-            return false;
-        if (nodeId != other.nodeId)
-            return false;
-        if (toType == null) {
-            if (other.toType != null)
-                return false;
-        } else if (!toType.equals(other.toType))
-            return false;
-        return true;
+        return Objects.equals(connectionId, other.connectionId) && Objects.equals(nodeId, other.nodeId) && Objects.equals(toType, other.toType);
     }
 
 }

@@ -25,13 +25,14 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<SplitFactory<T>, T> {
 
     public static final String METHOD_TYPE = "type";
     public static final String METHOD_CONSTRAINT = "constraint";
 
-    public SplitFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public SplitFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new Split(), id);
     }
 
@@ -44,27 +45,27 @@ public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends 
         return this;
     }
 
-    public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, String constraint) {
+    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, String constraint) {
         return constraint(toNodeId, name, type, dialect, constraint, 0);
     }
 
-    public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, String constraint, int priority) {
+    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, String constraint, int priority) {
         return constraint(toNodeId, name, type, dialect, constraint, priority, false);
     }
 
-    public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, String constraint, int priority, boolean isDefault) {
+    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, String constraint, int priority, boolean isDefault) {
         return constraintBuilder(toNodeId, name, type, dialect, constraint).withDefault(isDefault).priority(priority).done();
     }
 
-    public ConstraintFactory<SplitFactory<T>> constraintBuilder(long toNodeId, String name, String type, String dialect, String constraint) {
+    public ConstraintFactory<SplitFactory<T>> constraintBuilder(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, String constraint) {
         return new ConstraintFactory<>(this, toNodeId, name, type, dialect, constraint);
     }
 
-    public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
+    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
         return constraint(toNodeId, name, type, dialect, evaluator, priority, false);
     }
 
-    public SplitFactory<T> constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority, boolean isDefault) {
+    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority, boolean isDefault) {
         ReturnValueConstraintEvaluator constraintImpl = new ReturnValueConstraintEvaluator();
         constraintImpl.setName(name);
         constraintImpl.setType(type);

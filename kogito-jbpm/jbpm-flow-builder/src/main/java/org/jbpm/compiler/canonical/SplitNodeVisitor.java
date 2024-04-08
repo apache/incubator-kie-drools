@@ -37,7 +37,6 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -55,7 +54,7 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
 
     @Override
     public void visitNode(String factoryField, Split node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        body.addStatement(getAssignedFactoryMethod(factoryField, SplitFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, SplitFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "Split"))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(node.getType())));
 
@@ -87,7 +86,7 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                                 returnValueEvaluator = lambda;
                             }
                             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
-                                    new LongLiteralExpr(entry.getKey().getNodeId()),
+                                    getWorkflowElementConstructor(entry.getKey().getNodeId()),
                                     new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
                                     new StringLiteralExpr(entry.getKey().getToType()),
                                     new StringLiteralExpr(constraint.getDialect()),

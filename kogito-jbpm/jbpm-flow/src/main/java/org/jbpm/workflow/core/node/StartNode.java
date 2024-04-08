@@ -71,13 +71,13 @@ public class StartNode extends ExtendedNodeImpl {
     @Override
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
-                "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] may not have an incoming connection!");
+                "A start node [" + this.getUniqueId() + ", " + this.getName() + "] may not have an incoming connection!");
     }
 
     @Override
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
-                "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] may not have an incoming connection!");
+                "A start node [" + this.getUniqueId() + ", " + this.getName() + "] may not have an incoming connection!");
     }
 
     @Override
@@ -85,11 +85,11 @@ public class StartNode extends ExtendedNodeImpl {
         super.validateAddOutgoingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                    "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] only accepts default outgoing connection type!");
+                    "A start node [" + this.getUniqueId() + ", " + this.getName() + "] only accepts default outgoing connection type!");
         }
         if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
-                    "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] cannot have more than one outgoing connection!");
+                    "A start node [" + this.getUniqueId() + ", " + this.getName() + "] cannot have more than one outgoing connection!");
         }
     }
 

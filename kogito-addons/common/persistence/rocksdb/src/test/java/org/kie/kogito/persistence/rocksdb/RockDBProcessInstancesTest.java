@@ -39,6 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.kie.kogito.process.MutableProcessInstances;
+import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -130,7 +131,7 @@ class RockDBProcessInstancesTest {
         WorkflowProcessInstance instance = ((AbstractProcessInstance<?>) process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")))).internalGetProcessInstance();
         logger.debug("Created instance {}", instance.getId());
         instance.setStartDate(new Date());
-        pi.create(instance.getId(), mockProcessInstance(instance));
+        pi.create(instance.getId(), mockProcessInstance(instance, process));
         assertThat(pi.exists(instance.getId())).isTrue();
         assertThat(pi.findById(instance.getId())).isNotEmpty();
         assertThat(pi.findById("non_existant")).isEmpty();
@@ -147,12 +148,13 @@ class RockDBProcessInstancesTest {
         logger.debug("Checked removed instance {}", instance.getId());
     }
 
-    private static AbstractProcessInstance<?> mockProcessInstance(WorkflowProcessInstance pi) {
+    private static AbstractProcessInstance<?> mockProcessInstance(WorkflowProcessInstance pi, Process process) {
         AbstractProcessInstance<?> mockPi = mock(AbstractProcessInstance.class);
         mockPi.setVersion(1L);
         when(mockPi.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         when(mockPi.internalGetProcessInstance()).thenReturn(pi);
         when(mockPi.id()).thenReturn(pi.getId());
+        when(mockPi.process()).thenReturn(process);
         return mockPi;
     }
 }

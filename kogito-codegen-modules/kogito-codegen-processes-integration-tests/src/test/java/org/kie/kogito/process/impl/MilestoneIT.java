@@ -28,7 +28,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
@@ -38,6 +37,7 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.flexible.ItemDescription.Status;
 import org.kie.kogito.process.flexible.Milestone;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +72,7 @@ class MilestoneIT extends AbstractCodegenIT {
         assertThat(legacyProcessInstance.getNodeIdInError()).isNullOrEmpty();
         Optional<String> milestoneId = Stream.of(legacyProcessInstance.getNodeContainer().getNodes())
                 .filter(node -> node.getName().equals("SimpleMilestone"))
-                .map(n -> (String) n.getMetaData().get(Metadata.UNIQUE_ID))
+                .map(n -> n.getUniqueId())
                 .findFirst();
         assertThat(milestoneId).isPresent();
         assertThat(legacyProcessInstance.getCompletedNodeIds()).contains(milestoneId.get());
@@ -92,13 +92,13 @@ class MilestoneIT extends AbstractCodegenIT {
         assertState(processInstance, ProcessInstance.STATE_PENDING);
 
         Collection<Milestone> expected = new ArrayList<>();
-        expected.add(Milestone.builder().withName("Milestone").withStatus(AVAILABLE).build());
+        expected.add(Milestone.builder().withId("_8060F4FE-534E-475A-ACCD-80CBDF90D878").withName("Milestone").withStatus(AVAILABLE).build());
         assertMilestones(expected, processInstance.milestones());
 
         processInstance.start();
         assertState(processInstance, ProcessInstance.STATE_ACTIVE);
 
-        expected = expected.stream().map(m -> Milestone.builder().withId(m.getId()).withName(m.getName()).withStatus(AVAILABLE).build()).collect(Collectors.toList());
+        expected = expected.stream().map(m -> Milestone.builder().withId(m.getId()).withName(m.getName()).withStatus(Status.ACTIVE).build()).collect(Collectors.toList());
         assertMilestones(expected, processInstance.milestones());
 
         List<WorkItem> workItems = processInstance.workItems();

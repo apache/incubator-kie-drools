@@ -21,6 +21,7 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class CompositeContextNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<CompositeContextNodeFactory<T>, T> {
 
@@ -29,7 +30,7 @@ public class CompositeContextNodeFactory<T extends RuleFlowNodeContainerFactory<
     public static final String METHOD_LINK_OUTGOING_CONNECTIONS = "linkOutgoingConnections";
     public static final String METHOD_AUTO_COMPLETE = "autoComplete";
 
-    public CompositeContextNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public CompositeContextNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new CompositeContextNode(), id);
     }
 

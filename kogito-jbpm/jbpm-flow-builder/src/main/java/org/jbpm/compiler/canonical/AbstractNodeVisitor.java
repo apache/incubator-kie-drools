@@ -48,7 +48,6 @@ import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -89,7 +88,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     }
 
     protected String getNodeId(T node) {
-        return getNodeKey() + node.getId();
+        return getNodeKey() + node.getId().toSanitizeString();
     }
 
     public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
@@ -272,9 +271,9 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
             return;
         }
 
-        body.addStatement(getFactoryMethod(factoryField, "connection", new LongLiteralExpr(connection.getFrom().getId()),
-                new LongLiteralExpr(connection.getTo().getId()),
-                new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get("UniqueId"), ""))));
+        body.addStatement(getFactoryMethod(factoryField, "connection", getWorkflowElementConstructor(connection.getFrom().getId()),
+                getWorkflowElementConstructor(connection.getTo().getId()),
+                new StringLiteralExpr(getOrDefault(connection.getUniqueId(), ""))));
     }
 
     protected static LambdaExpr createLambdaExpr(String consequence, VariableScope scope) {

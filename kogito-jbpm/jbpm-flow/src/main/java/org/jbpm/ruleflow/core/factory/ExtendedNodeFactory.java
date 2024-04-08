@@ -27,10 +27,11 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public abstract class ExtendedNodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends NodeFactory<T, P> {
 
-    protected ExtendedNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, long id) {
+    protected ExtendedNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, node, id);
     }
 

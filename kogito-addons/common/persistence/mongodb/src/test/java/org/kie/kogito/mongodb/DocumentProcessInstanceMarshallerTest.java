@@ -24,13 +24,13 @@ import java.util.Collections;
 
 import org.bson.Document;
 import org.drools.io.ClassPathResource;
+import org.jbpm.flow.serialization.MarshallerContextName;
+import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.serialization.process.MarshallerContextName;
-import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;

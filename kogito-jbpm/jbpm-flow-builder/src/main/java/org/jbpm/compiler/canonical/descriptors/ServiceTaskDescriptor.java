@@ -83,7 +83,7 @@ public class ServiceTaskDescriptor extends AbstractServiceTaskDescriptor {
 
     protected ServiceTaskDescriptor(WorkItemNode workItemNode, ClassLoader contextClassLoader) {
         super(workItemNode);
-        mangledName = mangledHandlerName(interfaceName, operationName, String.valueOf(workItemNode.getId()));
+        mangledName = mangledHandlerName(interfaceName, operationName, String.valueOf(workItemNode.getId().toSanitizeString()));
         this.parameters = extractTaskParameters();
         try {
             cls = contextClassLoader.loadClass(interfaceName);

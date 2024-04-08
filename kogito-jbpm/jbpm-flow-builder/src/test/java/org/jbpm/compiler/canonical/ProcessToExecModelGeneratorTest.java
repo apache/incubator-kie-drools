@@ -22,8 +22,10 @@ import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProcessToExecModelGeneratorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGeneratorTest.class);
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
+    private static WorkflowElementIdentifier four = WorkflowElementIdentifierFactory.fromExternalFormat("four");
 
     @Test
     public void testScriptAndWorkItemGeneration() {
@@ -45,24 +52,24 @@ public class ProcessToExecModelGeneratorTest {
                 .packageName("com.myspace.demo")
                 .dynamic(false)
                 .version("1.0")
-                .workItemNode(1)
+                .workItemNode(one)
                 .name("Log")
                 .workName("Log")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("Dump order")
                 .action("java", "System.out.println(\"Order has been created \" + order);")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("end")
                 .terminate(false)
                 .done()
-                .startNode(4)
+                .startNode(four)
                 .name("start")
                 .done()
-                .connection(2, 1)
-                .connection(4, 2)
-                .connection(1, 3);
+                .connection(two, one)
+                .connection(four, two)
+                .connection(one, three);
 
         WorkflowProcess process = factory.validate().getProcess();
 
@@ -91,24 +98,24 @@ public class ProcessToExecModelGeneratorTest {
                 .packageName("com.myspace.demo")
                 .dynamic(false)
                 .version("1.0")
-                .workItemNode(1)
+                .workItemNode(one)
                 .name("Log")
                 .workName("Log")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("Dump order")
                 .action("java", "System.out.println(\"Order has been created \" + order);")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("end")
                 .terminate(false)
                 .done()
-                .startNode(4)
+                .startNode(four)
                 .name("start")
                 .done()
-                .connection(2, 1)
-                .connection(4, 2)
-                .connection(1, 3);
+                .connection(two, one)
+                .connection(four, two)
+                .connection(one, three);
 
         Process process = factory.validate().getProcess();
 
@@ -129,24 +136,24 @@ public class ProcessToExecModelGeneratorTest {
                 .packageName("com.myspace.demo")
                 .dynamic(false)
                 .version("1.0")
-                .workItemNode(1)
+                .workItemNode(one)
                 .name("Log")
                 .workName("Log")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("Dump order")
                 .action("java", "System.out.println(\"Order has been created \" + order);")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("end")
                 .terminate(false)
                 .done()
-                .startNode(4)
+                .startNode(four)
                 .name("start")
                 .done()
-                .connection(2, 1)
-                .connection(4, 2)
-                .connection(1, 3);
+                .connection(two, one)
+                .connection(four, two)
+                .connection(one, three);
 
         WorkflowProcess process = factory.validate().getProcess();
 

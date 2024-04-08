@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.process.ProcessContext;
 
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
@@ -50,7 +51,7 @@ public class DynamicNode extends CompositeContextNode {
     }
 
     @Override
-    public Node internalGetNode(long id) {
+    public Node internalGetNode(WorkflowElementIdentifier id) {
         try {
             return getNode(id);
         } catch (IllegalArgumentException e) {

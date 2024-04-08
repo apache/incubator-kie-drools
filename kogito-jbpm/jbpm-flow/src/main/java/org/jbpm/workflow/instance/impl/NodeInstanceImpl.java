@@ -54,6 +54,7 @@ import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -66,7 +67,6 @@ import org.slf4j.LoggerFactory;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.Metadata.INCOMING_CONNECTION;
 import static org.jbpm.ruleflow.core.Metadata.OUTGOING_CONNECTION;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 
 /**
@@ -79,7 +79,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     protected static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 
     private String id;
-    private long nodeId;
+    private WorkflowElementIdentifier nodeId;
     private WorkflowProcessInstance processInstance;
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
     private Map<String, Object> metaData = new HashMap<>();
@@ -109,12 +109,12 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return this.id;
     }
 
-    public void setNodeId(final long nodeId) {
+    public void setNodeId(WorkflowElementIdentifier nodeId) {
         this.nodeId = nodeId;
     }
 
     @Override
-    public long getNodeId() {
+    public WorkflowElementIdentifier getNodeId() {
         return this.nodeId;
     }
 
@@ -126,7 +126,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     @Override
     public String getNodeDefinitionId() {
-        return (String) getNode().getMetaData().get(UNIQUE_ID);
+        return getNode().getUniqueId();
     }
 
     @Override
@@ -224,8 +224,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer()).setCurrentLevel(level);
             Collection<Connection> incoming = getNode().getIncomingConnections(type);
             for (Connection conn : incoming) {
-                if (conn.getFrom().getId() == from.getNodeId()) {
-                    this.metaData.put(INCOMING_CONNECTION, conn.getMetaData().get(UNIQUE_ID));
+                if (conn.getFrom().getId().equals(from.getNodeId())) {
+                    this.metaData.put(INCOMING_CONNECTION, conn.getUniqueId());
                     break;
                 }
             }
@@ -257,6 +257,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
 
     protected void captureError(Exception e) {
+        e.printStackTrace();
+        logger.error("capture error", e);
         getProcessInstance().setErrorState(this, e);
     }
 
@@ -291,7 +293,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         leaveTime = new Date();
         org.kie.api.definition.process.Node node = getNode();
         if (node != null) {
-            String uniqueId = (String) node.getMetaData().get(UNIQUE_ID);
+            String uniqueId = node.getUniqueId();
             if (uniqueId == null) {
                 uniqueId = ((NodeImpl) node).getUniqueId();
             }
@@ -456,8 +458,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         nodeInstance.trigger(this, type);
         Collection<Connection> outgoing = getNode().getOutgoingConnections(type);
         for (Connection conn : outgoing) {
-            if (conn.getTo().getId() == nodeInstance.getNodeId()) {
-                this.metaData.put(OUTGOING_CONNECTION, conn.getMetaData().get(UNIQUE_ID));
+            if (conn.getTo().getId().equals(nodeInstance.getNodeId())) {
+                this.metaData.put(OUTGOING_CONNECTION, conn.getUniqueId());
                 break;
             }
         }
@@ -478,11 +480,11 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         triggerNode(getNodeId(), !remove);
     }
 
-    public void triggerNode(long nodeId) {
+    public void triggerNode(WorkflowElementIdentifier nodeId) {
         triggerNode(nodeId, true);
     }
 
-    public void triggerNode(long nodeId, boolean fireEvents) {
+    public void triggerNode(WorkflowElementIdentifier nodeId, boolean fireEvents) {
         org.jbpm.workflow.instance.NodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
                 .getNodeInstance(((KogitoNode) getNode()).getParentContainer().getNode(nodeId));
         triggerNodeInstance(nodeInstance, Node.CONNECTION_DEFAULT_TYPE, fireEvents);

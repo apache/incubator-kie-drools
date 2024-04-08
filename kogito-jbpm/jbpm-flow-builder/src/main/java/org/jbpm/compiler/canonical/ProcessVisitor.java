@@ -71,7 +71,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -82,7 +81,6 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_ASSOCIATION;
 import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_CONNECTION;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_DYNAMIC;
@@ -263,9 +261,9 @@ public class ProcessVisitor extends AbstractVisitor {
             method = METHOD_ASSOCIATION;
         }
         body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, method,
-                new LongLiteralExpr(connection.getFrom().getId()),
-                new LongLiteralExpr(connection.getTo().getId()),
-                new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get(UNIQUE_ID), ""))));
+                getWorkflowElementConstructor(connection.getFrom().getId()),
+                getWorkflowElementConstructor(connection.getTo().getId()),
+                new StringLiteralExpr(getOrDefault(connection.getUniqueId(), ""))));
     }
 
     private void visitCompensationScope(Process process, BlockStmt body) {

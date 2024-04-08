@@ -124,7 +124,7 @@ public class ProcessDefinitionEventRegistry {
     private List<NodeDefinition> getNodesDefinitions(Process<?> p) {
         return p.findNodes(n -> true).stream()
                 .map(node -> NodeDefinition.builder()
-                        .setId(String.valueOf(node.getId()))
+                        .setId(node.getId().toExternalFormat())
                         .setName(node.getName())
                         .setType(node.getClass().getSimpleName())
                         .setUniqueId(node.getUniqueId())

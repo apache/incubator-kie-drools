@@ -29,6 +29,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport.AssignmentType;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -269,7 +270,7 @@ public class HumanTaskWorkItemDecoratorImpl implements InternalHumanTaskWorkItem
     }
 
     @Override
-    public long getNodeId() {
+    public WorkflowElementIdentifier getNodeId() {
         return delegate.getNodeId();
     }
 
@@ -374,8 +375,8 @@ public class HumanTaskWorkItemDecoratorImpl implements InternalHumanTaskWorkItem
     }
 
     @Override
-    public void setNodeId(long deploymentId) {
-        delegate.setNodeId(deploymentId);
+    public void setNodeId(WorkflowElementIdentifier nodeIdentifier) {
+        delegate.setNodeId(nodeIdentifier);
     }
 
     @Override

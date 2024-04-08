@@ -41,6 +41,7 @@ public class MockNodeInstanceFactory implements NodeInstanceFactory {
     }
 
     public NodeInstance getNodeInstance(Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
+        instance.setNodeId(node.getId());
         instance.setProcessInstance(processInstance);
         instance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
         return instance;

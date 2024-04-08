@@ -71,6 +71,10 @@ public interface KogitoProcessEventSupport {
 
     void fireOnMessage(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String messageName, Object messageObject);
 
+    void fireOnError(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, Exception exception);
+
+    void fireOnMigration(KogitoProcessInstance processInstance, KieRuntime runtime);
+
     // user tasks events
 
     void fireOneUserTaskStateChange(
@@ -164,5 +168,4 @@ public interface KogitoProcessEventSupport {
 
     void removeEventListener(KogitoProcessEventListener listener);
 
-    void fireOnError(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, Exception exception);
 }

@@ -31,6 +31,7 @@ import org.infinispan.client.hotrod.MetadataValue;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.util.CloseableIterator;
+import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
 import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
@@ -39,7 +40,6 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 @SuppressWarnings({ "rawtypes" })
 public class CacheProcessInstances implements MutableProcessInstances {

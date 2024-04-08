@@ -21,6 +21,7 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class EventNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractEventNodeFactory<EventNodeFactory<T>, T> {
 
@@ -29,7 +30,7 @@ public class EventNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
     public static final String METHOD_VARIABLE_NAME = "variableName";
     public static final String METHOD_INPUT_VARIABLE_NAME = "inputVariableName";
 
-    public EventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public EventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new EventNode(), id);
     }
 

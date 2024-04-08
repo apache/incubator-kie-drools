@@ -51,7 +51,7 @@ public abstract class AbstractNodeInstanceAction implements Action, Serializable
     private static NodeInstance findNodeByUniqueId(Collection<NodeInstance> nodeInstances, String uniqueId) {
         if (nodeInstances != null && !nodeInstances.isEmpty()) {
             for (NodeInstance nInstance : nodeInstances) {
-                String nodeUniqueId = (String) nInstance.getNode().getMetaData().get("UniqueId");
+                String nodeUniqueId = nInstance.getNode().getUniqueId();
                 if (uniqueId.equals(nodeUniqueId)) {
                     return nInstance;
                 }

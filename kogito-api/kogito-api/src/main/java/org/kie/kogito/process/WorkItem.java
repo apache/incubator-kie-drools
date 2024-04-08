@@ -20,11 +20,13 @@ package org.kie.kogito.process;
 
 import java.util.Map;
 
+import org.kie.api.definition.process.WorkflowElementIdentifier;
+
 public interface WorkItem {
 
     String getId();
 
-    default String getNodeId() {
+    default WorkflowElementIdentifier getNodeId() {
         throw new UnsupportedOperationException();
     }
 

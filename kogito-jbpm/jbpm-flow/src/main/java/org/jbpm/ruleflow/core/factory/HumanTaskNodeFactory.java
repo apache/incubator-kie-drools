@@ -23,6 +23,7 @@ import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class HumanTaskNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractWorkItemNodeFactory<HumanTaskNodeFactory<T>, T> {
 
@@ -34,7 +35,7 @@ public class HumanTaskNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> 
     public static final String WORK_SKIPPABLE = "Skippable";
     public static final String WORK_CONTENT = "Content";
 
-    public HumanTaskNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public HumanTaskNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new HumanTaskNode(), id);
     }
 

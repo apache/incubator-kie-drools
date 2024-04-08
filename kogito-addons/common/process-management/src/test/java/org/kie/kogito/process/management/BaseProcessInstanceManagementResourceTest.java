@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -102,7 +103,7 @@ class BaseProcessInstanceManagementResourceTest {
 
     @BeforeEach
     void setUp() {
-        lenient().when(node.getId()).thenReturn(1l);
+        lenient().when(node.getId()).thenReturn(WorkflowElementIdentifierFactory.fromExternalFormat("one"));
         lenient().when(node.getName()).thenReturn("node");
         lenient().when(node.getUniqueId()).thenReturn(NODE_ID);
         lenient().when(node.getMetaData()).thenReturn(singletonMap(UNIQUE_ID, NODE_UNIQUE_ID));
@@ -200,6 +201,16 @@ class BaseProcessInstanceManagementResourceTest {
             public Object getProcessInfo(String processId) {
                 return null;
             }
+
+            @Override
+            public Object migrateAllInstances(String processId, ProcessMigrationSpec migrationSpec) {
+                return null;
+            }
+
+            @Override
+            public Object migrateInstance(String processId, String processInstanceId, ProcessMigrationSpec migrationSpec) {
+                return null;
+            }
         });
     }
 
@@ -227,7 +238,7 @@ class BaseProcessInstanceManagementResourceTest {
         verify(workflowProcess).getNodesRecursively();
 
         assertThat(response).isInstanceOf(List.class).asList().hasSize(1).element(0)
-                .hasFieldOrPropertyWithValue("id", node.getId())
+                .hasFieldOrPropertyWithValue("id", node.getId().toExternalFormat())
                 .hasFieldOrPropertyWithValue("name", node.getName())
                 .hasFieldOrPropertyWithValue("uniqueId", node.getUniqueId())
                 .hasFieldOrProperty("metadata")

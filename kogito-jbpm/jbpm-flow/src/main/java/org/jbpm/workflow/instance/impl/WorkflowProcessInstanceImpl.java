@@ -75,6 +75,7 @@ import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.FaultNodeInstance;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
@@ -104,7 +105,6 @@ import static org.jbpm.ruleflow.core.Metadata.CUSTOM_SLA_DUE_DATE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.ACTIVE;
@@ -267,29 +267,29 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     @Override
-    public NodeInstance getFirstNodeInstance(final long nodeId) {
+    public NodeInstance getFirstNodeInstance(WorkflowElementIdentifier nodeId) {
         for (final NodeInstance nodeInstance : this.nodeInstances) {
-            if (nodeInstance.getNodeId() == nodeId && nodeInstance.getLevel() == getCurrentLevel()) {
+            if (nodeInstance.getNodeId().equals(nodeId) && nodeInstance.getLevel() == getCurrentLevel()) {
                 return nodeInstance;
             }
         }
         return null;
     }
 
-    public List<NodeInstance> getNodeInstances(final long nodeId) {
+    public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId) {
         List<NodeInstance> result = new ArrayList<>();
         for (final NodeInstance nodeInstance : this.nodeInstances) {
-            if (nodeInstance.getNodeId() == nodeId) {
+            if (nodeInstance.getNodeId().equals(nodeId)) {
                 result.add(nodeInstance);
             }
         }
         return result;
     }
 
-    public List<NodeInstance> getNodeInstances(final long nodeId, final List<NodeInstance> currentView) {
+    public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, final List<NodeInstance> currentView) {
         List<NodeInstance> result = new ArrayList<>();
         for (final NodeInstance nodeInstance : currentView) {
-            if (nodeInstance.getNodeId() == nodeId) {
+            if (nodeInstance.getNodeId().equals(nodeId)) {
                 result.add(nodeInstance);
             }
         }
@@ -708,7 +708,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                             }
                             nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
                         } else if (node instanceof CompositeNode) {
-                            Optional<NodeInstance> instance = this.nodeInstances.stream().filter(ni -> ni.getNodeId() == node.getId()).findFirst();
+                            Optional<NodeInstance> instance = this.nodeInstances.stream().filter(ni -> ni.getNodeId().equals(node.getId())).findFirst();
                             instance.ifPresent(n -> ((CompositeNodeInstance) n).signalEvent(type, event));
                         }
                     }
@@ -854,7 +854,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
             if (n instanceof BoundaryEventNode) {
                 BoundaryEventNode boundaryEventNode = (BoundaryEventNode) n;
                 StateBasedNodeInstance attachedToNodeInstance = (StateBasedNodeInstance) getNodeInstances(true).stream()
-                        .filter(ni -> ni.getNode().getMetaData().get(UNIQUE_ID).equals(boundaryEventNode.getAttachedToNodeId())).findFirst().orElse(null);
+                        .filter(ni -> ni.getNode().getUniqueId().equals(boundaryEventNode.getAttachedToNodeId())).findFirst().orElse(null);
                 if (attachedToNodeInstance != null) {
                     Map<String, String> properties = new HashMap<>();
                     properties.put("AttachedToID", attachedToNodeInstance.getNodeDefinitionId());
@@ -868,7 +868,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         eventName = TIMER_TRIGGERED_EVENT;
                     }
 
-                    eventDesciptions.add(new BaseEventDescription(eventName, (String) n.getMetaData().get(UNIQUE_ID), n.getName(), eventType, null, getStringId(), dataType, properties));
+                    eventDesciptions.add(new BaseEventDescription(eventName, n.getUniqueId(), n.getName(), eventType, null, getStringId(), dataType, properties));
 
                 }
 
@@ -882,7 +882,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         Map<String, String> timerProperties = ((StateBasedNodeInstance) ni).extractTimerEventInformation();
                         if (timerProperties != null) {
 
-                            eventDesciptions.add(new BaseEventDescription(TIMER_TRIGGERED_EVENT, (String) startNode.getMetaData().get("UniqueId"), startNode.getName(), "timer", ni.getStringId(),
+                            eventDesciptions.add(new BaseEventDescription(TIMER_TRIGGERED_EVENT, (String) startNode.getUniqueId(), startNode.getName(), "timer", ni.getStringId(),
                                     getStringId(), null, timerProperties));
 
                         }
@@ -891,7 +891,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
                     for (String eventName : eventSubProcessNode.getEvents()) {
 
-                        eventDesciptions.add(new BaseEventDescription(eventName, (String) startNode.getMetaData().get("UniqueId"), startNode.getName(), "signal", null, getStringId(), dataType));
+                        eventDesciptions.add(new BaseEventDescription(eventName, (String) startNode.getUniqueId(), startNode.getName(), "signal", null, getStringId(), dataType));
                     }
 
                 }
@@ -900,7 +900,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 getNodeInstances(n.getId()).forEach(ni -> eventDesciptions.add(
                         new BaseEventDescription(
                                 ((EventNode) n).getType(),
-                                (String) n.getMetaData().get(UNIQUE_ID),
+                                n.getUniqueId(),
                                 n.getName(),
                                 (String) n.getMetaData().getOrDefault(EVENT_TYPE, EVENT_TYPE_SIGNAL),
                                 ni.getStringId(),
@@ -910,7 +910,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 getNodeInstances(n.getId()).forEach(ni -> eventDesciptions.add(
                         new BaseEventDescription(
                                 (String) n.getMetaData().get(CONDITION),
-                                (String) n.getMetaData().get(UNIQUE_ID),
+                                n.getUniqueId(),
                                 n.getName(),
                                 (String) n.getMetaData().getOrDefault(EVENT_TYPE, EVENT_TYPE_SIGNAL),
                                 ni.getStringId(),
@@ -1179,7 +1179,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     public Collection<Milestone> milestones() {
         return getNodesByType(MilestoneNode.class)
                 .map(n -> {
-                    String uid = (String) n.getMetaData().get(UNIQUE_ID);
+                    String uid = n.getUniqueId();
                     return Milestone.builder()
                             .withId(uid)
                             .withName(n.getName())

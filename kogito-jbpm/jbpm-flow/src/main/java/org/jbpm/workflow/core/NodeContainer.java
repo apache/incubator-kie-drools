@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.jbpm.process.core.Context;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public interface NodeContainer extends org.kie.api.definition.process.NodeContainer, Serializable {
 
@@ -44,6 +45,6 @@ public interface NodeContainer extends org.kie.api.definition.process.NodeContai
 
     Context resolveContext(String contextId, Object param);
 
-    Node internalGetNode(long id);
+    Node internalGetNode(WorkflowElementIdentifier id);
 
 }

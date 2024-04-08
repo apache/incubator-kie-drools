@@ -65,7 +65,7 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
     private boolean isAttachedToNodeActive(Collection<NodeInstance> nodeInstances, String attachedTo, String type, Object event) {
         if (nodeInstances != null && !nodeInstances.isEmpty()) {
             for (NodeInstance nInstance : nodeInstances) {
-                String nodeUniqueId = (String) nInstance.getNode().getMetaData().get("UniqueId");
+                String nodeUniqueId = (String) nInstance.getNode().getUniqueId();
                 boolean isActivating = ((WorkflowProcessInstanceImpl) nInstance.getProcessInstance()).getActivatingNodeIds().contains(nodeUniqueId);
                 if (attachedTo.equals(nodeUniqueId) && !isActivating) {
                     // in case this is timer event make sure it corresponds to the proper node instance

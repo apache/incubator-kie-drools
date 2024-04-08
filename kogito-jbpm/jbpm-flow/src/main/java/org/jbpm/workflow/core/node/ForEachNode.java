@@ -27,9 +27,11 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
@@ -56,39 +58,59 @@ public class ForEachNode extends CompositeContextNode {
     private Expression evaluateExpression;
 
     public ForEachNode() {
+        this(WorkflowElementIdentifierFactory.newRandom());
+    }
+
+    public ForEachNode(WorkflowElementIdentifier id) {
+        setId(id);
         // Split
         ForEachSplitNode split = new ForEachSplitNode();
+        split.setId(getSplitIdentifier());
         split.setName("ForEachSplit");
         split.setMetaData("hidden", true);
-        split.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:split");
+
         super.addNode(split);//Node ID 1
         super.linkIncomingConnections(
                 Node.CONNECTION_DEFAULT_TYPE,
                 new CompositeNode.NodeAndType(split, Node.CONNECTION_DEFAULT_TYPE));
         // Composite node
         CompositeContextNode compositeNode = new CompositeContextNode();
+        compositeNode.setId(getCompositeIdentifier());
         compositeNode.setName("ForEachComposite");
         compositeNode.setMetaData("hidden", true);
-        compositeNode.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:composite");
+
         super.addNode(compositeNode);//Node ID 2
         VariableScope variableScope = new VariableScope();
         compositeNode.addContext(variableScope);
         compositeNode.setDefaultContext(variableScope);
         // Join
         ForEachJoinNode join = new ForEachJoinNode();
+        join.setId(getJoinIdentifier());
         join.setName("ForEachJoin");
         join.setMetaData("hidden", true);
-        join.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:join");
+
         super.addNode(join);//Node ID 3
         super.linkOutgoingConnections(
                 new CompositeNode.NodeAndType(join, Node.CONNECTION_DEFAULT_TYPE),
                 Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
-                super.getNode(ForEachSplitNode.NODE_ID), Node.CONNECTION_DEFAULT_TYPE,
+                super.getNode(getSplitIdentifier()), Node.CONNECTION_DEFAULT_TYPE,
                 getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl(
                 getCompositeNode(), Node.CONNECTION_DEFAULT_TYPE,
-                super.getNode(ForEachJoinNode.NODE_ID), Node.CONNECTION_DEFAULT_TYPE);
+                super.getNode(getJoinIdentifier()), Node.CONNECTION_DEFAULT_TYPE);
+    }
+
+    private WorkflowElementIdentifier getCompositeIdentifier() {
+        return WorkflowElementIdentifierFactory.fromExternalFormat(getUniqueId() + ":foreach:composite");
+    }
+
+    private WorkflowElementIdentifier getJoinIdentifier() {
+        return WorkflowElementIdentifierFactory.fromExternalFormat(getUniqueId() + ":foreach:join");
+    }
+
+    private WorkflowElementIdentifier getSplitIdentifier() {
+        return WorkflowElementIdentifierFactory.fromExternalFormat(getUniqueId() + ":foreach:split");
     }
 
     @Override
@@ -141,15 +163,15 @@ public class ForEachNode extends CompositeContextNode {
     }
 
     public CompositeContextNode getCompositeNode() {
-        return (CompositeContextNode) super.getNode(2);
+        return (CompositeContextNode) super.getNode(getCompositeIdentifier());
     }
 
     public ForEachSplitNode getForEachSplitNode() {
-        return (ForEachSplitNode) super.getNode(1);
+        return (ForEachSplitNode) super.getNode(getSplitIdentifier());
     }
 
     public ForEachJoinNode getForEachJoinNode() {
-        return (ForEachJoinNode) super.getNode(3);
+        return (ForEachJoinNode) super.getNode(getJoinIdentifier());
     }
 
     @Override
@@ -163,12 +185,12 @@ public class ForEachNode extends CompositeContextNode {
     }
 
     @Override
-    public org.kie.api.definition.process.Node getNode(long id) {
+    public org.kie.api.definition.process.Node getNode(WorkflowElementIdentifier id) {
         return getCompositeNode().getNode(id);
     }
 
     @Override
-    public org.kie.api.definition.process.Node internalGetNode(long id) {
+    public org.kie.api.definition.process.Node internalGetNode(WorkflowElementIdentifier id) {
         return super.getNode(id);
     }
 
@@ -193,12 +215,12 @@ public class ForEachNode extends CompositeContextNode {
     }
 
     @Override
-    public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
+    public void linkIncomingConnections(String inType, WorkflowElementIdentifier inNodeId, String inNodeType) {
         getCompositeNode().linkIncomingConnections(inType, inNodeId, inNodeType);
     }
 
     @Override
-    public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
+    public void linkOutgoingConnections(WorkflowElementIdentifier outNodeId, String outNodeType, String outType) {
         getCompositeNode().linkOutgoingConnections(outNodeId, outNodeType, outType);
     }
 
@@ -275,12 +297,11 @@ public class ForEachNode extends CompositeContextNode {
 
     public static class ForEachSplitNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
-        public static long NODE_ID = 1;
     }
 
     public static class ForEachJoinNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
-        public static long NODE_ID = 3;
+
     }
 
     @Override

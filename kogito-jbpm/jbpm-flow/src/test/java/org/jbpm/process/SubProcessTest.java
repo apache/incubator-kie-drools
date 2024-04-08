@@ -19,6 +19,7 @@
 package org.jbpm.process;
 
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -26,6 +27,7 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,10 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubProcessTest extends AbstractBaseTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
 
     public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
@@ -46,14 +52,14 @@ public class SubProcessTest extends AbstractBaseTest {
         process.setName("Process");
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setName("SubProcessNode");
-        subProcessNode.setId(2);
+        subProcessNode.setId(two);
         subProcessNode.setProcessId(nonExistentSubProcessName);
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(3);
+        endNode.setId(three);
 
         connect(startNode, subProcessNode);
         connect(subProcessNode, endNode);

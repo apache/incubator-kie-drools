@@ -22,6 +22,7 @@ import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> implements MappableNodeFactory<T> {
 
@@ -33,7 +34,7 @@ public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlo
     protected NodeContainer nodeContainer;
     protected P nodeContainerFactory;
 
-    protected NodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Object node, Object id) {
+    protected NodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Object node, WorkflowElementIdentifier id) {
         this.nodeContainerFactory = nodeContainerFactory;
         this.nodeContainer = nodeContainer;
         this.node = node;
@@ -43,8 +44,8 @@ public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlo
         }
     }
 
-    protected void setId(Object node, Object id) {
-        ((Node) node).setId((long) id);
+    protected void setId(Object node, WorkflowElementIdentifier id) {
+        ((Node) node).setId(id);
     }
 
     public Node getNode() {
@@ -69,4 +70,5 @@ public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlo
     public Mappable getMappableNode() {
         return (Mappable) node;
     }
+
 }

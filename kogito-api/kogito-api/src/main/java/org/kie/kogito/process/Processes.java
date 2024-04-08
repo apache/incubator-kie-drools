@@ -19,11 +19,22 @@
 package org.kie.kogito.process;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.kie.kogito.KogitoEngine;
 import org.kie.kogito.Model;
 
 public interface Processes extends KogitoEngine {
+
+    default Optional<Process<? extends Model>> processByProcessInstanceId(String processInstanceId) {
+        for (String processId : processIds()) {
+            Process<? extends Model> process = processById(processId);
+            if (process.instances().findById(processInstanceId, ProcessInstanceReadMode.READ_ONLY).isPresent()) {
+                return Optional.of(process);
+            }
+        }
+        return Optional.empty();
+    }
 
     Process<? extends Model> processById(String processId);
 

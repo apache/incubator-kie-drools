@@ -24,6 +24,7 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.Model;
 
 public class SubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends StateBasedNodeFactory<SubProcessNodeFactory<T>, T>
@@ -34,7 +35,7 @@ public class SubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>>
     public static final String METHOD_WAIT_FOR_COMPLETION = "waitForCompletion";
     public static final String METHOD_INDEPENDENT = "independent";
 
-    public SubProcessNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public SubProcessNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new SubProcessNode(), id);
     }
 

@@ -28,7 +28,6 @@ import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -58,7 +57,7 @@ public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends
 
     @Override
     public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        body.addStatement(getAssignedFactoryMethod(factoryField, factoryClass(), getNodeId(node), factoryMethod(), new LongLiteralExpr(node.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, factoryClass(), getNodeId(node), factoryMethod(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, getDefaultName()));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         VariableScope variableScopeNode = (VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE);

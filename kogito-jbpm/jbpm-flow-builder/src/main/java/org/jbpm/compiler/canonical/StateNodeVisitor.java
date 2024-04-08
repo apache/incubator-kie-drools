@@ -31,7 +31,6 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.utils.StringEscapeUtils;
@@ -64,6 +63,7 @@ public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
         if (node.getConstraints() == null) {
             return Stream.empty();
         }
+
         Collection<MethodCallExpr> result = new ArrayList<>();
         for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : node.getConstraints().entrySet()) {
             ConnectionRef ref = entry.getKey();
@@ -71,7 +71,7 @@ public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
                 if (constraint != null) {
                     result.add(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
                             getOrNullExpr(ref.getConnectionId()),
-                            new LongLiteralExpr(ref.getNodeId()),
+                            getWorkflowElementConstructor(ref.getNodeId()),
                             new StringLiteralExpr(ref.getToType()),
                             new StringLiteralExpr(constraint.getDialect()),
                             new StringLiteralExpr(StringEscapeUtils.escapeJava(constraint.getConstraint())),

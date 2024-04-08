@@ -101,14 +101,14 @@ class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkf
         assertHasName(stateActionNode, "callbackFunction");
         ActionNode afterStateActionMergeNode = assertClassAndGetNode(callbackState, 2, ActionNode.class);
         Split stateSplitNode = assertClassAndGetNode(callbackState, 5, Split.class);
-        assertHasName(stateSplitNode, "EventSplit_" + stateSplitNode.getId());
+        assertHasName(stateSplitNode, "EventSplit_" + stateSplitNode.getId().toExternalFormat());
         Join stateJoinNode = assertClassAndGetNode(callbackState, 6, Join.class);
-        assertHasName(stateJoinNode, "ExclusiveJoin_" + stateJoinNode.getId());
+        assertHasName(stateJoinNode, "ExclusiveJoin_" + stateJoinNode.getId().toExternalFormat());
         EventNode stateEventNode = assertClassAndGetNode(callbackState, 3, EventNode.class);
         assertHasName(stateEventNode, "callbackEvent");
         ActionNode afterStateEventMergeNode = assertClassAndGetNode(callbackState, 4, ActionNode.class);
         TimerNode stateTimerNode = assertClassAndGetNode(callbackState, 7, TimerNode.class);
-        assertHasName(stateTimerNode, "TimerNode_" + stateTimerNode.getId());
+        assertHasName(stateTimerNode, "TimerNode_" + stateTimerNode.getId().toExternalFormat());
         assertThat(stateTimerNode.getTimer().getDelay()).isEqualTo("PT5S");
         assertThat(stateTimerNode.getTimer().getTimeType()).isEqualTo(1);
         EndNode stateEndNode = assertClassAndGetNode(callbackState, 8, EndNode.class);

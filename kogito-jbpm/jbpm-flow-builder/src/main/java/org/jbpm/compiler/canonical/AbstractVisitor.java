@@ -28,17 +28,23 @@ import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.utils.KogitoTags;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ADD_COMPENSATION_CONTEXT;
@@ -49,6 +55,12 @@ public abstract class AbstractVisitor {
 
     protected static final String FACTORY_FIELD_NAME = "factory";
     protected static final String KCONTEXT_VAR = "kcontext";
+
+    protected MethodCallExpr getWorkflowElementConstructor(WorkflowElementIdentifier identifier) {
+        Type type = new ClassOrInterfaceType().setName(WorkflowElementIdentifierFactory.class.getName());
+        MethodCallExpr identifierConstructor = new MethodCallExpr(new TypeExpr(type), "fromExternalFormat", NodeList.nodeList(new StringLiteralExpr(identifier.toExternalFormat())));
+        return identifierConstructor;
+    }
 
     protected MethodCallExpr getFactoryMethod(String object, String methodName, Expression... args) {
         MethodCallExpr variableMethod = new MethodCallExpr(new NameExpr(object), methodName);

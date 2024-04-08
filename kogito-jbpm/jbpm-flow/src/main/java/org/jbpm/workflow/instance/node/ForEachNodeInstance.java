@@ -98,11 +98,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             nodeInstance.setNodeId(node.getId());
             nodeInstance.setNodeInstanceContainer(this);
             nodeInstance.setProcessInstance(getProcessInstance());
-            String uniqueID = (String) node.getMetaData().get("UniqueId");
-            if (uniqueID == null) {
-                uniqueID = node.getId() + "";
-            }
-            int level = this.getLevelForNode(uniqueID);
+            int level = this.getLevelForNode(node.getUniqueId());
             nodeInstance.setLevel(level);
             return nodeInstance;
 
@@ -116,7 +112,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 nodeInstance.setNodeId(node.getId());
                 nodeInstance.setNodeInstanceContainer(this);
                 nodeInstance.setProcessInstance(getProcessInstance());
-                String uniqueID = (String) node.getMetaData().get("UniqueId");
+                String uniqueID = node.getUniqueId();
                 if (uniqueID == null) {
                     uniqueID = node.getId() + "";
                 }

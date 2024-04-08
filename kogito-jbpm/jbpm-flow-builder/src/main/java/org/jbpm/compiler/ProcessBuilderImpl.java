@@ -386,7 +386,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             return "";
         } else {
             return "rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" +
-                    key.getNodeId() + "-" + key.getToType() + "\" @Propagation(EAGER) \n" +
+                    key.getNodeId().toExternalFormat() + "-" + key.getToType() + "\" @Propagation(EAGER) \n" +
                     "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
                     "    when \n" +
                     "      " + state.internalGetConstraint(key).getConstraint() + "\n" +

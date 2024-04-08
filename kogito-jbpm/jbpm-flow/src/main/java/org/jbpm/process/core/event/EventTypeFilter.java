@@ -61,6 +61,7 @@ public class EventTypeFilter implements EventFilter, Serializable {
 
     @Override
     public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
+        logger.info("This event is subscribed to a message ref {} {}", type, event);
         if (resolver == null) {
             return this.type != null && this.type.equals(type);
         }

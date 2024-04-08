@@ -28,6 +28,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
@@ -100,10 +101,10 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull();
 
         String nodeInstanceId = workItem.getNodeInstanceStringId();
-        long nodeId = workItem.getNodeId();
+        WorkflowElementIdentifier nodeId = workItem.getNodeId();
         String deploymentId = workItem.getDeploymentId();
 
-        assertThat(nodeId).isPositive();
+        assertThat(nodeId).isNotNull();
         assertThat(nodeInstanceId).isNotNull();
         assertThat(deploymentId).isNull();
 
@@ -119,7 +120,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         nodeInstanceId = workItem.getNodeInstanceStringId();
         nodeId = workItem.getNodeId();
 
-        assertThat(nodeId).isPositive();
+        assertThat(nodeId).isNotNull();
         assertThat(nodeInstanceId).isNotNull();
     }
 

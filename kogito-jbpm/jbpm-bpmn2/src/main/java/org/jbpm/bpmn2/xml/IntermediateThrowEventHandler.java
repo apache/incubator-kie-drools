@@ -33,6 +33,7 @@ import org.jbpm.process.instance.impl.actions.HandleMessageAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataAssociation;
@@ -132,7 +133,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
         String name = linkAttr.getNamedItem("name").getNodeValue();
 
         String id = element.getAttribute("id");
-        node.setMetaData("UniqueId", id);
+        node.setId(WorkflowElementIdentifierFactory.fromExternalFormat(id));
         node.setMetaData(LINK_NAME, name);
 
         org.w3c.dom.Node xmlNode = xmlLinkNode.getFirstChild();

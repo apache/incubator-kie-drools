@@ -114,7 +114,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
                 } else if (handlerNode instanceof EventSubProcessNode) {
                     // Check that subprocess parent has completed. 
                     List<String> completedIds = processInstance.getCompletedNodeIds();
-                    if (completedIds.contains(((NodeImpl) ((Node) handlerNode).getParentContainer()).getMetaData("UniqueId"))) {
+                    if (completedIds.contains(((NodeImpl) ((Node) handlerNode).getParentContainer()).getUniqueId())) {
                         NodeInstance subProcessNodeInstance =
                                 (nodeInstanceContainer).getNodeInstance((org.kie.api.definition.process.Node) ((Node) handlerNode).getParentContainer());
                         compensationInstances.add(subProcessNodeInstance);

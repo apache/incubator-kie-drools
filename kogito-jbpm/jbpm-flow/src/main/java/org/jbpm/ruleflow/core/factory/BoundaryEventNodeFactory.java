@@ -28,6 +28,7 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 import static org.jbpm.ruleflow.core.Metadata.ATTACHED_TO;
 
@@ -38,7 +39,7 @@ public class BoundaryEventNodeFactory<T extends RuleFlowNodeContainerFactory<T, 
 
     private String attachedToUniqueId;
 
-    public BoundaryEventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public BoundaryEventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new BoundaryEventNode(), id);
 
     }
@@ -47,8 +48,8 @@ public class BoundaryEventNodeFactory<T extends RuleFlowNodeContainerFactory<T, 
         return (BoundaryEventNode) getNode();
     }
 
-    public BoundaryEventNodeFactory<T> attachedTo(long attachedToId) {
-        return attachedTo((String) nodeContainer.getNode(attachedToId).getMetaData().get("UniqueId"));
+    public BoundaryEventNodeFactory<T> attachedTo(WorkflowElementIdentifier attachedToId) {
+        return attachedTo((String) nodeContainer.getNode(attachedToId).getUniqueId());
     }
 
     public BoundaryEventNodeFactory<T> attachedTo(String attachedToId) {

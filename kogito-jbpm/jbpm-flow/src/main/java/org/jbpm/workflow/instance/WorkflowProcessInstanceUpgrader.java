@@ -24,12 +24,12 @@ import java.util.Stack;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -41,7 +41,7 @@ public class WorkflowProcessInstanceUpgrader {
     }
 
     public static void upgradeProcessInstance(KogitoProcessRuntime kruntime, String processInstanceId, String processId,
-            Map<String, Long> nodeMapping) {
+            Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeMapping) {
         if (nodeMapping == null) {
             nodeMapping = new HashMap<>();
         }
@@ -79,15 +79,15 @@ public class WorkflowProcessInstanceUpgrader {
             String toProcessId,
             Map<String, String> nodeNamesMapping) {
 
-        Map<String, Long> nodeIdMapping = new HashMap<>();
+        Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeIdMapping = new HashMap<>();
 
         String fromProcessIdString = kruntime.getProcessInstance(fromProcessId).getProcessId();
         Process processFrom = kruntime.getKieBase().getProcess(fromProcessIdString);
         Process processTo = kruntime.getKieBase().getProcess(toProcessId);
 
         for (Map.Entry<String, String> entry : nodeNamesMapping.entrySet()) {
-            String from = null;
-            Long to = null;
+            WorkflowElementIdentifier from = null;
+            WorkflowElementIdentifier to = null;
 
             if (processFrom instanceof WorkflowProcess) {
                 from = getNodeId(((WorkflowProcess) processFrom).getNodes(), entry.getKey(), true);
@@ -100,9 +100,9 @@ public class WorkflowProcessInstanceUpgrader {
             }
 
             if (processTo instanceof WorkflowProcess) {
-                to = Long.valueOf(getNodeId(((WorkflowProcess) processTo).getNodes(), entry.getValue(), false));
+                to = getNodeId(((WorkflowProcess) processTo).getNodes(), entry.getValue(), false);
             } else if (processTo instanceof RuleFlowProcess) {
-                to = Long.valueOf(getNodeId(((RuleFlowProcess) processTo).getNodes(), entry.getValue(), false));
+                to = getNodeId(((RuleFlowProcess) processTo).getNodes(), entry.getValue(), false);
             } else if (processTo != null) {
                 throw new IllegalArgumentException("Suported processes are WorkflowProcess and RuleFlowProcess, it was:" + processTo.getClass());
             } else {
@@ -114,7 +114,7 @@ public class WorkflowProcessInstanceUpgrader {
         upgradeProcessInstance(kruntime, fromProcessId, toProcessId, nodeIdMapping);
     }
 
-    private static String getNodeId(org.kie.api.definition.process.Node[] nodes, String nodeName, boolean unique) {
+    private static WorkflowElementIdentifier getNodeId(org.kie.api.definition.process.Node[] nodes, String nodeName, boolean unique) {
 
         Stack<org.kie.api.definition.process.Node> nodeStack = new Stack<>();
         for (org.kie.api.definition.process.Node node : nodes) {
@@ -141,31 +141,20 @@ public class WorkflowProcessInstanceUpgrader {
             throw new IllegalArgumentException("No node with name " + nodeName);
         }
 
-        StringBuilder id = new StringBuilder();
-
-        if (unique) {
-            while (!(((Node) match).getParentContainer() instanceof Process)) {
-                id.insert(0, ":" + match.getId());
-                match = (org.kie.api.definition.process.Node) ((Node) match).getParentContainer();
-            }
-        }
-
-        id.insert(0, match.getId());
-
-        return id.toString();
+        return match.getId();
     }
 
-    private static void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<String, Long> nodeMapping) {
+    private static void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeMapping) {
         for (NodeInstance nodeInstance : nodeInstanceContainer.getNodeInstances()) {
-            String oldNodeId = ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getUniqueId();
-            Long newNodeId = nodeMapping.get(oldNodeId);
+            WorkflowElementIdentifier oldNodeId = ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getId();
+            WorkflowElementIdentifier newNodeId = nodeMapping.get(oldNodeId);
             if (newNodeId == null) {
                 newNodeId = nodeInstance.getNodeId();
             }
 
             // clean up iteration levels for removed (old) nodes
             Map<String, Integer> iterLevels = ((WorkflowProcessInstanceImpl) nodeInstance.getProcessInstance()).getIterationLevels();
-            String uniqueId = (String) ((NodeImpl) nodeInstance.getNode()).getMetaData("UniqueId");
+            String uniqueId = (String) ((NodeImpl) nodeInstance.getNode()).getUniqueId();
             iterLevels.remove(uniqueId);
             // and now set to new node id
             ((NodeInstanceImpl) nodeInstance).setNodeId(newNodeId);

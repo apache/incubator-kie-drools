@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.impl.WorkImpl;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -41,7 +42,7 @@ public class NodeCreator<T extends NodeImpl> {
 
     public T createNode(String name) throws Exception {
         T result = this.constructor.newInstance(new Object[0]);
-        result.setId(idGen++);
+        result.setId(WorkflowElementIdentifierFactory.fromExternalFormat(String.valueOf(idGen++)));
         result.setName(name);
         this.nodeContainer.addNode(result);
 

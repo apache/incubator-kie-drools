@@ -31,6 +31,7 @@ import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataAssociation;
@@ -95,8 +96,6 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 TimerNode timerNode = new TimerNode();
                 timerNode.setId(node.getId());
                 timerNode.setName(node.getName());
-                timerNode.setMetaData("UniqueId",
-                        node.getMetaData().get("UniqueId"));
                 node = timerNode;
                 setCatchVariable(ioSpecification, node);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_TIMER);
@@ -107,7 +106,6 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 StateNode stateNode = new StateNode();
                 stateNode.setId(node.getId());
                 stateNode.setName(node.getName());
-                stateNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
                 node = stateNode;
                 setCatchVariable(ioSpecification, node);
                 node.setMetaData(EVENT_TYPE, EVENT_TYPE_CONDITIONAL);
@@ -138,7 +136,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         String name = linkAttr.getNamedItem("name").getNodeValue();
         String id = element.getAttribute("id");
 
-        node.setMetaData("UniqueId", id);
+        node.setId(WorkflowElementIdentifierFactory.fromExternalFormat(id));
         node.setMetaData(LINK_NAME, name);
 
         org.w3c.dom.Node xmlNode = xmlLinkNode.getFirstChild();

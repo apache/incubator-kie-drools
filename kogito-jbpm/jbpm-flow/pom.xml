@@ -109,7 +109,6 @@
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <scope>provided</scope>
-      <version>4.0.1</version>
     </dependency>
 
     <dependency>

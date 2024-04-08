@@ -25,12 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class CompositeNode extends StateBasedNode implements NodeContainer, EventNodeInterface {
 
@@ -46,7 +48,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         this.nodeContainer = new NodeContainerImpl();
     }
 
-    public org.kie.api.definition.process.Node getNode(long id) {
+    public org.kie.api.definition.process.Node getNode(WorkflowElementIdentifier id) {
         return nodeContainer.getNode(id);
     }
 
@@ -60,7 +62,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         return nodeContainer;
     }
 
-    public org.kie.api.definition.process.Node internalGetNode(long id) {
+    public org.kie.api.definition.process.Node internalGetNode(WorkflowElementIdentifier id) {
         return getNode(id);
     }
 
@@ -80,18 +82,6 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     }
 
     public void addNode(org.kie.api.definition.process.Node node) {
-        // TODO find a more elegant solution for this
-        // preferrable remove id setting from this class
-        // and delegate to GUI command that drops node
-        if (node.getId() <= 0) {
-            long id = 0;
-            for (org.kie.api.definition.process.Node n : nodeContainer.getNodes()) {
-                if (n.getId() > id) {
-                    id = n.getId();
-                }
-            }
-            ((Node) node).setId(++id);
-        }
         nodeContainer.addNode(node);
         ((Node) node).setParentContainer(this);
     }
@@ -121,7 +111,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         return false;
     }
 
-    public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
+    public void linkIncomingConnections(String inType, WorkflowElementIdentifier inNodeId, String inNodeType) {
         linkIncomingConnections(inType, new NodeAndType(nodeContainer, inNodeId, inNodeType));
     }
 
@@ -159,7 +149,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
-    public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
+    public void linkOutgoingConnections(WorkflowElementIdentifier outNodeId, String outNodeType, String outType) {
         linkOutgoingConnections(new NodeAndType(this, outNodeId, outNodeType), outType);
     }
 
@@ -382,11 +372,11 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         private static final long serialVersionUID = 510l;
 
         private NodeContainer nodeContainer;
-        private long nodeId;
+        private WorkflowElementIdentifier nodeId;
         private String type;
         private transient org.kie.api.definition.process.Node node;
 
-        public NodeAndType(NodeContainer nodeContainer, long nodeId, String type) {
+        public NodeAndType(NodeContainer nodeContainer, WorkflowElementIdentifier nodeId, String type) {
             if (type == null) {
                 throw new IllegalArgumentException(
                         "Node or type may not be null!");
@@ -417,7 +407,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             return node;
         }
 
-        public long getNodeId() {
+        public WorkflowElementIdentifier getNodeId() {
             return nodeId;
         }
 
@@ -434,7 +424,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
 
         public int hashCode() {
-            return 7 * (int) nodeId + 13 * type.hashCode();
+            return 7 * nodeId.hashCode() + 13 * type.hashCode();
         }
 
     }
@@ -444,11 +434,12 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         private static final long serialVersionUID = 510l;
 
         private CompositeNode parentNode;
-        private long inNodeId;
+        private WorkflowElementIdentifier inNodeId;
         private transient org.kie.api.definition.process.Node inNode;
         private String inType;
 
         public CompositeNodeStart(CompositeNode parentNode, org.kie.api.definition.process.Node outNode, String outType) {
+            setId(WorkflowElementIdentifierFactory.fromExternalFormat(parentNode.getId().toExternalFormat() + ":composite:start"));
             setName("Composite node start");
             this.inNodeId = outNode.getId();
             this.inNode = outNode;
@@ -464,7 +455,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             return inNode;
         }
 
-        public long getInNodeId() {
+        public WorkflowElementIdentifier getInNodeId() {
             return inNodeId;
         }
 
@@ -479,11 +470,12 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         private static final long serialVersionUID = 510l;
 
         private CompositeNode parentNode;
-        private long outNodeId;
+        private WorkflowElementIdentifier outNodeId;
         private transient org.kie.api.definition.process.Node outNode;
         private String outType;
 
         public CompositeNodeEnd(CompositeNode parentNode, org.kie.api.definition.process.Node outNode, String outType) {
+            setId(WorkflowElementIdentifierFactory.fromExternalFormat(parentNode.getId().toExternalFormat() + ":composite:end"));
             setName("Composite node end");
             this.outNodeId = outNode.getId();
             this.outNode = outNode;
@@ -499,7 +491,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
             return outNode;
         }
 
-        public long getOutNodeId() {
+        public WorkflowElementIdentifier getOutNodeId() {
             return outNodeId;
         }
 

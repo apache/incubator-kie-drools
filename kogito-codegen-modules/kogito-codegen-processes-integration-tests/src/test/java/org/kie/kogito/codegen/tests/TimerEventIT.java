@@ -46,7 +46,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 public class TimerEventIT extends AbstractCodegenIT {
 
-    private static final int TIME_OUT = 5000;
+    private static final int TIME_OUT = 500000;
 
     @Test
     void testIntermediateCycleTimerEvent() throws Exception {

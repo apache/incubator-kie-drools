@@ -32,6 +32,7 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
@@ -43,6 +44,7 @@ import org.jbpm.ruleflow.core.factory.SupportsAction;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.utils.KogitoTags;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -95,7 +97,7 @@ public abstract class StateHandler<S extends State> {
     protected final boolean isStartState;
 
     private JoinFactory<?> join;
-    private Collection<Long> incomingConnections = new ArrayList<>();
+    private Collection<WorkflowElementIdentifier> incomingConnections = new ArrayList<>();
 
     protected StateHandler(S state, Workflow workflow, ParserContext parserContext) {
         this.workflow = workflow;
@@ -110,7 +112,9 @@ public abstract class StateHandler<S extends State> {
 
     public void handleStart() {
         if (isStartState) {
-            startNodeFactory = parserContext.factory().startNode(parserContext.newId()).name(ServerlessWorkflowParser.NODE_START_NAME).metaData(SWFConstants.STATE_NAME, state.getName());
+            WorkflowElementIdentifier id = parserContext.newId();
+            startNodeFactory = parserContext.factory().startNode(id).name(ServerlessWorkflowParser.NODE_START_NAME)
+                    .metaData(SWFConstants.STATE_NAME, state.getName());
             startNodeFactory.done();
         }
     }
@@ -144,15 +148,15 @@ public abstract class StateHandler<S extends State> {
             throw new IllegalArgumentException("State " + getState().getName() + " refers to a compensation " + state.getCompensatedBy() + " which cannot be found");
         }
         parserContext.setCompensation();
-        long eventCompensationId = parserContext.newId();
-        long subprocessCompensationId = parserContext.newId();
-        long startCompensationId = parserContext.newId();
-        String uniqueId = (String) outgoingNode.getNode().getMetaData().get(Metadata.UNIQUE_ID);
+        WorkflowElementIdentifier eventCompensationId = parserContext.newId();
+        WorkflowElementIdentifier subprocessCompensationId = parserContext.newId();
+        WorkflowElementIdentifier startCompensationId = parserContext.newId();
+        String uniqueId = (String) outgoingNode.getNode().getUniqueId();
         factory.boundaryEventNode(eventCompensationId).addCompensationHandler(uniqueId).attachedTo(uniqueId).eventType("Compensation").metaData(Metadata.EVENT_TYPE, "compensation");
         CompositeContextNodeFactory<?> embeddedSubProcess =
                 factory.compositeContextNode(subprocessCompensationId).autoComplete(true).metaData("isForCompensation", true).startNode(startCompensationId).interrupting(true).done();
         factory.association(eventCompensationId, subprocessCompensationId, null);
-        long lastNodeId = handleCompensation(embeddedSubProcess, compensation);
+        WorkflowElementIdentifier lastNodeId = handleCompensation(embeddedSubProcess, compensation);
         embeddedSubProcess.connection(startCompensationId, lastNodeId);
         compensation = parserContext.getStateHandler(compensation);
         while (compensation != null) {
@@ -163,11 +167,11 @@ public abstract class StateHandler<S extends State> {
             lastNodeId = handleCompensation(embeddedSubProcess, compensation);
             compensation = parserContext.getStateHandler(compensation);
         }
-        long endCompensationId = parserContext.newId();
+        WorkflowElementIdentifier endCompensationId = parserContext.newId();
         embeddedSubProcess.endNode(endCompensationId).terminate(false).done().connection(lastNodeId, endCompensationId);
     }
 
-    private long handleCompensation(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
+    private WorkflowElementIdentifier handleCompensation(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             StateHandler<?> compensation) {
         if (compensation.getState().getCompensatedBy() != null) {
             throw new IllegalArgumentException("Serverless workflow specification forbids nested compensations, hence state " + compensation.getState().getName() + " is not valid");
@@ -212,15 +216,16 @@ public abstract class StateHandler<S extends State> {
     }
 
     private ActionNodeFactory<?> handleStateFilter(RuleFlowNodeContainerFactory<?, ?> factory, String filter) {
+        WorkflowElementIdentifier id = parserContext.newId();
         ActionNodeFactory<?> result =
-                factory.actionNode(parserContext.newId())
+                factory.actionNode(id)
                         .action(ExpressionActionSupplier.of(workflow, filter).build());
         result.done();
         return result;
     }
 
     protected void connectSource(NodeFactory<?, ?> sourceNode) {
-        long id = sourceNode.getNode().getId();
+        WorkflowElementIdentifier id = sourceNode.getNode().getId();
         if (sourceNode instanceof SplitFactory || !incomingConnections.contains(id)) {
             incomingConnections.add(id);
         }
@@ -232,7 +237,7 @@ public abstract class StateHandler<S extends State> {
 
     protected void handleConnections(RuleFlowNodeContainerFactory<?, ?> factory) {
         NodeFactory<?, ?> incoming = getIncomingNode(factory);
-        for (long sourceId : incomingConnections) {
+        for (WorkflowElementIdentifier sourceId : incomingConnections) {
             factory.connection(sourceId, incoming.getNode().getId());
         }
     }
@@ -276,8 +281,10 @@ public abstract class StateHandler<S extends State> {
     protected final void handleErrors(RuleFlowNodeContainerFactory<?, ?> factory, RuleFlowNodeContainerFactory<?, ?> targetNode) {
         for (Error error : state.getOnErrors()) {
             getErrorDefinitions(error).forEach(errorDef -> {
-                String errorPrefix = RuleFlowProcessFactory.ERROR_TYPE_PREFIX + targetNode.getNode().getMetaData().get("UniqueId") + '-';
-                BoundaryEventNodeFactory<?> boundaryNode = factory.boundaryEventNode(parserContext.newId()).attachedTo(targetNode.getNode().getId())
+                String errorPrefix = RuleFlowProcessFactory.ERROR_TYPE_PREFIX + targetNode.getNode().getUniqueId() + '-';
+                WorkflowElementIdentifier id = parserContext.newId();
+                BoundaryEventNodeFactory<?> boundaryNode = factory.boundaryEventNode(id)
+                        .attachedTo(targetNode.getNode().getId().toExternalFormat())
                         .metaData(Metadata.EVENT_TYPE, Metadata.EVENT_TYPE_ERROR).metaData("HasErrorEvent", true).metaData(Metadata.ERROR_EVENT, errorDef.getCode())
                         .eventType(errorPrefix + errorDef.getCode())
                         .name(RuleFlowProcessFactory.ERROR_TYPE_PREFIX + targetNode.getNode().getName() + '-' + errorDef.getCode());
@@ -329,8 +336,10 @@ public abstract class StateHandler<S extends State> {
         if (join != null) {
             return join;
         } else if (incomingConnections.size() > 1) {
-            join = factory.joinNode(parserContext.newId()).type(Join.TYPE_OR).name("Join-" + node.getNode()
-                    .getName()).metaData(SWFConstants.STATE_NAME, state.getName());
+            WorkflowElementIdentifier id = parserContext.newId();
+            join = factory.joinNode(id).type(Join.TYPE_OR)
+                    .name("Join-" + node.getNode().getName())
+                    .metaData(SWFConstants.STATE_NAME, state.getName());
             join.done().connection(join.getNode().getId(), node.getNode().getId());
             return join;
         } else {
@@ -357,11 +366,12 @@ public abstract class StateHandler<S extends State> {
                     callback.ifPresent(c -> c.onStateTarget(targetState));
                 }
             } else {
-                ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId()).metaData(SWFConstants.STATE_NAME, state.getName());
+                WorkflowElementIdentifier id = parserContext.newId();
+                ActionNodeFactory<?> actionNode = factory.actionNode(id).metaData(SWFConstants.STATE_NAME, state.getName());
                 NodeFactory<?, ?> startNode = handleProduceEvents(factory, actionNode, produceEvents);
                 factory.connection(sourceFactory.getNode().getId(), startNode.getNode().getId());
                 if (transition.isCompensate()) {
-                    long eventId = compensationEvent(factory, sourceFactory).getNode().getId();
+                    WorkflowElementIdentifier eventId = compensationEvent(factory, sourceFactory).getNode().getId();
                     callback.ifPresent(c -> c.onIdTarget(eventId));
                 } else {
                     callback.ifPresent(c -> c.onIdTarget(startNode.getNode().getId()));
@@ -381,7 +391,8 @@ public abstract class StateHandler<S extends State> {
             ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
             while (iter.hasNext()) {
                 currentNode = startNode;
-                startNode = sendEventNode(factory.actionNode(parserContext.newId()), iter.next());
+                WorkflowElementIdentifier id = parserContext.newId();
+                startNode = sendEventNode(factory.actionNode(id), iter.next());
                 connect(startNode, currentNode);
             }
         }
@@ -394,7 +405,7 @@ public abstract class StateHandler<S extends State> {
     }
 
     protected final String getVarName() {
-        return state.getName() + "_" + parserContext.newId();
+        return state.getName() + "_" + parserContext.newId().toSanitizeString();
     }
 
     protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, EventDataFilter eventFilter, FilterableNodeSupplier nodeSupplier) {
@@ -427,7 +438,8 @@ public abstract class StateHandler<S extends State> {
         }
         NodeFactory<?, ?> startNode, currentNode;
         if (fromStateExpr != null) {
-            startNode = embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, fromStateExpr)
+            WorkflowElementIdentifier id = parserContext.newId();
+            startNode = embeddedSubProcess.actionNode(id).action(ExpressionActionSupplier.of(workflow, fromStateExpr)
                     .withVarNames(DEFAULT_WORKFLOW_VAR, actionVarName).build()).metaData(SWFConstants.STATE_NAME, state.getName());
             currentNode = connect(startNode, nodeSupplier.apply(embeddedSubProcess, actionVarName, actionVarName).metaData(SWFConstants.STATE_NAME, state.getName()));
 
@@ -442,10 +454,13 @@ public abstract class StateHandler<S extends State> {
 
         if (useData) {
             if (toStateExpr != null) {
-                currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId())
+                WorkflowElementIdentifier id = parserContext.newId();
+                currentNode = connect(currentNode, embeddedSubProcess.actionNode(id)
                         .action(new CollectorActionSupplier(workflow.getExpressionLang(), toStateExpr, DEFAULT_WORKFLOW_VAR, actionVarName)));
             } else if (shouldMerge) {
-                currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(new MergeActionSupplier(actionVarName, DEFAULT_WORKFLOW_VAR)));
+                WorkflowElementIdentifier id = parserContext.newId();
+                currentNode = connect(currentNode, embeddedSubProcess.actionNode(id)
+                        .action(new MergeActionSupplier(actionVarName, DEFAULT_WORKFLOW_VAR)));
             }
         }
         currentNode.done();
@@ -464,7 +479,8 @@ public abstract class StateHandler<S extends State> {
 
     protected final NodeFactory<?, ?> consumeEventNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
         EventDefinition eventDefinition = eventDefinition(eventRef);
-        return NodeFactoryUtils.consumeMessageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar, outputVar);
+        WorkflowElementIdentifier id = parserContext.newId();
+        return NodeFactoryUtils.consumeMessageNode(factory.eventNode(id), eventDefinition, inputVar, outputVar);
     }
 
     protected final EventDefinition eventDefinition(String eventName) {
@@ -477,8 +493,10 @@ public abstract class StateHandler<S extends State> {
         String eventTimeout = resolveEventTimeout(state, workflow);
         if (eventTimeout != null) {
             // creating a split-join branch for the timer
-            SplitFactory<?> splitNode = eventBasedSplitNode(factory.splitNode(parserContext.newId()), Split.TYPE_XAND);
-            JoinFactory<?> joinNode = joinExclusiveNode(factory.joinNode(parserContext.newId()));
+            WorkflowElementIdentifier splitId = parserContext.newId();
+            SplitFactory<?> splitNode = eventBasedSplitNode(factory.splitNode(splitId), Split.TYPE_XAND);
+            WorkflowElementIdentifier joinId = parserContext.newId();
+            JoinFactory<?> joinNode = joinExclusiveNode(factory.joinNode(joinId).metaData(Metadata.UNIQUE_ID, joinId.toExternalFormat()));
             connect(connect(splitNode, notTimerBranch), joinNode);
             createTimerNode(factory, splitNode, joinNode, eventTimeout);
             return new MakeNodeResult(splitNode, joinNode);
@@ -489,13 +507,15 @@ public abstract class StateHandler<S extends State> {
     }
 
     protected final void createTimerNode(RuleFlowNodeContainerFactory<?, ?> factory, SplitFactory<?> splitNode, JoinFactory<?> joinNode, String eventTimeout) {
-        TimerNodeFactory<?> eventTimeoutTimerNode = timerNode(factory.timerNode(parserContext.newId()), eventTimeout);
+        WorkflowElementIdentifier id = parserContext.newId();
+        TimerNodeFactory<?> eventTimeoutTimerNode = timerNode(factory.timerNode(id), eventTimeout);
         connect(splitNode, eventTimeoutTimerNode);
         connect(eventTimeoutTimerNode, joinNode);
     }
 
     protected final NodeFactory<?, ?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, End end) {
-        EndNodeFactory<?> nodeFactory = factory.endNode(parserContext.newId());
+        WorkflowElementIdentifier id = parserContext.newId();
+        EndNodeFactory<?> nodeFactory = factory.endNode(id);
         NodeFactory<?, ?> startNode = nodeFactory;
         List<ProduceEvent> produceEvents = end.getProduceEvents();
         if (produceEvents != null && !produceEvents.isEmpty()) {
@@ -507,9 +527,10 @@ public abstract class StateHandler<S extends State> {
 
     @SuppressWarnings("squid:S1452")
     private NodeFactory<?, ?> compensationEvent(RuleFlowNodeContainerFactory<?, ?> factory, NodeFactory<?, ?> sourceFactory) {
-        long eventId = parserContext.newId();
+        WorkflowElementIdentifier eventId = parserContext.newId();
         NodeFactory<?, ?> compensationNode =
-                factory.actionNode(eventId).name(state.getName() + "-" + eventId).action(new CompensationActionSupplier(CompensationScope.IMPLICIT_COMPENSATION_PREFIX + workflow.getId()));
+                factory.actionNode(eventId).name(state.getName() + "-" + eventId.toExternalFormat())
+                        .action(new CompensationActionSupplier(CompensationScope.IMPLICIT_COMPENSATION_PREFIX + workflow.getId()));
         compensationNode.done().connection(sourceFactory.getNode().getId(), eventId);
         return compensationNode;
     }
@@ -518,7 +539,7 @@ public abstract class StateHandler<S extends State> {
         default void onStateTarget(StateHandler<?> targetState) {
         }
 
-        default void onIdTarget(long targetId) {
+        default void onIdTarget(WorkflowElementIdentifier targetId) {
         }
 
         default void onEmptyTarget() {
@@ -529,14 +550,15 @@ public abstract class StateHandler<S extends State> {
         return addCondition(splitNode, targetNode.getNode().getId(), condition, isDefault);
     }
 
-    protected final <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> addCondition(SplitFactory<T> splitNode, long targetId, String condition, boolean isDefault) {
-        return splitNode.constraint(targetId, concatId(splitNode.getNode().getId(), targetId),
+    protected final <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> addCondition(SplitFactory<T> splitNode, WorkflowElementIdentifier targetId, String condition, boolean isDefault) {
+        WorkflowElementIdentifier splitNodeId = concatId(splitNode.getNode().getId(), targetId);
+        return splitNode.constraint(targetId, splitNodeId.toSanitizeString(),
                 "DROOLS_DEFAULT", workflow.getExpressionLang(),
                 new ExpressionReturnValueSupplier(workflow.getExpressionLang(), ExpressionHandlerUtils.replaceExpr(workflow, condition), DEFAULT_WORKFLOW_VAR), 0, isDefault)
                 .metaData(Metadata.VARIABLE, DEFAULT_WORKFLOW_VAR);
     }
 
-    protected static String concatId(long start, long end) {
-        return start + "_" + end;
+    protected static WorkflowElementIdentifier concatId(WorkflowElementIdentifier start, WorkflowElementIdentifier end) {
+        return WorkflowElementIdentifierFactory.fromExternalFormat(start.toSanitizeString() + "_" + end.toSanitizeString());
     }
 }

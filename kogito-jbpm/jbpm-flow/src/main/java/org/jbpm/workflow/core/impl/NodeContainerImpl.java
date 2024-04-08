@@ -24,6 +24,7 @@ import java.util.Map;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.NodeContainer;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 /**
  * 
@@ -32,7 +33,7 @@ public class NodeContainerImpl implements NodeContainer {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<Long, Node> nodes;
+    private Map<WorkflowElementIdentifier, Node> nodes;
 
     public NodeContainerImpl() {
         // keeping insertion order is useful for debugging and testing purposes.
@@ -62,7 +63,7 @@ public class NodeContainerImpl implements NodeContainer {
     }
 
     @Override
-    public Node getNode(final long id) {
+    public Node getNode(WorkflowElementIdentifier id) {
         Node node = this.nodes.get(id);
         if (node == null) {
             throw new IllegalArgumentException("Unknown node id: " + id);
@@ -76,12 +77,12 @@ public class NodeContainerImpl implements NodeContainer {
     }
 
     @Override
-    public Node internalGetNode(long id) {
+    public Node internalGetNode(WorkflowElementIdentifier id) {
         return getNode(id);
     }
 
     @Override
-    public void removeNode(final Node node) {
+    public void removeNode(Node node) {
         validateRemoveNode(node);
         this.nodes.remove(node.getId());
     }

@@ -53,6 +53,7 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
 import static org.jbpm.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE;
@@ -66,7 +67,6 @@ import static org.jbpm.ruleflow.core.Metadata.SIGNAL_NAME;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DATE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_EXIT;
 
 public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlowProcessFactory, RuleFlowProcessFactory> {
@@ -96,13 +96,13 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     }
 
     protected RuleFlowProcessFactory(String id, boolean autoComplete) {
-        super(null, null, new RuleFlowProcess(), id);
+        super(null, null, new RuleFlowProcess(), WorkflowElementIdentifierFactory.fromExternalFormat(id));
         getRuleFlowProcess().setAutoComplete(autoComplete);
     }
 
     @Override
-    protected void setId(Object node, Object id) {
-        getRuleFlowProcess().setId((String) id);
+    protected void setId(Object node, WorkflowElementIdentifier id) {
+        getRuleFlowProcess().setId(id.toExternalFormat());
     }
 
     public RuleFlowProcessFactory expressionLanguage(String exprLanguage) {
@@ -289,7 +289,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
-            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeDuration + "-" + node.getId()));
+            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeDuration + "-" + node.getId().toExternalFormat()));
         } else if (timeCycle != null) {
             int index = timeCycle.indexOf("###");
             if (index != -1) {
@@ -299,11 +299,12 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
             }
             timer.setDelay(timeCycle);
             timer.setTimeType(Timer.TIME_CYCLE);
-            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId()));
+            compositeNode.addTimer(timer,
+                    timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId().toExternalFormat()));
         } else if (timeDate != null) {
             timer.setDate(timeDate);
             timer.setTimeType(Timer.TIME_DATE);
-            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeDate + "-" + node.getId()));
+            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeDate + "-" + node.getId().toExternalFormat()));
         }
 
         if (cancelActivity) {
@@ -387,7 +388,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         Node node = null;
         // try looking for a node with same "UniqueId" (in metadata)
         for (Node containerNode : nodeContainer.getNodes()) {
-            if (nodeRef.equals(containerNode.getMetaData().get(UNIQUE_ID))) {
+            if (nodeRef.equals(containerNode.getUniqueId())) {
                 node = containerNode;
                 break;
             }

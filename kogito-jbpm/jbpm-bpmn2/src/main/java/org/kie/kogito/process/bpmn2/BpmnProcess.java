@@ -56,6 +56,7 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
         this.process = process;
         application.get(BpmnProcesses.class).addProcess(this);
         this.application = application;
+        this.activate();
     }
 
     public Application getApplication() {

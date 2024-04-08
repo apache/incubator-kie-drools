@@ -34,6 +34,8 @@ abstract class Repository {
     static final String DELETE = "DELETE FROM process_instances WHERE process_id = ? and id = ?";
     static final String PROCESS_VERSION_EQUALS_TO = "and process_version = ?";
     static final String PROCESS_VERSION_IS_NULL = "and process_version is null";
+    static final String MIGRATE_BULK = "UPDATE process_instances SET process_id = ?, process_version = ? WHERE process_id = ? ";
+    static final String MIGRATE_INSTANCE = "UPDATE process_instances SET process_id = ?, process_version = ? WHERE id = ANY (?) and process_id = ? ";
 
     static class Record {
         private final byte[] payload;
@@ -70,4 +72,8 @@ abstract class Repository {
     protected RuntimeException uncheckedException(Exception ex, String message, Object... param) {
         return new RuntimeException(String.format(message, param), ex);
     }
+
+    abstract long migrate(String id, String version, String targetProcessId, String targetProcessVersion);
+
+    abstract void migrate(String id, String version, String targetProcessId, String targetProcessVersion, String[] processIds);
 }

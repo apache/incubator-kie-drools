@@ -123,7 +123,7 @@ public class CodegenMessageStartEventTest {
 
         // class name is with suffix that represents node id as there might be multiple end message events
         List<GeneratedFile> resources = generatedFiles.stream()
-                .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventMessageProducer_3.java"))
+                .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventMessageProducer_EndEvent_1.java"))
                 .collect(Collectors.toList());
         assertThat(resources).hasSize(1);
 

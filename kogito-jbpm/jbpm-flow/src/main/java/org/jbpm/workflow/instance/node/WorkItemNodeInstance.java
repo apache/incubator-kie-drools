@@ -341,7 +341,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             workItemAborted((InternalKogitoWorkItem) event);
         } else if (("processInstanceCompleted:" + exceptionHandlingProcessInstanceId).equals(type)) {
             exceptionHandlingCompleted((WorkflowProcessInstance) event, null);
-        } else if (type.equals("RuleFlow-Activate" + getProcessInstance().getProcessId() + "-" + getNode().getMetaData().get("UniqueId"))) {
+        } else if (type.equals("RuleFlow-Activate" + getProcessInstance().getProcessId() + "-" + getNode().getUniqueId())) {
 
             trigger(null, Node.CONNECTION_DEFAULT_TYPE);
         } else {

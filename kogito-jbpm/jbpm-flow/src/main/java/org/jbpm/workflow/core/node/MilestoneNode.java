@@ -24,8 +24,6 @@ import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.process.ProcessContext;
 
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
-
 /**
  * Default implementation of a milestone node.
  */
@@ -79,7 +77,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
 
     private static void throwValidationException(Connection connection, String msg) {
         throw new IllegalArgumentException("This type of node ["
-                + connection.getFrom().getMetaData().get(UNIQUE_ID) + ", "
+                + connection.getFrom().getUniqueId() + ", "
                 + connection.getFrom().getName() + "] "
                 + msg);
     }

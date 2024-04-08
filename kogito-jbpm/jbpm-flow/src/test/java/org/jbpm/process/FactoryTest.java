@@ -26,12 +26,19 @@ import java.util.Objects;
 
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 public class FactoryTest extends AbstractBaseTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
+    private static WorkflowElementIdentifier four = WorkflowElementIdentifierFactory.fromExternalFormat("four");
 
     public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
@@ -50,12 +57,11 @@ public class FactoryTest extends AbstractBaseTest {
         factory.version("1.0");
         factory.visibility("Private");
         factory.metaData("TargetNamespace", "http://www.example.org/MinimalExample");
-        factory.startNode(1)
+        factory.startNode(one)
                 .name("StartProcess")
                 .done();
 
-        factory.dynamicNode(2)
-                .metaData("UniqueId", "_2")
+        factory.dynamicNode(two)
                 .metaData("MICollectionOutput", "_2_listOutOutput")
                 .metaData("x", 96)
                 .metaData("y", 16)
@@ -66,7 +72,7 @@ public class FactoryTest extends AbstractBaseTest {
                 .language("java")
                 .done();
 
-        factory.humanTaskNode(3)
+        factory.humanTaskNode(three)
                 .name("Task")
                 .taskName("Task Name")
                 .actorId("Actor")
@@ -79,14 +85,14 @@ public class FactoryTest extends AbstractBaseTest {
                 .timer("1s", null, "java", "")
                 .done();
 
-        factory.faultNode(4).name("Fault")
+        factory.faultNode(four).name("Fault")
                 .faultName("Fault Name")
                 .faultVariable("x")
                 .done();
 
-        factory.connection(1, 2, "_1-_2")
-                .connection(2, 3, "_2-_3")
-                .connection(3, 4, "_3-_4");
+        factory.connection(one, two, "_1-_2")
+                .connection(two, three, "_2-_3")
+                .connection(three, four, "_3-_4");
 
         factory.validate();
 

@@ -25,6 +25,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -42,6 +43,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.rule.RuleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +51,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RuleFlowProcessValidatorTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("1");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("2");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("3");
+    private static WorkflowElementIdentifier four = WorkflowElementIdentifierFactory.fromExternalFormat("4");
 
     private RuleFlowProcessValidator validator;
 
@@ -73,7 +80,7 @@ public class RuleFlowProcessValidatorTest {
     @Test
     void testAddErrorMessage() {
         when(node.getName()).thenReturn("nodeName");
-        when(node.getId()).thenReturn(Long.MAX_VALUE);
+        when(node.getId()).thenReturn(WorkflowElementIdentifierFactory.fromExternalFormat(Long.MAX_VALUE));
         validator.addErrorMessage(process,
                 node,
                 errors,
@@ -86,7 +93,7 @@ public class RuleFlowProcessValidatorTest {
     void testDynamicNodeValidationInNotDynamicProcess() {
         DynamicNode dynamicNode = new DynamicNode();
         dynamicNode.setName("MyDynamicNode");
-        dynamicNode.setId(1);
+        dynamicNode.setId(one);
         dynamicNode.setAutoComplete(false);
         // empty completion expression to trigger validation error
         process.addNode(dynamicNode);
@@ -109,7 +116,7 @@ public class RuleFlowProcessValidatorTest {
 
         DynamicNode dynamicNode = new DynamicNode();
         dynamicNode.setName("MyDynamicNode");
-        dynamicNode.setId(1);
+        dynamicNode.setId(one);
         dynamicNode.setAutoComplete(false);
         dynamicNode.setCompletionExpression(kcontext -> true);
         process.addNode(dynamicNode);
@@ -122,7 +129,7 @@ public class RuleFlowProcessValidatorTest {
         process.removeNode(dynamicNode);
         DynamicNode dynamicNode2 = new DynamicNode();
         dynamicNode2.setName("MyDynamicNode");
-        dynamicNode2.setId(1);
+        dynamicNode2.setId(one);
         dynamicNode2.setAutoComplete(false);
         process.addNode(dynamicNode2);
 
@@ -152,11 +159,11 @@ public class RuleFlowProcessValidatorTest {
     void testIdVariableName() {
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
         EndNode endNode = new EndNode();
         endNode.setName("EndNode");
-        endNode.setId(2);
+        endNode.setId(two);
         process.addNode(endNode);
         new org.jbpm.workflow.core.impl.ConnectionImpl(
                 startNode,
@@ -178,15 +185,15 @@ public class RuleFlowProcessValidatorTest {
     void testCompositeNodeNoStart() {
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
         EndNode endNode = new EndNode();
         endNode.setName("EndNode");
-        endNode.setId(2);
+        endNode.setId(two);
         process.addNode(endNode);
         CompositeNode compositeNode = new CompositeNode();
         compositeNode.setName("CompositeNode");
-        compositeNode.setId(3);
+        compositeNode.setId(three);
         process.addNode(compositeNode);
         new org.jbpm.workflow.core.impl.ConnectionImpl(
                 startNode,
@@ -213,7 +220,7 @@ public class RuleFlowProcessValidatorTest {
         testNodeOnEntryOnExit(ruleSetNode);
         testNodeOnEntryOnExit(new SubProcessNode());
         testNodeOnEntryOnExit(new WorkItemNode());
-        testNodeOnEntryOnExit(new ForEachNode());
+        testNodeOnEntryOnExit(new ForEachNode(one));
         testNodeOnEntryOnExit(new DynamicNode());
         testNodeOnEntryOnExit(new CompositeNode());
     }
@@ -221,34 +228,34 @@ public class RuleFlowProcessValidatorTest {
     private void testNodeOnEntryOnExit(ExtendedNodeImpl node) {
         List<ProcessValidationError> errors = new ArrayList<>();
         node.setName("name");
-        node.setId(1);
+        node.setId(node.getId());
         node.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, singletonList(new DroolsAction()));
         node.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, singletonList(new DroolsAction()));
         validator.validateNodes(new org.kie.api.definition.process.Node[] { node }, errors, process);
         assertThat(errors).extracting("message").contains(
-                "Node 'name' [1] On Entry Action is not yet supported in Kogito",
-                "Node 'name' [1] On Exit Action is not yet supported in Kogito");
+                "Node 'name' [" + node.getId().toExternalFormat() + "] On Entry Action is not yet supported in Kogito",
+                "Node 'name' [" + node.getId().toExternalFormat() + "] On Exit Action is not yet supported in Kogito");
     }
 
     @Test
     void testScriptTaskDialect() {
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
         EndNode endNode = new EndNode();
         endNode.setName("EndNode");
-        endNode.setId(2);
+        endNode.setId(two);
         process.addNode(endNode);
         ActionNode actionNode1 = new ActionNode();
         actionNode1.setName("ActionNode1");
         actionNode1.setAction(new DroolsConsequenceAction("mvel", "System.out.println();"));
-        actionNode1.setId(3);
+        actionNode1.setId(three);
         process.addNode(actionNode1);
         ActionNode actionNode2 = new ActionNode();
         actionNode2.setName("ActionNode2");
         actionNode2.setAction(new DroolsConsequenceAction("java", "System.out.println();"));
-        actionNode2.setId(4);
+        actionNode2.setId(four);
         process.addNode(actionNode2);
         new org.jbpm.workflow.core.impl.ConnectionImpl(
                 startNode,

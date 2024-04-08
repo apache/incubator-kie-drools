@@ -43,7 +43,6 @@ import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import io.serverlessworkflow.api.events.EventDefinition;
 
 import static org.jbpm.process.core.timer.Timer.TIME_DURATION;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.JSON_NODE;
 
@@ -130,29 +129,25 @@ public class NodeFactoryUtils {
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> eventBasedSplitNode(SplitFactory<T> nodeFactory, int type) {
-        return nodeFactory.name("EventSplit_" + nodeFactory.getNode().getId())
+        return nodeFactory.name("EventSplit_" + nodeFactory.getNode().getId().toExternalFormat())
                 .type(type)
-                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()))
                 .metaData("EventBased", "true");
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> SplitFactory<T> exclusiveSplitNode(SplitFactory<T> nodeFactory) {
-        return nodeFactory.name("ExclusiveSplit_" + nodeFactory.getNode().getId())
-                .type(Split.TYPE_XOR)
-                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()));
+        return nodeFactory.name("ExclusiveSplit_" + nodeFactory.getNode().getId().toExternalFormat())
+                .type(Split.TYPE_XOR);
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> JoinFactory<T> joinExclusiveNode(JoinFactory<T> nodeFactory) {
-        return nodeFactory.name("ExclusiveJoin_" + nodeFactory.getNode().getId())
-                .type(Join.TYPE_XOR)
-                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()));
+        return nodeFactory.name("ExclusiveJoin_" + nodeFactory.getNode().getId().toExternalFormat())
+                .type(Join.TYPE_XOR);
     }
 
     public static <T extends RuleFlowNodeContainerFactory<T, ?>> TimerNodeFactory<T> timerNode(TimerNodeFactory<T> nodeFactory, String duration) {
-        return nodeFactory.name("TimerNode_" + nodeFactory.getNode().getId())
+        return nodeFactory.name("TimerNode_" + nodeFactory.getNode().getId().toExternalFormat())
                 .type(TIME_DURATION)
                 .delay(duration)
-                .metaData(UNIQUE_ID, Long.toString(nodeFactory.getNode().getId()))
                 .metaData("EventType", "Timer");
     }
 

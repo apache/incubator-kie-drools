@@ -26,6 +26,7 @@ import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -65,7 +66,7 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
         for (Branch branch : state.getBranches()) {
             currentBranch = branch;
             CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory, getName(branch)), branch.getActions());
-            long branchId = embeddedSubProcess.getNode().getId();
+            WorkflowElementIdentifier branchId = embeddedSubProcess.getNode().getId();
             embeddedSubProcess.done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
         }
         return new MakeNodeResult(nodeFactory, connectionNode);

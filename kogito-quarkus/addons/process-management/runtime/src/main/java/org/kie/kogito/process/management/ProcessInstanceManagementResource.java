@@ -19,6 +19,7 @@
 package org.kie.kogito.process.management;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.Processes;
 
 import jakarta.enterprise.inject.Instance;
@@ -35,6 +36,9 @@ import jakarta.ws.rs.core.Response.Status;
 
 @Path("/management/processes/")
 public class ProcessInstanceManagementResource extends BaseProcessInstanceManagementResource<Response> {
+
+    @Inject
+    ProcessService processService;
 
     //CDI
     public ProcessInstanceManagementResource() {
@@ -100,6 +104,22 @@ public class ProcessInstanceManagementResource extends BaseProcessInstanceManage
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInstanceInError(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId) {
         return doGetInstanceInError(processId, processInstanceId);
+    }
+
+    @Override
+    @POST
+    @Path("{processId}/instances/{processInstanceId}/migrate")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response migrateInstance(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, ProcessMigrationSpec migrationSpec) {
+        return doMigrateInstance(processService, processId, migrationSpec, processInstanceId);
+    }
+
+    @Override
+    @POST
+    @Path("{processId}/migrate")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response migrateAllInstances(@PathParam("processId") String processId, ProcessMigrationSpec migrationSpec) {
+        return doMigrateAllInstances(processService, processId, migrationSpec);
     }
 
     @Override

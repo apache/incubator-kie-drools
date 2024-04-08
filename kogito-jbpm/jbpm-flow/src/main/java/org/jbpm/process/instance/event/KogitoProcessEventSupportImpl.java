@@ -210,6 +210,12 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
         notifyAllListeners(l -> l.onMessage(event));
     }
 
+    @Override
+    public void fireOnMigration(final KogitoProcessInstance processInstance, KieRuntime kruntime) {
+        ProcessMigrationEventImpl event = new ProcessMigrationEventImpl(processInstance, kruntime, "System");
+        notifyAllListeners(l -> l.onMigration(event));
+    }
+
     // users tasks events
     @Override
     public void fireOnUserTaskNotStartedDeadline(KogitoProcessInstance instance,

@@ -53,6 +53,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jbpm-flow-migration</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

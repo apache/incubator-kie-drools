@@ -25,6 +25,7 @@ import java.util.Map;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -40,7 +41,7 @@ public class WorkflowRuntimeException extends RuntimeException {
     private String processInstanceId;
     private String processId;
     private String nodeInstanceId;
-    private long nodeId;
+    private WorkflowElementIdentifier nodeId;
     private String nodeName;
     private String deploymentId;
 
@@ -128,14 +129,14 @@ public class WorkflowRuntimeException extends RuntimeException {
     /**
      * @return the nodeId
      */
-    public long getNodeId() {
+    public WorkflowElementIdentifier getNodeId() {
         return nodeId;
     }
 
     /**
      * @param nodeId the nodeId to set
      */
-    public void setNodeId(long nodeId) {
+    public void setNodeId(WorkflowElementIdentifier nodeId) {
         this.nodeId = nodeId;
     }
 
@@ -162,7 +163,7 @@ public class WorkflowRuntimeException extends RuntimeException {
         return MessageFormat.format("[{0}:{4} - {1}:{2}] -- {3}",
                 getProcessId(),
                 (getNodeName() == null ? "?" : getNodeName()),
-                (getNodeId() == 0 ? "?" : getNodeId()),
+                (getNodeId()),
                 (getCause() == null ? "WorkflowRuntimeException" : getCause().getMessage()),
                 getProcessInstanceId());
     }

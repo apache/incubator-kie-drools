@@ -23,6 +23,7 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.node.StateNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 
@@ -30,7 +31,7 @@ public class StateNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
 
     public static final String METHOD_CONSTRAINT = "constraint";
 
-    public StateNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public StateNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new StateNode(), id);
     }
 
@@ -38,7 +39,7 @@ public class StateNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
         return (StateNode) node;
     }
 
-    public StateNodeFactory<T> constraint(String connectionId, long nodeId, String type, String dialect, String constraint, int priority) {
+    public StateNodeFactory<T> constraint(String connectionId, WorkflowElementIdentifier nodeId, String type, String dialect, String constraint, int priority) {
         ConstraintImpl constraintImpl = new ConstraintImpl();
         constraintImpl.setName(connectionId);
         constraintImpl.setType(type);

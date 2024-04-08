@@ -46,6 +46,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kie.api.command.ExecutableCommand;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.Context;
@@ -1292,7 +1293,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         System.setProperty("jbpm.enable.multi.con", "true");
         kruntime = createKogitoProcessRuntime("BPMN2-MultiConnEnabled.bpmn2");
 
-        final List<Long> list = new ArrayList<>();
+        final List<WorkflowElementIdentifier> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
             public void afterNodeTriggered(org.kie.api.event.process.ProcessNodeTriggeredEvent event) {
                 if ("Task2".equals(event.getNodeInstance().getNodeName())) {

@@ -27,6 +27,7 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class StartNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<StartNodeFactory<T>, T> {
 
@@ -34,7 +35,7 @@ public class StartNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
     public static final String METHOD_TRIGGER = "trigger";
     public static final String METHOD_TIMER = "timer";
 
-    public StartNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public StartNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new StartNode(), id);
     }
 

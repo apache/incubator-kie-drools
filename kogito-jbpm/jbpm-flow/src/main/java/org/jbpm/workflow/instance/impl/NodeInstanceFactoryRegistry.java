@@ -74,12 +74,13 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
 public class NodeInstanceFactoryRegistry {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeInstanceFactoryRegistry.class);
     private static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
 
     private Map<Class<? extends Node>, NodeInstanceFactory> registry;
@@ -198,6 +199,7 @@ public class NodeInstanceFactoryRegistry {
             if (result != null) {
                 return result;
             } else {
+                LOGGER.debug("creating node {} with identifier {}", node, node.getId());
                 return createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
             }
         };
@@ -211,14 +213,9 @@ public class NodeInstanceFactoryRegistry {
         nodeInstance.setNodeId(node.getId());
         nodeInstance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
         nodeInstance.setProcessInstance(processInstance);
-        String uniqueId = (String) node.getMetaData().get(UNIQUE_ID);
-        if (uniqueId == null) {
-            uniqueId = node.getId() + "";
-        }
-        nodeInstance.setMetaData(UNIQUE_ID, uniqueId);
         nodeInstance.setMetaData(CUSTOM_ASYNC, node.getMetaData().get(CUSTOM_ASYNC));
 
-        int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(uniqueId);
+        int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(node.getUniqueId());
         nodeInstance.setLevel(level);
         return nodeInstance;
     }

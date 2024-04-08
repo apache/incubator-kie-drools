@@ -42,6 +42,7 @@ import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.command.ExecutableCommand;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -998,9 +999,9 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull().isInstanceOf(KogitoWorkItem.class);
 
         String nodeInstanceId = ((InternalKogitoWorkItem) workItem).getNodeInstanceStringId();
-        long nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
+        WorkflowElementIdentifier nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
 
-        assertThat(nodeId).isPositive();
+        assertThat(nodeId).isNotNull();
         assertThat(nodeInstanceId).isNotNull();
     }
 
@@ -1018,10 +1019,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull().isInstanceOf(KogitoWorkItem.class);
 
         String nodeInstanceId = ((InternalKogitoWorkItem) workItem).getNodeInstanceStringId();
-        long nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
+        WorkflowElementIdentifier nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
         String deploymentId = ((InternalKogitoWorkItem) workItem).getDeploymentId();
 
-        assertThat(nodeId).isPositive();
+        assertThat(nodeId).isNotNull();
         assertThat(nodeInstanceId).isNotNull();
         assertThat(deploymentId).isNull();
     }

@@ -257,7 +257,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 
                 if (mapping != null) {
                     xmlDump.append(
-                            "      <dataOutput id=\"_" + startNode.getId() + "_Output\" name=\"" + nameMapping + "\" />" + EOL +
+                            "      <dataOutput id=\"_" + startNode.getId().toExternalFormat() + "_Output\" name=\"" + nameMapping + "\" />" + EOL +
                                     "      <dataOutputAssociation>" + EOL +
                                     "        <sourceRef>_" + startNode.getId() + "_Output</sourceRef>" + EOL +
                                     "        <targetRef>" + mapping + "</targetRef>" + EOL +
@@ -372,7 +372,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 
                     EventTrigger trigger = new EventTrigger();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + ((EventSubProcessNode) parser.getParent()).getId());
+                    eventFilter.setType("Timer-" + ((EventSubProcessNode) parser.getParent()).getId().toExternalFormat());
                     trigger.addEventFilter(eventFilter);
                     String mapping = (String) startNode.getMetaData(TRIGGER_MAPPING);
                     if (mapping != null) {
@@ -388,7 +388,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 
     protected void handleCompensationNode(final StartNode startNode, final org.w3c.dom.Node xmlNode) {
         if (startNode.isInterrupting()) {
-            logger.warn("Compensation Event Sub-Processes [" + startNode.getMetaData("UniqueId") + "] may not be specified as interrupting:" +
+            logger.warn("Compensation Event Sub-Processes [" + startNode.getUniqueId() + "] may not be specified as interrupting:" +
                     " overriding attribute and setting to not-interrupting.");
         }
         startNode.setInterrupting(false);
@@ -409,7 +409,7 @@ public class StartEventHandler extends AbstractNodeHandler {
          */
         String activityRef = ((Element) xmlNode).getAttribute("activityRef");
         if (activityRef != null && activityRef.length() > 0) {
-            logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getMetaData("UniqueId")
+            logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getUniqueId()
                     + "' ignored per the BPMN2 specification.");
         }
 

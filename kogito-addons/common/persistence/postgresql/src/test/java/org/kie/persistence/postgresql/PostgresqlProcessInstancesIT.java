@@ -42,10 +42,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import io.vertx.pgclient.PgPool;
+import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.RowSet;
+import io.vertx.sqlclient.Tuple;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
@@ -196,6 +200,46 @@ class PostgresqlProcessInstancesIT {
         processInstances.remove(processInstance.id());
         assertEmpty(process.instances());
 
+    }
+
+    @Test
+    public void testMigrateAll() throws Exception {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance1.start();
+
+        ProcessInstance<BpmnVariables> processInstance2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance2.start();
+
+        process.instances().migrateAll("migrated", "2");
+        RowSet<Row> rows = client.preparedQuery("SELECT process_id, process_version FROM process_instances").execute().toCompletionStage().toCompletableFuture().get();
+        for (Row row : rows) {
+            assertEquals(row.get(String.class, 0), "migrated");
+            assertEquals(row.get(String.class, 1), "2");
+        }
+    }
+
+    @Test
+    public void testMigrateSingle() throws Exception {
+        BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance1.start();
+
+        ProcessInstance<BpmnVariables> processInstance2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance2.start();
+
+        process.instances().migrateProcessInstances("migrated", "2", processInstance1.id());
+        RowSet<Row> rows = null;
+        rows = client.preparedQuery("SELECT process_id, process_version FROM process_instances WHERE id = $1").execute(Tuple.of(processInstance1.id())).toCompletionStage().toCompletableFuture().get();
+        for (Row row : rows) {
+            assertEquals(row.get(String.class, 0), "migrated");
+            assertEquals(row.get(String.class, 1), "2");
+        }
+        rows = client.preparedQuery("SELECT process_id, process_version FROM process_instances WHERE id = $1").execute(Tuple.of(processInstance2.id())).toCompletionStage().toCompletableFuture().get();
+        for (Row row : rows) {
+            assertEquals(row.get(String.class, 0), "BPMN2_UserTask");
+            assertEquals(row.get(String.class, 1), "1.0");
+        }
     }
 
     @Test

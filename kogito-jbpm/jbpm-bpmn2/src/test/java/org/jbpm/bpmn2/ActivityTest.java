@@ -65,6 +65,7 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
@@ -389,7 +390,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             assertThat(nodeInstance).isNotNull().isInstanceOf(WorkItemNodeInstance.class);
             String deploymentId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getDeploymentId();
             String nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceStringId();
-            long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
+            WorkflowElementIdentifier nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
 
             assertThat(deploymentId).isEqualTo(((InternalKogitoWorkItem) workItem).getDeploymentId());
             assertThat(nodeId).isEqualTo(((InternalKogitoWorkItem) workItem).getNodeId());

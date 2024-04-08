@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.persistence.postgresql;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -26,17 +27,18 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.pgclient.PgPool;
+import io.vertx.sqlclient.PreparedQuery;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.Tuple;
@@ -54,6 +56,8 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private static final String FIND_BY_ID = "SELECT payload, version FROM process_instances WHERE process_id = $1 and id = $2 and process_version ";
     private static final String FIND_ALL = "SELECT payload, version FROM process_instances WHERE process_id = $1 and process_version ";
     private static final String UPDATE_WITH_LOCK = "UPDATE process_instances SET payload = $1, version = $2 WHERE process_id = $3 and id = $4 and version = $5 and process_version ";
+    private static final String MIGRATE_BULK = "UPDATE process_instances SET process_id = $1, process_version = $2 WHERE process_id = $3 and process_version ";
+    private static final String MIGRATE_INSTANCE = "UPDATE process_instances SET process_id = $1, process_version = $2 WHERE process_id = $3 and id = ANY ($4) and process_version ";
 
     private final Process<?> process;
     private final PgPool client;
@@ -65,7 +69,7 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         this.process = process;
         this.client = client;
         this.queryTimeoutMillis = queryTimeoutMillis;
-        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
+        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners().build();
         this.lock = lock;
     }
 
@@ -159,6 +163,45 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
 
     private RuntimeException uncheckedException(Exception ex, String message, Object... param) {
         return new RuntimeException(String.format(message, param), ex);
+    }
+
+    @Override
+    public long migrateAll(String targetProcessId, String targetProcessVersion) {
+        try {
+            PreparedQuery<RowSet<Row>> rows = null;
+            if (process.version() == null) {
+                rows = client.preparedQuery(MIGRATE_BULK + IS_NULL);
+            } else {
+                rows = client.preparedQuery(MIGRATE_BULK + "= $4");
+            }
+            Future<RowSet<Row>> future = rows.execute(tuple(targetProcessId, targetProcessVersion, process.id()));
+            return getResultFromFuture(future).map(RowSet::rowCount).orElse(0);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw uncheckedException(e, "Error migration process instance %s %s", process.id(), process.version());
+        } catch (Exception e) {
+            throw uncheckedException(e, "Error deleting process instance %s %s", process.id(), process.version());
+        }
+    }
+
+    @Override
+    public void migrateProcessInstances(String targetProcessId, String targetProcessVersion, String... processIds) {
+        try {
+            PreparedQuery<RowSet<Row>> rows = null;
+            if (process.version() == null) {
+                rows = client.preparedQuery(MIGRATE_INSTANCE + IS_NULL);
+
+            } else {
+                rows = client.preparedQuery(MIGRATE_INSTANCE + "= $5");
+            }
+            Future<RowSet<Row>> future = rows.execute(tuple(targetProcessId, targetProcessVersion, process.id(), processIds));
+            getExecutedResult(future);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw uncheckedException(e, "Error deleting process instance %s", Arrays.toString(processIds));
+        } catch (Exception e) {
+            throw uncheckedException(e, "Error deleting process instance %s", Arrays.toString(processIds));
+        }
     }
 
     private boolean updateInternal(String id, byte[] payload) {

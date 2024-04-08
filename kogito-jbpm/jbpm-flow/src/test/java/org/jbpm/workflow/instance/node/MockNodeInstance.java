@@ -70,7 +70,7 @@ public class MockNodeInstance extends NodeInstanceImpl {
     }
 
     public int hashCode() {
-        return (int) getNodeId();
+        return getNodeId().hashCode();
     }
 
     public boolean equals(Object object) {
@@ -78,7 +78,7 @@ public class MockNodeInstance extends NodeInstanceImpl {
             return false;
         }
         MockNodeInstance other = (MockNodeInstance) object;
-        return getNodeId() == other.getNodeId();
+        return getNodeId().equals(other.getNodeId());
     }
 
     public void triggerCompleted() {

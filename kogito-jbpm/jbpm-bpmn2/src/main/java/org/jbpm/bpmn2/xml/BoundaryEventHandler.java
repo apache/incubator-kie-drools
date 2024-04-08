@@ -256,14 +256,14 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 if (timeDuration != null && timeDuration.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration + "-" + eventNode.getId());
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration + "-" + eventNode.getId().toExternalFormat());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeDuration", timeDuration);
                 } else if (timeCycle != null && timeCycle.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + attachedTo + "-" + timeCycle + "-" + eventNode.getId());
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeCycle + "-" + eventNode.getId().toExternalFormat());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeCycle", timeCycle);
@@ -271,7 +271,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 } else if (timeDate != null && timeDate.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDate + "-" + eventNode.getId());
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDate + "-" + eventNode.getId().toExternalFormat());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeDate", timeDate);
@@ -295,7 +295,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 if ("compensateEventDefinition".equalsIgnoreCase(el.getNodeName())) {
                     String activityRef = el.getAttribute("activityRef");
                     if (activityRef != null && activityRef.length() > 0) {
-                        logger.warn("activityRef value [" + activityRef + "] on Boundary Event '" + eventNode.getMetaData("UniqueId")
+                        logger.warn("activityRef value [" + activityRef + "] on Boundary Event '" + eventNode.getUniqueId()
                                 + "' ignored per the BPMN2 specification.");
                     }
                 }

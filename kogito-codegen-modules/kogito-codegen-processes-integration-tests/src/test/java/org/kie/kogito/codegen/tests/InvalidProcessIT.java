@@ -47,13 +47,13 @@ public class InvalidProcessIT extends AbstractCodegenIT {
     static Stream<Arguments> invalidDataMappingProcessesForTest() {
         return Stream.of(
                 Arguments.of(new Object[] { "invalid/invalid-message-end-event.bpmn2",
-                        "Node 'processedconsumers' [2] Source variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data input assignment" }),
+                        "Node 'processedconsumers' [EndEvent_1] Source variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data input assignment" }),
                 Arguments.of(new Object[] { "invalid/invalid-message-start-event.bpmn2",
-                        "Node 'StartProcess' [1] Target variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data output assignment" }),
+                        "Node 'StartProcess' [StartEvent_1] Target variable 'customerId':'java.lang.String' has different data type from 'event':'java.lang.Boolean' in data output assignment" }),
                 Arguments.of(new Object[] { "invalid/intermediate-throw-event-message.bpmn2",
-                        "Node 'Intermediate Throw Event 1' [3] Source variable 'customerId':'java.lang.String' has different data type from 'input':'java.lang.Float' in data input assignment" }),
+                        "Node 'Intermediate Throw Event 1' [IntermediateThrowEvent_1] Source variable 'customerId':'java.lang.String' has different data type from 'input':'java.lang.Float' in data input assignment" }),
                 Arguments.of(new Object[] { "invalid/intermediate-catch-event-message.bpmn2",
-                        "Node 'Intermediate Catch Event' [2] Target variable 'customerId':'java.lang.String' has different data type from 'event':'org.acme.Customer' in data output assignment" }));
+                        "Node 'Intermediate Catch Event' [_4] Target variable 'customerId':'java.lang.String' has different data type from 'event':'org.acme.Customer' in data output assignment" }));
     }
 
     @Test

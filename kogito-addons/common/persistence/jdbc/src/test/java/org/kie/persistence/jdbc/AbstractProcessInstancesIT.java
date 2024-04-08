@@ -18,6 +18,9 @@
  */
 package org.kie.persistence.jdbc;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -39,6 +42,7 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
@@ -53,6 +57,8 @@ abstract class AbstractProcessInstancesIT {
 
     public static final String TEST_ID = "02ac3854-46ee-42b7-8b63-5186c9889d96";
     public static SecurityPolicy securityPolicy = SecurityPolicy.of(IdentityProviders.of("john"));
+
+    DataSource dataSource;
 
     public static void initMigration(JdbcDatabaseContainer container, String dbKind) {
         Flyway flyway = Flyway.configure().dataSource(container.getJdbcUrl(),
@@ -209,6 +215,62 @@ abstract class AbstractProcessInstancesIT {
 
         processInstances.remove(processInstance.id());
         assertEmpty(process.instances());
+    }
+
+    @Test
+    public void testMigrateAll() throws Exception {
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
+        BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance1.start();
+
+        ProcessInstance<BpmnVariables> processInstance2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance2.start();
+
+        process.instances().migrateAll("migrated", "2");
+
+        DataSource dataSource = getDataSource();
+        try (Connection connection = dataSource.getConnection();
+                ResultSet resultSet = connection.createStatement().executeQuery("SELECT process_id, process_version FROM process_instances")) {
+
+            while (resultSet.next()) {
+                assertEquals(resultSet.getString(1), "migrated");
+                assertEquals(resultSet.getString(2), "2");
+            }
+        }
+    }
+
+    @Test
+    public void testMigrateSingle() throws Exception {
+        var factory = new TestProcessInstancesFactory(getDataSource(), lock());
+        BpmnProcess process = createProcess(factory, "BPMN2-UserTask.bpmn2");
+        ProcessInstance<BpmnVariables> processInstance1 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance1.start();
+
+        ProcessInstance<BpmnVariables> processInstance2 = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+        processInstance2.start();
+
+        process.instances().migrateProcessInstances("migrated", "2", processInstance1.id());
+
+        DataSource dataSource = getDataSource();
+        try (Connection connection = dataSource.getConnection();
+                ResultSet resultSet = connection.createStatement().executeQuery("SELECT process_id, process_version FROM process_instances WHERE id = '" + processInstance1.id() + "'")) {
+
+            while (resultSet.next()) {
+                assertEquals(resultSet.getString(1), "migrated");
+                assertEquals(resultSet.getString(2), "2");
+            }
+        }
+
+        try (Connection connection = dataSource.getConnection();
+                ResultSet resultSet = connection.createStatement().executeQuery("SELECT process_id, process_version FROM process_instances WHERE id = '" + processInstance2.id() + "'")) {
+
+            while (resultSet.next()) {
+                assertEquals(resultSet.getString(1), "BPMN2_UserTask");
+                assertEquals(resultSet.getString(2), "1.0");
+            }
+        }
+
     }
 
     @Test

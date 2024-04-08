@@ -38,6 +38,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +103,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     }
 
     @Override
-    public org.kie.api.definition.process.Node getNode(final long id) {
+    public org.kie.api.definition.process.Node getNode(WorkflowElementIdentifier id) {
         return nodeContainer.getNode(id);
     }
 
@@ -112,7 +113,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     }
 
     @Override
-    public org.kie.api.definition.process.Node internalGetNode(long id) {
+    public org.kie.api.definition.process.Node internalGetNode(WorkflowElementIdentifier id) {
         try {
             return getNode(id);
         } catch (IllegalArgumentException e) {
@@ -181,9 +182,10 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         }
     }
 
-    protected org.kie.api.definition.process.Node getContainerNode(org.kie.api.definition.process.Node currentNode, org.jbpm.workflow.core.NodeContainer nodeContainer, long nodeId) {
+    protected org.kie.api.definition.process.Node getContainerNode(org.kie.api.definition.process.Node currentNode, org.jbpm.workflow.core.NodeContainer nodeContainer,
+            WorkflowElementIdentifier nodeId) {
         for (org.kie.api.definition.process.Node node : nodeContainer.getNodes()) {
-            if (nodeId == node.getId()) {
+            if (nodeId.equals(node.getId())) {
                 return currentNode;
             } else {
                 if (node instanceof org.jbpm.workflow.core.NodeContainer) {
@@ -194,7 +196,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return null;
     }
 
-    public org.kie.api.definition.process.Node getParentNode(long nodeId) {
+    public org.kie.api.definition.process.Node getParentNode(WorkflowElementIdentifier nodeId) {
         return getContainerNode(null, nodeContainer, nodeId);
     }
 

@@ -52,6 +52,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         Connection selected = null;
         int priority = Integer.MAX_VALUE;
         for (Connection connection : stateNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
+
             Collection<Constraint> constraints = stateNode.getConstraints(connection);
 
             if (constraints != null) {
@@ -162,7 +163,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             Collection<Constraint> constraints = getStateNode().getConstraints(connection);
             if (constraints != null) {
                 String constraintName = getActivationEventType() + "-"
-                        + connection.getTo().getId() + "-" + connection.getToType();
+                        + connection.getTo().getId().toExternalFormat() + "-" + connection.getToType();
                 if (constraintName.equals(event.getMatch().getRule().getName())
                         && checkProcessInstance((InternalMatch) event.getMatch())) {
                     selected = connection;

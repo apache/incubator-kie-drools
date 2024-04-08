@@ -25,5 +25,4 @@ public interface KogitoNode extends Node {
 
     NodeContainer getParentContainer();
 
-    String getUniqueId();
 }

@@ -138,7 +138,7 @@ public class CompensationTest extends AbstractBaseTest {
         kruntime = createKogitoProcessRuntime(process);
 
         Node compensatedNode = findNode(process, "work1");
-        String compensationEvent = (String) compensatedNode.getMetaData().get("UniqueId");
+        String compensationEvent = (String) compensatedNode.getUniqueId();
 
         runCompensationBoundaryEventSpecificTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
@@ -264,7 +264,7 @@ public class CompensationTest extends AbstractBaseTest {
         RuleFlowProcess process = createCompensationEventSubProcessProcess(processId, workItemNames, eventList);
 
         Node toCompensateNode = findNode(process, "sub0");
-        String compensationEvent = (String) toCompensateNode.getMetaData().get("UniqueId");
+        String compensationEvent = (String) toCompensateNode.getUniqueId();
 
         // run process
         kruntime = createKogitoProcessRuntime(process);
@@ -388,7 +388,7 @@ public class CompensationTest extends AbstractBaseTest {
         eventFilter.setType("Compensation");
         espNode.addEvent(eventFilter);
 
-        addCompensationScope(espNode, process, (String) compositeNode.getMetaData("UniqueId"));
+        addCompensationScope(espNode, process, compositeNode.getUniqueId());
 
         startNodeCreator.setNodeContainer(espNode);
         endNodeCreator.setNodeContainer(espNode);
@@ -420,7 +420,7 @@ public class CompensationTest extends AbstractBaseTest {
         RuleFlowProcess process = createNestedCompensationEventSubProcessProcess(processId, workItemNames, eventList);
 
         Node toCompensateNode = findNode(process, "sub1");
-        String compensationEvent = (String) toCompensateNode.getMetaData().get("UniqueId");
+        String compensationEvent = toCompensateNode.getUniqueId();
 
         kruntime = createKogitoProcessRuntime(process);
 
@@ -435,7 +435,7 @@ public class CompensationTest extends AbstractBaseTest {
         RuleFlowProcess process = createNestedCompensationEventSubProcessProcess(processId, workItemNames, eventList);
 
         Node toCompensateNode = findNode(process, "sub0");
-        String compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + toCompensateNode.getMetaData().get("UniqueId");
+        String compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + toCompensateNode.getUniqueId();
 
         kruntime = createKogitoProcessRuntime(process);
 
@@ -519,7 +519,7 @@ public class CompensationTest extends AbstractBaseTest {
             eventFilter.setType("Compensation");
             espNode.addEvent(eventFilter);
 
-            addCompensationScope(espNode, compensationScopeContainerNode, (String) compositeNode.getMetaData("UniqueId"));
+            addCompensationScope(espNode, compensationScopeContainerNode, compositeNode.getUniqueId());
 
             StartNode startNode = startNodeCreator.createNode("start3*");
             ActionNode actionNode = actionNodeCreator.createNode("action3*");
@@ -551,7 +551,7 @@ public class CompensationTest extends AbstractBaseTest {
         kruntime = createKogitoProcessRuntime(process);
 
         Node compensatedNode = findNode(process, "work-comp-1");
-        String compensationEvent = (String) compensatedNode.getMetaData().get("UniqueId");
+        String compensationEvent = (String) compensatedNode.getUniqueId();
 
         runCompensationBoundaryEventSpecificTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
@@ -567,7 +567,7 @@ public class CompensationTest extends AbstractBaseTest {
         kruntime = createKogitoProcessRuntime(process);
         Node toCompensateNode = findNode(process, "sub2");
         String compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX
-                + toCompensateNode.getMetaData().get("UniqueId");
+                + toCompensateNode.getUniqueId();
 
         runCompensationBoundaryEventGeneralTest(kruntime, process, processId, workItemNames, eventList, compensationEvent);
     }
@@ -674,7 +674,7 @@ public class CompensationTest extends AbstractBaseTest {
 
         NodeCreator<BoundaryEventNode> boundaryNodeCreator = new NodeCreator<BoundaryEventNode>(nodeContainer, BoundaryEventNode.class);
         BoundaryEventNode boundaryNode = boundaryNodeCreator.createNode("boundary" + id);
-        String attachedTo = (String) attachedToNode.getMetaData().get("UniqueId");
+        String attachedTo = attachedToNode.getUniqueId();
         boundaryNode.setMetaData("AttachedTo", attachedTo);
         boundaryNode.setAttachedToNodeId(attachedTo);
 

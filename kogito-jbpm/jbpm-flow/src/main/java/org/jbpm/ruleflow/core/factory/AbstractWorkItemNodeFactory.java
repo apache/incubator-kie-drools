@@ -29,6 +29,7 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.workitems.WorkParametersFactory;
 
 public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends StateBasedNodeFactory<T, P> {
@@ -36,7 +37,7 @@ public class AbstractWorkItemNodeFactory<T extends AbstractWorkItemNodeFactory<T
     public static final String METHOD_WORK_NAME = "workName";
     public static final String METHOD_WORK_PARAMETER = "workParameter";
 
-    protected AbstractWorkItemNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, long id) {
+    protected AbstractWorkItemNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, node, id);
     }
 

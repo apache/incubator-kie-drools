@@ -111,16 +111,12 @@ class CallbackJobsServiceResourceTest {
     void triggerTimerProcessNotFound() {
         Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT, PAYLOAD);
         assertThat(response.getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
-        assertThat(response.getEntity()).isEqualTo("Process with id " + PROCESS_ID + " not found");
+        assertThat(response.getEntity()).isEqualTo("Process instance with id " + PROCESS_INSTANCE_ID + " not found");
     }
 
     @Test
     void triggerTimerProcessInstanceNotFound() {
-        doReturn(process).when(processes).processById(PROCESS_ID);
-        doReturn(instances).when(process).instances();
-        doReturn(unitOfWorkManager).when(application).unitOfWorkManager();
-        doReturn(unitOfWork).when(unitOfWorkManager).newUnitOfWork();
-        doReturn(Optional.empty()).when(instances).findById(PROCESS_INSTANCE_ID);
+        doReturn(Optional.empty()).when(processes).processByProcessInstanceId(PROCESS_INSTANCE_ID);
         Response response = resource.triggerTimer(PROCESS_ID, PROCESS_INSTANCE_ID, TIMER_ID, LIMIT, PAYLOAD);
         assertThat(response.getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
         assertThat(response.getEntity()).isEqualTo("Process instance with id " + PROCESS_INSTANCE_ID + " not found");
@@ -128,7 +124,7 @@ class CallbackJobsServiceResourceTest {
 
     @Test
     void triggerTimerOK() {
-        doReturn(process).when(processes).processById(PROCESS_ID);
+        doReturn(Optional.of(process)).when(processes).processByProcessInstanceId(PROCESS_INSTANCE_ID);
         doReturn(instances).when(process).instances();
         doReturn(unitOfWorkManager).when(application).unitOfWorkManager();
         doReturn(unitOfWork).when(unitOfWorkManager).newUnitOfWork();

@@ -27,6 +27,7 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.ForEachNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.utils.KogitoTags;
 
 public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<ForEachNodeFactory<T>, T> {
@@ -38,8 +39,8 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public static final String METHOD_OUTPUT_TEMP = "tempVariable";
     public static final String METHOD_SEQUENTIAL = "sequential";
 
-    public ForEachNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, new ForEachNode(), id);
+    public ForEachNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
+        super(nodeContainerFactory, nodeContainer, new ForEachNode(id), id);
     }
 
     protected ForEachNode getForEachNode() {

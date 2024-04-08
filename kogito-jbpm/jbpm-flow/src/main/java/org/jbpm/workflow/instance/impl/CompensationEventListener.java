@@ -136,7 +136,7 @@ class CompensationEventListener implements KogitoEventListener {
         allProcessNodes.addAll(Arrays.asList(instance.getNodeContainer().getNodes()));
         while (!allProcessNodes.isEmpty()) {
             org.kie.api.definition.process.Node node = allProcessNodes.poll();
-            if (nodeId.equals(node.getMetaData().get("UniqueId"))) {
+            if (nodeId.equals(node.getUniqueId())) {
                 found = node;
                 break;
             }

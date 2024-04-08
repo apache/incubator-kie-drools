@@ -143,6 +143,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         AbstractProcessInstance mockUpdateProcessInstance = mock(AbstractProcessInstance.class);
         when(mockUpdateProcessInstance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         when(mockUpdateProcessInstance.internalGetProcessInstance()).thenReturn(updatePi);
+        when(mockUpdateProcessInstance.process()).thenReturn(process);
 
         mongodbInstance.update(id, mockUpdateProcessInstance);
         verify(mongoCollection, times(1)).replaceOne(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)), any());
@@ -154,6 +155,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         AbstractProcessInstance mockCreateProcessInstance = mock(AbstractProcessInstance.class);
         when(mockCreateProcessInstance.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         when(mockCreateProcessInstance.internalGetProcessInstance()).thenReturn(createPi);
+        when(mockCreateProcessInstance.process()).thenReturn(process);
 
         mongodbInstance.create(id, mockCreateProcessInstance);
         verify(mongoCollection, times(1)).insertOne(eq(clientSession), any());

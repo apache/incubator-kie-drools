@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 
@@ -52,6 +51,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -128,35 +128,15 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     public Object start(final String uri, final String localName, final Attributes attrs,
             final Parser parser) throws SAXException {
         parser.startElementBuilder(localName, attrs);
-        final Node node = createNode(attrs);
+
         String id = attrs.getValue("id");
-        node.setMetaData("UniqueId", id);
-        final String name = attrs.getValue("name");
+        String name = attrs.getValue("name");
+
+        Node node = createNode(attrs);
+        node.setId(WorkflowElementIdentifierFactory.fromExternalFormat(id));
         node.setName(name);
         node.setMetaData(INPUT_TYPES, new HashMap<String, String>());
         node.setMetaData(OUTPUT_TYPES, new HashMap<String, String>());
-        if ("true".equalsIgnoreCase(System.getProperty("jbpm.v5.id.strategy"))) {
-            try {
-                // remove starting _
-                id = id.substring(1);
-                // remove ids of parent nodes
-                id = id.substring(id.lastIndexOf("-") + 1);
-                node.setId(Integer.parseInt(id));
-            } catch (NumberFormatException e) {
-                // id is not in the expected format, generating a new one
-                long newId = 0;
-                NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-                for (org.kie.api.definition.process.Node n : nodeContainer.getNodes()) {
-                    if (n.getId() > newId) {
-                        newId = n.getId();
-                    }
-                }
-                node.setId(++newId);
-            }
-        } else {
-            AtomicInteger idGen = (AtomicInteger) parser.getMetaData().get("idGen");
-            node.setId(idGen.getAndIncrement());
-        }
         return node;
     }
 
@@ -662,7 +642,6 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     protected NodeImpl decorateMultiInstanceSpecificationSubProcess(CompositeContextNode nodeTarget, MultiInstanceSpecification multiInstanceSpecification) {
         ForEachNode forEachNode = decorateMultiInstanceSpecification(nodeTarget, multiInstanceSpecification);
-        forEachNode.setMetaData("UniqueId", nodeTarget.getMetaData().get("UniqueId"));
         forEachNode.setMetaData(ProcessHandler.CONNECTIONS, nodeTarget.getMetaData(ProcessHandler.CONNECTIONS));
         forEachNode.setAutoComplete(nodeTarget.isAutoComplete());
         // nodeTarget/subprocess is invalidated by this. we get all the content and added to the for each nodes 
@@ -695,9 +674,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     protected NodeImpl decorateMultiInstanceSpecificationActivity(NodeImpl nodeTarget, MultiInstanceSpecification multiInstanceSpecification) {
         ForEachNode forEachNode = decorateMultiInstanceSpecification(nodeTarget, multiInstanceSpecification);
-        String uniqueId = (String) nodeTarget.getMetaData().get("UniqueId");
-        nodeTarget.getMetaData().put("UniqueId", uniqueId + ":1");
-        forEachNode.setMetaData("UniqueId", uniqueId);
+        String uniqueId = nodeTarget.getUniqueId();
+        nodeTarget.setId(WorkflowElementIdentifierFactory.fromExternalFormat(uniqueId + "_1"));
         forEachNode.addNode(nodeTarget);
         forEachNode.linkIncomingConnections(Node.CONNECTION_DEFAULT_TYPE, nodeTarget.getId(), Node.CONNECTION_DEFAULT_TYPE);
         forEachNode.linkOutgoingConnections(nodeTarget.getId(), Node.CONNECTION_DEFAULT_TYPE, Node.CONNECTION_DEFAULT_TYPE);
@@ -705,8 +683,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected ForEachNode decorateMultiInstanceSpecification(NodeImpl nodeTarget, MultiInstanceSpecification multiInstanceSpecification) {
-        ForEachNode forEachNode = new ForEachNode();
-        forEachNode.setId(nodeTarget.getId());
+        ForEachNode forEachNode = new ForEachNode(nodeTarget.getId());
         forEachNode.setName(nodeTarget.getName());
         nodeTarget.setMetaData("hidden", true);
         forEachNode.setIoSpecification(nodeTarget.getIoSpecification());
@@ -888,7 +865,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                  * Alternatively, compensation can be triggered without waiting for its completion,
                  * by setting the throw compensation event's waitForCompletion attribute to false."
                  */
-                String nodeId = (String) node.getMetaData().get("UniqueId");
+                String nodeId = (String) node.getUniqueId();
                 String waitForCompletionString = ((Element) xmlNode).getAttribute("waitForCompletion");
                 boolean waitForCompletion = true;
                 if (waitForCompletionString != null && waitForCompletionString.length() > 0) {

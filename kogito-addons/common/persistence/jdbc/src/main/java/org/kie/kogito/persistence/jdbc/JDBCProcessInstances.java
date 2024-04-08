@@ -24,13 +24,13 @@ import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
+import org.jbpm.flow.serialization.ProcessInstanceMarshallerService;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
-import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock) {
         this.process = process;
         this.lock = lock;
-        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
+        this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withDefaultListeners().build();
         this.repository = new GenericRepository(dataSource);
     }
 
@@ -86,6 +86,16 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         } finally {
             disconnect(instance);
         }
+    }
+
+    @Override
+    public long migrateAll(String targetProcessId, String targetProcessVersion) {
+        return repository.migrate(process.id(), process.version(), targetProcessId, targetProcessVersion);
+    }
+
+    @Override
+    public void migrateProcessInstances(String targetProcessId, String targetProcessVersion, String... processIds) {
+        repository.migrate(process.id(), process.version(), targetProcessId, targetProcessVersion, processIds);
     }
 
     @Override

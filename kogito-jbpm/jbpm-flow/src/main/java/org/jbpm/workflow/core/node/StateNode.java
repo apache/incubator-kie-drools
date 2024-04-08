@@ -21,4 +21,5 @@ package org.jbpm.workflow.core.node;
 public class StateNode extends CompositeContextNode implements Constrainable {
 
     private static final long serialVersionUID = 510l;
+
 }

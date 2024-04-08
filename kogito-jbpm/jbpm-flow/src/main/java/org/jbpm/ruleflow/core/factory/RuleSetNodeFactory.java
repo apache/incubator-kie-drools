@@ -26,6 +26,7 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.RuleUnitFactory;
 import org.jbpm.workflow.instance.rule.RuleType;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.decision.DecisionModel;
 
@@ -38,7 +39,7 @@ public class RuleSetNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public static final String METHOD_DECISION = "decision";
     public static final String METHOD_PARAMETER = "parameter";
 
-    public RuleSetNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public RuleSetNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new RuleSetNode(), id);
     }
 

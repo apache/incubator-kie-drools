@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
 import io.serverlessworkflow.api.Workflow;
@@ -111,7 +112,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
     private void finalizeDataBasedSwitchState(RuleFlowNodeContainerFactory<?, ?> factory) {
         final NodeFactory<?, ?> startNode = getNode();
-        final long splitId = startNode.getNode().getId();
+        final WorkflowElementIdentifier splitId = startNode.getNode().getId();
 
         DefaultConditionDefinition defaultCondition = state.getDefaultCondition();
         // set default connection
@@ -120,18 +121,18 @@ public class SwitchHandler extends StateHandler<SwitchState> {
             handleTransition(factory, defaultCondition.getTransition(), startNode, Optional.of(new StateHandler.HandleTransitionCallBack() {
                 @Override
                 public void onStateTarget(StateHandler<?> targetState) {
-                    targetHandlers.add(() -> startNode.metaData(XORSPLITDEFAULT, concatId(splitId, targetState.getIncomingNode(factory).getNode().getId())));
+                    targetHandlers.add(() -> startNode.metaData(XORSPLITDEFAULT, concatId(splitId, targetState.getIncomingNode(factory).getNode().getId()).toExternalFormat()));
                 }
 
                 @Override
-                public void onIdTarget(long targetId) {
-                    startNode.metaData(XORSPLITDEFAULT, concatId(splitId, targetId));
+                public void onIdTarget(WorkflowElementIdentifier targetId) {
+                    startNode.metaData(XORSPLITDEFAULT, concatId(splitId, targetId).toExternalFormat());
                 }
 
                 @Override
                 public void onEmptyTarget() {
                     NodeFactory<?, ?> endNodeFactory = endIt(splitId, factory, defaultCondition.getEnd());
-                    startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()));
+                    startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()).toExternalFormat());
                 }
             }));
         }
@@ -145,7 +146,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
                 }
 
                 @Override
-                public void onIdTarget(long targetId) {
+                public void onIdTarget(WorkflowElementIdentifier targetId) {
                     addConstraint(startNode, targetId, condition);
                 }
 
@@ -158,7 +159,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         }
     }
 
-    private NodeFactory<?, ?> endIt(long sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, End end) {
+    private NodeFactory<?, ?> endIt(WorkflowElementIdentifier sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, End end) {
         NodeFactory<?, ?> endNodeFactory = endNodeFactory(factory, end);
         endNodeFactory.done().connection(sourceNodeId, endNodeFactory.getNode().getId());
         return endNodeFactory;
@@ -168,7 +169,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         addConstraint(startNode, stateHandler.getIncomingNode(factory).getNode().getId(), condition);
     }
 
-    private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
+    private void addConstraint(NodeFactory<?, ?> startNode, WorkflowElementIdentifier targetId, DataCondition condition) {
         addCondition((SplitFactory<?>) startNode, targetId, condition.getCondition(), isDefaultCondition(state, condition));
     }
 

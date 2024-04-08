@@ -84,7 +84,7 @@ public class Split extends NodeImpl implements Constrainable {
         }
 
         if (this.type == TYPE_OR || this.type == TYPE_XOR) {
-            ConnectionRef ref = new ConnectionRef((String) connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
+            ConnectionRef ref = new ConnectionRef(connection.getUniqueId(), connection.getTo().getId(), connection.getToType());
             Collection<Constraint> constraints = this.constraints.get(ref);
             if (constraints != null) {
                 for (Constraint constraint : constraints) {
@@ -108,7 +108,7 @@ public class Split extends NodeImpl implements Constrainable {
         }
 
         if (this.type == TYPE_OR || this.type == TYPE_XOR) {
-            ConnectionRef ref = new ConnectionRef((String) connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
+            ConnectionRef ref = new ConnectionRef(connection.getUniqueId(), connection.getTo().getId(), connection.getToType());
             return this.constraints.get(ref);
         }
         throw new UnsupportedOperationException("Constraints are " +
@@ -126,7 +126,7 @@ public class Split extends NodeImpl implements Constrainable {
                 throw new IllegalArgumentException("connection is unknown:" + connection);
             }
             addConstraint(
-                    new ConnectionRef((String) connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType()),
+                    new ConnectionRef(connection.getUniqueId(), connection.getTo().getId(), connection.getToType()),
                     constraint);
         } else {
             throw new UnsupportedOperationException("Constraints are " +
@@ -139,13 +139,13 @@ public class Split extends NodeImpl implements Constrainable {
         super.validateAddIncomingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName()
+                    "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] only accepts default incoming connection type!");
         }
 
         if (!getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty() && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
-                    "This type of node [" + connection.getTo().getMetaData().get("UniqueId") + ", " + connection.getTo().getName()
+                    "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] cannot have more than one incoming connection!");
         }
     }
@@ -155,7 +155,7 @@ public class Split extends NodeImpl implements Constrainable {
         super.validateAddOutgoingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                    "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName()
+                    "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] only accepts default outgoing connection type!");
         }
     }
@@ -167,7 +167,7 @@ public class Split extends NodeImpl implements Constrainable {
     }
 
     public void removeConstraint(Connection connection) {
-        ConnectionRef ref = new ConnectionRef((String) connection.getMetaData().get("UniqueId"), connection.getTo().getId(), connection.getToType());
+        ConnectionRef ref = new ConnectionRef(connection.getUniqueId(), connection.getTo().getId(), connection.getToType());
         internalRemoveConstraint(ref);
     }
 

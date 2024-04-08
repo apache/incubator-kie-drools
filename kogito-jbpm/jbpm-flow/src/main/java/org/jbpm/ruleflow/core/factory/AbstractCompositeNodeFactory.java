@@ -25,14 +25,15 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractCompositeNodeFactory<T extends RuleFlowNodeContainerFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends RuleFlowNodeContainerFactory<T, P> {
 
-    private long linkedIncomingNodeId = -1;
-    private long linkedOutgoingNodeId = -1;
+    private WorkflowElementIdentifier linkedIncomingNodeId;
+    private WorkflowElementIdentifier linkedOutgoingNodeId;
 
-    protected AbstractCompositeNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, NodeContainer node, Object id) {
+    protected AbstractCompositeNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, NodeContainer node, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, node, id);
     }
 
@@ -79,7 +80,7 @@ public abstract class AbstractCompositeNodeFactory<T extends RuleFlowNodeContain
         return (T) this;
     }
 
-    public T linkIncomingConnections(long nodeId) {
+    public T linkIncomingConnections(WorkflowElementIdentifier nodeId) {
         this.linkedIncomingNodeId = nodeId;
         return (T) this;
     }
@@ -89,19 +90,19 @@ public abstract class AbstractCompositeNodeFactory<T extends RuleFlowNodeContain
         return (T) this;
     }
 
-    public T linkOutgoingConnections(long nodeId) {
+    public T linkOutgoingConnections(WorkflowElementIdentifier nodeId) {
         this.linkedOutgoingNodeId = nodeId;
         return (T) this;
     }
 
     @Override
     public P done() {
-        if (linkedIncomingNodeId != -1) {
+        if (linkedIncomingNodeId != null) {
             getCompositeNode().linkIncomingConnections(
                     Node.CONNECTION_DEFAULT_TYPE,
                     linkedIncomingNodeId, Node.CONNECTION_DEFAULT_TYPE);
         }
-        if (linkedOutgoingNodeId != -1) {
+        if (linkedOutgoingNodeId != null) {
             getCompositeNode().linkOutgoingConnections(
                     linkedOutgoingNodeId, Node.CONNECTION_DEFAULT_TYPE,
                     Node.CONNECTION_DEFAULT_TYPE);

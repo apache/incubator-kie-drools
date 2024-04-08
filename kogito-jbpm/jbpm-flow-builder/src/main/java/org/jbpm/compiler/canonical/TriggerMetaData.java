@@ -163,11 +163,11 @@ public class TriggerMetaData {
             NodeContainer container = ((KogitoNode) node).getParentContainer();
             while (container instanceof CompositeNode) {
                 CompositeNode compositeNode = (CompositeNode) container;
-                prefix.append(compositeNode.getId()).append('_');
+                prefix.append(compositeNode.getId().toSanitizeString()).append('_');
                 container = compositeNode.getParentContainer();
             }
         }
-        return prefix.append(node.getId()).toString();
+        return prefix.append(node.getId().toSanitizeString()).toString();
     }
 
 }

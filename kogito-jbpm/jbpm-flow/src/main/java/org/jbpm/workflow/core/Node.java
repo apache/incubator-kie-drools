@@ -23,6 +23,7 @@ import java.io.Serializable;
 import org.jbpm.process.core.Contextable;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 
 /**
@@ -38,7 +39,7 @@ public interface Node extends KogitoNode, Contextable, Serializable {
      * 
      * @param id the id of the node
      */
-    void setId(long id);
+    void setId(WorkflowElementIdentifier id);
 
     /**
      * Method for setting the name of the node
@@ -46,8 +47,6 @@ public interface Node extends KogitoNode, Contextable, Serializable {
      * @param name the name of the node
      */
     void setName(String name);
-
-    String getUniqueId();
 
     void addIncomingConnection(String type, Connection connection);
 

@@ -37,6 +37,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.MockDataWorkItemHandler;
 import org.jbpm.process.test.Person;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -45,6 +46,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
@@ -54,6 +56,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class WorkItemTest extends AbstractBaseTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
 
     public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
@@ -216,11 +222,11 @@ public class WorkItemTest extends AbstractBaseTest {
 
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
 
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setName("workItemNode");
-        workItemNode.setId(2);
+        workItemNode.setId(two);
         workItemNode.getIoSpecification().addInputMapping("#{Person.name}", "Comment");
         workItemNode.getIoSpecification().addInputMapping("MyObject", "Attachment");
         workItemNode.getIoSpecification().addOutputMapping("Result", "MyObject");
@@ -244,7 +250,7 @@ public class WorkItemTest extends AbstractBaseTest {
 
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(3);
+        endNode.setId(three);
 
         connect(startNode,
                 workItemNode);

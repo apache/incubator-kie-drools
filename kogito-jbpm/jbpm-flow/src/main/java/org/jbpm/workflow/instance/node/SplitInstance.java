@@ -41,6 +41,7 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
@@ -248,13 +249,13 @@ public class SplitInstance extends NodeInstanceImpl {
     }
 
     protected boolean hasLoop(org.kie.api.definition.process.Node startAt, final org.kie.api.definition.process.Node lookFor) {
-        Set<Long> vistedNodes = new HashSet<>();
+        Set<WorkflowElementIdentifier> vistedNodes = new HashSet<>();
 
         return checkNodes(startAt, lookFor, vistedNodes);
 
     }
 
-    protected boolean checkNodes(org.kie.api.definition.process.Node currentNode, final org.kie.api.definition.process.Node lookFor, Set<Long> vistedNodes) {
+    protected boolean checkNodes(org.kie.api.definition.process.Node currentNode, final org.kie.api.definition.process.Node lookFor, Set<WorkflowElementIdentifier> vistedNodes) {
         List<Connection> connections = currentNode.getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);
 
         for (Connection conn : connections) {
@@ -265,7 +266,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 continue;
             } else {
                 vistedNodes.add(nextNode.getId());
-                if (nextNode.getId() == lookFor.getId()) {
+                if (nextNode.getId().equals(lookFor.getId())) {
                     return true;
                 }
 

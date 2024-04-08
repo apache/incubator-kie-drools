@@ -29,11 +29,13 @@ import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -54,11 +56,16 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_TIMER;
 import static org.jbpm.ruleflow.core.Metadata.HAS_ERROR_EVENT;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
+    private static WorkflowElementIdentifier four = WorkflowElementIdentifierFactory.fromExternalFormat("four");
+    private static WorkflowElementIdentifier five = WorkflowElementIdentifierFactory.fromExternalFormat("five");
 
     @Test
     public void testProcessFactory() throws Exception {
@@ -68,20 +75,20 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .name("My process")
                 .packageName("org.jbpm")
                 // nodes
-                .startNode(1)
+                .startNode(one)
                 .name("Start")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("Action")
                 .action("java",
                         "System.out.println(\"Action\");")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("End")
                 .done()
                 // connections
-                .connection(1, 2)
-                .connection(2, 3);
+                .connection(one, two)
+                .connection(two, three);
         RuleFlowProcess process = factory.validate().getProcess();
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
@@ -97,35 +104,35 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .name("My process")
                 .packageName("org.jbpm")
                 // nodes
-                .startNode(1)
+                .startNode(one)
                 .name("Start")
                 .done()
-                .compositeContextNode(2)
+                .compositeContextNode(two)
                 .name("SubProcess")
-                .startNode(1)
+                .startNode(one)
                 .name("SubProcess Start")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("SubProcess Action")
                 .action("java",
                         "System.out.println(\"SubProcess Action\");")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("SubProcess End")
                 .terminate(true)
                 .done()
-                .connection(1, 2)
-                .connection(2, 3)
+                .connection(one, two)
+                .connection(two, three)
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("End")
                 .done()
                 // connections
-                .connection(1, 2)
-                .connection(2, 3);
+                .connection(one, two)
+                .connection(two, three);
         RuleFlowProcess process = factory.validate().getProcess();
 
-        assertThat(process.getNode(2).getName()).isEqualTo("SubProcess");
+        assertThat(process.getNode(two).getName()).isEqualTo("SubProcess");
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
@@ -148,33 +155,33 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .name("My process")
                 .packageName("org.jbpm")
                 // nodes
-                .startNode(1)
+                .startNode(one)
                 .name("Start")
                 .done()
-                .humanTaskNode(2)
+                .humanTaskNode(two)
                 .name("Task")
                 .actorId("john")
                 .taskName("MyTask")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("End1")
                 .terminate(false)
                 .done()
-                .boundaryEventNode(4)
+                .boundaryEventNode(four)
                 .name("BoundaryTimerEvent")
-                .attachedTo(2)
+                .attachedTo(two)
                 .metaData(TIME_CYCLE, timeCycle)
                 .metaData(CANCEL_ACTIVITY, false)
                 .eventType(EVENT_TYPE_TIMER, timeCycle)
                 .done()
-                .endNode(5)
+                .endNode(five)
                 .name("End2")
                 .terminate(false)
                 .done()
                 // connections
-                .connection(1, 2)
-                .connection(2, 3)
-                .connection(4, 5);
+                .connection(one, two)
+                .connection(two, three)
+                .connection(four, five);
         RuleFlowProcess process = factory.validate().getProcess();
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
@@ -212,33 +219,33 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .name("My process")
                 .packageName("org.jbpm")
                 // nodes
-                .startNode(1)
+                .startNode(one)
                 .name("Start")
                 .done()
-                .humanTaskNode(2)
+                .humanTaskNode(two)
                 .name("Task")
                 .actorId("john")
                 .taskName("MyTask")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("End1")
                 .terminate(false)
                 .done()
-                .boundaryEventNode(4)
+                .boundaryEventNode(four)
                 .name("BoundaryTimerEvent")
-                .attachedTo(2)
+                .attachedTo(two)
                 .metaData(TIME_DURATION, timeDuration)
                 .metaData(CANCEL_ACTIVITY, false)
                 .eventType(EVENT_TYPE_TIMER, timeDuration)
                 .done()
-                .endNode(5)
+                .endNode(five)
                 .name("End2")
                 .terminate(false)
                 .done()
                 // connections
-                .connection(1, 2)
-                .connection(2, 3)
-                .connection(4, 5);
+                .connection(one, two)
+                .connection(two, three)
+                .connection(four, five);
         RuleFlowProcess process = factory.validate().getProcess();
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
@@ -288,25 +295,25 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .packageName("org.jbpm")
                 .variable("eventData",
                         new org.jbpm.process.core.datatype.impl.type.StringDataType())
-                .startNode(1)
+                .startNode(one)
                 .name("Start")
                 .done()
-                .eventNode(2)
+                .eventNode(two)
                 .name("Event1")
                 .eventType("testEvent")
                 .variableName("eventData")
                 .done()
-                .actionNode(3)
+                .actionNode(three)
                 .name("simpleActionNode")
                 .action("java",
                         "System.out.println(\"test event action\");")
                 .done()
-                .endNode(4)
+                .endNode(four)
                 .name("End")
                 .done()
-                .connection(1, 2)
-                .connection(2, 3)
-                .connection(3, 4);
+                .connection(one, two)
+                .connection(two, three)
+                .connection(three, four);
         RuleFlowProcess process = factory.validate().getProcess();
 
         assertThat(process).isNotNull();
@@ -335,20 +342,20 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         factory
                 .name("ActionNodeActionProcess")
                 .version("1")
-                .startNode(1)
+                .startNode(one)
                 .name("Start")
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("End")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("printTextActionNode")
                 .action("java",
                         "System.out.println(\"test print\");",
                         true)
                 .done()
-                .connection(1, 2)
-                .connection(2, 3);
+                .connection(one, two)
+                .connection(two, three);
         RuleFlowProcess process = factory.validate().getProcess();
 
         assertThat(process).isNotNull();
@@ -379,36 +386,33 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .name("My process")
                 .packageName("org.kie.kogito")
                 // nodes
-                .startNode(1)
+                .startNode(one)
                 .name(startNode)
-                .metaData(UNIQUE_ID, startNode)
                 .done()
-                .workItemNode(2)
+                .workItemNode(two)
                 .name(task)
                 .workName(task)
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("EndOnSuccess")
                 .done()
-                .boundaryEventNode(4)
+                .boundaryEventNode(four)
                 .name(boundaryErrorEvent)
-                .attachedTo(2)
+                .attachedTo(two)
                 .metaData(ERROR_EVENT, errorCode)
                 .metaData(HAS_ERROR_EVENT, true)
                 .metaData(ERROR_STRUCTURE_REF, null)
                 .metaData("EventTpe", "error")
-                .metaData(UNIQUE_ID, boundaryErrorEvent)
                 .eventType("Error", errorCode)
                 .done()
-                .endNode(5)
+                .endNode(five)
                 .name(endOnError)
-                .metaData(UNIQUE_ID, endOnError)
                 .terminate(true)
                 .done()
                 // connections
-                .connection(1, 2)
-                .connection(2, 3)
-                .connection(4, 5);
+                .connection(one, two)
+                .connection(two, three)
+                .connection(four, five);
 
         final RuleFlowProcess process = factory.validate().getProcess();
 

@@ -31,6 +31,7 @@ import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
 import org.kie.kogito.UserTaskParam.ParamType;
@@ -104,13 +105,13 @@ public class UserTaskModelMetaData {
         this.humanTaskNode = humanTaskNode;
         this.processId = processId;
 
-        this.inputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_INTPUT_CLASS_SUFFIX);
+        this.inputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId().toExternalFormat() + "_" + TASK_INTPUT_CLASS_SUFFIX);
         this.inputModelClassName = packageName + '.' + inputModelClassSimpleName;
 
-        this.outputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
+        this.outputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId().toExternalFormat() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
         this.outputModelClassName = packageName + '.' + outputModelClassSimpleName;
 
-        this.taskModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId() + "_" + TASK_MODEL_CLASS_SUFFIX);
+        this.taskModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId().toExternalFormat() + "_" + TASK_MODEL_CLASS_SUFFIX);
         this.taskModelClassName = packageName + '.' + taskModelClassSimpleName;
 
     }
@@ -150,7 +151,7 @@ public class UserTaskModelMetaData {
         return humanTaskNode.getName();
     }
 
-    public long getId() {
+    public WorkflowElementIdentifier getId() {
         return humanTaskNode.getId();
     }
 
@@ -412,7 +413,7 @@ public class UserTaskModelMetaData {
 
     public SwitchEntry getModelSwitchEntry() {
         SwitchEntry entry = new SwitchEntry();
-        entry.setLabels(NodeList.nodeList(new StringLiteralExpr(Long.toString(humanTaskNode.getId()))));
+        entry.setLabels(NodeList.nodeList(new StringLiteralExpr(humanTaskNode.getId().toExternalFormat())));
         entry.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(
                 taskModelClassSimpleName), new SimpleName("from")).addArgument(WORK_ITEM)));
         return entry;

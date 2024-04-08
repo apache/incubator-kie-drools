@@ -443,7 +443,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
         org.kie.api.definition.process.Node node = rfp.getNodesRecursively()
                 .stream()
-                .filter(ni -> Objects.equals(nodeId, ni.getNodeUniqueId()) || Objects.equals(nodeId, ni.getName()) || Objects.equals(nodeId, String.valueOf(ni.getId())))
+                .filter(ni -> Objects.equals(nodeId, ni.getUniqueId()) || Objects.equals(nodeId, ni.getName()) || Objects.equals(nodeId, ni.getId().toExternalFormat()))
                 .findFirst()
                 .orElseThrow(() -> new NodeNotFoundException(this.id, nodeId));
 
@@ -509,7 +509,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
         return new BaseWorkItem(workItemInstance.getStringId(),
                 workItemInstance.getWorkItem().getStringId(),
-                Long.toString(workItemInstance.getNode().getId()),
+                workItemInstance.getNode().getId(),
                 (String) workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()),
                 workItemInstance.getWorkItem().getState(),
                 workItemInstance.getWorkItem().getPhaseId(),
@@ -530,7 +530,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             if (p.test(ni) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies)) {
                 BaseWorkItem taskName = new BaseWorkItem(ni.getStringId(),
                         ((WorkItemNodeInstance) ni).getWorkItemId(),
-                        Long.toString(ni.getNode().getId()),
+                        ni.getNode().getId(),
                         (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
                         ((WorkItemNodeInstance) ni).getWorkItem().getState(),
                         ((WorkItemNodeInstance) ni).getWorkItem().getPhaseId(),

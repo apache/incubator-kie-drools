@@ -23,7 +23,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class HumanTaskNodeVisitor extends WorkItemNodeVisitor<HumanTaskNode> {
@@ -41,7 +40,7 @@ public class HumanTaskNodeVisitor extends WorkItemNodeVisitor<HumanTaskNode> {
     public void visitNode(String factoryField, HumanTaskNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Work work = node.getWork();
 
-        body.addStatement(getAssignedFactoryMethod(factoryField, HumanTaskNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, HumanTaskNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "Task"));
 
         addWorkItemParameters(work, body, getNodeId(node));

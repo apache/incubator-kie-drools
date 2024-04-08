@@ -28,6 +28,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -93,6 +94,7 @@ class CacheProcessInstancesWithLockIT {
         when(mockCreatePi.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         when(mockCreatePi.internalGetProcessInstance()).thenReturn(createPi);
         when(mockCreatePi.id()).thenReturn(TEST_ID);
+        when(mockCreatePi.process()).thenReturn((Process) process);
         pi.create(TEST_ID, mockCreatePi);
         assertOne(pi);
         assertThat(pi.exists(TEST_ID)).isTrue();
@@ -104,6 +106,7 @@ class CacheProcessInstancesWithLockIT {
         when(mockUpdatePi.status()).thenReturn(ProcessInstance.STATE_ACTIVE);
         when(mockUpdatePi.internalGetProcessInstance()).thenReturn(updatePi);
         when(mockUpdatePi.id()).thenReturn(TEST_ID);
+        when(mockUpdatePi.process()).thenReturn((Process) process);
 
         try {
             pi.update(TEST_ID, mockUpdatePi);

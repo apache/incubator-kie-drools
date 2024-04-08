@@ -21,6 +21,7 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.FaultNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class FaultNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends ExtendedNodeFactory<FaultNodeFactory<T>, T> {
 
@@ -28,7 +29,7 @@ public class FaultNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
     public static final String METHOD_FAULT_VARIABLE = "faultVariable";
     public static final String METHOD_TERMINATE_PARENT = "terminateParent";
 
-    public FaultNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public FaultNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new FaultNode(), id);
     }
 

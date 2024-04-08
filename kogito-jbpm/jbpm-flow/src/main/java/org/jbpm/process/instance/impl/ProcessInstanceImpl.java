@@ -118,9 +118,17 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
         this.process = process;
     }
 
+    public void setInternalProcess(Process process) {
+        this.process = process;
+    }
+
     @Override
     public String getProcessVersion() {
         return processVersion;
+    }
+
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
     }
 
     @Override

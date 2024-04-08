@@ -4,13 +4,13 @@
   <bpmn2:itemDefinition id="_var2Item" structureRef="String"/>
   <bpmn2:itemDefinition id="_var3Item" structureRef="String"/>
   <bpmn2:itemDefinition id="_var4Item" structureRef="String"/>
-  <bpmn2:itemDefinition id="__F0FA249C-853B-4F78-91CB-24275587D66D_nameInputXItem" structureRef="String"/>
-  <bpmn2:itemDefinition id="__F0FA249C-853B-4F78-91CB-24275587D66D_var4OutputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__F0FA249C-853B-4F78-91CB-24275587D66D_3_nameInputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="__F0FA249C-853B-4F78-91CB-24275587D66D_3_var4OutputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3_var1InputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3_shouldWaitInputXItem" structureRef="Boolean"/>
   <bpmn2:itemDefinition id="__67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3_var2OutputXItem" structureRef="String"/>
-  <bpmn2:interface id="_F0FA249C-853B-4F78-91CB-24275587D66D_ServiceInterface" name="org.kie.kogito.HelloService" implementationRef="org.kie.kogito.HelloService">
-    <bpmn2:operation id="_F0FA249C-853B-4F78-91CB-24275587D66D_ServiceOperation" name="hello" implementationRef="hello"/>
+  <bpmn2:interface id="_F0FA249C-853B-4F78-91CB-24275587D66D_3_ServiceInterface" name="org.kie.kogito.HelloService" implementationRef="org.kie.kogito.HelloService">
+    <bpmn2:operation id="_F0FA249C-853B-4F78-91CB-24275587D66D_3_ServiceOperation" name="hello" implementationRef="hello"/>
   </bpmn2:interface>
   <bpmn2:collaboration id="_4F03757E-7758-4827-87CB-BE885225CE39" name="Default Collaboration">
     <bpmn2:participant id="_E727FA61-1686-4062-A5CF-290C575E759E" name="Pool Participant" processRef="reusableSubprocessHello"/>
@@ -37,14 +37,14 @@
         </drools:metaData>
       </bpmn2:extensionElements>
     </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="_9D9841CA-2B86-4113-9AC3-F6D803541C8D" sourceRef="_F0FA249C-853B-4F78-91CB-24275587D66D" targetRef="_43637F43-6B5B-4737-B108-3491CB2E9551">
+    <bpmn2:sequenceFlow id="_9D9841CA-2B86-4113-9AC3-F6D803541C8D" sourceRef="_F0FA249C-853B-4F78-91CB-24275587D66D_3" targetRef="_43637F43-6B5B-4737-B108-3491CB2E9551">
       <bpmn2:extensionElements>
         <drools:metaData name="isAutoConnection.target">
           <drools:metaValue><![CDATA[true]]></drools:metaValue>
         </drools:metaData>
       </bpmn2:extensionElements>
     </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="_EA0431DF-6DE3-496C-A28F-B28C1E418A0D" sourceRef="_67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3" targetRef="_F0FA249C-853B-4F78-91CB-24275587D66D">
+    <bpmn2:sequenceFlow id="_EA0431DF-6DE3-496C-A28F-B28C1E418A0D" sourceRef="_67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3" targetRef="_F0FA249C-853B-4F78-91CB-24275587D66D_3">
       <bpmn2:extensionElements>
         <drools:metaData name="isAutoConnection.target">
           <drools:metaValue><![CDATA[true]]></drools:metaValue>
@@ -105,7 +105,7 @@
 kcontext.setVariable("var4", var4 + " &gt; Script End !!!"); 
 System.out.println("ending hello process");</bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:serviceTask id="_F0FA249C-853B-4F78-91CB-24275587D66D" drools:serviceimplementation="Java" drools:serviceinterface="org.kie.kogito.HelloService" drools:serviceoperation="hello" name="Middle Task" implementation="Java" operationRef="_F0FA249C-853B-4F78-91CB-24275587D66D_ServiceOperation">
+    <bpmn2:serviceTask id="_F0FA249C-853B-4F78-91CB-24275587D66D_3" drools:serviceimplementation="Java" drools:serviceinterface="org.kie.kogito.HelloService" drools:serviceoperation="hello" name="Middle Task" implementation="Java" operationRef="_F0FA249C-853B-4F78-91CB-24275587D66D_3_ServiceOperation">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Middle Task]]></drools:metaValue>
@@ -114,28 +114,28 @@ System.out.println("ending hello process");</bpmn2:script>
       <bpmn2:incoming>_EA0431DF-6DE3-496C-A28F-B28C1E418A0D</bpmn2:incoming>
       <bpmn2:outgoing>_9D9841CA-2B86-4113-9AC3-F6D803541C8D</bpmn2:outgoing>
       <bpmn2:ioSpecification>
-        <bpmn2:dataInput id="_F0FA249C-853B-4F78-91CB-24275587D66D_nameInputX" drools:dtype="String" itemSubjectRef="__F0FA249C-853B-4F78-91CB-24275587D66D_nameInputXItem" name="name"/>
-        <bpmn2:dataOutput id="_F0FA249C-853B-4F78-91CB-24275587D66D_var4OutputX" drools:dtype="String" itemSubjectRef="__F0FA249C-853B-4F78-91CB-24275587D66D_var4OutputXItem" name="var4"/>
+        <bpmn2:dataInput id="_F0FA249C-853B-4F78-91CB-24275587D66D_3_nameInputX" drools:dtype="String" itemSubjectRef="__F0FA249C-853B-4F78-91CB-24275587D66D_3_nameInputXItem" name="name"/>
+        <bpmn2:dataOutput id="_F0FA249C-853B-4F78-91CB-24275587D66D_3_var4OutputX" drools:dtype="String" itemSubjectRef="__F0FA249C-853B-4F78-91CB-24275587D66D_3_var4OutputXItem" name="var4"/>
         <bpmn2:inputSet>
-          <bpmn2:dataInputRefs>_F0FA249C-853B-4F78-91CB-24275587D66D_nameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_F0FA249C-853B-4F78-91CB-24275587D66D_3_nameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
         <bpmn2:outputSet>
-          <bpmn2:dataOutputRefs>_F0FA249C-853B-4F78-91CB-24275587D66D_var4OutputX</bpmn2:dataOutputRefs>
+          <bpmn2:dataOutputRefs>_F0FA249C-853B-4F78-91CB-24275587D66D_3_var4OutputX</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
       <bpmn2:dataInputAssociation>
         <bpmn2:sourceRef>var3</bpmn2:sourceRef>
-        <bpmn2:targetRef>_F0FA249C-853B-4F78-91CB-24275587D66D_nameInputX</bpmn2:targetRef>
+        <bpmn2:targetRef>_F0FA249C-853B-4F78-91CB-24275587D66D_3_nameInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation>
-        <bpmn2:sourceRef>_F0FA249C-853B-4F78-91CB-24275587D66D_var4OutputX</bpmn2:sourceRef>
+        <bpmn2:sourceRef>_F0FA249C-853B-4F78-91CB-24275587D66D_3_var4OutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>var4</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
     </bpmn2:serviceTask>
   </bpmn2:process>
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="reusableSubprocessHello">
-      <bpmndi:BPMNShape id="shape__F0FA249C-853B-4F78-91CB-24275587D66D" bpmnElement="_F0FA249C-853B-4F78-91CB-24275587D66D">
+      <bpmndi:BPMNShape id="shape__F0FA249C-853B-4F78-91CB-24275587D66D_3" bpmnElement="_F0FA249C-853B-4F78-91CB-24275587D66D_3">
         <dc:Bounds height="102" width="154" x="564" y="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__43637F43-6B5B-4737-B108-3491CB2E9551" bpmnElement="_43637F43-6B5B-4737-B108-3491CB2E9551">
@@ -150,11 +150,11 @@ System.out.println("ending hello process");</bpmn2:script>
       <bpmndi:BPMNShape id="shape__67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3" bpmnElement="_67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3">
         <dc:Bounds height="101" width="153" x="304.5" y="120"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge_shape__67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3_to_shape__F0FA249C-853B-4F78-91CB-24275587D66D" bpmnElement="_EA0431DF-6DE3-496C-A28F-B28C1E418A0D">
+      <bpmndi:BPMNEdge id="edge_shape__67B5BAA3-5BCF-45F6-8706-635B1FF7B5A3_to_shape__F0FA249C-853B-4F78-91CB-24275587D66D_3" bpmnElement="_EA0431DF-6DE3-496C-A28F-B28C1E418A0D">
         <di:waypoint x="381" y="170.5"/>
         <di:waypoint x="564" y="171"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="edge_shape__F0FA249C-853B-4F78-91CB-24275587D66D_to_shape__43637F43-6B5B-4737-B108-3491CB2E9551" bpmnElement="_9D9841CA-2B86-4113-9AC3-F6D803541C8D">
+      <bpmndi:BPMNEdge id="edge_shape__F0FA249C-853B-4F78-91CB-24275587D66D_3_to_shape__43637F43-6B5B-4737-B108-3491CB2E9551" bpmnElement="_9D9841CA-2B86-4113-9AC3-F6D803541C8D">
         <di:waypoint x="641" y="171"/>
         <di:waypoint x="803" y="170"/>
       </bpmndi:BPMNEdge>
@@ -173,7 +173,7 @@ System.out.println("ending hello process");</bpmn2:script>
       <bpsim:BPSimData>
         <bpsim:Scenario id="default" name="Simulationscenario">
           <bpsim:ScenarioParameters/>
-          <bpsim:ElementParameters elementRef="_F0FA249C-853B-4F78-91CB-24275587D66D">
+          <bpsim:ElementParameters elementRef="_F0FA249C-853B-4F78-91CB-24275587D66D_3">
             <bpsim:TimeParameters>
               <bpsim:ProcessingTime>
                 <bpsim:NormalDistribution mean="0" standardDeviation="0"/>

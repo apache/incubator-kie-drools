@@ -33,7 +33,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -99,7 +98,7 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
             metadata.getGeneratedHandlers().put(workName, taskDescriptor.generateHandlerClassForService());
         }
 
-        body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, work.getName()))
                 .addStatement(getFactoryMethod(nodeId, METHOD_WORK_NAME, new StringLiteralExpr(workName)));
 

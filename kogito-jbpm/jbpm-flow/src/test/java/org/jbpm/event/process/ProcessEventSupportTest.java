@@ -25,6 +25,7 @@ import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -36,6 +37,7 @@ import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -51,6 +53,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessEventSupportTest extends AbstractBaseTest {
 
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
+    private static WorkflowElementIdentifier four = WorkflowElementIdentifierFactory.fromExternalFormat("four");
+
     public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
     }
@@ -63,7 +70,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
 
         ActionNode actionNode = new ActionNode();
@@ -71,7 +78,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", (Action) context -> logger.info("Executed action"));
         actionNode.setAction(action);
-        actionNode.setId(2);
+        actionNode.setId(two);
         process.addNode(actionNode);
         new ConnectionImpl(
                 startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -79,7 +86,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(3);
+        endNode.setId(three);
         process.addNode(endNode);
         new ConnectionImpl(
                 actionNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -162,7 +169,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
 
         ActionNode actionNode = new ActionNode();
@@ -170,13 +177,13 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", (Action) context -> logger.info("Executed action"));
         actionNode.setAction(action);
-        actionNode.setId(2);
+        actionNode.setId(two);
         process.addNode(actionNode);
         new ConnectionImpl(startNode, Node.CONNECTION_DEFAULT_TYPE, actionNode, Node.CONNECTION_DEFAULT_TYPE);
 
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(3);
+        endNode.setId(three);
         process.addNode(endNode);
         new ConnectionImpl(actionNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
 
@@ -235,7 +242,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
 
         ActionNode actionNode = new ActionNode();
@@ -243,7 +250,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", (Action) context -> logger.info("Executed action"));
         actionNode.setAction(action);
-        actionNode.setId(2);
+        actionNode.setId(two);
         process.addNode(actionNode);
         new ConnectionImpl(
                 startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -251,7 +258,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         EventNode eventNode = new EventNode();
         eventNode.setName("Event");
-        eventNode.setId(3);
+        eventNode.setId(three);
 
         List<EventFilter> filters = new ArrayList<EventFilter>();
         EventTypeFilter filter = new EventTypeFilter();
@@ -265,7 +272,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(4);
+        endNode.setId(four);
         process.addNode(endNode);
         new ConnectionImpl(
                 eventNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -353,7 +360,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         process.addNode(startNode);
 
         ActionNode actionNode = new ActionNode();
@@ -361,7 +368,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", (Action) context -> logger.info("Executed action"));
         actionNode.setAction(action);
-        actionNode.setId(2);
+        actionNode.setId(two);
         process.addNode(actionNode);
         new ConnectionImpl(
                 startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -369,7 +376,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(3);
+        endNode.setId(three);
         endNode.setTerminate(false);
         process.addNode(endNode);
         new ConnectionImpl(
@@ -450,7 +457,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         StartNode startNode = new StartNode();
         startNode.setName("Start");
-        startNode.setId(1);
+        startNode.setId(one);
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
         eventFilter.setType("signal");
@@ -463,7 +470,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", (Action) context -> logger.info("Executed action"));
         actionNode.setAction(action);
-        actionNode.setId(2);
+        actionNode.setId(two);
         process.addNode(actionNode);
         new ConnectionImpl(
                 startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -471,7 +478,7 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         EndNode endNode = new EndNode();
         endNode.setName("End");
-        endNode.setId(3);
+        endNode.setId(three);
         process.addNode(endNode);
         new ConnectionImpl(
                 actionNode, Node.CONNECTION_DEFAULT_TYPE,

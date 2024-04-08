@@ -180,15 +180,15 @@ public class PersistenceGenerator extends AbstractGenerator {
 
             List<CompilationUnit> files = new ArrayList<>(marshallers);
 
-            variableMarshallers.add("org.kie.kogito.persistence.StringProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.BooleanProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.DateProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.DoubleProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.FloatProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.IntegerProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.LongProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.InstantProtostreamBaseMarshaller");
-            variableMarshallers.add("org.kie.kogito.persistence.SerializableProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.StringProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.BooleanProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.DateProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.DoubleProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.FloatProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.IntegerProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.LongProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.InstantProtostreamBaseMarshaller");
+            variableMarshallers.add("org.jbpm.flow.serialization.marshaller.SerializableProtostreamBaseMarshaller");
 
             for (CompilationUnit unit : files) {
                 String packageName = unit.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
@@ -250,14 +250,14 @@ public class PersistenceGenerator extends AbstractGenerator {
             try {
                 //try to find an existing ObjectMarshallerStrategy descriptor in the classpath to be appended to the ProtoStream generated one
                 objectMarshallerStrategyServiceDescriptor =
-                        new String(getClass().getResourceAsStream("/META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy").readAllBytes(), StandardCharsets.UTF_8);
+                        new String(getClass().getResourceAsStream("/META-INF/services/org.jbpm.flow.serialization.ObjectMarshallerStrategy").readAllBytes(), StandardCharsets.UTF_8);
             } catch (Exception e) {
                 LOGGER.warn("No existing ObjectMarshallerStrategy found the the classpath to be included with the ProtoS generated one for SPI.");
             }
             objectMarshallerStrategyServiceDescriptor += "\n" + fqnProtoStreamMarshaller + "\n";
 
             generatedFiles.add(new GeneratedFile(GeneratedFileType.INTERNAL_RESOURCE,
-                    "META-INF/services/org.kie.kogito.serialization.process.ObjectMarshallerStrategy",
+                    "META-INF/services/org.jbpm.flow.serialization.ObjectMarshallerStrategy",
                     objectMarshallerStrategyServiceDescriptor));
         }
         return generatedFiles;

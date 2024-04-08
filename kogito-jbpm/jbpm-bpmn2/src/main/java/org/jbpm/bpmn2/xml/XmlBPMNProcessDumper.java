@@ -867,15 +867,15 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     }
 
     public static String getUniqueNodeId(org.kie.api.definition.process.Node node) {
-        String result = (String) node.getMetaData().get("UniqueId");
+        String result = node.getUniqueId();
         if (result != null) {
             return result;
         }
-        result = node.getId() + "";
+        result = node.getId().toExternalFormat();
         NodeContainer nodeContainer = ((KogitoNode) node).getParentContainer();
         while (nodeContainer instanceof CompositeNode) {
             CompositeNode composite = (CompositeNode) nodeContainer;
-            result = composite.getId() + "-" + result;
+            result = composite.getId().toExternalFormat() + "-" + result;
             nodeContainer = composite.getParentContainer();
         }
         return "_" + result;

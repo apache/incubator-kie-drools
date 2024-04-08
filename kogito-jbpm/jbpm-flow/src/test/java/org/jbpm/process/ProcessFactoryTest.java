@@ -19,11 +19,19 @@
 package org.jbpm.process;
 
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.slf4j.LoggerFactory;
 
 public class ProcessFactoryTest extends AbstractBaseTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
+    private static WorkflowElementIdentifier four = WorkflowElementIdentifierFactory.fromExternalFormat("four");
+    private static WorkflowElementIdentifier five = WorkflowElementIdentifierFactory.fromExternalFormat("five");
 
     public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
@@ -36,17 +44,17 @@ public class ProcessFactoryTest extends AbstractBaseTest {
                 // header
                 .name("My process").packageName("org.drools")
                 // nodes
-                .startNode(1).name("Start").done()
-                .actionNode(2).name("Action")
+                .startNode(one).name("Start").done()
+                .actionNode(two).name("Action")
                 .action("java",
                         "System.out.println(\"Action\");")
                 .done()
-                .endNode(3).name("End").done()
+                .endNode(three).name("End").done()
                 // connections
-                .connection(1,
-                        2)
-                .connection(2,
-                        3);
+                .connection(one,
+                        two)
+                .connection(two,
+                        three);
         factory.validate().getProcess();
     }
 }

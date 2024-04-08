@@ -58,7 +58,7 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
             Connection outgoingConnection = null;
             for (Connection out : splitNode.getDefaultOutgoingConnections()) {
                 if (out.getToType().equals(connection.getToType())
-                        && out.getTo().getId() == connection.getNodeId()) {
+                        && out.getTo().getId().equals(connection.getNodeId())) {
                     outgoingConnection = out;
                 }
             }

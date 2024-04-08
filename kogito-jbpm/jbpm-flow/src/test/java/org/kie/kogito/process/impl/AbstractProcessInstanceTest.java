@@ -116,7 +116,7 @@ public class AbstractProcessInstanceTest {
         RuleFlowProcess process = mock(RuleFlowProcess.class);
         when(wpi.getProcess()).thenReturn(process);
         org.kie.api.definition.process.Node node = mock(org.kie.api.definition.process.Node.class);
-        when(node.getNodeUniqueId()).thenReturn(nodeId);
+        when(node.getUniqueId()).thenReturn(nodeId);
         when(process.getNodesRecursively()).thenReturn(Arrays.asList(node));
 
         NodeInstance nodeInstance = mock(NodeInstance.class);

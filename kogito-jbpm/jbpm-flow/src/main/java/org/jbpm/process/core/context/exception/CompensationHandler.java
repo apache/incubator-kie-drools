@@ -37,7 +37,7 @@ public class CompensationHandler implements ExceptionHandler, Serializable {
     }
 
     public String toString() {
-        return "Compensation Handler [" + this.node.getName() + ", " + this.node.getMetaData().get("UniqueId") + "]";
+        return "Compensation Handler [" + this.node.getName() + ", " + this.node.getUniqueId() + "]";
     }
 
 }

@@ -18,7 +18,10 @@
  */
 package org.kie.kogito.jobs.management.springboot;
 
+import java.util.Optional;
+
 import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.jobs.api.JobCallbackPayload;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
@@ -67,8 +70,8 @@ public class CallbackJobsServiceResource {
             return ResponseEntity.badRequest().body("Process id and Process instance id must be  given");
         }
 
-        Process<?> process = processes.processById(processId);
-        if (process == null) {
+        Optional<Process<? extends Model>> process = processes.processByProcessInstanceId(processInstanceId);
+        if (process.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process with id " + processId + " not found");
         }
 
@@ -82,7 +85,7 @@ public class CallbackJobsServiceResource {
             }
         }
 
-        return new TriggerJobCommand(processInstanceId, correlationId, timerId, limit, process, application.unitOfWorkManager()).execute()
+        return new TriggerJobCommand(processInstanceId, correlationId, timerId, limit, process.get(), application.unitOfWorkManager()).execute()
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Process instance with id " + processInstanceId + " not found");
 

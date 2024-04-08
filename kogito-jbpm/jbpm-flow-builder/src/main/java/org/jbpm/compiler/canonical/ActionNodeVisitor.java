@@ -34,7 +34,6 @@ import org.jbpm.workflow.core.node.ActionNode;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
 
@@ -58,7 +57,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
 
     @Override
     public void visitNode(String factoryField, ActionNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        body.addStatement(getAssignedFactoryMethod(factoryField, ActionNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, ActionNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "Script"));
 
         Optional<ExpressionSupplier> supplierAction = getAction(node, ExpressionSupplier.class);
@@ -80,7 +79,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         } else if (node.getAction() instanceof DroolsConsequenceAction) {
             String consequence = getActionConsequence(node.getAction());
             if (consequence == null || consequence.trim().isEmpty()) {
-                throw new IllegalStateException("Action node " + node.getId() + " name " + node.getName() + " has no action defined");
+                throw new IllegalStateException("Action node " + node.getId().toExternalFormat() + " name " + node.getName() + " has no action defined");
             }
             BlockStmt actionBody = new BlockStmt();
             List<Variable> variables = variableScope.getVariables();

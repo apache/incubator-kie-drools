@@ -60,6 +60,8 @@ class InfinispanPersistenceGeneratorTest extends AbstractPersistenceGeneratorTes
                 assertThat(marshallerFiles.get(0).relativePath()).endsWith(expectedMarshaller + ".java");
             }
         }
+        System.out.println("marshaller " + hasProtoMarshaller(context));
+        System.out.println("index " + hasDataIndexProto(context));
         int marshallerFiles = hasProtoMarshaller(context) ? 14 : 0;
         int dataIndexFiles = hasDataIndexProto(context) ? 2 : 0;
         int expectedNumberOfFiles = marshallerFiles + dataIndexFiles;

@@ -30,12 +30,14 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Application;
+import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.AbstractProcess;
@@ -101,9 +103,9 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
             List<org.kie.api.definition.process.Node> nodes = ((KogitoWorkflowProcess) ((AbstractProcess<?>) process).get()).getNodesRecursively();
             List<Map<String, Object>> list = nodes.stream().map(n -> {
                 Map<String, Object> data = new HashMap<>();
-                data.put("id", n.getId());
+                data.put("id", n.getId().toExternalFormat());
                 data.put("uniqueId", ((Node) n).getUniqueId());
-                data.put("nodeDefinitionId", n.getMetaData().get(Metadata.UNIQUE_ID));
+                data.put("nodeDefinitionId", n.getUniqueId());
                 data.put("metadata", n.getMetaData());
                 data.put("type", n.getClass().getSimpleName());
                 data.put("name", n.getName());
@@ -125,6 +127,32 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
             return buildOkResponse(data);
         });
+    }
+
+    public T doMigrateInstance(ProcessService processService, String processId, ProcessMigrationSpec migrationSpec, String processInstanceId) {
+        try {
+            Process<? extends Model> process = processes.get().processById(processId);
+            processService.migrateProcessInstances(process, migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion(), processInstanceId);
+            Map<String, Object> message = new HashMap<>();
+            message.put("message", processInstanceId + " instance migrated");
+            message.put("processInstanceId", processInstanceId);
+            return buildOkResponse(message);
+        } catch (Exception e) {
+            return badRequestResponse(e.getMessage());
+        }
+    }
+
+    public T doMigrateAllInstances(ProcessService processService, String processId, ProcessMigrationSpec migrationSpec) {
+        try {
+            Process<? extends Model> process = processes.get().processById(processId);
+            long numberOfProcessInstanceMigrated = processService.migrateAll(process, migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion());
+            Map<String, Object> message = new HashMap<>();
+            message.put("message", "All intances migrated");
+            message.put("numberOfProcessInstanceMigrated", numberOfProcessInstanceMigrated);
+            return buildOkResponse(message);
+        } catch (Exception e) {
+            return badRequestResponse(e.getMessage());
+        }
     }
 
     public T doGetWorkItemsInProcessInstance(String processId, String processInstanceId) {

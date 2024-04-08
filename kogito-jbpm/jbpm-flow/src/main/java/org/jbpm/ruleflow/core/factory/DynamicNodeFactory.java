@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.DynamicNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.process.ProcessContext;
 
 public class DynamicNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<DynamicNodeFactory<T>, T> {
@@ -31,7 +32,7 @@ public class DynamicNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public static final String METHOD_ACTIVATION_EXPRESSION = "activationExpression";
     public static final String METHOD_COMPLETION_EXPRESSION = "completionExpression";
 
-    public DynamicNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public DynamicNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new DynamicNode(), id);
     }
 

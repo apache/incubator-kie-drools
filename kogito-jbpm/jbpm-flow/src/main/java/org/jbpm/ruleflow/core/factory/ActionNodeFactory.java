@@ -24,6 +24,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<ActionNodeFactory<T>, T> implements SupportsAction<ActionNodeFactory<T>, T> {
 
@@ -31,7 +32,7 @@ public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ext
 
     public ActionNodeFactory(T nodeContainerFactory,
             NodeContainer nodeContainer,
-            long id) {
+            WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new ActionNode(), id);
     }
 

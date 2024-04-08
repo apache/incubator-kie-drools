@@ -21,6 +21,7 @@ package org.kie.kogito.services.jobs.impl;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -160,10 +161,14 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
         @Override
         public void run() {
             try {
+                Optional<Process<? extends Model>> process = processes.processByProcessInstanceId(processInstanceId);
+                if (process.isEmpty()) {
+                    LOGGER.info("Skipping Job {}. There is no process for pid {} ", id, processInstanceId);
+                    return;
+                }
                 LOGGER.info("Job {} started", id);
-                Process<? extends Model> process = processes.processById(processId);
                 limit--;
-                boolean executed = new TriggerJobCommand(processInstanceId, id, timerId, limit, process, unitOfWorkManager).execute();
+                boolean executed = new TriggerJobCommand(processInstanceId, id, timerId, limit, process.get(), unitOfWorkManager).execute();
                 if (limit == 0 || !executed) {
                     cancelJob(id, false);
                 }

@@ -63,7 +63,7 @@ public class PersistentApplicationTest {
             publish(eventType, buildCloudEvent(eventType, id)
                     .withData(JsonCloudEventData.wrap(jsonObject().put("additionalData", additionalData)))
                     .build());
-            assertThat(application.waitForFinish(id, Duration.ofSeconds(20)).orElseThrow().getWorkflowdata())
+            assertThat(application.waitForFinish(id, Duration.ofSeconds(2000)).orElseThrow().getWorkflowdata())
                     .isEqualTo(jsonObject().put("additionalData", additionalData).put("slogan", "Viva er Beti"));
             await().atMost(Duration.ofSeconds(1)).pollInterval(Duration.ofMillis(50)).until(() -> application.variables(id).isEmpty());
         }

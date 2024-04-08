@@ -23,11 +23,11 @@ import java.util.Collection;
 import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
-import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 
 /**
  *
@@ -36,7 +36,7 @@ public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
 
     Collection<NodeInstance> getNodeInstances(boolean recursive);
 
-    NodeInstance getFirstNodeInstance(long nodeId);
+    NodeInstance getFirstNodeInstance(WorkflowElementIdentifier nodeId);
 
     NodeInstance getNodeInstance(Node node);
 
@@ -63,7 +63,7 @@ public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
     default NodeInstance getByNodeDefinitionId(final String nodeDefinitionId, NodeContainer nodeContainer) {
         for (Node node : nodeContainer.getNodes()) {
 
-            if (nodeDefinitionId.equals(node.getMetaData().get(UNIQUE_ID))) {
+            if (nodeDefinitionId.equals(node.getUniqueId())) {
                 if (nodeContainer instanceof Node) {
                     Collection<KogitoNodeInstance> nodeInstances = getKogitoNodeInstances(ni -> ni.getNode().getId() == (((Node) nodeContainer).getId()), true);
                     if (nodeInstances.isEmpty()) {

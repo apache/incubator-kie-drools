@@ -22,7 +22,9 @@ import java.util.Collections;
 
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Processes;
 
@@ -32,6 +34,10 @@ import static org.mockito.Mockito.when;
 
 class LightProcessRuntimeTest {
 
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
+
     static class MyProcess {
         String result;
         RuleFlowProcess process = RuleFlowProcessFactory.createProcess("org.kie.api2.MyProcessUnit")
@@ -40,15 +46,15 @@ class LightProcessRuntimeTest {
                 .version("1.0")
                 .packageName("org.jbpm")
                 // Nodes
-                .startNode(1).name("Start").done()
-                .actionNode(2).name("Action")
+                .startNode(one).name("Start").done()
+                .actionNode(two).name("Action")
                 .action(ctx -> {
                     result = "Hello!";
                 }).done()
-                .endNode(3).name("End").done()
+                .endNode(three).name("End").done()
                 // Connections
-                .connection(1, 2)
-                .connection(2, 3).validate().getProcess();
+                .connection(one, two)
+                .connection(two, three).validate().getProcess();
     }
 
     @Test

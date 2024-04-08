@@ -20,6 +20,7 @@ package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
@@ -28,12 +29,16 @@ import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EndNodeInstanceTest extends AbstractBaseTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
 
     public void addLogger() {
         logger = LoggerFactory.getLogger(this.getClass());
@@ -48,10 +53,10 @@ public class EndNodeInstanceTest extends AbstractBaseTest {
 
         WorkflowProcessImpl process = new WorkflowProcessImpl();
         Node endNode = new EndNode();
-        endNode.setId(1);
+        endNode.setId(one);
         endNode.setName("end node");
 
-        mockNode.setId(2);
+        mockNode.setId(two);
         new ConnectionImpl(mockNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
 
         process.addNode(mockNode);

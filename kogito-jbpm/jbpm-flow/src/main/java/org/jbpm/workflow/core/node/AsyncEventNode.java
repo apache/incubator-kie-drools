@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class AsyncEventNode extends EventNode {
 
@@ -39,7 +40,7 @@ public class AsyncEventNode extends EventNode {
     }
 
     @Override
-    public long getId() {
+    public WorkflowElementIdentifier getId() {
         return node.getId();
     }
 

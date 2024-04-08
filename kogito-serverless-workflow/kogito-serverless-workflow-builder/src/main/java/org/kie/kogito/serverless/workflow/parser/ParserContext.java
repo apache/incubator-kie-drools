@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.serverless.workflow.asyncapi.AsyncInfoConverter;
 import org.kie.kogito.serverless.workflow.asyncapi.AsyncInfoResolver;
@@ -89,8 +91,8 @@ public class ParserContext {
         return name != null ? stateHandlers.get(name) : null;
     }
 
-    public long newId() {
-        return idGenerator.getId();
+    public WorkflowElementIdentifier newId() {
+        return WorkflowElementIdentifierFactory.fromExternalFormat(idGenerator.getId());
     }
 
     public RuleFlowProcessFactory factory() {

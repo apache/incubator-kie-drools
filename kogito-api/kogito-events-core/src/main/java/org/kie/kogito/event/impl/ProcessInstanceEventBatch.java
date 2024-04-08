@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import org.kie.api.event.process.ErrorEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
+import org.kie.api.event.process.ProcessMigrationEvent;
 import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -125,6 +126,8 @@ public class ProcessInstanceEventBatch implements EventBatch {
             handleUserTaskAttachmentEvent((UserTaskAttachmentEvent) event);
         } else if (event instanceof UserTaskCommentEvent) {
             handleUserTaskCommentEvent((UserTaskCommentEvent) event);
+        } else if (event instanceof ProcessMigrationEvent) {
+            handleProcessStateEvent((ProcessMigrationEvent) event);
         }
     }
 
@@ -179,7 +182,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
         if (event.getNodeInstance() instanceof KogitoNodeInstance) {
             KogitoNodeInstance ni = (KogitoNodeInstance) event.getNodeInstance();
-            builder.nodeDefinitionId(ni.getNode().getNodeUniqueId())
+            builder.nodeDefinitionId(ni.getNode().getUniqueId())
                     .nodeInstanceId(ni.getId())
                     .nodeName(ni.getNodeName())
                     .nodeType(ni.getNode().getClass().getSimpleName())
@@ -236,7 +239,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .nodeName(event.getNodeInstance().getNodeName())
                 .nodeType(event.getNodeInstance().getNode().getClass().getSimpleName())
                 .nodeInstanceId(event.getNodeInstance().getId())
-                .nodeDefinitionId(event.getNodeInstance().getNode().getNodeUniqueId())
+                .nodeDefinitionId(event.getNodeInstance().getNode().getUniqueId())
                 .slaDueDate(nodeInstance.getSlaDueDate());
 
         if (eventType == ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER) {
@@ -283,6 +286,10 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
     private void handleProcessStateEvent(ProcessStartedEvent event) {
         processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_STARTED));
+    }
+
+    private void handleProcessStateEvent(ProcessMigrationEvent event) {
+        processedEvents.add(toProcessInstanceStateEvent(event, ProcessInstanceStateEventBody.EVENT_TYPE_MIGRATED));
     }
 
     private ProcessInstanceStateDataEvent toProcessInstanceStateEvent(ProcessEvent event, int eventType) {

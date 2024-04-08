@@ -31,7 +31,6 @@ import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
 import org.jbpm.workflow.core.node.ForEachNode;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
@@ -57,7 +56,7 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
 
     @Override
     public void visitNode(String factoryField, ForEachNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        body.addStatement(getAssignedFactoryMethod(factoryField, ForEachNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, ForEachNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "ForEach"));
 
         body.addStatement(getFactoryMethod(getNodeId(node), METHOD_SEQUENTIAL, new BooleanLiteralExpr(node.isSequential())));
@@ -107,13 +106,13 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
 
         NodeAndType incomingNode = node.getLinkedIncomingNode(Node.CONNECTION_DEFAULT_TYPE);
         if (incomingNode != null) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_LINK_INCOMING_CONNECTIONS, new LongLiteralExpr(incomingNode.getNodeId())));
-            filterNodes.removeIf(n -> n.getId() == incomingNode.getNodeId());
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_LINK_INCOMING_CONNECTIONS, getWorkflowElementConstructor(incomingNode.getNodeId())));
+            filterNodes.removeIf(n -> n.getId().equals(incomingNode.getNodeId()));
         }
         NodeAndType outgoingNode = node.getLinkedOutgoingNode(Node.CONNECTION_DEFAULT_TYPE);
         if (outgoingNode != null) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_LINK_OUTGOING_CONNECTIONS, new LongLiteralExpr(outgoingNode.getNodeId())));
-            filterNodes.removeIf(n -> n.getId() == outgoingNode.getNodeId());
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_LINK_OUTGOING_CONNECTIONS, getWorkflowElementConstructor(outgoingNode.getNodeId())));
+            filterNodes.removeIf(n -> n.getId().equals(outgoingNode.getNodeId()));
         }
 
         visitConnections(getNodeId(node), filterNodes.toArray(new Node[filterNodes.size()]), body);

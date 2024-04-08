@@ -419,7 +419,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
-        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("org.jbpm.bpmn2.objects.HelloService_hello_2_Handler", workItemHandler));
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("org.jbpm.bpmn2.objects.HelloService_hello__2_Handler", workItemHandler));
         ProcessInstance<BpmnVariables> processInstance = processes.get("ServiceProcess").createInstance(BpmnVariables.create(params));
 
         processInstance.start();
@@ -459,7 +459,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         assertThat(metaData.getWorkItems())
                 .hasSize(1)
-                .contains("org.jbpm.bpmn2.objects.HelloService_hello_2_Handler");
+                .contains("org.jbpm.bpmn2.objects.HelloService_hello__2_Handler");
     }
 
     @Test
@@ -503,7 +503,8 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
             }
         };
 
-        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("org.jbpm.bpmn2.objects.HelloService_hello_3_Handler", workItemHandler));
+        Map<String, BpmnProcess> processes =
+                createProcesses(classData, Collections.singletonMap("org.jbpm.bpmn2.objects.HelloService_hello__F387A14A_BC7C_49AC_BAED_0CCFE1E114C6_Handler", workItemHandler));
         ProcessInstance i = UnitOfWorkExecutor.executeInUnitOfWork(process.getApplication().unitOfWorkManager(), () -> {
             ProcessInstance<BpmnVariables> processInstance = processes.get("AsyncProcess").createInstance(BpmnVariables.create(Collections.singletonMap("name", "Tiago")));
             processInstance.start();

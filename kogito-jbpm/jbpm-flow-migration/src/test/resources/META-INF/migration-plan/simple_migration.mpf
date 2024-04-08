@@ -1,0 +1,23 @@
+{
+    "name" : "my simple migration",
+    "processMigrationPlan" : {
+        "sourceProcessDefinition" : {
+            "processId" : "process_A",
+            "processVersion" : "1"
+        },
+        "targetProcessDefinition" : {
+            "processId" : "process_B",
+            "processVersion" : "2"
+        },
+        "nodeInstanceMigrationPlan" : [
+            {
+                "sourceNodeId" : "node_1",
+                "targetNodeId" : "node_2"
+            },
+            {
+                "sourceNodeId" : "node_2",
+                "targetNodeId" : "node_3"
+            }
+        ]
+    }
+}

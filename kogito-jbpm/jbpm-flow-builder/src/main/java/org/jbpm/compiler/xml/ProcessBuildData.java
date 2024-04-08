@@ -29,6 +29,7 @@ import java.util.ServiceLoader;
 
 import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class ProcessBuildData {
     private static List<ProcessDataEventListenerProvider> providers = collectProviders();
 
     private List<Process> processes = new ArrayList<>();
-    private Map<Long, Node> nodes = new HashMap<>();
+    private Map<WorkflowElementIdentifier, Node> nodes = new HashMap<>();
     private Map<String, Object> metaData = new HashMap<>();
 
     private List<ProcessDataEventListener> listeners = new ArrayList<>();
@@ -69,7 +70,7 @@ public class ProcessBuildData {
         this.processes = process;
     }
 
-    public Map<Long, Node> getNodes() {
+    public Map<WorkflowElementIdentifier, Node> getNodes() {
         return nodes;
     }
 

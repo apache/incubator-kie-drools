@@ -40,7 +40,6 @@ import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.drools.io.FileSystemResource;
 import org.jbpm.process.core.timer.Timer;
-import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.DroolsAction;
@@ -195,7 +194,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
     private static void assertNodes(Node[] expected, Node[] current) {
         assertThat(current).hasSameSizeAs(expected);
         Stream.of(expected).forEach(eNode -> {
-            Optional<Node> cNode = Stream.of(current).filter(c -> c.getId() == eNode.getId()).findFirst();
+            Optional<Node> cNode = Stream.of(current).filter(c -> c.getId().equals(eNode.getId())).findFirst();
             assertThat(cNode).as("Missing node " + eNode.getName()).isPresent();
             assertNode(eNode, cNode.get());
         });
@@ -439,11 +438,11 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
         if (expected.getMetaData().isEmpty()) {
             return current.getMetaData().isEmpty();
         }
-        String expectedId = (String) expected.getMetaData().get(Metadata.UNIQUE_ID);
+        String expectedId = expected.getUniqueId();
         if (expectedId == null) {
             expectedId = "";
         }
-        return Objects.equals(expectedId, current.getMetaData().get(Metadata.UNIQUE_ID));
+        return Objects.equals(expectedId, current.getUniqueId());
     }
 
     private static void assertTriggers(List<Trigger> expected, List<Trigger> current) {

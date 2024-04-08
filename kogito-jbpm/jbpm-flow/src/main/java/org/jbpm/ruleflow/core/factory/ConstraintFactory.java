@@ -21,12 +21,13 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class ConstraintFactory<T extends SplitFactory<?>> {
     private T parent;
     private ConstraintImpl constraintImpl;
 
-    public ConstraintFactory(T parent, long toNodeId, String name, String type, String dialect, String constraint) {
+    public ConstraintFactory(T parent, WorkflowElementIdentifier toNodeId, String name, String type, String dialect, String constraint) {
         this.parent = parent;
         constraintImpl = new ConstraintImpl();
         constraintImpl.setName(name);

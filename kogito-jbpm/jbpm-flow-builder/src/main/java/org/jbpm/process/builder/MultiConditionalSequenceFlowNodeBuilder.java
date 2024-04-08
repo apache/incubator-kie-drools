@@ -55,7 +55,7 @@ public class MultiConditionalSequenceFlowNodeBuilder implements ProcessNodeBuild
             Connection outgoingConnection = null;
             for (Connection out : ((NodeImpl) node).getDefaultOutgoingConnections()) {
                 if (out.getToType().equals(connection.getToType())
-                        && out.getTo().getId() == connection.getNodeId()) {
+                        && out.getTo().getId().equals(connection.getNodeId())) {
                     outgoingConnection = out;
                 }
             }

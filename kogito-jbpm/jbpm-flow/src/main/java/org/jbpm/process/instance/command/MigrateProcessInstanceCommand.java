@@ -27,6 +27,7 @@ import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.command.ExecutableCommand;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
@@ -55,14 +56,14 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, K
     private String processId;
 
     @XmlElement
-    private Map<String, Long> nodeMapping;
+    private Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeMapping;
 
     public MigrateProcessInstanceCommand(String processInstanceId, String processId) {
         this.processInstanceId = processInstanceId;
         this.processId = processId;
     }
 
-    public MigrateProcessInstanceCommand(String processInstanceId, String processId, Map<String, Long> nodeMapping) {
+    public MigrateProcessInstanceCommand(String processInstanceId, String processId, Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeMapping) {
         this.processInstanceId = processInstanceId;
         this.processId = processId;
         this.nodeMapping = nodeMapping;
@@ -86,11 +87,11 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, K
         this.processId = processId;
     }
 
-    public Map<String, Long> getNodeMapping() {
+    public Map<WorkflowElementIdentifier, WorkflowElementIdentifier> getNodeMapping() {
         return nodeMapping;
     }
 
-    public void setNodeMapping(Map<String, Long> nodeMapping) {
+    public void setNodeMapping(Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeMapping) {
         this.nodeMapping = nodeMapping;
     }
 
@@ -126,10 +127,10 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, K
         return null;
     }
 
-    private void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<String, Long> nodeMapping) {
+    private void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<WorkflowElementIdentifier, WorkflowElementIdentifier> nodeMapping) {
         for (NodeInstance nodeInstance : nodeInstanceContainer.getNodeInstances()) {
-            String oldNodeId = ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getUniqueId();
-            Long newNodeId = nodeMapping.get(oldNodeId);
+            WorkflowElementIdentifier oldNodeId = ((NodeImpl) ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getNode()).getId();
+            WorkflowElementIdentifier newNodeId = nodeMapping.get(oldNodeId);
             if (newNodeId == null) {
                 newNodeId = nodeInstance.getNodeId();
             }

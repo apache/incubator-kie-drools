@@ -115,6 +115,16 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public <T> void migrateProcessInstances(Process<T> process, String targetProcessId, String targetProcessVersion, String... processIds) throws UnsupportedOperationException {
+        process.instances().migrateProcessInstances(targetProcessId, targetProcessVersion, processIds);
+    }
+
+    @Override
+    public <T> long migrateAll(Process<T> process, String targetProcessId, String targetProcessVersion) throws UnsupportedOperationException {
+        return process.instances().migrateAll(targetProcessId, targetProcessVersion);
+    }
+
+    @Override
     public <T extends MappableToModel<R>, R> Optional<R> delete(Process<T> process, String id) {
         return UnitOfWorkExecutor.executeInUnitOfWork(
                 application.unitOfWorkManager(),
@@ -400,4 +410,5 @@ public class ProcessServiceImpl implements ProcessService {
                 new Policy<?>[] { policy },
                 JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), taskName));
     }
+
 }

@@ -27,6 +27,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
 
@@ -35,7 +36,7 @@ public class EndNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extend
     public static final String METHOD_TERMINATE = "terminate";
     public static final String METHOD_ACTION = "action";
 
-    public EndNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public EndNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new EndNode(), id);
     }
 

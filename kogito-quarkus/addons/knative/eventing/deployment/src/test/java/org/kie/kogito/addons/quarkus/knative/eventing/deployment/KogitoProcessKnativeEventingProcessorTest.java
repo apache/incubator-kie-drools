@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Node;
@@ -57,6 +58,7 @@ class KogitoProcessKnativeEventingProcessorTest {
     @BeforeAll
     static void setupClass() {
         Node node = mock(Node.class);
+        when(node.getId()).thenReturn(WorkflowElementIdentifierFactory.fromExternalFormat(1L));
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(Metadata.TRIGGER_REF, "myType");
         metadata.put(Metadata.MAPPING_VARIABLE, "myVar");

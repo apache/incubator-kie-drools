@@ -20,13 +20,14 @@ package org.kie.kogito.process.impl;
 
 import java.util.Map;
 
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.WorkItem;
 
 public class BaseWorkItem implements WorkItem {
 
     private final String id;
     private final String nodeInstanceId;
-    private final String nodeId;
+    private final WorkflowElementIdentifier nodeId;
     private final String name;
 
     private final int state;
@@ -37,7 +38,8 @@ public class BaseWorkItem implements WorkItem {
     private Map<String, Object> results;
 
     @SuppressWarnings("squid:S107")
-    public BaseWorkItem(String nodeInstanceId, String id, String nodeId, String name, int state, String phase, String phaseStatus, Map<String, Object> parameters, Map<String, Object> results) {
+    public BaseWorkItem(String nodeInstanceId, String id, WorkflowElementIdentifier nodeId, String name, int state, String phase, String phaseStatus, Map<String, Object> parameters,
+            Map<String, Object> results) {
         this.id = id;
         this.nodeInstanceId = nodeInstanceId;
         this.nodeId = nodeId;
@@ -55,7 +57,7 @@ public class BaseWorkItem implements WorkItem {
     }
 
     @Override
-    public String getNodeId() {
+    public WorkflowElementIdentifier getNodeId() {
         return nodeId;
     }
 

@@ -97,7 +97,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
             return false;
         }
         for (org.kie.api.definition.process.Node node : nodes) {
-            String id = (String) node.getMetaData().get("UniqueId");
+            String id = node.getUniqueId();
             if (nodeInfo.getNodeRef().equals(id)) {
                 ((Node) node).setMetaData("x", nodeInfo.getX());
                 ((Node) node).setMetaData("y", nodeInfo.getY());
@@ -135,7 +135,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
         for (org.kie.api.definition.process.Node node : nodes) {
             for (List<Connection> connections : node.getOutgoingConnections().values()) {
                 for (Connection connection : connections) {
-                    String id = (String) connection.getMetaData().get("UniqueId");
+                    String id = connection.getUniqueId();
                     if (id != null && id.equals(connectionInfo.getElementRef())) {
                         ((ConnectionImpl) connection).setMetaData(
                                 "bendpoints", connectionInfo.getBendpoints());

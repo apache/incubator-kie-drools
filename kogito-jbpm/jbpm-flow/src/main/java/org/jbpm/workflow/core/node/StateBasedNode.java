@@ -50,7 +50,7 @@ public class StateBasedNode extends ExtendedNodeImpl {
         Timer timer = new Timer();
         timer.setDelay(duration);
         DroolsConsequenceAction timeoutAction = new DroolsConsequenceAction("java", null);
-        timeoutAction.setMetaData(ACTION, new CompleteStateBasedNodeInstanceAction(getNodeUniqueId()));
+        timeoutAction.setMetaData(ACTION, new CompleteStateBasedNodeInstanceAction(getUniqueId()));
         addTimer(timer, timeoutAction);
     }
 

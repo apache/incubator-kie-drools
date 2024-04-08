@@ -24,12 +24,13 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.StateBasedNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public abstract class StateBasedNodeFactory<T extends StateBasedNodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends ExtendedNodeFactory<T, P> {
 
     public static final String METHOD_TIMER = "timer";
 
-    protected StateBasedNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, long id) {
+    protected StateBasedNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, node, id);
     }
 

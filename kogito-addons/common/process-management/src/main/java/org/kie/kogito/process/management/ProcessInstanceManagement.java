@@ -41,4 +41,9 @@ public interface ProcessInstanceManagement<T> {
     T cancelNodeInstanceId(String processId, String processInstanceId, String nodeInstanceId);
 
     T cancelProcessInstanceId(String processId, String processInstanceId);
+
+    T migrateAllInstances(String processId, ProcessMigrationSpec migrationSpec);
+
+    T migrateInstance(String processId, String processInstanceId, ProcessMigrationSpec migrationSpec);
+
 }

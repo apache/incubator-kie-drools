@@ -24,10 +24,13 @@ import java.util.List;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.test.TestProcessEventListener;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.junit.jupiter.api.Test;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodeInnerClassesTest extends AbstractBaseTest {
+
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("one");
 
     @Override
     public void addLogger() {
@@ -60,13 +65,13 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         process.setDynamic(true);
         CompositeNode compositeNode = new CompositeNode();
         compositeNode.setName("CompositeNode");
-        compositeNode.setId(2);
+        compositeNode.setId(two);
 
         ForEachNode forEachNode = new ForEachNode();
         ForEachNode.ForEachSplitNode split = new ForEachNode.ForEachSplitNode();
         split.setName("ForEachSplit");
         split.setMetaData("hidden", true);
-        split.setMetaData("UniqueId", forEachNode.getMetaData("Uniqueid") + ":foreach:split");
+        split.setMetaData(Metadata.UNIQUE_ID, forEachNode.getUniqueId() + ":foreach:split");
         forEachNode.internalAddNode(split);
         forEachNode.linkIncomingConnections(
                 Node.CONNECTION_DEFAULT_TYPE,

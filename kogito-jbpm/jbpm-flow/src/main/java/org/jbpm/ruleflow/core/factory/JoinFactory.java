@@ -21,12 +21,13 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.Join;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class JoinFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<JoinFactory<T>, T> {
 
     public static final String METHOD_TYPE = "type";
 
-    public JoinFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public JoinFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new Join(), id);
     }
 

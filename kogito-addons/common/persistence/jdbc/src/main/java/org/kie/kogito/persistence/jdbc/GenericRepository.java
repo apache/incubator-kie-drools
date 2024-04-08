@@ -235,4 +235,37 @@ public class GenericRepository extends Repository {
     private static String sqlIncludingVersion(String statement, String processVersion) {
         return statement + " " + (processVersion == null ? PROCESS_VERSION_IS_NULL : PROCESS_VERSION_EQUALS_TO);
     }
+
+    @Override
+    long migrate(String processId, String processVersion, String targetProcessId, String targetProcessVersion) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(Repository.MIGRATE_BULK, processVersion))) {
+            statement.setString(1, targetProcessId);
+            statement.setString(2, targetProcessVersion);
+            statement.setString(3, processId);
+            if (processVersion != null) {
+                statement.setString(4, processVersion);
+            }
+            return statement.executeUpdate();
+        } catch (Exception e) {
+            throw uncheckedException(e, "Error updating process instance %s-%s", processId, processVersion);
+        }
+    }
+
+    @Override
+    void migrate(String processId, String processVersion, String targetProcessId, String targetProcessVersion, String[] processIds) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(Repository.MIGRATE_INSTANCE, processVersion))) {
+            statement.setString(1, targetProcessId);
+            statement.setString(2, targetProcessVersion);
+            statement.setObject(3, connection.createArrayOf("VARCHAR", processIds));
+            statement.setString(4, processId);
+            if (processVersion != null) {
+                statement.setString(5, processVersion);
+            }
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw uncheckedException(e, "Error updating process instance %s-%s", processId, processVersion);
+        }
+    }
 }

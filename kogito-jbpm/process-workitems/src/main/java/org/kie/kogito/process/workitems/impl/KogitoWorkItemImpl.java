@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
@@ -43,7 +44,7 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     private String processInstanceId;
     private String deploymentId;
     private String nodeInstanceId;
-    private long nodeId;
+    private WorkflowElementIdentifier nodeId;
 
     private String phaseId;
     private String phaseStatus;
@@ -176,12 +177,12 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     }
 
     @Override
-    public long getNodeId() {
+    public WorkflowElementIdentifier getNodeId() {
         return nodeId;
     }
 
     @Override
-    public void setNodeId(long nodeId) {
+    public void setNodeId(WorkflowElementIdentifier nodeId) {
         this.nodeId = nodeId;
     }
 

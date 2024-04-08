@@ -86,6 +86,7 @@ public class BpmnProcessCompiler {
                 }
             });
 
+            bpmnProcessesList.forEach(BpmnProcess::activate);
             return bpmnProcessesList;
         } catch (Exception e) {
             throw new BpmnProcessReaderException(e);

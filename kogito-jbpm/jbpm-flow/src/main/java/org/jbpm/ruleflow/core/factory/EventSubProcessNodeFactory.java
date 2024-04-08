@@ -22,13 +22,14 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class EventSubProcessNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<EventSubProcessNodeFactory<T>, T> {
 
     public static final String METHOD_KEEP_ACTIVE = "keepActive";
     public static final String METHOD_EVENT = "event";
 
-    public EventSubProcessNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public EventSubProcessNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new EventSubProcessNode(), id);
     }
 

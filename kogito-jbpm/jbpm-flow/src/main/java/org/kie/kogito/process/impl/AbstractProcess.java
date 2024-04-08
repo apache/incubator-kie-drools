@@ -187,16 +187,20 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
 
     }
 
+    public KogitoProcessRuntime getProcessRuntime() {
+        return this.processRuntime;
+    }
+
     @Override
     public void activate() {
         if (this.activated) {
             return;
         }
+        this.processRuntime = createProcessRuntime().getKogitoProcessRuntime();
         WorkflowProcessImpl p = (WorkflowProcessImpl) get();
         configure();
         List<StartNode> startNodes = p.getTimerStart();
         if (startNodes != null && !startNodes.isEmpty()) {
-            this.processRuntime = createProcessRuntime().getKogitoProcessRuntime();
             for (StartNode startNode : startNodes) {
                 if (startNode != null && startNode.getTimer() != null) {
                     String timerId = processRuntime.getJobsService().scheduleProcessJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));

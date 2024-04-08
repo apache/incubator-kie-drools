@@ -21,10 +21,11 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CatchLinkNode;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class CatchLinkNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends ExtendedNodeFactory<CatchLinkNodeFactory<T>, T> {
 
-    public CatchLinkNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    public CatchLinkNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new CatchLinkNode(), id);
     }
 }

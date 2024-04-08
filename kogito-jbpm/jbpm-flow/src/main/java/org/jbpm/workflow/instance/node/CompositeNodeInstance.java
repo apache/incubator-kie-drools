@@ -43,6 +43,7 @@ import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
@@ -127,7 +128,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             for (Connection connection : connections) {
                 if ((connection.getFrom() instanceof CompositeNode.CompositeNodeStart) &&
                         (from == null ||
-                                ((CompositeNode.CompositeNodeStart) connection.getFrom()).getInNode().getId() == from.getNodeId())) {
+                                ((CompositeNode.CompositeNodeStart) connection.getFrom()).getInNode().getId().equals(from.getNodeId()))) {
                     NodeInstance nodeInstance = getNodeInstance(connection.getFrom());
                     nodeInstance.trigger(null, nodeAndType.getType());
                     return;
@@ -264,9 +265,9 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     @Override
-    public NodeInstance getFirstNodeInstance(final long nodeId) {
+    public NodeInstance getFirstNodeInstance(WorkflowElementIdentifier nodeId) {
         for (final NodeInstance nodeInstance : this.nodeInstances) {
-            if (nodeInstance.getNodeId() == nodeId && nodeInstance.getLevel() == getCurrentLevel()) {
+            if (nodeInstance.getNodeId().equals(nodeId) && nodeInstance.getLevel() == getCurrentLevel()) {
                 return nodeInstance;
             }
         }
@@ -343,20 +344,20 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         this.signalEvent(type, event, varName -> this.getVariable(varName));
     }
 
-    public List<NodeInstance> getNodeInstances(final long nodeId) {
+    public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId) {
         List<NodeInstance> result = new ArrayList<>();
         for (final NodeInstance nodeInstance : this.nodeInstances) {
-            if (nodeInstance.getNodeId() == nodeId) {
+            if (nodeInstance.getNodeId().equals(nodeId)) {
                 result.add(nodeInstance);
             }
         }
         return result;
     }
 
-    public List<NodeInstance> getNodeInstances(final long nodeId, List<NodeInstance> currentView) {
+    public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, List<NodeInstance> currentView) {
         List<NodeInstance> result = new ArrayList<>();
         for (final NodeInstance nodeInstance : currentView) {
-            if (nodeInstance.getNodeId() == nodeId) {
+            if (nodeInstance.getNodeId().equals(nodeId)) {
                 result.add(nodeInstance);
             }
         }

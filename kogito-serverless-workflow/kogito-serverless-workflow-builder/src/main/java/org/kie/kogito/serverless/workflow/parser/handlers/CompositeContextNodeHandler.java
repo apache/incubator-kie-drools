@@ -113,7 +113,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             end.name("Join_" + actionName);
         }
         connect(start, end);
-        start.metaData(XORSPLITDEFAULT, concatId(start.getNode().getId(), end.getNode().getId()));
+        start.metaData(XORSPLITDEFAULT, concatId(start.getNode().getId(), end.getNode().getId()).toExternalFormat());
         return new MakeNodeResult(start, end);
     }
 

@@ -25,15 +25,21 @@ import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.ProcessValidatorRegistry;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.process.validation.ValidationException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class JavaRuleFlowProcessValidatorTest {
+
+    private static WorkflowElementIdentifier one = WorkflowElementIdentifierFactory.fromExternalFormat("one");
+    private static WorkflowElementIdentifier two = WorkflowElementIdentifierFactory.fromExternalFormat("two");
+    private static WorkflowElementIdentifier three = WorkflowElementIdentifierFactory.fromExternalFormat("three");
 
     @BeforeAll
     static void init() {
@@ -75,19 +81,19 @@ public class JavaRuleFlowProcessValidatorTest {
                 .packageName("com.myspace.demo")
                 .dynamic(false)
                 .version("1.0")
-                .startNode(1)
+                .startNode(one)
                 .name("start")
                 .done()
-                .actionNode(2)
+                .actionNode(two)
                 .name("Dump order 1")
                 .action("java", script)
                 .done()
-                .endNode(3)
+                .endNode(three)
                 .name("end")
                 .terminate(false)
                 .done()
-                .connection(1, 2)
-                .connection(2, 3);
+                .connection(one, two)
+                .connection(two, three);
         RuleFlowProcess process = factory.getProcess();
         ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, null);
         assertThatExceptionOfType(ValidationException.class)

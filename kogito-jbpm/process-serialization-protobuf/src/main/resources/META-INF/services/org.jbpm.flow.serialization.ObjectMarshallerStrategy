@@ -1,0 +1,9 @@
+org.jbpm.flow.serialization.impl.marshallers.ProtobufStringMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufObjectMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufBooleanMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufLongMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufFloatMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufIntegerMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufDateMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufDoubleMarshallerStrategy
+org.jbpm.flow.serialization.impl.marshallers.ProtobufJsonNodeMessageMarshaller

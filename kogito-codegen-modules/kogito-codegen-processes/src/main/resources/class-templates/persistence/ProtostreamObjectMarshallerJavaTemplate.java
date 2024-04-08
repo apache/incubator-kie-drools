@@ -24,8 +24,8 @@ import org.infinispan.protostream.ProtobufUtil;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.config.Configuration;
 import org.infinispan.protostream.impl.SerializationContextImpl;
-import org.kie.kogito.serialization.process.ObjectMarshallerStrategy;
-import org.kie.kogito.serialization.process.ProcessInstanceMarshallerException;
+import org.jbpm.flow.serialization.ObjectMarshallerStrategy;
+import org.jbpm.flow.serialization.ProcessInstanceMarshallerException;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;

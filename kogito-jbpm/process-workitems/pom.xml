@@ -106,6 +106,7 @@
                   <allowedImports>
                     <!-- we always allow process.* as these will be movable to internal -->
                     <allowedImport>org.kie.api.runtime.process.*</allowedImport>
+                    <allowedImport>org.kie.api.definition.process.WorkflowElementIdentifier</allowedImport>
                   </allowedImports>
                 </restrictImports>
                 <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports">
