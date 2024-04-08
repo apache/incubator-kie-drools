@@ -70,7 +70,7 @@
         <version.org.hibernate>6.2.13.Final</version.org.hibernate>
         <version.org.apache.opennlp>2.3.1</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.10.0</version.org.apache.commons.csv>
-        <version.org.jredisearch>2.0.0</version.org.jredisearch>
+        <version.org.jredisearch>2.2.0</version.org.jredisearch>
         <version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
         <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
         <version.com.graphql-java-extended-scalars>19.0</version.com.graphql-java-extended-scalars>
