@@ -18,6 +18,7 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -67,8 +68,6 @@ public class PhreakBranchNode {
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
 
-        RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
-
         for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
 
@@ -107,7 +106,6 @@ public class PhreakBranchNode {
                               TupleSets stagedLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
-        RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
 
         for (TupleImpl leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             TupleImpl next = leftTuple.getStagedNext();
@@ -168,12 +166,12 @@ public class PhreakBranchNode {
             if (branchTuples.mainLeftTuple != null) {
                 normalizeStagedTuples( stagedLeftTuples, branchTuples.mainLeftTuple );
 
-                if (!breaking) {
-                    // child exist, new one does, so update
-                    trgLeftTuples.addUpdate(branchTuples.mainLeftTuple);
-                } else {
+                if (breaking && !NodeTypeEnums.isTerminalNode(branchTuples.mainLeftTuple.getSink())) {
                     // child exist, new one does not, so delete
                     trgLeftTuples.addDelete(branchTuples.mainLeftTuple);
+                } else {
+                    // child exist, new one does, so update
+                    trgLeftTuples.addUpdate(branchTuples.mainLeftTuple);
                 }
             } else if (!breaking) {
                 // child didn't exist, new one does, so insert

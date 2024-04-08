@@ -309,6 +309,7 @@ public class RuleExecutor {
     public void removeDormantTuple(RuleTerminalNodeLeftTuple tuple) {
 //        if (tuple.getStagedType() == Tuple.DELETE || tuple.getStagedType() == Tuple.NONE) {
         if (tuple.getStagedType() == Tuple.DELETE) {
+//        if (true) {
             if (!tuple.isDormant()) {
                 throw new IllegalStateException();
             }
@@ -341,7 +342,9 @@ public class RuleExecutor {
         tuple.setQueued(false);
         activeMatches.remove(tuple);
 //        if (tuple.getStagedType() == Tuple.DELETE || tuple.getStagedType() == Tuple.NONE) {
-        if (tuple.getStagedType() == Tuple.NONE) {
+//        if (tuple.getStagedType() == Tuple.NONE) {
+        if (tuple.getStagedType() != Tuple.DELETE) {
+//        if (true) {
             if (tuple.isDormant()) {
                 throw new IllegalStateException();
             }
@@ -366,7 +369,7 @@ public class RuleExecutor {
     }
 
     private void updateSalience(int currentSalience) {
-        // the queue may be emtpy if no more matches are left, so reset it to default salience 0
+        // the queue may be empty if no more matches are left, so reset it to default salience 0
         int newSalience = queue.isEmpty() ? SalienceInteger.DEFAULT_SALIENCE.getValue() : queue.peek().getSalience();
         if (currentSalience != newSalience) {
             // salience changed, so the RuleAgendaItem needs to be removed and re-added, for sorting

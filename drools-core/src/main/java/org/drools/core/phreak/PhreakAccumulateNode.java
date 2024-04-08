@@ -249,8 +249,7 @@ public class PhreakAccumulateNode {
                 FastIterator leftIt = accNode.getLeftIterator( ltm );
 
                 for ( TupleImpl leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
-                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry
-                                                         ) ) {
+                    if ( constraints.isAllowedCachedRight(leftTuple, contextEntry) ) {
                         final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
                         addMatch( accNode, accumulate, leftTuple, rightTuple,
                                   null, null, reteEvaluator, am,
@@ -717,7 +716,7 @@ public class PhreakAccumulateNode {
                           final boolean useLeftMemory,
                           final boolean leftPropagation) {
         TupleImpl tuple = leftTuple;
-        InternalFactHandle handle = (InternalFactHandle) rightTuple.getFactHandle();
+        InternalFactHandle handle = rightTuple.getFactHandle();
 
         if (accNode.isRightInputIsRiaNode()) {
             // if there is a subnetwork, handle must be unwrapped
