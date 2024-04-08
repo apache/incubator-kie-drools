@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -167,16 +168,12 @@ public class DMNModelImpl
             return node.getName();
         } else {
             Optional<String> lookupAlias = getImportAliasFor(node.getModelNamespace(), node.getModelName());
-            if (lookupAlias.isPresent()) {
-                return lookupAlias.get() + "." + node.getName();
-            } else {
-                return null;
-            }
+            return lookupAlias.map(s -> s + "." + node.getName()).orElse(null);
         }
     }
 
     public void addInput(InputDataNode idn) {
-        inputs.put(computeDRGElementModelLocalId(idn), idn);
+        computeDRGElementModelLocalId(idn).forEach(id -> inputs.put(id, idn));
     }
 
     @Override
@@ -199,24 +196,24 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getInputs() {
-        return this.inputs.values().stream().collect( Collectors.toCollection(LinkedHashSet::new) );
+        return new LinkedHashSet<>(this.inputs.values());
     }
 
     public void addDecision(DecisionNode dn) {
-        decisions.put(computeDRGElementModelLocalId(dn), dn);
+        computeDRGElementModelLocalId(dn).forEach(id -> decisions.put(id, dn));
     }
 
-    private String computeDRGElementModelLocalId(DMNNode node) {
+    private List<String> computeDRGElementModelLocalId(DMNNode node) {
         // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them with original opne,
         // Here, if the node comes from an unnamed imported model, then it is stored only with its id, to be looked for
         // as if defined in the model itself
         if (node.getModelNamespace().equals(definitions.getNamespace())) {
-            return node.getId();
+            return Collections.singletonList(node.getId());
         } else if (isInUnnamedImport(node, this)) {
             // the node is an unnamed import
-            return node.getId();
+            return Arrays.asList(node.getId(), node.getModelNamespace() + "#" + node.getId());
         } else {
-            return node.getModelNamespace() + "#" + node.getId();
+            return Collections.singletonList(node.getModelNamespace() + "#" + node.getId());
         }
     }
 
@@ -241,7 +238,7 @@ public class DMNModelImpl
 
     @Override
     public Set<DecisionNode> getDecisions() {
-        return this.decisions.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
+        return new LinkedHashSet<>(this.decisions.values());
     }
 
     @Override
@@ -265,7 +262,7 @@ public class DMNModelImpl
     }
 
     public void addDecisionService(DecisionServiceNode dsn) {
-        decisionServices.put(computeDRGElementModelLocalId(dsn), dsn);
+        computeDRGElementModelLocalId(dsn).forEach(id -> decisionServices.put(id, dsn));
     }
 
     public DecisionServiceNode getDecisionServiceById(String id) {
@@ -286,11 +283,11 @@ public class DMNModelImpl
 
     @Override
     public Collection<DecisionServiceNode> getDecisionServices() {
-        return this.decisionServices.values().stream().collect(Collectors.toCollection(LinkedHashSet::new));
+        return new LinkedHashSet<>(this.decisionServices.values());
     }
 
     public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
-        bkms.put(computeDRGElementModelLocalId(bkm), bkm);
+        computeDRGElementModelLocalId(bkm).forEach(id -> bkms.put(id, bkm));
     }
 
     @Override
