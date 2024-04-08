@@ -273,49 +273,13 @@ public class DMNCompilerTest extends BaseVariantTest {
     }
 
     @Test
-    public void testEmptyNamedModelImport() {
-        final DMNRuntime runtime = createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
-                                                                        this.getClass(),
-                                                                        "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    public void testEmptyNamedModelImportWithHrefNamespace() {
+        commonValidateUnnamedImport("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn", "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
 
-        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
-                                                        "Imported Model");
-        assertThat(importedModel).isNotNull();
-        for (final DMNMessage message : importedModel.getMessages()) {
-            LOG.debug("{}", message);
-        }
-
-        final DMNModel importingModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
-                                                   "Importing empty-named Model");
-        assertThat(importingModel).isNotNull();
-        for (final DMNMessage message : importingModel.getMessages()) {
-            LOG.debug("{}", message);
-        }
-
-        final DMNContext context = runtime.newContext();
-        context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
-
-        final DMNResult evaluateAll = evaluateModel(runtime, importingModel, context);
-        for (final DMNMessage message : evaluateAll.getMessages()) {
-            LOG.debug("{}", message);
-        }
-        LOG.debug("{}", evaluateAll);
-        // Verify locally-defined BusinessKnowledgeModel
-        assertThat(evaluateAll.getDecisionResultByName("Local Greeting").getResult()).isEqualTo("Local Hello John!");
-
-        if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
-            Map<String, Object> allProperties = outputSet.allFEELProperties();
-            assertThat(allProperties).containsEntry("Local Greeting", "Local Hello John!");
-        }
-        // Verify unnamed-imported BusinessKnowledgeModel
-        assertThat(evaluateAll.getDecisionResultByName("Imported Greeting").getResult()).isEqualTo("Hello John!");
-
-        if (isTypeSafe()) {
-            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
-            Map<String, Object> allProperties = outputSet.allFEELProperties();
-            assertThat(allProperties).containsEntry("Imported Greeting", "Hello John!");
-        }
+    @Test
+    public void testEmptyNamedModelImportWithoutHrefNamespace() {
+        commonValidateUnnamedImport("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn", "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
@@ -379,5 +343,50 @@ public class DMNCompilerTest extends BaseVariantTest {
                                         m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
                                         m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
                            .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
+    }
+
+    private void commonValidateUnnamedImport(String importingModelRef, String importedModelRef) {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources(importingModelRef,
+                                                                        this.getClass(),
+                                                                        importedModelRef);
+
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
+                                                        "Imported Model");
+        assertThat(importedModel).isNotNull();
+        for (final DMNMessage message : importedModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel importingModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
+                                                         "Importing empty-named Model");
+        assertThat(importingModel).isNotNull();
+        for (final DMNMessage message : importingModel.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNContext context = runtime.newContext();
+        context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
+
+        final DMNResult evaluateAll = evaluateModel(runtime, importingModel, context);
+        for (final DMNMessage message : evaluateAll.getMessages()) {
+            LOG.debug("{}", message);
+        }
+        LOG.debug("{}", evaluateAll);
+        // Verify locally-defined BusinessKnowledgeModel
+        assertThat(evaluateAll.getDecisionResultByName("Local Greeting").getResult()).isEqualTo("Local Hello John!");
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties).containsEntry("Local Greeting", "Local Hello John!");
+        }
+        // Verify unnamed-imported BusinessKnowledgeModel
+        assertThat(evaluateAll.getDecisionResultByName("Imported Greeting").getResult()).isEqualTo("Hello John!");
+
+        if (isTypeSafe()) {
+            FEELPropertyAccessible outputSet = ((DMNContextFPAImpl)evaluateAll.getContext()).getFpa();
+            Map<String, Object> allProperties = outputSet.allFEELProperties();
+            assertThat(allProperties).containsEntry("Imported Greeting", "Hello John!");
+        }
     }
 }
