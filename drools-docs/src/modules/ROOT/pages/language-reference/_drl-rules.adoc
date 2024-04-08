@@ -1347,6 +1347,25 @@ You cannot embed a comma operator in a composite constraint expression, such as 
 /persons[ ( age > 50 && weight > 80 ) || height > 2 ]
 ----
 
+[NOTE]
+====
+When you write multiple OOPath lines
+[source]
+----
+when
+  /persons[ age == "10" ]
+  /addresses[ city == "London" ]
+----
+Before {PRODUCT} 10, they were concatenated to one line `/persons[ age == "10" ]/addresses[ city == "London" ]`. To avoid that, you need to explicitly use a semicolon `;` to separate the OOPath lines.
+[source]
+----
+when
+  /persons[ age == "10" ];
+  /addresses[ city == "London" ];
+----
+Since {PRODUCT} 10, {PRODUCT} considers the new line as a separator between OOPath lines. So the semicolon is not required.
+====
+
 === Bound variables in patterns and constraints
 
 You can bind variables to OOPath expressions of patterns and constraints to refer to matched objects in other portions of a rule. Bound variables can help you define rules more efficiently or more consistently with how you annotate facts in your data model.
