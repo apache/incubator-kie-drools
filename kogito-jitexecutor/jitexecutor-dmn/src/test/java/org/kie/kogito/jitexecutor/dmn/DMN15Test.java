@@ -61,13 +61,23 @@ class DMN15Test {
     }
 
     @Test
-    void unnamedImport() throws IOException {
-        String URI1 = "valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn";
-        String URI2 = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
-        ResourceWithURI model1 = new ResourceWithURI(URI1, getModelFromIoUtils(URI1));
-        ResourceWithURI model2 = new ResourceWithURI(URI2, getModelFromIoUtils(URI2));
+    void unnamedImportWithHrefNamespace() throws IOException {
+        commonUnnamedImport("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
+                "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
 
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(URI1, List.of(model1, model2), Collections.EMPTY_MAP);
+    @Test
+    void unnamedImportWithoutHrefNamespace() throws IOException {
+        commonUnnamedImport("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+                "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
+
+    private void commonUnnamedImport(String importingModelRef, String importedModelRef) throws IOException {
+        ResourceWithURI model1 = new ResourceWithURI(importingModelRef, getModelFromIoUtils(importingModelRef));
+        ResourceWithURI model2 = new ResourceWithURI(importedModelRef, getModelFromIoUtils(importedModelRef));
+
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2),
+                Collections.EMPTY_MAP);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -79,7 +89,7 @@ class DMN15Test {
 
         String response = given()
                 .contentType(ContentType.JSON)
-                .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
+                .body(new MultipleResourcesPayload(importingModelRef, List.of(model1, model2)))
                 .when()
                 .post("/jitdmn/validate")
                 .then()
@@ -92,7 +102,7 @@ class DMN15Test {
 
         Map<String, Object> context =
                 Map.of("A Person", Map.of("name", "John", "age", 47));
-        jitdmnpayload = new JITDMNPayload(URI1, List.of(model1, model2), context);
+        jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2), context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
