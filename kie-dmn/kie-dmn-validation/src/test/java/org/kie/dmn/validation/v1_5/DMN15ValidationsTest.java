@@ -75,14 +75,15 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void unnamedImportValidation() {
-        String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
-        String importingModelFileName = "valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn";
-        String modelName = "Importing empty-named Model";
-        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
-        validate(importedModelFileName, importingModelFileName);
-        Map<String, Object> inputData = Map.of("A Person", prototype(entry("name", "Hugh"), entry("age", 32)));
-        evaluate(modelNamespace, modelName, importingModelFileName, inputData, importedModelFileName);
+    public void unnamedImportValidationWithHrefNamespace() {
+        commonUnnamedImportValidation("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
+                                      "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
+
+    @Test
+    public void unnamedImportValidationWithoutHrefNamespace() {
+        commonUnnamedImportValidation("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+                                      "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
@@ -129,6 +130,14 @@ public class DMN15ValidationsTest {
         validate(modelFileName);
         Map<String, Object> inputData = Map.of("p1", prototype(entry("Name", "P1"), entry("Interests", Collections.singletonList("Golf"))));
         evaluate(modelNamespace, modelName, modelFileName, inputData);
+    }
+
+    private void commonUnnamedImportValidation(String importingModelRef, String importedModelRef) {
+        String modelName = "Importing empty-named Model";
+        String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        validate(importingModelRef, importedModelRef);
+        Map<String, Object> inputData = Map.of("A Person", prototype(entry("name", "Hugh"), entry("age", 32)));
+        evaluate(modelNamespace, modelName, importingModelRef, inputData, importedModelRef);
     }
 
     private void validate(String modelFileName, String... otherFileNames) {
