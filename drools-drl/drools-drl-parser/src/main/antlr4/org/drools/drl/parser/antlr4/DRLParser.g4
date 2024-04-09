@@ -368,20 +368,17 @@ drlPrimary
     | SUPER
     | NEW drlCreator
     | drlLiteral
-    | drlIdentifier(
-        ( d=DOT i2=drlIdentifier )
-        |
-        ( d=(DOT | NULL_SAFE_DOT) LPAREN drlExpression (COMMA drlExpression)* RPAREN )
-        |
-        ( h=HASH i2=drlIdentifier )
-        |
-        ( n=NULL_SAFE_DOT i2=drlIdentifier )
-        )* (identifierSuffix)?
+    | drlIdentifier drlIdentifierMiddle* identifierSuffix?
     | typeTypeOrVoid DOT CLASS
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
     | inlineMapExpression
     | inlineCast
+    ;
+
+drlIdentifierMiddle
+    : (DOT | NULL_SAFE_DOT | HASH) drlIdentifier
+    | (DOT | NULL_SAFE_DOT) LPAREN drlExpression (COMMA drlExpression)* RPAREN
     ;
 
 identifierSuffix
