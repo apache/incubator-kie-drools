@@ -23,7 +23,11 @@
       <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
-
+     <dmn:inputData id="_51190b90-924d-479b-872b-4c6f3486c2cb" name="A Person">
+        <dmn:variable id="_44a44de4-c0ab-408e-9ba9-983d8ec2f6b5"
+                           name="A Person"
+                           typeRef="tPerson"/>
+     </dmn:inputData>
   <dmn:inputData id="_51190b90-924d-479b-872b-4c6f3486c2de" name="An Imported Person">
     <dmn:variable id="_44a44de4-c0ab-408e-9ba9-983d8ec2f6c6"
                        name="An Imported Person"

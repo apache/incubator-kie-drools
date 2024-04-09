@@ -19,6 +19,7 @@
 package org.kie.api.runtime.process;
 
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 /**
  * A node instance represents the execution of one specific node
@@ -53,7 +54,7 @@ public interface NodeInstance {
      *
      * @return the id of the node this node instance refers to
      */
-    long getNodeId();
+    WorkflowElementIdentifier getNodeId();
 
     /**
      * Return the node this node instance refers to.  The node

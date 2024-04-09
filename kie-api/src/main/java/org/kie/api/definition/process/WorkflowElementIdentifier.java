@@ -16,9 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.task.model;
 
+package org.kie.api.definition.process;
 
-public interface Email extends OrganizationalEntity {
+public interface WorkflowElementIdentifier extends Comparable<WorkflowElementIdentifier> {
+
+    <T> T toValue();
+
+    @Override
+    int hashCode();
+
+    @Override
+    boolean equals(Object obj);
+
+    @Override
+    default int compareTo(WorkflowElementIdentifier o) {
+        return this.toExternalFormat().compareTo(o.toExternalFormat());
+    }
+
+    default String toExternalFormat() {
+        return toValue().toString();
+    }
+
+    String toSanitizeString();
 
 }
