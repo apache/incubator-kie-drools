@@ -747,7 +747,7 @@ identifierSuffix
                           expression
                           RBRACK { helper.emit($RBRACK, DroolsEditorType.SYMBOL); } )+ // can also be matched by selector, but do here
     |   arguments
-//    |   DOT class_key
+    |   DOT class_key
 //    |   DOT explicitGenericInvocation
 //    |   DOT this_key
 //    |   DOT super_key arguments
