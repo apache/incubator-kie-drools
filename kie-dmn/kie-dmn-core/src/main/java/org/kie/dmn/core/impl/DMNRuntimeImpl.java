@@ -461,7 +461,10 @@ public class DMNRuntimeImpl
     private boolean isNodeValueDefined(DMNResultImpl result, DMNNode callerNode, DMNNode node) {
         if (node.getModelNamespace().equals(result.getContext().scopeNamespace().orElse(result.getModel().getNamespace()))) {
             return result.getContext().isDefined(node.getName());
-        } else {
+        }  else if (isInUnnamedImport(node, (DMNModelImpl) result.getModel())) {
+            // the node is an unnamed import
+            return result.getContext().isDefined(node.getName());
+    } else {
             Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
             if (importAlias.isPresent()) {
                 Object aliasContext = result.getContext().get(importAlias.get());
