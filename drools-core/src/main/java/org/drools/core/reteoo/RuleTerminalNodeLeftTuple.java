@@ -65,7 +65,8 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     private RuleImpl rule;
     private Consequence consequence;
 
-    private boolean dormant;
+    // left here for debugging purposes: switch RuleExecutor.DEBUG_DORMANT_TUPLE to true to enable this debugging
+    // private boolean dormant;
 
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -352,10 +353,12 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public boolean isDormant() {
-        return dormant;
+        throw new IllegalStateException("This method can be called only for debugging purposes. Uncomment dormant boolean to enable debugging.");
+        // return dormant;
     }
 
     public void setDormant(boolean dormant) {
-        this.dormant = dormant;
+        throw new IllegalStateException("This method can be called only for debugging purposes. Uncomment dormant boolean to enable debugging.");
+        // this.dormant = dormant;
     }
 }

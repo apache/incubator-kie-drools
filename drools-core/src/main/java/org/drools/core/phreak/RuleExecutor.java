@@ -49,6 +49,8 @@ import org.slf4j.LoggerFactory;
 
 public class RuleExecutor {
 
+    private static final boolean DEBUG_DORMANT_TUPLE = false;
+
     protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
     private final PathMemory pmem;
@@ -201,11 +203,8 @@ public class RuleExecutor {
             leftTuple = activeMatches.removeFirst();
             ((InternalMatch) leftTuple).setQueued(false);
         }
-        if (((RuleTerminalNodeLeftTuple) leftTuple).isDormant()) {
-            throw new IllegalStateException();
-        }
-        dormantMatches.add(leftTuple);
-        ((RuleTerminalNodeLeftTuple) leftTuple).setDormant(true);
+
+        addDormantTuple((RuleTerminalNodeLeftTuple) leftTuple);
         return leftTuple;
     }
 
@@ -299,29 +298,35 @@ public class RuleExecutor {
     }
 
     public void addDormantTuple(RuleTerminalNodeLeftTuple tuple) {
-        if (tuple.isDormant()) {
-            throw new IllegalStateException();
+        if (DEBUG_DORMANT_TUPLE) {
+            if (tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
         }
         dormantMatches.add(tuple);
-        tuple.setDormant(true);
+        if (DEBUG_DORMANT_TUPLE) {
+            tuple.setDormant(true);
+        }
     }
 
     public void removeDormantTuple(RuleTerminalNodeLeftTuple tuple) {
-//        if (tuple.getStagedType() == Tuple.DELETE || tuple.getStagedType() == Tuple.NONE) {
-        if (tuple.getStagedType() == Tuple.DELETE) {
-//        if (true) {
+        if (DEBUG_DORMANT_TUPLE) {
             if (!tuple.isDormant()) {
                 throw new IllegalStateException();
             }
-            dormantMatches.remove(tuple);
+        }
+        dormantMatches.remove(tuple);
+        if (DEBUG_DORMANT_TUPLE) {
             tuple.setDormant(false);
         }
-    }
+   }
 
     public void addActiveTuple(RuleTerminalNodeLeftTuple tuple) {
         tuple.setQueued(true);
-        if (tuple.isDormant()) {
-            throw new IllegalStateException();
+        if (DEBUG_DORMANT_TUPLE) {
+            if (tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
         }
         this.activeMatches.add(tuple);
         if (queue != null) {
@@ -330,26 +335,15 @@ public class RuleExecutor {
     }
 
     public void modifyActiveTuple(RuleTerminalNodeLeftTuple tuple) {
-        if (!tuple.isDormant()) {
-            throw new IllegalStateException();
-        }
-        dormantMatches.remove(tuple);
-        tuple.setDormant(false);
+        removeDormantTuple(tuple);
         addActiveTuple(tuple);
     }
 
     public void removeActiveTuple(RuleTerminalNodeLeftTuple tuple) {
         tuple.setQueued(false);
         activeMatches.remove(tuple);
-//        if (tuple.getStagedType() == Tuple.DELETE || tuple.getStagedType() == Tuple.NONE) {
-//        if (tuple.getStagedType() == Tuple.NONE) {
         if (tuple.getStagedType() != Tuple.DELETE) {
-//        if (true) {
-            if (tuple.isDormant()) {
-                throw new IllegalStateException();
-            }
-            dormantMatches.add(tuple);
-            tuple.setDormant(true);
+            addDormantTuple(tuple);
         }
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
@@ -447,7 +441,6 @@ public class RuleExecutor {
             internalMatch.setActive(false);
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
-            e.printStackTrace();
             knowledgeHelper.restoreActivationOnConsequenceFailure(internalMatch);
             activationsManager.handleException(internalMatch, e);
         } finally {

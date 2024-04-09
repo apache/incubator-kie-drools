@@ -30,6 +30,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.definition.rule.Rule;
@@ -268,7 +269,7 @@ public class PhreakRuleTerminalNode {
         if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire
             executor.removeActiveTuple( leftTuple );
-        } else if ( !leftTuple.isQueued() ) {
+        } else if ( leftTuple.getStagedType() == Tuple.DELETE && !leftTuple.isQueued() ) {
             executor.removeDormantTuple( leftTuple );
         }
 
