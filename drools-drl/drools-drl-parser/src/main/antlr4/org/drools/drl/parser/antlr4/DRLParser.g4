@@ -90,12 +90,12 @@ parameter : type? drlIdentifier ; // type is optional. Removed (LEFT_SQUARE RIGH
 
 lhs : DRL_WHEN lhsExpression* ;
 
-lhsExpression : LPAREN lhsExpression RPAREN             #lhsExpressionEnclosed
-              | lhsUnary                                #lhsUnarySingle
-              | LPAREN DRL_AND lhsExpression+ RPAREN    #lhsAnd
-              | lhsExpression (DRL_AND lhsExpression)+  #lhsAnd
-              | LPAREN DRL_OR lhsExpression+ RPAREN     #lhsOr
-              | lhsExpression (DRL_OR lhsExpression)+   #lhsOr
+lhsExpression : LPAREN lhsExpression RPAREN namedConsequenceInvocation? #lhsExpressionEnclosed
+              | lhsUnary                                                #lhsUnarySingle
+              | LPAREN DRL_AND lhsExpression+ RPAREN                    #lhsAnd
+              | lhsExpression (DRL_AND lhsExpression)+                  #lhsAnd
+              | LPAREN DRL_OR lhsExpression+ RPAREN                     #lhsOr
+              | lhsExpression (DRL_OR lhsExpression)+                   #lhsOr
               ;
 
 // lhsAnd is used as a label in lhsExpression rule. But some other rules explicitly use the def, so lhsAndDef is declared.
@@ -110,18 +110,19 @@ lhsUnary : ( lhsExists namedConsequence?
            | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
-           | LPAREN lhsOr RPAREN namedConsequence?
+           | LPAREN lhsOr RPAREN namedConsequence? // this part is handled by #lhsExpressionEnclosed
            | lhsPatternBind consequenceInvocation*
            ) SEMI? ;
 */
 
 lhsUnary : (
-           lhsExists
-           | lhsNot
-           | lhsEval
+           lhsExists namedConsequenceInvocation?
+           | lhsNot namedConsequenceInvocation?
+           | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
-           | lhsPatternBind
+           | conditionalBranch // not in the above old parser definition, but actually implemented in the old parser
+           | lhsPatternBind consequenceInvocation*
            ) SEMI? ;
 
 lhsPatternBind : (label|unif)? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
@@ -156,6 +157,25 @@ xpathSeparator : DIV | QUESTION_DIV ;
 xpathPrimary : label? xpathChunk+ ;
 xpathChunk : xpathSeparator drlIdentifier (DOT drlIdentifier)* (HASH drlIdentifier)? (LBRACK xpathExpressionList RBRACK)? ;
 xpathExpressionList : label? drlExpression (COMMA label? drlExpression)* ;
+
+// named consequence
+
+// consequenceInvocation := conditionalBranch | namedConsequence
+consequenceInvocation : conditionalBranch | namedConsequenceInvocation ;
+
+// conditionalBranch := IF LEFT_PAREN conditionalExpression RIGHT_PAREN
+//                      ( namedConsequence | breakingNamedConsequence )
+//                      ( ELSE ( namedConsequence | breakingNamedConsequence | conditionalBranch ) )?
+conditionalBranch : IF LPAREN conditionalOrExpression RPAREN
+                    ( do1=namedConsequenceInvocation | break1=breakingNamedConsequenceInvocation )
+                    ( ELSE ( do2=namedConsequenceInvocation | break2=breakingNamedConsequenceInvocation | conditionalBranch ) )? ;
+
+// namedConsequence := DO LEFT_SQUARE ID RIGHT_SQUARE BREAK?
+namedConsequenceInvocation : DO LBRACK drlIdentifier RBRACK ; // BREAK? is not actually implmented in the old parser
+
+// breakingNamedConsequence := BREAK LEFT_SQUARE ID RIGHT_SQUARE
+breakingNamedConsequenceInvocation : BREAK LBRACK drlIdentifier RBRACK ;
+
 
 relationalOperator
     : EQUAL
@@ -488,9 +508,13 @@ lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                  RPAREN (SEMI)?
                  ;
 
-rhs : DRL_THEN consequence ;
+rhs : DRL_THEN defaultConsequence namedConsequence* ;
 
-consequence : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
+defaultConsequence : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
+
+// THEN LEFT_SQUARE ID RIGHT_SQUARE chunk
+namedConsequence : RHS_NAMED_CONSEQUENCE_THEN namedConsequenceBody ;
+namedConsequenceBody : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
