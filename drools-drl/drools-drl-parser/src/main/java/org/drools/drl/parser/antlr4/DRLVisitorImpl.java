@@ -300,9 +300,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
             // named consequences
             ctx.rhs().namedConsequence()
-                     .forEach(namedConsequnceCtx -> {
-                         String name = extractNamedConsequenceName(namedConsequnceCtx.RHS_NAMED_CONSEQUENCE_THEN().getText());
-                         String body = getTokenTextPreservingWhitespace(namedConsequnceCtx.namedConsequenceBody(), tokenStream);
+                     .forEach(namedConsequenceCtx -> {
+                         String name = extractNamedConsequenceName(namedConsequenceCtx.RHS_NAMED_CONSEQUENCE_THEN().getText());
+                         String body = getTokenTextPreservingWhitespace(namedConsequenceCtx.namedConsequenceBody(), tokenStream);
                          ruleDescr.addNamedConsequences(name, body);
                      } );
         }
