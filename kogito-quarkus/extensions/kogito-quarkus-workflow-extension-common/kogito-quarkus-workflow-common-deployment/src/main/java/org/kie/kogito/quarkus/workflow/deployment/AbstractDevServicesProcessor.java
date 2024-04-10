@@ -71,6 +71,12 @@ public abstract class AbstractDevServicesProcessor {
         return launchMode.getLaunchMode().isDevOrTest() || config.alwaysInclude;
     }
 
+    protected Optional<String> getProperty(List<SystemPropertyBuildItem> systemPropertyBuildItems, String propertyKey) {
+        return systemPropertyBuildItems.stream().filter(property -> property.getKey().equals(propertyKey))
+                .findAny()
+                .map(SystemPropertyBuildItem::getValue);
+    }
+
     @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
     public void startDataIndexDevService(
             BuildProducer<AdditionalBeanBuildItem> additionalBean,

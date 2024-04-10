@@ -18,15 +18,23 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.kie.kogito.quarkus.workflow.deployment.AbstractDevServicesProcessor;
 import org.kie.kogito.quarkus.workflow.deployment.config.KogitoWorkflowBuildTimeConfig;
 import org.kie.kogito.serverless.workflow.devservices.DevModeServerlessWorkflowLogger;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
+import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
+import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
+import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
+import io.quarkus.devui.spi.page.Page;
 
 public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesProcessor {
     @BuildStep
@@ -36,4 +44,17 @@ public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesP
         }
     }
 
+    @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
+    CardPageBuildItem createDevUILink(List<SystemPropertyBuildItem> systemPropertyBuildItems) {
+        Optional<String> dataindex_url_prop = getProperty(systemPropertyBuildItems, "kogito.data-index.url");
+        if (dataindex_url_prop.isPresent()) {
+            CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+            cardPageBuildItem.addPage(Page.externalPageBuilder("Data Index GraphQL UI")
+                    .url(dataindex_url_prop.get() + "/q/graphql-ui/")
+                    .isHtmlContent()
+                    .icon("font-awesome-solid:signs-post"));
+            return cardPageBuildItem;
+        }
+        return null;
+    }
 }
