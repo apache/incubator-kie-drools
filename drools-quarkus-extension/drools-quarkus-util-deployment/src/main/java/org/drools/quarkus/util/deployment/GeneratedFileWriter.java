@@ -69,17 +69,12 @@ public class GeneratedFileWriter {
     private final Path resourcePath;
     private final Path scaffoldedSourcesDir;
 
-    public static final String DEFAULT_SOURCES_DIR = "generated-sources/kogito/";
-    public static final String DEFAULT_RESOURCE_PATH = "generated-resources/kogito/";
-    public static final String DEFAULT_SCAFFOLDED_SOURCES_DIR = "src/main/java/";
-    public static final String DEFAULT_CLASSES_DIR = "target/classes";
-
     /**
      *
-     * @param classesDir usually {@link #DEFAULT_CLASSES_DIR}
-     * @param sourcesDir usually target/generated-sources/kogito/. See {@link #DEFAULT_SOURCES_DIR}
-     * @param resourcePath usually target/generated-resources/kogito/ {@link #DEFAULT_RESOURCE_PATH}
-     * @param scaffoldedSourcesDir usually {@link #DEFAULT_SCAFFOLDED_SOURCES_DIR}
+     * @param classesDir usually generated-sources/kogito/
+     * @param sourcesDir usually target/generated-sources/kogito/.
+     * @param resourcePath usually target/generated-resources/kogito/
+     * @param scaffoldedSourcesDir usually src/main/java/
      */
     public GeneratedFileWriter(Path classesDir, Path sourcesDir, Path resourcePath, Path scaffoldedSourcesDir) {
         this.classesDir = classesDir;
@@ -102,11 +97,7 @@ public class GeneratedFileWriter {
                     writeGeneratedFile(f, classesDir);
                     break;
                 case SOURCE:
-                    if (f.type().isCustomizable()) {
-                        writeGeneratedFile(f, scaffoldedSourcesDir);
-                    } else {
-                        writeGeneratedFile(f, sourcesDir);
-                    }
+                    writeGeneratedFile(f, scaffoldedSourcesDir);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown Category " + category.name());

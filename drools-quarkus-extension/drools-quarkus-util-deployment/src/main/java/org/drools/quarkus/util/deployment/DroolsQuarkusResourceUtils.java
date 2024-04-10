@@ -79,17 +79,23 @@ public class DroolsQuarkusResourceUtils {
 
     // since quarkus-maven-plugin is later phase of maven-resources-plugin,
     // need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath );
-    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder =
-            new GeneratedFileWriter.Builder(
-                    "target/classes",
-                    getConfig("drools.codegen.sources.directory", "target/generated-sources/drools/"),
-                    getConfig("drools.codegen.resources.directory", "target/generated-resources/drools/"),
-                    "target/generated-sources/drools/");
+    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder;
+
+    static {
+        String targetClasses = AppPaths.BT.CLASSES_PATH.toString();
+        String generatedSourcesDrools = Path.of(AppPaths.GENERATED_SOURCES_DIR, "drools").toString();
+        String generatedResourcesSourcesDrools = Path.of(AppPaths.GENERATED_RESOURCES_DIR, "drools").toString();
+        generatedFileWriterBuilder = new GeneratedFileWriter.Builder(
+                targetClasses,
+                getConfig("drools.codegen.sources.directory", generatedSourcesDrools),
+                getConfig("drools.codegen.resources.directory", generatedResourcesSourcesDrools),
+                generatedSourcesDrools);
+    }
 
     public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
         // scan and parse paths
         AppPaths.BuildTool buildTool = AppPaths.BuildTool.findBuildTool();
-        AppPaths appPaths = QuarkusAppPaths.from(outputTarget, paths, buildTool);
+        AppPaths appPaths = QuarkusAppPaths.from(paths, buildTool);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
                 .withClassLoader(classLoader)

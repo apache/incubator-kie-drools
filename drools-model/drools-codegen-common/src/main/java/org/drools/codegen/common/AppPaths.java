@@ -32,34 +32,55 @@ import java.util.function.UnaryOperator;
 public class AppPaths {
 
     public enum BuildTool {
-        MAVEN("target"),
-        GRADLE("build");
+        MAVEN("target",
+              Path.of("target","generated-sources"),
+              Path.of("target","generated-resources"),
+              Path.of("target","generated-test-resources"),
+              Path.of("target","classes"),
+              Path.of("target","test-classes")),
+        GRADLE("build",
+               Path.of("build", "generated", "sources"),
+               Path.of("build","generated", "resources"),
+               Path.of("build","generated", "test", "resources"),
+               Path.of("build","classes", "java", "main"),
+               Path.of("build","classes", "java", "test"));
 
-        private final String outputDirectory;
+        public final String OUTPUT_DIRECTORY;
+        public final Path GENERATED_SOURCES_PATH;
+        public final Path GENERATED_RESOURCES_PATH;
+        public final Path GENERATED_TEST_RESOURCES_PATH;
+        public final Path CLASSES_PATH;
+        public final Path TEST_CLASSES_PATH;
 
-        BuildTool(String build) {
-            this.outputDirectory = build;
+        BuildTool(String outputDirectory, Path generatedSourcesPath, Path generatedResourcesPath, Path generatedTestResourcesPath, Path classesPath, Path testClassesPath) {
+            this.OUTPUT_DIRECTORY = outputDirectory;
+            this.GENERATED_SOURCES_PATH = generatedSourcesPath;
+            this.GENERATED_RESOURCES_PATH = generatedResourcesPath;
+            this.GENERATED_TEST_RESOURCES_PATH = generatedTestResourcesPath;
+            this.CLASSES_PATH = classesPath;
+            this.TEST_CLASSES_PATH = testClassesPath;
         }
 
         public static AppPaths.BuildTool findBuildTool() {
             return System.getProperty("org.gradle.appname") == null ? MAVEN : GRADLE;
         }
-
     }
 
     public static final String TARGET_DIR;
+    public static final String GENERATED_SOURCES_DIR;
+    public static final String GENERATED_RESOURCES_DIR;
+    public static final BuildTool BT;
 
     static {
-        System.out.println("Setting target dir");
-        TARGET_DIR = BuildTool.findBuildTool().outputDirectory;
-        System.out.println("TARGET_DIR = " + TARGET_DIR);
+        BT = BuildTool.findBuildTool();
+        TARGET_DIR = BT.OUTPUT_DIRECTORY;
+        GENERATED_SOURCES_DIR = BT.GENERATED_SOURCES_PATH.toString();
+        GENERATED_RESOURCES_DIR = BT.GENERATED_RESOURCES_PATH.toString();
     }
 
     public static final String SRC_DIR = "src";
 
     public static final String RESOURCES_DIR = "resources";
-
-    public static final String GENERATED_RESOURCES_DIR = "generated-resources";
 
     public static final String MAIN_DIR = "main";
     public static final String TEST_DIR = "test";
@@ -80,13 +101,8 @@ public class AppPaths {
     private final Path[] sourcePaths;
 
     public static AppPaths fromProjectDir(Path projectDir) {
-        BuildTool bt = BuildTool.findBuildTool();
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, bt, MAIN_DIR, Paths.get(".", bt.outputDirectory));
+        return fromProjectDir(projectDir, BT);
     }
-
-//    public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
-//        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), MAIN_DIR, outputTarget);
-//    }
 
     /**
      * Builder to be used only for tests, where <b>all</b> resources must be present in "src/test/resources" directory
@@ -95,7 +111,27 @@ public class AppPaths {
      * @return
      */
     public static AppPaths fromTestDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.findBuildTool(), TEST_DIR, Paths.get(projectDir.toString(), TARGET_DIR));
+        return fromTestDir(projectDir, BT);
+    }
+
+    /**
+     * Default-access method for testing purpose
+     * @param projectDir
+     * @param bt
+     * @return
+     */
+    static AppPaths fromProjectDir(Path projectDir, BuildTool bt) {
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, bt, MAIN_DIR, false);
+    }
+
+    /**
+     * Default-access method for testing purpose
+     * @param projectDir
+     * @param bt
+     * @return
+     */
+    static AppPaths fromTestDir(Path projectDir, BuildTool bt) {
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, bt, TEST_DIR, true);
     }
 
     /**
@@ -106,13 +142,13 @@ public class AppPaths {
      * @param resourcesBasePath "main" or "test"
      */
     protected AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
-            String resourcesBasePath, Path outputTarget) {
+            String resourcesBasePath, boolean isTest) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
-        this.outputTarget = outputTarget;
-        firstProjectPath = getFirstProjectPath(this.projectPaths, outputTarget, bt);
-        resourcePaths = getResourcePaths(this.projectPaths, resourcesBasePath, bt);
+        this.outputTarget = Paths.get(".", bt.OUTPUT_DIRECTORY);
+        firstProjectPath = getFirstProjectPath(this.projectPaths/*, outputTarget, bt*/);
+        resourcePaths = getResourcePaths(this.projectPaths, resourcesBasePath, bt, isTest);
         paths = isJar ? getJarPaths(isJar, this.classesPaths) : resourcePaths;
         resourceFiles = getResourceFiles(resourcePaths);
         sourcePaths = getSourcePaths(this.projectPaths);
@@ -155,10 +191,8 @@ public class AppPaths {
                 '}';
     }
 
-    static Path getFirstProjectPath(Set<Path> innerProjectPaths, Path innerOutputTarget, BuildTool innerBt) {
-        return innerBt == BuildTool.MAVEN
-                ? innerProjectPaths.iterator().next()
-                : innerOutputTarget;
+    static Path getFirstProjectPath(Set<Path> innerProjectPaths) {
+        return innerProjectPaths.iterator().next();
     }
 
     static Path[] getJarPaths(boolean isInnerJar, Collection<Path> innerClassesPaths) {
@@ -169,20 +203,14 @@ public class AppPaths {
         }
     }
 
-    static Path[] getResourcePaths(Set<Path> innerProjectPaths, String resourcesBasePath, BuildTool innerBt) {
-        Path[] toReturn;
-        if (innerBt == BuildTool.GRADLE) {
-            toReturn = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get("")));
-        } else {
-            toReturn = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(SRC_DIR, resourcesBasePath,
-                                                                                  RESOURCES_DIR)));
-            Path[] generatedResourcesPaths = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(TARGET_DIR,
-                                                                                                        GENERATED_RESOURCES_DIR)));
-            Path[] newToReturn = new Path[toReturn.length + generatedResourcesPaths.length];
-            System.arraycopy(toReturn, 0, newToReturn, 0, toReturn.length);
-            System.arraycopy(generatedResourcesPaths, 0, newToReturn, toReturn.length, generatedResourcesPaths.length);
-            toReturn = newToReturn;
-        }
+    static Path[] getResourcePaths(Set<Path> innerProjectPaths, String resourcesBasePath, BuildTool innerBt, boolean isTest) {
+        Path[] resourcesPaths = transformPaths(innerProjectPaths, p -> p.resolve(Paths.get(SRC_DIR, resourcesBasePath,
+                                                                              RESOURCES_DIR)));
+        Path generatedResourcesPath = isTest ? innerBt.GENERATED_TEST_RESOURCES_PATH : innerBt.GENERATED_RESOURCES_PATH;
+        Path[] generatedResourcesPaths = transformPaths(innerProjectPaths, p -> p.resolve(generatedResourcesPath));
+        Path[] toReturn = new Path[resourcesPaths.length + generatedResourcesPaths.length];
+        System.arraycopy(resourcesPaths, 0, toReturn, 0, resourcesPaths.length);
+        System.arraycopy(generatedResourcesPaths, 0, toReturn, resourcesPaths.length, generatedResourcesPaths.length);
         return toReturn;
     }
 

@@ -9,11 +9,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.drools.codegen.common.AppPaths.GENERATED_RESOURCES_DIR;
 import static org.drools.codegen.common.AppPaths.MAIN_DIR;
 import static org.drools.codegen.common.AppPaths.RESOURCES_DIR;
 import static org.drools.codegen.common.AppPaths.SRC_DIR;
-import static org.drools.codegen.common.AppPaths.TARGET_DIR;
 import static org.drools.codegen.common.AppPaths.TEST_DIR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,18 +24,21 @@ class AppPathsTest {
     void fromProjectDir(boolean withGradle) {
         String projectDirPath = "projectDir";
         String outputTargetPath;
+        String generatedResourceDir;
         Path projectDir = Path.of(projectDirPath);
+        AppPaths.BuildTool bt;
         if (withGradle) {
-            outputTargetPath = "./build";
-            System.setProperty("org.gradle.appname", "gradle-impl");
+            generatedResourceDir = "generated/resources";
+            bt = AppPaths.BuildTool.GRADLE;
         } else {
-            outputTargetPath = "./target";
-            System.clearProperty("org.gradle.appname");
+            generatedResourceDir = "generated-resources";
+            bt = AppPaths.BuildTool.MAVEN;
         }
-        AppPaths retrieved = AppPaths.fromProjectDir(projectDir);
+        outputTargetPath = bt.OUTPUT_DIRECTORY;
+        AppPaths retrieved = AppPaths.fromProjectDir(projectDir, bt);
         getPathsTest(retrieved, projectDirPath, withGradle, false);
-        getFirstProjectPathTest(retrieved, projectDirPath, outputTargetPath, withGradle);
-        getResourceFilesTest(retrieved, projectDirPath, withGradle, false);
+        getFirstProjectPathTest(retrieved, projectDirPath/*, outputTargetPath, withGradle*/);
+        getResourceFilesTest(retrieved, projectDirPath, outputTargetPath, generatedResourceDir, false);
         getResourcePathsTest(retrieved, projectDirPath, withGradle, false);
         getSourcePathsTest(retrieved, projectDirPath);
         getClassesPathsTest(retrieved);
@@ -48,17 +49,22 @@ class AppPathsTest {
     @ValueSource(booleans = {true, false})
     void fromTestDir(boolean withGradle) {
         String projectDirPath = "projectDir";
-        String outputTargetPath = String.format("%s/%s", projectDirPath, TARGET_DIR).replace("/", File.separator);
+        String outputTargetPath;
+        String generatedResourceDir;
         Path projectDir = Path.of(projectDirPath);
+        AppPaths.BuildTool bt;
         if (withGradle) {
-            System.setProperty("org.gradle.appname", "gradle-impl");
+            generatedResourceDir = "generated/test/resources";
+            bt = AppPaths.BuildTool.GRADLE;
         } else {
-            System.clearProperty("org.gradle.appname");
+            generatedResourceDir = "generated-test-resources";
+            bt = AppPaths.BuildTool.MAVEN;
         }
-        AppPaths retrieved = AppPaths.fromTestDir(projectDir);
+        outputTargetPath = bt.OUTPUT_DIRECTORY;
+        AppPaths retrieved = AppPaths.fromTestDir(projectDir, bt);
         getPathsTest(retrieved, projectDirPath, withGradle, true);
-        getFirstProjectPathTest(retrieved, projectDirPath, outputTargetPath, withGradle);
-        getResourceFilesTest(retrieved, projectDirPath, withGradle, true);
+        getFirstProjectPathTest(retrieved, projectDirPath);
+        getResourceFilesTest(retrieved, projectDirPath, outputTargetPath, generatedResourceDir, true);
         getResourcePathsTest(retrieved, projectDirPath, withGradle, true);
         getSourcePathsTest(retrieved, projectDirPath);
         getClassesPathsTest(retrieved);
@@ -70,33 +76,21 @@ class AppPathsTest {
         commonCheckResourcePaths(retrieved, projectDirPath, isGradle, isTestDir,"getPathsTest");
     }
 
-    private void getFirstProjectPathTest(AppPaths toCheck, String projectPath, String outputPath, boolean isGradle) {
+    private void getFirstProjectPathTest(AppPaths toCheck, String expectedPath) {
         Path retrieved = toCheck.getFirstProjectPath();
-        String expectedPath;
-        if (isGradle) {
-            expectedPath = outputPath;
-        } else {
-            expectedPath = projectPath;
-        }
         assertEquals(Path.of(expectedPath), retrieved, "AppPathsTest.getFirstProjectPathTest");
     }
 
-    private void getResourceFilesTest(AppPaths toCheck, String projectDirPath, boolean isGradle, boolean isTestDir) {
+    private void getResourceFilesTest(AppPaths toCheck, String projectDirPath, String outputDir, String generatedResourceDir, boolean isTestDir) {
         File[] retrieved = toCheck.getResourceFiles();
-        int expected = isGradle ? 1 : 2;
+        int expected = 2;
         assertEquals(expected, retrieved.length, "AppPathsTest.getResourceFilesTest");
         String expectedPath;
         String sourceDir =  isTestDir ? TEST_DIR : MAIN_DIR;
-        if (isGradle) {
-            expectedPath = projectDirPath;
-        } else {
-            expectedPath = String.format("%s/%s/%s/%s", projectDirPath, SRC_DIR, sourceDir, RESOURCES_DIR).replace("/", File.separator);
-        }
+        expectedPath = String.format("%s/%s/%s/%s", projectDirPath, SRC_DIR, sourceDir, RESOURCES_DIR).replace("/", File.separator);
         assertEquals(new File(expectedPath), retrieved[0], "AppPathsTest.getResourceFilesTest");
-        if (!isGradle) {
-            expectedPath = String.format("%s/%s/%s", projectDirPath, TARGET_DIR, GENERATED_RESOURCES_DIR).replace("/", File.separator);
-            assertEquals(new File(expectedPath), retrieved[1], "AppPathsTest.getResourceFilesTest");
-        }
+        expectedPath = String.format("%s/%s/%s", projectDirPath, outputDir, generatedResourceDir).replace("/", File.separator);
+        assertEquals(new File(expectedPath), retrieved[1], "AppPathsTest.getResourceFilesTest");
     }
 
     private void getResourcePathsTest(AppPaths toCheck, String projectDirPath, boolean isGradle, boolean isTestDir) {
@@ -118,22 +112,24 @@ class AppPathsTest {
 
     private void getOutputTargetTest(AppPaths toCheck, String outputPath) {
         Path retrieved = toCheck.getOutputTarget();
+        outputPath = String.format(".%s%s", File.separator, outputPath);
         assertEquals(Path.of(outputPath), retrieved, "AppPathsTest.getOutputTargetTest");
     }
 
     private void commonCheckResourcePaths(Path[] toCheck, String projectDirPath, boolean isGradle, boolean isTestDir, String methodName) {
-        int expected = isGradle ? 1 : 2;
+        int expected = 2;
         assertEquals(expected, toCheck.length, String.format("AppPathsTest.%s", methodName));
         String expectedPath;
         String sourceDir =  isTestDir ? "test" : "main";
-        if (isGradle) {
-            expectedPath = projectDirPath;
-        } else {
-            expectedPath = String.format("%s/src/%s/resources", projectDirPath, sourceDir).replace("/", File.separator);
-        }
+        expectedPath = String.format("%s/src/%s/resources", projectDirPath, sourceDir).replace("/", File.separator);
         assertEquals(Path.of(expectedPath), toCheck[0], String.format("AppPathsTest.%s", methodName));
-        if (!isGradle) {
-            expectedPath = String.format("%s/target/generated-resources", projectDirPath).replace("/", File.separator);
+        if (isGradle) {
+            String toFormat = isTestDir ? "%s/build/generated/test/resources" : "%s/build/generated/resources";
+            expectedPath = String.format(toFormat, projectDirPath).replace("/", File.separator);
+            assertEquals(Path.of(expectedPath), toCheck[1], String.format("AppPathsTest.%s", methodName));
+        } else {
+            String toFormat = isTestDir ? "%s/target/generated-test-resources" : "%s/target/generated-resources";
+            expectedPath = String.format(toFormat, projectDirPath).replace("/", File.separator);
             assertEquals(Path.of(expectedPath), toCheck[1], String.format("AppPathsTest.%s", methodName));
         }
     }
