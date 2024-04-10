@@ -296,13 +296,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         if (ctx.rhs() != null) {
             // default consequence
             ruleDescr.setConsequenceLocation(ctx.rhs().getStart().getLine(), ctx.rhs().getStart().getCharPositionInLine()); // location of "then"
-            ruleDescr.setConsequence(getTokenTextPreservingWhitespace(ctx.rhs().defaultConsequence(), tokenStream)); // RHS is just a text
+            ruleDescr.setConsequence(getTokenTextPreservingWhitespace(ctx.rhs().consequenceBody(), tokenStream)); // RHS is just a text
 
             // named consequences
             ctx.rhs().namedConsequence()
                      .forEach(namedConsequenceCtx -> {
                          String name = extractNamedConsequenceName(namedConsequenceCtx.RHS_NAMED_CONSEQUENCE_THEN().getText());
-                         String body = getTokenTextPreservingWhitespace(namedConsequenceCtx.namedConsequenceBody(), tokenStream);
+                         String body = getTokenTextPreservingWhitespace(namedConsequenceCtx.consequenceBody(), tokenStream);
                          ruleDescr.addNamedConsequences(name, body);
                      } );
         }

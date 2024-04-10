@@ -508,13 +508,12 @@ lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                  RPAREN (SEMI)?
                  ;
 
-rhs : DRL_THEN defaultConsequence namedConsequence* ;
+rhs : DRL_THEN consequenceBody namedConsequence* ;
 
-defaultConsequence : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
+consequenceBody : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
 
 // THEN LEFT_SQUARE ID RIGHT_SQUARE chunk
-namedConsequence : RHS_NAMED_CONSEQUENCE_THEN namedConsequenceBody ;
-namedConsequenceBody : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
+namedConsequence : RHS_NAMED_CONSEQUENCE_THEN consequenceBody ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
