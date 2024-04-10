@@ -499,7 +499,7 @@ public class ExpressionTyper {
         if (drlxExpr instanceof FieldAccessExpr) {
             // try to see if it's a constant
             final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((FieldAccessExpr) drlxExpr).getScope(), ((FieldAccessExpr) drlxExpr).getNameAsString());
-            if(typedExpression.isPresent()) {
+            if (typedExpression.isPresent()) {
                 return new TypedExpressionResult(typedExpression, context);
             }
         }
@@ -507,7 +507,7 @@ public class ExpressionTyper {
         if (patternType == null && drlxExpr instanceof NullSafeFieldAccessExpr) {
             // try to see if it's a constant
             final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((NullSafeFieldAccessExpr) drlxExpr).getScope(), ((NullSafeFieldAccessExpr) drlxExpr).getNameAsString());
-            if(typedExpression.isPresent()) {
+            if (typedExpression.isPresent()) {
                 return new TypedExpressionResult(typedExpression, context);
             }
         }
