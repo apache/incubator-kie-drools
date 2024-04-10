@@ -475,31 +475,31 @@ public class ExecutionFlowControlTest {
         assertThat(group1.size()).isEqualTo(1);
         RuleAgendaItem ruleItem1 = group1.getActivations().iterator().next();
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-        assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
+        assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(3);
 
         ruleItem1.getRuleExecutor().fire(agenda);
         assertThat(group1.size()).isEqualTo(1);
-        assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
+        assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
 
         ksession.update( brieHandle, brie );
         assertThat(group1.size()).isEqualTo(1);
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-        assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
+        assertThat(ruleItem1.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
 
         InternalAgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group2" );
         agenda.getAgendaGroupsManager().setFocus( group2);
         assertThat(group2.size()).isEqualTo(1);
         RuleAgendaItem ruleItem2 = group2.getActivations().iterator().next();
         ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-        assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
+        assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(3);
 
         ruleItem2.getRuleExecutor().fire(agenda);
         assertThat(group2.size()).isEqualTo(1);
-        assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
+        assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
 
         ksession.update( brieHandle, brie );
         assertThat(group2.size()).isEqualTo(1);
-        assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(2);
+        assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
     }
 
     @Test
