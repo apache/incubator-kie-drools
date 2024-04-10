@@ -758,7 +758,7 @@ public class NamedConsequencesTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
         for (int i = 1; i < 7; i++) {
             ksession.insert(new Fact(i));
@@ -787,6 +787,11 @@ public class NamedConsequencesTest {
 
         public void setStatus(Status status) {
             this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return "Fact(" + id + ")";
         }
     }
 

@@ -91,7 +91,7 @@ public abstract class AbstractCepEspTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testDuplicateFiring2() {
 
         final String drl = "package org.test;\n" +

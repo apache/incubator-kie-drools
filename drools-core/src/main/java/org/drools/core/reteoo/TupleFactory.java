@@ -19,14 +19,13 @@
 package org.drools.core.reteoo;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 
 public class TupleFactory {
     public static TupleImpl createPeer(Sink n, TupleImpl original) {
         TupleImpl peer;
-        switch(((BaseNode)n).getType()) {
+        switch(n.getType()) {
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
@@ -66,7 +65,7 @@ public class TupleFactory {
                                             final InternalFactHandle factHandle,
                                             boolean leftTupleMemoryEnabled) {
 
-        switch(((BaseNode)s).getType()) {
+        switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
@@ -96,7 +95,7 @@ public class TupleFactory {
     public static TupleImpl createLeftTuple(final InternalFactHandle factHandle,
                                             final TupleImpl leftTuple,
                                             final Sink s) {
-        switch(((BaseNode)s).getType()) {
+        switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
@@ -127,7 +126,7 @@ public class TupleFactory {
                                             Sink s,
                                             PropagationContext pctx,
                                             boolean leftTupleMemoryEnabled) {
-        switch(((BaseNode)s).getType()) {
+        switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
@@ -157,7 +156,7 @@ public class TupleFactory {
     public static TupleImpl createLeftTuple(TupleImpl leftTuple,
                                             TupleImpl rightTuple,
                                             Sink s) {
-        switch(((BaseNode)s).getType()) {
+        switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
@@ -190,7 +189,7 @@ public class TupleFactory {
                                             TupleImpl currentRightChild,
                                             Sink s,
                                             boolean leftTupleMemoryEnabled) {
-        switch(((BaseNode)s).getType()) {
+        switch(s.getType()) {
             case NodeTypeEnums.JoinNode:
             case NodeTypeEnums.AccumulateNode:
             case NodeTypeEnums.QueryElementNode:
