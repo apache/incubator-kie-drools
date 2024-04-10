@@ -24,9 +24,17 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.model.functions.Operator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 
+
+
 public class CustomOperatorSpec extends NativeOperatorSpec {
     public static final CustomOperatorSpec INSTANCE = new CustomOperatorSpec();
 
+    /*
+     Three different cases for generating code:
+       1) if EvaluatorDefinition evalDef contains the method getInstance and implements Operator.SingleValue use the getInstance(opName) and do not create a CustomOperatorWrapper
+       2) if EvaluatorDefinition evalDef contains the method getInstance use getInstance(opName) vs creating a new instance of the class
+       3) none of the above :   new CustomOperatorWrapper( .. new evalDef)
+    */
     @Override
     protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
         EvaluatorDefinition evalDef = context.getEvaluatorDefinition( opName );
@@ -34,8 +42,23 @@ public class CustomOperatorSpec extends NativeOperatorSpec {
             throw new RuntimeException( "Unknown custom operator: " + opName );
         }
 
-        String arg = "new " + CustomOperatorWrapper.class.getCanonicalName() + "( new " + evalDef.getClass().getCanonicalName() + "().getEvaluator(" +
-                ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, null), \"" + opName + "\")";
+        String arg;
+        try {
+            evalDef.getClass().getMethod("getInstance",String.class);
+            boolean needWrapper = !Operator.SingleValue.class.isAssignableFrom(evalDef.getClass());
+            if (needWrapper) {
+                // case 2
+                arg = "new " + CustomOperatorWrapper.class.getCanonicalName() + "( "+ evalDef.getClass().getCanonicalName() + ".getInstance(\"" + opName+ "\").getEvaluator(" +
+                        ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, null), \"" + opName + "\")";
+            } else {
+                // case 1
+                arg = evalDef.getClass().getCanonicalName()  + ".getInstance(\"" + opName+ "\")";
+            }
+        } catch (NoSuchMethodException e) {
+            // case 3
+            arg = "new " + CustomOperatorWrapper.class.getCanonicalName() + "( new " + evalDef.getClass().getCanonicalName() + "().getEvaluator(" +
+                    ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, null), \"" + opName + "\")";
+        }
 
         methodCallExpr.addArgument( arg );
         return null;
