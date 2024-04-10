@@ -89,11 +89,6 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.util.TypeResolver;
-import org.drools.util.ClassUtils;
-import org.drools.util.IncompatibleGetterOverloadException;
-import org.drools.util.MethodUtils;
-import org.drools.util.StringUtils;
 import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.errors.IncompatibleGetterOverloadError;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
@@ -110,15 +105,20 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.ConstraintCompiler;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.util.ClassUtils;
+import org.drools.util.IncompatibleGetterOverloadException;
+import org.drools.util.MethodUtils;
+import org.drools.util.StringUtils;
+import org.drools.util.TypeResolver;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-import static org.drools.util.MethodUtils.findMethod;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.isDslTopLevelNamespace;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
 import static org.drools.util.ClassUtils.toRawClass;
+import static org.drools.util.MethodUtils.findMethod;
 
 public class DrlxParseUtil {
 
