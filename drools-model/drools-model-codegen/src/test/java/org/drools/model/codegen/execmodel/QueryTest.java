@@ -120,11 +120,11 @@ public class QueryTest extends BaseModelTest {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
-                "query olderThan( Person $p, int $age )\n" +
+                "query older_than( Person $p, int $age )\n" +
                 "    $p := Person(age > $age)\n" +
                 "end\n" +
                 "rule R when\n" +
-                "    olderThan( $p, 40; )\n" +
+                "    older_than( $p, 40; )\n" +
                 "then\n" +
                 "    insert(new Result($p.getName()));\n" +
                 "end";
