@@ -418,8 +418,7 @@ public class PackageModel {
     }
 
     public void putQueryVariable(String queryName, QueryParameter qp) {
-        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
-        this.queryVariables.get(queryName).add(qp);
+        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>()).add(qp);
     }
 
     public List<QueryParameter> queryVariables(String queryName) {
