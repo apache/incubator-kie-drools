@@ -546,7 +546,8 @@ public final class ClassUtils {
 
         java.lang.reflect.Type returnType = method.getGenericReturnType();
 
-        if (returnType instanceof ParameterizedType type) {
+        if (returnType instanceof ParameterizedType) {
+            ParameterizedType type = (ParameterizedType) returnType;
             java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
             if (typeArguments.length > 0) {
                 return typeArguments[0] instanceof ParameterizedType ? (Class) ((ParameterizedType)typeArguments[0]).getRawType() : (Class) typeArguments[0];
@@ -596,7 +597,8 @@ public final class ClassUtils {
         if (type instanceof ParameterizedType) {
             return toRawClass( (( ParameterizedType ) type).getRawType() );
         }
-        if (type instanceof TypeVariable typeVar) {
+        if (type instanceof TypeVariable) {
+            final TypeVariable typeVar = (TypeVariable) type;
             return typeVar.getBounds().length == 1 ? toRawClass(typeVar.getBounds()[0]) : Object.class;
         }
         throw new UnsupportedOperationException( "Unknown type " + type );
