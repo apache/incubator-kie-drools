@@ -269,8 +269,7 @@ public final class ClassUtils {
     /**
      * Populates the import style pattern map from give comma delimited string
      */
-    public static void addImportStylePatterns(Map<String, Object> patterns,
-                                              String str) {
+    public static void addImportStylePatterns(Map<String, Object> patterns, String str) {
         if ( str == null || "".equals( str.trim() ) ) {
             return;
         }
@@ -595,11 +594,12 @@ public final class ClassUtils {
         if (type instanceof Class<?>) {
             return ( Class ) type;
         }
-        if (type instanceof ParameterizedType ) {
+        if (type instanceof ParameterizedType) {
             return toRawClass( (( ParameterizedType ) type).getRawType() );
         }
-        if (type instanceof TypeVariable ) {
-            return Object.class;
+        if (type instanceof TypeVariable) {
+            final TypeVariable typeVar = (TypeVariable) type;
+            return typeVar.getBounds().length == 1 ? toRawClass(typeVar.getBounds()[0]) : Object.class;
         }
         throw new UnsupportedOperationException( "Unknown type " + type );
     }
