@@ -66,13 +66,13 @@ public class Antlr4ParserStringUtils {
     }
 
     /**
-     * Just remove leading "then"
+     * Extract name from "then[name]" of RHS_NAMED_CONSEQUENCE_THEN
      */
-    public static String trimThen(String rhs) {
-        if (rhs.startsWith("then")) {
-            return rhs.substring("then".length());
+    public static String extractNamedConsequenceName(String namedConsequenceThen) {
+        if (namedConsequenceThen.toLowerCase().startsWith("then[") && namedConsequenceThen.endsWith("]")) {
+            return namedConsequenceThen.substring("then[".length(), namedConsequenceThen.length() - 1);
         } else {
-            throw new DRLParserException("rhs has to start with 'then' : rhs = " + rhs);
+            throw new DRLParserException("namedConsequenceThen has to be surrounded by 'then[', ']' : " + namedConsequenceThen);
         }
     }
 

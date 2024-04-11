@@ -19,6 +19,7 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.ConditionalBranchDescr;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.EvalDescr;
@@ -30,6 +31,7 @@ import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -3996,5 +3998,174 @@ class MiscDRLParserTest {
         assertThat(trait.getSuperTypes())
                 .map(QualifiedName::getFullName)
                 .containsExactlyInAnyOrder("com.sample.ParentTrait", "UncleTrait", "org.test.GrandParentTrait");
+    }
+
+    @Test
+    void namedConsequenceDo() {
+        final String text =
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person(name == \"Mark\")\n" +
+                "  do[FoundMark]\n" +
+                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "then\n" +
+                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "then[FoundMark]\n" +
+                "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                "end";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
+        assertThat(namedConsequenceDescr.getName()).isEqualTo("FoundMark");
+
+        assertThat(ruleDescr.getConsequence().toString()).isEqualTo("$r.addValue($p2.getName() + \" is older than \" + $p1.getName());");
+        assertThat(ruleDescr.getNamedConsequences().get("FoundMark").toString()).isEqualTo("$r.addValue(\"Found \" + $p1.getName());");
+    }
+
+    @Test
+    void namedConsequenceIfElse() {
+        final String text =
+                "rule R1 dialect \"mvel\" when\n" +
+                        "    $a: Cheese ( type == \"stilton\" )\n" +
+                        "    if ( $a.price > Cheese.BASE_PRICE ) do[t1] else do[t2]\n" +
+                        "    $b: Cheese ( type == \"cheddar\" )\n" +
+                        "then\n" +
+                        "    results.add( $b.getType() );\n" +
+                        "then[t1]\n" +
+                        "    results.add( $a.getType() );\n" +
+                        "then[t2]\n" +
+                        "    results.add( $a.getType().toUpperCase() );\n" +
+                        "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) ruleDescr.getLhs().getDescrs().get(1);
+        assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$a.price > Cheese.BASE_PRICE");
+        assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("t1");
+        assertThat(conditionalBranchDescr.getElseBranch().getConsequence().getName()).isEqualTo("t2");
+    }
+
+    @Test
+    void namedConsequenceIfElseBreak() {
+        final String text =
+                "rule R1 dialect \"mvel\" when\n" +
+                        "    $a: Cheese ( type == \"stilton\" )\n" +
+                        "    if ( $a.price > Cheese.BASE_PRICE ) break[t1] else break[t2]\n" +
+                        "    $b: Cheese ( type == \"cheddar\" )\n" +
+                        "then\n" +
+                        "    results.add( $b.getType() );\n" +
+                        "then[t1]\n" +
+                        "    results.add( $a.getType() );\n" +
+                        "then[t2]\n" +
+                        "    results.add( $a.getType().toUpperCase() );\n" +
+                        "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) ruleDescr.getLhs().getDescrs().get(1);
+        assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$a.price > Cheese.BASE_PRICE");
+        assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("t1");
+        assertThat(conditionalBranchDescr.getElseBranch().getConsequence().getName()).isEqualTo("t2");
+    }
+
+    @Test
+    void namedConsequenceNestedIf() {
+        final String text =
+                "rule R1 dialect \"mvel\" when\n" +
+                        "    $a: Cheese ( type == \"stilton\" )\n" +
+                        "    if ( $a.price > Cheese.BASE_PRICE ) do[t1] else if ($a.price == Cheese.BASE_PRICE ) do[t2]\n" +
+                        "    $b: Cheese ( type == \"cheddar\" )\n" +
+                        "then\n" +
+                        "    results.add( $b.getType() );\n" +
+                        "then[t1]\n" +
+                        "    results.add( $a.getType() );\n" +
+                        "then[t2]\n" +
+                        "    results.add( $a.getType().toUpperCase() );\n" +
+                        "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) ruleDescr.getLhs().getDescrs().get(1);
+        assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$a.price > Cheese.BASE_PRICE");
+        assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("t1");
+        ConditionalBranchDescr elseBranch = conditionalBranchDescr.getElseBranch();
+        assertThat(elseBranch.getCondition().getContent().toString()).isEqualTo("$a.price == Cheese.BASE_PRICE");
+        assertThat(elseBranch.getConsequence().getName()).isEqualTo("t2");
+    }
+
+    @Test
+    void namedConsequenceAfterExists() {
+        final String text =
+                "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  exists( Person(name == \"Mark\") )\n" +
+                        "  do[FoundMark]\n" +
+                        "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                        "then\n" +
+                        "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                        "then[FoundMark]\n" +
+                        "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                        "end";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
+        assertThat(namedConsequenceDescr.getName()).isEqualTo("FoundMark");
+    }
+
+    @Test
+    void namedConsequenceAfterNot() {
+        final String text =
+                "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  not( Person(name == \"Mark\") )\n" +
+                        "  do[NotFoundMark]\n" +
+                        "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                        "then\n" +
+                        "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                        "then[FoundMark]\n" +
+                        "  $r.addValue(\"NotFound \" + $p1.getName());\n" +
+                        "end";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
+        assertThat(namedConsequenceDescr.getName()).isEqualTo("NotFoundMark");
+    }
+
+    @Test
+    void namedConsequenceIfElseAfterEval() {
+        final String text =
+                "rule R1 dialect \"mvel\" when\n" +
+                        "    $a: Cheese ( type == \"stilton\" )\n" +
+                        "    eval($a.price > 0) if ( $a.price > Cheese.BASE_PRICE ) do[t1] else do[t2]\n" +
+                        "    $b: Cheese ( type == \"cheddar\" )\n" +
+                        "then\n" +
+                        "    results.add( $b.getType() );\n" +
+                        "then[t1]\n" +
+                        "    results.add( $a.getType() );\n" +
+                        "then[t2]\n" +
+                        "    results.add( $a.getType().toUpperCase() );\n" +
+                        "end\n";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        ConditionalBranchDescr conditionalBranchDescr = (ConditionalBranchDescr) ruleDescr.getLhs().getDescrs().get(2);
+        assertThat(conditionalBranchDescr.getCondition().getContent().toString()).isEqualTo("$a.price > Cheese.BASE_PRICE");
+        assertThat(conditionalBranchDescr.getConsequence().getName()).isEqualTo("t1");
+        assertThat(conditionalBranchDescr.getElseBranch().getConsequence().getName()).isEqualTo("t2");
+    }
+
+    @Test
+    void namedConsequenceAfterEnclosed() {
+        final String text =
+                "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  ( Person(name == \"Mark\") or Person(name == \"Mario\") )\n" +
+                        "  do[FoundMarkOrMario]\n" +
+                        "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                        "then\n" +
+                        "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                        "then[FoundMark]\n" +
+                        "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                        "end";
+        PackageDescr packageDescr = parser.parse(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
+        assertThat(namedConsequenceDescr.getName()).isEqualTo("FoundMarkOrMario");
     }
 }

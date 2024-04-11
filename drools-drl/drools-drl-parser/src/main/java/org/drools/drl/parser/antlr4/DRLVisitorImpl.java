@@ -35,6 +35,7 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.BehaviorDescr;
 import org.drools.drl.ast.descr.CollectDescr;
+import org.drools.drl.ast.descr.ConditionalBranchDescr;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
 import org.drools.drl.ast.descr.EvalDescr;
@@ -47,6 +48,7 @@ import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
+import org.drools.drl.ast.descr.NamedConsequenceDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -60,9 +62,9 @@ import org.drools.drl.ast.descr.UnitDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
 
+import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.extractNamedConsequenceName;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTextPreservingWhitespace;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextPreservingWhitespace;
-import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.trimThen;
 import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
 import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
 import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
@@ -292,8 +294,17 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         }
 
         if (ctx.rhs() != null) {
+            // default consequence
             ruleDescr.setConsequenceLocation(ctx.rhs().getStart().getLine(), ctx.rhs().getStart().getCharPositionInLine()); // location of "then"
-            ruleDescr.setConsequence(trimThen(getTokenTextPreservingWhitespace(ctx.rhs(), tokenStream))); // RHS is just a text
+            ruleDescr.setConsequence(getTokenTextPreservingWhitespace(ctx.rhs().consequenceBody(), tokenStream)); // RHS is just a text
+
+            // named consequences
+            ctx.rhs().namedConsequence()
+                     .forEach(namedConsequenceCtx -> {
+                         String name = extractNamedConsequenceName(namedConsequenceCtx.RHS_NAMED_CONSEQUENCE_THEN().getText());
+                         String body = getTokenTextPreservingWhitespace(namedConsequenceCtx.consequenceBody(), tokenStream);
+                         ruleDescr.addNamedConsequences(name, body);
+                     } );
         }
 
         return ruleDescr;
@@ -559,6 +570,74 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public NamedConsequenceDescr visitNamedConsequenceInvocation(DRLParser.NamedConsequenceInvocationContext ctx) {
+        NamedConsequenceDescr namedConsequenceDescr = BaseDescrFactory.builder(new NamedConsequenceDescr(ctx.drlIdentifier().getText()))
+                .withParserRuleContext(ctx)
+                .build();
+        return namedConsequenceDescr;
+    }
+
+    @Override
+    public NamedConsequenceDescr visitBreakingNamedConsequenceInvocation(DRLParser.BreakingNamedConsequenceInvocationContext ctx) {
+        NamedConsequenceDescr namedConsequenceDescr = BaseDescrFactory.builder(new NamedConsequenceDescr(ctx.drlIdentifier().getText()))
+                .withParserRuleContext(ctx)
+                .build();
+        namedConsequenceDescr.setBreaking(true);
+        return namedConsequenceDescr;
+    }
+
+    /**
+     * process
+     *
+     * if (condition) do[namedConsequence1] else do[namedConsequence2]
+     *
+     * into a ConditionalBranchDescr
+     */
+    @Override
+    public ConditionalBranchDescr visitConditionalBranch(DRLParser.ConditionalBranchContext ctx) {
+        ConditionalBranchDescr conditionalBranchDescr = BaseDescrFactory.builder(new ConditionalBranchDescr())
+                .withParserRuleContext(ctx)
+                .build();
+        EvalDescr evalDescr = BaseDescrFactory.builder(new EvalDescr())
+                .withParserRuleContext(ctx.conditionalOrExpression())
+                .build();
+        evalDescr.setContent(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
+        conditionalBranchDescr.setCondition(evalDescr);
+
+        // main branch
+        if (ctx.do1 != null) {
+            NamedConsequenceDescr namedConsequenceDescr = visitNamedConsequenceInvocation(ctx.do1);
+            conditionalBranchDescr.setConsequence(namedConsequenceDescr);
+        } else if (ctx.break1 != null) {
+            NamedConsequenceDescr namedConsequenceDescr = visitBreakingNamedConsequenceInvocation(ctx.break1);
+            conditionalBranchDescr.setConsequence(namedConsequenceDescr);
+        }
+
+        // else branch
+        if (ctx.do2 != null) {
+            ConditionalBranchDescr elseBranchDescr = BaseDescrFactory.builder(new ConditionalBranchDescr())
+                    .withParserRuleContext(ctx.do2)
+                    .build();
+            conditionalBranchDescr.setElseBranch(elseBranchDescr);
+            NamedConsequenceDescr namedConsequenceDescr = visitNamedConsequenceInvocation(ctx.do2);
+            elseBranchDescr.setConsequence(namedConsequenceDescr);
+        } else if (ctx.break2 != null) {
+            ConditionalBranchDescr elseBranchDescr = BaseDescrFactory.builder(new ConditionalBranchDescr())
+                    .withParserRuleContext(ctx.break2)
+                    .build();
+            conditionalBranchDescr.setElseBranch(elseBranchDescr);
+            NamedConsequenceDescr namedConsequenceDescr = visitBreakingNamedConsequenceInvocation(ctx.break2);
+            elseBranchDescr.setConsequence(namedConsequenceDescr);
+        } else if (ctx.conditionalBranch() != null) {
+            // nested if
+            ConditionalBranchDescr nestedConditionalBranchDescr = visitConditionalBranch(ctx.conditionalBranch());
+            conditionalBranchDescr.setElseBranch(nestedConditionalBranchDescr);
+        }
+
+        return conditionalBranchDescr;
+    }
+
+    @Override
     public ForallDescr visitLhsForall(DRLParser.LhsForallContext ctx) {
         ForallDescr forallDescr = BaseDescrFactory.builder(new ForallDescr())
                 .withParserRuleContext(ctx)
@@ -792,9 +871,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitLhsExpressionEnclosed(DRLParser.LhsExpressionEnclosedContext ctx) {
+    public List<BaseDescr> visitLhsExpressionEnclosed(DRLParser.LhsExpressionEnclosedContext ctx) {
         // enclosed expression is simply stripped because Descr itself is encapsulated
-        return (BaseDescr) visit(ctx.lhsExpression());
+        return visitDescrChildren(ctx);
     }
 
     @Override
@@ -887,8 +966,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitLhsUnary(DRLParser.LhsUnaryContext ctx) {
-        return visitDescrChildren(ctx).get(0); // lhsUnary has only one child
+    public List<BaseDescr> visitLhsUnary(DRLParser.LhsUnaryContext ctx) {
+        return visitDescrChildren(ctx); // lhsUnary may have consequenceInvocation, so not always a single child
     }
 
     /**
@@ -924,6 +1003,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             Object childResult = c.accept(this);
             if (childResult instanceof BaseDescr) {
                 aggregator.add(new DescrNodePair((BaseDescr) childResult, c)); // pairing the returned Descr and the parser node
+            } else if (childResult instanceof List) {
+                List<BaseDescr> descrList = (List<BaseDescr>) childResult;
+                descrList.forEach(descr -> aggregator.add(new DescrNodePair(descr, c))); // pairing the returned Descr and the parser node
             }
         }
         return aggregator;
