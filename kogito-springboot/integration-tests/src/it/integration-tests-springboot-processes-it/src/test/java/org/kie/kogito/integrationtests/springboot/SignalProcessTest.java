@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.HashMap;
+
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,6 +61,7 @@ class SignalProcessTest extends BaseRestTest {
         String pid = given()
                 .contentType(ContentType.JSON)
             .when()
+                .body(new HashMap<>())
                 .post("/greetings")
             .then()
                 .statusCode(201)

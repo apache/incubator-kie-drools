@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 import org.kie.kogito.integrationtests.springboot.utils.DataIndexWireMockSpringBootTestResource;
 import org.kie.kogito.test.utils.CustomSVGMatcher;
@@ -72,6 +73,7 @@ public class ProcessSvgAddonTest extends BaseRestTest {
         String pId = given()
                 .contentType(ContentType.JSON)
                 .when()
+                .body(new HashMap<>())
                 .post("/approvals")
                 .then()
                 .statusCode(201)

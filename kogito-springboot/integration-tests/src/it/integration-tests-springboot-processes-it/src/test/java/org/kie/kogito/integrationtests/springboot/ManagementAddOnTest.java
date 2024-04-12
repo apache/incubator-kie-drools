@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.HashMap;
 import java.util.List;
 
 import io.restassured.RestAssured;
@@ -129,6 +130,7 @@ class ManagementAddOnTest extends BaseRestTest {
     private String givenGreetingsProcess() {
         return given().contentType(ContentType.JSON)
                 .when()
+                    .body(new HashMap<>())
                     .post("/greetings")
                 .then()
                     .statusCode(201)

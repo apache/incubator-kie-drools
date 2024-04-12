@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.HashMap;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ class LinkTest extends BaseRestTest {
         given()
                 .contentType(ContentType.JSON)
             .when()
+                .body(new HashMap<>())
                 .post("/SimpleLinkTest")
             .then()
                 .statusCode(201);

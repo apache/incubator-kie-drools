@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.integrationtests.springboot;
 
+import java.util.HashMap;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.KogitoGAV;
@@ -25,7 +27,7 @@ import org.kie.kogito.config.ConfigBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -38,7 +40,7 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@AutoConfigureMetrics
+@AutoConfigureObservability
 public class MonitoringTest extends BaseRestTest {
 
     @Autowired
@@ -48,6 +50,7 @@ public class MonitoringTest extends BaseRestTest {
     public void test() {
         String pId = given().contentType(ContentType.JSON)
                 .when()
+                .body(new HashMap<>())
                 .post("/monitoring")
                 .then()
                 .statusCode(201)
