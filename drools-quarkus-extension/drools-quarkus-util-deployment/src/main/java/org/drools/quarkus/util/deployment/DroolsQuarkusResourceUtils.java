@@ -41,6 +41,7 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.GeneratedFileWriter;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
 import org.drools.wiring.api.ComponentsSupplier;
 import org.jboss.jandex.ClassInfo;
@@ -52,7 +53,6 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.util.Config.getConfig;
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
 /**
@@ -79,18 +79,9 @@ public class DroolsQuarkusResourceUtils {
 
     // since quarkus-maven-plugin is later phase of maven-resources-plugin,
     // need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath );
-    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder;
+    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder = GeneratedFileWriter.builder("drools"
+            , "drools.codegen.resources.directory", "drools.codegen.sources.directory");
 
-    static {
-        String targetClasses = AppPaths.BT.CLASSES_PATH.toString();
-        String generatedSourcesDrools = Path.of(AppPaths.GENERATED_SOURCES_DIR, "drools").toString();
-        String generatedResourcesSourcesDrools = Path.of(AppPaths.GENERATED_RESOURCES_DIR, "drools").toString();
-        generatedFileWriterBuilder = new GeneratedFileWriter.Builder(
-                targetClasses,
-                getConfig("drools.codegen.sources.directory", generatedSourcesDrools),
-                getConfig("drools.codegen.resources.directory", generatedResourcesSourcesDrools),
-                generatedSourcesDrools);
-    }
 
     public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
         // scan and parse paths

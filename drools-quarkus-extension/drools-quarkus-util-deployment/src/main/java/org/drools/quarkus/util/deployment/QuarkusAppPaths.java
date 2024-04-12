@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import io.quarkus.deployment.pkg.steps.JarResultBuildStep;
@@ -50,7 +51,7 @@ public class QuarkusAppPaths extends AppPaths {
         UNKNOWN
     }
 
-    protected QuarkusAppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt) {
+    protected QuarkusAppPaths(List<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt) {
         super(projectPaths, classesPaths, isJar, bt, JarResultBuildStep.MAIN, false);
     }
 
@@ -76,7 +77,7 @@ public class QuarkusAppPaths extends AppPaths {
                 case MUTABLE_JAR:
                     // project, class, and target are all the same.
                     // also, we don't need any prefix (see constructor), hence passing GRADLE as the build tool
-                    return new QuarkusAppPaths(Collections.singleton(path), Collections.singleton(path), false,
+                    return new QuarkusAppPaths(Collections.singletonList(path), Collections.singleton(path), false,
                                                BuildTool.GRADLE);
                 case UNKNOWN:
                     classesPaths.add(path);
@@ -84,7 +85,7 @@ public class QuarkusAppPaths extends AppPaths {
                     break;
             }
         }
-        return new QuarkusAppPaths(projectPaths, classesPaths, isJar, bt);
+        return new QuarkusAppPaths(new ArrayList<>(projectPaths), classesPaths, isJar, bt);
     }
 
     private static Path getParentPath(Path path, AppPaths.BuildTool bt) {

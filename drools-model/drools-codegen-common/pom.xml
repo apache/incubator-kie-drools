@@ -39,6 +39,10 @@
     </properties>
 
     <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-util</artifactId>
+      </dependency>
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>

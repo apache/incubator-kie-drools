@@ -37,7 +37,7 @@ class AppPathsTest {
         outputTargetPath = bt.OUTPUT_DIRECTORY;
         AppPaths retrieved = AppPaths.fromProjectDir(projectDir, bt);
         getPathsTest(retrieved, projectDirPath, withGradle, false);
-        getFirstProjectPathTest(retrieved, projectDirPath/*, outputTargetPath, withGradle*/);
+        getFirstProjectPathTest(retrieved, projectDirPath);
         getResourceFilesTest(retrieved, projectDirPath, outputTargetPath, generatedResourceDir, false);
         getResourcePathsTest(retrieved, projectDirPath, withGradle, false);
         getSourcePathsTest(retrieved, projectDirPath);

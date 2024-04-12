@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
@@ -121,7 +122,7 @@ public class AppPaths {
      * @return
      */
     static AppPaths fromProjectDir(Path projectDir, BuildTool bt) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, bt, MAIN_DIR, false);
+        return new AppPaths(Collections.singletonList(projectDir), Collections.emptyList(), false, bt, MAIN_DIR, false);
     }
 
     /**
@@ -131,7 +132,7 @@ public class AppPaths {
      * @return
      */
     static AppPaths fromTestDir(Path projectDir, BuildTool bt) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, bt, TEST_DIR, true);
+        return new AppPaths(Collections.singletonList(projectDir), Collections.emptyList(), false, bt, TEST_DIR, true);
     }
 
     /**
@@ -141,13 +142,13 @@ public class AppPaths {
      * @param bt
      * @param resourcesBasePath "main" or "test"
      */
-    protected AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
-            String resourcesBasePath, boolean isTest) {
+    protected AppPaths(List<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
+                       String resourcesBasePath, boolean isTest) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
         this.outputTarget = Paths.get(".", bt.OUTPUT_DIRECTORY);
-        firstProjectPath = getFirstProjectPath(this.projectPaths/*, outputTarget, bt*/);
+        firstProjectPath = projectPaths.get(0);
         resourcePaths = getResourcePaths(this.projectPaths, resourcesBasePath, bt, isTest);
         paths = isJar ? getJarPaths(isJar, this.classesPaths) : resourcePaths;
         resourceFiles = getResourceFiles(resourcePaths);
@@ -189,10 +190,6 @@ public class AppPaths {
                 ", classesPaths=" + classesPaths +
                 ", isJar=" + isJar +
                 '}';
-    }
-
-    static Path getFirstProjectPath(Set<Path> innerProjectPaths) {
-        return innerProjectPaths.iterator().next();
     }
 
     static Path[] getJarPaths(boolean isInnerJar, Collection<Path> innerClassesPaths) {
