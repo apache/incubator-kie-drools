@@ -2,7 +2,7 @@ parser grammar DRLParser;
 
 options { tokenVocab=DRLLexer; }
 
-import JavaParser;
+import DRL6Expressions, JavaParser;
 
     /*
      * statement := importStatement
@@ -138,26 +138,6 @@ constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
 nestedConstraint : ( IDENTIFIER ( DOT | NULL_SAFE_DOT | HASH ) )* IDENTIFIER (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
 
-// TBD: constraint parsing could be delegated to DRL6ExpressionParser
-conditionalOrExpression : left=conditionalAndExpression (OR right=conditionalAndExpression)* ;
-conditionalAndExpression : left=inclusiveOrExpression (AND right=inclusiveOrExpression)* ;
-inclusiveOrExpression : left=exclusiveOrExpression (BITOR right=exclusiveOrExpression)* ;
-exclusiveOrExpression : left=andExpression (CARET right=andExpression)* ;
-andExpression : left=equalityExpression (BITAND right=equalityExpression)* ;
-equalityExpression : label? left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
-instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
-inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
-relationalExpression : left=drlExpression (right=orRestriction)* ;
-orRestriction : left=andRestriction (OR right=andRestriction)* ;
-andRestriction : left=singleRestriction (AND right=singleRestriction)* ;
-singleRestriction : op=relationalOperator squareArguments? drlExpression ;
-
-// OOPath
-xpathSeparator : DIV | QUESTION_DIV ;
-xpathPrimary : label? xpathChunk+ ;
-xpathChunk : xpathSeparator drlIdentifier (DOT drlIdentifier)* (HASH drlIdentifier)? (LBRACK xpathExpressionList RBRACK)? ;
-xpathExpressionList : label? drlExpression (COMMA label? drlExpression)* ;
-
 // named consequence
 
 // consequenceInvocation := conditionalBranch | namedConsequence
@@ -198,93 +178,6 @@ functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock 
 /* extending JavaParser qualifiedName */
 drlQualifiedName
     : drlIdentifier (DOT drlIdentifier)*
-    ;
-
-/* extending JavaParser identifier */
-drlIdentifier
-    : drlKeywords
-    | IDENTIFIER
-    | MODULE
-    | OPEN
-    | REQUIRES
-    | EXPORTS
-    | OPENS
-    | TO
-    | USES
-    | PROVIDES
-    | WITH
-    | TRANSITIVE
-    | YIELD
-    | SEALED
-    | PERMITS
-    | RECORD
-    | VAR
-    | THIS
-    ;
-
-drlKeywords
-    : builtInOperator
-    | DRL_UNIT
-    | DRL_FUNCTION
-    | DRL_GLOBAL
-    | DRL_DECLARE
-    | DRL_RULE
-    | DRL_QUERY
-    | DRL_WHEN
-    | DRL_THEN
-    | DRL_END
-    | DRL_AND
-    | DRL_OR
-    | DRL_EXISTS
-    | DRL_NOT
-    | DRL_IN
-    | DRL_FROM
-    | DRL_ACCUMULATE
-    | DRL_ACC
-    | DRL_INIT
-    | DRL_ACTION
-    | DRL_REVERSE
-    | DRL_RESULT
-    | DRL_ENTRY_POINT
-    | DRL_EVAL
-    | DRL_SALIENCE
-    | DRL_ENABLED
-    | DRL_NO_LOOP
-    | DRL_AUTO_FOCUS
-    | DRL_LOCK_ON_ACTIVE
-    | DRL_REFRACT
-    | DRL_DIRECT
-    | DRL_AGENDA_GROUP
-    | DRL_ACTIVATION_GROUP
-    | DRL_RULEFLOW_GROUP
-    | DRL_DATE_EFFECTIVE
-    | DRL_DATE_EXPIRES
-    | DRL_DIALECT
-    | DRL_CALENDARS
-    | DRL_TIMER
-    | DRL_DURATION
-    ;
-
-builtInOperator
-    : DRL_CONTAINS
-    | DRL_EXCLUDES
-    | DRL_MATCHES
-    | DRL_MEMBEROF
-    | DRL_SOUNDSLIKE
-    | DRL_AFTER
-    | DRL_BEFORE
-    | DRL_COINCIDES
-    | DRL_DURING
-    | DRL_FINISHED_BY
-    | DRL_FINISHES
-    | DRL_INCLUDES
-    | DRL_MEETS
-    | DRL_MET_BY
-    | DRL_OVERLAPPED_BY
-    | DRL_OVERLAPS
-    | DRL_STARTED_BY
-    | DRL_STARTS
-    | DRL_STR
     ;
 
 /* extending JavaParser expression */
@@ -403,14 +296,8 @@ drlLiteral
     | TIME_INTERVAL
     ;
 
-squareArguments : LBRACK expressionList? RBRACK ;
-
 inlineListExpression
     :   LBRACK expressionList? RBRACK
-    ;
-
-expressionList
-    :   drlExpression (COMMA drlExpression)*
     ;
 
 inlineMapExpression
