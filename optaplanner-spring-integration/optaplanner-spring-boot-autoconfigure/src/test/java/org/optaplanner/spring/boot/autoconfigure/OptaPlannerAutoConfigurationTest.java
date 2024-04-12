@@ -67,13 +67,13 @@ import org.optaplanner.spring.boot.autoconfigure.normal.domain.TestdataSpringSol
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-@TestExecutionListeners(listeners = { SpringBootDependencyInjectionTestExecutionListener.class })
+@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class })
 class OptaPlannerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner;
