@@ -37,7 +37,6 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
-import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.AbstractProcess;
@@ -129,10 +128,10 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
         });
     }
 
-    public T doMigrateInstance(ProcessService processService, String processId, ProcessMigrationSpec migrationSpec, String processInstanceId) {
+    public T doMigrateInstance(String processId, ProcessMigrationSpec migrationSpec, String processInstanceId) {
         try {
             Process<? extends Model> process = processes.get().processById(processId);
-            processService.migrateProcessInstances(process, migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion(), processInstanceId);
+            process.instances().migrateProcessInstances(migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion(), processInstanceId);
             Map<String, Object> message = new HashMap<>();
             message.put("message", processInstanceId + " instance migrated");
             message.put("processInstanceId", processInstanceId);
@@ -142,10 +141,10 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
         }
     }
 
-    public T doMigrateAllInstances(ProcessService processService, String processId, ProcessMigrationSpec migrationSpec) {
+    public T doMigrateAllInstances(String processId, ProcessMigrationSpec migrationSpec) {
         try {
             Process<? extends Model> process = processes.get().processById(processId);
-            long numberOfProcessInstanceMigrated = processService.migrateAll(process, migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion());
+            long numberOfProcessInstanceMigrated = process.instances().migrateAll(migrationSpec.getTargetProcessId(), migrationSpec.getTargetProcessVersion());
             Map<String, Object> message = new HashMap<>();
             message.put("message", "All intances migrated");
             message.put("numberOfProcessInstanceMigrated", numberOfProcessInstanceMigrated);

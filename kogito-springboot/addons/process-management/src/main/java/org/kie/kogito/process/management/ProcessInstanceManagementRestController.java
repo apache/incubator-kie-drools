@@ -19,7 +19,6 @@
 package org.kie.kogito.process.management;
 
 import org.kie.kogito.Application;
-import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.Processes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -37,9 +36,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/management/processes")
 public class ProcessInstanceManagementRestController extends BaseProcessInstanceManagementResource<ResponseEntity> {
-
-    @Autowired
-    ProcessService processService;
 
     @Autowired
     @Lazy
@@ -83,13 +79,13 @@ public class ProcessInstanceManagementRestController extends BaseProcessInstance
     @Override
     @PostMapping(value = "{processId}/instances/{processInstanceId}/migrate", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity migrateInstance(@PathVariable("processId") String processId, @PathVariable("processInstanceId") String processInstanceId, ProcessMigrationSpec migrationSpec) {
-        return doMigrateInstance(processService, processId, migrationSpec, processInstanceId);
+        return doMigrateInstance(processId, migrationSpec, processInstanceId);
     }
 
     @Override
     @PostMapping(value = "{processId}/migrate", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity migrateAllInstances(String processId, ProcessMigrationSpec migrationSpec) {
-        return doMigrateAllInstances(processService, processId, migrationSpec);
+        return doMigrateAllInstances(processId, migrationSpec);
     }
 
     @Override
