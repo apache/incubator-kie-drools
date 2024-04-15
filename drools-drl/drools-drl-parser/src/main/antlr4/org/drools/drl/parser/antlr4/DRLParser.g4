@@ -168,8 +168,7 @@ relationalOperator
     | temporalOperator
     ;
 
-// IDENTIFIER is required to accept custom operators.
-drlRelationalOperator : DRL_NOT? (IDENTIFIER | builtInOperator) ;
+drlRelationalOperator : DRL_NOT? builtInOperator ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
 functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock ;
@@ -244,16 +243,6 @@ temporalOperator : DRL_NOT? bop=(DRL_AFTER | DRL_BEFORE | DRL_COINCIDES | DRL_DU
 
 timeAmount : LBRACK (TIME_INTERVAL | DECIMAL_LITERAL | MUL | SUB MUL) (COMMA (TIME_INTERVAL | DECIMAL_LITERAL | MUL | SUB MUL))* RBRACK ;
 
-unaryExpressionNotPlusMinus : (left2=xpathPrimary | left1=drlPrimary) (selector)* ;
-
-selector
-    : DOT SUPER superSuffix
-    | DOT NEW (nonWildcardTypeArguments)? innerCreator
-    | (DOT | NULL_SAFE_DOT) drlIdentifier (drlArguments)?
-    | (DOT | NULL_SAFE_DOT) drlMethodCall
-    | LBRACK drlExpression RBRACK
-    ;
-
 /* extending JavaParser primary */
 drlPrimary
     : LPAREN drlExpression RPAREN
@@ -261,23 +250,12 @@ drlPrimary
     | SUPER
     | NEW drlCreator
     | drlLiteral
-    | drlIdentifier drlIdentifierMiddle* identifierSuffix?
+    | drlIdentifier
     | typeTypeOrVoid DOT CLASS
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
     | inlineMapExpression
     | inlineCast
-    ;
-
-drlIdentifierMiddle
-    : (DOT | NULL_SAFE_DOT | HASH) drlIdentifier
-    | (DOT | NULL_SAFE_DOT) LPAREN drlExpression (COMMA drlExpression)* RPAREN
-    ;
-
-identifierSuffix
-    : (LBRACK RBRACK)+ DOT CLASS
-    | (LBRACK drlExpression RBRACK)+
-    | arguments
     ;
 
 inlineCast : drlIdentifier HASH drlIdentifier ;
@@ -333,7 +311,7 @@ patternSource : fromAccumulate
               | fromExpression
               ;
 
-fromExpression : unaryExpressionNotPlusMinus ;
+fromExpression : conditionalOrExpression ;
 
 
 /*
