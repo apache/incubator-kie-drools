@@ -40,21 +40,37 @@ public class GeneratedFileWriter {
      * @return
      */
     public static Builder builder(String finalPath, String resourcesDirectoryProperty, String sourcesDirectoryProperty ) {
+        return builder(finalPath,
+                       resourcesDirectoryProperty,
+        sourcesDirectoryProperty,
+                       AppPaths.BT);
+    }
+
+    /**
+     * Default-access for testing purpose
+     * @param finalPath
+     * @param resourcesDirectoryProperty
+     * @param sourcesDirectoryProperty
+     * @param bt
+     * @return
+     */
+    static Builder builder(String finalPath, String resourcesDirectoryProperty, String sourcesDirectoryProperty, AppPaths.BuildTool bt ) {
         // using runtime BT instead to allow usage of
         // Springboot from GRADLE
-        String targetClasses = AppPaths.BT.CLASSES_PATH.toString();
-        String generatedResourcesSourcesKogito = Path.of(AppPaths.GENERATED_RESOURCES_DIR, finalPath).toString();
-        String generatedSourcesKogito = Path.of(AppPaths.GENERATED_SOURCES_DIR, finalPath).toString();
+        String targetClasses = bt.CLASSES_PATH.toString();
+
+        String generatedResourcesSourcesKogito = Path.of(bt.GENERATED_RESOURCES_PATH.toString(), finalPath).toString();
+        String generatedSourcesKogito = Path.of(bt.GENERATED_SOURCES_PATH.toString(), finalPath).toString();
         return new Builder(targetClasses,
                            getConfig(resourcesDirectoryProperty, generatedResourcesSourcesKogito),
                            getConfig(sourcesDirectoryProperty, generatedSourcesKogito));
     }
 
     public static class Builder {
-
-        private final String classesDir;
-        private final String resourcePath;
-        private final String scaffoldedSourcesDir;
+        //Default-access for testing purpose
+        final String classesDir;
+        final String resourcePath;
+        final String scaffoldedSourcesDir;
 
         /**
          *
@@ -90,7 +106,8 @@ public class GeneratedFileWriter {
      * @param resourcePath usually target/generated-resources/kogito/
      * @param scaffoldedSourcesDir usually target/generated-sources/kogito/
      */
-    private GeneratedFileWriter(Path classesDir, Path resourcePath, Path scaffoldedSourcesDir) {
+    //Default-access for testing purpose
+    GeneratedFileWriter(Path classesDir, Path resourcePath, Path scaffoldedSourcesDir) {
         this.classesDir = classesDir;
         this.resourcePath = resourcePath;
         this.scaffoldedSourcesDir = scaffoldedSourcesDir;
@@ -132,7 +149,7 @@ public class GeneratedFileWriter {
         return scaffoldedSourcesDir;
     }
 
-    private void writeGeneratedFile(GeneratedFile f, Path location) throws IOException {
+    void writeGeneratedFile(GeneratedFile f, Path location) throws IOException {
         if (location == null) {
             return;
         }

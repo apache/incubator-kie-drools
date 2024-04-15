@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.drools.codegen.common.AppPaths.MAIN_DIR;
 import static org.drools.codegen.common.AppPaths.RESOURCES_DIR;
@@ -20,20 +20,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AppPathsTest {
 
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void fromProjectDir(boolean withGradle) {
+    @EnumSource(value = AppPaths.BuildTool.class, names = {"GRADLE", "MAVEN"})
+    void fromProjectDir(AppPaths.BuildTool bt) {
         String projectDirPath = "projectDir";
         String outputTargetPath;
         String generatedResourceDir;
         Path projectDir = Path.of(projectDirPath);
-        AppPaths.BuildTool bt;
-        if (withGradle) {
-            generatedResourceDir = "generated/resources";
-            bt = AppPaths.BuildTool.GRADLE;
-        } else {
-            generatedResourceDir = "generated-resources";
-            bt = AppPaths.BuildTool.MAVEN;
-        }
+        boolean withGradle;
+        generatedResourceDir = switch (bt) {
+            case GRADLE -> {
+                withGradle = true;
+                yield "generated/resources";
+            }
+            default -> {
+                withGradle = false;
+                yield "generated-resources";
+            }
+        };
         outputTargetPath = bt.OUTPUT_DIRECTORY;
         AppPaths retrieved = AppPaths.fromProjectDir(projectDir, bt);
         getPathsTest(retrieved, projectDirPath, withGradle, false);
@@ -46,20 +49,23 @@ class AppPathsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void fromTestDir(boolean withGradle) {
+    @EnumSource(value = AppPaths.BuildTool.class, names = {"GRADLE", "MAVEN"})
+    void fromTestDir(AppPaths.BuildTool bt) {
         String projectDirPath = "projectDir";
         String outputTargetPath;
         String generatedResourceDir;
         Path projectDir = Path.of(projectDirPath);
-        AppPaths.BuildTool bt;
-        if (withGradle) {
-            generatedResourceDir = "generated/test/resources";
-            bt = AppPaths.BuildTool.GRADLE;
-        } else {
-            generatedResourceDir = "generated-test-resources";
-            bt = AppPaths.BuildTool.MAVEN;
-        }
+        boolean withGradle;
+        generatedResourceDir = switch (bt) {
+            case GRADLE -> {
+                withGradle = true;
+                yield "generated/test/resources";
+            }
+            default -> {
+                withGradle = false;
+                yield "generated-test-resources";
+            }
+        };
         outputTargetPath = bt.OUTPUT_DIRECTORY;
         AppPaths retrieved = AppPaths.fromTestDir(projectDir, bt);
         getPathsTest(retrieved, projectDirPath, withGradle, true);
