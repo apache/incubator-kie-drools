@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -31,37 +31,54 @@ public enum MatchesOperator implements Operator.SingleValue<String, String> {
 
     INSTANCE;
 
-    private static final String CACHE_MATCHES_COMPILED_MAX_PROPERTY = "drools.matches.compiled.cache.count";
-
-    // default to 0 for no cache
-    private final static int MAX_SIZE_CACHE = Integer.parseInt(System.getProperty(CACHE_MATCHES_COMPILED_MAX_PROPERTY, "0"));
+    // not final due to unit tests
+    private int MAX_SIZE_CACHE = getMaxSizeCache();
 
     // store Pattern for regular expressions using the regular expression as the key up to MAX_SIZE_CACHE entries.
-    public final Map<String, Pattern> patternMap = Collections.synchronizedMap(new LinkedHashMap<>() {
+    private final Map<String, Pattern> patternMap = Collections.synchronizedMap(new LinkedHashMap<>() {
         @Override
-        protected boolean removeEldestEntry( Map.Entry<String, Pattern> eldest ) {
+        protected boolean removeEldestEntry(Map.Entry<String, Pattern> eldest) {
             return size() > (MAX_SIZE_CACHE);
         }
     });
 
+    // 0 default disables the Pattern map
+    private static int getMaxSizeCache() {
+        final String CACHE_MATCHES_COMPILED_MAX_PROPERTY = "drools.matches.compiled.cache.count";
+        return Integer.parseInt(System.getProperty(CACHE_MATCHES_COMPILED_MAX_PROPERTY, "0"));
+    }
 
+    // package-private for unit testing
+    void forceCacheSize(int size) {
+        MAX_SIZE_CACHE = size;
+        patternMap.clear();
+    }
 
-    // S1 is the candidate string
-    // S2 is the regular expression
+    // package-private for unit testing
+    void reInitialize() {
+        forceCacheSize(getMaxSizeCache());
+    }
+
+    // package-private for unit testing
+    int mapSize() {
+        return patternMap.size();
+    }
+
     @Override
-    public boolean eval( String s1, String s2 ) {
-        if (s1 == null) {
+    public boolean eval(String input, String regex) {
+        if (input == null) {
             return false;
-        } else if (MAX_SIZE_CACHE ==0 ) {
-            return s1.matches( s2 );
+        } else if (MAX_SIZE_CACHE == 0) {
+            return input.matches(regex);
         } else {
-            Pattern pattern = patternMap.get( s2 );
+            Pattern pattern = patternMap.get(regex);
             if (pattern == null) {
-                //  cache miss on s2, compile it, then store it
-                pattern = Pattern.compile(s2);
-                patternMap.put(s2, pattern);
+                //  Cache miss on regex, compile it, store it.
+                //  Storing in patternMap may remove the oldest entry per MAX_SIZE_CACHE.
+                pattern = Pattern.compile(regex);
+                patternMap.put(regex, pattern);
             }
-            Matcher matcher = pattern.matcher(s1);
+            Matcher matcher = pattern.matcher(input);
             return matcher.matches();
         }
     }
