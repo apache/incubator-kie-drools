@@ -18,14 +18,22 @@
  */
 package org.drools.model.codegen.execmodel.generator.operatorspec;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.model.functions.Operator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
+import org.drools.model.functions.Operator;
 
 public class CustomOperatorSpec extends NativeOperatorSpec {
-    public static final CustomOperatorSpec INSTANCE = new CustomOperatorSpec();
+
+    private Set<String> generatedOperators = new HashSet<>();
+
+    private List<String> operatorDeclarations = new ArrayList<>();
 
     @Override
     protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
@@ -34,10 +42,20 @@ public class CustomOperatorSpec extends NativeOperatorSpec {
             throw new RuntimeException( "Unknown custom operator: " + opName );
         }
 
-        String arg = "new " + CustomOperatorWrapper.class.getCanonicalName() + "( new " + evalDef.getClass().getCanonicalName() + "().getEvaluator(" +
-                ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, null), \"" + opName + "\")";
+        String operatorInstance = "OPERATOR_" + opName + "_INSTANCE";
 
-        methodCallExpr.addArgument( arg );
+        if (generatedOperators.add(opName)) {
+            String operatorFieldDeclaration = "public static final " + Operator.class.getCanonicalName() + ".SingleValue<Object, Object> " + operatorInstance +
+                    " = new " + CustomOperatorWrapper.class.getCanonicalName() + "( new " + evalDef.getClass().getCanonicalName() + "().getEvaluator(" +
+                    ValueType.class.getCanonicalName() + ".OBJECT_TYPE, \"" + opName + "\", false, null), \"" + opName + "\");";
+            operatorDeclarations.add(operatorFieldDeclaration);
+        }
+
+        methodCallExpr.addArgument( context.getPackageModel().getRulesFileNameWithPackage() + "." + operatorInstance );
         return null;
+    }
+
+    public List<String> getOperatorDeclarations() {
+        return operatorDeclarations;
     }
 }

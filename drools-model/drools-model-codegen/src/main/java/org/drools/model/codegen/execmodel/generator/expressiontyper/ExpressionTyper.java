@@ -66,14 +66,13 @@ import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.ParseExpressionErrorResult;
-import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
+import org.drools.model.codegen.execmodel.generator.TypedDeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.UnificationTypedExpression;
 import org.drools.model.codegen.execmodel.generator.drlxparse.NumberAndStringArithmeticOperationCoercion;
-import org.drools.model.codegen.execmodel.generator.operatorspec.CustomOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.NativeOperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.OperatorSpec;
 import org.drools.model.codegen.execmodel.generator.operatorspec.TemporalOperatorSpec;
@@ -126,8 +125,8 @@ import static org.drools.model.codegen.execmodel.generator.expressiontyper.Flatt
 import static org.drools.mvel.parser.MvelParser.parseType;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.ClassUtils.extractGenericType;
-import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.util.ClassUtils.getTypeArgument;
+import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.util.ClassUtils.toRawClass;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
@@ -482,7 +481,7 @@ public class ExpressionTyper {
         if ( org.drools.model.functions.Operator.Register.hasOperator( operator ) ) {
             return NativeOperatorSpec.INSTANCE;
         }
-        return CustomOperatorSpec.INSTANCE;
+        return ruleContext.getPackageModel().getCustomOperatorSpec();
     }
 
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
