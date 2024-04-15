@@ -32,10 +32,10 @@ public enum MatchesOperator implements Operator.SingleValue<String, String> {
     INSTANCE;
 
     // not final due to unit tests
-    private int MAX_SIZE_CACHE = getMaxSizeCache();
+    private static int MAX_SIZE_CACHE = getMaxSizeCache();
 
     // store Pattern for regular expressions using the regular expression as the key up to MAX_SIZE_CACHE entries.
-    private final Map<String, Pattern> patternMap = Collections.synchronizedMap(new LinkedHashMap<>() {
+    private static final Map<String, Pattern> patternMap = Collections.synchronizedMap(new LinkedHashMap<>() {
         @Override
         protected boolean removeEldestEntry(Map.Entry<String, Pattern> eldest) {
             return size() > (MAX_SIZE_CACHE);
