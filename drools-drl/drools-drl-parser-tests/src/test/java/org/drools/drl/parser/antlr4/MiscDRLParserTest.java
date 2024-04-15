@@ -4001,6 +4001,22 @@ class MiscDRLParserTest {
     }
 
     @Test
+    public void pluggableEvaluator() throws Exception {
+        final String source = "package org.drools\n" +
+                "rule R\n" +
+                "when\n" +
+                "   $t : Thing( $c : core, this not isA t.x.E.class, this isA t.x.D.class )\n" +
+                "then\n" +
+                "   list.add( \"E\" ); \n" +
+                "   don( $t, E.class ); \n" +
+                "end\n";
+        PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(source).getLhs().getDescrs().get(0);
+        assertThat(pattern.getConstraint().getDescrs())
+                .extracting(Object::toString)
+                .containsExactly("$c : core", "this not isA t.x.E.class", "this isA t.x.D.class");
+    }
+
+    @Test
     void namedConsequenceDo() {
         final String text =
                 "rule R when\n" +
