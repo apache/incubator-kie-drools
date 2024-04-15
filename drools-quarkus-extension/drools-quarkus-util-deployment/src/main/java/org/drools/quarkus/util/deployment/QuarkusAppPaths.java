@@ -51,11 +51,11 @@ public class QuarkusAppPaths extends AppPaths {
         UNKNOWN
     }
 
-    protected QuarkusAppPaths(List<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt) {
-        super(projectPaths, classesPaths, isJar, bt, JarResultBuildStep.MAIN, false);
+    protected QuarkusAppPaths(List<Path> projectPaths, Collection<Path> classesPaths, boolean isJar) {
+        super(projectPaths, classesPaths, isJar, AppPaths.BT, JarResultBuildStep.MAIN, false);
     }
 
-    public static AppPaths from(Iterable<Path> paths, AppPaths.BuildTool bt) {
+    public static AppPaths from(Iterable<Path> paths) {
         final Set<Path> projectPaths = new LinkedHashSet<>();
         final Collection<Path> classesPaths = new ArrayList<>();
         boolean isJar = false;
@@ -64,32 +64,31 @@ public class QuarkusAppPaths extends AppPaths {
             switch (pathType) {
                 case CLASSES:
                     classesPaths.add(path);
-                    projectPaths.add(getParentPath(path, bt));
+                    projectPaths.add(getParentPath(path));
                     break;
                 case TEST_CLASSES:
-                    projectPaths.add(getParentPath(path, bt));
+                    projectPaths.add(getParentPath(path));
                     break;
                 case JAR:
                     isJar = true;
                     classesPaths.add(path);
-                    projectPaths.add(getParentPath(path, bt));
+                    projectPaths.add(getParentPath(path));
                     break;
                 case MUTABLE_JAR:
                     // project, class, and target are all the same.
                     // also, we don't need any prefix (see constructor), hence passing GRADLE as the build tool
-                    return new QuarkusAppPaths(Collections.singletonList(path), Collections.singleton(path), false,
-                                               BuildTool.GRADLE);
+                    return new QuarkusAppPaths(Collections.singletonList(path), Collections.singleton(path), false);
                 case UNKNOWN:
                     classesPaths.add(path);
                     projectPaths.add(path);
                     break;
             }
         }
-        return new QuarkusAppPaths(new ArrayList<>(projectPaths), classesPaths, isJar, bt);
+        return new QuarkusAppPaths(new ArrayList<>(projectPaths), classesPaths, isJar);
     }
 
-    private static Path getParentPath(Path path, AppPaths.BuildTool bt) {
-        if (bt.equals(BuildTool.GRADLE)) {
+    private static Path getParentPath(Path path) {
+        if (AppPaths.BT.equals(BuildTool.GRADLE)) {
             return path.getParent().getParent().getParent().getParent();
         } else {
             return path.getParent().getParent();

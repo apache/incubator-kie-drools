@@ -83,10 +83,9 @@ public class DroolsQuarkusResourceUtils {
             , "drools.codegen.resources.directory", "drools.codegen.sources.directory");
 
 
-    public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
+    public static DroolsModelBuildContext createDroolsBuildContext(Iterable<Path> paths, IndexView index) {
         // scan and parse paths
-        AppPaths.BuildTool buildTool = AppPaths.BuildTool.findBuildTool();
-        AppPaths appPaths = QuarkusAppPaths.from(paths, buildTool);
+        AppPaths appPaths = QuarkusAppPaths.from(paths);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
                 .withClassLoader(classLoader)
