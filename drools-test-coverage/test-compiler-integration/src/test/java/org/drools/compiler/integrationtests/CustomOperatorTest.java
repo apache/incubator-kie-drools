@@ -70,6 +70,18 @@ public class CustomOperatorTest {
     }
 
     @Test
+    public void testNoOperatorInstancesCreatedAtRuntime() {
+        String constraints =
+                "    $alice : Person(name == \"Alice\")\n" +
+                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                "    Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
+
+        customOperatorUsingCollections(constraints);
+
+        assertThat(SupersetOfEvaluatorDefinition.INSTANCES_COUNTER).isEqualTo(0);
+    }
+
+    @Test
     public void testCustomOperatorUsingCollectionsInverted() {
         // DROOLS-6983
         String constraints =
@@ -90,6 +102,9 @@ public class CustomOperatorTest {
         System.setProperty(EvaluatorOption.PROPERTY_NAME + "supersetOf", SupersetOfEvaluatorDefinition.class.getName());
         try {
             final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("custom-operator-test", kieBaseTestConfiguration, drl);
+
+            SupersetOfEvaluatorDefinition.INSTANCES_COUNTER = 0;
+
             final KieSession ksession = kbase.newKieSession();
             try {
                 final Person alice = new Person("Alice", 30);
@@ -117,6 +132,12 @@ public class CustomOperatorTest {
         private static final String[] SUPPORTED_IDS = {SUPERSET_OF.getOperatorString()};
 
         private Evaluator[] evaluator;
+
+        static int INSTANCES_COUNTER = 0;
+
+        public SupersetOfEvaluatorDefinition() {
+            INSTANCES_COUNTER++;
+        }
 
         public String[] getEvaluatorIds() {
             return SupersetOfEvaluatorDefinition.SUPPORTED_IDS;
