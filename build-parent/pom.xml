@@ -60,9 +60,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.13.0</version.commons-io>
     <version.common-text>1.10.0</version.common-text>
-    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.17.0</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.17.0</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.17.0</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
@@ -74,7 +74,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.4</version.info.picocli>
     <version.io.micrometer>1.11.1</version.io.micrometer>
-    <version.io.quarkus>3.2.10.Final</version.io.quarkus>
+    <version.io.quarkus>3.8.3</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.4.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
