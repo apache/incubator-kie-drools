@@ -16,35 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.core.process;
 
-import java.util.Map;
+package org.kie.api.definition.process;
 
-import org.kie.api.definition.process.WorkflowElementIdentifier;
+public interface WorkflowElement {
 
-public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
+    /**
+     * The id of the node.  This is unique within its NodeContainer.
+     * @return the id of the node
+     */
+    WorkflowElementIdentifier getId();
 
-    void setName(String name);
+    /**
+     * the node id in the bpmn
+     * @return
+     */
+    default String getUniqueId() {
+        return this.getId().toExternalFormat();
+    }
 
-    void setParameter(String name, Object value);
-
-    void setParameters(Map<String, Object> parameters);
-
-    void setResults(Map<String, Object> results);
-
-    void setState(int state);
-
-    void setProcessInstanceId(String processInstanceId);
-
-    void setDeploymentId(String deploymentId);
-
-    void setNodeInstanceId(long deploymentId);
-
-    void setNodeId(WorkflowElementIdentifier nodeIdentifier);
-
-    String getDeploymentId();
-
-    long getNodeInstanceId();
-
-    WorkflowElementIdentifier getNodeId();
 }

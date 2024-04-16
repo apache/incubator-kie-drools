@@ -87,6 +87,7 @@ import org.drools.model.codegen.execmodel.generator.QueryGenerator;
 import org.drools.model.codegen.execmodel.generator.QueryParameter;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.WindowReferenceGenerator;
+import org.drools.model.codegen.execmodel.generator.operatorspec.CustomOperatorSpec;
 import org.drools.model.codegen.execmodel.util.lambdareplace.CreatedClass;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.util.StringUtil;
@@ -186,6 +187,8 @@ public class PackageModel {
     private final Collection<String> executableRulesClasses = new HashSet<>();
 
     private final boolean prototypesAllowed;
+
+    private final CustomOperatorSpec customOperatorSpec = new CustomOperatorSpec();
 
     private PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(configuration, releaseId, name));
@@ -291,6 +294,10 @@ public class PackageModel {
     
     public DRLIdGenerator getExprIdGenerator() {
         return exprIdGenerator;
+    }
+
+    public CustomOperatorSpec getCustomOperatorSpec() {
+        return customOperatorSpec;
     }
 
     public void addImports(Collection<String> imports) {
@@ -418,8 +425,7 @@ public class PackageModel {
     }
 
     public void putQueryVariable(String queryName, QueryParameter qp) {
-        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
-        this.queryVariables.get(queryName).add(qp);
+        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>()).add(qp);
     }
 
     public List<QueryParameter> queryVariables(String queryName) {
@@ -612,6 +618,8 @@ public class PackageModel {
         }
 
         rulesClass.addMember( generateListField("org.drools.model.Global", "globals", globals.isEmpty() && !hasRuleUnit) );
+
+        customOperatorSpec.getOperatorDeclarations().forEach( op -> rulesClass.addMember( parseBodyDeclaration( op ) ) );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
             BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = new java.util.ArrayList<>();");

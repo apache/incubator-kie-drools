@@ -26,23 +26,15 @@ import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
 public class UnnamedImportUtilsTest {
 
     @Test
-    public void isInUnnamedImportTrue() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_EmptyNamed_Model" +
-                                                                                               ".dmn",
-                                                                                       this.getClass(),
-                                                                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    public void isInUnnamedImportTrueWithHrefNamespace() {
+        commonIsInUnnamedImportTrue("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
+                                    "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
 
-        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44",
-                                                        "Imported Model");
-        assertThat(importedModel).isNotNull();
-        final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
-                                                             "Importing empty-named Model");
-        assertThat(importingModel).isNotNull();
-        importedModel.getDecisions().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getBusinessKnowledgeModels().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getDecisionServices().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getInputs().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getItemDefinitions().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+    @Test
+    public void isInUnnamedImportTrueWithoutHrefNamespace() {
+        commonIsInUnnamedImportTrue("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+                                    "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
@@ -81,10 +73,42 @@ public class UnnamedImportUtilsTest {
     }
 
     @Test
-    public void addIfNotPresentFalse() throws IOException {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
+    public void addIfNotPresentFalseWithHrefNamespace() throws IOException {
+        commonAddIfNotPresentFalse("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
+                                    "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
+
+    @Test
+    public void addIfNotPresentFalseWithoutHrefNamespace() throws IOException {
+        commonAddIfNotPresentFalse("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+                                    "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+    }
+
+    private void commonIsInUnnamedImportTrue(String importingModelRef, String importedModelRef) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelRef,
                                                                                        this.getClass(),
-                                                                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
+                                                                                       importedModelRef);
+
+        final DMNModel importedModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f" +
+                                                                "-9848-11ba35e0df44",
+                                                        "Imported Model");
+        assertThat(importedModel).isNotNull();
+        final DMNModelImpl importingModel = (DMNModelImpl) runtime.getModel("http://www.trisotech" +
+                                                                                    ".com/dmn/definitions/_f79aa7a4" +
+                                                                                    "-f9a3-410a-ac95-bea496edabgc",
+                                                                            "Importing empty-named Model");
+        assertThat(importingModel).isNotNull();
+        importedModel.getDecisions().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+        importedModel.getBusinessKnowledgeModels().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+        importedModel.getDecisionServices().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+        importedModel.getInputs().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+        importedModel.getItemDefinitions().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+    }
+
+    private void commonAddIfNotPresentFalse(String importingModelRef, String importedModelRef) throws IOException {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources(importingModelRef,
+                                                                                       this.getClass(),
+                                                                                       importedModelRef);
         final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
                                                                            "Importing empty-named Model");
         assertThat(importingModel).isNotNull();

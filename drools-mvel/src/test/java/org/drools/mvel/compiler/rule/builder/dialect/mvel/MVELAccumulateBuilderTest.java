@@ -20,25 +20,24 @@ package org.drools.mvel.compiler.rule.builder.dialect.mvel;
 
 import java.util.Collections;
 
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.reteoo.InitialFactImpl;
+import org.drools.base.rule.Accumulate;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.base.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.base.rule.Accumulate;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -98,7 +97,7 @@ public class MVELAccumulateBuilderTest {
                                             10 );
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             8 );
-        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( new InitialFactImpl() );
+        final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( InitialFactImpl.getInstance() );
         final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
         final InternalFactHandle f2 = (InternalFactHandle) ksession.insert( cheddar2 );
         final LeftTuple tuple = new LeftTuple( f0,

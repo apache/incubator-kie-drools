@@ -271,8 +271,7 @@ public final class ClassUtils {
     /**
      * Populates the import style pattern map from give comma delimited string
      */
-    public static void addImportStylePatterns(Map<String, Object> patterns,
-                                              String str) {
+    public static void addImportStylePatterns(Map<String, Object> patterns, String str) {
         if ( str == null || "".equals( str.trim() ) ) {
             return;
         }
@@ -549,8 +548,7 @@ public final class ClassUtils {
 
         java.lang.reflect.Type returnType = method.getGenericReturnType();
 
-        if (returnType instanceof ParameterizedType) {
-            ParameterizedType type = (ParameterizedType) returnType;
+        if (returnType instanceof ParameterizedType type) {
             java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
             if (typeArguments.length > 0) {
                 return typeArguments[0] instanceof ParameterizedType ? (Class) ((ParameterizedType)typeArguments[0]).getRawType() : (Class) typeArguments[0];
@@ -597,11 +595,11 @@ public final class ClassUtils {
         if (type instanceof Class<?>) {
             return ( Class ) type;
         }
-        if (type instanceof ParameterizedType ) {
+        if (type instanceof ParameterizedType) {
             return toRawClass( (( ParameterizedType ) type).getRawType() );
         }
-        if (type instanceof TypeVariable ) {
-            return Object.class;
+        if (type instanceof TypeVariable typeVar) {
+            return typeVar.getBounds().length == 1 ? toRawClass(typeVar.getBounds()[0]) : Object.class;
         }
         throw new UnsupportedOperationException( "Unknown type " + type );
     }

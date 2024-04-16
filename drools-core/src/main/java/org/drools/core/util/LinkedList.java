@@ -22,12 +22,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 
 import org.drools.core.reteoo.TupleImpl;
 
 /**
- * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
+ * This is a simple linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
  * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of
  * ways to iterate the list.
@@ -468,8 +469,7 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         }
 
         public JavaUtilIterator(final LinkedList<T> list) {
-            this( list,
-                  true );
+            this( list, true );
         }
 
         public JavaUtilIterator(final LinkedList<T> list,
@@ -525,5 +525,11 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
         other.firstNode = firstNode;
         other.lastNode = lastNode;
         other.size = size;
+    }
+
+    public <I> void addAllToCollection(Collection<I> c) {
+        for (T item = getFirst(); item != null; item = item.getNext()) {
+            c.add((I) item);
+        }
     }
 }

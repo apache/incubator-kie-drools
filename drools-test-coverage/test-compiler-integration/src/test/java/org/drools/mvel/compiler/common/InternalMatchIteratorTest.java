@@ -18,16 +18,17 @@
  */
 package org.drools.mvel.compiler.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.serialization.protobuf.iterators.ActivationIterator;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBaseFactory;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.Iterator;
+import org.drools.serialization.protobuf.iterators.ActivationIterator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -654,9 +655,9 @@ public class InternalMatchIteratorTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        ksession.insert( new Integer( 1 ) );
-        ksession.insert( new Integer( 2 ) );
-        ksession.insert( new Integer( 3 ) );
+        ksession.insert( 1 );
+        ksession.insert( 2 );
+        ksession.insert( 3 );
 
         ksession.fireAllRules();
 
@@ -753,5 +754,104 @@ public class InternalMatchIteratorTest {
         ((InternalWorkingMemory) ksession).flushPropagations();
 
         assertThat(list.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testCollectAndCountActivationsWithNodesSharing() {
+        // KIE-1062
+        String str =
+                "import " + CartLineDetails.class.getCanonicalName() + ";" +
+                        "\n" +
+                        "rule R1 when\n" +
+                        "        exists($cartLineDetails1 : CartLineDetails(cartLineProductId in (\"Product1\" ) &&\n" +
+                        "                    cartLineProductCategoryId == \"Category1\"))\n" +
+                        "        Number(doubleValue() > 1) from\n" +
+                        "            accumulate ( CartLineDetails(cartLineProductId in (\"Product1\" , \"NotUsedProduct\" ) &&\n" +
+                        "                            $qty : cartLineItemQuantity != null), sum($qty) )\n" +
+                        "        Number(doubleValue() > 1) from\n" +
+                        "            accumulate ( CartLineDetails(cartLineProductId in (\"Product2\" ) &&\n" +
+                        "                            $qty : cartLineItemQuantity != null), sum($qty) )\n" +
+                        "        Boolean(this == true)\n" +
+                        "        $cartLineDetails4 : CartLineDetails(cartLineProductCategoryId == \"Category1\")\n" +
+                        "    then\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule R2 when\n" +
+                        "        exists($cartLineDetails1 : CartLineDetails(cartLineProductId in (\"Product1\" ) &&\n" +
+                        "                    cartLineProductCategoryId == \"Category1\"))\n" +
+                        "        Number(doubleValue() > 1) from\n" +
+                        "            accumulate ( CartLineDetails(cartLineProductId in (\"Product1\" , \"NotUsedProduct\" ) &&\n" +
+                        "                        $qty : cartLineItemQuantity != null), sum($qty) )\n" +
+                        "        Number(doubleValue() > 1) from\n" +
+                        "            accumulate ( CartLineDetails(cartLineProductId in (\"Product2\" ) &&\n" +
+                        "                            $qty : cartLineItemQuantity != null), sum($qty) )\n" +
+                        "        Boolean(this == false)\n" +
+                        "        $cartLineDetails4 : CartLineDetails(cartLineProductCategoryId == \"Category1\")\n" +
+                        "    then\n" +
+                        "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession kieSession = kbase.newKieSession();
+
+        int totalMatchingLineItems = 4;
+        List<CartLineDetails> cartLineDetails = generateCartDetails(totalMatchingLineItems);
+
+        for (CartLineDetails lineItem : cartLineDetails) {
+            kieSession.insert(lineItem);
+        }
+        kieSession.insert(true);
+
+        kieSession.fireAllRules();
+
+        Iterator it = ActivationIterator.iterator( kieSession );
+        List<InternalMatch> matches = new ArrayList<>();
+        for (InternalMatch act = (InternalMatch) it.next(); act != null; act = (InternalMatch) it.next() ) {
+            matches.add( act );
+        }
+
+        assertThat(matches.size()).isEqualTo(totalMatchingLineItems);
+    }
+
+    private List<CartLineDetails> generateCartDetails(int totalMatchingLineItems) {
+        List<CartLineDetails> lineItemList = new ArrayList<>();
+        for(int i = 1 ; i <= totalMatchingLineItems; i++){
+            CartLineDetails lineItem = new CartLineDetails();
+            lineItem.setCartLineProductId("Product" + i);
+            lineItem.setCartLineProductCategoryId("Category" + "1");
+            lineItem.setCartLineItemQuantity(10.0);
+            lineItemList.add(lineItem);
+        }
+        return lineItemList;
+    }
+
+    public static class CartLineDetails implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private String cartLineProductCategoryId;
+        private Double cartLineItemQuantity;
+        private String cartLineProductId;
+
+        public String getCartLineProductCategoryId(){
+            return cartLineProductCategoryId;
+        }
+
+        public void setCartLineProductCategoryId( String cartLineProductCategoryId ){
+            this.cartLineProductCategoryId = cartLineProductCategoryId;
+        }
+
+        public Double getCartLineItemQuantity(){
+            return cartLineItemQuantity;
+        }
+
+        public void setCartLineItemQuantity( Double cartLineItemQuantity ){
+            this.cartLineItemQuantity = cartLineItemQuantity;
+        }
+
+        public String getCartLineProductId(){
+            return cartLineProductId;
+        }
+
+        public void setCartLineProductId( String cartLineProductId ){
+            this.cartLineProductId = cartLineProductId;
+        }
     }
 }

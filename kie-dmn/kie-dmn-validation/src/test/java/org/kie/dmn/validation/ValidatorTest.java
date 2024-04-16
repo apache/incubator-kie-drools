@@ -23,11 +23,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
+import org.drools.io.ClassPathResource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message.Level;
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -36,6 +43,7 @@ import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.DMNRuntimeTest;
+import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
 import org.kie.dmn.core.imports.ImportsTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -43,14 +51,23 @@ import org.kie.dmn.core.v1_3.DMN13specificTest;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class ValidatorTest extends AbstractValidatorTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidatorTest.class);
+
+    static final DMNValidator validator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
+    static final DMNValidator.ValidatorBuilder validatorBuilder = validator.validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA, DMNValidator.Validation.VALIDATE_MODEL);
 
     @Test
     public void testDryRun() {
@@ -80,32 +97,10 @@ public class ValidatorTest extends AbstractValidatorTest {
 
     @Test
     public void testMACDInputReader() throws IOException {
-        try (final Reader reader = new InputStreamReader(getClass().getResourceAsStream("/org/kie/dmn/core/MACD-enhanced_iteration.dmn") )) {
+        try (final Reader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/org/kie/dmn/core/MACD-enhanced_iteration.dmn")))) {
             List<DMNMessage> messages = DMNValidatorFactory.newValidator().validate(reader, VALIDATE_MODEL, VALIDATE_COMPILATION);
             assertThat(messages).withFailMessage(messages.toString()).hasSize(0);
         }
-    }
-
-    private Definitions utilDefinitions(String filename, String modelName) {
-//        List<DMNMessage> validateXML;
-//        try {
-//            validateXML = validator.validate( new File(this.getClass().getResource(filename).toURI()), DMNValidator.Validation.VALIDATE_SCHEMA );
-//            assertThat( "using unit test method utilDefinitions must received a XML valid DMN file", validateXML, IsEmptyCollection.empty() );
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//            fail("Unable for the test suite to locate the file for XML validation.");
-//        }
-        
-        DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
-        try( InputStreamReader isr = new InputStreamReader( getClass().getResourceAsStream( filename ) ) ) {
-            Definitions definitions = marshaller.unmarshal( isr );
-            assertThat(definitions).isNotNull();
-            return definitions;
-        } catch ( IOException e ) {
-            e.printStackTrace();
-            fail("Unable for the test suite to locate the file for validation.");
-        }
-        return null;
     }
         
     @Test
@@ -169,7 +164,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     
     @Test @Ignore( "Needs to be improved as invocations can be used to invoke functions node defined in BKMs. E.g., FEEL built in functions, etc.")
     public void testINVOCATION_MISSING_TARGET() {
-        Definitions definitions = utilDefinitions( "INVOCATION_MISSING_TARGET.dmn", "INVOCATION_MISSING_TARGET" );
+        Definitions definitions = utilDefinitions( "INVOCATION_MISSING_TARGET.dmn" );
         List<DMNMessage> validate = validator.validate(definitions);
         
 //        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVOCATION_MISSING_TARGET ) ) );
@@ -178,7 +173,7 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Ignore("known current limitation")
     @Test
     public void testINVOCATION_MISSING_TARGETRbis() {
-        Definitions definitions = utilDefinitions( "INVOCATION_MISSING_TARGETbis.dmn", "INVOCATION_MISSING_TARGETbis" );
+        Definitions definitions = utilDefinitions( "INVOCATION_MISSING_TARGETbis.dmn");
         List<DMNMessage> validate = validator.validate(definitions);
         
 //        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVOCATION_MISSING_TARGET ) ) );
@@ -530,6 +525,57 @@ public class ValidatorTest extends AbstractValidatorTest {
     public void testInformationItemMissingTypeRef_SMC() {
         // DROOLS-5152 DMN align message level for missing typeRef attribute
         checkInformationItemMissingTypeRef(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+    }
+
+    @Test
+    public void validateAllValidSharedModels() throws IOException {
+        String modelFilesPath = "valid_models/";
+        URL modelFilesJarURL = Collections.list(Thread.currentThread().getContextClassLoader().getResources(
+                "valid_models/"))
+                .stream()
+                .filter(url -> url.getProtocol().equals("jar"))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Failed to retrieve jar containing " + modelFilesPath));
+        String modelFilesJarFile = modelFilesJarURL.getFile();
+        String jarPath = modelFilesJarFile.substring(modelFilesJarFile.lastIndexOf(":") + 1,
+                                                     modelFilesJarFile.lastIndexOf("!"));
+        final JarFile jarFile = new JarFile(new File(jarPath));
+        testDirectoryInJar(jarFile, modelFilesPath);
+    }
+
+    private void testDirectoryInJar(JarFile jarFile, String directory) {
+        List<String> allFiles = Collections.list(jarFile.entries())
+                .stream()
+                .filter(entry -> entry.getName().startsWith(directory) && !entry.isDirectory())
+                .map(ZipEntry::getName)
+                .toList();
+        testFiles(allFiles);
+    }
+
+    private void testFiles(List<String> modelFiles) {
+        Resource[] resources = modelFiles.stream()
+                .map(ClassPathResource::new)
+                .toArray(value -> new Resource[modelFiles.size()]);
+        List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
+        assertNotNull(dmnMessages);
+        dmnMessages.forEach(dmnMessage -> LOGGER.error(dmnMessage.toString()));
+        assertTrue(dmnMessages.isEmpty());
+    }
+
+
+    private Definitions utilDefinitions(String filename) {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        try( InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(filename))) ) {
+            Definitions definitions = marshaller.unmarshal( isr );
+            assertThat(definitions).isNotNull();
+            return definitions;
+        } catch ( IOException e ) {
+            String messageToShow = e.getMessage() != null && !e.getMessage().isEmpty() ? e.getMessage() : String.format("Unable to find file %s", filename);
+            LOGGER.error(messageToShow);
+            LOGGER.debug(messageToShow, e);
+            fail(String.format("Unable for the test suite to locate the file %s for validation.", filename));
+            return null;
+        }
     }
 
     private void checkInformationItemMissingTypeRef(DMNValidator.Validation... options) {

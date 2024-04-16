@@ -33,6 +33,7 @@
   <properties>
     <java.module.name>org.kie.dmn.validation</java.module.name>
     <drools.reproducibleExecutableModelGeneration>true</drools.reproducibleExecutableModelGeneration>
+    <dependency-plugin.version>3.6.1</dependency-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -176,6 +177,11 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -199,7 +205,7 @@
           <includePluginDependencies>true</includePluginDependencies>
            <additionalClasspathElements>
             <additionalClasspathElement>${project.basedir}/src/test/resources/</additionalClasspathElement>
-          </additionalClasspathElements> 
+          </additionalClasspathElements>
         </configuration>
         <dependencies>
           <dependency>

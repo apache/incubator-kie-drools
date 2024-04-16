@@ -284,7 +284,7 @@ public class DefaultAgenda implements InternalAgenda {
             // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
             RuleExecutor ruleExecutor = item.getRuleExecutor();
             ruleExecutor.evaluateNetwork(this);
-            TupleList list = ruleExecutor.getLeftTupleList();
+            TupleList list = ruleExecutor.getActiveMatches();
             for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
                 if ( ruleName.equals( lt.getRule().getName() ) && ( lt.checkProcessInstance( workingMemory, processInstanceId ) )) {
                     return true;

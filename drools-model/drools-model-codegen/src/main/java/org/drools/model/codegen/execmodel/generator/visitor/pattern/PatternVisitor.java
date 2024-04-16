@@ -31,6 +31,7 @@ import org.drools.model.codegen.execmodel.util.PatternUtil;
 
 import static org.drools.model.codegen.execmodel.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.model.codegen.execmodel.generator.QueryGenerator.toQueryDef;
+import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class PatternVisitor {
 
@@ -75,7 +76,7 @@ public class PatternVisitor {
     private DSLNode parsePatternWithClass(PatternDescr pattern, String className) {
         List<? extends BaseDescr> constraintDescrs = pattern.getConstraint().getDescrs();
 
-        String queryName = QUERY_METHOD_PREFIX + className;
+        String queryName = QUERY_METHOD_PREFIX + toId( className );
         String queryDef = toQueryDef( className );
 
         // Expression is a query, get bindings from query parameter type
