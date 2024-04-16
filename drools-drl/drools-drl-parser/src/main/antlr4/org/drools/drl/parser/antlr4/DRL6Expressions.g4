@@ -30,12 +30,7 @@ options {
 @members {
     private ParserHelper helper;
 
-    public DRL6Expressions(TokenStream input,
-                          ParserHelper helper ) {
-        this( input );
-        this.helper = helper;
-    }
-
+    public void setHelper( ParserHelper helper )              { this.helper = helper; }
     public ParserHelper getHelper()                           { return helper; }
     public boolean hasErrors()                                { return helper.hasErrors(); }
     public List<DroolsParserException> getErrors()            { return helper.getErrors(); }
@@ -59,7 +54,6 @@ options {
     public void setHasBindings( boolean value ) { this.hasBindings = value; }
     public boolean hasBindings() { return this.hasBindings; }
 
-    @Override
     public final BaseDescr conditionalOrExpressionDescr() throws RecognitionException {
         return conditionalOrExpression().result;
     }
@@ -101,8 +95,10 @@ literal
     :	STRING_LITERAL  {	helper.emit($STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
     |	DRL_STRING_LITERAL  {	helper.emit($DRL_STRING_LITERAL, DroolsEditorType.STRING_CONST);	}
     |	DECIMAL_LITERAL {	helper.emit($DECIMAL_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	DRL_BIG_INTEGER_LITERAL {	helper.emit($DRL_BIG_INTEGER_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	HEX_LITERAL     {	helper.emit($HEX_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	FLOAT_LITERAL   {	helper.emit($FLOAT_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	DRL_BIG_DECIMAL_LITERAL   {	helper.emit($DRL_BIG_DECIMAL_LITERAL, DroolsEditorType.NUMERIC_CONST);	}
     |	BOOL_LITERAL    {	helper.emit($BOOL_LITERAL, DroolsEditorType.BOOLEAN_CONST);	}
     |	NULL_LITERAL    {	helper.emit($NULL_LITERAL, DroolsEditorType.NULL_CONST);	}
     |   TIME_INTERVAL {	helper.emit($TIME_INTERVAL, DroolsEditorType.NULL_CONST); }
