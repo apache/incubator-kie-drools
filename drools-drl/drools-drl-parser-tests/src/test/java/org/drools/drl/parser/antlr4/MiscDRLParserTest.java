@@ -42,6 +42,7 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
+import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -4010,6 +4011,10 @@ class MiscDRLParserTest {
                 "   list.add( \"E\" ); \n" +
                 "   don( $t, E.class ); \n" +
                 "end\n";
+
+        Operator.addOperatorToRegistry("isA", false);
+        Operator.addOperatorToRegistry("isA", true);
+
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(source).getLhs().getDescrs().get(0);
         assertThat(pattern.getConstraint().getDescrs())
                 .extracting(Object::toString)
