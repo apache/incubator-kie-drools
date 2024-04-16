@@ -52,7 +52,8 @@ public class Drl6ExprParserAntlr4 implements DrlExprParser {
             DRLLexer lexer = new DRLLexer(CharStreams.fromString(text));
             CommonTokenStream input = new CommonTokenStream(lexer);
             helper = new ParserHelper(input, languageLevel);
-            DRLExpressions parser = new DRL6Expressions(input, helper);
+            DRL6Expressions parser = new DRL6Expressions(input);
+            parser.setHelper(helper);
             parser.addErrorListener(new BaseErrorListener() {
                 @Override
                 public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
