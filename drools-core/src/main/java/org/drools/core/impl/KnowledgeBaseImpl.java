@@ -1086,12 +1086,14 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
     }
 
     public void kBaseInternal_removeRule(InternalKnowledgePackage pkg, RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
+        logger.info("kBaseInternal_removeRule: " + rule.getName());
         this.reteooBuilder.removeRules(Collections.singletonList(rule), workingMemories);
         pkg.removeRule( rule );
         addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
     public void kBaseInternal_removeRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories) {
+        logger.info("kBaseInternal_removeRules: " + rules);
         this.reteooBuilder.removeRules(rules, workingMemories);
     }
 
@@ -1237,6 +1239,7 @@ public class KnowledgeBaseImpl implements InternalRuleBase {
         for (InternalKnowledgePackage pkg : pkgs.values()) {
             List<RuleImpl> rulesToBeRemoved = pkg.getRulesGeneratedFromResource(resource);
             if (!rulesToBeRemoved.isEmpty()) {
+                logger.info("removeObjectsGeneratedFromResource: " + rulesToBeRemoved);
                 this.reteooBuilder.removeRules( rulesToBeRemoved, workingMemories );
                 // removal of rule from package has to be delayed after the rule has been removed from the phreak network
                 // in order to allow the correct flushing of all outstanding staged tuples

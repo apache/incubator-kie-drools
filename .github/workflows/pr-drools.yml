@@ -52,23 +52,30 @@ jobs:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/long-paths@main
+      - uses: actions/checkout@v3
       - name: Java and Maven Setup
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - name: Build Chain
-        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
-        env:
-          BUILD_MVN_OPTS_CURRENT: '-Dfull -Dreproducible'
-          MAVEN_OPTS: "-Dfile.encoding=UTF-8"
-        with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
-          annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Surefire Report
-        uses: apache/incubator-kie-kogito-pipelines/.ci/actions/surefire-report@main
-        if: ${{ always() }}
-        with:
-          report_paths: '**/*-reports/TEST-*.xml'
+          allow-snapshots: true
+      - name: Build drools-core
+        run: mvn -B clean install -Dquickly --file drools-core/pom.xml
+      - name: Build drools-compiler
+        run: mvn -B clean install -Dquickly --file drools-compiler/pom.xml
+      - name: Run loop Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: cmd
+        run: |
+          FOR /L %%G IN (1,1,50) DO (
+            echo Iteration %%G
+            mvn -B clean test --file drools-test-coverage/test-compiler-integration/pom.xml -Dtest=ConcurrentBasesParallelTest,org.drools.mvel.integrationtests.KieContainerTest#testIncrementalCompilationSynchronization*
+          )
+      - name:  Run loop Linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          for i in {1..50}; do
+            echo "Iteration $i"
+            mvn -B clean test --file drools-test-coverage/test-compiler-integration/pom.xml -Dtest=ConcurrentBasesParallelTest,org.drools.mvel.integrationtests.KieContainerTest#testIncrementalCompilationSynchronization*
+          done

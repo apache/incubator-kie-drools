@@ -48,6 +48,8 @@ import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.util.TupleRBTree.Node;
 import org.kie.api.definition.rule.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -57,6 +59,7 @@ public class ReteooBuilder
         implements
         Externalizable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ReteooBuilder.class);
 
     private static final long           serialVersionUID = 510l;
 
@@ -158,6 +161,7 @@ public class ReteooBuilder
     }
 
     public synchronized void removeRules(Collection<? extends Rule> rulesToBeRemoved, Collection<InternalWorkingMemory> workingMemories) {
+        LOG.info("removeRules: " + rulesToBeRemoved);
         for (Rule r : rulesToBeRemoved) {
             RuleImpl rule = (RuleImpl) r;
             if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {

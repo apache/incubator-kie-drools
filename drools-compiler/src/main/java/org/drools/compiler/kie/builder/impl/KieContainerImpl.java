@@ -298,6 +298,14 @@ public class KieContainerImpl
                                                                           )))
                         .forEach(compositeUpdater::add);
 
+                log.warn("update");
+                cs.getChanges().entrySet().forEach( entry -> {
+                    String resourceName = entry.getKey();
+                    ResourceChangeSet resourceChangeSet = entry.getValue();
+                    if (resourceName.equals("rules1.drl")) {
+                        log.warn("  " + resourceName + " -> " + resourceChangeSet.getChanges());
+                    }
+                });
                 kBase.enqueueModification(compositeUpdater);
 
             }

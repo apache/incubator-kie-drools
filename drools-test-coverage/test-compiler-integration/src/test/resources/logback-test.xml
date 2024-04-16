@@ -30,6 +30,11 @@
 
     <logger name="org.kie" level="warn"/>
     <logger name="org.drools" level="warn"/>
+    <logger name="org.drools.core" level="INFO"/>
+    <logger name="org.drools.compiler.builder.impl.processors" level="INFO"/>
+    <logger name="org.drools.compiler.kie.builder.impl" level="INFO"/>
+    <logger name="org.drools.compiler.kie.builder.impl.KieContainerImpl" level="warn"/>
+    <logger name="org.drools.mvel.integrationtests" level="INFO"/>
 
 <!--     <logger name="org.drools.core.management" level="debug"/> -->
 <!--    <logger name="org.drools.modelcompiler.builder" level="debug"/>-->

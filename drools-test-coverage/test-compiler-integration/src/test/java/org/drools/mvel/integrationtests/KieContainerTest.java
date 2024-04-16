@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.compiler.io.Folder;
@@ -49,6 +51,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
@@ -56,6 +60,8 @@ import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatc
 
 @RunWith(Parameterized.class)
 public class KieContainerTest {
+
+    private final Logger LOG = LoggerFactory.getLogger(KieContainerTest.class);
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
@@ -248,49 +254,110 @@ public class KieContainerTest {
         ksession.insert(message);
     }
 
+    private static volatile boolean running = true;
 
     @Test(timeout = 20000)
     public void testIncrementalCompilationSynchronization() {
-        final KieServices kieServices = KieServices.Factory.get();
 
-        ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0.0");
-        KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, createDRL("rule0"));
+        int MAX_THREAD = 8;
+        ExecutorService executor = Executors.newFixedThreadPool(MAX_THREAD);
 
-        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        try {
+            for (int n = 0; n < 1; n++) {
+                LOG.info("*** run : n = " + n);
 
-        KieSession kieSession = kieContainer.newKieSession();
-        List<String> list = new ArrayList<>();
-        kieSession.setGlobal("list", list);
-        kieSession.fireAllRules();
-        kieSession.dispose();
-        assertThat(list.size()).isEqualTo(1);
+                final KieServices kieServices = KieServices.Factory.get();
 
-        Thread t = new Thread(() -> {
-            for (int i = 1; i < 10; i++) {
-                ReleaseId releaseId1 = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
-                KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, createDRL("rule" + i));
-                kieContainer.updateToVersion(releaseId1);
+                ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0.0");
+                KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, createDRL("rule0"));
+
+                final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+                KieSession kieSession = kieContainer.newKieSession();
+                List<String> list = new ArrayList<>();
+                kieSession.setGlobal("list", list);
+                kieSession.fireAllRules();
+                kieSession.dispose();
+                assertThat(list.size()).isEqualTo(1);
+                LOG.info("  1st iteration done");
+
+                running = true;
+//                for (int m = 0; m < MAX_THREAD; m++) {
+//                    executor.execute(new Runnable() {
+//
+//                        public void run() {
+//                            long dummy = 0;
+//                            while (running) {  // The thread runs until 'running' is set to false
+//                                dummy += 1;    // Simple increment to keep the thread busy
+//                                if (dummy < 0) {
+//                                    dummy = 0;
+//                                }
+//                                dummy += 1;
+//                            }
+//                        }
+//                    });
+//                }
+
+                Thread t = new Thread(() -> {
+                    for (int i = 1; i < 10; i++) {
+                        ReleaseId releaseId1 = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
+                        LOG.info("  getKieModuleFromDrls: " + releaseId1.toExternalForm());
+                        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, createDRL("rule" + i));
+                        LOG.info("  updateToVersion: " + releaseId1.toExternalForm());
+                        kieContainer.updateToVersion(releaseId1);
+                    }
+                });
+
+                t.setDaemon(true);
+                t.start();
+
+                String lastResult = "";
+                int sameResultCounter = 0;
+                while (true) {
+                    kieSession = kieContainer.newKieSession();
+
+//                    kieSession.addEventListener(new SlownessAgendaEventListener());
+
+                    list = new ArrayList<>();
+                    kieSession.setGlobal("list", list);
+                    kieSession.fireAllRules();
+                    kieSession.dispose();
+                    // There can be multiple items in the list if an updateToVersion is triggered during a fireAllRules
+                    // (updateToVersion can be called multiple times during fireAllRules, especially on slower machines)
+                    // in that case it may fire with the old rule and multiple new ones
+                    assertThat(list).isNotEmpty();
+                    if (list.get(0).equals("rule9")) {
+                        LOG.info("  ** Fired rule: list = " + list);
+                        running = false;
+                        break;
+                    } else {
+                        if (!lastResult.equals(list.toString())) {
+                            LOG.info("  ** Fired rule: list = " + list + ", previous sameResultCounter = " + sameResultCounter);
+                            lastResult = list.toString();
+                            sameResultCounter = 0;
+                        } else {
+                            sameResultCounter++;
+                        }
+                    }
+                }
             }
-        });
-
-        t.setDaemon(true);
-        t.start();
-
-        while (true) {
-            kieSession = kieContainer.newKieSession();
-            list = new ArrayList<>();
-            kieSession.setGlobal("list", list);
-            kieSession.fireAllRules();
-            kieSession.dispose();
-            // There can be multiple items in the list if an updateToVersion is triggered during a fireAllRules
-            // (updateToVersion can be called multiple times during fireAllRules, especially on slower machines)
-            // in that case it may fire with the old rule and multiple new ones
-            assertThat(list).isNotEmpty();
-            if (list.get(0).equals("rule9")) {
-                break;
-            }
+        } finally {
+            running = false;
         }
     }
+
+    static class SlownessAgendaEventListener extends org.kie.api.event.rule.DefaultAgendaEventListener {
+
+        @Override
+        public void beforeMatchFired(org.kie.api.event.rule.BeforeMatchFiredEvent event) {
+            try {
+                Thread.sleep(80);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+         }
+    }
+
 
     @Test
     public void testMemoryFileSystemFolderUniqueness() {
