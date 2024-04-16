@@ -2,7 +2,7 @@ parser grammar DRLParser;
 
 options { tokenVocab=DRLLexer; }
 
-import JavaParser;
+import DRL6Expressions, JavaParser;
 
     /*
      * statement := importStatement
@@ -138,26 +138,6 @@ constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
 nestedConstraint : ( IDENTIFIER ( DOT | NULL_SAFE_DOT | HASH ) )* IDENTIFIER (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
 
-// TBD: constraint parsing could be delegated to DRL6ExpressionParser
-conditionalOrExpression : left=conditionalAndExpression (OR right=conditionalAndExpression)* ;
-conditionalAndExpression : left=inclusiveOrExpression (AND right=inclusiveOrExpression)* ;
-inclusiveOrExpression : left=exclusiveOrExpression (BITOR right=exclusiveOrExpression)* ;
-exclusiveOrExpression : left=andExpression (CARET right=andExpression)* ;
-andExpression : left=equalityExpression (BITAND right=equalityExpression)* ;
-equalityExpression : label? left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
-instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
-inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
-relationalExpression : left=drlExpression (right=orRestriction)* ;
-orRestriction : left=andRestriction (OR right=andRestriction)* ;
-andRestriction : left=singleRestriction (AND right=singleRestriction)* ;
-singleRestriction : op=relationalOperator squareArguments? drlExpression ;
-
-// OOPath
-xpathSeparator : DIV | QUESTION_DIV ;
-xpathPrimary : label? xpathChunk+ ;
-xpathChunk : xpathSeparator drlIdentifier (DOT drlIdentifier)* (HASH drlIdentifier)? (LBRACK xpathExpressionList RBRACK)? ;
-xpathExpressionList : label? drlExpression (COMMA label? drlExpression)* ;
-
 // named consequence
 
 // consequenceInvocation := conditionalBranch | namedConsequence
@@ -188,8 +168,7 @@ relationalOperator
     | temporalOperator
     ;
 
-// IDENTIFIER is required to accept custom operators.
-drlRelationalOperator : DRL_NOT? (IDENTIFIER | builtInOperator) ;
+drlRelationalOperator : DRL_NOT? builtInOperator ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
 functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock ;
@@ -198,93 +177,6 @@ functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock 
 /* extending JavaParser qualifiedName */
 drlQualifiedName
     : drlIdentifier (DOT drlIdentifier)*
-    ;
-
-/* extending JavaParser identifier */
-drlIdentifier
-    : drlKeywords
-    | IDENTIFIER
-    | MODULE
-    | OPEN
-    | REQUIRES
-    | EXPORTS
-    | OPENS
-    | TO
-    | USES
-    | PROVIDES
-    | WITH
-    | TRANSITIVE
-    | YIELD
-    | SEALED
-    | PERMITS
-    | RECORD
-    | VAR
-    | THIS
-    ;
-
-drlKeywords
-    : builtInOperator
-    | DRL_UNIT
-    | DRL_FUNCTION
-    | DRL_GLOBAL
-    | DRL_DECLARE
-    | DRL_RULE
-    | DRL_QUERY
-    | DRL_WHEN
-    | DRL_THEN
-    | DRL_END
-    | DRL_AND
-    | DRL_OR
-    | DRL_EXISTS
-    | DRL_NOT
-    | DRL_IN
-    | DRL_FROM
-    | DRL_ACCUMULATE
-    | DRL_ACC
-    | DRL_INIT
-    | DRL_ACTION
-    | DRL_REVERSE
-    | DRL_RESULT
-    | DRL_ENTRY_POINT
-    | DRL_EVAL
-    | DRL_SALIENCE
-    | DRL_ENABLED
-    | DRL_NO_LOOP
-    | DRL_AUTO_FOCUS
-    | DRL_LOCK_ON_ACTIVE
-    | DRL_REFRACT
-    | DRL_DIRECT
-    | DRL_AGENDA_GROUP
-    | DRL_ACTIVATION_GROUP
-    | DRL_RULEFLOW_GROUP
-    | DRL_DATE_EFFECTIVE
-    | DRL_DATE_EXPIRES
-    | DRL_DIALECT
-    | DRL_CALENDARS
-    | DRL_TIMER
-    | DRL_DURATION
-    ;
-
-builtInOperator
-    : DRL_CONTAINS
-    | DRL_EXCLUDES
-    | DRL_MATCHES
-    | DRL_MEMBEROF
-    | DRL_SOUNDSLIKE
-    | DRL_AFTER
-    | DRL_BEFORE
-    | DRL_COINCIDES
-    | DRL_DURING
-    | DRL_FINISHED_BY
-    | DRL_FINISHES
-    | DRL_INCLUDES
-    | DRL_MEETS
-    | DRL_MET_BY
-    | DRL_OVERLAPPED_BY
-    | DRL_OVERLAPS
-    | DRL_STARTED_BY
-    | DRL_STARTS
-    | DRL_STR
     ;
 
 /* extending JavaParser expression */
@@ -351,16 +243,6 @@ temporalOperator : DRL_NOT? bop=(DRL_AFTER | DRL_BEFORE | DRL_COINCIDES | DRL_DU
 
 timeAmount : LBRACK (TIME_INTERVAL | DECIMAL_LITERAL | MUL | SUB MUL) (COMMA (TIME_INTERVAL | DECIMAL_LITERAL | MUL | SUB MUL))* RBRACK ;
 
-unaryExpressionNotPlusMinus : (left2=xpathPrimary | left1=drlPrimary) (selector)* ;
-
-selector
-    : DOT SUPER superSuffix
-    | DOT NEW (nonWildcardTypeArguments)? innerCreator
-    | (DOT | NULL_SAFE_DOT) drlIdentifier (drlArguments)?
-    | (DOT | NULL_SAFE_DOT) drlMethodCall
-    | LBRACK drlExpression RBRACK
-    ;
-
 /* extending JavaParser primary */
 drlPrimary
     : LPAREN drlExpression RPAREN
@@ -368,23 +250,12 @@ drlPrimary
     | SUPER
     | NEW drlCreator
     | drlLiteral
-    | drlIdentifier drlIdentifierMiddle* identifierSuffix?
+    | drlIdentifier
     | typeTypeOrVoid DOT CLASS
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
     | inlineMapExpression
     | inlineCast
-    ;
-
-drlIdentifierMiddle
-    : (DOT | NULL_SAFE_DOT | HASH) drlIdentifier
-    | (DOT | NULL_SAFE_DOT) LPAREN drlExpression (COMMA drlExpression)* RPAREN
-    ;
-
-identifierSuffix
-    : (LBRACK RBRACK)+ DOT CLASS
-    | (LBRACK drlExpression RBRACK)+
-    | arguments
     ;
 
 inlineCast : drlIdentifier HASH drlIdentifier ;
@@ -403,14 +274,8 @@ drlLiteral
     | TIME_INTERVAL
     ;
 
-squareArguments : LBRACK expressionList? RBRACK ;
-
 inlineListExpression
     :   LBRACK expressionList? RBRACK
-    ;
-
-expressionList
-    :   drlExpression (COMMA drlExpression)*
     ;
 
 inlineMapExpression
@@ -446,7 +311,7 @@ patternSource : fromAccumulate
               | fromExpression
               ;
 
-fromExpression : unaryExpressionNotPlusMinus ;
+fromExpression : conditionalOrExpression ;
 
 
 /*
@@ -559,13 +424,15 @@ drlElementValue
     ;
 
 attributes : attribute ( COMMA? attribute )* ;
-attribute : name=( 'salience' | 'enabled' ) conditionalOrExpression #expressionAttribute
+attribute : name=( 'salience' | 'enabled' ) conditionalAttributeValue #expressionAttribute
           | name=( 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL? #booleanAttribute
           | name=( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL #stringAttribute
           | name='calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
           | name='timer' ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
           | name='duration' ( DECIMAL_LITERAL | TIME_INTERVAL | LPAREN TIME_INTERVAL RPAREN ) #durationAttribute
           ;
+
+conditionalAttributeValue : ( LPAREN conditionalExpression RPAREN | conditionalExpression ) ;
 
 chunk : .+?;
 

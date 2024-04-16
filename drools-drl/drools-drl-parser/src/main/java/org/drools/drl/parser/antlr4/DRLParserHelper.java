@@ -32,6 +32,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * Collection of static helper methods for DRLParser
@@ -76,7 +77,10 @@ public class DRLParserHelper {
     private static DRLParser createDrlParser(CharStream charStream) {
         DRLLexer drlLexer = new DRLLexer(charStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(drlLexer);
-        return new DRLParser(commonTokenStream);
+        DRLParser parser = new DRLParser(commonTokenStream);
+        ParserHelper helper = new ParserHelper(commonTokenStream, LanguageLevelOption.DRL6);
+        parser.setHelper(helper);
+        return parser;
     }
 
     /**

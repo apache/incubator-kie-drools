@@ -399,7 +399,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .build();
-        attributeDescr.setValue(getTextPreservingWhitespace(ctx.conditionalOrExpression()));
+        attributeDescr.setValue(getTextPreservingWhitespace(ctx.conditionalAttributeValue()));
         attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
         return attributeDescr;
     }
@@ -673,8 +673,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .build();
         behaviorDescr.setType(ctx.DRL_WINDOW().getText());
         behaviorDescr.setSubType(ctx.IDENTIFIER().getText());
-        List<DRLParser.DrlExpressionContext> drlExpressionContexts = ctx.expressionList().drlExpression();
-        List<String> parameters = drlExpressionContexts.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
+        List<DRLParser.ExpressionContext> expressionContexts = ctx.expressionList().expression();
+        List<String> parameters = expressionContexts.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
         behaviorDescr.setParameters(parameters);
         return behaviorDescr;
     }
