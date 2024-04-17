@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`CloudEventFieldLabelIcon tests default snapshot test - with header 1`] = `<div />`;
-
-exports[`CloudEventFieldLabelIcon tests default snapshot test 1`] = `<div />`;

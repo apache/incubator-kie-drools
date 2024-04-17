@@ -36,10 +36,6 @@
 
     <properties>
         <skip.springboot>false</skip.springboot>
-        <skip.ui.deps>false</skip.ui.deps>
-        <skip.ui.build>false</skip.ui.build>
-        <skip.ui.test>${skipTests}</skip.ui.test>
-        <skip.ui.it>${skipITs}</skip.ui.it>
 
         <failsafe.include>**/*IT.java</failsafe.include>
         <failsafe.exclude>**/Native*IT.java</failsafe.exclude>
@@ -61,7 +57,6 @@
         <container.image.data-index-service-inmemory>org.kie.kogito/data-index-service-inmemory:${project.version}</container.image.data-index-service-inmemory>
         <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
         <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
-        <container.image.trusty-ui>org.kie.kogito/trusty-ui:${project.version}</container.image.trusty-ui>
         <container.image.integration-tests-trusty-service-quarkus>org.kie.kogito/integration-tests-trusty-service-quarkus:${project.version}</container.image.integration-tests-trusty-service-quarkus>
 
         <!-- OptaPlanner version -->
@@ -268,10 +263,6 @@
             </activation>
             <properties>
                 <skip.springboot>true</skip.springboot>
-                <skip.ui.deps>true</skip.ui.deps>
-                <skip.ui.build>true</skip.ui.build>
-                <skip.ui.test>true</skip.ui.test>
-                <skip.ui.it>true</skip.ui.it>
                 <failsafe.include>**/Native*IT.java</failsafe.include>
                 <failsafe.exclude></failsafe.exclude>
                 <quarkus.native.native-image-xmx>8g</quarkus.native.native-image-xmx>
@@ -295,20 +286,6 @@
             </build>
         </profile>
         <profile>
-            <id>skipUI</id>
-            <activation>
-                <property>
-                    <name>skipUI</name>
-                </property>
-            </activation>
-            <properties>
-                <skip.ui.deps>true</skip.ui.deps>
-                <skip.ui.build>true</skip.ui.build>
-                <skip.ui.test>true</skip.ui.test>
-                <skip.ui.it>true</skip.ui.it>
-            </properties>
-        </profile>
-        <profile>
             <id>quickly</id>
             <activation>
                 <property>
@@ -316,8 +293,6 @@
                 </property>
             </activation>
             <properties>
-                <skip.ui.deps>true</skip.ui.deps>
-                <skip.ui.build>true</skip.ui.build>
                 <skip.springboot>true</skip.springboot>
                 <formatter.skip>true</formatter.skip>
                 <skipITs>true</skipITs>

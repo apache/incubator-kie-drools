@@ -1,7 +1,0 @@
-{
-  "extends": ["plugin:cypress/recommended"],
-  "rules": {
-    "cypress/require-data-selectors": "error",
-    "cypress/unsafe-to-chain-command": "off"
-  }
-}

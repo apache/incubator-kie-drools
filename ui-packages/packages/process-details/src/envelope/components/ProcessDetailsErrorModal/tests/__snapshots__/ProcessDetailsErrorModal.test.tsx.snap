@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Process details error modal tests Snapshot test with default props 1`] = `
-<div
-  aria-hidden="true"
-/>
-`;

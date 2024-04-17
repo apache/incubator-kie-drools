@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`AboutModal component tests snapshot testing 1`] = `
-<div
-  aria-hidden="true"
-/>
-`;
