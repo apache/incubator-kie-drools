@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.GeneratedFile;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,7 +52,7 @@ class PredictionCodegenInternalGenerateTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "target/test-classes");
+        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, String.format("%s/test-classes", AppPaths.TARGET_DIR));
     }
 
     @AfterAll

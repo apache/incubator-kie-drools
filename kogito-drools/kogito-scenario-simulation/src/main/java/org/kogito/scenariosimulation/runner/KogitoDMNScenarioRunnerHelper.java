@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.AppPaths;
 import org.drools.io.FileSystemResource;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
@@ -53,7 +54,7 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
 
     private DMNRuntime dmnRuntime = initDmnRuntime();
 
-    private static final String targetFolder = File.separator + "target" + File.separator;
+    private static final String targetFolder = File.separator + AppPaths.TARGET_DIR + File.separator;
     private static final String generatedResourcesFolder = targetFolder + "generated-resources" + File.separator;
 
     @Override

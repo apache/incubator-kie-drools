@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.di.impl.CDIDependencyInjectionAnnotator;
 import org.drools.util.StringUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -80,7 +81,7 @@ class PMMLRestResourceGeneratorTest {
         String filePrefix = URLEncoder.encode(getSanitizedClassName(KIE_PMML_MODEL.getFileName().replace(".pmml", "")));
         String classPrefix = URLEncoder.encode(getSanitizedClassName(KIE_PMML_MODEL.getName()));
         expectedUrl = String.format("/%s/%s", filePrefix, classPrefix);
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "target/test-classes");
+        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, String.format("%s/test-classes", AppPaths.TARGET_DIR));
     }
 
     @AfterAll

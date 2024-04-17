@@ -22,6 +22,7 @@ import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,13 +38,13 @@ import org.apache.maven.project.MavenProject;
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileWriter;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
-import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.prediction.PredictionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
@@ -54,6 +55,8 @@ import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
+
+    protected static final GeneratedFileWriter.Builder generatedFileWriterBuilder = GeneratedFileWriter.builder("kogito", "kogito.codegen.resources.directory", "kogito.codegen.sources.directory");
 
     @Parameter(required = true, defaultValue = "${project.basedir}")
     protected File projectDir;
@@ -67,11 +70,8 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
     protected File outputDirectory;
 
-    @Parameter(defaultValue = "${project.build.directory}/" + GeneratedFileWriter.DEFAULT_SOURCES_DIR)
-    protected File generatedSources;
-
-    @Parameter(defaultValue = "${project.build.directory}/" + GeneratedFileWriter.DEFAULT_RESOURCE_PATH)
-    protected File generatedResources;
+    @Parameter(required = true, defaultValue = "${project.basedir}")
+    protected File baseDir;
 
     @Parameter(property = "kogito.codegen.persistence", defaultValue = "true")
     protected boolean persistence;
@@ -102,7 +102,7 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     }
 
     protected KogitoBuildContext discoverKogitoRuntimeContext(ClassLoader classLoader) {
-        AppPaths appPaths = AppPaths.fromProjectDir(projectDir.toPath(), outputDirectory.toPath());
+        AppPaths appPaths = AppPaths.fromProjectDir(projectDir.toPath());
         KogitoBuildContext context = contextBuilder()
                 .withClassAvailabilityResolver(this::hasClassOnClasspath)
                 .withClassSubTypeAvailabilityResolver(classSubTypeAvailabilityResolver())
@@ -250,20 +250,27 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     }
 
     protected void writeGeneratedFiles(Collection<GeneratedFile> generatedFiles) {
-        generatedFiles.forEach(this::writeGeneratedFile);
+        GeneratedFileWriter writer = getGeneratedFileWriter();
+        generatedFiles.forEach(generatedFile -> writeGeneratedFile(generatedFile, writer));
     }
 
     protected void writeGeneratedFile(GeneratedFile generatedFile) {
-        GeneratedFileWriter writer = new GeneratedFileWriter(outputDirectory.toPath(),
-                generatedSources.toPath(),
-                generatedResources.toPath(),
-                getSourcesPath().toPath());
+        writeGeneratedFile(generatedFile, getGeneratedFileWriter());
+    }
 
+    protected void writeGeneratedFile(GeneratedFile generatedFile, GeneratedFileWriter writer) {
         getLog().info("Generating: " + generatedFile.relativePath());
         writer.write(generatedFile);
     }
 
     protected File getSourcesPath() {
-        return generatedSources;
+        // using runtime BT instead of static AppPaths.MAVEN to allow
+        // invocation from GRADLE
+        return Path.of(baseDir.getAbsolutePath(), AppPaths.BT.GENERATED_SOURCES_PATH.toString()).toFile();
+    }
+
+    protected GeneratedFileWriter getGeneratedFileWriter() {
+        return generatedFileWriterBuilder
+                .build(Path.of(baseDir.getAbsolutePath()));
     }
 }

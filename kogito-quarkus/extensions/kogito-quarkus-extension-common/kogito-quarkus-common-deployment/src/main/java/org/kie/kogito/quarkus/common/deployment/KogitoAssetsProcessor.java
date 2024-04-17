@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
@@ -107,10 +108,9 @@ public class KogitoAssetsProcessor {
     @BuildStep
     public KogitoBuildContextBuildItem generateKogitoBuildContext(List<KogitoBuildContextAttributeBuildItem> attributes) {
         // configure the application generator
-        PathCollection rootPaths = getRootPaths(root.getResolvedPaths());
+        PathCollection rootPaths = getRootPaths(root.getResolvedPaths(), AppPaths.BT);
         KogitoBuildContext context =
-                kogitoBuildContext(outputTargetBuildItem.getOutputDirectory(),
-                        rootPaths,
+                kogitoBuildContext(rootPaths,
                         combinedIndexBuildItem.getIndex(),
                         curateOutcomeBuildItem.getApplicationModel().getAppArtifact());
         attributes.forEach(attribute -> context.addContextAttribute(attribute.getName(), attribute.getValue()));
@@ -218,26 +218,26 @@ public class KogitoAssetsProcessor {
         return new EfestoGeneratedClassBuildItem(kogitoGeneratedSourcesBuildItem.getGeneratedFiles());
     }
 
-    static PathCollection getRootPaths(PathCollection resolvedPaths) {
-        AtomicReference<PathCollection> toReturnRef = new AtomicReference<>(resolvedPaths);
-        if (resolvedPaths.stream().noneMatch(path -> path.endsWith(File.separator + "generated-resources"))) {
-            Optional<Path> optClassesPath =
-                    resolvedPaths.stream().filter(path -> {
-                        String fullPath = path.toString();
-                        String dir = fullPath.substring(fullPath.lastIndexOf(File.separator) + 1);
-                        return dir.equals("classes");
-                    }).findFirst();
-            optClassesPath.ifPresent(classesPath -> {
-                Path toAdd = Path.of(classesPath.toString().replace(File.separator + "classes",
-                        File.separator +
-                                "generated" +
-                                "-resources"));
-                List<Path> prevPaths = toReturnRef.get().stream().collect(Collectors.toList());
-                prevPaths.add(toAdd);
-                toReturnRef.set(PathList.from(prevPaths));
-            });
+    static PathCollection getRootPaths(PathCollection resolvedPaths, AppPaths.BuildTool bt) {
+        // Needed hack because during MAVEN build, resolvedPaths point to root of project,
+        // while during GRADLE build, resolved paths contains {root_project}/build/classes/java/main and
+        // {root_project}/build/resources/main
+        switch (bt) {
+            case GRADLE -> {
+                AtomicReference<PathCollection> toReturnRef = new AtomicReference<>(resolvedPaths);
+                Optional<Path> optClassesPath =
+                        resolvedPaths.stream().filter(path -> {
+                            String fullPath = path.toString();
+                            String lookingFor = "build/classes/java/main".replace("/", File.separator);
+                            return fullPath.endsWith(lookingFor);
+                        }).findFirst();
+                optClassesPath.ifPresent(classesPath -> toReturnRef.set(PathList.of(classesPath)));
+                return toReturnRef.get();
+            }
+            default -> {
+                return resolvedPaths;
+            }
         }
-        return toReturnRef.get();
     }
 
     private Collection<GeneratedFile> collectGeneratedFiles(KogitoGeneratedSourcesBuildItem sources, List<KogitoAddonsPreGeneratedSourcesBuildItem> preSources,

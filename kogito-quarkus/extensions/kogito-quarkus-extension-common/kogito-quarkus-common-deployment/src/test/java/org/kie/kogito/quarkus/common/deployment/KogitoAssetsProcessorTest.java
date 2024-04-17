@@ -22,7 +22,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
+import org.drools.codegen.common.AppPaths;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import io.quarkus.bootstrap.model.PathsCollection;
 import io.quarkus.paths.PathCollection;
@@ -32,34 +34,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class KogitoAssetsProcessorTest {
 
-    @Test
-    void getRootPathsWithoutClasses() {
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void getRootPathsWithoutClasses(boolean withGradle) {
         String projectDirPath = "projectDir";
-        String outputTargetPath = "outputTarget";
         Path projectDir = Path.of(projectDirPath);
-        Path outputTarget = Path.of(outputTargetPath);
+        AppPaths.BuildTool bt;
+        if (withGradle) {
+            bt = AppPaths.BuildTool.GRADLE;
+        } else {
+            bt = AppPaths.BuildTool.MAVEN;
+        }
+        Path outputTarget = Path.of(bt.OUTPUT_DIRECTORY);
         Iterable<Path> paths = Arrays.asList(projectDir, outputTarget);
-
         PathCollection resolvedPaths = PathsCollection.from(paths);
-        PathCollection retrieved = KogitoAssetsProcessor.getRootPaths(resolvedPaths);
+        PathCollection retrieved = KogitoAssetsProcessor.getRootPaths(resolvedPaths, bt);
         assertEquals(resolvedPaths.size(), retrieved.size());
         paths.forEach(expected -> assertTrue(retrieved.contains(expected)));
     }
 
-    @Test
-    void getRootPathsWithClasses() {
+    @ParameterizedTest
+    @ValueSource(booleans = { true, false })
+    void getRootPathsWithClasses(boolean withGradle) {
         String projectDirPath = "projectDir";
-        String outputTargetPath = "outputTarget";
-        String outputTargetPathClasses = String.format("%s/%s/classes", projectDirPath, outputTargetPath).replace("/", File.separator);
+        AppPaths.BuildTool bt;
+        if (withGradle) {
+            bt = AppPaths.BuildTool.GRADLE;
+        } else {
+            bt = AppPaths.BuildTool.MAVEN;
+        }
+        String outputTargetPathClasses = String.format("%s/%s", projectDirPath, bt.CLASSES_PATH.toString()).replace("./", "").replace("/", File.separator);
         Path projectDir = Path.of(projectDirPath);
         Path outputTarget = Path.of(outputTargetPathClasses);
         Iterable<Path> paths = Arrays.asList(projectDir, outputTarget);
 
         PathCollection resolvedPaths = PathsCollection.from(paths);
-        PathCollection retrieved = KogitoAssetsProcessor.getRootPaths(resolvedPaths);
-        assertEquals(resolvedPaths.size() + 1, retrieved.size());
-        paths.forEach(expected -> assertTrue(retrieved.contains(expected)));
-        String expectedPath = String.format("%s/%s/generated-resources", projectDirPath, outputTargetPath).replace("/", File.separator);
+        PathCollection retrieved = KogitoAssetsProcessor.getRootPaths(resolvedPaths, bt);
+        int expectedSize = withGradle ? 1 : resolvedPaths.size();
+        assertEquals(expectedSize, retrieved.size());
+        String expectedPath = String.format("%s/%s", projectDirPath, bt.CLASSES_PATH).replace("/", File.separator);
         assertTrue(retrieved.contains(Path.of(expectedPath)));
     }
 }

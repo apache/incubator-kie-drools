@@ -34,6 +34,7 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.GeneratedFileWriter;
 import org.drools.quarkus.util.deployment.QuarkusAppPaths;
 import org.drools.util.PortablePath;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -44,7 +45,6 @@ import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.SourceFileCodegenBindNotifier;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.core.utils.GeneratedFileWriter;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,16 +76,11 @@ public class KogitoQuarkusResourceUtils {
 
     // since quarkus-maven-plugin is later phase of maven-resources-plugin,
     // need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath )
-    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder =
-            new GeneratedFileWriter.Builder(
-                    "target/classes",
-                    System.getProperty("kogito.codegen.sources.directory", "target/generated-sources/kogito/"),
-                    System.getProperty("kogito.codegen.resources.directory", "target/generated-resources/kogito/"),
-                    "target/generated-sources/kogito/");
+    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder = GeneratedFileWriter.builder("kogito", "kogito.codegen.resources.directory", "kogito.codegen.sources.directory");
 
-    public static KogitoBuildContext kogitoBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index, Dependency appArtifact) {
+    public static KogitoBuildContext kogitoBuildContext(Iterable<Path> paths, IndexView index, Dependency appArtifact) {
         // scan and parse paths
-        AppPaths appPaths = QuarkusAppPaths.from(outputTarget, paths, AppPaths.BuildTool.findBuildTool());
+        AppPaths appPaths = QuarkusAppPaths.from(paths);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
                 .withApplicationPropertyProvider(new KogitoQuarkusApplicationPropertiesProvider())
@@ -111,9 +106,7 @@ public class KogitoQuarkusResourceUtils {
     private static Predicate<Class<?>> classSubTypeAvailabilityResolver(IndexView index) {
         return clazz -> index.getAllKnownImplementors(DotName.createSimple(clazz.getCanonicalName()))
                 .stream()
-                .filter(c -> !Modifier.isInterface(c.flags()) && !Modifier.isAbstract(c.flags()))
-                .findFirst()
-                .isPresent();
+                .anyMatch(c -> !Modifier.isInterface(c.flags()) && !Modifier.isAbstract(c.flags()));
     }
 
     /**

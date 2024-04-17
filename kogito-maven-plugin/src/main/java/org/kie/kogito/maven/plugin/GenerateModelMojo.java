@@ -54,9 +54,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     public static final PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
-    @Parameter(property = "kogito.codegen.sources.directory", defaultValue = "${project.build.directory}/generated-sources/kogito")
-    private File customizableSourcesPath;
-
     /**
      * Partial generation can be used when reprocessing a pre-compiled project
      * for faster code-generation. It only generates code for rules and processes,
@@ -72,19 +69,16 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     private boolean keepSources;
 
-    @Parameter(property = "build.output.directory", readonly = true, defaultValue = "${project.build.directory}/classes/")
-    private String buildOutputDirectory;
-
     @Override
     public void execute() throws MojoExecutionException {
         // TODO to be removed with DROOLS-7090
         boolean indexFileDirectorySet = false;
-        getLog().debug("execute -> " + buildOutputDirectory);
-        if (buildOutputDirectory == null) {
+        getLog().debug("execute -> " + outputDirectory);
+        if (outputDirectory == null) {
             throw new MojoExecutionException("${project.build.directory} is null");
         }
         if (System.getProperty(INDEXFILE_DIRECTORY_PROPERTY) == null) {
-            System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, buildOutputDirectory);
+            System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, outputDirectory.toString());
             indexFileDirectorySet = true;
         }
         addCompileSourceRoots();
@@ -103,14 +97,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
         return onDemand;
     }
 
-    @Override
-    protected File getSourcesPath() {
-        return customizableSourcesPath;
-    }
-
     protected void addCompileSourceRoots() {
-        project.addCompileSourceRoot(getSourcesPath().getPath());
-        project.addCompileSourceRoot(generatedSources.getPath());
+        project.addCompileSourceRoot(getGeneratedFileWriter().getScaffoldedSourcesDir().toString());
     }
 
     protected void generateModel() throws MojoExecutionException {
@@ -129,9 +117,11 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         Map<GeneratedFileType, List<GeneratedFile>> mappedGeneratedFiles = generatedFiles.stream()
                 .collect(Collectors.groupingBy(GeneratedFile::type));
-        mappedGeneratedFiles.entrySet().stream()
+        List<GeneratedFile> generatedUncompiledFiles = mappedGeneratedFiles.entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(COMPILED_CLASS))
-                .forEach(entry -> writeGeneratedFiles(entry.getValue()));
+                .flatMap(entry -> entry.getValue().stream())
+                .toList();
+        writeGeneratedFiles(generatedUncompiledFiles);
 
         List<GeneratedFile> generatedCompiledFiles = mappedGeneratedFiles.getOrDefault(COMPILED_CLASS,
                 Collections.emptyList())

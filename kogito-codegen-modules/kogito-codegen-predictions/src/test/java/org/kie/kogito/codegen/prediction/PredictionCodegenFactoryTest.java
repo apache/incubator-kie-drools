@@ -21,6 +21,7 @@ package org.kie.kogito.codegen.prediction;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.codegen.common.AppPaths;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +47,7 @@ class PredictionCodegenFactoryTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, "target/test-classes");
+        System.setProperty(INDEXFILE_DIRECTORY_PROPERTY, String.format("%s/test-classes", AppPaths.TARGET_DIR));
     }
 
     @AfterAll
