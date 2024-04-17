@@ -69,12 +69,12 @@
     <version.com.google.protobuf>3.25.0</version.com.google.protobuf>
     <version.com.h2database>2.2.220</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
-    <version.com.sun.xml.bind>2.3.0.1</version.com.sun.xml.bind>
+    <version.com.sun.xml.bind>4.0.4</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.12.2</version.io.micrometer>
-    <version.io.quarkus>3.8.2</version.io.quarkus>
+    <version.io.quarkus>3.8.3</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -97,11 +97,11 @@
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
-    <version.org.hamcrest>1.3</version.org.hamcrest>
+    <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.infinispan>14.0.25.Final</version.org.infinispan>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>6.0.1.Final</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.narayana.tomcat>7.0.1.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.logging>3.5.3.Final</version.org.jboss.logging>
     <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
@@ -111,14 +111,8 @@
     <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
     <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
-    <version.jakarta.ejb-api>3.2.6</version.jakarta.ejb-api>
-    <version.jakarta.servlet.jsp-api>2.3.6</version.jakarta.servlet.jsp-api>
-    <version.jakarta.servlet.jsp.jstl-api>2.0.0</version.jakarta.servlet.jsp.jstl-api>
     <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
-    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
-    <version.jakarta.xml.ws-api>4.0.1</version.jakarta.xml.ws-api>
     <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
-    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
     <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
     <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
     <version.jakarta.json>1.1.5</version.jakarta.json>
@@ -132,7 +126,6 @@
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.xerces>2.12.0.SP04</version.xerces>
-    <version.xmlunit>1.3</version.xmlunit>
 
     <!-- External dependency versions bom -->
     <!-- ################################################################################ -->
@@ -150,7 +143,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>5.8.0</version.org.mockito>
+    <version.org.mockito>5.2.0</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -450,39 +443,14 @@
         <version>${version.jakarta.annotation-api}</version>
       </dependency>
       <dependency>
-        <groupId>jakarta.servlet.jsp</groupId>
-        <artifactId>jakarta.servlet.jsp-api</artifactId>
-        <version>${version.jakarta.servlet.jsp-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.servlet.jsp.jstl</groupId>
-        <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-        <version>${version.jakarta.servlet.jsp.jstl-api}</version>
-      </dependency>
-      <dependency>
         <groupId>jakarta.transaction</groupId>
         <artifactId>jakarta.transaction-api</artifactId>
         <version>${version.jakarta.transaction-api}</version>
       </dependency>
       <dependency>
-        <groupId>jakarta.ws.rs</groupId>
-        <artifactId>jakarta.ws.rs-api</artifactId>
-        <version>${version.jakarta.ws.rs-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.xml.ws</groupId>
-        <artifactId>jakarta.xml.ws-api</artifactId>
-        <version>${version.jakarta.xml.ws-api}</version>
-      </dependency>
-      <dependency>
         <groupId>jakarta.persistence</groupId>
         <artifactId>jakarta.persistence-api</artifactId>
         <version>${version.jakarta.persistence-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
-        <version>${version.jakarta.servlet-api}</version>
       </dependency>
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
@@ -869,12 +837,6 @@
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>${version.xerces}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>${version.xmlunit}</version>
       </dependency>
 
       <!--JMH (Benchmarks)-->
@@ -1320,41 +1282,11 @@
                         </ignoreClasses>
                       </dependency>
                       <dependency>
-                        <!-- This JAR contains classes that override classes coming from jakarta.* -->
-                        <groupId>org.jboss.errai</groupId>
-                        <artifactId>errai-ioc</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>javax.inject.Provider</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <!-- This JAR contains classes that override classes coming from jakarta.* -->
-                        <groupId>org.jboss.errai</groupId>
-                        <artifactId>errai-javax-enterprise</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
                         <!-- quarkus-ide-launcher is a dependency of quarkus-core that they auto exclude during the build -->
                         <groupId>io.quarkus</groupId>
                         <artifactId>quarkus-ide-launcher</artifactId>
                         <ignoreClasses>
                           <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-
-                      <!-- ignore jboss-logging included in kie server router as it is required by undertow and uberjar usage-->
-                      <dependency>
-                        <groupId>org.kie.server</groupId>
-                        <artifactId>kie-server-router-proxy</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>org.jboss.logging.*</ignoreClass>
-                          <ignoreClass>org.jboss.threads.*</ignoreClass>
-                          <ignoreClass>org.xnio.*</ignoreClass>
-                          <ignoreClass>org.wildfly.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
                       <!-- sundr-codegen is required to compile test classes. -->
@@ -1788,48 +1720,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
         </plugin>
-        <!--Fix translations from Zanata -->
-        <plugin>
-          <groupId>com.google.code.maven-replacer-plugin</groupId>
-          <artifactId>replacer</artifactId>
-          <version>1.5.2</version>
-          <configuration>
-            <includes>
-              <include>**/*Constants_de.properties</include>
-              <include>**/*Constants_es_ES.properties</include>
-              <include>**/*Constants_fr_FR.properties</include>
-              <include>**/*Constants_ja_JP.properties</include>
-              <include>**/*Constants_pt_BR.properties</include>
-              <include>**/*Constants_zh_CN.properties</include>
-            </includes>
-            <excludes>
-              <exclude>**/ErraiApp.properties</exclude>
-            </excludes>
-            <replacements>
-              <replacement>
-                <token>''</token>
-                <value>'</value>
-              </replacement>
-              <replacement>
-                <token>'</token>
-                <value>''</value>
-              </replacement>
-            </replacements>
-          </configuration>
-        </plugin>
-        <!-- Zanata -->
-        <plugin>
-          <groupId>org.zanata</groupId>
-          <artifactId>zanata-maven-plugin</artifactId>
-          <version>2.3.0</version>
-          <configuration>
-            <excludes>**/ErraiApp.properties</excludes>
-            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-            <srcDir>src/main/resources/</srcDir>
-            <transDir>src/main/resources/</transDir>
-            <includes>**/*Constants.properties,**/*Constants_en.properties</includes>
-          </configuration>
-        </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
              It has no influence on the Maven build itself. -->
@@ -2235,8 +2125,6 @@
                                 folder during the build. These are not a subject of test coverage measurement.
                               -->
                               <exclude name="**/target/**/target/classes/**/*.class"/>
-                              <exclude name="**/.errai/**/*.class"/>
-                              <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
 
                               <!--
                                 TODO: there are multiple classes of the same fully qualified name in kie-server modules.
