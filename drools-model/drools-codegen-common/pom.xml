@@ -39,6 +39,10 @@
     </properties>
 
     <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-util</artifactId>
+      </dependency>
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
@@ -56,6 +60,11 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
         <scope>test</scope>
       </dependency>
     </dependencies>

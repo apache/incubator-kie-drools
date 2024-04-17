@@ -32,7 +32,6 @@ import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
-import io.quarkus.deployment.pkg.builditem.OutputTargetBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
@@ -71,8 +70,6 @@ public class DroolsAssetsProcessor {
     CurateOutcomeBuildItem curateOutcomeBuildItem;
     @Inject
     CombinedIndexBuildItem combinedIndexBuildItem;
-    @Inject
-    OutputTargetBuildItem outputTargetBuildItem;
 
     private static final String FEATURE = "drools";
 
@@ -91,7 +88,7 @@ public class DroolsAssetsProcessor {
                                  BuildProducer<GlobalsBuildItem> globalsBI,
                                  BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer) {
         DroolsModelBuildContext context =
-                createDroolsBuildContext(outputTargetBuildItem.getOutputDirectory(), root.getPaths(), combinedIndexBuildItem.getIndex());
+                createDroolsBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex());
 
         Collection<Resource> resources = ResourceCollector.fromPaths(context.getAppPaths().getPaths());
 
