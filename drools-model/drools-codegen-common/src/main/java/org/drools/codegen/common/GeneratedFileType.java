@@ -57,7 +57,7 @@ public interface GeneratedFileType {
         /**
          * Represent a cp resource automatically generated during codegen, so after generate-resources maven phase.
          * This means to add it to target/classes both for Quarkus or using kogito-maven-plugin (SB). For additional
-         * information see {@link org.kie.kogito.codegen.utils.GeneratedFileWriter#write(GeneratedFile)}
+         * information see {@link org.drools.codegen.common.GeneratedFileWriter#write(GeneratedFile)}
          * For Quarkus it will be subject of GeneratedResourceBuildItem and NativeImageResourceBuildItem too
          */
         INTERNAL_RESOURCE,

@@ -153,7 +153,7 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
         // default fallback value (usually overridden)
-        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath(), Paths.get(".", AppPaths.TARGET_DIR));
+        protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath());
 
         protected AbstractBuilder() {
         }

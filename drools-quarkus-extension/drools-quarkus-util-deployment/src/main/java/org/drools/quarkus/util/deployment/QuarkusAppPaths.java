@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.drools.codegen.common.AppPaths;
-
 import io.quarkus.deployment.pkg.steps.JarResultBuildStep;
+import org.drools.codegen.common.AppPaths;
 
 /**
  * {@link AppPaths}'s extension in Quarkus context.
@@ -36,8 +36,6 @@ import io.quarkus.deployment.pkg.steps.JarResultBuildStep;
 public class QuarkusAppPaths extends AppPaths {
 
     private static final Path MUTABLE_JAR_PATH = Paths.get("dev", "app");
-    private static final Path CLASSES_PATH = Paths.get(TARGET_DIR, "classes");
-    private static final Path TEST_CLASSES_PATH = Paths.get(TARGET_DIR, "test-classes");
 
     private enum PathType {
         CLASSES,
@@ -53,11 +51,11 @@ public class QuarkusAppPaths extends AppPaths {
         UNKNOWN
     }
 
-    protected QuarkusAppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt, Path outputTarget) {
-        super(projectPaths, classesPaths, isJar, bt, JarResultBuildStep.MAIN, outputTarget);
+    protected QuarkusAppPaths(List<Path> projectPaths, Collection<Path> classesPaths, boolean isJar) {
+        super(projectPaths, classesPaths, isJar, AppPaths.BT, JarResultBuildStep.MAIN, false);
     }
 
-    public static AppPaths from(Path outputTarget, Iterable<Path> paths, AppPaths.BuildTool bt) {
+    public static AppPaths from(Iterable<Path> paths) {
         final Set<Path> projectPaths = new LinkedHashSet<>();
         final Collection<Path> classesPaths = new ArrayList<>();
         boolean isJar = false;
@@ -66,37 +64,45 @@ public class QuarkusAppPaths extends AppPaths {
             switch (pathType) {
                 case CLASSES:
                     classesPaths.add(path);
-                    projectPaths.add(path.getParent().getParent());
+                    projectPaths.add(getParentPath(path));
                     break;
                 case TEST_CLASSES:
-                    projectPaths.add(path.getParent().getParent());
+                    projectPaths.add(getParentPath(path));
                     break;
                 case JAR:
                     isJar = true;
                     classesPaths.add(path);
-                    projectPaths.add(path.getParent().getParent());
+                    projectPaths.add(getParentPath(path));
                     break;
                 case MUTABLE_JAR:
                     // project, class, and target are all the same.
                     // also, we don't need any prefix (see constructor), hence passing GRADLE as the build tool
-                    return new QuarkusAppPaths(Collections.singleton(path), Collections.singleton(path), false, BuildTool.GRADLE, path);
+                    return new QuarkusAppPaths(Collections.singletonList(path), Collections.singleton(path), false);
                 case UNKNOWN:
                     classesPaths.add(path);
                     projectPaths.add(path);
                     break;
             }
         }
-        return new QuarkusAppPaths(projectPaths, classesPaths, isJar, bt, outputTarget);
+        return new QuarkusAppPaths(new ArrayList<>(projectPaths), classesPaths, isJar);
+    }
+
+    private static Path getParentPath(Path path) {
+        if (AppPaths.BT.equals(BuildTool.GRADLE)) {
+            return path.getParent().getParent().getParent().getParent();
+        } else {
+            return path.getParent().getParent();
+        }
     }
 
     private static PathType getPathType(Path archiveLocation) {
         if (archiveLocation.endsWith(MUTABLE_JAR_PATH)) {
             return PathType.MUTABLE_JAR;
         }
-        if (archiveLocation.endsWith(CLASSES_PATH)) {
+        if (archiveLocation.endsWith(AppPaths.BT.CLASSES_PATH)) {
             return PathType.CLASSES;
         }
-        if (archiveLocation.endsWith(TEST_CLASSES_PATH)) {
+        if (archiveLocation.endsWith(AppPaths.BT.TEST_CLASSES_PATH)) {
             return PathType.TEST_CLASSES;
         }
         // Quarkus generates a file with extension .jar.original when doing a native compilation of a uberjar

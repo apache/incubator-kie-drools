@@ -41,6 +41,7 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.codegen.common.GeneratedFileWriter;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
 import org.drools.wiring.api.ComponentsSupplier;
 import org.jboss.jandex.ClassInfo;
@@ -52,7 +53,6 @@ import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.util.Config.getConfig;
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
 /**
@@ -79,17 +79,13 @@ public class DroolsQuarkusResourceUtils {
 
     // since quarkus-maven-plugin is later phase of maven-resources-plugin,
     // need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath );
-    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder =
-            new GeneratedFileWriter.Builder(
-                    "target/classes",
-                    getConfig("drools.codegen.sources.directory", "target/generated-sources/drools/"),
-                    getConfig("drools.codegen.resources.directory", "target/generated-resources/drools/"),
-                    "target/generated-sources/drools/");
+    private static final GeneratedFileWriter.Builder generatedFileWriterBuilder = GeneratedFileWriter.builder("drools"
+            , "drools.codegen.resources.directory", "drools.codegen.sources.directory");
 
-    public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
+
+    public static DroolsModelBuildContext createDroolsBuildContext(Iterable<Path> paths, IndexView index) {
         // scan and parse paths
-        AppPaths.BuildTool buildTool = AppPaths.BuildTool.findBuildTool();
-        AppPaths appPaths = QuarkusAppPaths.from(outputTarget, paths, buildTool);
+        AppPaths appPaths = QuarkusAppPaths.from(paths);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
                 .withClassLoader(classLoader)
