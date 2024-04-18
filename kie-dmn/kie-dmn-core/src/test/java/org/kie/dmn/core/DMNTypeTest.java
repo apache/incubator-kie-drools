@@ -18,20 +18,21 @@
  */
 package org.kie.dmn.core;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -120,6 +121,66 @@ public class DMNTypeTest {
         assertThat(tDecision1.isAssignableValue(Arrays.asList("ae", "efew"))).isTrue();
         assertThat(tDecision1.isAssignableValue(Arrays.asList("sda", "de", "z"))).isTrue();
     }
+
+    @Test
+    public void testAllowedValuesForSimpleTypeInherited() {
+        final String testNS = "testAllowedValuesForSimpleTypeInherited";
+
+        final FEEL feel = FEEL.newInstance();
+        final DMNType aStringSimpleType = typeRegistry.registerType(new SimpleTypeImpl(testNS, "AString", null, false, feel.evaluateUnaryTests("string length( ? ) = 3"), null, FEEL_STRING, BuiltInType.STRING));
+        assertThat(aStringSimpleType.isAssignableValue("abc")).isTrue();
+        assertThat(aStringSimpleType.isAssignableValue("ab")).isFalse();
+        assertThat(aStringSimpleType.isAssignableValue("c")).isFalse();
+        final DMNType aConstrainedStringSimpleType = typeRegistry.registerType(new SimpleTypeImpl(testNS, "AConstrainedString",
+                null, false, feel.evaluateUnaryTests("\"Bob\""), null, aStringSimpleType, BuiltInType.STRING));
+        assertThat(aConstrainedStringSimpleType.isAssignableValue("Bob")).isTrue();
+        assertThat(aConstrainedStringSimpleType.isAssignableValue("abc")).isFalse();
+    }
+
+    @Test
+    public void testAllowedValuesForComplexType() {
+        final String testNS = "testAllowedValuesForComplexType";
+        final FEEL feel = FEEL.newInstance();
+        final Map<String, DMNType> personPrototype = prototype(entry("name", FEEL_STRING), entry("age", FEEL_NUMBER));
+        final BaseDMNTypeImpl dmnPerson = (BaseDMNTypeImpl) typeRegistry.registerType(new CompositeTypeImpl(testNS, "Person", null, false, personPrototype, null, null));
+        dmnPerson.setAllowedValues(feel.evaluateUnaryTests("?.name = \"Bob\", ?.age >= 30"));
+        final Map<String, Object> instanceAdultBob = prototype(entry("name", "Bob"), entry("age", 42));
+        assertThat(dmnPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        final Map<String, Object> instanceYoungBob = prototype(entry("name", "Bob"), entry("age", 12));
+        // UnaryTests are OR - based for constraints defined on the same type
+        assertThat(dmnPerson.isAssignableValue(instanceYoungBob)).isTrue();
+        final Map<String, Object> instanceAdultJoe = prototype(entry("name", "Joe"), entry("age", 42));
+        // UnaryTests are OR - based for constraints defined on the same type
+        assertThat(dmnPerson.isAssignableValue(instanceAdultJoe)).isTrue();
+        final Map<String, Object> instanceYoungJoe = prototype(entry("name", "Joe"), entry("age", 12));
+        assertThat(dmnPerson.isAssignableValue(instanceYoungJoe)).isFalse();
+    }
+
+    @Test
+    public void testAllowedValuesForComplexTypeInherited() {
+        final String testNS = "testAllowedValuesForComplexType";
+        final FEEL feel = FEEL.newInstance();
+        final Map<String, DMNType> personPrototype = prototype(entry("name", FEEL_STRING), entry("age", FEEL_NUMBER));
+        final BaseDMNTypeImpl dmnAdultPerson = (BaseDMNTypeImpl) typeRegistry.registerType(new CompositeTypeImpl(testNS, "AdultPerson", null, false, personPrototype, null, null));
+        dmnAdultPerson.setAllowedValues(feel.evaluateUnaryTests("?.age >= 30"));
+        final Map<String, Object> instanceAdultBob = prototype(entry("name", "Bob"), entry("age", 42));
+        assertThat(dmnAdultPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        final Map<String, Object> instanceYoungBob = prototype(entry("name", "Bob"), entry("age", 12));
+        assertThat(dmnAdultPerson.isAssignableValue(instanceYoungBob)).isFalse();
+
+        final BaseDMNTypeImpl dmnAdultBobPerson = (BaseDMNTypeImpl) typeRegistry.registerType(new CompositeTypeImpl(testNS, "AdultBobPerson", null, false, personPrototype, dmnAdultPerson, null));
+        dmnAdultBobPerson.setAllowedValues(feel.evaluateUnaryTests("?.name = \"Bob\""));
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        // UnaryTests are AND - based for constraints defined on different/inherited types
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungBob)).isFalse();
+        final Map<String, Object> instanceAdultJoe = prototype(entry("name", "Joe"), entry("age", 42));
+        // UnaryTests are AND - based for constraints defined on different/inherited types
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultJoe)).isFalse();
+        final Map<String, Object> instanceYoungJoe = prototype(entry("name", "Joe"), entry("age", 12));
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungJoe)).isFalse();
+    }
+
+
 
 }
 
