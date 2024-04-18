@@ -14,15 +14,15 @@
     <!-- simple type -->
     <dmn:itemDefinition isCollection="false" label="A String" name="AString">
         <dmn:typeRef>string</dmn:typeRef>
-        <allowedValues>
-            <text>string length( ? ) = 3</text>
-        </allowedValues>
+        <dmn:allowedValues>
+            <dmn:text>string length( ? ) = 3</dmn:text>
+        </dmn:allowedValues>
     </dmn:itemDefinition>
     <dmn:itemDefinition isCollection="false" label="A Constrained String" name="AConstrainedString">
         <dmn:typeRef>AString</dmn:typeRef>
-        <allowedValues>
-            <text>"Bob"</text>
-        </allowedValues>
+        <dmn:allowedValues>
+            <dmn:text>"Bob"</dmn:text>
+        </dmn:allowedValues>
     </dmn:itemDefinition>
 
     <!-- complex type -->
@@ -39,15 +39,15 @@
        </dmn:itemComponent>
    </dmn:itemDefinition>
     <dmn:itemDefinition isCollection="false" label="Adult Person" name="AdultPerson">
-        <typeRef>Person</typeRef>
-        <allowedValues>
-            <text>?.age >= 30</text>
-        </allowedValues>
+        <dmn:typeRef>Person</dmn:typeRef>
+        <dmn:allowedValues>
+            <dmn:text>?.age >= 30</dmn:text>
+        </dmn:allowedValues>
     </dmn:itemDefinition>
     <dmn:itemDefinition isCollection="false" label="Adult Bob" name="AdultBob">
         <dmn:typeRef>AdultPerson</dmn:typeRef>
-        <allowedValues>
-            <text>?.name = "Bob"</text>
-        </allowedValues>
+        <dmn:allowedValues>
+            <dmn:text>?.name = "Bob"</dmn:text>
+        </dmn:allowedValues>
     </dmn:itemDefinition>
 </dmn:definitions>
