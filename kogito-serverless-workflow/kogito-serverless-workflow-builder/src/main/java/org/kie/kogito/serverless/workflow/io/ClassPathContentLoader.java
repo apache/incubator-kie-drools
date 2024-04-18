@@ -24,6 +24,8 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ public class ClassPathContentLoader extends CachedContentLoader {
 
     static String getPath(URI uri) {
         final String classPathPrefix = "classpath:";
-        String str = uri.toString();
+        String str = URLDecoder.decode(uri.toString(), Charset.defaultCharset());
         if (str.toLowerCase().startsWith(classPathPrefix)) {
             str = str.substring(classPathPrefix.length());
             while (str.startsWith("/")) {

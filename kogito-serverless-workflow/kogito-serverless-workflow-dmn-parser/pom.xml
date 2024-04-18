@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-serverless-workflow</artifactId>
+    <version>999-SNAPSHOT</version>
+  </parent>
+   <name>Kogito :: Serverless Workflow :: DMN :: Parser</name>
+   
+  <properties>
+      <java.module.name>org.kie.kogito.serverless.workflow.dmn.parser</java.module.name>
+  </properties>
+
+  <artifactId>kogito-serverless-workflow-dmn-parser</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-dmn</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-fluent</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-executor-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-test-resources</artifactId>
+        <classifier>tests</classifier>
+        <version>${project.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

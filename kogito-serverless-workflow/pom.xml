@@ -55,6 +55,8 @@
     <module>kogito-jq-expression</module>
     <module>kogito-serverless-workflow-executor</module>
     <module>kogito-serverless-workflow-executor-tests</module>
+    <module>kogito-serverless-workflow-dmn-parser</module>
+    <module>kogito-serverless-workflow-dmn</module>
   </modules>
 
   <profiles>

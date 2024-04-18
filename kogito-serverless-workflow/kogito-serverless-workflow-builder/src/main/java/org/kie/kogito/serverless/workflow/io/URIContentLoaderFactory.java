@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -91,7 +93,7 @@ public class URIContentLoaderFactory {
     }
 
     public static Builder builder(String uri) {
-        return new Builder(URI.create(uri));
+        return new Builder(URI.create(URLEncoder.encode(uri, Charset.defaultCharset())));
     }
 
     public static class Builder {

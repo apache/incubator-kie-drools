@@ -27,7 +27,6 @@ import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.Builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.builder;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.compoundURI;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readString;
@@ -53,7 +52,7 @@ class URIContentLoaderTest {
     @Test
     void testNotExistingClasspath() {
         Builder builder = builder("classpath:/noPepe.txt");
-        assertThatIllegalArgumentException().isThrownBy(() -> readString(builder));
+        assertThatExceptionOfType(UncheckedIOException.class).isThrownBy(() -> readString(builder));
     }
 
     @Test

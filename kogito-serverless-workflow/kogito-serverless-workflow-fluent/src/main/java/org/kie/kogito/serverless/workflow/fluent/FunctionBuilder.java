@@ -76,12 +76,15 @@ public class FunctionBuilder {
     }
 
     private static FunctionBuilder service(String name, String langName, String moduleName, String methodName) {
-        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM)
-                .withOperation(ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + langName + CUSTOM_TYPE_SEPARATOR + moduleName + ServiceTypeHandler.INTFC_SEPARATOR + methodName));
+        return custom(name, ServiceTypeHandler.SERVICE_TYPE + CUSTOM_TYPE_SEPARATOR + langName + CUSTOM_TYPE_SEPARATOR + moduleName + ServiceTypeHandler.INTFC_SEPARATOR + methodName);
     }
 
     public static FunctionBuilder log(String name, WorkflowLogLevel level) {
-        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation(SYSOUT_TYPE + CUSTOM_TYPE_SEPARATOR + level));
+        return custom(name, SYSOUT_TYPE + CUSTOM_TYPE_SEPARATOR + level);
+    }
+
+    public static FunctionBuilder custom(String name, String operation) {
+        return new FunctionBuilder(new FunctionDefinition(name).withType(Type.CUSTOM).withOperation(operation));
     }
 
     private FunctionBuilder(FunctionDefinition functionDefinition) {
