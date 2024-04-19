@@ -105,7 +105,7 @@ public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAsse
                 removeBlocked(dep);
                 TruthMaintenanceSystemRuleTerminalNodeLeftTuple justified = (TruthMaintenanceSystemRuleTerminalNodeLeftTuple) dep.getJustified();
                 if (justified.getBlockers().isEmpty() && justified.isActive()) {
-                    activationsManager.stageLeftTuple(ruleAgendaItem, justified);
+                    activationsManager.stageLeftTuple(justified.getRuleAgendaItem(), justified);
                 }
                 dep = tmp;
             }

@@ -16,6 +16,7 @@
 
 package org.drools.core.util.index;
 
+import java.util.Collection;
 import java.io.Serializable;
 
 import org.drools.core.common.InternalFactHandle;
@@ -27,18 +28,19 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 
+
 public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializable {
 
     public static final long       serialVersionUID = 510l;
 
     private TupleList<C>           next;
 
-    private Tuple                  first;
-    private Tuple                  last;
+    protected Tuple                  first;
+    protected Tuple                  last;
 
     private TupleHashTableIterator iterator;
 
-    private int                    size;
+    protected int                    size;
 
     private C                      context;
 
@@ -277,6 +279,12 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
 
         for ( Tuple current = first; current != null; current = current.getNext() ) {
             current.setMemory(other);
+        }
+    }
+
+    public <I> void addAllToCollection(Collection<I> c) {
+        for (Tuple item = getFirst(); item != null; item = item.getNext()) {
+            c.add((I) item);
         }
     }
 }
