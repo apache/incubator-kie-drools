@@ -7,7 +7,7 @@
     <parent>
         <artifactId>kie-drl</artifactId>
         <groupId>org.kie</groupId>
-        <version>8.44.1.Final</version>
+        <version>8.44.2.Final</version>
     </parent>
 
     <name>KIE :: DRL :: Implementations</name>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.44.1.Final</version>
+        <version>8.44.2.Final</version>
     </parent>
 
     <name>Drools :: Quarkus Extension :: Integration Test with Rule Unit</name>
