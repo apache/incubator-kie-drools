@@ -27,12 +27,14 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.conflict.MatchConflictResolver;
 import org.drools.core.conflict.RuleAgendaConflictResolver;
 import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.reteoo.AbstractTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
 import org.drools.core.util.index.TupleList;
@@ -44,12 +46,15 @@ import org.slf4j.LoggerFactory;
 
 public class RuleExecutor {
 
+    private static final boolean DEBUG_DORMANT_TUPLE = true;
+
     protected static final Logger log = LoggerFactory.getLogger(RuleExecutor.class);
 
     private final PathMemory pmem;
-    private final RuleAgendaItem ruleAgendaItem;
-    private final TupleList tupleList;
-    private final Queue<InternalMatch> queue;
+    private final RuleAgendaItem       ruleAgendaItem;
+    private final TupleList                 activeMatches;
+    private final DormantTupleList dormantMatches;
+    private final Queue<InternalMatch>      queue;
     private volatile boolean dirty;
     private final boolean declarativeAgendaEnabled;
     private boolean fireExitedEarly;
@@ -58,10 +63,36 @@ public class RuleExecutor {
             RuleAgendaItem ruleAgendaItem,
             boolean declarativeAgendaEnabled) {
         this.pmem = pmem;
-        this.ruleAgendaItem = ruleAgendaItem;
-        this.tupleList = new TupleList();
+        this.ruleAgendaItem           = ruleAgendaItem;
+        this.activeMatches            = new TupleList();
+        this.dormantMatches           = new DormantTupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         this.queue = ruleAgendaItem.getRule().getSalience().isDynamic() ? QueueFactory.createQueue(MatchConflictResolver.INSTANCE) : null;
+    }
+
+    public static class DormantTupleList<C> extends TupleList<C> {
+        public DormantTupleList() {
+        }
+
+        public DormantTupleList(C c) {
+            super(c);
+        }
+
+        public DormantTupleList( Tuple first, Tuple last, int size ) {
+            super( first, last, size );
+        }
+
+        public void add(final Tuple tuple) {
+            if ( this.last != null ) {
+                this.last.setNext( (AbstractTuple) tuple );
+                tuple.setPrevious( this.last );
+                this.last = tuple;
+            } else {
+                this.first = tuple;
+                this.last = tuple;
+            }
+            this.size++;
+        }
     }
 
     public int evaluateNetworkAndFire( ReteEvaluator reteEvaluator,
@@ -85,15 +116,15 @@ public class RuleExecutor {
 
     private int doDirectFirings(ActivationsManager activationsManager, AgendaFilter filter, ReteEvaluator reteEvaluator) {
         RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
-        int directFirings = tupleList.size();
+        int directFirings = activeMatches.size();
 
-        for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
+        for (Tuple tuple = activeMatches.getFirst(); tuple != null; tuple = activeMatches.getFirst()) {
             if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                 directFirings--;
             } else {
                 fireActivationEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
             }
-            removeLeftTuple( tuple );
+            removeActiveTuple((RuleTerminalNodeLeftTuple) tuple);
         }
         ruleAgendaItem.remove();
         return directFirings;
@@ -114,7 +145,7 @@ public class RuleExecutor {
                       int fireLimit) {
         int localFireCount = 0;
 
-        if (!tupleList.isEmpty()) {
+        if (!activeMatches.isEmpty()) {
             if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
                 RuleAgendaItem nextRule = activationsManager.peekNextRule();
@@ -185,17 +216,19 @@ public class RuleExecutor {
     }
 
     private Tuple getNextTuple() {
-        if (tupleList.isEmpty()) {
+        if (activeMatches.isEmpty()) {
             return null;
         }
         Tuple leftTuple;
         if (queue != null) {
             leftTuple = (Tuple) queue.dequeue();
-            tupleList.remove(leftTuple);
+            activeMatches.remove(leftTuple);
         } else {
-            leftTuple = tupleList.removeFirst();
+            leftTuple = activeMatches.removeFirst();
             ((InternalMatch) leftTuple).setQueued(false);
         }
+
+        addDormantTuple((RuleTerminalNodeLeftTuple) leftTuple);
         return leftTuple;
     }
 
@@ -204,7 +237,7 @@ public class RuleExecutor {
     }
 
     public void removeRuleAgendaItemWhenEmpty(ReteEvaluator reteEvaluator) {
-        if (!dirty && tupleList.isEmpty()) {
+        if (!dirty && activeMatches.isEmpty()) {
             if (log.isTraceEnabled()) {
                 log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
             }
@@ -280,40 +313,81 @@ public class RuleExecutor {
         return RuleAgendaConflictResolver.doCompare(ruleAgendaItem, nextRule) >= 0;
     }
 
-    public TupleList getLeftTupleList() {
-        return tupleList;
+    public TupleList getActiveMatches() {
+        return activeMatches;
     }
 
-    public void addLeftTuple(Tuple tuple) {
-        ((InternalMatch) tuple).setQueued(true);
-        this.tupleList.add(tuple);
+    public DormantTupleList getDormantMatches() {
+        return dormantMatches;
+    }
+
+    public void addDormantTuple(RuleTerminalNodeLeftTuple tuple) {
+        if (DEBUG_DORMANT_TUPLE) {
+            if (tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
+        }
+        dormantMatches.add(tuple);
+        if (DEBUG_DORMANT_TUPLE) {
+            tuple.setDormant(true);
+        }
+    }
+
+    public void removeDormantTuple(RuleTerminalNodeLeftTuple tuple) {
+        if (DEBUG_DORMANT_TUPLE) {
+            if (!tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
+        }
+        dormantMatches.remove(tuple);
+        if (DEBUG_DORMANT_TUPLE) {
+            tuple.setDormant(false);
+        }
+    }
+
+    public void addActiveTuple(RuleTerminalNodeLeftTuple tuple) {
+        tuple.setQueued(true);
+        if (DEBUG_DORMANT_TUPLE) {
+            if (tuple.isDormant()) {
+                throw new IllegalStateException();
+            }
+        }
+        this.activeMatches.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
         }
     }
 
-    public void addQueuedLeftTuple(Tuple tuple) {
-        int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.enqueue((InternalMatch) tuple);
-        updateSalience(currentSalience);
+    public void modifyActiveTuple(RuleTerminalNodeLeftTuple tuple) {
+        removeDormantTuple(tuple);
+        addActiveTuple(tuple);
     }
 
-    public void removeLeftTuple(Tuple tuple) {
-        ((InternalMatch) tuple).setQueued(false);
-        this.tupleList.remove(tuple);
+    public void removeActiveTuple(RuleTerminalNodeLeftTuple tuple) {
+        tuple.setQueued(false);
+        activeMatches.remove(tuple);
+        if (tuple.getStagedType() != Tuple.DELETE) {
+            addDormantTuple(tuple);
+        }
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
         }
     }
 
-    private void removeQueuedLeftTuple(Tuple tuple) {
+    public void addQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.dequeue(((InternalMatch) tuple));
+        queue.enqueue(tuple);
+        updateSalience(currentSalience);
+    }
+
+    private void removeQueuedLeftTuple(RuleTerminalNodeLeftTuple tuple) {
+        int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
+        queue.dequeue((tuple));
         updateSalience(currentSalience);
     }
 
     private void updateSalience(int currentSalience) {
-        // the queue may be emtpy if no more matches are left, so reset it to default salience 0
+        // the queue may be empty if no more matches are left, so reset it to default salience 0
         int newSalience = queue.isEmpty() ? SalienceInteger.DEFAULT_SALIENCE.getValue() : queue.peek().getSalience();
         if (currentSalience != newSalience) {
             // salience changed, so the RuleAgendaItem needs to be removed and re-added, for sorting
@@ -326,8 +400,8 @@ public class RuleExecutor {
     }
 
     public void cancel(ReteEvaluator reteEvaluator, EventSupport es) {
-        while (!tupleList.isEmpty()) {
-            RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) tupleList.removeFirst();
+        while (!activeMatches.isEmpty()) {
+            RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) activeMatches.removeFirst();
             if (queue != null) {
                 queue.dequeue(rtnLt);
             }
@@ -391,7 +465,6 @@ public class RuleExecutor {
             internalMatch.setActive(false);
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
-            e.printStackTrace();
             knowledgeHelper.restoreActivationOnConsequenceFailure(internalMatch);
             activationsManager.handleException(internalMatch, e);
         } finally {

@@ -216,8 +216,8 @@ public interface AgendaGroupsManager extends Externalizable {
             }
             int count = 0;
             for ( RuleAgendaItem item : mainAgendaGroup.getActivations() ) {
-                if (!(item.getRuleExecutor().getLeftTupleList().isEmpty())) {
-                    count = count + item.getRuleExecutor().getLeftTupleList().size();
+                if (!(item.getRuleExecutor().getActiveMatches().isEmpty())) {
+                    count = count + item.getRuleExecutor().getActiveMatches().size();
                 }
             }
             return count;
@@ -510,8 +510,8 @@ public interface AgendaGroupsManager extends Externalizable {
 
             int count = 0;
             for ( RuleAgendaItem item : group.getActivations() ) {
-                if (!item.getRuleExecutor().getLeftTupleList().isEmpty()) {
-                    count = count + item.getRuleExecutor().getLeftTupleList().size();
+                if (!item.getRuleExecutor().getActiveMatches().isEmpty()) {
+                    count = count + item.getRuleExecutor().getActiveMatches().size();
                 }
             }
             return count;

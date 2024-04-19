@@ -62,6 +62,9 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     private RuleImpl rule;
     private Consequence consequence;
 
+    // left here for debugging purposes: switch RuleExecutor.DEBUG_DORMANT_TUPLE to true to enable this debugging
+    private boolean dormant;
+
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
     }
@@ -218,7 +221,7 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     }
 
     public void dequeue() {
-        ruleAgendaItem.getRuleExecutor().removeLeftTuple(this);
+        ruleAgendaItem.getRuleExecutor().removeActiveTuple(this);
     }
 
     public void remove() {
@@ -334,5 +337,19 @@ public class RuleTerminalNodeLeftTuple extends LeftTuple implements InternalMatc
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), ruleAgendaItem.getRule().getName());
+    }
+
+    public boolean isFullMatch() {
+        return true;
+    }
+
+    public boolean isDormant() {
+        //throw new IllegalStateException("This method can be called only for debugging purposes. Uncomment dormant boolean to enable debugging.");
+        return dormant;
+    }
+
+    public void setDormant(boolean dormant) {
+        //throw new IllegalStateException("This method can be called only for debugging purposes. Uncomment dormant boolean to enable debugging.");
+        this.dormant = dormant;
     }
 }
