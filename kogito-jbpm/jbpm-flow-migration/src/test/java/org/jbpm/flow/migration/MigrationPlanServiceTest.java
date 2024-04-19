@@ -18,23 +18,64 @@
  */
 package org.jbpm.flow.migration;
 
+import java.util.Collections;
+
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.kie.kogito.process.Processes;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory.fromExternalFormat;
+import static org.mockito.Mockito.when;
 
+@TestInstance(Lifecycle.PER_CLASS)
 public class MigrationPlanServiceTest {
+
+    Processes processes;
+    org.kie.kogito.process.Process processB;
+
+    @BeforeAll
+    public void init() {
+        processes = Mockito.mock(Processes.class);
+        when(processes.processIds()).thenReturn(Collections.singletonList("process_B"));
+
+        processB = Mockito.mock(org.kie.kogito.process.Process.class);
+        when(processes.processById("process_B")).thenReturn(processB);
+        when(processB.id()).thenReturn("process_B");
+        when(processB.version()).thenReturn("2");
+    }
+
+    @Test
+    public void testMigrationProcessInstanceSameProcessDefinition() {
+        MigrationPlanService service = new MigrationPlanService();
+
+        WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
+        processImpl.setInternalProcess(new DummyProcess("process_A", "1"));
+        processImpl.setProcessId("process_A");
+        processImpl.setProcessVersion("1");
+        service.migrateProcessElement(processes, processImpl);
+
+        assertThat(processImpl)
+                .hasFieldOrPropertyWithValue("processId", "process_A")
+                .hasFieldOrPropertyWithValue("processVersion", "1");
+
+    }
 
     @Test
     public void testMigrationProcessInstance() {
         MigrationPlanService service = new MigrationPlanService();
 
         WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
-        processImpl.setProcess(new DummyProcess("process_A", "1"));
-        service.migrateProcessElement(processImpl);
+        processImpl.setInternalProcess(new DummyProcess("process_B", "2"));
+        processImpl.setProcessId("process_A");
+        processImpl.setProcessVersion("1");
+        service.migrateProcessElement(processes, processImpl);
 
         assertThat(processImpl)
                 .hasFieldOrPropertyWithValue("processId", "process_B")
@@ -43,11 +84,25 @@ public class MigrationPlanServiceTest {
     }
 
     @Test
+    public void testMigrationProcessInstanceNotMatchingVersion() {
+        MigrationPlanService service = new MigrationPlanService();
+
+        WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
+        processImpl.setProcess(new DummyProcess("process_D", "1"));
+        service.migrateProcessElement(processes, processImpl);
+
+        assertThat(processImpl)
+                .hasFieldOrPropertyWithValue("processId", "process_D")
+                .hasFieldOrPropertyWithValue("processVersion", "1");
+
+    }
+
+    @Test
     public void testMigrationProcessNonExisting() {
         MigrationPlanService service = new MigrationPlanService();
         WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
         processImpl.setProcess(new DummyProcess("process_C", "1"));
-        service.migrateProcessElement(processImpl);
+        service.migrateProcessElement(processes, processImpl);
 
         assertThat(processImpl)
                 .hasFieldOrPropertyWithValue("processId", "process_C")
@@ -59,7 +114,7 @@ public class MigrationPlanServiceTest {
         MigrationPlanService service = new MigrationPlanService();
         WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
         processImpl.setProcess(new DummyProcess("process_A", "3"));
-        service.migrateProcessElement(processImpl);
+        service.migrateProcessElement(processes, processImpl);
 
         assertThat(processImpl)
                 .hasFieldOrPropertyWithValue("processId", "process_A")
@@ -70,12 +125,14 @@ public class MigrationPlanServiceTest {
     public void testMigrationNode() {
         MigrationPlanService service = new MigrationPlanService();
         WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
-        processImpl.setProcess(new DummyProcess("process_A", "1"));
+        processImpl.setInternalProcess(new DummyProcess("process_B", "2"));
+        processImpl.setProcessId("process_A");
+        processImpl.setProcessVersion("1");
         ExtendedNodeInstanceImpl nodeInstanceImpl = new ExtendedNodeInstanceImpl() {
         };
         nodeInstanceImpl.setProcessInstance(processImpl);
         nodeInstanceImpl.setNodeId(fromExternalFormat("node_1"));
-        service.migrateNodeElement(nodeInstanceImpl);
+        service.migrateNodeElement(processes, nodeInstanceImpl);
 
         assertThat(nodeInstanceImpl)
                 .hasFieldOrPropertyWithValue("nodeId", fromExternalFormat("node_2"));
@@ -85,12 +142,14 @@ public class MigrationPlanServiceTest {
     public void testMigrationNodeNextItem() {
         MigrationPlanService service = new MigrationPlanService();
         WorkflowProcessInstanceImpl processImpl = new RuleFlowProcessInstance();
-        processImpl.setProcess(new DummyProcess("process_A", "1"));
+        processImpl.setInternalProcess(new DummyProcess("process_B", "2"));
+        processImpl.setProcessId("process_A");
+        processImpl.setProcessVersion("1");
         ExtendedNodeInstanceImpl nodeInstanceImpl = new ExtendedNodeInstanceImpl() {
         };
         nodeInstanceImpl.setProcessInstance(processImpl);
         nodeInstanceImpl.setNodeId(fromExternalFormat("node_2"));
-        service.migrateNodeElement(nodeInstanceImpl);
+        service.migrateNodeElement(processes, nodeInstanceImpl);
 
         assertThat(nodeInstanceImpl)
                 .hasFieldOrPropertyWithValue("nodeId", fromExternalFormat("node_3"));
@@ -105,7 +164,7 @@ public class MigrationPlanServiceTest {
         };
         nodeInstanceImpl.setProcessInstance(processImpl);
         nodeInstanceImpl.setNodeId(fromExternalFormat("node_3"));
-        service.migrateNodeElement(nodeInstanceImpl);
+        service.migrateNodeElement(processes, nodeInstanceImpl);
 
         assertThat(nodeInstanceImpl)
                 .hasFieldOrPropertyWithValue("nodeId", fromExternalFormat("node_3"));
@@ -120,7 +179,7 @@ public class MigrationPlanServiceTest {
         };
         nodeInstanceImpl.setProcessInstance(processImpl);
         nodeInstanceImpl.setNodeId(fromExternalFormat("node_3"));
-        service.migrateNodeElement(nodeInstanceImpl);
+        service.migrateNodeElement(processes, nodeInstanceImpl);
 
         assertThat(nodeInstanceImpl)
                 .hasFieldOrPropertyWithValue("nodeId", fromExternalFormat("node_3"));

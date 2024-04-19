@@ -25,14 +25,21 @@ import org.jbpm.flow.migration.model.MigrationPlan;
 import org.jbpm.flow.migration.model.ProcessDefinitionMigrationPlan;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.kie.kogito.process.Processes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Functions.identity;
 import static java.util.stream.Collectors.toMap;
 
+/**
+ * The migration system is limited in this way.
+ * Cannot have more that one identifier process deployed (version is fixed)
+ * if there are several migration plans defined for the same source only one is taken into account
+ */
 public class MigrationPlanService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MigrationPlanService.class);
 
@@ -49,8 +56,8 @@ public class MigrationPlanService {
         this.migrations.putAll(this.migrationPlanProvider.findMigrationPlans().stream().collect(toMap(MigrationPlan::getSource, identity())));
     }
 
-    public void migrateProcessElement(KogitoWorkflowProcessInstance processInstance) {
-        MigrationPlan plan = getMigrationPlan(processInstance);
+    public void migrateProcessElement(Processes processes, KogitoWorkflowProcessInstance processInstance) {
+        MigrationPlan plan = getMigrationPlan(processes, processInstance);
         if (plan != null) {
             // the process will have to do nothing as it is done by the engine itself
             LOGGER.info("Process instance {} will be migrated from {} to {} with plan {}",
@@ -67,9 +74,9 @@ public class MigrationPlanService {
         }
     }
 
-    public void migrateNodeElement(KogitoNodeInstance nodeInstance) {
+    public void migrateNodeElement(Processes processes, KogitoNodeInstance nodeInstance) {
         KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) nodeInstance.getProcessInstance();
-        MigrationPlan plan = getMigrationPlan(pi);
+        MigrationPlan plan = getMigrationPlan(processes, pi);
         if (plan == null) {
             return;
         }
@@ -79,14 +86,63 @@ public class MigrationPlanService {
         impl.setNodeId(plan.getProcessMigrationPlan().getNodeMigratedFor(nodeInstance));
     }
 
-    private MigrationPlan getMigrationPlan(KogitoWorkflowProcessInstance processInstance) {
+    // we check the target deployed in the container is the same as the target in the migration plan
+    private MigrationPlan getMigrationPlan(Processes processes, KogitoWorkflowProcessInstance processInstance) {
+        // first check if we need a migration as the process being set should be not be the same as the process set in the 
+        // process being loaded.
+        String currentProcessId = processInstance.getProcess().getId();
+        String currentVersion = processInstance.getProcess().getVersion();
+        ProcessDefinitionMigrationPlan currentProcessDefinition = new ProcessDefinitionMigrationPlan(currentProcessId, currentVersion);
+
         RuleFlowProcessInstance pi = (RuleFlowProcessInstance) processInstance;
-        ProcessDefinitionMigrationPlan pd =
-                new ProcessDefinitionMigrationPlan(pi.getProcessId(), pi.getProcessVersion());
-        return migrations.get(pd);
+        ProcessDefinitionMigrationPlan processStateDefinition = new ProcessDefinitionMigrationPlan(pi.getProcessId(), pi.getProcessVersion());
+
+        // check if definition and state match. we don't need to perform any migration.
+        if (currentProcessDefinition.equals(processStateDefinition)) {
+            return null;
+        }
+
+        // there is no migration plan define for the source
+        MigrationPlan plan = migrations.get(processStateDefinition);
+        if (plan == null) {
+            LOGGER.debug("No migration plan defined for process state {}.", processStateDefinition);
+            return null;
+        }
+
+        // current process definition matches the target process of the migration plan
+        ProcessDefinitionMigrationPlan targetDefinition = plan.getProcessMigrationPlan().getTargetProcessDefinition();
+        if (!targetDefinition.equals(currentProcessDefinition)) {
+            LOGGER.debug("Migration plan found for {} does not match target definition {}, Found plan to {}.", processStateDefinition, currentProcessDefinition, targetDefinition);
+            return null;
+        }
+
+        // target process not being deployed
+        if (!processes.processIds().contains(targetDefinition.getProcessId())) {
+            LOGGER.debug("No migration target defintion deployed in this container {} for migrating {}.", targetDefinition, processStateDefinition);
+            return null;
+        }
+
+        // target process not matching version
+        org.kie.kogito.process.Process<? extends Model> process = processes.processById(targetDefinition.getProcessId());
+        ProcessDefinitionMigrationPlan targetDeployed =
+                new ProcessDefinitionMigrationPlan(process.id(), process.version());
+
+        return targetDeployed.equals(targetDefinition) ? plan : null;
     }
 
-    public boolean shouldMigrate(KogitoWorkflowProcessInstance processInstance) {
-        return getMigrationPlan(processInstance) != null;
+    public boolean isEqualVersion(Processes processes, KogitoWorkflowProcessInstance processInstance) {
+        String currentProcessId = processInstance.getProcess().getId();
+        String currentVersion = processInstance.getProcess().getVersion();
+        ProcessDefinitionMigrationPlan currentProcessDefinition = new ProcessDefinitionMigrationPlan(currentProcessId, currentVersion);
+
+        RuleFlowProcessInstance pi = (RuleFlowProcessInstance) processInstance;
+        ProcessDefinitionMigrationPlan processStateDefinition = new ProcessDefinitionMigrationPlan(pi.getProcessId(), pi.getProcessVersion());
+
+        // check if definition and state match. we don't need to perform any migration.
+        return currentProcessDefinition.equals(processStateDefinition);
+    }
+
+    public boolean hasMigrationPlan(Processes processes, KogitoWorkflowProcessInstance processInstance) {
+        return getMigrationPlan(processes, processInstance) != null;
     }
 }

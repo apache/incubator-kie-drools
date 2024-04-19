@@ -31,7 +31,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jbpm.flow.migration.MigrationPlanFile;
@@ -49,7 +51,7 @@ public class FileSystemMigrationPlanFileProvider implements MigrationPlanFilePro
     public static final String EXPLODED_MIGRATION_PLAN_FOLDER = "META-INF/migration-plan/";
     public static final String MIGRATION_PLAN_FOLDER = "/META-INF/migration-plan/";
 
-    private List<URI> rootPaths;
+    private Set<URI> rootPaths;
 
     public FileSystemMigrationPlanFileProvider() {
         try {
@@ -57,7 +59,7 @@ public class FileSystemMigrationPlanFileProvider implements MigrationPlanFilePro
             if (url.isEmpty()) {
                 url = Collections.list(JbpmClassLoaderUtil.findClassLoader().getResources(EXPLODED_MIGRATION_PLAN_FOLDER));
             }
-            this.rootPaths = url.stream().map(this::toURI).filter(Optional::isPresent).map(Optional::get).toList();
+            this.rootPaths = url.stream().map(this::toURI).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
         } catch (IOException e) {
             throw new IllegalArgumentException("error trying to get Migration Plan folder");
         }
@@ -72,7 +74,7 @@ public class FileSystemMigrationPlanFileProvider implements MigrationPlanFilePro
     }
 
     public FileSystemMigrationPlanFileProvider(URI rootPath) {
-        this.rootPaths = List.of(rootPath);
+        this.rootPaths = Set.of(rootPath);
     }
 
     @Override

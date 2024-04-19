@@ -55,8 +55,8 @@ public class MigrationPlanProviderTest {
         plan.setProcessMigrationPlan(pdmp);
 
         assertThat(plans)
-                .hasSize(1)
-                .containsExactly(plan);
+                .hasSize(2)
+                .contains(plan);
 
     }
 

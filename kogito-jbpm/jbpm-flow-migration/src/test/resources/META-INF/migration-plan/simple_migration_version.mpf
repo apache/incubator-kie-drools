@@ -1,13 +1,13 @@
 {
-    "name" : "my simple migration versioned",
+    "name" : "my simple migration",
     "processMigrationPlan" : {
         "sourceProcessDefinition" : {
-            "processId" : "process_D",
+            "processId" : "process_A",
             "processVersion" : "1"
         },
         "targetProcessDefinition" : {
             "processId" : "process_B",
-            "processVersion" : "3"
+            "processVersion" : "2"
         },
         "nodeInstanceMigrationPlan" : [
             {
