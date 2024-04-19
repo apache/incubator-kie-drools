@@ -16,23 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.dmn.efesto.compiler.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
-import java.io.Serializable;
+public class DmnCompilationContextImpl extends EfestoCompilationContextImpl implements DmnCompilationContext {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "step-type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
-        @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
-        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
-})
-public interface GeneratedResource extends Serializable {
+    public DmnCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
+        super(memoryCompilerClassLoader);
+    }
 
+    @Override
+    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
+        return KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(memoryCompilerClassLoader);
+    }
 }

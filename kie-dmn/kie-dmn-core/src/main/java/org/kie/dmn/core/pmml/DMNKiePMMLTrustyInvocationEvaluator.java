@@ -58,7 +58,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
-import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrRedirect;
+
+import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrModelOrRedirect;
 
 
 public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvocationEvaluator {
@@ -136,7 +137,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         ModelLocalUriId modelLocalUriId = getModelLocalUriId(pmmlFileName, modelName);
 
         Collection<EfestoOutput> retrieved;
-        if (!(isPresentExecutableOrRedirect(modelLocalUriId, runtimeContext))) {
+        if (!(isPresentExecutableOrModelOrRedirect(modelLocalUriId, runtimeContext))) {
             LOG.warn("GeneratedResources for {}@{} are not present: trying to invoke compilation....",
                      pmmlFileName,
                      modelName);

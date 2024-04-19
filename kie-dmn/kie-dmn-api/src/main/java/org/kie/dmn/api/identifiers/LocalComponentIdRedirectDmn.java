@@ -16,23 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.dmn.api.identifiers;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.kie.efesto.common.api.identifiers.LocalUri;
 
-import java.io.Serializable;
+public class LocalComponentIdRedirectDmn extends AbstractModelLocalUriIdDmn {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "step-type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
-        @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
-        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
-})
-public interface GeneratedResource extends Serializable {
+    private static final long serialVersionUID = -4610916178245973385L;
 
+    private final String redirectModel;
+
+    public LocalComponentIdRedirectDmn(String redirectModel, String fileName, String name) {
+        super(LocalUri.Root.append(redirectModel).append(fileName).append(name), fileName, name);
+        this.redirectModel = redirectModel;
+    }
+
+    public String getRedirectModel() {
+        return redirectModel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

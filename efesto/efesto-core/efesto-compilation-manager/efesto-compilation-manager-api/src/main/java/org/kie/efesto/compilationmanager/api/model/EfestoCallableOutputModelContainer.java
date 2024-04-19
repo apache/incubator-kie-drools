@@ -16,23 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.efesto.compilationmanager.api.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-import java.io.Serializable;
+/**
+ * A <code>EfestoCallableOutput</code> containing model source (e.g. for DMN execution)
+ */
+public abstract class EfestoCallableOutputModelContainer implements EfestoCallableOutput {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "step-type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
-        @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
-        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
-})
-public interface GeneratedResource extends Serializable {
+    private final ModelLocalUriId modelLocalUriId;
+    private final String modelSource;
 
+    protected EfestoCallableOutputModelContainer(ModelLocalUriId modelLocalUriId, String modelSource) {
+        this.modelLocalUriId = modelLocalUriId;
+        this.modelSource = modelSource;
+    }
+
+    @Override
+    public ModelLocalUriId getModelLocalUriId() {
+        return modelLocalUriId;
+    }
+
+    public String getModelSource() {
+        return modelSource;
+    }
 }

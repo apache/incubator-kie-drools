@@ -16,23 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.dmn.efesto.compiler.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.Collection;
 
-import java.io.Serializable;
+public class EfestoValidationOutput {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "step-type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
-        @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
-        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
-})
-public interface GeneratedResource extends Serializable {
+    public enum STATUS {
+        OK,
+        FAIL
+    }
 
+    private String modelIdentifier;
+    private STATUS status;
+    private Collection<String> messages;
+
+    public EfestoValidationOutput() {
+    }
+
+    public EfestoValidationOutput(String modelIdentifier, STATUS status, Collection<String> messages) {
+        this.modelIdentifier = modelIdentifier;
+        this.status = status;
+        this.messages = messages;
+    }
+
+    public String getModelIdentifier() {
+        return modelIdentifier;
+    }
+
+    public STATUS getStatus() {
+        return status;
+    }
+
+    public Collection<String> getMessages() {
+        return messages;
+    }
 }

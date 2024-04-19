@@ -16,23 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.dmn.core.runtime.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
 
-import java.io.Serializable;
+public class EfestoOutputDMN extends AbstractEfestoOutput<DMNResult> {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "step-type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
-        @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
-        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
-})
-public interface GeneratedResource extends Serializable {
-
+    public EfestoOutputDMN(ModelLocalUriId modelLocalUriId, DMNResult outputData) {
+        super(modelLocalUriId, outputData);
+    }
 }

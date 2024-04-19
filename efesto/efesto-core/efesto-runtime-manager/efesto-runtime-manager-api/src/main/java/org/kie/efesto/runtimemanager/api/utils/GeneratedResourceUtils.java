@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
+import org.kie.efesto.common.api.model.GeneratedModelResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
 import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
@@ -40,6 +41,16 @@ public class GeneratedResourceUtils {
     private static final Logger logger = LoggerFactory.getLogger(GeneratedResourceUtils.class.getName());
 
     private GeneratedResourceUtils() {
+    }
+
+    public static boolean isPresentExecutableOrModelOrRedirect(ModelLocalUriId modelLocalUriId, EfestoContext context) {
+        return  getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent() ||
+                getGeneratedModelResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent() ||
+                getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent();
+    }
+
+    public static boolean isPresentModel(ModelLocalUriId modelLocalUriId, EfestoContext context) {
+        return getGeneratedModelResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent();
     }
 
     public static boolean isPresentExecutableOrRedirect(ModelLocalUriId modelLocalUriId, EfestoContext context) {
@@ -61,6 +72,24 @@ public class GeneratedResourceUtils {
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
         Collection<GeneratedExecutableResource> allExecutableResources = getAllGeneratedExecutableResources(generatedResources);
         return findAtMostOne(allExecutableResources,
+                             generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
+    }
+
+    public static Optional<GeneratedModelResource> getGeneratedModelResource(ModelLocalUriId modelLocalUriId, Map<String, GeneratedResources> generatedResourcesMap) {
+        if (!generatedResourcesMap.containsKey(modelLocalUriId.model())) {
+            return Optional.empty();
+        } else {
+            return getGeneratedModelResource(modelLocalUriId, generatedResourcesMap.get(modelLocalUriId.model()));
+        }
+    }
+
+    /**
+     * find GeneratedExecutableResource from GeneratedResources without IndexFile
+     */
+    public static Optional<GeneratedModelResource> getGeneratedModelResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
+        Collection<GeneratedModelResource> allModelResources = getAllGeneratedModelResources(generatedResources);
+        return findAtMostOne(allModelResources,
                              generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
     }
@@ -96,6 +125,21 @@ public class GeneratedResourceUtils {
             }
         } catch (Exception e) {
             logger.error("Failed to read GeneratedClassResource from context.", e);
+        }
+        return toReturn;
+    }
+
+    public static Collection<GeneratedModelResource> getAllGeneratedModelResources(GeneratedResources generatedResources) {
+        Collection<GeneratedModelResource> toReturn = new HashSet<>();
+        try {
+            logger.debug("getAllGeneratedModelResources {}", generatedResources);
+            for (GeneratedResource generatedResource : generatedResources) {
+                if (generatedResource instanceof GeneratedModelResource) {
+                    toReturn.add((GeneratedModelResource) generatedResource);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Failed to read GeneratedModelResource from context.", e);
         }
         return toReturn;
     }

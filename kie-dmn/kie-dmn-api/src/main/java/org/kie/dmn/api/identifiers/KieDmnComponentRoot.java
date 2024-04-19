@@ -16,23 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.common.api.model;
+package org.kie.dmn.api.identifiers;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.util.Map;
 
-import java.io.Serializable;
+import org.kie.efesto.common.api.identifiers.ComponentRoot;
+import org.kie.efesto.common.api.identifiers.EfestoComponentRoot;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "step-type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = GeneratedRedirectResource.class, name = "redirect"),
-        @JsonSubTypes.Type(value = GeneratedClassResource.class, name = "class"),
-        @JsonSubTypes.Type(value = GeneratedExecutableResource.class, name = "executable"),
-        @JsonSubTypes.Type(value = GeneratedModelResource.class, name = "model")
-})
-public interface GeneratedResource extends Serializable {
+import static org.kie.efesto.common.api.utils.EfestoAppRootHelper.getComponentRootBySPI;
 
+public class KieDmnComponentRoot implements EfestoComponentRoot {
+
+    private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
+
+    static {
+        INSTANCES = getComponentRootBySPI(DmnComponentRoot.class);
+    }
+
+    @Override
+    public <T extends ComponentRoot> T get(Class<T> providerId) {
+        return (T) INSTANCES.get(providerId);
+    }
 }
