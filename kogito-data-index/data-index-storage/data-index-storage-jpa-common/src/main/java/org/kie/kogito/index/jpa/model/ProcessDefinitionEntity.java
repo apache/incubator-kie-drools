@@ -205,10 +205,7 @@ public class ProcessDefinitionEntity extends AbstractEntity {
                 ", version='" + version + '\'' +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", roles=" + roles +
-                ", addons=" + addons +
                 ", endpoint='" + endpoint + '\'' +
-                ", nodes='" + nodes + '\'' +
                 '}';
     }
 }
