@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.jobs.service.scheduler.impl;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
@@ -76,7 +75,7 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
 
     @Test
     void testDoSchedule() {
-        PublisherBuilder<ManageableJobHandle> schedule = tested.doSchedule(scheduledJob, Optional.empty());
+        PublisherBuilder<ManageableJobHandle> schedule = tested.doSchedule(scheduledJob, scheduledJob.getTrigger());
         Multi.createFrom().publisher(publisher(schedule.buildRs())).subscribe().with(dummyCallback(), dummyCallback());
         verify(timer).scheduleJob(any(DelegateJob.class), any(JobDetailsContext.class), eq(scheduledJob.getTrigger()));
     }

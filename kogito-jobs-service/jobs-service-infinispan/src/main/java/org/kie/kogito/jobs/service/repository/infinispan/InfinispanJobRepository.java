@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
@@ -44,6 +45,7 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 
 import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.JOB_DETAILS;
+import static org.kie.kogito.jobs.service.utils.ModelUtil.jobWithCreatedAndLastUpdate;
 
 @ApplicationScoped
 public class InfinispanJobRepository extends BaseReactiveJobRepository implements ReactiveJobRepository {
@@ -71,8 +73,12 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
 
     @Override
     public CompletionStage<JobDetails> doSave(JobDetails job) {
-        return runAsync(() -> cache.put(job.getId(), job))
-                .thenApply(j -> job);
+        return runAsync(() -> {
+            boolean isNew = !cache.containsKey(job.getId());
+            JobDetails timeStampedJob = jobWithCreatedAndLastUpdate(isNew, job);
+            cache.put(timeStampedJob.getId(), timeStampedJob);
+            return timeStampedJob;
+        });
     }
 
     @Override
@@ -93,37 +99,56 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
     }
 
     @Override
-    public PublisherBuilder<JobDetails> findAll() {
-        Query<JobDetails> query = queryFactory.<JobDetails> create("from job.service.JobDetails");
+    public PublisherBuilder<JobDetails> findByStatusBetweenDates(ZonedDateTime fromFireTime,
+            ZonedDateTime toFireTime,
+            JobStatus[] status,
+            SortTerm[] orderBy) {
+
+        String statusFilter = (status != null && status.length > 0) ? createStatusFilter(status) : null;
+        String fireTimeFilter = createFireTimeFilter("from", "to");
+        String orderByCriteria = (orderBy != null && orderBy.length > 0) ? createOrderBy("j", orderBy) : "";
+
+        StringBuilder queryFilter = new StringBuilder();
+        if (statusFilter != null) {
+            queryFilter.append(statusFilter);
+            queryFilter.append(" and ");
+        }
+        queryFilter.append(fireTimeFilter);
+
+        String findQuery = "from job.service.JobDetails j" +
+                " where " + queryFilter +
+                " " + orderByCriteria;
+
+        Query<JobDetails> query = queryFactory.create(findQuery);
+        query.setParameter("from", fromFireTime.toInstant().toEpochMilli());
+        query.setParameter("to", toFireTime.toInstant().toEpochMilli());
         return ReactiveStreams.fromIterable(query.execute().list());
     }
 
-    @Override
-    public PublisherBuilder<JobDetails> findByStatus(JobStatus... status) {
-        Query<JobDetails> query = queryFactory.create("from job.service.JobDetails j " +
-                "where " +
-                "j.status in (" + createStatusQuery(status) + ")");
-        return ReactiveStreams.fromIterable(query.execute().list());
+    private static String createFireTimeFilter(String fromParam, String toParam) {
+        return String.format("j.nextFireTime >= :%s and j.nextFireTime <= :%s ", fromParam, toParam);
     }
 
-    @Override
-    public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to,
-            JobStatus... status) {
-        Query<JobDetails> query = queryFactory.create("from job.service.JobDetails j " +
-                "where " +
-                "j.trigger.nextFireTime > :from " +
-                "and j.trigger.nextFireTime < :to " +
-                "and j.status in (" + createStatusQuery(status) + ") " +
-                "order by j.priority desc");
-        query.setParameter("to", to.toInstant().toEpochMilli());
-        query.setParameter("from", from.toInstant().toEpochMilli());
-        return ReactiveStreams.fromIterable(query.execute().list());
+    private static String createStatusFilter(JobStatus... status) {
+        return Arrays.stream(status).map(JobStatus::name)
+                .collect(Collectors.joining("', '", "j.status IN ('", "')"));
     }
 
-    //building the query sentence for the status IN (not supported to use array in setParameter on the query)
-    private String createStatusQuery(JobStatus[] status) {
-        return Arrays.stream(status)
-                .map(JobStatus::name)
-                .collect(Collectors.joining("\', \'", "\'", "\'"));
+    private static String createOrderBy(String objName, SortTerm[] sortTerms) {
+        return Stream.of(sortTerms).map(term -> createOrderByTerm(objName, term))
+                .collect(Collectors.joining(", ", "order by ", ""));
+    }
+
+    private static String createOrderByTerm(String objName, SortTerm sortTerm) {
+        return objName + "." + toColumName(sortTerm.getField()) + (sortTerm.isAsc() ? " asc" : " desc");
+    }
+
+    private static String toColumName(SortTermField field) {
+        return switch (field) {
+            case FIRE_TIME -> "nextFireTime";
+            case CREATED -> "created";
+            case ID -> "id";
+            default -> throw new IllegalArgumentException("No colum name is defined for field: " + field);
+        };
     }
 }

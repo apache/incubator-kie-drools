@@ -2,6 +2,7 @@ package job.service;
 
 /* @Indexed */
 message JobDetails {
+  /* @Field(store = Store.YES)  @SortableField */
   optional string id = 1;
   optional string correlationId = 2;
   /* @Field(store = Store.YES) */
@@ -18,6 +19,10 @@ message JobDetails {
   optional string type = 11;//enum
   optional int64 executionTimeout = 12;
   optional string executionTimeoutUnit = 13;
+  /* @Field(store = Store.YES)  @SortableField */
+  optional int64 nextFireTime = 14;
+  /* @Field(store = Store.YES)  @SortableField */
+  optional int64 created = 15;
 }
 
 /* @Indexed */

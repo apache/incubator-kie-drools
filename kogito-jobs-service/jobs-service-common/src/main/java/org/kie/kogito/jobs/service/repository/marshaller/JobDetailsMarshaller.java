@@ -82,6 +82,7 @@ public class JobDetailsMarshaller implements Marshaller<JobDetails, JsonObject> 
         private Map<String, Object> trigger;
         private Long executionTimeout;
         private String executionTimeoutUnit;
+        private Date created;
 
         public JobDetailsAccessor() {
         }
@@ -99,6 +100,7 @@ public class JobDetailsMarshaller implements Marshaller<JobDetails, JsonObject> 
             this.trigger = Optional.ofNullable(jobDetails.getTrigger()).map(t -> triggerMarshaller.marshall(t).getMap()).orElse(null);
             this.executionTimeout = jobDetails.getExecutionTimeout();
             this.executionTimeoutUnit = Optional.ofNullable(jobDetails.getExecutionTimeoutUnit()).map(Enum::name).orElse(null);
+            this.created = Optional.ofNullable(jobDetails.getCreated()).map(u -> Date.from(u.toInstant())).orElse(null);
         }
 
         public JobDetails to(RecipientMarshaller recipientMarshaller, TriggerMarshaller triggerMarshaller) {
@@ -115,6 +117,7 @@ public class JobDetailsMarshaller implements Marshaller<JobDetails, JsonObject> 
                     .trigger(Optional.ofNullable(this.trigger).map(t -> triggerMarshaller.unmarshall(new JsonObject(t))).orElse(null))
                     .executionTimeout(this.executionTimeout)
                     .executionTimeoutUnit(Optional.ofNullable(this.executionTimeoutUnit).map(ChronoUnit::valueOf).orElse(null))
+                    .created(Optional.ofNullable(this.created).map(t -> ZonedDateTime.ofInstant(t.toInstant(), DEFAULT_ZONE)).orElse(null))
                     .build();
         }
 
@@ -212,6 +215,14 @@ public class JobDetailsMarshaller implements Marshaller<JobDetails, JsonObject> 
 
         public void setExecutionTimeoutUnit(String executionTimeoutUnit) {
             this.executionTimeoutUnit = executionTimeoutUnit;
+        }
+
+        public Date getCreated() {
+            return created;
+        }
+
+        public void setCreated(Date created) {
+            this.created = created;
         }
     }
 }

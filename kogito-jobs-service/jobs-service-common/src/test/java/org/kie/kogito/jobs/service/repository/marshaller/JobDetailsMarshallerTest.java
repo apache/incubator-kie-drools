@@ -54,8 +54,8 @@ class JobDetailsMarshallerTest {
         String id = "testId";
         String correlationId = "testCorrelationId";
         JobStatus status = JobStatus.SCHEDULED;
-        Date date = new Date();
-        ZonedDateTime lastUpdate = ZonedDateTime.ofInstant(date.toInstant(), DEFAULT_ZONE);
+        Date lastUpdateDate = new Date();
+        ZonedDateTime lastUpdate = ZonedDateTime.ofInstant(lastUpdateDate.toInstant(), DEFAULT_ZONE);
         Integer retries = 2;
         Integer priority = 3;
         Integer executionCounter = 4;
@@ -65,6 +65,8 @@ class JobDetailsMarshallerTest {
         Trigger trigger = new PointInTimeTrigger(new Date().toInstant().toEpochMilli(), null, null);
         Long executionTimeout = 10L;
         ChronoUnit executionTimeoutUnit = ChronoUnit.SECONDS;
+        Date createdDate = new Date();
+        ZonedDateTime created = ZonedDateTime.ofInstant(createdDate.toInstant(), DEFAULT_ZONE);
 
         jobDetails = JobDetails.builder()
                 .id(id)
@@ -79,13 +81,14 @@ class JobDetailsMarshallerTest {
                 .trigger(trigger)
                 .executionTimeout(executionTimeout)
                 .executionTimeoutUnit(executionTimeoutUnit)
+                .created(created)
                 .build();
 
         jsonObject = new JsonObject()
                 .put("id", id)
                 .put("correlationId", correlationId)
                 .put("status", status.name())
-                .put("lastUpdate", date.getTime())
+                .put("lastUpdate", lastUpdateDate.getTime())
                 .put("retries", retries)
                 .put("executionCounter", executionCounter)
                 .put("scheduledId", scheduledId)
@@ -97,7 +100,8 @@ class JobDetailsMarshallerTest {
                         .put("nextFireTime", trigger.hasNextFireTime().getTime())
                         .put("classType", PointInTimeTrigger.class.getName()))
                 .put("executionTimeout", executionTimeout)
-                .put("executionTimeoutUnit", executionTimeoutUnit.name());
+                .put("executionTimeoutUnit", executionTimeoutUnit.name())
+                .put("created", createdDate.getTime());
     }
 
     @Test

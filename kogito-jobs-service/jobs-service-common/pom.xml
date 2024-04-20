@@ -120,11 +120,6 @@
       <artifactId>quarkus-smallrye-reactive-messaging</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>io.smallrye.reactive</groupId>
-      <artifactId>smallrye-reactive-messaging-in-memory</artifactId>
-    </dependency>
-
     <!-- Data Index Integration -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

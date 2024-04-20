@@ -46,7 +46,9 @@ import io.vertx.mutiny.core.Vertx;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -87,17 +89,18 @@ class JobSchedulerManagerTest {
         this.scheduledJob = JobDetails
                 .builder()
                 .id(JOB_ID)
+                .status(JobStatus.SCHEDULED)
                 .trigger(new PointInTimeTrigger(System.currentTimeMillis(), null, null))
                 .build();
 
-        lenient().when(repository.findByStatusBetweenDatesOrderByPriority(any(ZonedDateTime.class),
+        lenient().when(repository.findByStatusBetweenDates(any(ZonedDateTime.class),
                 any(ZonedDateTime.class),
-                any(JobStatus.class),
-                any(JobStatus.class)))
+                any(JobStatus[].class),
+                any(ReactiveJobRepository.SortTerm[].class)))
                 .thenReturn(ReactiveStreams.of(scheduledJob));
         lenient().when(scheduler.scheduled(JOB_ID))
                 .thenReturn(Optional.empty());
-        lenient().when(scheduler.schedule(scheduledJob))
+        lenient().when(scheduler.internalSchedule(eq(scheduledJob), anyBoolean()))
                 .thenReturn(ReactiveStreams.of(scheduledJob).buildRs());
         ArgumentCaptor<Runnable> action = ArgumentCaptor.forClass(Runnable.class);
         lenient().doAnswer(a -> {
@@ -110,13 +113,13 @@ class JobSchedulerManagerTest {
     }
 
     @Test
-    void testLoadJobDetailss() {
+    void testLoadJobDetails() {
         tested.loadJobDetails();
-        verify(scheduler).schedule(scheduledJob);
+        verify(scheduler).internalSchedule(scheduledJob, true);
     }
 
     @Test
-    void testLoadAlreadyJobDetailss() {
+    void testLoadAlreadyJobDetails() {
         when(scheduler.scheduled(JOB_ID)).thenReturn(Optional.of(DateUtil.now()));
 
         tested.loadJobDetails();

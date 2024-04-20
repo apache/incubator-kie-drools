@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.smallrye.reactive.messaging.providers.locals.ContextAwareMessage;
 
-public abstract class AbstractJobStreams {
+public abstract class AbstractJobStreams implements JobStreams {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractJobStreams.class);
 
@@ -56,17 +56,24 @@ public abstract class AbstractJobStreams {
         this.url = url;
     }
 
-    protected void jobStatusChange(JobDetails job) {
-        if (enabled) {
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void jobStatusChange(JobDetails job) {
+        if (isEnabled()) {
             try {
                 JobDataEvent event = JobDataEvent
                         .builder()
                         .source(url + RestApiConstants.JOBS_PATH)
                         .data(ScheduledJobAdapter.of(job))//this should support jobs crated with V1 and V2
                         .build();
+                LOGGER.debug("emit jobStatusChange, hasRequests: {}, eventId: {}, jobDetails: {}", emitter.hasRequests(), event.getId(), job);
                 String json = objectMapper.writeValueAsString(event);
                 emitter.send(decorate(ContextAwareMessage.of(json)
-                        .withAck(() -> onAck(job))
+                        .withAck(() -> onAck(event.getId(), job))
                         .withNack(reason -> onNack(reason, job))));
             } catch (Exception e) {
                 String msg = String.format("An unexpected error was produced while processing a Job status change for the job: %s", job);
@@ -75,13 +82,13 @@ public abstract class AbstractJobStreams {
         }
     }
 
-    protected CompletionStage<Void> onAck(JobDetails job) {
-        LOGGER.debug("Job Status change published: {}", job);
+    protected CompletionStage<Void> onAck(String eventId, JobDetails job) {
+        LOGGER.debug("Job Status change emitted successfully, eventId: {}, jobDetails: {}", eventId, job);
         return CompletableFuture.completedFuture(null);
     }
 
     protected CompletionStage<Void> onNack(Throwable reason, JobDetails job) {
-        String msg = String.format("An error was produced while publishing a Job status change for the job: %s", job);
+        String msg = String.format("An error was produced while emitting a Job status change for the job: %s", job);
         LOGGER.error(msg, reason);
         return CompletableFuture.completedFuture(null);
     }

@@ -35,6 +35,7 @@ import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.Recipient;
 import org.kie.kogito.jobs.service.model.RecipientInstance;
+import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller;
 import org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller;
 import org.kie.kogito.jobs.service.utils.DateUtil;
@@ -152,11 +153,11 @@ class PostgreSqlJobRepositoryExecutionTest {
         verify(query, times(1)).execute(parameterCaptor.capture());
 
         String query = "INSERT INTO " + JOB_DETAILS + " (id, correlation_id, status, last_update, retries, execution_counter, scheduled_id, " +
-                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit) VALUES ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9, $10, $11, $12) " +
+                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit, created) VALUES ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9, $10, $11, $12, now()) " +
                 "ON CONFLICT (id) DO UPDATE SET correlation_id = $2, status = $3, last_update = now(), retries = $4, " +
                 "execution_counter = $5, scheduled_id = $6, priority = $7, " +
                 "recipient = $8, trigger = $9, fire_time = $10, execution_timeout = $11, execution_timeout_unit = $12 RETURNING id, correlation_id, status, last_update, retries, " +
-                "execution_counter, scheduled_id, priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit";
+                "execution_counter, scheduled_id, priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit, created";
 
         Tuple parameter = Tuple.tuple(Stream.of(
                 job.getId(),
@@ -199,7 +200,7 @@ class PostgreSqlJobRepositoryExecutionTest {
         verify(query, times(1)).execute(parameterCaptor.capture());
 
         String query = "SELECT id, correlation_id, status, last_update, retries, execution_counter, scheduled_id, " +
-                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit FROM " + JOB_DETAILS + " WHERE id = $1";
+                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit, created FROM " + JOB_DETAILS + " WHERE id = $1";
         String parameter = "test";
 
         assertEquals(query, queryCaptor.getValue());
@@ -235,7 +236,7 @@ class PostgreSqlJobRepositoryExecutionTest {
 
         String query = "DELETE FROM " + JOB_DETAILS + " WHERE id = $1 " +
                 "RETURNING id, correlation_id, status, last_update, retries, " +
-                "execution_counter, scheduled_id, priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit";
+                "execution_counter, scheduled_id, priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit, created";
         String parameter = "test";
 
         assertEquals(query, queryCaptor.getValue());
@@ -243,64 +244,54 @@ class PostgreSqlJobRepositoryExecutionTest {
     }
 
     @Test
-    void findAll() {
-        PublisherBuilder<JobDetails> result = repository.findAll();
-        assertNotNull(result);
-
-        ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(client, times(1)).preparedQuery(queryCaptor.capture());
-
-        String query = "SELECT id, correlation_id, status, last_update, retries, " +
-                "execution_counter, scheduled_id, priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit FROM " + JOB_DETAILS + " LIMIT $1";
-
-        assertEquals(query, queryCaptor.getValue());
-    }
-
-    @Test
-    void findByStatusBetweenDatesOrderByPriority() {
+    void findByStatusBetweenDates() {
         ZonedDateTime from = ZonedDateTime.now();
         ZonedDateTime to = ZonedDateTime.now();
 
-        PublisherBuilder<JobDetails> result = repository.findByStatusBetweenDatesOrderByPriority(from, to, JobStatus.SCHEDULED, JobStatus.RETRY);
+        PublisherBuilder<JobDetails> result = repository.findByStatusBetweenDates(from, to,
+                new JobStatus[] { JobStatus.SCHEDULED, JobStatus.RETRY },
+                new ReactiveJobRepository.SortTerm[] { ReactiveJobRepository.SortTerm.byFireTime(true) });
         assertNotNull(result);
 
         ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
         verify(client, times(1)).preparedQuery(queryCaptor.capture());
 
         String query = "SELECT id, correlation_id, status, last_update, retries, execution_counter, scheduled_id, " +
-                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit FROM " + JOB_DETAILS + " " +
-                "WHERE status IN ('SCHEDULED', 'RETRY') AND fire_time BETWEEN $2 AND $3 ORDER BY priority DESC LIMIT $1";
+                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit, created FROM " + JOB_DETAILS + " " +
+                "WHERE status IN ('SCHEDULED', 'RETRY') AND fire_time BETWEEN $1 AND $2 ORDER BY fire_time ASC";
 
         assertEquals(query, queryCaptor.getValue());
     }
 
     @Test
-    void findByStatusBetweenDatesOrderByPriorityNoCondition() {
+    void findByStatusBetweenDatesNoStatusCondition() {
         ZonedDateTime from = ZonedDateTime.now();
         ZonedDateTime to = ZonedDateTime.now();
 
-        PublisherBuilder<JobDetails> result = repository.findByStatusBetweenDatesOrderByPriority(from, to, JobStatus.SCHEDULED);
+        PublisherBuilder<JobDetails> result = repository.findByStatusBetweenDates(from, to,
+                new JobStatus[] {},
+                new ReactiveJobRepository.SortTerm[] { ReactiveJobRepository.SortTerm.byFireTime(false) });
         assertNotNull(result);
 
         ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
         verify(client, times(1)).preparedQuery(queryCaptor.capture());
 
         String query = "SELECT id, correlation_id, status, last_update, retries, execution_counter, scheduled_id, " +
-                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit FROM " + JOB_DETAILS + " " +
-                "WHERE status IN ('SCHEDULED') AND fire_time BETWEEN $2 AND $3 ORDER BY priority DESC LIMIT $1";
+                "priority, recipient, trigger, fire_time, execution_timeout, execution_timeout_unit, created FROM " + JOB_DETAILS + " " +
+                "WHERE fire_time BETWEEN $1 AND $2 ORDER BY fire_time DESC";
 
         assertEquals(query, queryCaptor.getValue());
     }
 
     @Test
     void createStatusQuery() {
-        String statusQuery = PostgreSqlJobRepository.createStatusQuery(JobStatus.SCHEDULED, JobStatus.RETRY);
+        String statusQuery = PostgreSqlJobRepository.createStatusFilter(JobStatus.SCHEDULED, JobStatus.RETRY);
         assertEquals("status IN ('SCHEDULED', 'RETRY')", statusQuery);
     }
 
     @Test
     void createTimeQuery() {
-        String timeQuery = PostgreSqlJobRepository.createTimeQuery("$1", "$2");
+        String timeQuery = PostgreSqlJobRepository.createFireTimeFilter("$1", "$2");
         assertEquals("fire_time BETWEEN $1 AND $2", timeQuery);
     }
 

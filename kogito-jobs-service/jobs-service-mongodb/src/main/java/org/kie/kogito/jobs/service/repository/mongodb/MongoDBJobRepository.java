@@ -19,9 +19,13 @@
 package org.kie.kogito.jobs.service.repository.mongodb;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.json.JsonWriterSettings;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
@@ -38,6 +42,7 @@ import io.quarkus.mongodb.FindOptions;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.quarkus.mongodb.reactive.ReactiveMongoCollection;
 import io.quarkus.runtime.StartupEvent;
+import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -48,12 +53,13 @@ import jakarta.inject.Inject;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.in;
-import static com.mongodb.client.model.Filters.lt;
+import static com.mongodb.client.model.Filters.lte;
 import static com.mongodb.client.model.Indexes.ascending;
 import static com.mongodb.client.model.ReturnDocument.AFTER;
 import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Sorts.orderBy;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.counting;
@@ -61,6 +67,7 @@ import static java.util.stream.Collectors.toList;
 import static mutiny.zero.flow.adapters.AdaptersToReactiveStreams.publisher;
 import static org.bson.Document.parse;
 import static org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams.fromPublisher;
+import static org.kie.kogito.jobs.service.utils.ModelUtil.jobWithCreatedAndLastUpdate;
 
 @ApplicationScoped
 public class MongoDBJobRepository extends BaseReactiveJobRepository implements ReactiveJobRepository {
@@ -74,6 +81,8 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
     static final String STATUS_COLUMN = "status";
 
     static final String FIRE_TIME_COLUMN = "trigger.nextFireTime";
+
+    static final String CREATED_COLUMN = "created";
 
     private static final JsonWriterSettings jsonWriterSettings = JsonWriterSettings.builder()
             .int64Converter((value, writer) -> writer.writeNumber(value.toString())).build();
@@ -97,26 +106,34 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
 
     void onStart(@Observes StartupEvent ev) {
         this.collection.createIndex(ascending(STATUS_COLUMN, FIRE_TIME_COLUMN)).await().indefinitely();
+        this.collection.createIndex(ascending(CREATED_COLUMN, FIRE_TIME_COLUMN, ID)).await().indefinitely();
     }
 
     @Override
     public CompletionStage<JobDetails> doSave(JobDetails job) {
+        return collection.find(eq(ID, job.getId()))
+                .collect().with(counting())
+                .map(count -> jobWithCreatedAndLastUpdate(count == 0, job))
+                .chain(this::findAndUpdate)
+                .emitOn(Infrastructure.getDefaultExecutor())
+                .convert()
+                .toCompletionStage();
+    }
+
+    private Uni<JobDetails> findAndUpdate(JobDetails job) {
         return collection.findOneAndReplace(
                 eq(ID, job.getId()),
                 jsonToDocument(jobDetailsMarshaller.marshall(job)),
                 new FindOneAndReplaceOptions().upsert(true).returnDocument(AFTER))
-                .map(document -> documentToJson(document))
-                .map(jobDetailsMarshaller::unmarshall)
-                .emitOn(Infrastructure.getDefaultExecutor())
-                .convert()
-                .toCompletionStage();
+                .map(MongoDBJobRepository::documentToJson)
+                .map(jobDetailsMarshaller::unmarshall);
     }
 
     @Override
     public CompletionStage<JobDetails> get(String id) {
         return collection.find(eq(ID, id))
                 .collect().first()
-                .map(document -> documentToJson(document))
+                .map(MongoDBJobRepository::documentToJson)
                 .map(jobDetailsMarshaller::unmarshall)
                 .emitOn(Infrastructure.getDefaultExecutor())
                 .convert()
@@ -136,7 +153,7 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
     @Override
     public CompletionStage<JobDetails> delete(String id) {
         return collection.findOneAndDelete(eq(ID, id))
-                .map(document -> documentToJson(document))
+                .map(MongoDBJobRepository::documentToJson)
                 .map(jobDetailsMarshaller::unmarshall)
                 .emitOn(Infrastructure.getDefaultExecutor())
                 .convert()
@@ -144,25 +161,27 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
     }
 
     @Override
-    public PublisherBuilder<JobDetails> findAll() {
-        return fromPublisher(publisher(collection.find()
-                .map(document -> documentToJson(document))
-                .map(jobDetailsMarshaller::unmarshall)
-                .emitOn(Infrastructure.getDefaultExecutor())
-                .convert()
-                .toPublisher()));
-    }
+    public PublisherBuilder<JobDetails> findByStatusBetweenDates(ZonedDateTime fromFireTime,
+            ZonedDateTime toFireTime,
+            JobStatus[] status,
+            SortTerm[] orderBy) {
 
-    @Override
-    public PublisherBuilder<JobDetails> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
+        FindOptions findOptions = new FindOptions();
+        List<Bson> filters = new ArrayList<>();
+        if (status != null && status.length > 0) {
+            filters.add(createStatusFilter(status));
+        }
+        filters.add(gte(FIRE_TIME_COLUMN, fromFireTime.toInstant().toEpochMilli()));
+        filters.add(lte(FIRE_TIME_COLUMN, toFireTime.toInstant().toEpochMilli()));
+        findOptions.filter(and(filters));
+
+        if (orderBy != null && orderBy.length > 0) {
+            findOptions.sort(createOrderBy(orderBy));
+        }
+
         return fromPublisher(publisher(
-                collection.find(
-                        and(
-                                in(STATUS_COLUMN, stream(status).map(Enum::name).collect(toList())),
-                                gt(FIRE_TIME_COLUMN, from.toInstant().toEpochMilli()),
-                                lt(FIRE_TIME_COLUMN, to.toInstant().toEpochMilli())),
-                        new FindOptions().sort(descending("priority")))
-                        .map(document -> documentToJson(document))
+                collection.find(findOptions)
+                        .map(MongoDBJobRepository::documentToJson)
                         .map(jobDetailsMarshaller::unmarshall)
                         .emitOn(Infrastructure.getDefaultExecutor())
                         .convert()
@@ -175,5 +194,27 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
 
     static Document jsonToDocument(JsonObject jsonNode) {
         return ofNullable(jsonNode).map(json -> parse(json.toString())).orElse(null);
+    }
+
+    static Bson createStatusFilter(JobStatus... status) {
+        return in(STATUS_COLUMN, stream(status).map(Enum::name).collect(toList()));
+    }
+
+    static Bson createOrderBy(SortTerm[] sortTerms) {
+        return orderBy(stream(sortTerms).map(MongoDBJobRepository::createOrderByTerm).collect(Collectors.toList()));
+    }
+
+    static Bson createOrderByTerm(SortTerm sortTerm) {
+        String columnName = toColumName(sortTerm.getField());
+        return sortTerm.isAsc() ? ascending(columnName) : descending(columnName);
+    }
+
+    static String toColumName(SortTermField field) {
+        return switch (field) {
+            case FIRE_TIME -> FIRE_TIME_COLUMN;
+            case CREATED -> CREATED_COLUMN;
+            case ID -> ID;
+            default -> throw new IllegalArgumentException("No colum name is defined for field: " + field);
+        };
     }
 }

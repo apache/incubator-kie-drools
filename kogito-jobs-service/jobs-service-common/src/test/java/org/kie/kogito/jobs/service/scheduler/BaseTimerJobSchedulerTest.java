@@ -81,7 +81,7 @@ public abstract class BaseTimerJobSchedulerTest {
     public CompletionStage<JobDetails> scheduled;
 
     @Captor
-    private ArgumentCaptor<Optional<Trigger>> delayCaptor;
+    private ArgumentCaptor<Trigger> delayCaptor;
 
     @Captor
     private ArgumentCaptor<JobDetails> scheduleCaptor;
@@ -102,7 +102,7 @@ public abstract class BaseTimerJobSchedulerTest {
     @BeforeEach
     public void setUp() {
         tested().schedulerChunkInMinutes = 5;
-        tested().forceExecuteExpiredJobs = Optional.of(Boolean.FALSE);
+        tested().forceExecuteExpiredJobs = false;
         //expiration on the current scheduler chunk
         expirationTime = DateUtil.now().plusMinutes(tested().schedulerChunkInMinutes - 1);
         errorResponse = JobExecutionResponse.builder()
@@ -177,7 +177,7 @@ public abstract class BaseTimerJobSchedulerTest {
 
         verify(jobRepository, expired || SCHEDULED.equals(jobStatus) ? atLeastOnce() : never()).delete(any(JobDetails.class));
         verify(tested(), expired ? never() : times(1)).doSchedule(eq(scheduledJob), delayCaptor.capture());
-        verify(jobRepository, expired ? never() : times(1)).save(scheduleCaptor.capture());
+        verify(jobRepository, expired ? never() : times(2)).save(scheduleCaptor.capture());
 
         //assert always a scheduled job is canceled (periodic or not)
         Optional.ofNullable(jobStatus)
@@ -208,7 +208,7 @@ public abstract class BaseTimerJobSchedulerTest {
 
     @Test
     void testScheduleExistingJobRetry() {
-        testExistingJob(false, JobStatus.RETRY);
+        testExistingJob(false, SCHEDULED);
     }
 
     @Test
@@ -253,7 +253,7 @@ public abstract class BaseTimerJobSchedulerTest {
         verify(tested(), never()).cancel(scheduleCaptorFuture.capture());
 
         subscribeOn(executionSuccess.buildRs());
-        verify(jobRepository, times(2)).save(scheduleCaptor.capture());
+        verify(jobRepository, times(3)).save(scheduleCaptor.capture());
         JobDetails scheduleCaptorValue = scheduleCaptor.getValue();
         assertThat(scheduleCaptorValue.getStatus()).isEqualTo(SCHEDULED);
         assertThat(scheduleCaptorValue.getExecutionCounter()).isEqualTo(1);
@@ -378,7 +378,7 @@ public abstract class BaseTimerJobSchedulerTest {
         verify(tested(), never()).doSchedule(eq(scheduledJob), delayCaptor.capture());
 
         //testing with forcing enabled
-        tested().forceExecuteExpiredJobs = Optional.of(Boolean.TRUE);
+        tested().forceExecuteExpiredJobs = true;
         subscribeOn(tested().schedule(scheduledJob));
         verify(tested(), times(1)).doSchedule(eq(scheduledJob), delayCaptor.capture());
     }

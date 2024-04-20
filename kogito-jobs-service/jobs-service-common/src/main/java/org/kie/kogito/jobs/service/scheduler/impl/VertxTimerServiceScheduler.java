@@ -18,9 +18,7 @@
  */
 package org.kie.kogito.jobs.service.scheduler.impl;
 
-import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.time.chrono.ChronoZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -42,6 +40,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class VertxTimerServiceScheduler implements TimerService<ManageableJobHandle>,
         InternalSchedulerService {
+
+    private static final long MIN_TIMER_DELAY = 1000;
 
     protected TimerJobFactoryManager jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
@@ -118,13 +118,9 @@ public class VertxTimerServiceScheduler implements TimerService<ManageableJobHan
         handle.setScheduledTime(now);
     }
 
-    private Long calculateDelay(long then, ZonedDateTime now) {
-        return Optional.of(now)
-                .map(ChronoZonedDateTime::toInstant)
-                .map(Instant::toEpochMilli)
-                .filter(n -> then > n)
-                .map(n -> then - n)
-                .orElse(1l);
+    private long calculateDelay(long then, ZonedDateTime now) {
+        long delay = then - now.toInstant().toEpochMilli();
+        return Math.max(MIN_TIMER_DELAY, delay);
     }
 
     public Vertx getVertx() {

@@ -64,4 +64,23 @@ public class KogitoAddonsQuarkusJobsServiceEmbeddedRuntimeConfig {
     @ConfigItem(name = "forceExecuteExpiredJobs", defaultValue = "true")
     public boolean forceExecuteExpiredJobs;
 
+    /**
+     * Flag to allow that jobs that where timed-out when the jobs service was down, must be fired immediately at the
+     * jobs service next startup.
+     */
+    @ConfigItem(name = "forceExecuteExpiredJobsOnServiceStart", defaultValue = "true")
+    boolean forceExecuteExpiredJobsOnServiceStart;
+
+    /**
+     * Number of retries configured for the periodic jobs loading procedure. Every time the procedure is started this
+     * value is considered.
+     */
+    @ConfigItem(name = "loadJobRetries", defaultValue = "3")
+    int loadJobRetries;
+
+    /**
+     * Error strategy to apply when the periodic jobs loading procedure has exceeded the jobLoadReties.
+     */
+    @ConfigItem(name = "loadJobErrorStrategy", defaultValue = "NONE")
+    String loadJobErrorStrategy;
 }

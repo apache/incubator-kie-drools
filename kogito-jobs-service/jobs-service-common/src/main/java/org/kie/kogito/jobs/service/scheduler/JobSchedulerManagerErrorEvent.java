@@ -16,11 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.stream;
+package org.kie.kogito.jobs.service.scheduler;
 
-import org.kie.kogito.jobs.service.model.JobDetails;
+public class JobSchedulerManagerErrorEvent {
 
-public interface JobEventPublisher {
+    private final String message;
 
-    JobDetails publishJobStatusChange(JobDetails scheduledJob);
+    private final Throwable error;
+
+    public JobSchedulerManagerErrorEvent(String message, Throwable error) {
+        this.message = message;
+        this.error = error;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Throwable getError() {
+        return error;
+    }
 }

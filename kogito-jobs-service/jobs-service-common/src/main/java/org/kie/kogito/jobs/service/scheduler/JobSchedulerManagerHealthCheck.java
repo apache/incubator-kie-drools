@@ -16,34 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.management;
+package org.kie.kogito.jobs.service.scheduler;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
-import org.eclipse.microprofile.health.Readiness;
+import org.eclipse.microprofile.health.Liveness;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 
-@Readiness
+@Liveness
 @ApplicationScoped
-public class JobServiceLeaderHealthCheck implements HealthCheck {
+public class JobSchedulerManagerHealthCheck implements HealthCheck {
 
-    private final AtomicBoolean enabled = new AtomicBoolean(false);
-
-    protected void onMessagingStatusChange(@Observes MessagingChangeEvent event) {
-        this.enabled.set(event.isEnabled());
-    }
+    private final AtomicReference<JobSchedulerManagerErrorEvent> errorEvent = new AtomicReference<>();
 
     @Override
     public HealthCheckResponse call() {
-        final HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Leader Instance");
-        if (enabled.get()) {
-            return responseBuilder.up().build();
+        final HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Job Scheduler Manager");
+        if (errorEvent.get() != null) {
+            return responseBuilder.withData("error", errorEvent.get().getMessage()).down().build();
         }
-        return responseBuilder.down().build();
+        return responseBuilder.up().build();
+    }
+
+    protected void onJobSchedulerManagerStatusChange(@Observes JobSchedulerManagerErrorEvent event) {
+        errorEvent.set(event);
     }
 }

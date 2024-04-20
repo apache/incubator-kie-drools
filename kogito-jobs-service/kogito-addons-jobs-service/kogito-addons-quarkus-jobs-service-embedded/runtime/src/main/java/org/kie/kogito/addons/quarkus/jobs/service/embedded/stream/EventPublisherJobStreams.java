@@ -19,11 +19,11 @@
 package org.kie.kogito.addons.quarkus.jobs.service.embedded.stream;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.jobs.JobsServiceException;
@@ -31,15 +31,14 @@ import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.resource.RestApiConstants;
-import org.kie.kogito.jobs.service.stream.AvailableStreams;
+import org.kie.kogito.jobs.service.stream.JobEventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.smallrye.reactive.messaging.annotations.Blocking;
-
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
@@ -50,7 +49,8 @@ import static org.kie.kogito.jobs.service.events.JobDataEvent.JOB_EVENT_TYPE;
  * EventPublisher API. Events propagation is enabled only when the embedded data index is present in current application.
  */
 @ApplicationScoped
-public class EventPublisherJobStreams {
+@Alternative
+public class EventPublisherJobStreams implements JobEventPublisher {
 
     public static final String DATA_INDEX_EVENT_PUBLISHER = "org.kie.kogito.index.addon.DataIndexEventPublisher";
 
@@ -62,41 +62,52 @@ public class EventPublisherJobStreams {
 
     private final ObjectMapper objectMapper;
 
+    private final ManagedExecutor managedExecutor;
+
     @Inject
     public EventPublisherJobStreams(@ConfigProperty(name = "kogito.service.url", defaultValue = "http://localhost:8080") String url,
             Instance<EventPublisher> eventPublishers,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            ManagedExecutor managedExecutor) {
         this.url = url;
         eventPublisher = eventPublishers.stream().collect(Collectors.toList());
         this.objectMapper = objectMapper;
+        this.managedExecutor = managedExecutor;
     }
 
-    @Incoming(AvailableStreams.JOB_STATUS_CHANGE_EVENTS)
-    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    @Blocking
-    public void onJobStatusChange(JobDetails jobDetails) {
-        if (eventPublisher != null) {
-            ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
-            byte[] jsonContent;
-            try {
-                jsonContent = objectMapper.writeValueAsBytes(scheduledJob);
-            } catch (Exception e) {
-                throw new JobsServiceException("It was not possible to serialize scheduledJob to json: " + scheduledJob, e);
+    @Override
+    public JobDetails publishJobStatusChange(JobDetails jobDetails) {
+        try {
+            managedExecutor.runAsync(() -> {
+                if (eventPublisher != null) {
+                    ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
+                    byte[] jsonContent;
+                    try {
+                        jsonContent = objectMapper.writeValueAsBytes(scheduledJob);
+                    } catch (Exception e) {
+                        throw new JobsServiceException("It was not possible to serialize scheduledJob to json: " + scheduledJob, e);
+                    }
+                    JobInstanceDataEvent event = new JobInstanceDataEvent(JOB_EVENT_TYPE,
+                            url + RestApiConstants.JOBS_PATH,
+                            jsonContent,
+                            scheduledJob.getProcessInstanceId(),
+                            scheduledJob.getRootProcessInstanceId(),
+                            scheduledJob.getProcessId(),
+                            scheduledJob.getRootProcessId(),
+                            null);
+                    try {
+                        eventPublisher.forEach(e -> e.publish(event));
+                    } catch (Exception e) {
+                        LOGGER.error("Job status change propagation has failed at eventPublisher: " + eventPublisher.getClass() + " execution.", e);
+                    }
+                }
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
             }
-            JobInstanceDataEvent event = new JobInstanceDataEvent(JOB_EVENT_TYPE,
-                    url + RestApiConstants.JOBS_PATH,
-                    jsonContent,
-                    scheduledJob.getProcessInstanceId(),
-                    scheduledJob.getRootProcessInstanceId(),
-                    scheduledJob.getProcessId(),
-                    scheduledJob.getRootProcessId(),
-                    null);
-            try {
-                eventPublisher.forEach(e -> e.publish(event));
-            } catch (Exception e) {
-                LOGGER.error("Job status change propagation has failed at eventPublisher: " + eventPublisher.getClass() + " execution.", e);
-            }
+            throw new RuntimeException("Job status change propagation has failed.", e);
         }
+        return jobDetails;
     }
-
 }

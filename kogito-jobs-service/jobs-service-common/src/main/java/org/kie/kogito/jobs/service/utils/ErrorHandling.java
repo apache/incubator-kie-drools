@@ -49,7 +49,7 @@ public class ErrorHandling {
     public static <R, T> Publisher<R> skipErrorPublisher(Function<? super T, Publisher<R>> function, T input) {
         return ReactiveStreams
                 .fromPublisher(function.apply(input))
-                .onError(t -> LOGGER.warn("Error skipped when processing {}.", input, t))
+                .onError(t -> LOGGER.warn(String.format("Error skipped when processing input: %s.", input), t))
                 .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R> empty().buildRs())
                 .buildRs();
     }
@@ -68,7 +68,7 @@ public class ErrorHandling {
      */
     public static <R, T> PublisherBuilder<R> skipErrorPublisherBuilder(Function<? super T, PublisherBuilder<R>> function, T input) {
         return function.apply(input)
-                .onError(t -> LOGGER.warn("Error skipped when processing {}.", input, t))
+                .onError(t -> LOGGER.warn(String.format("Error skipped when processing input: %s.", input), t))
                 .onErrorResumeWithRsPublisher(t -> ReactiveStreams.<R> empty().buildRs());
     }
 }

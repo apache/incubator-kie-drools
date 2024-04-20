@@ -44,6 +44,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -94,7 +96,7 @@ public abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
         doReturn(SERIALIZED_MESSAGE).when(objectMapper).writeValueAsString(any());
         Message<String> message = executeStatusChange(job);
         message.ack();
-        verify(jobStreams).onAck(job);
+        verify(jobStreams).onAck(anyString(), eq(job));
     }
 
     @Test
@@ -141,14 +143,14 @@ public abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
         assertThat(message.getPayload()).isEqualTo(SERIALIZED_MESSAGE);
         assertExpectedMetadata(message);
         message.ack();
-        verify(jobStreams).onAck(job);
+        verify(jobStreams).onAck(anyString(), eq(job));
     }
 
     private void executeStatusChangeWithUnexpectedError(JobDetails job) throws Exception {
         doThrow(new RuntimeException("Unexpected error")).when(objectMapper).writeValueAsString(any());
         jobStreams.jobStatusChange(job);
 
-        verify(jobStreams, never()).onAck(any());
+        verify(jobStreams, never()).onAck(any(), any());
         verify(jobStreams, never()).onNack(any(), any());
     }
 

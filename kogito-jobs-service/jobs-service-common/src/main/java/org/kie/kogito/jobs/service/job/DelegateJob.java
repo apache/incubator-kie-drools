@@ -18,18 +18,25 @@
  */
 package org.kie.kogito.jobs.service.job;
 
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.kogito.jobs.service.exception.JobExecutionException;
+import org.kie.kogito.jobs.service.executor.JobExecutor;
 import org.kie.kogito.jobs.service.executor.JobExecutorResolver;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobDetailsContext;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
-import org.kie.kogito.jobs.service.stream.JobEventPublisher;
+import org.kie.kogito.jobs.service.scheduler.ReactiveJobScheduler;
+import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.kie.kogito.timer.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
+
+import static java.util.Objects.requireNonNull;
+import static mutiny.zero.flow.adapters.AdaptersToFlow.publisher;
 
 /**
  * The job that delegates the execution to the {@link JobExecutorResolver} with the {@link JobDetailsContext}.
@@ -40,35 +47,45 @@ public class DelegateJob implements Job<JobDetailsContext> {
 
     private final JobExecutorResolver jobExecutorResolver;
 
-    private final JobEventPublisher jobEventPublisher;
+    ReactiveJobScheduler scheduler;
 
-    public DelegateJob(JobExecutorResolver executorResolver, JobEventPublisher jobEventPublisher) {
+    public DelegateJob(JobExecutorResolver executorResolver, ReactiveJobScheduler scheduler) {
         this.jobExecutorResolver = executorResolver;
-        this.jobEventPublisher = jobEventPublisher;
+        this.scheduler = scheduler;
     }
 
     @Override
     public void execute(JobDetailsContext ctx) {
-        LOGGER.info("Executing for context {}", ctx.getJobDetails());
-        Optional.ofNullable(ctx)
-                .map(JobDetailsContext::getJobDetails)
-                .map(jobExecutorResolver::get)
-                .map(executor -> executor.execute(ctx.getJobDetails()))
-                .orElseThrow(() -> new IllegalStateException("JobDetails cannot be null from context " + ctx))
-                .onItem().invoke(jobEventPublisher::publishJobSuccess)
-                .onFailure(JobExecutionException.class).invoke(ex -> {
+        final AtomicReference<JobExecutionResponse> executionResponse = new AtomicReference<>();
+        final JobDetails jobDetails = requireNonNull(ctx.getJobDetails(), () -> String.format("JobDetails cannot be null for context: %s", ctx));
+        final JobExecutor executor = requireNonNull(jobExecutorResolver.get(jobDetails), () -> String.format("No JobExecutor was found for jobDetails: %s", jobDetails));
+        LOGGER.info("Executing job for context: {}", jobDetails);
+        executor.execute(jobDetails)
+                .flatMap(response -> {
+                    executionResponse.set(response);
+                    return handleJobExecutionSuccess(response);
+                })
+                .onFailure(JobExecutionException.class).recoverWithUni(ex -> {
                     String jobId = ((JobExecutionException) ex).getJobId();
-                    LOGGER.error("Error executing job {}", jobId, ex);
-                    jobEventPublisher.publishJobError(JobExecutionResponse.builder()
+                    executionResponse.set(JobExecutionResponse.builder()
                             .message(ex.getMessage())
                             .now()
                             .jobId(jobId)
                             .build());
+                    return handleJobExecutionError(executionResponse.get());
                 })
-                //to avoid blocking IO pool from eventloop since execute() is blocking currently
-                //might consider execute() method to be non-blocking/async
+                // avoid blocking IO pool from the event-loop since alternative EmbeddedJobExecutor is blocking.
                 .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
-                .subscribe().with(response -> LOGGER.info("Executed successfully with response {}", response));
+                .subscribe().with(ignore -> LOGGER.info("Job execution response processing has finished: {}", executionResponse.get()));
+    }
 
+    public Uni<JobDetails> handleJobExecutionSuccess(JobExecutionResponse response) {
+        LOGGER.debug("Job execution success response received: {}", response);
+        return Uni.createFrom().publisher(publisher(ErrorHandling.skipErrorPublisherBuilder(scheduler::handleJobExecutionSuccess, response).buildRs()));
+    }
+
+    public Uni<JobDetails> handleJobExecutionError(JobExecutionResponse response) {
+        LOGGER.error("Job execution error response received: {}", response);
+        return Uni.createFrom().publisher(publisher(ErrorHandling.skipErrorPublisherBuilder(scheduler::handleJobExecutionError, response).buildRs()));
     }
 }

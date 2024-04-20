@@ -19,7 +19,6 @@
 package org.kie.kogito.jobs.service.scheduler.impl;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
@@ -31,7 +30,6 @@ import org.kie.kogito.jobs.service.model.JobDetailsContext;
 import org.kie.kogito.jobs.service.model.ManageableJobHandle;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.BaseTimerJobScheduler;
-import org.kie.kogito.jobs.service.stream.JobEventPublisher;
 import org.kie.kogito.timer.Trigger;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -52,8 +50,6 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
 
     private VertxTimerServiceScheduler delegate;
 
-    private JobEventPublisher jobEventPublisher;
-
     protected TimerDelegateJobScheduler() {
     }
 
@@ -63,21 +59,19 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
             @ConfigProperty(name = "kogito.jobs-service.maxIntervalLimitToRetryMillis", defaultValue = "60000") long maxIntervalLimitToRetryMillis,
             @ConfigProperty(name = "kogito.jobs-service.schedulerChunkInMinutes", defaultValue = "10") long schedulerChunkInMinutes,
             @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobs", defaultValue = "true") boolean forceExecuteExpiredJobs,
-            JobExecutorResolver jobExecutorResolver, VertxTimerServiceScheduler delegate,
-            JobEventPublisher jobEventPublisher) {
-        super(jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, forceExecuteExpiredJobs);
+            @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobsOnServiceStart", defaultValue = "true") boolean forceExecuteExpiredJobsOnServiceStart,
+            JobExecutorResolver jobExecutorResolver, VertxTimerServiceScheduler delegate) {
+        super(jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, forceExecuteExpiredJobs, forceExecuteExpiredJobsOnServiceStart);
         this.jobExecutorResolver = jobExecutorResolver;
         this.delegate = delegate;
-        this.jobEventPublisher = jobEventPublisher;
     }
 
     @Override
-    public PublisherBuilder<ManageableJobHandle> doSchedule(JobDetails job, Optional<Trigger> trigger) {
-        LOGGER.debug("Job Scheduling {}", job);
-        return ReactiveStreams
-                .of(job)
-                .map(j -> delegate.scheduleJob(new DelegateJob(jobExecutorResolver, jobEventPublisher), new JobDetailsContext(j),
-                        trigger.orElse(j.getTrigger())));
+    public PublisherBuilder<ManageableJobHandle> doSchedule(JobDetails job, Trigger trigger) {
+        LOGGER.debug("Job Scheduling job: {}, trigger: {}", job, trigger);
+        ManageableJobHandle jobHandle = delegate.scheduleJob(new DelegateJob(jobExecutorResolver, this),
+                new JobDetailsContext(job), trigger);
+        return ReactiveStreams.of(jobHandle);
     }
 
     @Override
@@ -94,4 +88,15 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
                 .buildRs();
     }
 
+    /**
+     * Removes only the programed in-memory timers.
+     */
+    public void unscheduleTimers() {
+        LOGGER.debug("Removing in-memory scheduled timers");
+        super.getScheduledJobs().forEach(record -> {
+            boolean removed = delegate.removeJob(new ManageableJobHandle(record.getHandleId()));
+            LOGGER.debug("Vertex timer: {} for jobId: {}, was removed: {}", record.getHandleId(), record.getJobId(), removed);
+            super.unregisterScheduledJob(JobDetails.builder().id(record.getJobId()).build());
+        });
+    }
 }

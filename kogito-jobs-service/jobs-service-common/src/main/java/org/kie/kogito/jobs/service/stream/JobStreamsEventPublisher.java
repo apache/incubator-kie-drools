@@ -18,131 +18,42 @@
  */
 package org.kie.kogito.jobs.service.stream;
 
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.eclipse.microprofile.reactive.messaging.OnOverflow;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.jobs.service.model.JobDetails;
-import org.kie.kogito.jobs.service.model.JobExecutionResponse;
-import org.kie.kogito.jobs.service.scheduler.ReactiveJobScheduler;
-import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.smallrye.reactive.messaging.annotations.Broadcast;
-
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
-/**
- * Class that configure the Consumers for Job Streams,like Job Executed, Job Error... and execute the actions for each
- * received item.
- */
 @ApplicationScoped
 public class JobStreamsEventPublisher implements JobEventPublisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobStreamsEventPublisher.class);
 
     @Inject
-    ReactiveJobScheduler scheduler;
+    Instance<JobStreams> jobStreamsInstance;
 
-    /**
-     * Publish on Stream of Job Error events
-     */
-    @Inject
-    @Channel(AvailableStreams.JOB_ERROR)
-    @OnOverflow(value = OnOverflow.Strategy.NONE)
-    Emitter<JobExecutionResponse> jobErrorEmitter;
+    private List<JobStreams> enabledStreams;
 
-    /**
-     * Publish on Stream of Job Success events
-     */
-    @Inject
-    @Channel(AvailableStreams.JOB_SUCCESS)
-    @OnOverflow(value = OnOverflow.Strategy.NONE)
-    Emitter<JobExecutionResponse> jobSuccessEmitter;
-
-    /**
-     * Publish on Stream of Job Success events
-     */
-    @Inject
-    @Channel(AvailableStreams.JOB_STATUS_CHANGE)
-    @OnOverflow(value = OnOverflow.Strategy.NONE)
-    Emitter<JobDetails> jobStatusChangeEmitter;
-
-    public JobExecutionResponse publishJobError(JobExecutionResponse response) {
-        jobErrorEmitter.send(response);
-        return response;
+    @PostConstruct
+    void init() {
+        this.enabledStreams = jobStreamsInstance.stream()
+                .filter(stream -> {
+                    LOGGER.info("Job stream: {}, enabled: {}", stream, stream.isEnabled());
+                    return stream.isEnabled();
+                })
+                .collect(Collectors.toList());
     }
 
-    public JobExecutionResponse publishJobSuccess(JobExecutionResponse response) {
-        jobSuccessEmitter.send(response);
-        return response;
-    }
-
-    public JobDetails publishJobStatusChange(JobDetails scheduledJob) {
-        jobStatusChangeEmitter.send(scheduledJob);
-        return scheduledJob;
-    }
-
-    //Stream Processors
-    @Incoming(AvailableStreams.JOB_ERROR_EVENTS)
-    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public CompletionStage<Boolean> jobErrorProcessor(JobExecutionResponse response) {
-        LOGGER.warn("Error received {}", response);
-        return ErrorHandling.skipErrorPublisherBuilder(scheduler::handleJobExecutionError, response)
-                .findFirst()
-                .run()
-                .thenApply(Optional::isPresent)
-                .exceptionally(e -> {
-                    LOGGER.error("Error handling error {}", response, e);
-                    return false;
-                });
-    }
-
-    @Incoming(AvailableStreams.JOB_SUCCESS_EVENTS)
-    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public CompletionStage<Boolean> jobSuccessProcessor(JobExecutionResponse response) {
-        LOGGER.debug("Success received to be processed {}", response);
-        return ErrorHandling.skipErrorPublisherBuilder(scheduler::handleJobExecutionSuccess, response)
-                .findFirst()
-                .run()
-                .thenApply(Optional::isPresent)
-                .exceptionally(e -> {
-                    LOGGER.error("Error handling error {}", response, e);
-                    return false;
-                });
-    }
-
-    // Broadcast Events from Emitter to Streams
-    @Incoming(AvailableStreams.JOB_ERROR)
-    @Outgoing(AvailableStreams.JOB_ERROR_EVENTS)
-    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public JobExecutionResponse jobErrorBroadcast(JobExecutionResponse response) {
-        LOGGER.debug("Error broadcast published {}", response);
-        return response;
-    }
-
-    @Incoming(AvailableStreams.JOB_SUCCESS)
-    @Outgoing(AvailableStreams.JOB_SUCCESS_EVENTS)
-    @Broadcast
-    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public JobExecutionResponse jobSuccessBroadcast(JobExecutionResponse response) {
-        LOGGER.debug("Success broadcast published {}", response);
-        return response;
-    }
-
-    @Incoming(AvailableStreams.JOB_STATUS_CHANGE)
-    @Outgoing(AvailableStreams.JOB_STATUS_CHANGE_EVENTS)
-    @Broadcast
-    @Acknowledgment(Acknowledgment.Strategy.PRE_PROCESSING)
-    public JobDetails jobStatusChangeBroadcast(JobDetails job) {
-        LOGGER.debug("Status change broadcast for Job {}", job);
+    @Override
+    public JobDetails publishJobStatusChange(JobDetails job) {
+        LOGGER.debug("publishJobStatusChange to streams, job: {}", job);
+        enabledStreams.forEach(jobStream -> jobStream.jobStatusChange(job));
         return job;
     }
 }

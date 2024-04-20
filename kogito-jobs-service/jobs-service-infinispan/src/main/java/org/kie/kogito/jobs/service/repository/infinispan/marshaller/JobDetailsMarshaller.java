@@ -66,6 +66,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
         writer.writeObject("trigger", job.getTrigger(), getInterface(job.getTrigger()));
         writer.writeLong("executionTimeout", job.getExecutionTimeout());
         writer.writeString("executionTimeoutUnit", job.getExecutionTimeoutUnit() != null ? job.getExecutionTimeoutUnit().name() : null);
+        writer.writeInstant("nextFireTime", toInstant(job.getTrigger().hasNextFireTime()));
+        writer.writeInstant("created", zonedDateTimeToInstant(job.getCreated()));
     }
 
     public Class<?> getInterface(Object object) {
@@ -90,6 +92,7 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
         Trigger trigger = reader.readObject("trigger", Trigger.class);
         Long executionTimeout = reader.readLong("executionTimeout");
         String executionTimeoutUnit = reader.readString("executionTimeoutUnit");
+        ZonedDateTime created = instantToZonedDateTime(reader.readInstant("created"));
 
         return JobDetails.builder()
                 .id(id)
@@ -104,6 +107,7 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
                 .trigger(trigger)
                 .executionTimeout(executionTimeout)
                 .executionTimeoutUnit(executionTimeoutUnit != null ? ChronoUnit.valueOf(executionTimeoutUnit) : null)
+                .created(created)
                 .build();
     }
 }

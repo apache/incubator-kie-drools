@@ -18,17 +18,13 @@
  */
 package org.kie.kogito.jobs.service.repository.impl;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobDetails;
-import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobEventPublisher;
 
@@ -50,13 +46,6 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
         vertx.executeBlocking(v -> future.complete(function.get()), r -> {
         });
         return future;
-    }
-
-    @Override
-    public PublisherBuilder<JobDetails> findByStatus(JobStatus... status) {
-        return findAll()
-                .filter(job -> Objects.nonNull(job.getStatus()))
-                .filter(job -> Arrays.stream(status).anyMatch(job.getStatus()::equals));
     }
 
     @Override

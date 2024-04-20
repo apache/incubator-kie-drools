@@ -30,6 +30,8 @@ public interface ReactiveJobScheduler extends JobScheduler<Publisher<JobDetails>
 
     Publisher<JobDetails> schedule(JobDetails job);
 
+    Publisher<JobDetails> internalSchedule(JobDetails job, boolean onServiceStart);
+
     CompletionStage<JobDetails> cancel(String jobId);
 
     PublisherBuilder<JobDetails> reschedule(String id, Trigger trigger);

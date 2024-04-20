@@ -22,8 +22,10 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
@@ -44,6 +46,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.enterprise.inject.Instance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyCollection;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -93,14 +96,20 @@ class EventPublisherJobStreamsTest {
         Instance<EventPublisher> eventPublisherInstance = mock(Instance.class);
         Stream<EventPublisher> eventPublishers = Arrays.stream(new EventPublisher[] { eventPublisher });
         doReturn(eventPublishers).when(eventPublisherInstance).stream();
+        ManagedExecutor managedExecutor = mock(ManagedExecutor.class);
+        ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass(Runnable.class);
+        CompletableFuture<Void> completableFuture = CompletableFuture.completedFuture(null);
+        doReturn(completableFuture).when(managedExecutor).runAsync(any());
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        EventPublisherJobStreams eventPublisherJobStreams = new EventPublisherJobStreams(URL, eventPublisherInstance, objectMapper);
+        EventPublisherJobStreams eventPublisherJobStreams = new EventPublisherJobStreams(URL, eventPublisherInstance, objectMapper, managedExecutor);
 
         JobDetails jobDetails = buildJobDetails();
-        eventPublisherJobStreams.onJobStatusChange(jobDetails);
+        eventPublisherJobStreams.publishJobStatusChange(jobDetails);
+        verify(managedExecutor).runAsync(runnableArgumentCaptor.capture());
+        runnableArgumentCaptor.getValue().run();
 
         verify(eventPublisher).publish(eventCaptor.capture());
         verify(eventPublisher, never()).publish(anyCollection());

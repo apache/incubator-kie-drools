@@ -18,11 +18,15 @@
  */
 package org.kie.kogito.jobs.service.utils;
 
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import org.kie.kogito.jobs.service.adapter.JobDetailsAdapter;
 import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobStatus;
+import org.kie.kogito.jobs.service.model.ManageableJobHandle;
 
 public class ModelUtil {
 
@@ -36,5 +40,26 @@ public class ModelUtil {
         }
         ChronoUnit chronoUnit = job.getExecutionTimeoutUnit() != null ? JobDetailsAdapter.TemporalUnitAdapter.toChronoUnit(job.getExecutionTimeoutUnit()) : ChronoUnit.MILLIS;
         return chronoUnit.getDuration().multipliedBy(job.getExecutionTimeout()).toMillis();
+    }
+
+    public static JobDetails jobWithStatus(JobDetails job, JobStatus status) {
+        return JobDetails.builder().of(job).status(status).build();
+    }
+
+    public static JobDetails jobWithStatusAndHandle(JobDetails job, JobStatus status, ManageableJobHandle handle) {
+        return JobDetails.builder().of(job).status(status).scheduledId(String.valueOf(handle.getId())).build();
+    }
+
+    public static JobDetails jobWithCreatedAndLastUpdate(boolean isNew, JobDetails job) {
+        ZonedDateTime now = DateUtil.now();
+        return isNew ? jobWithCreated(job, now, now) : jobWithLastUpdate(job, now);
+    }
+
+    public static JobDetails jobWithCreated(JobDetails job, ZonedDateTime created, ZonedDateTime lastUpdate) {
+        return JobDetails.builder().of(job).created(created).lastUpdate(lastUpdate).build();
+    }
+
+    public static JobDetails jobWithLastUpdate(JobDetails job, ZonedDateTime lastUpdate) {
+        return JobDetails.builder().of(job).lastUpdate(lastUpdate).build();
     }
 }

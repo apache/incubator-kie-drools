@@ -38,6 +38,7 @@ public class JobDetailsBuilder {
     private Integer priority;
     private Long executionTimeout;
     private ChronoUnit executionTimeoutUnit;
+    private ZonedDateTime created;
 
     public JobDetailsBuilder id(String id) {
         this.id = id;
@@ -99,9 +100,14 @@ public class JobDetailsBuilder {
         return this;
     }
 
+    public JobDetailsBuilder created(ZonedDateTime created) {
+        this.created = created;
+        return this;
+    }
+
     public JobDetails build() {
         return new JobDetails(id, correlationId, status, lastUpdate, retries, executionCounter, scheduledId,
-                recipient, trigger, priority, executionTimeout, executionTimeoutUnit);
+                recipient, trigger, priority, executionTimeout, executionTimeoutUnit, created);
     }
 
     public JobDetailsBuilder of(JobDetails jobDetails) {
@@ -116,7 +122,8 @@ public class JobDetailsBuilder {
                 .trigger(jobDetails.getTrigger())
                 .priority(jobDetails.getPriority())
                 .executionTimeout(jobDetails.getExecutionTimeout())
-                .executionTimeoutUnit(jobDetails.getExecutionTimeoutUnit());
+                .executionTimeoutUnit(jobDetails.getExecutionTimeoutUnit())
+                .created(jobDetails.getCreated());
     }
 
     public JobDetailsBuilder incrementRetries() {

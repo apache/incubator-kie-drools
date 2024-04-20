@@ -42,11 +42,12 @@ public class JobDetails {
     private Trigger trigger;//when/how it should be executed
     private Long executionTimeout;
     private ChronoUnit executionTimeoutUnit;
+    private ZonedDateTime created;
 
     @SuppressWarnings("java:S107")
     protected JobDetails(String id, String correlationId, JobStatus status, ZonedDateTime lastUpdate, Integer retries,
             Integer executionCounter, String scheduledId, Recipient recipient, Trigger trigger, Integer priority,
-            Long executionTimeout, ChronoUnit executionTimeoutUnit) {
+            Long executionTimeout, ChronoUnit executionTimeoutUnit, ZonedDateTime created) {
         this.id = id;
         this.correlationId = correlationId;
         this.status = status;
@@ -59,6 +60,7 @@ public class JobDetails {
         this.priority = priority;
         this.executionTimeout = executionTimeout;
         this.executionTimeoutUnit = executionTimeoutUnit;
+        this.created = created;
     }
 
     public String getId() {
@@ -109,6 +111,10 @@ public class JobDetails {
         return executionTimeoutUnit;
     }
 
+    public ZonedDateTime getCreated() {
+        return created;
+    }
+
     public static JobDetailsBuilder builder() {
         return new JobDetailsBuilder();
     }
@@ -132,13 +138,14 @@ public class JobDetails {
                 Objects.equals(getRecipient(), that.getRecipient()) &&
                 Objects.equals(getTrigger().hasNextFireTime(), that.getTrigger().hasNextFireTime()) &&
                 Objects.equals(getExecutionTimeout(), that.getExecutionTimeout()) &&
-                Objects.equals(getExecutionTimeoutUnit(), that.getExecutionTimeoutUnit());
+                Objects.equals(getExecutionTimeoutUnit(), that.getExecutionTimeoutUnit()) &&
+                Objects.equals(getCreated(), that.getCreated());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getCorrelationId(), getStatus(), getRetries(), getExecutionCounter(),
-                getScheduledId(), getRecipient(), getTrigger(), getExecutionTimeout(), getExecutionTimeoutUnit());
+                getScheduledId(), getRecipient(), getTrigger(), getExecutionTimeout(), getExecutionTimeoutUnit(), getCreated());
     }
 
     @Override
@@ -155,6 +162,7 @@ public class JobDetails {
                 .add("trigger=" + trigger)
                 .add("executionTimeout=" + executionTimeout)
                 .add("executionTimeoutUnit=" + executionTimeoutUnit)
+                .add("created=" + created)
                 .toString();
     }
 }
