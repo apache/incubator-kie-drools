@@ -18,10 +18,6 @@
  */
 package org.kie.dmn.openapi.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.feel.FEEL;
@@ -32,24 +28,35 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class FEELSchemaEnum {
 
     private static final Logger LOG = LoggerFactory.getLogger(FEELSchemaEnum.class);
 
-    public static void parseValuesIntoSchema(Schema schema, List<DMNUnaryTest> list) {
-        List<Object> expectLiterals = evaluateUnaryTests(list);
+    public static void parseValuesIntoSchema(Schema schema, List<DMNUnaryTest> unaryTests) {
+        List<Object> expectLiterals = evaluateUnaryTests(unaryTests);
+        try {
+            checkEvaluatedUnaryTestsForTypeConsistency(expectLiterals);
+        } catch (IllegalArgumentException e) {
+            LOG.warn("Unable to parse generic value into the JSON Schema for enumeration");
+            return;
+        }
         if (expectLiterals.contains(null)) {
             schema.setNullable(true);
         }
-        boolean allLiterals = expectLiterals.stream().allMatch(o -> o == null || o instanceof String || o instanceof Number || o instanceof Boolean);
+        boolean allLiterals = !expectLiterals.isEmpty() && expectLiterals.stream().allMatch(o -> o == null || o instanceof String || o instanceof Number || o instanceof Boolean);
         if (allLiterals) {
             schema.enumeration(expectLiterals);
         } else {
             LOG.warn("Unable to parse generic value into the JSON Schema for enumeration");
         }
     }
-    
-    public static void parseNumbersIntoSchema(Schema schema, List<DMNUnaryTest> list) {
+
+    public static void parseRangeableValuesIntoSchema(Schema schema, List<DMNUnaryTest> list, Class<?> expectedType) {
         List<Object> uts = evaluateUnaryTests(list); // we leverage the property of the *base* FEEL grammar(non visited by ASTVisitor, only the ParseTree->AST Visitor) that `>x` is a Range
         boolean allowNull = uts.remove(null);
         if (allowNull) {
@@ -67,13 +74,13 @@ public class FEELSchemaEnum {
                     schema.exclusiveMaximum(range.getHighBoundary() == RangeBoundary.OPEN);
                 }
             }
-        } else if (uts.stream().allMatch(o -> o instanceof Number)) {
+        } else if (uts.stream().allMatch(expectedType::isInstance)) {
             if (allowNull) {
                 uts.add(null);
             }
             schema.enumeration(uts);
         } else {
-            LOG.warn("Unable to parse number value into the JSON Schema for enumeration");
+            LOG.warn("Unable to parse {} value into the JSON Schema for enumeration", expectedType);
         }
     }
 
@@ -99,13 +106,43 @@ public class FEELSchemaEnum {
         return consistent ? result : null;
     }
 
-    private static List<Object> evaluateUnaryTests(List<DMNUnaryTest> list) {
-    	FEEL SimpleFEEL = FEEL.newInstance();
-        List<Object> utEvaluated = list.stream().map(UnaryTestImpl.class::cast)
-                                       .map(UnaryTestImpl::toString)
-                                       .map(SimpleFEEL::evaluate)
-                                       .collect(Collectors.toList());
-        return utEvaluated;
+    static List<Object> evaluateUnaryTests(List<DMNUnaryTest> list) {
+        FEEL feelInstance = FEEL.newInstance();
+        List<Object> toReturn = list.stream()
+                .map(UnaryTestImpl.class::cast)
+                .map(UnaryTestImpl::toString)
+                .filter(str -> !str.contains("?")) // We have to exclude "TEST" expressions, because they can't be evaluated without a context and their return is meaningless
+                .map(feelInstance::evaluate)
+                .collect(Collectors.toList());
+        checkEvaluatedUnaryTestsForNull(toReturn);
+        return toReturn;
+    }
+
+    /**
+     * Method used to verify if the given <code>List</code> contains at most one <code>null</code>,
+     * since those should be put in the "enum" attribute
+     *
+     * @param toCheck
+     */
+    static void checkEvaluatedUnaryTestsForNull(List<Object> toCheck) {
+        if (toCheck.stream().filter(Objects::isNull).toList().size() > 1) {
+            throw new IllegalArgumentException("More then one object is null, only one allowed at maximum");
+        }
+    }
+
+    /**
+     * Method used to verify if the given <code>List</code> contains the same type of <code>Object</code>s,
+     * since those should be put in the "enum" attribute
+     *
+     * @param toCheck
+     */
+    static void checkEvaluatedUnaryTestsForTypeConsistency(List<Object> toCheck) {
+        if (toCheck.stream().filter(Objects::nonNull)
+                .map(Object::getClass)
+                .collect(Collectors.toUnmodifiableSet())
+                .size() > 1) {
+            throw new IllegalArgumentException("Different types of objects, only one allowed");
+        }
     }
 
     private FEELSchemaEnum() {
