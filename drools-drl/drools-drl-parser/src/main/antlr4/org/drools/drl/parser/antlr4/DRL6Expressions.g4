@@ -187,6 +187,7 @@ drlKeywords returns [Token token]
     | DRL_FUNCTION
     | DRL_GLOBAL
     | DRL_DECLARE
+    | DRL_TRAIT
     | DRL_RULE
     | DRL_QUERY
     | DRL_WHEN
@@ -198,6 +199,7 @@ drlKeywords returns [Token token]
     | DRL_NOT
     | DRL_IN
     | DRL_FROM
+    | DRL_COLLECT
     | DRL_ACCUMULATE
     | DRL_ACC
     | DRL_INIT
@@ -206,6 +208,8 @@ drlKeywords returns [Token token]
     | DRL_RESULT
     | DRL_ENTRY_POINT
     | DRL_EVAL
+    | DRL_FORALL
+    | DRL_OVER
     | DRL_SALIENCE
     | DRL_ENABLED
     | DRL_NO_LOOP
@@ -222,6 +226,7 @@ drlKeywords returns [Token token]
     | DRL_CALENDARS
     | DRL_TIMER
     | DRL_DURATION
+    | DRL_WINDOW
     ;
 
 builtInOperator returns[Token token]
