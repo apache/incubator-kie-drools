@@ -40,7 +40,7 @@
 
         <groovy.core.version>2.4.11</groovy.core.version>
         <groovy.gmaven.pluginVersion>1.6.1</groovy.gmaven.pluginVersion>
-        <google.guava.version>29.0-jre</google.guava.version>
+        <google.guava.version>32.0.0-jre</google.guava.version>
 
         <jenkins-spock.version>2.0.0</jenkins-spock.version>
         <jenkins.version>2.334</jenkins.version>
