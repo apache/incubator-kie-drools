@@ -92,7 +92,6 @@ public class DroolsQuarkusResourceUtils {
                 .withApplicationProperties(appPaths.getResourceFiles())
                 .withClassAvailabilityResolver(className -> classAvailabilityResolver(index, className))
                 .withAppPaths(appPaths)
-                .withAppPaths(appPaths)
                 .build();
 
         return context;
