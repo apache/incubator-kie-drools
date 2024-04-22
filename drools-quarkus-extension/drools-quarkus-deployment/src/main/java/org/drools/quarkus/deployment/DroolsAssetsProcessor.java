@@ -19,6 +19,8 @@
 package org.drools.quarkus.deployment;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,12 +41,22 @@ import jakarta.inject.Inject;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.project.RuleCodegen;
 import org.drools.quarkus.util.deployment.GlobalsBuildItem;
 import org.drools.quarkus.util.deployment.KmoduleKieBaseModelsBuiltItem;
 import org.drools.quarkus.util.deployment.PatternsTypesBuildItem;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
+import org.kie.api.conf.PrototypesOption;
+import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +85,8 @@ public class DroolsAssetsProcessor {
 
     private static final String FEATURE = "drools";
 
+    private static final String CONFIG_PREFIX = "drools.kbase.";
+
     @BuildStep
     public FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
@@ -87,12 +101,12 @@ public class DroolsAssetsProcessor {
                                  BuildProducer<KmoduleKieBaseModelsBuiltItem> kbaseModelsBI,
                                  BuildProducer<GlobalsBuildItem> globalsBI,
                                  BuildProducer<GeneratedJaxRsResourceBuildItem> jaxrsProducer) {
-        DroolsModelBuildContext context =
-                createDroolsBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex());
+
+        DroolsModelBuildContext context = createDroolsBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex());
 
         Collection<Resource> resources = ResourceCollector.fromPaths(context.getAppPaths().getPaths());
 
-        RuleCodegen ruleCodegen = ofResources(context, resources);
+        RuleCodegen ruleCodegen = ofResources(context, resources).withKieBaseModels(readKieBaseModels());
         Collection<GeneratedFile> generatedFiles = ruleCodegen.generate();
         generatedFiles.addAll(getRuleUnitDefProducerSource(combinedIndexBuildItem.getIndex()));
 
@@ -127,5 +141,80 @@ public class DroolsAssetsProcessor {
         generatedBeanBuildItems.stream()
                 .filter(b -> restResourceClassNameSet.contains(b.getName()))
                 .forEach(b -> jaxrsProducer.produce(new GeneratedJaxRsResourceBuildItem(b.getName(), b.getData())));
+    }
+
+    private Map<String, KieBaseModel> readKieBaseModels() {
+        Map<String, KieBaseModel> kieBaseModels = new HashMap<>();
+        Config config = ConfigProvider.getConfig();
+
+        for (String propertyName : config.getPropertyNames()) {
+            if (!propertyName.startsWith(CONFIG_PREFIX)) {
+                continue;
+            }
+
+            String[] splitProp = propertyName.substring(CONFIG_PREFIX.length()).split("\\.");
+            if (splitProp.length < 2) {
+                LOGGER.error("Malformed Drools property: " + propertyName);
+                continue;
+            }
+
+            String kBaseName = splitProp[0];
+            KieBaseModel kieBaseModel = kieBaseModels.computeIfAbsent(kBaseName, KieBaseModelImpl::new);
+            switch (splitProp[1]) {
+                case "packages":
+                    for (String pkg : config.getValue(propertyName, String.class).split("\\,")) {
+                        kieBaseModel.addPackage(pkg);
+                    }
+                    break;
+                case "default":
+                    kieBaseModel.setDefault( config.getValue(propertyName, Boolean.class) );
+                    break;
+                case "prototypes":
+                    kieBaseModel.setPrototypes(PrototypesOption.determinePrototypesOption(config.getValue(propertyName, String.class)));
+                    break;
+                case "eventProcessingMode":
+                    kieBaseModel.setEventProcessingMode(EventProcessingOption.determineEventProcessingMode(config.getValue(propertyName, String.class)));
+                    break;
+                case "mutability":
+                    kieBaseModel.setMutability(KieBaseMutabilityOption.determineMutability(config.getValue(propertyName, String.class)));
+                    break;
+                case "sessionsPool":
+                    kieBaseModel.setSessionsPool(SessionsPoolOption.get(config.getValue(propertyName, Integer.class)));
+                    break;
+                case "ksessions":
+                    for (String ksession : config.getValue(propertyName, String.class).split("\\,")) {
+                        kieBaseModel.newKieSessionModel(ksession);
+                    }
+                    break;
+                case "ksession":
+                    if (splitProp.length == 2) {
+                        kieBaseModel.newKieSessionModel(config.getValue(propertyName, String.class));
+                    } else {
+                        if (splitProp.length < 4) {
+                            LOGGER.error("Malformed Drools property: " + propertyName);
+                            break;
+                        }
+
+                        String kSessionName = splitProp[2];
+                        KieSessionModel kieSessionModel = kieBaseModel.getKieSessionModels().get(kSessionName);
+                        if (kieSessionModel == null) {
+                            kieSessionModel = kieBaseModel.newKieSessionModel(kSessionName);
+                        }
+
+                        switch (splitProp[3]) {
+                            case "default":
+                                kieSessionModel.setDefault( config.getValue(propertyName, Boolean.class) );
+                                break;
+                            case "clockType":
+                                kieSessionModel.setClockType( ClockTypeOption.get(config.getValue(propertyName, String.class) ) );
+                                break;
+                        }
+                    }
+                    break;
+            }
+
+        }
+
+        return kieBaseModels;
     }
 }
