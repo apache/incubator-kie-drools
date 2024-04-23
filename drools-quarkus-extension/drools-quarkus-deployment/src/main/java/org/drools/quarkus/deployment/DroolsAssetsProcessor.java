@@ -129,7 +129,7 @@ public class DroolsAssetsProcessor {
         registerResources(generatedFiles, staticResProducer, resource, genResBI);
         
         otnClasesBI.produce(new PatternsTypesBuildItem(ruleCodegen.getPackageModels().stream().collect(Collectors.toMap(PackageModel::getName, PackageModel::getOtnsClasses))));
-        if (ruleCodegen.getKmoduleKieBaseModels() != null) {
+        if (ruleCodegen.hasKieBaseModels()) {
             kbaseModelsBI.produce(new KmoduleKieBaseModelsBuiltItem(ruleCodegen.getKmoduleKieBaseModels()));
         }
         globalsBI.produce(new GlobalsBuildItem(ruleCodegen.getPackageModels().stream().collect(Collectors.toMap(PackageModel::getName, PackageModel::getGlobals))));

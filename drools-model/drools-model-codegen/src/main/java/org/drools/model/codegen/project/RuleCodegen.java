@@ -74,7 +74,9 @@ public class RuleCodegen {
         Collection<GeneratedFile> generatedFiles = droolsModelBuilder.generateCanonicalModelSources();
 
         if (!droolsModelBuilder.hasRuleUnits()) {
-            KieSessionModelBuilder kieSessionModelBuilder = new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources(), kieBaseModels);
+            KieSessionModelBuilder kieSessionModelBuilder = kieBaseModels != null ?
+                    new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources(), kieBaseModels) :
+                    new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
             generatedFiles.addAll(kieSessionModelBuilder.generate());
             this.kieBaseModels = kieSessionModelBuilder.getKieBaseModels();
         }
@@ -123,6 +125,10 @@ public class RuleCodegen {
     }
     
     public Collection<KieBaseModel> getKmoduleKieBaseModels() {
-        return kieBaseModels == null ? null : kieBaseModels.values();
+        return hasKieBaseModels() ? kieBaseModels.values() : Collections.emptyList();
+    }
+
+    public boolean hasKieBaseModels() {
+        return kieBaseModels != null && !kieBaseModels.isEmpty();
     }
 }
