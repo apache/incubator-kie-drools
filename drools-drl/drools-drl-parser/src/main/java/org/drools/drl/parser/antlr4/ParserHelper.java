@@ -91,7 +91,7 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
  * by the DRL parser
  */
 public class ParserHelper {
-    public final String[]                             statementKeywords        = new String[]{
+    public static final String[]                      statementKeywords        = new String[]{
                                                                                DroolsSoftKeywords.PACKAGE,
                                                                                DroolsSoftKeywords.UNIT,
                                                                                DroolsSoftKeywords.IMPORT,

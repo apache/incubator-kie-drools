@@ -21,8 +21,11 @@ package org.drools.drl.parser.antlr4;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.AndDescr;
+import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 
 /**
@@ -35,29 +38,38 @@ public class DescrHelper {
     }
 
     public static <T extends BaseDescr> T populateCommonProperties(T descr, ParserRuleContext ctx) {
-        descr.setStartCharacter(ctx.getStart().getStartIndex());
-        // TODO: Current DRL6Parser adds +1 for EndCharacter but it doesn't look reasonable. At the moment, I don't add. Instead, I fix unit tests.
-        //       I will revisit if this is the right approach.
-        descr.setEndCharacter(ctx.getStop().getStopIndex());
-        descr.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
-        descr.setEndLocation(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1); // last column of the end token
+
+        if (descr instanceof ExprConstraintDescr) {
+            // Backward Compatibility Notes:
+            //   Old DRL6Parser.constraint() has slightly different behavior for ExprConstraintDescr. Keep it for backward compatibility
+            //   When we will update LanguageLevel, we can align this with other Descr.
+            descr.setStartCharacter(ctx.getStart().getStartIndex());
+            descr.setEndCharacter(ctx.getStop().getStopIndex());
+            descr.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+            descr.setEndLocation(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine());
+        } else {
+            descr.setStartCharacter(ctx.getStart().getStartIndex());
+            // Backward Compatibility Notes:
+            //   Old DRL6Parser adds +1 for EndCharacter (except ExprConstraintDescr). This new parser follows the same to keep the backward compatibility.
+            //   However, it doesn't look reasonable. When we will update LanguageLevel, we can remove this +1.
+            descr.setEndCharacter(ctx.getStop().getStopIndex() + 1);
+            descr.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+            descr.setEndLocation(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1); // last column of the end token
+        }
         return descr;
     }
 
-    /**
-     * LHS rootDescr requires special handling for properties, because it rearranges its children.
-     */
-    public static AndDescr refreshRootProperties(AndDescr descr) {
-        List<BaseDescr> childDescrs = descr.getDescrs();
-        if (childDescrs.isEmpty()) {
+    public static <T extends BaseDescr> T populateCommonProperties(T descr, List<? extends ParserRuleContext> ctxList) {
+        if (ctxList.isEmpty()) {
             return descr;
         }
-        BaseDescr firstChild = childDescrs.get(0);
-        BaseDescr lastChild = childDescrs.get(childDescrs.size() - 1);
-        descr.setStartCharacter(firstChild.getStartCharacter());
-        descr.setEndCharacter(lastChild.getEndCharacter());
-        descr.setLocation(firstChild.getLine(), firstChild.getColumn());
-        descr.setEndLocation(lastChild.getEndLine(), lastChild.getEndColumn());
+        ParserRuleContext firstCtx = ctxList.get(0);
+        ParserRuleContext lastCtx = ctxList.get(ctxList.size() - 1);
+
+        descr.setStartCharacter(firstCtx.getStart().getStartIndex());
+        descr.setEndCharacter(lastCtx.getStop().getStopIndex() + 1);
+        descr.setLocation(firstCtx.getStart().getLine(), firstCtx.getStart().getCharPositionInLine());
+        descr.setEndLocation(lastCtx.getStop().getLine(), lastCtx.getStop().getCharPositionInLine() + lastCtx.getStop().getText().length() - 1); // last column of the end token
         return descr;
     }
 

@@ -60,7 +60,9 @@ public class DrlParser {
     private Resource                resource              = null;
 
     public static final String ANTLR4_PARSER_ENABLED_PROPERTY = "drools.drl.antlr4.parser.enabled";
-    public static final boolean ANTLR4_PARSER_ENABLED = Boolean.parseBoolean(System.getProperty(ANTLR4_PARSER_ENABLED_PROPERTY, "true")); // default is true
+
+    // TODO: temporarily removed 'final' for testing purposes. This should be final
+    public static boolean ANTLR4_PARSER_ENABLED = Boolean.parseBoolean(System.getProperty(ANTLR4_PARSER_ENABLED_PROPERTY, "true")); // default is true
 
     public static final LanguageLevelOption DEFAULT_LANGUAGE_LEVEL = LanguageLevelOption.DRL6;
     private final LanguageLevelOption languageLevel;
