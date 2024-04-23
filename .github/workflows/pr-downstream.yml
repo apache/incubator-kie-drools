@@ -20,11 +20,13 @@ jobs:
     timeout-minutes: 180
     strategy:
       matrix:
-        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        job_name: [ optaplanner, kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
         os: [ubuntu-latest]
         java-version: [17]
         maven-version: ['3.9.6']
         include:
+          - job_name: optaplanner
+            repository: incubator-kie-optaplanner
           - job_name: kogito-runtimes
             repository: incubator-kie-kogito-runtimes
           - job_name: kogito-apps
@@ -60,7 +62,7 @@ jobs:
       - name: Build Chain
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           starting-project: apache/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
