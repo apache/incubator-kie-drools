@@ -30,6 +30,8 @@ import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
+import org.drools.drl.parser.DrlExprParserFactory;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.AfterEach;
@@ -49,17 +51,17 @@ public class DRLExprParserTest {
     DrlExprParser parser;
 
     @BeforeEach
-    public void setUp() throws Exception {
-        this.parser = new Drl6ExprParserAntlr4(LanguageLevelOption.DRL6);
+    public void setUp() {
+        this.parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         this.parser = null;
     }
 
     @Test
-    public void testSimpleExpression() throws Exception {
+    public void testSimpleExpression() {
         String source = "a > b";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -387,13 +389,26 @@ public class DRLExprParserTest {
         assertThat(parser.hasErrors()).isTrue();
         assertThat(parser.getErrors()).hasSize(1);
         DroolsParserException exception = parser.getErrors().get(0);
-        assertThat(exception.getErrorCode()).isEqualTo("ERR 102");
-        assertThat(exception.getLineNumber()).isEqualTo(1);
-        assertThat(exception.getColumn()).isEqualTo(1);
-        assertThat(exception.getOffset()).isEqualTo(1);
-        assertThat(exception.getMessage())
-                .startsWithIgnoringCase("[ERR 102] Line 1:1 mismatched input '<EOF>' expecting ")
-                .contains("TIME_INTERVAL", "DRL_STRING_LITERAL", "?/", "boolean", "byte", "char", "double", "float", "int", "long", "new", "short", "super", "DECIMAL_LITERAL", "HEX_LITERAL", "FLOAT_LITERAL", "BOOL_LITERAL", "STRING_LITERAL", "null", "(", "[", ".", "<", "!", "~", "++", "--", "+", "-", "*", "/", "IDENTIFIER");
+
+        // Backward Compatibility Notes:
+        //   Antlr4 gives a different error code/message from antlr3 for this case.
+        //   Backward compatibility doesn't seem to be required in this case.
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            assertThat(exception.getErrorCode()).isEqualTo("ERR 102");
+            assertThat(exception.getLineNumber()).isEqualTo(1);
+            assertThat(exception.getColumn()).isEqualTo(1);
+            assertThat(exception.getOffset()).isEqualTo(1);
+            assertThat(exception.getMessage())
+                    .startsWithIgnoringCase("[ERR 102] Line 1:1 mismatched input '<EOF>' expecting ")
+                    .contains("TIME_INTERVAL", "DRL_STRING_LITERAL", "?/", "boolean", "byte", "char", "double", "float", "int", "long", "new", "short", "super", "DECIMAL_LITERAL", "HEX_LITERAL", "FLOAT_LITERAL", "BOOL_LITERAL", "STRING_LITERAL", "null", "(", "[", ".", "<", "!", "~", "++", "--", "+", "-", "*", "/", "IDENTIFIER");
+        } else {
+            assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
+            assertThat(exception.getLineNumber()).isEqualTo(1);
+            assertThat(exception.getColumn()).isEqualTo(1);
+            assertThat(exception.getOffset()).isEqualTo(1);
+            assertThat(exception.getMessage())
+                    .isEqualToIgnoringCase("[ERR 101] Line 1:1 no viable alternative at input '<eof>'");
+        }
     }
 
     @Test
@@ -403,26 +418,48 @@ public class DRLExprParserTest {
         assertThat(parser.hasErrors()).isTrue();
         assertThat(parser.getErrors()).hasSize(1);
         DroolsParserException exception = parser.getErrors().get(0);
-        assertThat(exception.getErrorCode()).isEqualTo("ERR 109");
-        assertThat(exception.getLineNumber()).isEqualTo(1);
-        assertThat(exception.getColumn()).isEqualTo(3);
-        assertThat(exception.getOffset()).isEqualTo(3);
-        assertThat(exception.getMessage())
-                .startsWithIgnoringCase("[ERR 109] Line 1:3 extraneous input ';' expecting ")
-                .contains("TIME_INTERVAL", "DRL_STRING_LITERAL", "?/", "boolean", "byte", "char", "double", "float", "int", "long", "new", "short", "super", "DECIMAL_LITERAL", "HEX_LITERAL", "FLOAT_LITERAL", "BOOL_LITERAL", "STRING_LITERAL", "null", "(", "[", ".", "<", "!", "~", "++", "--", "+", "-", "*", "/", "IDENTIFIER");
+
+        // Backward Compatibility Notes:
+        //   Antlr4 gives a different error code/message from antlr3 for this case.
+        //   Backward compatibility doesn't seem to be required in this case.
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            assertThat(exception.getErrorCode()).isEqualTo("ERR 109");
+            assertThat(exception.getLineNumber()).isEqualTo(1);
+            assertThat(exception.getColumn()).isEqualTo(3);
+            assertThat(exception.getOffset()).isEqualTo(3);
+            assertThat(exception.getMessage())
+                    .startsWithIgnoringCase("[ERR 109] Line 1:3 extraneous input ';' expecting ")
+                    .contains("TIME_INTERVAL", "DRL_STRING_LITERAL", "?/", "boolean", "byte", "char", "double", "float", "int", "long", "new", "short", "super", "DECIMAL_LITERAL", "HEX_LITERAL", "FLOAT_LITERAL", "BOOL_LITERAL", "STRING_LITERAL", "null", "(", "[", ".", "<", "!", "~", "++", "--", "+", "-", "*", "/", "IDENTIFIER");
+        } else {
+            assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
+            assertThat(exception.getLineNumber()).isEqualTo(1);
+            assertThat(exception.getColumn()).isEqualTo(3);
+            assertThat(exception.getOffset()).isEqualTo(3);
+            assertThat(exception.getMessage())
+                    .isEqualToIgnoringCase("[ERR 101] Line 1:3 no viable alternative at input ';'");
+        }
     }
+
     @Test
     public void testNoViableAlt() {
         String source = "x.int";
         parser.parse(source);
-        assertThat(parser.hasErrors()).isTrue();
-        assertThat(parser.getErrors()).hasSize(1);
-        DroolsParserException exception = parser.getErrors().get(0);
-        assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
-        assertThat(exception.getLineNumber()).isEqualTo(1);
-        assertThat(exception.getColumn()).isEqualTo(2);
-        assertThat(exception.getOffset()).isEqualTo(2);
-        assertThat(exception.getMessage())
-                .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input '.int'");
+
+        // Backward Compatibility Notes:
+        //   Old expr parser (DRL6Expressions) allows this expression because it's too tolerant (fail at runtime anyway).
+        //   Backward compatibility doesn't seem to be required in this case. (But we may align with the old tolerant behavior.)
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            assertThat(parser.hasErrors()).isTrue();
+            assertThat(parser.getErrors()).hasSize(1);
+            DroolsParserException exception = parser.getErrors().get(0);
+            assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
+            assertThat(exception.getLineNumber()).isEqualTo(1);
+            assertThat(exception.getColumn()).isEqualTo(2);
+            assertThat(exception.getOffset()).isEqualTo(2);
+            assertThat(exception.getMessage())
+                    .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input '.int'");
+        } else {
+            assertThat(parser.hasErrors()).isFalse();
+        }
     }
 }
