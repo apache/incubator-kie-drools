@@ -403,7 +403,7 @@ consequenceBody : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
 // THEN LEFT_SQUARE ID RIGHT_SQUARE chunk
 namedConsequence : RHS_NAMED_CONSEQUENCE_THEN consequenceBody ;
 
-stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
+stringId : ( drlIdentifier | DRL_STRING_LITERAL ) ;
 
 type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRACK)* ;
 
