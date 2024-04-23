@@ -20,7 +20,7 @@ package  org.kie.pmml.models.scorecard.evaluator;
 
 import java.util.Map;
 
-import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.dto.PMML4Result;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;

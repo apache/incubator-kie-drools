@@ -24,7 +24,7 @@ import org.dmg.pmml.SimplePredicate;
 import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.drl.ast.dsl.PackageDescrBuilder;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.dto.PMML4Result;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.slf4j.Logger;

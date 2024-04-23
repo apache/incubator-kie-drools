@@ -28,7 +28,7 @@ import org.apache.commons.math3.util.Precision;
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;

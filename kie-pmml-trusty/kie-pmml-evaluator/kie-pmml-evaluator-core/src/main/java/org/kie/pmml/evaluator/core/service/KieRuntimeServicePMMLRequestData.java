@@ -20,8 +20,8 @@ package org.kie.pmml.evaluator.core.service;
 
 import java.util.Optional;
 
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;

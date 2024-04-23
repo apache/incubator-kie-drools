@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.pmml;
+package org.kie.pmml.api.dto;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -24,54 +24,49 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="value")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class IntegerFieldOutput extends AbstractOutput<Integer> {
-    private Integer value;
+public class DoubleFieldOutput extends AbstractOutput<Double> {
+    private Double value;
     
-    public IntegerFieldOutput() {
+    
+    public DoubleFieldOutput() {
         super();
     }
 
-    
-    
-    public IntegerFieldOutput(String correlationId, String name, String displayValue, Double weight, Integer value) {
+
+    public DoubleFieldOutput(String correlationId, String name, String displayValue, Double weight, Double value) {
         super(correlationId, name, displayValue, weight);
         this.value = value;
     }
 
 
-
-    public IntegerFieldOutput(String correlationId, String segmentationId, String segmentId, String name,
-            String displayValue, Double weight, Integer value) {
+    public DoubleFieldOutput(String correlationId, String segmentationId, String segmentId, String name,
+            String displayValue, Double weight, Double value) {
         super(correlationId, segmentationId, segmentId, name, displayValue, weight);
         this.value = value;
     }
 
 
-
-    public IntegerFieldOutput(String correlationId, String segmentationId, String segmentId, String name, Integer value) {
+    public DoubleFieldOutput(String correlationId, String segmentationId, String segmentId, String name, Double value) {
         super(correlationId, segmentationId, segmentId, name);
         this.value = value;
     }
 
 
-
-    public IntegerFieldOutput(String correlationId, String name, Integer value) {
+    public DoubleFieldOutput(String correlationId, String name, Double value) {
         super(correlationId, name);
         this.value = value;
     }
 
 
-
     @Override
-    public Integer getValue() {
+    public Double getValue() {
         return value;
     }
 
     @Override
-    public void setValue(Integer value) {
+    public void setValue(Double value) {
         this.value = value;
     }
-
 
 
     @Override
@@ -81,7 +76,6 @@ public class IntegerFieldOutput extends AbstractOutput<Integer> {
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
-
 
 
     @Override
@@ -95,7 +89,7 @@ public class IntegerFieldOutput extends AbstractOutput<Integer> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        IntegerFieldOutput other = (IntegerFieldOutput) obj;
+        DoubleFieldOutput other = (DoubleFieldOutput) obj;
         if (value == null) {
             if (other.value != null) {
                 return false;
@@ -106,13 +100,12 @@ public class IntegerFieldOutput extends AbstractOutput<Integer> {
         return true;
     }
 
-
-
     @Override
     public String toString() {
-        return "IntegerFieldOutput [correlationId=" + getCorrelationId() + ", segmentationId="
+        return "DoubleFieldOutput [correlationId=" + getCorrelationId() + ", segmentationId="
                 + getSegmentationId() + ", segmentId=" + getSegmentId() + ", name=" + getName()
                 + ", displayValue=" + getDisplayValue() + ", value=" + value + ", weight=" + weight + "]";
     }
-
+    
+    
 }

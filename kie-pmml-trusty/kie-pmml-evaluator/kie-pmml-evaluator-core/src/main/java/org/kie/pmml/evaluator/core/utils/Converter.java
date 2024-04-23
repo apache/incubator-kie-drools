@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.api.dto.ParameterInfo;
 
 /**
  * Class used to convert data to/from different formats

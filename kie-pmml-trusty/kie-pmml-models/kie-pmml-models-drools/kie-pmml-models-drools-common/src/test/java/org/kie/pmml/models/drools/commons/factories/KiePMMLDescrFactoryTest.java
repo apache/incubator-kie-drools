@@ -29,7 +29,7 @@ import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.jupiter.api.Test;
-import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.dto.PMML4Result;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;

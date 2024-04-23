@@ -16,19 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.internal.pmml;
+package org.kie.pmml.api.dto;
 
-import java.util.Map;
 
-import org.kie.api.runtime.Context;
 
-public interface PMMLCommandExecutor {
+public abstract class PMML4AbstractField implements PMML4Field {
 
-    /**
-     * Evaluate the given <code>Map<String, Object><code>
-     * @param pmmlRequestData : it must contain the pmml file name (in the <i>source</i> property)
-     * and the model name
-     * @return
-     */
-    Map<String, Object> execute(final Map<String, Object> pmmlRequestData, final Context context);
 }

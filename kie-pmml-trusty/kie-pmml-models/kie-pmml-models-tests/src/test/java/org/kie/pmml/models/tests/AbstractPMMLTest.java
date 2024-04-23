@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.models.PMMLStep;

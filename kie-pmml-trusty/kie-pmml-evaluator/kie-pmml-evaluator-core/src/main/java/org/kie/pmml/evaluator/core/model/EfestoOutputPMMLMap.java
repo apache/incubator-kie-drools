@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.pmml;
+package org.kie.pmml.evaluator.core.model;
 
+import java.util.Map;
 
-public interface PMML4Field {
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
 
-    public String getContext();
+public class EfestoOutputPMMLMap extends AbstractEfestoOutput<Map<String, Object>> {
 
-    public boolean isValid();
-
-    public boolean isMissing();
-
-    public String getName();
+    public EfestoOutputPMMLMap(ModelLocalUriId modelLocalUriId, Map<String, Object> outputData) {
+        super(modelLocalUriId, outputData);
+    }
 }

@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.models.PMMLModel;

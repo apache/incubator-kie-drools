@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.api.dto.PMMLRequestData;
+import org.kie.pmml.api.dto.ParameterInfo;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KiePMMLException;

@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.api.dto.PMMLRequestData;
+import org.kie.pmml.api.dto.ParameterInfo;
 import org.kie.pmml.api.enums.CLOSURE;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;

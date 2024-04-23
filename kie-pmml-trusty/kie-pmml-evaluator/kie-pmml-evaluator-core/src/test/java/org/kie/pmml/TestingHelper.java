@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.dto.PMML4Result;
+import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;

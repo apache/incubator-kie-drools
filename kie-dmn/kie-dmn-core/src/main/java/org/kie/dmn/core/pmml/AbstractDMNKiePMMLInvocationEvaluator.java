@@ -20,10 +20,10 @@ package org.kie.dmn.core.pmml;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.api.io.Resource;
-import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -38,6 +38,8 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.dmn.core.pmml.DMNKiePMMLTrustyInvocationEvaluator.RESULT_CODE;
 
 /**
  * Abstract <code>DMNKiePMMLInvocationEvaluator</code> to delegate actual <code>PMML4Result</code> retrieval to specific
@@ -55,12 +57,21 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
-        PMML4Result resultHolder = getPMML4Result(eventManager, dmnr);
-
-        Map<String, Object> resultVariables = resultHolder.getResultVariables();
-        Map<String, Object> result = getOutputFieldValues(resultHolder, resultVariables, dmnr);
+        Map<String, Object> resultVariables = getPMMLResult(eventManager, dmnr);
+        if (!Objects.equals(resultVariables.get(RESULT_CODE),"OK")) {
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  node,
+                                  ((DMNResultImpl) dmnr),
+                                  null,
+                                  null,
+                                  Msg.UNABLE_TO_RETRIEVE_PMML_RESULT,
+                                  model);
+            return new EvaluatorResultImpl(null, ResultType.FAILURE);
+        }
+        Map<String, Object> result = getOutputFieldValues(resultVariables, dmnr);
         if (result.isEmpty()) {
-            result = getPredictedValues(resultHolder, dmnr);
+            result = getPredictedValues(resultVariables, dmnr);
         }
         if (result.isEmpty()) {
             MsgUtil.reportMessage(LOG,
@@ -79,29 +90,30 @@ public abstract class AbstractDMNKiePMMLInvocationEvaluator extends AbstractPMML
     }
 
     /**
-     * Returns the <code>PMML4Result</code>
+     * Returns the <code>PMML</code> results
      * @param eventManager
      * @param dmnr
      * @return
      */
-    protected abstract PMML4Result getPMML4Result(DMNRuntimeEventManager eventManager, DMNResult dmnr);
+    protected abstract Map<String, Object> getPMMLResult(DMNRuntimeEventManager eventManager, DMNResult dmnr);
 
     /**
      * Returns a <code>Map&lt;String, Object&gt;</code> of values identified by <b>Output</b> definition
-     * @param pmml4Result
      * @param resultVariables
      * @param dmnr
      * @return
      */
-    protected abstract Map<String, Object> getOutputFieldValues(PMML4Result pmml4Result, Map<String, Object> resultVariables, DMNResult dmnr);
+    protected abstract Map<String, Object> getOutputFieldValues(Map<String, Object>
+    resultVariables, DMNResult dmnr);
 
     /**
-     * Returns a <code>Map&lt;String, Object&gt;</code> of predicted values identified by <b>MiningSchema/Targets</b> definitions
-     * @param pmml4Result
+     * Returns a <code>Map&lt;String, Object&gt;</code> of predicted values identified by
+     <b>MiningSchema/Targets</b> definitions
+     * @param resultVariables
      * @param dmnr
      * @return
      */
-    protected abstract Map<String, Object> getPredictedValues(PMML4Result pmml4Result, DMNResult dmnr);
+    protected abstract Map<String, Object> getPredictedValues(Map<String, Object> resultVariables, DMNResult dmnr);
 
     protected Optional<String> getOutputFieldNameFromInfo(String resultName) {
         Optional<String> toReturn;

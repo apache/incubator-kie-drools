@@ -18,7 +18,7 @@
  */
 package org.kie.pmml.evaluator.core.model;
 
-import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.dto.PMML4Result;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
 

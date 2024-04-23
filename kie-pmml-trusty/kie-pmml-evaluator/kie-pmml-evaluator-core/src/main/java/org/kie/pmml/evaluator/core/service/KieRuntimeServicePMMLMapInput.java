@@ -22,20 +22,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
+import org.kie.pmml.evaluator.core.model.EfestoOutputPMMLMap;
 
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInputFromMap;
 
-public class KieRuntimeServicePMMLMapInput implements KieRuntimeService<Map<String, Object>, PMML4Result,
-        EfestoInput<Map<String, Object>>, EfestoOutputPMML, EfestoRuntimeContext> {
+public class KieRuntimeServicePMMLMapInput implements KieRuntimeService<Map<String, Object>, Map<String, Object>,
+        EfestoInput<Map<String, Object>>, EfestoOutputPMMLMap, EfestoRuntimeContext> {
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
@@ -48,7 +48,7 @@ public class KieRuntimeServicePMMLMapInput implements KieRuntimeService<Map<Stri
     }
 
     @Override
-    public Optional<EfestoOutputPMML> evaluateInput(EfestoInput<Map<String, Object>> toEvaluate,
+    public Optional<EfestoOutputPMMLMap> evaluateInput(EfestoInput<Map<String, Object>> toEvaluate,
                                                     EfestoRuntimeContext context) {
         return executeEfestoInputFromMap(toEvaluate, context);
     }

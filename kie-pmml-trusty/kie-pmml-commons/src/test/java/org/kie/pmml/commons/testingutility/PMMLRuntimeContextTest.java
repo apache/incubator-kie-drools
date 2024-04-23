@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.api.dto.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
