@@ -33,6 +33,8 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.model.codegen.project.KieModuleModelWrapper.hasKieModule;
+
 public class RuleCodegen {
 
     public static final String GENERATOR_NAME = "rules";
@@ -74,11 +76,16 @@ public class RuleCodegen {
         Collection<GeneratedFile> generatedFiles = droolsModelBuilder.generateCanonicalModelSources();
 
         if (!droolsModelBuilder.hasRuleUnits()) {
-            KieSessionModelBuilder kieSessionModelBuilder = kieBaseModels != null ?
-                    new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources(), kieBaseModels) :
-                    new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
-            generatedFiles.addAll(kieSessionModelBuilder.generate());
-            this.kieBaseModels = kieSessionModelBuilder.getKieBaseModels();
+            if (kieBaseModels != null) {
+                if (hasKieModule(context.getAppPaths().getPaths())) {
+                    LOGGER.warn("The Kie Module configuration has been provided externally, so the existing kmodule.xml file will be ignored.");
+                }
+                generatedFiles.addAll(new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources(), kieBaseModels).generate());
+            } else {
+                KieSessionModelBuilder kieSessionModelBuilder = new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
+                generatedFiles.addAll(kieSessionModelBuilder.generate());
+                this.kieBaseModels = kieSessionModelBuilder.getKieBaseModels();
+            }
         }
 
         if (LOGGER.isDebugEnabled()) {
