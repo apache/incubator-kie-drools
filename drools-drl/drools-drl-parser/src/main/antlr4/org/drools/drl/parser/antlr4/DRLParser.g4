@@ -17,24 +17,24 @@ import DRL6Expressions, JavaParser;
 compilationUnit : packagedef? unitdef? drlStatementdef* ;
 
 drlStatementdef
-    : importdef
-    | globaldef
-    | declaredef
-    | ruledef
-    | attributes
-    | functiondef
-    | querydef
+    : importdef SEMI?
+    | globaldef SEMI?
+    | declaredef SEMI?
+    | ruledef SEMI?
+    | attributes SEMI?
+    | functiondef SEMI?
+    | querydef SEMI?
     ;
 
 packagedef : PACKAGE name=drlQualifiedName SEMI? ;
 
 unitdef : DRL_UNIT name=drlQualifiedName SEMI? ;
 
-importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)? SEMI?         #importStandardDef
-          | IMPORT (DRL_ACCUMULATE|DRL_ACC) drlQualifiedName IDENTIFIER SEMI?       #importAccumulateDef
+importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)?          #importStandardDef
+          | IMPORT (DRL_ACCUMULATE|DRL_ACC) drlQualifiedName IDENTIFIER        #importAccumulateDef
           ;
 
-globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
+globaldef : DRL_GLOBAL type drlIdentifier ;
 
 /**
  * declare := DECLARE
@@ -60,15 +60,15 @@ declaredef : DRL_DECLARE (
  *                     END
  */
 
-typeDeclaration : DRL_TRAIT? name=drlQualifiedName (EXTENDS superTypes+=drlQualifiedName (COMMA superTypes+=drlQualifiedName)* )? drlAnnotation* field* DRL_END SEMI?;
+typeDeclaration : DRL_TRAIT? name=drlQualifiedName (EXTENDS superTypes+=drlQualifiedName (COMMA superTypes+=drlQualifiedName)* )? drlAnnotation* field* DRL_END ;
 
 // entryPointDeclaration := ENTRY-POINT stringId annotation* END
 
-entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* DRL_END SEMI?;
+entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* DRL_END ;
 
 // windowDeclaration := WINDOW ID annotation* lhsPatternBind END
 
-windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind DRL_END SEMI?;
+windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind DRL_END ;
 
 // field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
 
@@ -76,11 +76,11 @@ field : label type (ASSIGN initExpr=conditionalOrExpression)? drlAnnotation* SEM
 
 // rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
-ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* attributes? lhs rhs DRL_RHS_END ;
+ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* attributes? lhs? rhs DRL_RHS_END ;
 
 // query := QUERY stringId parameters? annotation* lhsExpression END
 
-querydef : DRL_QUERY name=stringId parameters? drlAnnotation* lhsExpression+ DRL_END SEMI?;
+querydef : DRL_QUERY name=stringId parameters? drlAnnotation* lhsExpression+ DRL_END ;
 
 // parameters := LEFT_PAREN ( parameter ( COMMA parameter )* )? RIGHT_PAREN
 parameters : LPAREN ( parameter ( COMMA parameter )* )? RPAREN ;

@@ -12,6 +12,10 @@ import JavaLexer;
         }
         return input;
     }
+
+    public boolean isRhsDrlEnd() {
+        return new LexerHelper(_input).isRhsDrlEnd();
+    }
 }
 
 /////////////////
@@ -164,7 +168,8 @@ DrlUnicodeEscape
 
 mode RHS;
 RHS_WS : [ \t\r\n\u000C]+ -> channel(HIDDEN);
-DRL_RHS_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) {setText("end");} -> popMode;
+//DRL_RHS_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) { setText("end"); } -> popMode;
+DRL_RHS_END : {isRhsDrlEnd()}? DRL_END -> popMode;
 
 RHS_STRING_LITERAL
       // cannot reuse DRL_STRING_LITERAL because Actions are ignored in referenced rules
