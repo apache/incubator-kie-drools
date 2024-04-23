@@ -83,20 +83,6 @@ public class KieModuleModelImpl implements KieModuleModel {
         setKBases( newMap );
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.kModule.KieProject#removeKieBaseModel(org.kie.kModule.KieBaseModel)
-     */
-    public void moveKBase(String oldQName, String newQName) {
-        Map<String, KieBaseModel> newMap = new HashMap<>();
-        newMap.putAll( this.kBases );
-        KieBaseModel kieBaseModel = newMap.remove( oldQName );
-        newMap.put( newQName, kieBaseModel);
-        setKBases( newMap );
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.kModule.KieProject#getKieBaseModels()
-     */
     public Map<String, KieBaseModel> getKieBaseModels() {
         return Collections.unmodifiableMap( kBases );
     }

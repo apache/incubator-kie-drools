@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.quarkus.test;
+package org.drools.quarkus.test.kmodule;
 
 import java.util.Collection;
 import java.util.List;
@@ -100,7 +100,7 @@ public class TestableResource {
 
         List<String> pkgNames = kBase.getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
         assertThat(pkgNames)
-            .containsExactlyInAnyOrder("defaultpkg","org.drools.quarkus.test","org.drools.drl","org.drools.dtable","org.drools.cep","org.drools.tms","org.drools.probe","org.drools.yaml","org.drools.prototype");
+            .containsExactlyInAnyOrder("org.drools.quarkus.test.kmodule","org.drools.cep","org.drools.tms","org.drools.probe");
         
         return Response.ok().build();
     }
