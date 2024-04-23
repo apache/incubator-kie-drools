@@ -92,20 +92,10 @@ public class LexerHelper {
     }
 
     private void skipSemiAndWSAndComment() {
-        while (true) {
+        do {
+            // skip semi and WS, and repeat that so long as it's followed by a valid and skipped comment
             skipSemiAndWS();
-            if (input.LA(lookAheadCounter) == '/') {
-                boolean skipped = skipComment();
-                if (!skipped) {
-                    // found non-comment token
-                    break;
-                }
-                // if comment is found and skipped, continue to skip semi and WS
-            } else {
-                // found non-comment token
-                break;
-            }
-        }
+        } while (skipComment());
     }
 
     private void skipSemiAndWS() {
