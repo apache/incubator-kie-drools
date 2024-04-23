@@ -18,12 +18,6 @@
  */
 package org.drools.model.codegen.project;
 
-import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.codegen.common.GeneratedFile;
-import org.drools.codegen.common.GeneratedFileType;
-import org.drools.model.codegen.execmodel.ModelSourceClass;
-import org.kie.api.builder.model.KieBaseModel;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
+import org.drools.model.codegen.execmodel.ModelSourceClass;
+import org.kie.api.builder.model.KieBaseModel;
 
 import static java.util.stream.Collectors.toList;
 
@@ -45,8 +45,12 @@ public class KieSessionModelBuilder {
     private DroolsModelBuildContext context;
 
     public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<CodegenPackageSources> packageSources) {
+        this(context, packageSources, KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getPaths()).kieBaseModels());
+    }
+
+    public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<CodegenPackageSources> packageSources, Map<String, KieBaseModel> kieBaseModels) {
         this.context = context;
-        this.kieBaseModels = KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getPaths()).kieBaseModels();
+        this.kieBaseModels = kieBaseModels;
         this.modelByKBase = getModelByKBase(packageSources, this.kieBaseModels);
     }
 
