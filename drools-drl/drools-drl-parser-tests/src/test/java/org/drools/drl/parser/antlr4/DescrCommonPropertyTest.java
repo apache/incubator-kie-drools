@@ -40,7 +40,6 @@ import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.PatternSourceDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
@@ -50,7 +49,6 @@ import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

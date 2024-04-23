@@ -18,9 +18,7 @@
  */
 package org.drools.drl.parser.antlr4;
 
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
-import org.drools.drl.parser.DroolsParserException;
 
 public class ParserTestUtils {
 
