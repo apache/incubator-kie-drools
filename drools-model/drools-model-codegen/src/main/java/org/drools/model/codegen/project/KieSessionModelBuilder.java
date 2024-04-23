@@ -44,6 +44,10 @@ public class KieSessionModelBuilder {
     private final Map<String, List<String>> modelByKBase;
     private DroolsModelBuildContext context;
 
+    public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<CodegenPackageSources> packageSources) {
+        this(context, packageSources, null);
+    }
+
     public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<CodegenPackageSources> packageSources, Map<String, KieBaseModel> kieBaseModels) {
         this.context = context;
         this.kieBaseModels = kieBaseModels != null ? kieBaseModels : KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getPaths()).kieBaseModels();
