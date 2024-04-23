@@ -18,8 +18,10 @@
  */
 package org.kie.dmn.openapi.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,8 +74,7 @@ public class DMNTypeSchemas {
             return FEELBuiltinTypeSchemas.from(t);
         }
         if (typesIndex.contains(t)) {
-            Schema schema = OASFactory.createObject(Schema.class).ref(namingPolicy.getRef(t));
-            return schema;
+            return OASFactory.createObject(Schema.class).ref(namingPolicy.getRef(t));
         }
         throw new UnsupportedOperationException();
     }
@@ -131,7 +132,7 @@ public class DMNTypeSchemas {
             parseSimpleType(DMNOASConstants.X_DMN_ALLOWED_VALUES, t, schema, t.getAllowedValuesFEEL(), t.getAllowedValues());
         }
         if (t.getTypeConstraint() != null && !t.getTypeConstraint().isEmpty()) {
-            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, t, schema, t.getTypeConstraintFEEL(), t.getAllowedValues());
+            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, t, schema, t.getTypeConstraintFEEL(), t.getTypeConstraint());
         }
         schema = nestAsItemIfCollection(schema, t);
         schema.addExtension(X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
@@ -142,7 +143,9 @@ public class DMNTypeSchemas {
     private void parseSimpleType(String schemaString, SimpleTypeImpl t, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
         schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
         if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
-            FEELSchemaEnum.parseNumbersIntoSchema(schema, dmnUnaryTests);
+            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, Number.class);
+        } else if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.DATE) {
+            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, LocalDate.class);
         } else {
             FEELSchemaEnum.parseValuesIntoSchema(schema, dmnUnaryTests);
         }
@@ -154,7 +157,7 @@ public class DMNTypeSchemas {
             for (Entry<String, DMNType> fkv : ct.getFields().entrySet()) {
                 schema.addProperty(fkv.getKey(), refOrBuiltinSchema(fkv.getValue()));
             }
-            if (isIOSetForInputScope(ct) && ct.getFields().size() > 0) {
+            if (isIOSetForInputScope(ct) && !ct.getFields().isEmpty()) {
                 schema.required(new ArrayList<>(ct.getFields().keySet()));
             }
         } else {
