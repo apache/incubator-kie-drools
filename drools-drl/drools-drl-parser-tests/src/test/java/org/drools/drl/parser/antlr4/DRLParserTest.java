@@ -17,6 +17,9 @@ import static org.drools.drl.parser.antlr4.DRLParserHelper.computeTokenIndex;
 import static org.drools.drl.parser.antlr4.DRLParserHelper.createDrlParser;
 import static org.drools.drl.parser.antlr4.DRLParserHelper.parse;
 
+/**
+ * This test class is specific to new antlr4 parser.
+ */
 class DRLParserTest {
 
     private static final String drl =

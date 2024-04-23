@@ -149,6 +149,11 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public BaseDescr visitDrlStatementdef(DRLParser.DrlStatementdefContext ctx) {
+        return visitDescrChildren(ctx).get(0); // only one child. Ignore SEMICOLON
+    }
+
+    @Override
     public GlobalDescr visitGlobaldef(DRLParser.GlobaldefContext ctx) {
         return BaseDescrFactory.builder(new GlobalDescr(ctx.drlIdentifier().getText(), ctx.type().getText()))
                 .withParserRuleContext(ctx)
@@ -290,7 +295,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             List<BaseDescr> lhsDescrList = visitLhs(ctx.lhs());
             lhsDescrList.forEach(descr -> rootDescr.addDescr(descr));
             slimLhsRootDescr(rootDescr);
-            DescrHelper.refreshRootProperties(rootDescr);
+            DescrHelper.populateCommonProperties(rootDescr, ctx.lhs().lhsExpression());
+        } else {
+            ruleDescr.setLhs(new AndDescr());
         }
 
         if (ctx.rhs() != null) {
