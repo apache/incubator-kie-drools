@@ -83,4 +83,42 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!-- override default-test for new parser -->
+                                <id>default-test</id>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <drools.drl.antlr4.parser.enabled>true</drools.drl.antlr4.parser.enabled>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>old-parser-test</id>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <drools.drl.antlr4.parser.enabled>false</drools.drl.antlr4.parser.enabled>
+                                    </systemPropertyVariables>
+                                </configuration>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
