@@ -18,11 +18,12 @@
  */
 package org.kie.kogito.monitoring.core.common.process;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.kie.api.event.process.ErrorEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -31,12 +32,14 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Counter.Builder;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -56,88 +59,103 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
         this.meterRegistry = meterRegistry;
     }
 
-    private Counter getNumberOfProcessInstancesStartedCounter(String appId, String processId) {
-        return Counter
-                .builder("kogito_process_instance_started_total")
-                .description("Started Process Instances")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
-                .register(meterRegistry);
-    }
-
-    private Counter getNumberOfSLAsViolatedCounter(String appId, String processId, String nodeName) {
-        return Counter
-                .builder("kogito_process_instance_sla_violated_total")
-                .description("Process Instances SLA Violated")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName), Tag.of("artifactId", gav.getArtifactId()),
-                        Tag.of("version", gav.getVersion())))
-                .register(meterRegistry);
-    }
-
-    private Counter getNumberOfProcessInstancesCompletedCounter(String appId, String processId, String nodeName) {
-        return Counter
-                .builder("kogito_process_instance_completed_total")
-                .description("Completed Process Instances")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName), Tag.of("artifactId", gav.getArtifactId()),
-                        Tag.of("version", gav.getVersion())))
-                .register(meterRegistry);
-    }
-
-    private AtomicInteger getRunningProcessInstancesGauge(String appId, String processId) {
-        if (gaugeMap.containsKey(appId + processId)) {
-            return gaugeMap.get(appId + processId);
+    protected Counter buildCounter(String name, String description, String processId, Tag... tags) {
+        Builder builder = Counter.builder(name)
+                .description(description)
+                .tag("app_id", identifier).tag("process_id", processId).tag("artifactId", gav.getArtifactId()).tag("version", gav.getVersion());
+        for (Tag tag : tags) {
+            builder.tag(tag.getKey(), tag.getValue());
         }
+        return builder.register(meterRegistry);
+    }
+
+    protected AtomicInteger buildGauge(String name, String description, String processId, Tag... tags) {
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        Gauge.builder("kogito_process_instance_running_total", atomicInteger, AtomicInteger::doubleValue)
-                .description("Running Process Instances")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
-                .register(meterRegistry);
-        gaugeMap.put(appId + processId, atomicInteger);
+        io.micrometer.core.instrument.Gauge.Builder<AtomicInteger> builder = Gauge.builder(name, atomicInteger, AtomicInteger::doubleValue)
+                .description(description)
+                .tag("app_id", identifier).tag("process_id", processId).tag("artifactId", gav.getArtifactId()).tag("version", gav.getVersion());
+        for (Tag tag : tags) {
+            builder.tag(tag.getKey(), tag.getValue());
+        }
+        builder.register(meterRegistry);
         return atomicInteger;
     }
 
-    private DistributionSummary getProcessInstancesDurationSummary(String appId, String processId) {
-        return DistributionSummary.builder("kogito_process_instance_duration_seconds")
-                .description("Process Instances Duration")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
-                .register(meterRegistry);
+    protected DistributionSummary buildDistributionSummary(String name, String description, Tag... tags) {
+        io.micrometer.core.instrument.DistributionSummary.Builder builder = DistributionSummary.builder(name)
+                .description(description).tag("artifactId", gav.getArtifactId()).tag("version", gav.getVersion());
+        for (Tag tag : tags) {
+            builder.tag(tag.getKey(), tag.getValue());
+        }
+        return builder.register(meterRegistry);
+    }
+
+    private Counter getNumberOfProcessInstancesStartedCounter(String processId) {
+        return buildCounter("kogito_process_instance_started_total", "Started Process Instances", processId);
+    }
+
+    private Counter getErrorCounter(String processId, String errorMessage) {
+        return buildCounter("kogito_process_instance_error", "Number of errors that has occurred", processId, Tag.of("error_message", errorMessage));
+    }
+
+    private Counter getNumberOfSLAsViolatedCounter(String processId, String nodeName) {
+        return buildCounter("kogito_process_instance_sla_violated_total", "Number of SLA violations that has ocurred", processId, Tag.of("node_name", nodeName));
+    }
+
+    private Counter getNumberOfProcessInstancesCompletedCounter(String processId, String state) {
+        return buildCounter("kogito_process_instance_completed_total", "Completed Process Instances", processId, Tag.of("process_state", state));
+    }
+
+    private AtomicInteger getRunningProcessInstancesGauge(String processId) {
+        return gaugeMap.computeIfAbsent(identifier + processId, k -> buildGauge("kogito_process_instance_running_total", "Running Process Instances", processId));
+    }
+
+    private DistributionSummary getProcessInstancesDurationSummary(String processId) {
+        return buildDistributionSummary("kogito_process_instance_duration_seconds",
+                "Process Instances Duration", Tag.of("process_id", processId), Tag.of("app_id", identifier));
     }
 
     private DistributionSummary getWorkItemsDurationSummary(String name) {
-        return DistributionSummary.builder("kogito_work_item_duration_seconds")
-                .description("Work Items Duration")
-                .tags(Arrays.asList(Tag.of("name", name), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
-                .register(meterRegistry);
+        return buildDistributionSummary("kogito_work_item_duration_seconds",
+                "Work Items Duration", Tag.of("name", name));
     }
 
-    protected void recordRunningProcessInstance(String containerId, String processId) {
-        getRunningProcessInstancesGauge(containerId, processId).incrementAndGet();
+    protected void recordRunningProcessInstance(String processId) {
+        getRunningProcessInstancesGauge(processId).incrementAndGet();
     }
 
     protected static double millisToSeconds(long millis) {
-        return millis / 1000.0;
+        return TimeUnit.MILLISECONDS.toSeconds(millis);
     }
 
     @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
         LOGGER.debug("After process started event: {}", event);
         final ProcessInstance processInstance = event.getProcessInstance();
-        getNumberOfProcessInstancesStartedCounter(identifier, processInstance.getProcessId()).increment();
-        recordRunningProcessInstance(identifier, processInstance.getProcessId());
+        getNumberOfProcessInstancesStartedCounter(processInstance.getProcessId()).increment();
+        recordRunningProcessInstance(processInstance.getProcessId());
     }
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
         LOGGER.debug("After process completed event: {}", event);
         final KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) event.getProcessInstance();
-        getRunningProcessInstancesGauge(identifier, processInstance.getProcessId()).decrementAndGet();
+        getRunningProcessInstancesGauge(processInstance.getProcessId()).decrementAndGet();
 
-        getNumberOfProcessInstancesCompletedCounter(identifier, processInstance.getProcessId(), String.valueOf(processInstance.getState())).increment();
+        getNumberOfProcessInstancesCompletedCounter(processInstance.getProcessId(), fromState(processInstance.getState())).increment();
 
         if (processInstance.getStartDate() != null) {
             final double duration = millisToSeconds(processInstance.getEndDate().getTime() - processInstance.getStartDate().getTime());
-            getProcessInstancesDurationSummary(identifier, processInstance.getProcessId()).record(duration);
+            getProcessInstancesDurationSummary(processInstance.getProcessId()).record(duration);
             LOGGER.debug("Process Instance duration: {}s", duration);
         }
+    }
+
+    @Override
+    public void onError(ErrorEvent event) {
+        LOGGER.debug("After Error event: {}", event);
+        final KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) event.getProcessInstance();
+        getErrorCounter(processInstance.getProcessId(), processInstance.getErrorMessage()).increment();
     }
 
     @Override
@@ -160,7 +178,22 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
         LOGGER.debug("After SLA violated event: {}", event);
         final ProcessInstance processInstance = event.getProcessInstance();
         if (processInstance != null && event.getNodeInstance() != null) {
-            getNumberOfSLAsViolatedCounter(identifier, processInstance.getProcessId(), event.getNodeInstance().getNodeName()).increment();
+            getNumberOfSLAsViolatedCounter(processInstance.getProcessId(), event.getNodeInstance().getNodeName()).increment();
         }
     }
+
+    private static String fromState(int state) {
+        switch (state) {
+            case KogitoProcessInstance.STATE_ABORTED:
+                return "Aborted";
+            case KogitoProcessInstance.STATE_COMPLETED:
+                return "Completed";
+            case KogitoProcessInstance.STATE_ERROR:
+                return "Error";
+            default:
+            case KogitoProcessInstance.STATE_ACTIVE:
+                return "Active";
+        }
+    }
+
 }

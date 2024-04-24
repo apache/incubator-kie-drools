@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 public class MonitoringIT {
 
     private static final String ARTIFACT_ID = "integration-tests-quarkus-processes";
-    private static final String VERSION = System.getProperty("kogito.version");
+    private static final String VERSION = System.getProperty("kogito.version", "999-SNAPSHOT");
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -96,7 +96,7 @@ public class MonitoringIT {
                 .contains(format("kogito_work_item_duration_seconds_count{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\"} 1.0", ARTIFACT_ID, VERSION))
                 .contains(format("kogito_work_item_duration_seconds_sum{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\"}", ARTIFACT_ID, VERSION))
                 .contains(format(
-                        "kogito_process_instance_completed_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",node_name=\"2\",process_id=\"monitoring\",version=\"%s\"} 1.0",
+                        "kogito_process_instance_completed_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",process_state=\"Completed\",version=\"%s\"} 1.0",
                         ARTIFACT_ID, VERSION))
                 .contains(format("kogito_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\"} 0.0",
                         ARTIFACT_ID, VERSION))
