@@ -807,10 +807,10 @@ selector
     :   DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } super_key superSuffix
     |   DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } new_key (nonWildcardTypeArguments)? innerCreator
     |   DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); }
-                  IDENTIFIER { helper.emit($IDENTIFIER, DroolsEditorType.IDENTIFIER); }
+                  id=drlIdentifier { helper.emit($id.token, DroolsEditorType.IDENTIFIER); }
                   (arguments)?
     |   NULL_SAFE_DOT { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); }
-                  IDENTIFIER { helper.emit($IDENTIFIER, DroolsEditorType.IDENTIFIER); }
+                  id=drlIdentifier { helper.emit($id.token, DroolsEditorType.IDENTIFIER); }
                   (arguments)?
     //|   DOT this_key
     |   LBRACK { helper.emit($LBRACK, DroolsEditorType.SYMBOL); }
