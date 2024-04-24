@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +48,6 @@ import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -3191,6 +3191,7 @@ class MiscDRLParserTest {
         ann = rule.getAnnotation( "ann2" );
         assertThat(ann).isNotNull();
         assertThat(ann.getValue()).isEqualTo("\"val1\", \"val2\"");
+        assertThat(ann.getSingleValueAsString()).isEqualTo("\"val1\", \"val2\"");
     }
 
     @Test
@@ -3838,7 +3839,27 @@ class MiscDRLParserTest {
         AnnotationDescr annotationDescr = patternDescr.getAnnotations().iterator().next();
 
         assertThat(annotationDescr.getName()).isEqualTo("watch");
+        assertThat(annotationDescr.getValue()).isEqualTo("!*, age");
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
+    }
+
+    @Test
+    void annotationWithEmptyParentheses() {
+        final String text = "package org.drools;\n" +
+                "import java.util.*;\n" +
+                "import org.drools.base.factmodel.traits.*;\n" +
+                "declare HashMap @Traitable() end \n" +
+                "declare trait PersonMap\n" +
+                "@propertyReactive  \n" +
+                "   age  : Integer  @Alias( \"years\" ) \n" +
+                "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        AnnotationDescr annotationDescr = packageDescr.getTypeDeclarations().get(0).getAnnotations().iterator().next();
+
+        assertThat(annotationDescr.getName()).isEqualTo("Traitable");
+        assertThat(annotationDescr.getValue()).isEqualTo(Collections.emptyMap());
+        assertThat(annotationDescr.getSingleValueAsString()).isNull();
     }
 
     @Test
