@@ -248,11 +248,11 @@ public class DRLExprParserTest {
 
     @ParameterizedTest
     @EnumSource(Operator.BuiltInOperator.class)
-    public void testDrlKeywordMethodCallBinding(Operator.BuiltInOperator operator) throws Exception {
+    public void testDrlKeywordInChainedMethodCallWithBinding(Operator.BuiltInOperator operator) throws Exception {
         // Skip operators that cannot be used as method names (==, !=, <, etc.).
         assumeFalse(nonKeywordBuiltInOperators.contains(operator));
 
-        String expressionSource = String.format("x.%s( 1, a )", operator.getSymbol());
+        String expressionSource = String.format("x.%s( 1, a ).%s(\"\")", operator.getSymbol(), operator.getSymbol());
         String bindingVariableSource = "$x";
         String source = bindingVariableSource + " : " + expressionSource;
         ConstraintConnectiveDescr result = parser.parse( source );
