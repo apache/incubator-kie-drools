@@ -363,15 +363,21 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AnnotationDescr visitDrlAnnotation(DRLParser.DrlAnnotationContext ctx) {
+        // Full Java-style annotation.
+        if (ctx.anno != null) {
+            if (ctx.anno.result == null) {
+                throw new IllegalStateException("anno.result must not be null!");
+            }
+            return BaseDescrFactory.builder(ctx.anno.result)
+                    .withParserRuleContext(ctx)
+                    .build();
+        }
+
+        // A chunk that is neither a single value nor a list of key-value pairs. For example `!*, age` in `@watch(!*, age)`.
         AnnotationDescr annotationDescr = BaseDescrFactory.builder(new AnnotationDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .build();
-        if (ctx.drlElementValue() != null) {
-            annotationDescr.setValue(getTextPreservingWhitespace(ctx.drlElementValue())); // single value
-        } else if (ctx.drlElementValuePairs() != null) {
-            visitDrlElementValuePairs(ctx.drlElementValuePairs(), annotationDescr); // multiple values
-        } else if (ctx.chunk() != null) {
-            // A chunk that is neither a single value nor a list of key-value pairs. For example `!*, age` in `@watch(!*, age)`.
+        if (ctx.chunk() != null) {
             annotationDescr.setValue(getTextPreservingWhitespace(ctx.chunk()));
         }
         return annotationDescr;
@@ -391,14 +397,6 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .map(this::visitDrlAnnotation)
                 .forEach(typeFieldDescr::addAnnotation);
         return typeFieldDescr;
-    }
-
-    private void visitDrlElementValuePairs(DRLParser.DrlElementValuePairsContext ctx, AnnotationDescr annotationDescr) {
-        ctx.drlElementValuePair().forEach(pairCtx -> {
-            String key = pairCtx.key.getText();
-            String value = getTextPreservingWhitespace(pairCtx.value);
-            annotationDescr.setKeyValue(key, value);
-        });
     }
 
     @Override
