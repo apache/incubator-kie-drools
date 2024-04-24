@@ -352,11 +352,11 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(queryDescr::addAnnotation);
 
-        ctx.lhsExpression().stream()
-                           .flatMap(lhsExpressionContext -> visitDescrChildren(lhsExpressionContext).stream())
-                           .forEach(descr -> queryDescr.getLhs().addDescr(descr));
-
-        slimLhsRootDescr(queryDescr.getLhs());
+        final AndDescr rootDescr = queryDescr.getLhs();
+        List<BaseDescr> lhsDescrList = visitDescrChildren(ctx.queryLhs()); // queryLhs never be null
+        lhsDescrList.forEach(descr -> rootDescr.addDescr(descr));
+        slimLhsRootDescr(rootDescr);
+        DescrHelper.populateCommonProperties(rootDescr, ctx.queryLhs());
 
         return queryDescr;
     }

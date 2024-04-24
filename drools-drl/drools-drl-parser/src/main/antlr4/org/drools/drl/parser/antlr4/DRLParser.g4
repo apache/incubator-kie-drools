@@ -80,7 +80,7 @@ ruledef : DRL_RULE name=stringId (EXTENDS parentName=stringId)? drlAnnotation* a
 
 // query := QUERY stringId parameters? annotation* lhsExpression END
 
-querydef : DRL_QUERY name=stringId parameters? drlAnnotation* lhsExpression+ DRL_END ;
+querydef : DRL_QUERY name=stringId parameters? drlAnnotation* queryLhs DRL_END ;
 
 // parameters := LEFT_PAREN ( parameter ( COMMA parameter )* )? RIGHT_PAREN
 parameters : LPAREN ( parameter ( COMMA parameter )* )? RPAREN ;
@@ -89,6 +89,8 @@ parameters : LPAREN ( parameter ( COMMA parameter )* )? RPAREN ;
 parameter : type? drlIdentifier ; // type is optional. Removed (LEFT_SQUARE RIGHT_SQUARE)* as it doesn't make sense in the grammar
 
 lhs : DRL_WHEN lhsExpression* ;
+
+queryLhs : lhsExpression+ ;
 
 lhsExpression : LPAREN lhsExpression RPAREN namedConsequenceInvocation? #lhsExpressionEnclosed
               | lhsUnary                                                #lhsUnarySingle

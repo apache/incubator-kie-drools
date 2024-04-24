@@ -4263,4 +4263,80 @@ class MiscDRLParserTest {
         NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
         assertThat(namedConsequenceDescr.getName()).isEqualTo("FoundMarkOrMario");
     }
+
+    @Test
+    public void queryComplexLhs() {
+        final String text = "query isContainedIn(String x, String y)\n" +
+                "    Location (x, y;)\n" +
+                "    or\n" +
+                "    ( Location (z, y;) and ?isContainedIn(x, z;))\n" +
+                "end\n";
+        final QueryDescr query = parseAndGetFirstQueryDescr(text);
+
+        assertThat(query).isNotNull();
+        AndDescr lhs = query.getLhs();
+        assertThat(lhs.getDescrs()).hasSize(1);
+
+        assertThat(lhs.getDescrs().get(0))
+                .as("Top level node is OR")
+                .isInstanceOfSatisfying(OrDescr.class, orDescr -> {
+                    assertThat(orDescr.getDescrs()).hasSize(2);
+                    assertThat(orDescr.getDescrs().get(0))
+                            .as("Left node of OR is Pattern")
+                            .isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                                assertThat(patternDescr.getObjectType()).isEqualTo("Location");
+                                assertThat(patternDescr.getConstraint().getDescrs().get(0))
+                                        .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
+                                            assertThat(constraint.getExpression().toString()).isEqualTo("x");
+                                            assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
+                                            assertThat(constraint.getPosition()).isEqualTo(0);
+                                        });
+                                assertThat(patternDescr.getConstraint().getDescrs().get(1))
+                                        .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
+                                            assertThat(constraint.getExpression().toString()).isEqualTo("y");
+                                            assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
+                                            assertThat(constraint.getPosition()).isEqualTo(1);
+                                        });
+                            });
+                    assertThat(orDescr.getDescrs().get(1))
+                            .as("Right node of OR is AND")
+                            .isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                                assertThat(andDescr.getDescrs().get(0))
+                                        .as("Left node of AND is Pattern")
+                                        .isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                                            assertThat(patternDescr.getObjectType()).isEqualTo("Location");
+                                            assertThat(patternDescr.getConstraint().getDescrs().get(0))
+                                                    .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
+                                                        assertThat(constraint.getExpression().toString()).isEqualTo("z");
+                                                        assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
+                                                        assertThat(constraint.getPosition()).isEqualTo(0);
+                                                    });
+                                            assertThat(patternDescr.getConstraint().getDescrs().get(1))
+                                                    .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
+                                                        assertThat(constraint.getExpression().toString()).isEqualTo("y");
+                                                        assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
+                                                        assertThat(constraint.getPosition()).isEqualTo(1);
+                                                    });
+                                        });
+                                assertThat(andDescr.getDescrs().get(1))
+                                        .as("Right node of AND is Query Pattern")
+                                        .isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                                            assertThat(patternDescr.isQuery()).isTrue();
+                                            assertThat(patternDescr.getObjectType()).isEqualTo("isContainedIn");
+                                            assertThat(patternDescr.getConstraint().getDescrs().get(0))
+                                                    .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
+                                                        assertThat(constraint.getExpression().toString()).isEqualTo("x");
+                                                        assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
+                                                        assertThat(constraint.getPosition()).isEqualTo(0);
+                                                    });
+                                            assertThat(patternDescr.getConstraint().getDescrs().get(1))
+                                                    .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
+                                                        assertThat(constraint.getExpression().toString()).isEqualTo("z");
+                                                        assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
+                                                        assertThat(constraint.getPosition()).isEqualTo(1);
+                                                    });
+                                        });
+                            });
+                });
+    }
 }
