@@ -413,15 +413,10 @@ type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER ty
 drlArguments : LPAREN drlArgument (COMMA drlArgument)* RPAREN ;
 drlArgument : ( stringId | floatLiteral | BOOL_LITERAL | NULL_LITERAL ) ;
 
-drlAnnotation : AT name=drlQualifiedName (LPAREN ( drlElementValuePairs | drlElementValue | chunk )? RPAREN)? ;
-
-drlElementValuePairs : drlElementValuePair (COMMA drlElementValuePair)* ;
-drlElementValuePair : key=drlIdentifier ASSIGN value=drlElementValue ;
-
-drlElementValue
-    : drlExpression
-    | drlArrayInitializer
-    ;
+drlAnnotation
+    // TODO actions can be removed once there is a DRL6ExpressionsVisitorImpl.
+    : {boolean buildState = buildDescr; buildDescr = true;} anno=fullAnnotation[null] {buildDescr = buildState;} // either standard Java annotation
+    | AT name=drlQualifiedName (LPAREN chunk RPAREN)? ; // or support @watch(!*, age) etc.
 
 attributes : attribute ( COMMA? attribute )* ;
 attribute : name=( 'salience' | 'enabled' ) conditionalAttributeValue #expressionAttribute
