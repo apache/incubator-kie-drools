@@ -4287,13 +4287,13 @@ class MiscDRLParserTest {
                                 assertThat(patternDescr.getObjectType()).isEqualTo("Location");
                                 assertThat(patternDescr.getConstraint().getDescrs().get(0))
                                         .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
-                                            assertThat(constraint.getExpression().toString()).isEqualTo("x");
+                                            assertThat(constraint.getExpression()).isEqualTo("x");
                                             assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
                                             assertThat(constraint.getPosition()).isEqualTo(0);
                                         });
                                 assertThat(patternDescr.getConstraint().getDescrs().get(1))
                                         .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
-                                            assertThat(constraint.getExpression().toString()).isEqualTo("y");
+                                            assertThat(constraint.getExpression()).isEqualTo("y");
                                             assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
                                             assertThat(constraint.getPosition()).isEqualTo(1);
                                         });
@@ -4307,13 +4307,13 @@ class MiscDRLParserTest {
                                             assertThat(patternDescr.getObjectType()).isEqualTo("Location");
                                             assertThat(patternDescr.getConstraint().getDescrs().get(0))
                                                     .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
-                                                        assertThat(constraint.getExpression().toString()).isEqualTo("z");
+                                                        assertThat(constraint.getExpression()).isEqualTo("z");
                                                         assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
                                                         assertThat(constraint.getPosition()).isEqualTo(0);
                                                     });
                                             assertThat(patternDescr.getConstraint().getDescrs().get(1))
                                                     .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
-                                                        assertThat(constraint.getExpression().toString()).isEqualTo("y");
+                                                        assertThat(constraint.getExpression()).isEqualTo("y");
                                                         assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
                                                         assertThat(constraint.getPosition()).isEqualTo(1);
                                                     });
@@ -4325,13 +4325,13 @@ class MiscDRLParserTest {
                                             assertThat(patternDescr.getObjectType()).isEqualTo("isContainedIn");
                                             assertThat(patternDescr.getConstraint().getDescrs().get(0))
                                                     .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
-                                                        assertThat(constraint.getExpression().toString()).isEqualTo("x");
+                                                        assertThat(constraint.getExpression()).isEqualTo("x");
                                                         assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
                                                         assertThat(constraint.getPosition()).isEqualTo(0);
                                                     });
                                             assertThat(patternDescr.getConstraint().getDescrs().get(1))
                                                     .isInstanceOfSatisfying(ExprConstraintDescr.class, constraint -> {
-                                                        assertThat(constraint.getExpression().toString()).isEqualTo("z");
+                                                        assertThat(constraint.getExpression()).isEqualTo("z");
                                                         assertThat(constraint.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
                                                         assertThat(constraint.getPosition()).isEqualTo(1);
                                                     });
