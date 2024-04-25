@@ -293,8 +293,19 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         if (ctx.lhs() != null) {
             final AndDescr rootDescr = ruleDescr.getLhs();
             List<BaseDescr> lhsDescrList = visitLhs(ctx.lhs());
-            lhsDescrList.forEach(descr -> rootDescr.addDescr(descr));
-            slimLhsRootDescr(rootDescr);
+            // Root Descr is always AndDescr.
+            // For example, if there are nested AndDescr like
+            //  AndDescr
+            //  /\
+            // P  AndDescr
+            //     /\
+            //    P  P
+            // is slimmed down to
+            //  AndDescr
+            //  / | \
+            // P  P  P
+            // by addOrMerge() method.
+            lhsDescrList.forEach(rootDescr::addOrMerge);
             DescrHelper.populateCommonProperties(rootDescr, ctx.lhs().lhsExpression());
         } else {
             ruleDescr.setLhs(new AndDescr());
@@ -317,23 +328,6 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         return ruleDescr;
     }
 
-    private void slimLhsRootDescr(AndDescr root) {
-        // Root Descr is always AndDescr.
-        // For example, if there are nested AndDescr like
-        //  AndDescr
-        //  /\
-        // P  AndDescr
-        //     /\
-        //    P  P
-        // is slimmed down to
-        //  AndDescr
-        //  / | \
-        // P  P  P
-        List<BaseDescr> descrList = new ArrayList<>(root.getDescrs());
-        root.getDescrs().clear();
-        descrList.forEach(root::addOrMerge);
-    }
-
     @Override
     public QueryDescr visitQuerydef(DRLParser.QuerydefContext ctx) {
         QueryDescr queryDescr = BaseDescrFactory.builder(new QueryDescr(safeStripStringDelimiters(ctx.name.getText())))
@@ -352,11 +346,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         ctx.drlAnnotation().stream().map(this::visitDrlAnnotation).forEach(queryDescr::addAnnotation);
 
-        ctx.lhsExpression().stream()
-                           .flatMap(lhsExpressionContext -> visitDescrChildren(lhsExpressionContext).stream())
-                           .forEach(descr -> queryDescr.getLhs().addDescr(descr));
-
-        slimLhsRootDescr(queryDescr.getLhs());
+        final AndDescr rootDescr = queryDescr.getLhs();
+        List<BaseDescr> lhsDescrList = visitDescrChildren(ctx.queryLhs()); // queryLhs never be null
+        lhsDescrList.forEach(rootDescr::addOrMerge);
+        DescrHelper.populateCommonProperties(rootDescr, ctx.queryLhs());
 
         return queryDescr;
     }
