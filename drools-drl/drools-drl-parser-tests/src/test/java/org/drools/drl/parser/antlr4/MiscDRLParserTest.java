@@ -4360,4 +4360,68 @@ class MiscDRLParserTest {
                             });
                 });
     }
+
+    @Test
+    void notWithPrefixAnd() {
+        final String text =
+                "package org.drools.compiler\n" +
+                        "rule R when\n" +
+                        "  (not (and Integer( $i : intValue )\n" +
+                        "            String( length > $i ) \n" +
+                        "       )\n" +
+                        "  )\n" +
+                        "then\n" +
+                        "end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
+            assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                assertThat(andDescr.getDescrs()).hasSize(2);
+                assertThat(andDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("Integer");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("$i : intValue");
+                    });
+                });
+                assertThat(andDescr.getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("String");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("length > $i");
+                    });
+                });
+            });
+        });
+    }
+
+    @Test
+    void existsWithPrefixAnd() {
+        final String text =
+                "package org.drools.compiler\n" +
+                        "rule R when\n" +
+                        "  (exists (and Integer( $i : intValue )\n" +
+                        "            String( length > $i ) \n" +
+                        "       )\n" +
+                        "  )\n" +
+                        "then\n" +
+                        "end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(ExistsDescr.class, existsDescr -> {
+            assertThat(existsDescr.getDescrs().get(0)).isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                assertThat(andDescr.getDescrs()).hasSize(2);
+                assertThat(andDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("Integer");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("$i : intValue");
+                    });
+                });
+                assertThat(andDescr.getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("String");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("length > $i");
+                    });
+                });
+            });
+        });
+    }
 }

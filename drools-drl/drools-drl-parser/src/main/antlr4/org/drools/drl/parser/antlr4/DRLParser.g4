@@ -92,7 +92,7 @@ lhs : DRL_WHEN lhsExpression* ;
 
 queryLhs : lhsExpression+ ;
 
-lhsExpression : LPAREN lhsExpression RPAREN namedConsequenceInvocation? #lhsExpressionEnclosed
+lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
               | lhsUnary                                                #lhsUnarySingle
               | LPAREN DRL_AND lhsExpression+ RPAREN                    #lhsAnd
               | lhsExpression (DRL_AND lhsExpression)+                  #lhsAnd
@@ -112,7 +112,7 @@ lhsUnary : ( lhsExists namedConsequence?
            | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
-           | LPAREN lhsOr RPAREN namedConsequence? // this part is handled by #lhsExpressionEnclosed
+           | LPAREN lhsOr RPAREN namedConsequence?
            | lhsPatternBind consequenceInvocation*
            ) SEMI? ;
 */
@@ -123,6 +123,7 @@ lhsUnary : (
            | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
+           | LPAREN lhsExpression RPAREN namedConsequenceInvocation?
            | conditionalBranch // not in the above old parser definition, but actually implemented in the old parser
            | lhsPatternBind consequenceInvocation*
            ) SEMI? ;
@@ -354,11 +355,7 @@ fromWindow : DRL_WINDOW IDENTIFIER ;
            )
 */
 // Use lhsExpression instead of lhsOr because lhsExpression has good enough structure
-lhsExists : DRL_EXISTS
-          ( LPAREN lhsExpression RPAREN
-          | lhsPatternBind
-          )
-          ;
+lhsExists : DRL_EXISTS ( lhsPatternBind | lhsExpression ) ;
 
 /*
  lhsNot := NOT
@@ -368,11 +365,7 @@ lhsExists : DRL_EXISTS
            )
 */
 // Use lhsExpression instead of lhsOr because lhsExpression has good enough structure
-lhsNot : DRL_NOT
-         ( LPAREN lhsExpression RPAREN
-         | lhsPatternBind
-         )
-         ;
+lhsNot : DRL_NOT ( lhsPatternBind | lhsExpression ) ;
 
 /**
  * lhsEval := EVAL LEFT_PAREN conditionalExpression RIGHT_PAREN
