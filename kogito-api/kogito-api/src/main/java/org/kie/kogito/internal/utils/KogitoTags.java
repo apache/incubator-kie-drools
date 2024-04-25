@@ -27,4 +27,6 @@ public class KogitoTags {
     public static final String INPUT_TAG = "input";
     public static final String OUTPUT_TAG = "output";
 
+    public static final String METRIC_NAME_METADATA = "MetricName";
+
 }

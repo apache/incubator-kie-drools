@@ -35,6 +35,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.kie.kogito.internal.utils.KogitoTags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +121,11 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
                 "Work Items Duration", Tag.of("name", name));
     }
 
+    private DistributionSummary getNodeInstancesDurationSummary(String processId, String nodeName) {
+        return buildDistributionSummary("kogito_node_instance_duration_milliseconds", "Relevant nodes duration in milliseconds", Tag.of("process_id", processId),
+                Tag.of("node_name", nodeName));
+    }
+
     protected void recordRunningProcessInstance(String processId) {
         getRunningProcessInstancesGauge(processId).incrementAndGet();
     }
@@ -164,12 +170,19 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
         final KogitoNodeInstance nodeInstance = (KogitoNodeInstance) event.getNodeInstance();
         if (nodeInstance instanceof KogitoWorkItemNodeInstance) {
             KogitoWorkItemNodeInstance wi = (KogitoWorkItemNodeInstance) nodeInstance;
-            if (wi.getTriggerTime() != null) {
-                final String name = (String) wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName());
-                final double duration = millisToSeconds(wi.getLeaveTime().getTime() - wi.getTriggerTime().getTime());
-                getWorkItemsDurationSummary(name).record(duration);
-                LOGGER.debug("Work Item {}, duration: {}s", name, duration);
-            }
+            recordNodeDuration(getWorkItemsDurationSummary((String) wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName())), nodeInstance, TimeUnit.SECONDS);
+        }
+        String nodeName = (String) nodeInstance.getNode().getMetaData().get(KogitoTags.METRIC_NAME_METADATA);
+        if (nodeName != null) {
+            recordNodeDuration(getNodeInstancesDurationSummary(event.getProcessInstance().getProcessId(), nodeName), nodeInstance, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private void recordNodeDuration(DistributionSummary summary, KogitoNodeInstance instance, TimeUnit target) {
+        if (instance.getTriggerTime() != null) {
+            double duration = target.convert(instance.getLeaveTime().getTime() - instance.getTriggerTime().getTime(), TimeUnit.MILLISECONDS);
+            summary.record(duration);
+            LOGGER.debug("Recorded {} {} because of node {} for summary {}", duration, target, instance.getNode().getName(), summary.getId().getName());
         }
     }
 

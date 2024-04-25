@@ -189,7 +189,7 @@ public abstract class StateHandler<S extends State> {
 
     protected void handleState(RuleFlowNodeContainerFactory<?, ?> factory) {
         MakeNodeResult result = makeNode(factory);
-        node = result.getIncomingNode().metaData(SWFConstants.STATE_NAME, state.getName());
+        node = result.getIncomingNode().metaData(SWFConstants.STATE_NAME, state.getName()).metaData(KogitoTags.METRIC_NAME_METADATA, state.getName());
         outgoingNode = result.getOutgoingNode().metaData(SWFConstants.STATE_NAME, state.getName());
         if (state.getCompensatedBy() != null) {
             handleCompensation(factory);
@@ -208,7 +208,7 @@ public abstract class StateHandler<S extends State> {
             if (output != null) {
                 ActionNodeFactory<?> actionNode = handleStateFilter(factory, output);
                 factory.connection(outgoingNode.getNode().getId(), actionNode.getNode().getId());
-                outgoingNode = actionNode.metaData(SWFConstants.STATE_NAME, state.getName());
+                outgoingNode = actionNode.metaData(SWFConstants.STATE_NAME, state.getName()).metaData(KogitoTags.METRIC_NAME_METADATA, state.getName());
             }
         }
         connectStart(factory);
