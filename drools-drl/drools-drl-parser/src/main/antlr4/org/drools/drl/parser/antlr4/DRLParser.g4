@@ -50,6 +50,7 @@ declaredef : DRL_DECLARE (
                          | entryPointDeclaration
                          | windowDeclaration
                          | typeDeclaration
+                         | enumDeclaration
                          )
                          ; // DRL_END belongs to entryPointDeclaration etc.
 
@@ -69,6 +70,16 @@ entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* DRL_END ;
 // windowDeclaration := WINDOW ID annotation* lhsPatternBind END
 
 windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind DRL_END ;
+
+// (enum)typeDeclaration := [ENUM] qualifiedIdentifier annotation* enumerative+ field* END
+
+enumDeclaration : ENUM name=drlQualifiedName drlAnnotation* enumeratives SEMI field* DRL_END ;
+
+enumeratives : enumerative (COMMA enumerative)* ;
+
+// enumerative := ID ( LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
+
+enumerative: drlIdentifier ( LPAREN expression ( COMMA expression )* RPAREN )? ;
 
 // field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
 
