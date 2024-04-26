@@ -16,40 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
- * 
- */
-package org.jbpm.workflow.instance.node;
+package org.jbpm.workflow.instance.impl.factory;
 
+import java.util.function.Supplier;
+
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MockNodeInstanceFactory implements NodeInstanceFactory {
+public class SingletonNodeInstanceFactory extends AbstractNodeInstanceFactory {
 
-    private MockNodeInstance instance;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SingletonNodeInstanceFactory.class);
+
+    private Class<? extends NodeImpl> nodeDefinition;
+    private Supplier<NodeInstanceImpl> nodeInstanceSupplier;
 
     @Override
     public Class<? extends Node> forClass() {
-        return this.instance.getNode().getClass();
+        return nodeDefinition;
     }
 
-    public MockNodeInstanceFactory(MockNodeInstance instance) {
-        this.instance = instance;
+    public SingletonNodeInstanceFactory(Class<? extends NodeImpl> nodeDefinition, Supplier<NodeInstanceImpl> nodeInstanceSupplier) {
+        this.nodeDefinition = nodeDefinition;
+        this.nodeInstanceSupplier = nodeInstanceSupplier;
     }
 
-    public MockNodeInstance getMockNodeInstance() {
-        return this.instance;
-    }
-
+    @Override
     public NodeInstance getNodeInstance(Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
-        instance.setNodeId(node.getId());
-        instance.setProcessInstance(processInstance);
-        instance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
-        return instance;
+        NodeInstance result = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getFirstNodeInstance(node.getId());
+        if (result != null) {
+            return result;
+        } else {
+            LOGGER.debug("creating node {} with identifier {}", node, node.getId());
+            return createInstance(nodeInstanceSupplier.get(), node, processInstance, nodeInstanceContainer);
+        }
     }
 
 }

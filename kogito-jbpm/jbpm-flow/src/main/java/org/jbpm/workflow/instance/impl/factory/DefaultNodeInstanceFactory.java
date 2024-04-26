@@ -16,40 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
- * 
- */
-package org.jbpm.workflow.instance.node;
+package org.jbpm.workflow.instance.impl.factory;
 
+import java.util.function.Supplier;
+
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
-public class MockNodeInstanceFactory implements NodeInstanceFactory {
+public class DefaultNodeInstanceFactory extends AbstractNodeInstanceFactory {
 
-    private MockNodeInstance instance;
+    private Class<? extends NodeImpl> nodeDefinition;
+    private Supplier<NodeInstanceImpl> nodeInstanceSupplier;
 
     @Override
     public Class<? extends Node> forClass() {
-        return this.instance.getNode().getClass();
+        return nodeDefinition;
     }
 
-    public MockNodeInstanceFactory(MockNodeInstance instance) {
-        this.instance = instance;
+    public DefaultNodeInstanceFactory(Class<? extends NodeImpl> nodeDefinition, Supplier<NodeInstanceImpl> supplier) {
+        this.nodeDefinition = nodeDefinition;
+        this.nodeInstanceSupplier = supplier;
     }
 
-    public MockNodeInstance getMockNodeInstance() {
-        return this.instance;
-    }
-
+    @Override
     public NodeInstance getNodeInstance(Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
-        instance.setNodeId(node.getId());
-        instance.setProcessInstance(processInstance);
-        instance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
-        return instance;
+        return createInstance(nodeInstanceSupplier.get(), node, processInstance, nodeInstanceContainer);
     }
 
 }

@@ -16,40 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
- * 
- */
-package org.jbpm.workflow.instance.node;
+
+package org.jbpm.workflow.instance.impl.factory;
 
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
-public class MockNodeInstanceFactory implements NodeInstanceFactory {
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
 
-    private MockNodeInstance instance;
+public abstract class AbstractNodeInstanceFactory implements NodeInstanceFactory {
 
-    @Override
-    public Class<? extends Node> forClass() {
-        return this.instance.getNode().getClass();
+    protected NodeInstance createInstance(NodeInstanceImpl nodeInstance, Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
+        nodeInstance.setNodeId(node.getId());
+        nodeInstance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
+        nodeInstance.setProcessInstance(processInstance);
+        nodeInstance.setMetaData(CUSTOM_ASYNC, node.getMetaData().get(CUSTOM_ASYNC));
+
+        int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(node.getUniqueId());
+        nodeInstance.setLevel(level);
+        return nodeInstance;
     }
-
-    public MockNodeInstanceFactory(MockNodeInstance instance) {
-        this.instance = instance;
-    }
-
-    public MockNodeInstance getMockNodeInstance() {
-        return this.instance;
-    }
-
-    public NodeInstance getNodeInstance(Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
-        instance.setNodeId(node.getId());
-        instance.setProcessInstance(processInstance);
-        instance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
-        return instance;
-    }
-
 }

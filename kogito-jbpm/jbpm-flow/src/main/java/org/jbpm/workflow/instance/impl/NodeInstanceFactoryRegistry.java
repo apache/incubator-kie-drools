@@ -18,66 +18,16 @@
  */
 package org.jbpm.workflow.instance.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.ServiceLoader;
 
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.AsyncEventNode;
-import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
-import org.jbpm.workflow.core.node.BoundaryEventNode;
-import org.jbpm.workflow.core.node.CatchLinkNode;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.jbpm.workflow.core.node.CompositeNode;
-import org.jbpm.workflow.core.node.DynamicNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.EventSubProcessNode;
-import org.jbpm.workflow.core.node.FaultNode;
-import org.jbpm.workflow.core.node.ForEachNode;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.MilestoneNode;
-import org.jbpm.workflow.core.node.RuleSetNode;
-import org.jbpm.workflow.core.node.Split;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.StateNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.ThrowLinkNode;
-import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.jbpm.workflow.instance.node.ActionNodeInstance;
-import org.jbpm.workflow.instance.node.BoundaryEventNodeInstance;
-import org.jbpm.workflow.instance.node.CatchLinkNodeInstance;
-import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
-import org.jbpm.workflow.instance.node.CompositeNodeInstance;
-import org.jbpm.workflow.instance.node.DynamicNodeInstance;
-import org.jbpm.workflow.instance.node.EndNodeInstance;
-import org.jbpm.workflow.instance.node.EventNodeInstance;
-import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
-import org.jbpm.workflow.instance.node.FaultNodeInstance;
-import org.jbpm.workflow.instance.node.ForEachNodeInstance;
-import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
-import org.jbpm.workflow.instance.node.JoinInstance;
-import org.jbpm.workflow.instance.node.MilestoneNodeInstance;
-import org.jbpm.workflow.instance.node.RuleSetNodeInstance;
-import org.jbpm.workflow.instance.node.SplitInstance;
-import org.jbpm.workflow.instance.node.StartNodeInstance;
-import org.jbpm.workflow.instance.node.StateNodeInstance;
-import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
-import org.jbpm.workflow.instance.node.ThrowLinkNodeInstance;
-import org.jbpm.workflow.instance.node.TimerNodeInstance;
-import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.jbpm.util.JbpmClassLoaderUtil;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
 
 public class NodeInstanceFactoryRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeInstanceFactoryRegistry.class);
@@ -96,11 +46,26 @@ public class NodeInstanceFactoryRegistry {
 
     protected NodeInstanceFactoryRegistry() {
         this.registry = new HashMap<>();
+        initRegistry();
     }
 
-    public void register(Class<? extends Node> cls,
-            NodeInstanceFactory factory) {
-        this.registry.put(cls, factory);
+    private void initRegistry() {
+        ServiceLoader.load(NodeInstanceFactoryProvider.class, JbpmClassLoaderUtil.findClassLoader())
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .map(NodeInstanceFactoryProvider::provide)
+                .flatMap(Collection::stream)
+                .forEach(this::register);
+    }
+
+    private void register(NodeInstanceFactory nodeInstanceFactory) {
+        LOGGER.debug("registering new node instance factory for {} set by {}", nodeInstanceFactory.forClass(), nodeInstanceFactory.getClass().getCanonicalName());
+        this.registry.put(nodeInstanceFactory.forClass(), nodeInstanceFactory);
+    }
+
+    public void register(Class<? extends Node> forClass, NodeInstanceFactory nodeInstanceFactory) {
+        LOGGER.debug("override new node instance factory for {} set by {}", forClass, nodeInstanceFactory.getClass().getCanonicalName());
+        this.registry.put(forClass, nodeInstanceFactory);
     }
 
     public NodeInstanceFactory getProcessNodeInstanceFactory(Node node) {
@@ -112,111 +77,12 @@ public class NodeInstanceFactoryRegistry {
             }
             clazz = clazz.getSuperclass();
         }
+        LOGGER.debug("node instance factory not found for node {}", node.getClass().getName());
         return null;
     }
 
     protected NodeInstanceFactory get(Class<?> clazz) {
-        // hard wired nodes:
-        if (RuleSetNode.class == clazz) {
-            return factory(RuleSetNodeInstance::new);
-        }
-        if (Split.class == clazz) {
-            return factory(SplitInstance::new);
-        }
-        if (Join.class == clazz) {
-            return factoryOnce(JoinInstance::new);
-        }
-        if (StartNode.class == clazz) {
-            return factory(StartNodeInstance::new);
-        }
-        if (EndNode.class == clazz) {
-            return factory(EndNodeInstance::new);
-        }
-        if (MilestoneNode.class == clazz) {
-            return factory(MilestoneNodeInstance::new);
-        }
-        if (SubProcessNode.class == clazz) {
-            return factory(SubProcessNodeInstance::new);
-        }
-        if (ActionNode.class == clazz) {
-            return factory(ActionNodeInstance::new);
-        }
-        if (WorkItemNode.class == clazz) {
-            return factory(WorkItemNodeInstance::new);
-        }
-        if (TimerNode.class == clazz) {
-            return factory(TimerNodeInstance::new);
-        }
-        if (FaultNode.class == clazz) {
-            return factory(FaultNodeInstance::new);
-        }
-        if (EventSubProcessNode.class == clazz) {
-            return factory(EventSubProcessNodeInstance::new);
-        }
-        if (CompositeNode.class == clazz) {
-            return factory(CompositeNodeInstance::new);
-        }
-        if (CompositeContextNode.class == clazz) {
-            return factory(CompositeContextNodeInstance::new);
-        }
-        if (HumanTaskNode.class == clazz) {
-            return factory(HumanTaskNodeInstance::new);
-        }
-        if (ForEachNode.class == clazz) {
-            return factory(ForEachNodeInstance::new);
-        }
-        if (EventNode.class == clazz) {
-            return factory(EventNodeInstance::new);
-        }
-        if (StateNode.class == clazz) {
-            return factory(StateNodeInstance::new);
-        }
-        if (DynamicNode.class == clazz) {
-            return factory(DynamicNodeInstance::new);
-        }
-        if (BoundaryEventNode.class == clazz) {
-            return factory(BoundaryEventNodeInstance::new);
-        }
-        if (CatchLinkNode.class == clazz) {
-            return factory(
-                    CatchLinkNodeInstance::new);
-        }
-        if (ThrowLinkNode.class == clazz) {
-            return factory(
-                    ThrowLinkNodeInstance::new);
-        }
-        if (AsyncEventNode.class == clazz) {
-            return factory(
-                    AsyncEventNodeInstance::new);
-        }
-
         return this.registry.get(clazz);
     }
 
-    protected NodeInstanceFactory factoryOnce(Supplier<NodeInstanceImpl> supplier) {
-        return (node, processInstance, nodeInstanceContainer) -> {
-            NodeInstance result = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getFirstNodeInstance(node.getId());
-            if (result != null) {
-                return result;
-            } else {
-                LOGGER.debug("creating node {} with identifier {}", node, node.getId());
-                return createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
-            }
-        };
-    }
-
-    protected NodeInstanceFactory factory(Supplier<NodeInstanceImpl> supplier) {
-        return (node, processInstance, nodeInstanceContainer) -> createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
-    }
-
-    private static NodeInstance createInstance(NodeInstanceImpl nodeInstance, Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
-        nodeInstance.setNodeId(node.getId());
-        nodeInstance.setNodeInstanceContainer((KogitoNodeInstanceContainer) nodeInstanceContainer);
-        nodeInstance.setProcessInstance(processInstance);
-        nodeInstance.setMetaData(CUSTOM_ASYNC, node.getMetaData().get(CUSTOM_ASYNC));
-
-        int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(node.getUniqueId());
-        nodeInstance.setLevel(level);
-        return nodeInstance;
-    }
 }
