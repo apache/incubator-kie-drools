@@ -134,6 +134,7 @@ lhsUnary : (
            | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
+           | lhsGroupBy
            | conditionalBranch // not in the above old parser definition, but actually implemented in the old parser
            | lhsPatternBind consequenceInvocation*
            ) SEMI? ;
@@ -184,7 +185,7 @@ relationalOperator
 drlRelationalOperator : DRL_NOT? builtInOperator ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
-functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock ;
+functiondef : DRL_FUNCTION typeTypeOrVoid? drlIdentifier formalParameters drlBlock ;
 
 
 /* extending JavaParser qualifiedName */
@@ -411,6 +412,15 @@ lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                    (SEMI constraints)?
                  RPAREN (SEMI)?
                  ;
+
+lhsGroupBy : DRL_GROUPBY LPAREN lhsAndDef (COMMA|SEMI)
+               groupByKeyBinding SEMI
+               accumulateFunction (COMMA accumulateFunction)*
+               (SEMI constraints)?
+             RPAREN (SEMI)?
+             ;
+
+groupByKeyBinding : label? conditionalExpression ;
 
 rhs : DRL_THEN consequenceBody namedConsequence* ;
 

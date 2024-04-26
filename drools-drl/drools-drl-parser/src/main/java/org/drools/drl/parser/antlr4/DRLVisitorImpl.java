@@ -49,6 +49,7 @@ import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
@@ -203,7 +204,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         } else {
             functionDescr.setReturnType("void");
         }
-        functionDescr.setName(ctx.IDENTIFIER().getText());
+        functionDescr.setName(ctx.drlIdentifier().getText());
 
         // add function parameters
         DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
@@ -695,6 +696,31 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
         PatternDescr patternDescr = new PatternDescr("Object");
         patternDescr.setSource(accumulateDescr);
+        List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
+        constraintDescrList.forEach(patternDescr::addConstraint);
+
+        return patternDescr;
+    }
+
+    @Override
+    public Object visitLhsGroupBy(DRLParser.LhsGroupByContext ctx) {
+        GroupByDescr groupByDescr = BaseDescrFactory.builder(new GroupByDescr())
+                .withParserRuleContext(ctx)
+                .build();
+        groupByDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
+
+        if (ctx.groupByKeyBinding().label() != null) {
+            groupByDescr.setGroupingKey(ctx.groupByKeyBinding().label().drlIdentifier().getText());
+        }
+        groupByDescr.setGroupingFunction(getTextPreservingWhitespace(ctx.groupByKeyBinding().conditionalExpression()));
+
+        // accumulate function
+        for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
+            groupByDescr.addFunction(visitAccumulateFunction(accumulateFunctionContext));
+        }
+
+        PatternDescr patternDescr = new PatternDescr("Object");
+        patternDescr.setSource(groupByDescr);
         List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
         constraintDescrList.forEach(patternDescr::addConstraint);
 

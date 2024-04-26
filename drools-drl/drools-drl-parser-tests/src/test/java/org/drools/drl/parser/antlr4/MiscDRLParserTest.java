@@ -34,6 +34,7 @@ import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
@@ -2083,6 +2084,43 @@ class MiscDRLParserTest {
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(col.getLine()).isEqualTo(23);
         assertThat(col.getEndLine()).isEqualTo(25);
+    }
+
+    @Test
+    public void parse_GroupBy() throws Exception {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile( "groupBy.drl" );
+
+        assertThat(pkg.getRules().size()).isEqualTo(1);
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final GroupByDescr groupBy = (GroupByDescr) outPattern.getSource();
+        assertThat(groupBy.getGroupingKey()).isEqualToIgnoringWhitespace("$initial");
+        assertThat(groupBy.getGroupingFunction()).isEqualToIgnoringWhitespace("$p.getName().substring(0, 1)");
+        assertThat(groupBy.getActionCode()).isNull();
+        assertThat(groupBy.getReverseCode()).isNull();
+        assertThat(groupBy.getFunctions()).hasSize(2);
+        assertThat(groupBy.getFunctions().get(0).getFunction()).isEqualToIgnoringWhitespace("sum");
+        assertThat(groupBy.getFunctions().get(1).getFunction()).isEqualToIgnoringWhitespace("count");
+
+        assertThat(groupBy.getFunctions().get(0).getParams()).hasSize(1);
+        assertThat(groupBy.getFunctions().get(0).getParams()[0]).isEqualToIgnoringWhitespace("$age");
+
+        assertThat(groupBy.getFunctions().get(1).getParams()).hasSize(0);
+
+        assertThat(groupBy.isExternalFunction()).isTrue();
+
+        final PatternDescr pattern = groupBy.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(pattern.getConstraint().getDescrs().get(0).getText()).isEqualToIgnoringWhitespace("$age : age < 30");
+
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(pattern.getConstraint().getDescrs().get(0).getText()).isEqualToIgnoringWhitespace("$age : age < 30");
+
+        assertThat(outPattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(outPattern.getConstraint().getDescrs().get(0).getText()).isEqualToIgnoringWhitespace("$sumOfAges > 10");
     }
 
     @Test
