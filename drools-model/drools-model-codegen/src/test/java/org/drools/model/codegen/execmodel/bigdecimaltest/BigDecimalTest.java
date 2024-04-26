@@ -813,4 +813,46 @@ public class BigDecimalTest extends BaseModelTest {
 
         assertThat(result).contains(new BigDecimal("80000"));
     }
+
+    @Test
+    public void bigDecimalInWithInt_shouldNotFailToBuild() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BDFact.class.getCanonicalName() + ";\n" +
+                        "rule \"Rule 1a\"\n" +
+                        "    when\n" +
+                        "        BDFact( value1 in (100, 200) )\n" +
+                        "    then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BDFact bdFact = new BDFact();
+        bdFact.setValue1(new BigDecimal("100"));
+
+        ksession.insert(bdFact);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void bigDecimalInWithBD_shouldNotFailToBuild() {
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + BDFact.class.getCanonicalName() + ";\n" +
+                        "rule \"Rule 1a\"\n" +
+                        "    when\n" +
+                        "        BDFact( value1 in (100B, 200B) )\n" +
+                        "    then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        BDFact bdFact = new BDFact();
+        bdFact.setValue1(new BigDecimal("100"));
+
+        ksession.insert(bdFact);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
 }

@@ -153,9 +153,23 @@ public class ConstraintParserTest {
     }
 
     @Test
-    public void bigDecimalArithmeticInMathodCallScope() {
+    public void bigDecimalArithmeticInMethodCallScope() {
         SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "(money * new java.math.BigDecimal(\"1000\")).longValue()");
 
         assertThat(result.getExpr().toString()).isEqualTo("_this.getMoney().multiply(new java.math.BigDecimal(\"1000\"), java.math.MathContext.DECIMAL128).longValue()");
+    }
+
+    @Test
+    public void bigDecimalInWithInt() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "(money in (100, 200))");
+
+        assertThat(result.getExpr().toString()).isEqualTo("D.eval(org.drools.model.operators.InOperator.INSTANCE, _this.getMoney(), 100, 200)");
+    }
+
+    @Test
+    public void bigDecimalInWithBD() {
+        SingleDrlxParseSuccess result = (SingleDrlxParseSuccess) parser.drlxParse(Person.class, "$p", "(money in (100B, 200B))");
+
+        assertThat(result.getExpr().toString()).isEqualTo("D.eval(org.drools.model.operators.InOperator.INSTANCE, _this.getMoney(), new java.math.BigDecimal(\"100\"), new java.math.BigDecimal(\"200\"))");
     }
 }
