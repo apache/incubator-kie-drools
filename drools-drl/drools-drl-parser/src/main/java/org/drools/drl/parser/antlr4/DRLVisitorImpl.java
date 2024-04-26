@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -756,7 +757,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
         String function = ctx.IDENTIFIER().getText();
         String bind = ctx.label() == null ? null : ctx.label().drlIdentifier().getText();
-        String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
+
+        String[] params = ctx.conditionalExpressions().conditionalExpression().stream()
+                .map(RuleContext::getText)
+                .toArray(String[]::new);
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
     }
 
