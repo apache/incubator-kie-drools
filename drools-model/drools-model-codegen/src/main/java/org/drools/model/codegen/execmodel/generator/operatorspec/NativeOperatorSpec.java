@@ -23,12 +23,12 @@ import java.util.Optional;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
-import org.drools.model.functions.Operator;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.drlxparse.CoercedExpression;
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper;
+import org.drools.model.functions.Operator;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 
@@ -36,6 +36,7 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStrin
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.EVAL_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.model.codegen.execmodel.generator.drlxparse.ConstraintParser.getCoercedRightExpression;
+import static org.drools.model.codegen.execmodel.util.ExpressionUtils.convertBigIntegerLiteralExprOrBigDecimalLiteralExpr;
 
 public class NativeOperatorSpec implements OperatorSpec {
     public static final NativeOperatorSpec INSTANCE = new NativeOperatorSpec();
@@ -60,7 +61,9 @@ public class NativeOperatorSpec implements OperatorSpec {
                 } else {
                     coercedRight = right;
                 }
-                methodCallExpr.addArgument(coercedRight.getExpression() );
+                Expression rightExpression = coercedRight.getExpression();
+                rightExpression = convertBigIntegerLiteralExprOrBigDecimalLiteralExpr(rightExpression);
+                methodCallExpr.addArgument(rightExpression);
             });
         }
 

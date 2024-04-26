@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,33 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.model.operators;
+package org.drools.model.codegen.execmodel.util;
 
-import org.drools.model.functions.Operator;
+import com.github.javaparser.ast.expr.Expression;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
-import static org.drools.model.util.OperatorUtils.areEqual;
+public class ExpressionUtils {
 
-public enum InOperator implements Operator.MultipleValue<Object, Object> {
+    private ExpressionUtils() {
+        // utility class
+    }
 
-    INSTANCE;
-
-    @Override
-    public boolean eval( Object a, Object[] bs ) {
-        for (Object b : bs) {
-            if (areEqual(a, b)) {
-                return true;
-            }
+    public static Expression convertBigIntegerLiteralExprOrBigDecimalLiteralExpr(Expression expression) {
+        if (expression instanceof BigIntegerLiteralExpr) {
+            return ((BigIntegerLiteralExpr) expression).convertToObjectCreationExpr();
+        } else if (expression instanceof BigDecimalLiteralExpr) {
+            return ((BigDecimalLiteralExpr) expression).convertToObjectCreationExpr();
         }
-        return false;
-    }
-
-    @Override
-    public String getOperatorName() {
-        return "in";
-    }
-
-    @Override
-    public boolean requiresCoercion() {
-        return true;
+        return expression;
     }
 }

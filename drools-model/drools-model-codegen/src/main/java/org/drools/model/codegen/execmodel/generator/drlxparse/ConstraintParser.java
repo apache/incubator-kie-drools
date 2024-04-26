@@ -98,6 +98,7 @@ import static org.drools.model.codegen.execmodel.generator.ConstraintUtil.LESS_T
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.convertArithmeticBinaryToMethodCall;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.getBinaryTypeAfterConversion;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.shouldConvertArithmeticBinaryToMethodCall;
+import static org.drools.model.codegen.execmodel.util.ExpressionUtils.convertBigIntegerLiteralExprOrBigDecimalLiteralExpr;
 import static org.drools.util.StringUtils.lcFirstForBean;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.createConstraintCompiler;
@@ -356,11 +357,7 @@ public class ConstraintParser {
 
         if (drlxExpr instanceof LiteralExpr) {
             Class<?> literalExpressionType = getLiteralExpressionType(((LiteralExpr) drlxExpr));
-            if (drlxExpr instanceof BigIntegerLiteralExpr) {
-                drlxExpr = ((BigIntegerLiteralExpr) drlxExpr).convertToObjectCreationExpr();
-            } else if (drlxExpr instanceof BigDecimalLiteralExpr) {
-                drlxExpr = ((BigDecimalLiteralExpr) drlxExpr).convertToObjectCreationExpr();
-            }
+            drlxExpr = convertBigIntegerLiteralExprOrBigDecimalLiteralExpr(drlxExpr);
             return new SingleDrlxParseSuccess(patternType, bindingId, drlxExpr, literalExpressionType)
                     .setIsPredicate(isBooleanBoxedUnboxed(literalExpressionType));
         }
@@ -984,11 +981,7 @@ public class ConstraintParser {
         if(arg.isEnclosedExpr()) {
             arg = arg.asEnclosedExpr().getInner();
         }
-        if (arg instanceof BigIntegerLiteralExpr) {
-            arg = ((BigIntegerLiteralExpr) arg).convertToObjectCreationExpr();
-        } else if (arg instanceof BigDecimalLiteralExpr ) {
-            arg = ((BigDecimalLiteralExpr) arg).convertToObjectCreationExpr();
-        }
+        arg = convertBigIntegerLiteralExprOrBigDecimalLiteralExpr(arg);
         toBigDecimalMethod.addArgument( arg );
         return toBigDecimalMethod;
     }
