@@ -188,7 +188,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .withParserRuleContext(ctx)
                 .build();
         accumulateImportDescr.setTarget(ctx.drlQualifiedName().getText());
-        accumulateImportDescr.setFunctionName(ctx.IDENTIFIER().getText());
+        accumulateImportDescr.setFunctionName(ctx.drlIdentifier().getText());
         return accumulateImportDescr;
     }
 
@@ -202,7 +202,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         } else {
             functionDescr.setReturnType("void");
         }
-        functionDescr.setName(ctx.IDENTIFIER().getText());
+        functionDescr.setName(ctx.drlIdentifier().getText());
 
         // add function parameters
         DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
@@ -547,7 +547,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         if (ctx.label() != null) {
             patternDescr.setIdentifier(ctx.label().drlIdentifier().getText());
         } else if (ctx.unif() != null) {
-            patternDescr.setIdentifier(ctx.unif().IDENTIFIER().getText());
+            patternDescr.setIdentifier(ctx.unif().drlIdentifier().getText());
             patternDescr.setUnification(true);
         }
         DescrHelper.refreshPatternDescrProperties(patternDescr, ctx);
@@ -706,7 +706,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .withParserRuleContext(ctx)
                 .build();
         behaviorDescr.setType(ctx.DRL_WINDOW().getText());
-        behaviorDescr.setSubType(ctx.IDENTIFIER().getText());
+        behaviorDescr.setSubType(ctx.drlIdentifier().getText());
         List<DRLParser.ExpressionContext> expressionContexts = ctx.expressionList().expression();
         List<String> parameters = expressionContexts.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
         behaviorDescr.setParameters(parameters);
@@ -754,7 +754,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
-        String function = ctx.IDENTIFIER().getText();
+        String function = ctx.drlIdentifier().getText();
         String bind = ctx.label() == null ? null : ctx.label().drlIdentifier().getText();
         String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
@@ -769,7 +769,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public WindowReferenceDescr visitFromWindow(DRLParser.FromWindowContext ctx) {
-        return BaseDescrFactory.builder(new WindowReferenceDescr(ctx.IDENTIFIER().getText()))
+        return BaseDescrFactory.builder(new WindowReferenceDescr(ctx.drlIdentifier().getText()))
                 .withParserRuleContext(ctx)
                 .build();
     }

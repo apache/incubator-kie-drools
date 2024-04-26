@@ -32,4 +32,11 @@ public class ParserTestUtils {
     public static DrlParser getParser() {
         return new DrlParser();
     }
+
+    /**
+     * Enables the old parser. Just for quick testing purposes.
+     */
+    public static void enableOldParser() {
+        DrlParser.ANTLR4_PARSER_ENABLED = false;
+    }
 }
