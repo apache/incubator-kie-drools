@@ -28,13 +28,13 @@ import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.MD5CorrelationEncoder;
 
-public class PostgreSQLCorrelationService implements CorrelationService {
+public class JDBCCorrelationService implements CorrelationService {
 
-    private PostgreSQLCorrelationRepository repository;
+    private JDBCCorrelationRepository repository;
     private CorrelationEncoder correlationEncoder;
 
-    public PostgreSQLCorrelationService(DataSource dataSource) {
-        this.repository = new PostgreSQLCorrelationRepository(dataSource);
+    public JDBCCorrelationService(DataSource dataSource) {
+        this.repository = new JDBCCorrelationRepository(dataSource);
         this.correlationEncoder = new MD5CorrelationEncoder();
     }
 

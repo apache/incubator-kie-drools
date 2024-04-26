@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.SimpleCorrelation;
-import org.kie.kogito.persistence.jdbc.correlation.PostgreSQLCorrelationService;
+import org.kie.kogito.persistence.jdbc.correlation.JDBCCorrelationService;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -42,7 +42,7 @@ public class JDBCCorrelationServiceIT {
     @Container
     private static final KogitoPostgreSqlContainer PG_CONTAINER = new KogitoPostgreSqlContainer();
     private static PGSimpleDataSource dataSource;
-    private static PostgreSQLCorrelationService correlationService;
+    private static JDBCCorrelationService correlationService;
 
     @BeforeAll
     public static void setUp() {
@@ -50,7 +50,7 @@ public class JDBCCorrelationServiceIT {
         dataSource.setUrl(PG_CONTAINER.getJdbcUrl());
         dataSource.setUser(PG_CONTAINER.getUsername());
         dataSource.setPassword(PG_CONTAINER.getPassword());
-        correlationService = new PostgreSQLCorrelationService(dataSource);
+        correlationService = new JDBCCorrelationService(dataSource);
         //create table
         //        DDLRunner.init(new GenericRepository(dataSource), true);
         initMigration(PG_CONTAINER, "postgresql");
