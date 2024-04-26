@@ -25,6 +25,8 @@ import org.drools.drl.ast.descr.CollectDescr;
 import org.drools.drl.ast.descr.ConditionalBranchDescr;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.EnumLiteralDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
@@ -4359,5 +4361,38 @@ class MiscDRLParserTest {
                                         });
                             });
                 });
+    }
+
+    @Test
+    public void enumDeclaration() {
+        final String text =
+                "declare enum PersonAge\n" +
+                        "    @doc(author=\"Bob\")\n" +
+                        "    ELEVEN(11, \"XI\"), TWELVE(12, \"XII\");\n" +
+                        "\n" +
+                        "    key: int\n" +
+                        "    romanStr : String\n" +
+                        "end";
+        PackageDescr pkg = parseAndGetPackageDescr(text);
+
+        List<EnumDeclarationDescr> descrList = pkg.getEnumDeclarations();
+        EnumDeclarationDescr enumDeclarationDescr = descrList.get(0);
+        assertThat(enumDeclarationDescr.getTypeName()).isEqualTo("PersonAge");
+
+        assertThat(enumDeclarationDescr.getAnnotation("doc").getValue("author")).isEqualTo("\"Bob\"");
+
+        List<EnumLiteralDescr> literals = enumDeclarationDescr.getLiterals();
+        EnumLiteralDescr enumLiteralDescr0 = literals.get(0);
+        assertThat(enumLiteralDescr0.getName()).isEqualTo("ELEVEN");
+        assertThat(enumLiteralDescr0.getConstructorArgs()).containsExactly("11", "\"XI\"");
+        EnumLiteralDescr enumLiteralDescr1 = literals.get(1);
+        assertThat(enumLiteralDescr1.getName()).isEqualTo("TWELVE");
+        assertThat(enumLiteralDescr1.getConstructorArgs()).containsExactly("12", "\"XII\"");
+
+        TypeFieldDescr key = enumDeclarationDescr.getFields().get("key");
+        assertThat(key.getPattern().getObjectType()).isEqualTo("int");
+
+        TypeFieldDescr romanStr = enumDeclarationDescr.getFields().get("romanStr");
+        assertThat(romanStr.getPattern().getObjectType()).isEqualTo("String");
     }
 }
