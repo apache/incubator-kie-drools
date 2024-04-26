@@ -38,6 +38,8 @@ import org.drools.drl.ast.descr.CollectDescr;
 import org.drools.drl.ast.descr.ConditionalBranchDescr;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.EnumLiteralDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
@@ -130,6 +132,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 packageDescr.addEntryPointDeclaration((EntryPointDeclarationDescr) descr);
             } else if (descr instanceof WindowDeclarationDescr) {
                 packageDescr.addWindowDeclaration((WindowDeclarationDescr) descr);
+            } else if (descr instanceof EnumDeclarationDescr) {
+                packageDescr.addEnumDeclaration((EnumDeclarationDescr) descr);
             } else if (descr instanceof AttributeDescr) {
                 packageDescr.addAttribute((AttributeDescr) descr);
             } else if (descr instanceof RuleDescr) { // QueryDescr extends RuleDescr
@@ -240,6 +244,38 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .map(this::visitField)
                 .forEach(typeDeclarationDescr::addField);
         return typeDeclarationDescr;
+    }
+
+    @Override
+    public EnumDeclarationDescr visitEnumDeclaration(DRLParser.EnumDeclarationContext ctx) {
+        EnumDeclarationDescr enumDeclarationDescr = BaseDescrFactory.builder(new EnumDeclarationDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
+        ctx.drlAnnotation().stream()
+                .map(this::visitDrlAnnotation)
+                .forEach(enumDeclarationDescr::addAnnotation);
+
+        List<BaseDescr> descrList = visitDescrChildren(ctx.enumeratives());
+        descrList.stream()
+                .filter(EnumLiteralDescr.class::isInstance)
+                .map(EnumLiteralDescr.class::cast)
+                .forEach(enumDeclarationDescr::addLiteral);
+
+        ctx.field().stream()
+                .map(this::visitField)
+                .forEach(enumDeclarationDescr::addField);
+        return enumDeclarationDescr;
+    }
+
+    @Override
+    public EnumLiteralDescr visitEnumerative(DRLParser.EnumerativeContext ctx) {
+        EnumLiteralDescr enumLiteralDescr = BaseDescrFactory.builder(new EnumLiteralDescr(ctx.drlIdentifier().getText()))
+                .withParserRuleContext(ctx)
+                .build();
+        ctx.expression().stream()
+                .map(Antlr4ParserStringUtils::getTextPreservingWhitespace)
+                .forEach(enumLiteralDescr::addConstructorArg);
+        return enumLiteralDescr;
     }
 
     @Override
