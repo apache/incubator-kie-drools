@@ -62,17 +62,25 @@ public class ProcessToExecModelGenerator {
 
     private static final String PROCESS_CLASS_SUFFIX = "Process";
     private static final String MODEL_CLASS_SUFFIX = "Model";
-    private static final String PROCESS_TEMPLATE_FILE = "/class-templates/ProcessTemplate.java";
+    private static final String PROCESS_TEMPLATE_FILE = "ProcessTemplate.java";
     private static final String PROCESS_NAME_PARAM = "processName";
 
     private final ProcessVisitor processVisitor;
+    private ClassLoader contextClassLoader;
+    private String classTemplate;
 
     public ProcessToExecModelGenerator(ClassLoader contextClassLoader) {
+        this(PROCESS_TEMPLATE_FILE, contextClassLoader);
+    }
+
+    public ProcessToExecModelGenerator(String classTemplate, ClassLoader contextClassLoader) {
+        this.classTemplate = classTemplate;
+        this.contextClassLoader = contextClassLoader;
         this.processVisitor = new ProcessVisitor(contextClassLoader);
     }
 
     public ProcessMetaData generate(WorkflowProcess process) {
-        CompilationUnit parsedClazzFile = parse(this.getClass().getResourceAsStream(PROCESS_TEMPLATE_FILE));
+        CompilationUnit parsedClazzFile = parse(TemplateHelper.findTemplate(contextClassLoader, this.classTemplate));
         parsedClazzFile.setPackageDeclaration(process.getPackageName());
         Optional<ClassOrInterfaceDeclaration> processClazzOptional = parsedClazzFile.findFirst(
                 ClassOrInterfaceDeclaration.class,

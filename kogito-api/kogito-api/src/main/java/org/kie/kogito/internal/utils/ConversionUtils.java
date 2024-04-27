@@ -241,6 +241,10 @@ public class ConversionUtils {
         return !isEmpty(value);
     }
 
+    public static String sanitizeString(String string) {
+        return string.replaceAll("\"", "\\\\\"");
+    }
+
     public static String sanitizeClassName(String className) {
         return sanitizeJavaName(className, true);
     }

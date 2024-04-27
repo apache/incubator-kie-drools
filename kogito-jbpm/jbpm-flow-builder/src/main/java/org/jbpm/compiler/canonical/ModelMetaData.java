@@ -104,10 +104,14 @@ public class ModelMetaData {
         this.customGenerator = customGenerator;
     }
 
-    public String generate() {
+    public CompilationUnit generateUnit() {
         CompilationUnit modelClass = compilationUnit();
         Arrays.stream(customGenerator).forEach(generator -> generator.accept(modelClass));
-        return modelClass.toString();
+        return modelClass;
+    }
+
+    public String generate() {
+        return generateUnit().toString();
     }
 
     public AssignExpr newInstance(String assignVarName) {
@@ -169,7 +173,7 @@ public class ModelMetaData {
     }
 
     private CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream(templateName));
+        CompilationUnit compilationUnit = parse(TemplateHelper.findTemplate(templateName));
         compilationUnit.setPackageDeclaration(packageName);
         Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
 

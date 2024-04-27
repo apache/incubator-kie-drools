@@ -50,6 +50,7 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_ADD_COMPENSATION_CONTEXT;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VARIABLE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_METADATA;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeString;
 
 public abstract class AbstractVisitor {
 
@@ -73,9 +74,9 @@ public abstract class AbstractVisitor {
 
     protected String getOrDefault(String value, String defaultValue) {
         if (value == null) {
-            return defaultValue;
+            return sanitizeString(defaultValue);
         }
-        return value;
+        return sanitizeString(value);
     }
 
     protected Expression getOrNullExpr(String value) {

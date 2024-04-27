@@ -122,15 +122,17 @@
     <version.org.slf4j>2.0.6</version.org.slf4j>
 
     <version.maven>3.9.3</version.maven>
+    <version.maven.project>2.2.1</version.maven.project>
     <version.maven.plugin>3.7.1</version.maven.plugin>
     <version.maven.invoker>3.2.0</version.maven.invoker>
-
+    <version.maven.plugin.testing.harness>4.0.0-alpha-2</version.maven.plugin.testing.harness>
     <version.plexus>2.1.0</version.plexus>
     <version.plexus.classworld>2.6.0</version.plexus.classworld>
 
     <!-- see: https://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#parallel-test-execution-and-single-thread-execution -->
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.2.0</version.black.ninia>
+    <version.com.google.collections>1.0</version.com.google.collections>
     <version.com.google.guava>32.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.26.0</version.apache.commons.commons-compress>
   </properties>
@@ -142,6 +144,11 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.com.google.guava}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.collections</groupId>
+        <artifactId>google-collections</artifactId>
+        <version>${version.com.google.collections}</version>
       </dependency>
 
       <dependency>
@@ -555,6 +562,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
+        <artifactId>maven-project</artifactId>
+        <version>${version.maven.project}</version>
+    </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
         <version>${version.maven}</version>
       </dependency>
@@ -562,6 +574,11 @@
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <version>${version.maven.plugin}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>${version.maven.plugin.testing.harness}</version>
       </dependency>
 
       <dependency>

@@ -30,12 +30,16 @@ import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.Processes;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -96,6 +100,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
                 false);
 
         retValue.ifPresentOrElse(retValueExpression -> {
+
             retValueExpression.findAll(ClassOrInterfaceType.class)
                     .stream()
                     .filter(t -> t.getNameAsString().equals("$Type$"))
@@ -108,6 +113,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
                     .ifPresent(m -> m.setBody(unbind(node)));
             body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey(), retValueExpression));
+
         }, () -> body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey())));
 
         addNodeMappings(node, body, getNodeId(node));
@@ -143,15 +149,21 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
     }
 
     private BlockStmt createInstance(SubProcessNode subProcessNode, ProcessMetaData metadata) {
-
         String processId = ProcessToExecModelGenerator.extractProcessId(subProcessNode.getProcessId());
-        String processFieldName = "process" + processId;
-
-        MethodCallExpr processInstanceSupplier = new MethodCallExpr(new NameExpr(processFieldName), "createInstance").addArgument("model");
+        String subProcessModelClassName = metadata.getModelClassName() != null ? metadata.getModelClassName() : ProcessToExecModelGenerator.extractModelClassName(processId);
+        String processFieldName = "app";
+        Expression expr = new NameExpr(processFieldName);
+        ClassOrInterfaceType processesType = new ClassOrInterfaceType(null, Processes.class.getCanonicalName());
+        expr = new MethodCallExpr(expr, "get", NodeList.nodeList(new ClassExpr(processesType)));
+        expr = new MethodCallExpr(expr, "processById", NodeList.nodeList(new StringLiteralExpr(subProcessNode.getProcessId())));
+        expr = new MethodCallExpr(expr, "createInstance").addArgument("model");
+        ClassOrInterfaceType subProcessType = new ClassOrInterfaceType(null, ProcessInstance.class.getCanonicalName());
+        subProcessType.setTypeArguments(new ClassOrInterfaceType(null, subProcessModelClassName));
+        expr = new CastExpr(subProcessType, expr);
 
         metadata.addSubProcess(processId, subProcessNode.getProcessId());
 
-        return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));
+        return new BlockStmt().addStatement(new ReturnStmt(expr));
     }
 
     private BlockStmt unbind(SubProcessNode subProcessNode) {

@@ -124,8 +124,7 @@ public class TriggerMetaData {
         if (TriggerType.ConsumeMessage.equals(type) || TriggerType.ProduceMessage.equals(type)) {
 
             if (StringUtils.isEmpty(name) ||
-                    StringUtils.isEmpty(dataType) ||
-                    StringUtils.isEmpty(modelRef)) {
+                    StringUtils.isEmpty(dataType)) {
                 throw new IllegalArgumentException("Message Trigger information is not complete " + this);
             }
         } else if (TriggerType.Signal.equals(type) && StringUtils.isEmpty(name)) {

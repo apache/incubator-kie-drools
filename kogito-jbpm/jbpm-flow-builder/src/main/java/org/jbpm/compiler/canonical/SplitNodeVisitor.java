@@ -29,6 +29,7 @@ import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
+import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
@@ -104,6 +105,6 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
     private static ObjectCreationExpr buildFEELReturnValueEvaluator(Constraint constraint) {
         return new ObjectCreationExpr(null,
                 StaticJavaParser.parseClassOrInterfaceType("org.jbpm.bpmn2.feel.FeelReturnValueEvaluator"),
-                new NodeList<>(new StringLiteralExpr(constraint.getConstraint())));
+                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(constraint.getConstraint()))));
     }
 }

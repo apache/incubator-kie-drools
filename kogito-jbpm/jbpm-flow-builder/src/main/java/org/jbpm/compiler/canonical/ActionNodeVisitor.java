@@ -30,6 +30,8 @@ import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
@@ -47,6 +49,8 @@ import static org.jbpm.ruleflow.core.Metadata.VARIABLE;
 import static org.jbpm.ruleflow.core.factory.ActionNodeFactory.METHOD_ACTION;
 
 public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionNodeVisitor.class);
 
     private static final String INTERMEDIATE_COMPENSATION_TYPE = "IntermediateThrowEvent-None";
 
@@ -77,20 +81,20 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(MAPPING_VARIABLE_INPUT), (String) node.getMetaData(CUSTOM_SCOPE))));
         } else if (node.getAction() instanceof DroolsConsequenceAction) {
+            BlockStmt actionBody = new BlockStmt();
             String consequence = getActionConsequence(node.getAction());
             if (consequence == null || consequence.trim().isEmpty()) {
-                throw new IllegalStateException("Action node " + node.getId().toExternalFormat() + " name " + node.getName() + " has no action defined");
+                LOGGER.warn("Action node {} name {} has no action defined!", node.getId().toExternalFormat(), node.getName());
+            } else {
+                List<Variable> variables = variableScope.getVariables();
+                variables.stream()
+                        .filter(v -> consequence.contains(v.getName()))
+                        .map(ActionNodeVisitor::makeAssignment)
+                        .forEach(actionBody::addStatement);
+
+                BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "}");
+                blockStmt.getStatements().forEach(actionBody::addStatement);
             }
-            BlockStmt actionBody = new BlockStmt();
-            List<Variable> variables = variableScope.getVariables();
-            variables.stream()
-                    .filter(v -> consequence.contains(v.getName()))
-                    .map(ActionNodeVisitor::makeAssignment)
-                    .forEach(actionBody::addStatement);
-
-            BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "}");
-            blockStmt.getStatements().forEach(actionBody::addStatement);
-
             LambdaExpr lambda = new LambdaExpr(
                     new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
                     actionBody);
