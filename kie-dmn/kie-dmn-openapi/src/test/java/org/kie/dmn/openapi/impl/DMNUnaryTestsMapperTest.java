@@ -21,7 +21,6 @@ package org.kie.dmn.openapi.impl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,14 +31,10 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.DMNUnaryTest;
-import org.kie.dmn.core.compiler.DMNTypeRegistry;
-import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -50,14 +45,12 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.getUnaryEvaluationNodesFromUnaryTests;
 import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.populateSchemaFromBaseNode;
 import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.populateSchemaFromUnaryTests;
+import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
+import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
+import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.feel;
+import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
 
 public class DMNUnaryTestsMapperTest {
-
-    private static final FEEL feel = FEEL.newInstance();
-
-    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV15(Collections.emptyMap());
-    private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
-    private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
 
     @Test
     public void testPopulateSchemaFromUnaryTestsForEnumsWithoutNull() {
@@ -94,33 +87,33 @@ public class DMNUnaryTestsMapperTest {
         List<Object> toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
-        AtomicReference<Schema> schemaRef = new AtomicReference<>(getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING));
-        assertNull(schemaRef.get().getEnumeration());
-        populateSchemaFromUnaryTests(schemaRef.get(), toCheck);
-        assertEquals(enumBase.size(), schemaRef.get().getEnumeration().size());
-        enumBase.forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
+        AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING));
+        assertNull(toPopulate.get().getEnumeration());
+        populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
+        assertEquals(enumBase.size(), toPopulate.get().getEnumeration().size());
+        enumBase.forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
 
         toEnum = Arrays.asList(1, 3, 6, 78);
         expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
-        schemaRef.set(getSchemaForSimpleType(null, expression, FEEL_NUMBER, BuiltInType.NUMBER));
-        assertNull(schemaRef.get().getEnumeration());
-        populateSchemaFromUnaryTests(schemaRef.get(), toCheck);
-        assertEquals(enumBase.size(), schemaRef.get().getEnumeration().size());
-        toEnum.stream().map(i -> BigDecimal.valueOf((int)i)).forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
+        toPopulate.set(getSchemaForSimpleType(null, expression, FEEL_NUMBER, BuiltInType.NUMBER));
+        assertNull(toPopulate.get().getEnumeration());
+        populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
+        assertEquals(toEnum.size(), toPopulate.get().getEnumeration().size());
+        toEnum.stream().map(i -> BigDecimal.valueOf((int)i)).forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
 
-        schemaRef.set(OASFactory.createObject(Schema.class));
+        toPopulate.set(OASFactory.createObject(Schema.class));
         List<LocalDate> expectedDates = Arrays.asList(LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1));
         List<String> formattedDates = expectedDates.stream()
                 .map(toFormat -> String.format("@\"%s-0%s-0%s\"", toFormat.getYear(), toFormat.getMonthValue(), toFormat.getDayOfMonth()))
                 .toList();
         expression = String.join(",", formattedDates.stream().map(toMap -> String.format("%s", toMap)).toList());
         toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
-        assertNull(schemaRef.get().getNullable());
-        populateSchemaFromUnaryTests(schemaRef.get(), toCheck);
-        assertNotNull(schemaRef.get().getEnumeration());
-        assertEquals(expectedDates.size(), schemaRef.get().getEnumeration().size());
-        expectedDates.forEach(expectedDate -> assertTrue(schemaRef.get().getEnumeration().contains(expectedDate)));
+        assertNull(toPopulate.get().getNullable());
+        populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
+        assertNotNull(toPopulate.get().getEnumeration());
+        assertEquals(expectedDates.size(), toPopulate.get().getEnumeration().size());
+        expectedDates.forEach(expectedDate -> assertTrue(toPopulate.get().getEnumeration().contains(expectedDate)));
         
     }
 
@@ -150,10 +143,4 @@ public class DMNUnaryTestsMapperTest {
         enumBase.forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
     }
 
-    private Schema getSchemaForSimpleType(String allowedValuesString, String typeConstraintString, DMNType baseType, BuiltInType builtInType) {
-        List<UnaryTest> allowedValues = allowedValuesString != null && !allowedValuesString.isEmpty() ?  feel.evaluateUnaryTests(allowedValuesString) : null;
-        List<UnaryTest> typeConstraint = typeConstraintString != null && !typeConstraintString.isEmpty() ?  feel.evaluateUnaryTests(typeConstraintString) : null;
-        DMNType dmnType = new SimpleTypeImpl("testNS", "tName", null, true, allowedValues, typeConstraint, baseType, builtInType);
-        return  FEELBuiltinTypeSchemaMapper.from(dmnType);
-    }
 }

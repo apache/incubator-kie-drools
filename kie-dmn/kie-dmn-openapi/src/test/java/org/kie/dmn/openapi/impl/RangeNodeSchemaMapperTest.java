@@ -48,20 +48,20 @@ public class RangeNodeSchemaMapperTest {
 
     @Test
     public void testEvaluateUnaryTestsForNumberRange() {
-        List<Object> toEnum = Arrays.asList("(>1)", "(<=10)");
-        String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
+        List<Object> toRange = Arrays.asList("(>1)", "(<=10)");
+        String expression = String.join(",", toRange.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> toCheck =
                 feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         List<RangeNode> ranges = getUnaryEvaluationNodesFromUnaryTests(toCheck)
                 .stream()
                 .map(RangeNode.class::cast)
                 .toList();
-        Schema schema = OASFactory.createObject(Schema.class);
-        populateSchemaFromListOfRanges(schema, ranges);
-        assertEquals(BigDecimal.ONE, schema.getMinimum());
-        assertTrue(schema.getExclusiveMinimum());
-        assertEquals(BigDecimal.TEN, schema.getMaximum());
-        assertFalse(schema.getExclusiveMaximum());
+        Schema toPopulate = OASFactory.createObject(Schema.class);
+        populateSchemaFromListOfRanges(toPopulate, ranges);
+        assertEquals(BigDecimal.ONE, toPopulate.getMinimum());
+        assertTrue(toPopulate.getExclusiveMinimum());
+        assertEquals(BigDecimal.TEN, toPopulate.getMaximum());
+        assertFalse(toPopulate.getExclusiveMaximum());
     }
 
     @Test
@@ -88,6 +88,8 @@ public class RangeNodeSchemaMapperTest {
                 .stream()
                 .map(RangeNode.class::cast)
                 .toList();
+
+        // TODO finsih test
         Schema schema = OASFactory.createObject(Schema.class);
         populateSchemaFromListOfRanges(schema, ranges);
     }

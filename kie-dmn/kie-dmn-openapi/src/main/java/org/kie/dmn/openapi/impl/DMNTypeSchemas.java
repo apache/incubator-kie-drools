@@ -66,6 +66,43 @@ public class DMNTypeSchemas {
         return schemas;
     }
 
+    static void populateSchemaWithConstraints(Schema toPopulate, SimpleTypeImpl t) {
+        if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
+            parseSimpleType(DMNOASConstants.X_DMN_ALLOWED_VALUES, toPopulate, t.getAllowedValuesFEEL(), t.getAllowedValues());
+        }
+        if (t.getTypeConstraint() != null && !t.getTypeConstraint().isEmpty()) {
+            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, toPopulate, t.getTypeConstraintFEEL(), t.getTypeConstraint());
+        }
+    }
+
+    static void parseSimpleType(String schemaString, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
+        schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
+        DMNUnaryTestsMapper.populateSchemaFromUnaryTests(schema, dmnUnaryTests);
+    }
+
+    private Schema schemaFromType(DMNType t) {
+        if (t instanceof CompositeTypeImpl compositeType) {
+            return schemaFromCompositeType(compositeType);
+        }
+        if (t instanceof SimpleTypeImpl simpleType) {
+            return schemaFromSimpleType(simpleType);
+        }
+        throw new UnsupportedOperationException();
+    }
+
+    private Schema schemaFromSimpleType(SimpleTypeImpl t) {
+        DMNType baseType = t.getBaseType();
+        if (baseType == null) {
+            throw new IllegalStateException();
+        }
+        Schema schema = refOrBuiltinSchema(baseType);
+        populateSchemaWithConstraints(schema, t);
+        schema = nestAsItemIfCollection(schema, t);
+        schema.addExtension(X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
+        processIoSetDoc(schema, t);
+        return schema;
+    }
+
     private Schema refOrBuiltinSchema(DMNType t) {
         if (DMNTypeUtils.isFEELBuiltInType(t)) {
             return FEELBuiltinTypeSchemaMapper.from(t);
@@ -107,40 +144,6 @@ public class DMNTypeSchemas {
             }
         }
         return Optional.ofNullable(res);
-    }
-
-    private Schema schemaFromType(DMNType t) {
-        if (t instanceof CompositeTypeImpl compositeType) {
-            return schemaFromCompositeType(compositeType);
-        }
-        if (t instanceof SimpleTypeImpl simpleType) {
-            return schemaFromSimpleType(simpleType);
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    // Default-access for testing purpose
-    Schema schemaFromSimpleType(SimpleTypeImpl t) {
-        DMNType baseType = t.getBaseType();
-        if (baseType == null) {
-            throw new IllegalStateException();
-        }
-        Schema schema = refOrBuiltinSchema(baseType);
-        if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-            parseSimpleType(DMNOASConstants.X_DMN_ALLOWED_VALUES, schema, t.getAllowedValuesFEEL(), t.getAllowedValues());
-        }
-        if (t.getTypeConstraint() != null && !t.getTypeConstraint().isEmpty()) {
-            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, schema, t.getTypeConstraintFEEL(), t.getTypeConstraint());
-        }
-        schema = nestAsItemIfCollection(schema, t);
-        schema.addExtension(X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
-        processIoSetDoc(schema, t);
-        return schema;
-    }
-
-    private void parseSimpleType(String schemaString, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
-        schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
-        DMNUnaryTestsMapper.populateSchemaFromUnaryTests(schema, dmnUnaryTests);
     }
 
     private Schema schemaFromCompositeType(CompositeTypeImpl ct) {
