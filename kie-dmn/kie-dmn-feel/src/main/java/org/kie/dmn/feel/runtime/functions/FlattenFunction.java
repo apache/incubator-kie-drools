@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class FlattenFunction
         extends BaseFEELFunction {
 
+    public static final FlattenFunction INSTANCE = new FlattenFunction();
+
     public FlattenFunction() {
         super( "flatten" );
     }

@@ -24,6 +24,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class EndsWithFunction
         extends BaseFEELFunction {
 
+    public static final EndsWithFunction INSTANCE = new EndsWithFunction();
+
     public EndsWithFunction() {
         super( "ends with" );
     }

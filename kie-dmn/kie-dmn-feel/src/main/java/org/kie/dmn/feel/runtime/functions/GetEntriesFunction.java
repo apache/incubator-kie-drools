@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.functions.extended.ContextPutFunction;
 
 public class GetEntriesFunction extends BaseFEELFunction {
 
+    public static final GetEntriesFunction INSTANCE = new GetEntriesFunction();
+
     public GetEntriesFunction() {
         super("get entries");
     }

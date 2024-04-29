@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class ReverseFunction
         extends BaseFEELFunction {
 
+    public static final ReverseFunction INSTANCE = new ReverseFunction();
+
     public ReverseFunction() {
         super( "reverse" );
     }

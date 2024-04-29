@@ -28,6 +28,8 @@ import java.util.regex.PatternSyntaxException;
 public class MatchesFunction
         extends BaseFEELFunction {
 
+    public static final MatchesFunction INSTANCE = new MatchesFunction();
+
     public MatchesFunction() {
         super( "matches" );
     }

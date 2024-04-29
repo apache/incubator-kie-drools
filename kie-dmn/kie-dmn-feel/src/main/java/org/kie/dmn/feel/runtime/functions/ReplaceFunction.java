@@ -24,6 +24,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class ReplaceFunction
         extends BaseFEELFunction {
 
+    public static final ReplaceFunction INSTANCE = new ReplaceFunction();
+
     public ReplaceFunction() {
         super( "replace" );
     }

@@ -28,6 +28,8 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class ListContainsFunction
         extends BaseFEELFunction {
 
+    public static final ListContainsFunction INSTANCE = new ListContainsFunction();
+
     public ListContainsFunction() {
         super( "list contains" );
     }

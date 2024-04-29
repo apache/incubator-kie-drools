@@ -24,6 +24,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class StartsWithFunction
         extends BaseFEELFunction {
 
+    public static final StartsWithFunction INSTANCE = new StartsWithFunction();
+
     public StartsWithFunction() {
         super( "starts with" );
     }

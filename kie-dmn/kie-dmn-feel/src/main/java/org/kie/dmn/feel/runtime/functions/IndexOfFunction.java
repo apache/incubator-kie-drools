@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class IndexOfFunction
         extends BaseFEELFunction {
 
+    public static final IndexOfFunction INSTANCE = new IndexOfFunction();
+
     public IndexOfFunction() {
         super( "index of" );
     }

@@ -122,7 +122,8 @@ public class DMNTypeSchemas {
         throw new UnsupportedOperationException();
     }
 
-    private Schema schemaFromSimpleType(SimpleTypeImpl t) {
+    // Default-access for testing purpose
+    Schema schemaFromSimpleType(SimpleTypeImpl t) {
         DMNType baseType = t.getBaseType();
         if (baseType == null) {
             throw new IllegalStateException();
@@ -142,13 +143,15 @@ public class DMNTypeSchemas {
 
     private void parseSimpleType(String schemaString, SimpleTypeImpl t, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
         schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
-        if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
-            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, Number.class);
-        } else if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.DATE) {
-            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, LocalDate.class);
-        } else {
-            FEELSchemaEnum.parseValuesIntoSchema(schema, dmnUnaryTests);
-        }
+        FEELSchemaEnum.populateSchemaFromUnaryTests(schema, dmnUnaryTests);
+//
+//        if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
+//            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, Number.class);
+//        } else if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.DATE) {
+//            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, LocalDate.class);
+//        } else {
+//            FEELSchemaEnum.parseValuesIntoSchema(schema, dmnUnaryTests);
+//        }
     }
 
     private Schema schemaFromCompositeType(CompositeTypeImpl ct) {

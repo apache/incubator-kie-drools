@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class InsertBeforeFunction
         extends BaseFEELFunction {
 
+    public static final InsertBeforeFunction INSTANCE = new InsertBeforeFunction();
+
     public InsertBeforeFunction() {
         super( "insert before" );
     }
