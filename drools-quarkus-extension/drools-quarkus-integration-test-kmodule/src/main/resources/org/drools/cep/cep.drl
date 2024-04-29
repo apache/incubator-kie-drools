@@ -1,6 +1,6 @@
 package org.drools.cep
 
-import org.drools.quarkus.test.StockTick
+import org.drools.quarkus.test.kmodule.StockTick
 
 rule R when
     $a : StockTick( company == "DROO" )

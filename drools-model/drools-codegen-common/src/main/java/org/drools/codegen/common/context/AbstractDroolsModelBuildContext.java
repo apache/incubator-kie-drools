@@ -18,20 +18,10 @@
  */
 package org.drools.codegen.common.context;
 
-import org.drools.codegen.common.AppPaths;
-import org.drools.codegen.common.DroolsModelApplicationPropertyProvider;
-import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.codegen.common.di.DependencyInjectionAnnotator;
-import org.drools.codegen.common.rest.RestAnnotator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +30,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
+
+import javax.lang.model.SourceVersion;
+
+import org.drools.codegen.common.AppPaths;
+import org.drools.codegen.common.DroolsModelApplicationPropertyProvider;
+import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuildContext {
 
@@ -149,9 +149,9 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
 
         protected String packageName = DEFAULT_PACKAGE_NAME;
         protected DroolsModelApplicationPropertyProvider applicationProperties = DroolsModelApplicationPropertyProvider.of(new Properties());
-//        protected AddonsConfig addonsConfig;
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
+
         // default fallback value (usually overridden)
         protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath());
 

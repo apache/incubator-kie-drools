@@ -13,7 +13,7 @@ pipeline {
     }
     environment {
         BUILDCHAIN_PROJECT = 'apache/incubator-kie-drools'
-        BUILDCHAIN_CONFIG_REPO = 'incubator-kie-drools'
+        BUILDCHAIN_CONFIG_REPO = 'incubator-kie-kogito-pipelines'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config-pr-cdb.yaml'
 
         ENABLE_SONARCLOUD = 'false'

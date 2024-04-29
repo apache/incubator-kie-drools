@@ -85,8 +85,11 @@ public class KieBaseModelImpl
     public KieBaseModelImpl() {
     }
 
-    public KieBaseModelImpl(KieModuleModel kModule,
-                            String name) {
+    public KieBaseModelImpl(String name) {
+        this(null, name);
+    }
+
+    public KieBaseModelImpl(KieModuleModel kModule, String name) {
         this.kModule = kModule;
         this.includes = new HashSet<>();
         this.name = name;
@@ -173,15 +176,6 @@ public class KieBaseModelImpl
         newMap.remove(qName);
         setKSessions(newMap);
         return this;
-    }
-
-    public void moveKSession(String oldQName,
-                             String newQName) {
-        Map<String, KieSessionModel> newMap = new HashMap<>();
-        newMap.putAll( this.kSessions );
-        KieSessionModel kieSessionModel = newMap.remove( oldQName );
-        newMap.put(newQName, kieSessionModel);
-        setKSessions( newMap );
     }
 
     public List<RuleTemplateModel> getRuleTemplates() {
