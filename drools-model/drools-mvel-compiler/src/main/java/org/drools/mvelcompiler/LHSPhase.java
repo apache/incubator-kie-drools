@@ -395,7 +395,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
 
     private Class<?> getRHSorLHSType(VariableDeclarator n) {
         return mvelCompilerContext.resolveType(n.getType() instanceof ClassOrInterfaceType ?
-                n.getType().asClassOrInterfaceType().getNameAsString() :
+                n.getType().asClassOrInterfaceType().getNameWithScope() :
                 n.getType().asString());
     }
 
