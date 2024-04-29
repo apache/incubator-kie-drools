@@ -26,7 +26,7 @@ import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 
-public class FEELBuiltinTypeSchemas {
+public class FEELBuiltinTypeSchemaMapper {
 
     public static Schema from(DMNType t) {
         BuiltInType builtin = DMNTypeUtils.getFEELBuiltInType(t);
@@ -70,11 +70,11 @@ public class FEELBuiltinTypeSchemas {
                 return OASFactory.createObject(Schema.class).addExtension(DMNOASConstants.X_DMN_TYPE, "FEEL:context"); // intentional, do NOT add .type(SchemaType.OBJECT), the JSONSchema to represent FEEL:context is {}
             case DURATION:
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Unsupported built-in type: " + builtin);
         }
     }
 
-    private FEELBuiltinTypeSchemas() {
+    private FEELBuiltinTypeSchemaMapper() {
         // deliberate intention not to allow instantiation of this class.
     }
 }

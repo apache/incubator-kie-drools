@@ -154,6 +154,6 @@ public class DMNUnaryTestsMapperTest {
         List<UnaryTest> allowedValues = allowedValuesString != null && !allowedValuesString.isEmpty() ?  feel.evaluateUnaryTests(allowedValuesString) : null;
         List<UnaryTest> typeConstraint = typeConstraintString != null && !typeConstraintString.isEmpty() ?  feel.evaluateUnaryTests(typeConstraintString) : null;
         DMNType dmnType = new SimpleTypeImpl("testNS", "tName", null, true, allowedValues, typeConstraint, baseType, builtInType);
-        return  FEELBuiltinTypeSchemas.from(dmnType);
+        return  FEELBuiltinTypeSchemaMapper.from(dmnType);
     }
 }

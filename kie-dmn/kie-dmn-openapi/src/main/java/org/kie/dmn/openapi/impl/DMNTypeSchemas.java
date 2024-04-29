@@ -68,7 +68,7 @@ public class DMNTypeSchemas {
 
     private Schema refOrBuiltinSchema(DMNType t) {
         if (DMNTypeUtils.isFEELBuiltInType(t)) {
-            return FEELBuiltinTypeSchemas.from(t);
+            return FEELBuiltinTypeSchemaMapper.from(t);
         }
         if (typesIndex.contains(t)) {
             return OASFactory.createObject(Schema.class).ref(namingPolicy.getRef(t));

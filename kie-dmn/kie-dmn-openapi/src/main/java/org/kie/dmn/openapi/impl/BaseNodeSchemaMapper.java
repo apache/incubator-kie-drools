@@ -66,21 +66,24 @@ public class BaseNodeSchemaMapper {
         SCHEMA_MODIFIERS.put(NullNode.class, NULLNODE_CONSUMER);
     }
 
-    static void populateSchemaFromBaseNode(Schema schema, BaseNode baseNode) {
+    static void populateSchemaFromBaseNode(Schema toPopulate, BaseNode baseNode) {
+        LOG.debug("populateSchemaFromUnaryTests {} {}", toPopulate, baseNode);
         if (SCHEMA_MODIFIERS.containsKey(baseNode.getClass())) {
-            SCHEMA_MODIFIERS.get(baseNode.getClass()).accept(baseNode, schema);
+            SCHEMA_MODIFIERS.get(baseNode.getClass()).accept(baseNode, toPopulate);
         }
     }
 
-    private static void populateEnumSchema(Schema schema, Object toAdd) {
+    private static void populateEnumSchema(Schema toPopulate, Object toAdd) {
+        LOG.debug("populateSchemaFromUnaryTests {} {}", toPopulate, toAdd);
         Set<Object> enums = new HashSet<>();
         enums.add(toAdd);
-        if (schema.getEnumeration() != null) {
-            enums.addAll(schema.getEnumeration());
+        if (toPopulate.getEnumeration() != null) {
+            enums.addAll(toPopulate.getEnumeration());
         }
-        schema.enumeration(new ArrayList<>(enums));
+        toPopulate.enumeration(new ArrayList<>(enums));
     }
 
     private BaseNodeSchemaMapper() {
+        // deliberate intention not to allow instantiation of this class.
     }
 }

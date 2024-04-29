@@ -27,8 +27,13 @@ import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.CountFunction;
 import org.kie.dmn.openapi.functions.TriConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FEELFunctionSchemaMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FEELFunctionSchemaMapper.class);
+
 
     static final Map< Class<? extends FEELFunction>, TriConsumer<InfixOperator, Object, Schema>> SCHEMA_MODIFIERS;
 
@@ -46,7 +51,9 @@ public class FEELFunctionSchemaMapper {
                 schema.setMinItems(((BigDecimal) rightValue).intValue());
                 schema.setMaxItems(((BigDecimal) rightValue).intValue());
             }
-            default -> {}
+            default -> {
+                LOG.debug("Ignore operator {}", o);
+            }
         }
     };
 
@@ -61,7 +68,7 @@ public class FEELFunctionSchemaMapper {
         }
     }
 
-
-
-
+    private FEELFunctionSchemaMapper() {
+        // deliberate intention not to allow instantiation of this class.
+    }
 }

@@ -45,5 +45,6 @@ public class InfixOpNodeSchemaMapper {
     }
 
     private InfixOpNodeSchemaMapper() {
+        // deliberate intention not to allow instantiation of this class.
     }
 }
