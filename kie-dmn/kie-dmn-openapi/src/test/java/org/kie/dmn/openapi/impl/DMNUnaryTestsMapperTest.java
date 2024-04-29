@@ -20,7 +20,6 @@ package org.kie.dmn.openapi.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,14 +45,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.checkEvaluatedUnaryTestsForNull;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.checkEvaluatedUnaryTestsForTypeConsistency;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.getUnaryEvaluationNodesFromUnaryTests;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.populateSchemaFromBaseNode;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.populateSchemaFromUnaryTests;
+import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.getUnaryEvaluationNodesFromUnaryTests;
+import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.populateSchemaFromBaseNode;
+import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.populateSchemaFromUnaryTests;
 
-public class FEELSchemaEnumTest {
+public class DMNUnaryTestsMapperTest {
 
     private static final FEEL feel = FEEL.newInstance();
 
@@ -126,7 +124,7 @@ public class FEELSchemaEnumTest {
         
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPopulateSchemaFromUnaryTestsFails() {
         List<Object> toEnum = Arrays.asList(null, null, "@\"2024-01-01\"");
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
@@ -134,7 +132,7 @@ public class FEELSchemaEnumTest {
                 feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         assertEquals(toEnum.size(), toCheck.size());
         Schema schema = getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING);
-        populateSchemaFromUnaryTests(schema, toCheck);
+        assertThrows(IllegalArgumentException.class, () -> populateSchemaFromUnaryTests(schema, toCheck));
     }
 
     @Test
@@ -150,34 +148,6 @@ public class FEELSchemaEnumTest {
         populateSchemaFromBaseNode(schemaRef.get(), toCheck);
         assertEquals(enumBase.size(), schemaRef.get().getEnumeration().size());
         enumBase.forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
-    }
-
-    @Test
-    public void testCheckEvaluatedUnaryTestsForNullSucceed() {
-        List<Object> toCheck = new ArrayList<>(Arrays.asList("1", "2", "3"));
-        checkEvaluatedUnaryTestsForNull(toCheck);
-        toCheck.add(null);
-        checkEvaluatedUnaryTestsForNull(toCheck);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testCheckEvaluatedUnaryTestsForNullFails() {
-        List<Object> toCheck = new ArrayList<>(Arrays.asList("1", "2", "3"));
-        toCheck.add(null);
-        toCheck.add(null);
-        checkEvaluatedUnaryTestsForNull(toCheck);
-    }
-
-    @Test
-    public void testCheckEvaluatedUnaryTestsForTypeConsistencySucceed() {
-        List<Object> toCheck = Arrays.asList("1", "2", "3");
-        checkEvaluatedUnaryTestsForTypeConsistency(toCheck);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testCheckEvaluatedUnaryTestsForTypeConsistencyFails() {
-        List<Object> toCheck = Arrays.asList("1", "2", 3);
-        checkEvaluatedUnaryTestsForTypeConsistency(toCheck);
     }
 
     private Schema getSchemaForSimpleType(String allowedValuesString, String typeConstraintString, DMNType baseType, BuiltInType builtInType) {

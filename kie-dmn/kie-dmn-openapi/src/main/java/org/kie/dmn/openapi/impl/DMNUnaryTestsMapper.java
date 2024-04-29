@@ -21,8 +21,6 @@ package org.kie.dmn.openapi.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -31,11 +29,8 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.ASTUnaryTestTransform;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.ast.NullNode;
-import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
@@ -44,19 +39,18 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 import static org.kie.dmn.openapi.impl.RangeNodeSchemaMapper.populateSchemaFromListOfRanges;
 
-public class FEELSchemaEnum {
+public class DMNUnaryTestsMapper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FEELSchemaEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMNUnaryTestsMapper.class);
 
     public static void populateSchemaFromUnaryTests(Schema toPopulate, List<DMNUnaryTest> unaryTests) {
+        LOG.debug("populateSchemaFromUnaryTests {} {}", toPopulate, unaryTests);
         List<BaseNode> unaryEvaluationNodes = getUnaryEvaluationNodesFromUnaryTests(unaryTests);
         Map<Boolean, List<BaseNode>> map = unaryEvaluationNodes.stream().collect(groupingBy(RangeNode.class::isInstance));
         if (map.containsKey(true)) {
@@ -79,57 +73,22 @@ public class FEELSchemaEnum {
     }
 
     static void populateSchemaFromBaseNode(Schema toPopulate, BaseNode unaryEvaluationNode) {
+        LOG.debug("populateSchemaFromBaseNode {} {}", toPopulate, unaryEvaluationNode);
         if (unaryEvaluationNode instanceof InfixOpNode infixOpNode) {
-            populateSchemaFromFunctionInvocationNode(toPopulate, infixOpNode);
+            InfixOpNodeSchemaMapper.populateSchemaFromFunctionInvocationNode(toPopulate, infixOpNode);
         } else {
-            BaseNodeSchemaMapper.populateSchemaFromBaseNode(unaryEvaluationNode, toPopulate);
+            BaseNodeSchemaMapper.populateSchemaFromBaseNode(toPopulate, unaryEvaluationNode);
         }
-    }
-
-    static void populateSchemaFromFunctionInvocationNode(Schema schema, InfixOpNode infixOpNode) {
-        String functionString =  ((FunctionInvocationNode) infixOpNode.getLeft()).getName().getText();
-        FEELFunction function = BuiltInFunctions.getFunction(functionString);
-        InfixOperator operator = infixOpNode.getOperator();
-        Object rightValue = infixOpNode.getRight();
-        if (rightValue instanceof NumberNode numberNode) {
-            rightValue = numberNode.getValue();
-        }
-        FEELFunctionSchemaMapper.populateSchemaFromFEELFunction(function, operator, rightValue, schema);
     }
 
     static List<BaseNode> getUnaryEvaluationNodesFromUnaryTests(List<DMNUnaryTest> unaryTests) {
+        LOG.debug("getUnaryEvaluationNodesFromUnaryTests {}", unaryTests);
         List<BaseNode> baseNodes = unaryTests.stream().map(dmnUnaryTest -> getBaseNode(dmnUnaryTest.toString())).toList();
         return baseNodes.stream().map(baseNode ->  ((UnaryTestNode) ((UnaryTestListNode) baseNode).getElements().get(0)).getValue()).toList();
     }
 
-    /**
-     * Method used to verify if the given <code>List</code> contains at most one <code>null</code>,
-     * since those should be put in the "enum" attribute
-     *
-     * @param toCheck
-     */
-    static void checkEvaluatedUnaryTestsForNull(List<Object> toCheck) {
-        if (toCheck.stream().filter(Objects::isNull).toList().size() > 1) {
-            throw new IllegalArgumentException("More then one object is null, only one allowed at maximum");
-        }
-    }
-
-    /**
-     * Method used to verify if the given <code>List</code> contains the same type of <code>Object</code>s,
-     * since those should be put in the "enum" attribute
-     *
-     * @param toCheck
-     */
-    static void checkEvaluatedUnaryTestsForTypeConsistency(List<Object> toCheck) {
-        if (toCheck.stream().filter(Objects::nonNull)
-                .map(Object::getClass)
-                .collect(Collectors.toUnmodifiableSet())
-                .size() > 1) {
-            throw new IllegalArgumentException("Different types of objects, only one allowed");
-        }
-    }
-
     static BaseNode getBaseNode(String expression) {
+        LOG.debug("getBaseNode {}", expression);
         FEEL feelInstance = FEEL.newInstance();
         CompilerContext ctx = feelInstance.newCompilerContext();
         ParseTree tree = getFEELParser(expression, ctx).unaryTestsRoot();
@@ -144,9 +103,9 @@ public class FEELSchemaEnum {
     }
 
     static FEEL_1_1Parser getFEELParser(String expression, CompilerContext ctx) {
+        LOG.debug("getFEELParser {} {}", expression, ctx);
         FEELEventListenersManager eventsManager =
                 new FEELEventListenersManager();
-
         return FEELParser.parse(
                 eventsManager,
                 expression,
@@ -157,7 +116,7 @@ public class FEELSchemaEnum {
                 ctx.getFEELFeelTypeRegistry());
     }
 
-    private FEELSchemaEnum() {
+    private DMNUnaryTestsMapper() {
         // deliberate intention not to allow instantiation of this class.
     }
 }

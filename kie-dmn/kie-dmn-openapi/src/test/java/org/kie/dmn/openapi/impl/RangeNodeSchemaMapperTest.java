@@ -38,7 +38,7 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.getUnaryEvaluationNodesFromUnaryTests;
+import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.getUnaryEvaluationNodesFromUnaryTests;
 import static org.kie.dmn.openapi.impl.RangeNodeSchemaMapper.populateSchemaFromListOfRanges;
 
 

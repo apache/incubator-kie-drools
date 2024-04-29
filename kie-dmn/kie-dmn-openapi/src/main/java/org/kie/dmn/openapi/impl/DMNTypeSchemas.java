@@ -140,7 +140,7 @@ public class DMNTypeSchemas {
 
     private void parseSimpleType(String schemaString, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
         schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
-        FEELSchemaEnum.populateSchemaFromUnaryTests(schema, dmnUnaryTests);
+        DMNUnaryTestsMapper.populateSchemaFromUnaryTests(schema, dmnUnaryTests);
     }
 
     private Schema schemaFromCompositeType(CompositeTypeImpl ct) {

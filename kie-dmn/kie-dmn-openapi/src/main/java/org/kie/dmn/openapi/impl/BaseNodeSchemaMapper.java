@@ -66,7 +66,7 @@ public class BaseNodeSchemaMapper {
         SCHEMA_MODIFIERS.put(NullNode.class, NULLNODE_CONSUMER);
     }
 
-    static void populateSchemaFromBaseNode(BaseNode baseNode, Schema schema) {
+    static void populateSchemaFromBaseNode(Schema schema, BaseNode baseNode) {
         if (SCHEMA_MODIFIERS.containsKey(baseNode.getClass())) {
             SCHEMA_MODIFIERS.get(baseNode.getClass()).accept(baseNode, schema);
         }
