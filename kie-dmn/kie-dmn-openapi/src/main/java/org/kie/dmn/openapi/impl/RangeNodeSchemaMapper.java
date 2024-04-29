@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,15 +20,11 @@ package org.kie.dmn.openapi.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTestImpl;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class RangeNodeSchemaMapper {
@@ -54,8 +50,6 @@ public class RangeNodeSchemaMapper {
             Comparable lowValue = null;
             if (r.getStart() instanceof NumberNode startNode) {
                 lowValue = startNode.getValue();
-            } else if (r.getStart() instanceof AtLiteralNode startNode) {
-                lowValue = startNode.getText();
             }
             if (lowValue != null) {
                 if (result.getLowEndPoint() == null) {
@@ -69,8 +63,6 @@ public class RangeNodeSchemaMapper {
             Comparable highValue = null;
             if (r.getEnd() instanceof NumberNode endNode) {
                 highValue = endNode.getValue();
-            } else if (r.getEnd() instanceof AtLiteralNode endNode) {
-                highValue = endNode.getText();
             }
             if (highValue != null) {
                 if (result.getHighEndPoint() == null) {
@@ -82,5 +74,8 @@ public class RangeNodeSchemaMapper {
             }
         }
         return consistent ? result : null;
+    }
+
+    private RangeNodeSchemaMapper() {
     }
 }

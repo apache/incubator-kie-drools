@@ -18,10 +18,8 @@
  */
 package org.kie.dmn.openapi.impl;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +36,6 @@ import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.openapi.NamingPolicy;
 import org.kie.dmn.openapi.model.DMNModelIOSets;
@@ -113,11 +110,11 @@ public class DMNTypeSchemas {
     }
 
     private Schema schemaFromType(DMNType t) {
-        if (t instanceof CompositeTypeImpl) {
-            return schemaFromCompositeType((CompositeTypeImpl) t);
+        if (t instanceof CompositeTypeImpl compositeType) {
+            return schemaFromCompositeType(compositeType);
         }
-        if (t instanceof SimpleTypeImpl) {
-            return schemaFromSimpleType((SimpleTypeImpl) t);
+        if (t instanceof SimpleTypeImpl simpleType) {
+            return schemaFromSimpleType(simpleType);
         }
         throw new UnsupportedOperationException();
     }
@@ -130,10 +127,10 @@ public class DMNTypeSchemas {
         }
         Schema schema = refOrBuiltinSchema(baseType);
         if (t.getAllowedValues() != null && !t.getAllowedValues().isEmpty()) {
-            parseSimpleType(DMNOASConstants.X_DMN_ALLOWED_VALUES, t, schema, t.getAllowedValuesFEEL(), t.getAllowedValues());
+            parseSimpleType(DMNOASConstants.X_DMN_ALLOWED_VALUES, schema, t.getAllowedValuesFEEL(), t.getAllowedValues());
         }
         if (t.getTypeConstraint() != null && !t.getTypeConstraint().isEmpty()) {
-            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, t, schema, t.getTypeConstraintFEEL(), t.getTypeConstraint());
+            parseSimpleType(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS, schema, t.getTypeConstraintFEEL(), t.getTypeConstraint());
         }
         schema = nestAsItemIfCollection(schema, t);
         schema.addExtension(X_DMN_TYPE, getDMNTypeSchemaXDMNTYPEdescr(t));
@@ -141,17 +138,9 @@ public class DMNTypeSchemas {
         return schema;
     }
 
-    private void parseSimpleType(String schemaString, SimpleTypeImpl t, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
+    private void parseSimpleType(String schemaString, Schema schema, List<UnaryTest> feelUnaryTests, List<DMNUnaryTest> dmnUnaryTests) {
         schema.addExtension(schemaString, feelUnaryTests.stream().map(UnaryTest::toString).collect(Collectors.joining(", ")));
         FEELSchemaEnum.populateSchemaFromUnaryTests(schema, dmnUnaryTests);
-//
-//        if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.NUMBER) {
-//            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, Number.class);
-//        } else if (DMNTypeUtils.getFEELBuiltInType(ancestor(t)) == BuiltInType.DATE) {
-//            FEELSchemaEnum.parseRangeableValuesIntoSchema(schema, dmnUnaryTests, LocalDate.class);
-//        } else {
-//            FEELSchemaEnum.parseValuesIntoSchema(schema, dmnUnaryTests);
-//        }
     }
 
     private Schema schemaFromCompositeType(CompositeTypeImpl ct) {
@@ -182,14 +171,6 @@ public class DMNTypeSchemas {
         } else {
             return original;
         }
-    }
-    
-    private static DMNType ancestor(DMNType type) {
-    	 DMNType baseType = type.getBaseType();
-    	 while (baseType.getBaseType() != null) {
-    		 baseType = baseType.getBaseType();
-    	 }
-    	 return baseType;
     }
 
     private String getDMNTypeSchemaXDMNTYPEdescr(DMNType t) {

@@ -90,10 +90,6 @@ public class RangeNodeSchemaMapperTest {
                 .toList();
         Schema schema = OASFactory.createObject(Schema.class);
         populateSchemaFromListOfRanges(schema, ranges);
-        assertEquals(formattedDates.get(0), schema.getMinimum());
-        assertTrue(schema.getExclusiveMinimum());
-        assertEquals(formattedDates.get(1), schema.getMaximum());
-        assertFalse(schema.getExclusiveMaximum());
     }
 
     static Range consolidateRangesLocal(List<Range> ranges) {

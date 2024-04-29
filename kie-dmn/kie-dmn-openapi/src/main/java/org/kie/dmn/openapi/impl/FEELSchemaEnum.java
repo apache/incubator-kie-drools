@@ -34,6 +34,7 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
+import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
@@ -55,61 +56,25 @@ public class FEELSchemaEnum {
 
     private static final Logger LOG = LoggerFactory.getLogger(FEELSchemaEnum.class);
 
-//    public static void parseValuesIntoSchema(Schema schema, List<DMNUnaryTest> unaryTests) {
-//        List<Object> expectLiterals = evaluateUnaryTests(schema, unaryTests);
-//        try {
-//            checkEvaluatedUnaryTestsForTypeConsistency(expectLiterals);
-//        } catch (IllegalArgumentException e) {
-//            LOG.warn("Unable to parse generic value into the JSON Schema for enumeration");
-//            return;
-//        }
-//        if (expectLiterals.contains(null)) {
-//            schema.setNullable(true);
-//        }
-//        boolean allLiterals = !expectLiterals.isEmpty() && expectLiterals.stream().allMatch(o -> o == null || o instanceof String || o instanceof Number || o instanceof Boolean);
-//        if (allLiterals) {
-//            schema.enumeration(expectLiterals);
-//        } else {
-//            LOG.warn("Unable to parse generic value into the JSON Schema for enumeration");
-//        }
-//    }
-//
-//    public static void parseRangeableValuesIntoSchema(Schema schema, List<DMNUnaryTest> list, Class<?> expectedType) {
-//        List<Object> uts = evaluateUnaryTests(schema, list); // we leverage the property of the *base* FEEL grammar(non visited by ASTVisitor, only the ParseTree->AST Visitor) that `>x` is a Range
-//        boolean allowNull = uts.remove(null);
-//        if (allowNull) {
-//            schema.setNullable(true);
-//        }
-//        if (uts.size() <= 2 && uts.stream().allMatch(o -> o instanceof Range)) {
-////            Range range = consolidateRanges((List) uts); // cast intentional.
-////            if (range != null) {
-////                if (range.getLowEndPoint() != null) {
-////                    schema.minimum((BigDecimal) range.getLowEndPoint());
-////                    schema.exclusiveMinimum(range.getLowBoundary() == RangeBoundary.OPEN);
-////                }
-////                if (range.getHighEndPoint() != null) {
-////                    schema.maximum((BigDecimal) range.getHighEndPoint());
-////                    schema.exclusiveMaximum(range.getHighBoundary() == RangeBoundary.OPEN);
-////                }
-////            }
-//        } else if (uts.stream().allMatch(expectedType::isInstance)) {
-//            if (allowNull) {
-//                uts.add(null);
-//            }
-//            schema.enumeration(uts);
-//        } else {
-//            LOG.warn("Unable to parse {} value into the JSON Schema for enumeration", expectedType);
-//        }
-//    }
-
     public static void populateSchemaFromUnaryTests(Schema toPopulate, List<DMNUnaryTest> unaryTests) {
         List<BaseNode> unaryEvaluationNodes = getUnaryEvaluationNodesFromUnaryTests(unaryTests);
-        Map<Boolean, List<BaseNode>> map = unaryEvaluationNodes.stream().collect(groupingBy(baseNode -> baseNode instanceof RangeNode));
+        Map<Boolean, List<BaseNode>> map = unaryEvaluationNodes.stream().collect(groupingBy(RangeNode.class::isInstance));
         if (map.containsKey(true)) {
             populateSchemaFromListOfRanges(toPopulate, map.get(true).stream().map(RangeNode.class::cast).toList());
         }
         if (map.containsKey(false)) {
-            map.get(false).forEach(unaryEvaluationNode ->populateSchemaFromBaseNode(toPopulate, unaryEvaluationNode));
+            List<BaseNode> enumBaseNodes = map.get(false);
+            List<BaseNode> nullNodes = enumBaseNodes.stream().filter(NullNode.class::isInstance).toList();
+            if (nullNodes.size() > 1) {
+                throw new IllegalArgumentException("At most one null value is allowed for enum definition");
+            }
+            // If there is a NullNode, the item is nullable
+            toPopulate.setNullable(!nullNodes.isEmpty());
+            if (enumBaseNodes.size() > nullNodes.size()) {
+                // Let's create enum only if there is at least one node != NullNode
+                enumBaseNodes.forEach(unaryEvaluationNode -> populateSchemaFromBaseNode(toPopulate, unaryEvaluationNode));
+            }
+
         }
     }
 

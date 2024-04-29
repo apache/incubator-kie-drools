@@ -18,39 +18,52 @@
  */
 package org.kie.dmn.openapi.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.kie.dmn.feel.codegen.feel11.Functions;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
-import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BaseNodeSchemaMapper {
 
+
+    private static final Logger LOG = LoggerFactory.getLogger(BaseNodeSchemaMapper.class);
+
     private static final Map<Class<? extends BaseNode>, BiConsumer<BaseNode, Schema>> SCHEMA_MODIFIERS;
 
-    private static BiConsumer<BaseNode, Schema> STRINGNODE_CONSUMER = (node, schema) -> {
-        populateEnumSchema(schema, ((StringNode) node).getValue());
+    private static BiConsumer<BaseNode, Schema> STRINGNODE_CONSUMER = (node, schema) -> populateEnumSchema(schema, ((StringNode) node).getValue());
+
+    private static BiConsumer<BaseNode, Schema> NUMBERNODE_CONSUMER = (node, schema) -> populateEnumSchema(schema, ((NumberNode) node).getValue());
+
+    private static BiConsumer<BaseNode, Schema> ATLITERALNODE_CONSUMER = (node, schema) -> {
+        EvaluationContextImpl emptyEvalCtx =
+                new EvaluationContextImpl(Functions.class.getClassLoader(), new FEELEventListenersManager());
+        Object evaluated = node.evaluate(emptyEvalCtx);
+        Object toStore = evaluated != null ? evaluated : ((AtLiteralNode) node).getStringLiteral().toString();
+        populateEnumSchema(schema, toStore);
     };
 
-    private static BiConsumer<BaseNode, Schema> NUMBERNODE_CONSUMER = (node, schema) -> {
-        populateEnumSchema(schema, ((NumberNode) node).getValue());
-    };
+    private static BiConsumer<BaseNode, Schema> NULLNODE_CONSUMER = (node, schema) -> populateEnumSchema(schema, null);
 
     static {
         SCHEMA_MODIFIERS = new HashMap<>();
         SCHEMA_MODIFIERS.put(StringNode.class, STRINGNODE_CONSUMER);
         SCHEMA_MODIFIERS.put(NumberNode.class, NUMBERNODE_CONSUMER);
+        SCHEMA_MODIFIERS.put(AtLiteralNode.class, ATLITERALNODE_CONSUMER);
+        SCHEMA_MODIFIERS.put(NullNode.class, NULLNODE_CONSUMER);
     }
 
     static void populateSchemaFromBaseNode(BaseNode baseNode, Schema schema) {
@@ -59,7 +72,6 @@ public class BaseNodeSchemaMapper {
         }
     }
 
-
     private static void populateEnumSchema(Schema schema, Object toAdd) {
         Set<Object> enums = new HashSet<>();
         enums.add(toAdd);
@@ -67,5 +79,8 @@ public class BaseNodeSchemaMapper {
             enums.addAll(schema.getEnumeration());
         }
         schema.enumeration(new ArrayList<>(enums));
+    }
+
+    private BaseNodeSchemaMapper() {
     }
 }

@@ -19,7 +19,6 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;

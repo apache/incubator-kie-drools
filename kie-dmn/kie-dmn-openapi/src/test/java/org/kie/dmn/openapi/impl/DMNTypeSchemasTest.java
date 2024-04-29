@@ -50,30 +50,4 @@ public class DMNTypeSchemasTest {
         assertThat(allowedValues).isNotNull();
 
     }
-
-    private static String getAllowedValuesInCollection() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<dmn:definitions xmlns=\"http://www.trisotech" +
-                ".com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442\"\n" +
-                "                      xmlns:dc=\"http://www.omg.org/spec/DMN/20180521/DC/\"\n" +
-                "                      xmlns:di=\"http://www.omg.org/spec/DMN/20180521/DI/\"\n" +
-                "                      xmlns:dmndi=\"https://www.omg.org/spec/DMN/20230324/DMNDI/\"\n" +
-                "                      xmlns:feel=\"https://www.omg.org/spec/DMN/20230324/FEEL/\"\n" +
-                "                      xmlns:dmn=\"https://www.omg.org/spec/DMN/20230324/MODEL/\"\n" +
-                "                      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "                      exporter=\"DMN Modeler\"\n" +
-                "                      exporterVersion=\"5.1.10.201705011622\"\n" +
-                "                      id=\"_238bd96d-47cd-4746-831b-504f3e77b442\"\n" +
-                "                      name=\"AllowedValuesChecksInsideCollection\"\n" +
-                "                      namespace=\"http://www.trisotech" +
-                ".com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442\">\n" +
-                "   <dmn:itemDefinition isCollection=\"true\" label=\"tInterests\" name=\"tInterests\">\n" +
-                "     <dmn:typeRef>string</dmn:typeRef>\n" +
-                "     <dmn:allowedValues xmlns:triso=\"http://www.trisotech.com/2015/triso/modeling\"\n" +
-                "                             triso:constraintsType=\"enumeration\">\n" +
-                "       <dmn:text>\"Golf\",\"Computer\",\"Hockey\",\"Jogging\"</dmn:text>\n" +
-                "     </dmn:allowedValues>\n" +
-                "   </dmn:itemDefinition>\n" +
-                "</dmn:definitions>";
-    }
 }

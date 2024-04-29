@@ -37,21 +37,21 @@ import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.openapi.impl.FEELSchemaEnum.checkEvaluatedUnaryTestsForNull;
 import static org.kie.dmn.openapi.impl.FEELSchemaEnum.checkEvaluatedUnaryTestsForTypeConsistency;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.populateSchemaFromUnaryTests;
-import static org.kie.dmn.openapi.impl.FEELSchemaEnum.getBaseNode;
+import static org.kie.dmn.openapi.impl.FEELSchemaEnum.getUnaryEvaluationNodesFromUnaryTests;
 import static org.kie.dmn.openapi.impl.FEELSchemaEnum.populateSchemaFromBaseNode;
-import static org.kie.dmn.openapi.impl.RangeNodeSchemaMapper.populateSchemaFromListOfRanges;
+import static org.kie.dmn.openapi.impl.FEELSchemaEnum.populateSchemaFromUnaryTests;
 
 public class FEELSchemaEnumTest {
 
@@ -62,7 +62,7 @@ public class FEELSchemaEnumTest {
     private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
 
     @Test
-    public void testParseValuesIntoSchemaWithoutNull() {
+    public void testPopulateSchemaFromUnaryTestsForEnumsWithoutNull() {
         Schema toPopulate = OASFactory.createObject(Schema.class);
         List<String> expectedStrings = Arrays.asList("ONE", "TWO");
         List<Object> toEnum = expectedStrings.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
@@ -70,14 +70,14 @@ public class FEELSchemaEnumTest {
         expression += ", count (?) > 1";
         List<DMNUnaryTest> unaryTests = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         populateSchemaFromUnaryTests(toPopulate, unaryTests);
-        assertNull(toPopulate.getNullable());
+        assertFalse(toPopulate.getNullable());
         assertNotNull(toPopulate.getEnumeration());
         assertEquals(expectedStrings.size(), toPopulate.getEnumeration().size());
         expectedStrings.forEach(expectedString -> assertTrue(toPopulate.getEnumeration().contains(expectedString)));
     }
 
     @Test
-    public void testParseValuesIntoSchemaWithNull() {
+    public void testPopulateSchemaFromUnaryTestsForEnumsWithNull() {
         Schema toPopulate = OASFactory.createObject(Schema.class);
         List<String> expectedStrings = Arrays.asList(null, "ONE", "TWO");
         List<Object> toEnum = expectedStrings.stream().map(toFormat -> toFormat == null ? "null": String.format("\"%s\"", toFormat)).collect(Collectors.toUnmodifiableList());
@@ -91,7 +91,7 @@ public class FEELSchemaEnumTest {
     }
 
     @Test
-    public void testEvaluateUnaryTestsForEnumSucceed() {
+    public void testPopulateSchemaFromUnaryTestsForEnumSucceed() {
         List<String> enumBase = Arrays.asList("DMN", "PMML", "JBPMN", "DRL");
         List<Object> toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
@@ -117,12 +117,9 @@ public class FEELSchemaEnumTest {
                 .map(toFormat -> String.format("@\"%s-0%s-0%s\"", toFormat.getYear(), toFormat.getMonthValue(), toFormat.getDayOfMonth()))
                 .toList();
         expression = String.join(",", formattedDates.stream().map(toMap -> String.format("%s", toMap)).toList());
-        List<RangeNode> rangeNodes = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast)
-                .map(dmnUnaryTest -> getBaseNode(dmnUnaryTest.toString()))
-                .map(RangeNode.class::cast)
-                .toList();
-        populateSchemaFromListOfRanges(schemaRef.get(), rangeNodes);
+        toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         assertNull(schemaRef.get().getNullable());
+        populateSchemaFromUnaryTests(schemaRef.get(), toCheck);
         assertNotNull(schemaRef.get().getEnumeration());
         assertEquals(expectedDates.size(), schemaRef.get().getEnumeration().size());
         expectedDates.forEach(expectedDate -> assertTrue(schemaRef.get().getEnumeration().contains(expectedDate)));
@@ -130,7 +127,7 @@ public class FEELSchemaEnumTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testEvaluateUnaryTestsFails() {
+    public void testPopulateSchemaFromUnaryTestsFails() {
         List<Object> toEnum = Arrays.asList(null, null, "@\"2024-01-01\"");
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> toCheck =
@@ -141,42 +138,19 @@ public class FEELSchemaEnumTest {
     }
 
     @Test
-    public void testEvaluateUnaryTestForInfixOpNodeSucceed() {
-        String expression = "count (?) > 1";
-        DMNUnaryTest toCheck =
-                feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList().get(0);
-        Schema schema = getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING);
-        assertNull(schema.getMinItems());
-        assertNull(schema.getMaxItems());
-        populateSchemaFromBaseNode(schema, getBaseNode(toCheck.toString()));
-        assertEquals(2, (int) schema.getMinItems());
-        assertNull(schema.getMaxItems());
-    }
-
-    @Test
-    public void testEvaluateUnaryTestForEnumSucceed() {
+    public void testPopulateSchemaFromBaseNodeSucceed() {
         List<String> enumBase = Arrays.asList("DMN");
         List<String> toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).toList();
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
-        DMNUnaryTest toCheck =
-                feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList().get(0);
+        List<DMNUnaryTest> dmnUnaryTests =
+                feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         AtomicReference<Schema> schemaRef = new AtomicReference<>(getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING));
         assertNull(schemaRef.get().getEnumeration());
-        populateSchemaFromBaseNode(schemaRef.get(), getBaseNode(toCheck.toString()));
+        BaseNode toCheck = getUnaryEvaluationNodesFromUnaryTests(dmnUnaryTests).get(0);
+        populateSchemaFromBaseNode(schemaRef.get(), toCheck);
         assertEquals(enumBase.size(), schemaRef.get().getEnumeration().size());
         enumBase.forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
-
-//        enumBase = Arrays.asList("DMN", "PMML", "JBPMN", "DRL");
-//        toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).toList();
-//        expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
-//        toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList().get(0);
-//        schemaRef.set(getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING));
-//        assertNull(schemaRef.get().getEnumeration());
-//        evaluateUnaryTest(schemaRef.get(), toCheck);
-//        assertEquals(enumBase.size(), schemaRef.get().getEnumeration().size());
-//        enumBase.forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
     }
-
 
     @Test
     public void testCheckEvaluatedUnaryTestsForNullSucceed() {
