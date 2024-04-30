@@ -28,19 +28,18 @@ import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.getUnaryEvaluationNodesFromUnaryTests;
-import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.populateSchemaFromBaseNode;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.feel;

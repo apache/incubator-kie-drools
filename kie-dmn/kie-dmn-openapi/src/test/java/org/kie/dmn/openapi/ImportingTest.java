@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.openapi;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.imports.ImportsTest;

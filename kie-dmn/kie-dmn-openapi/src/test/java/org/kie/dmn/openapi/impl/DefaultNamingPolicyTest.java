@@ -20,7 +20,7 @@ package org.kie.dmn.openapi.impl;
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.openapi.impl.DefaultNamingPolicy;

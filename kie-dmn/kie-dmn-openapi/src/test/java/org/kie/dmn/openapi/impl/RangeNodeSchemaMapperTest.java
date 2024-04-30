@@ -25,18 +25,17 @@ import java.util.List;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getBaseNodes;
 
 public class RangeNodeSchemaMapperTest {
 
@@ -45,7 +44,7 @@ public class RangeNodeSchemaMapperTest {
     @Test
     public void testEvaluateUnaryTestsForNumberRange() {
         List<String> toRange = Arrays.asList("(>1)", "(<=10)");
-        List<RangeNode> ranges = getRangeNodes(toRange);
+        List<RangeNode> ranges = getBaseNodes(toRange, RangeNode.class);
         Schema toPopulate = OASFactory.createObject(Schema.class);
         RangeNodeSchemaMapper.populateSchemaFromListOfRanges(toPopulate, ranges);
         assertEquals(BigDecimal.ONE, toPopulate.getMinimum());
@@ -62,7 +61,7 @@ public class RangeNodeSchemaMapperTest {
                 .toList();
         List<String> toRange = Arrays.asList(String.format("(>%s)", formattedDates.get(0)), String.format("(<=%s)",
                                                                                                           formattedDates.get(1)));
-        List<RangeNode> ranges = getRangeNodes(toRange);
+        List<RangeNode> ranges = getBaseNodes(toRange, RangeNode.class);
 
         Schema toPopulate = OASFactory.createObject(Schema.class);
         RangeNodeSchemaMapper.populateSchemaFromListOfRanges(toPopulate, ranges);
@@ -95,7 +94,7 @@ public class RangeNodeSchemaMapperTest {
                 .toList();
         List<String> toRange = Arrays.asList(String.format("(%s .. null)", formattedDates.get(0)), String.format(
                 "(null .. %s]", formattedDates.get(1)));
-        List<RangeNode> ranges = getRangeNodes(toRange);
+        List<RangeNode> ranges = getBaseNodes(toRange, RangeNode.class);
         Range retrieved = RangeNodeSchemaMapper.consolidateRanges(ranges);
         assertThat(retrieved).isNotNull().isEqualTo(new RangeImpl(lowRange.getLowBoundary(), lowRange.getLowEndPoint(),
                                                                   highRange.getHighEndPoint(),
@@ -122,14 +121,7 @@ public class RangeNodeSchemaMapperTest {
 
     private List<RangeNode> getRangeNodes(Range lowRange, Range highRange) {
         List<String> toRange = Arrays.asList(lowRange.toString(), highRange.toString());
-        return getRangeNodes(toRange);
+        return getBaseNodes(toRange, RangeNode.class);
     }
 
-    private List<RangeNode> getRangeNodes(List<String> toRange) {
-        return toRange.stream().map(expression -> feel.compile(expression, feel.newCompilerContext()))
-                .map(ProcessedExpression.class::cast)
-                .map(processedExpression -> processedExpression.getInterpreted().getASTNode())
-                .map(RangeNode.class::cast)
-                .toList();
-    }
 }

@@ -27,6 +27,8 @@ import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
@@ -56,6 +58,17 @@ public class SchemaMapperTestUtils {
         List<UnaryTest> typeConstraint = typeConstraintString != null && !typeConstraintString.isEmpty() ?
                 feel.evaluateUnaryTests(typeConstraintString) : null;
         return new SimpleTypeImpl("testNS", "tName", null, true, allowedValues, typeConstraint, baseType, builtInType);
+    }
+
+    static <T extends BaseNode> List<T> getBaseNodes(List<String> toRange, Class<T> clazz) {
+        return toRange.stream().map(expression -> getBaseNode(expression, clazz))
+                .toList();
+    }
+
+    static <T extends BaseNode> T getBaseNode(String expression, Class<T> clazz) {
+        ProcessedExpression processedExpression = (ProcessedExpression) feel.compile(expression, feel.newCompilerContext());
+        return clazz.cast(processedExpression.getInterpreted().getASTNode());
+
     }
 
     private SchemaMapperTestUtils() {

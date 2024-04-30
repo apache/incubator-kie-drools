@@ -60,9 +60,9 @@ public class FEELFunctionSchemaMapper {
         SCHEMA_MODIFIERS.put(CountFunction.class, COUNT_CONSUMER);
     }
 
-    static void populateSchemaFromFEELFunction(FEELFunction function, InfixOperator operator, Object rightValue, Schema schema  ) {
+    static void populateSchemaFromFEELFunction(FEELFunction function, InfixOperator operator, Object rightValue, Schema toPopulate  ) {
         if (SCHEMA_MODIFIERS.containsKey(function.getClass())) {
-            SCHEMA_MODIFIERS.get(function.getClass()).accept(operator, rightValue, schema);
+            SCHEMA_MODIFIERS.get(function.getClass()).accept(operator, rightValue, toPopulate);
         }
     }
 

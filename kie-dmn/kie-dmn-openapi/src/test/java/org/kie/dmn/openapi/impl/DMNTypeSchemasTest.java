@@ -25,13 +25,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
