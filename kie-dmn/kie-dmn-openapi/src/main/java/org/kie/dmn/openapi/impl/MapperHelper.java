@@ -18,13 +18,9 @@
  */
 package org.kie.dmn.openapi.impl;
 
-import java.util.List;
-
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.runtime.UnaryTestImpl;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 
 /**
