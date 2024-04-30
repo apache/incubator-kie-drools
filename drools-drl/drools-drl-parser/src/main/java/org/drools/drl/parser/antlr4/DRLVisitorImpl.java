@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -38,6 +39,8 @@ import org.drools.drl.ast.descr.CollectDescr;
 import org.drools.drl.ast.descr.ConditionalBranchDescr;
 import org.drools.drl.ast.descr.EntryPointDeclarationDescr;
 import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.EnumDeclarationDescr;
+import org.drools.drl.ast.descr.EnumLiteralDescr;
 import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
@@ -46,6 +49,7 @@ import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
@@ -130,6 +134,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 packageDescr.addEntryPointDeclaration((EntryPointDeclarationDescr) descr);
             } else if (descr instanceof WindowDeclarationDescr) {
                 packageDescr.addWindowDeclaration((WindowDeclarationDescr) descr);
+            } else if (descr instanceof EnumDeclarationDescr) {
+                packageDescr.addEnumDeclaration((EnumDeclarationDescr) descr);
             } else if (descr instanceof AttributeDescr) {
                 packageDescr.addAttribute((AttributeDescr) descr);
             } else if (descr instanceof RuleDescr) { // QueryDescr extends RuleDescr
@@ -198,7 +204,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         } else {
             functionDescr.setReturnType("void");
         }
-        functionDescr.setName(ctx.IDENTIFIER().getText());
+        functionDescr.setName(ctx.drlIdentifier().getText());
 
         // add function parameters
         DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
@@ -240,6 +246,38 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .map(this::visitField)
                 .forEach(typeDeclarationDescr::addField);
         return typeDeclarationDescr;
+    }
+
+    @Override
+    public EnumDeclarationDescr visitEnumDeclaration(DRLParser.EnumDeclarationContext ctx) {
+        EnumDeclarationDescr enumDeclarationDescr = BaseDescrFactory.builder(new EnumDeclarationDescr(ctx.name.getText()))
+                .withParserRuleContext(ctx)
+                .build();
+        ctx.drlAnnotation().stream()
+                .map(this::visitDrlAnnotation)
+                .forEach(enumDeclarationDescr::addAnnotation);
+
+        List<BaseDescr> descrList = visitDescrChildren(ctx.enumeratives());
+        descrList.stream()
+                .filter(EnumLiteralDescr.class::isInstance)
+                .map(EnumLiteralDescr.class::cast)
+                .forEach(enumDeclarationDescr::addLiteral);
+
+        ctx.field().stream()
+                .map(this::visitField)
+                .forEach(enumDeclarationDescr::addField);
+        return enumDeclarationDescr;
+    }
+
+    @Override
+    public EnumLiteralDescr visitEnumerative(DRLParser.EnumerativeContext ctx) {
+        EnumLiteralDescr enumLiteralDescr = BaseDescrFactory.builder(new EnumLiteralDescr(ctx.drlIdentifier().getText()))
+                .withParserRuleContext(ctx)
+                .build();
+        ctx.expression().stream()
+                .map(Antlr4ParserStringUtils::getTextPreservingWhitespace)
+                .forEach(enumLiteralDescr::addConstructorArg);
+        return enumLiteralDescr;
     }
 
     @Override
@@ -665,6 +703,31 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitLhsGroupBy(DRLParser.LhsGroupByContext ctx) {
+        GroupByDescr groupByDescr = BaseDescrFactory.builder(new GroupByDescr())
+                .withParserRuleContext(ctx)
+                .build();
+        groupByDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
+
+        if (ctx.groupByKeyBinding().label() != null) {
+            groupByDescr.setGroupingKey(ctx.groupByKeyBinding().label().drlIdentifier().getText());
+        }
+        groupByDescr.setGroupingFunction(getTextPreservingWhitespace(ctx.groupByKeyBinding().conditionalExpression()));
+
+        // accumulate function
+        for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
+            groupByDescr.addFunction(visitAccumulateFunction(accumulateFunctionContext));
+        }
+
+        PatternDescr patternDescr = new PatternDescr("Object");
+        patternDescr.setSource(groupByDescr);
+        List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
+        constraintDescrList.forEach(patternDescr::addConstraint);
+
+        return patternDescr;
+    }
+
+    @Override
     public BehaviorDescr visitPatternFilter(DRLParser.PatternFilterContext ctx) {
         BehaviorDescr behaviorDescr = BaseDescrFactory.builder(new BehaviorDescr())
                 .withParserRuleContext(ctx)
@@ -720,7 +783,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
         String function = ctx.IDENTIFIER().getText();
         String bind = ctx.label() == null ? null : ctx.label().drlIdentifier().getText();
-        String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
+
+        String[] params = ctx.conditionalExpressions().conditionalExpression().stream()
+                .map(RuleContext::getText)
+                .toArray(String[]::new);
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
     }
 

@@ -50,6 +50,7 @@ declaredef : DRL_DECLARE (
                          | entryPointDeclaration
                          | windowDeclaration
                          | typeDeclaration
+                         | enumDeclaration
                          )
                          ; // DRL_END belongs to entryPointDeclaration etc.
 
@@ -69,6 +70,16 @@ entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* DRL_END ;
 // windowDeclaration := WINDOW ID annotation* lhsPatternBind END
 
 windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind DRL_END ;
+
+// (enum)typeDeclaration := [ENUM] qualifiedIdentifier annotation* enumerative+ field* END
+
+enumDeclaration : ENUM name=drlQualifiedName drlAnnotation* enumeratives SEMI field* DRL_END ;
+
+enumeratives : enumerative (COMMA enumerative)* ;
+
+// enumerative := ID ( LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
+
+enumerative: drlIdentifier ( LPAREN expression ( COMMA expression )* RPAREN )? ;
 
 // field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
 
@@ -123,6 +134,7 @@ lhsUnary : (
            | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
+           | lhsGroupBy
            | LPAREN lhsExpression RPAREN namedConsequenceInvocation?
            | conditionalBranch // not in the above old parser definition, but actually implemented in the old parser
            | lhsPatternBind consequenceInvocation*
@@ -174,7 +186,7 @@ relationalOperator
 drlRelationalOperator : DRL_NOT? builtInOperator ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
-functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters drlBlock ;
+functiondef : DRL_FUNCTION typeTypeOrVoid? drlIdentifier formalParameters drlBlock ;
 
 
 /* extending JavaParser qualifiedName */
@@ -325,7 +337,7 @@ fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
                         ) RIGHT_PAREN
 */
 fromAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
-                   ( DRL_INIT LPAREN initBlockStatements=blockStatements RPAREN COMMA DRL_ACTION LPAREN actionBlockStatements=blockStatements RPAREN COMMA ( DRL_REVERSE LPAREN reverseBlockStatements=blockStatements RPAREN COMMA)? DRL_RESULT LPAREN expression RPAREN
+                   ( DRL_INIT LPAREN initBlockStatements=chunk RPAREN COMMA? DRL_ACTION LPAREN actionBlockStatements=chunk RPAREN COMMA? ( DRL_REVERSE LPAREN reverseBlockStatements=chunk RPAREN COMMA?)? DRL_RESULT LPAREN expression RPAREN
                    | accumulateFunction
                    )
                  RPAREN (SEMI)?
@@ -336,7 +348,10 @@ blockStatements : drlBlockStatement* ;
 /*
 accumulateFunction := label? ID parameters
 */
-accumulateFunction : label? IDENTIFIER LPAREN drlExpression RPAREN;
+accumulateFunction : label? IDENTIFIER conditionalExpressions ;
+
+// parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
+conditionalExpressions : LPAREN (conditionalExpression (COMMA conditionalExpression)* )? RPAREN ;
 
 // fromCollect := COLLECT LEFT_PAREN lhsPatternBind RIGHT_PAREN
 
@@ -390,6 +405,15 @@ lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                    (SEMI constraints)?
                  RPAREN (SEMI)?
                  ;
+
+lhsGroupBy : DRL_GROUPBY LPAREN lhsAndDef (COMMA|SEMI)
+               groupByKeyBinding SEMI
+               accumulateFunction (COMMA accumulateFunction)*
+               (SEMI constraints)?
+             RPAREN (SEMI)?
+             ;
+
+groupByKeyBinding : label? conditionalExpression ;
 
 rhs : DRL_THEN consequenceBody namedConsequence* ;
 
@@ -465,7 +489,7 @@ drlBlock
     ;
 /* extending JavaParser blockStatement */
 drlBlockStatement
-    : drlLocalVariableDeclaration SEMI
+    : drlLocalVariableDeclaration SEMI?
     | drlStatement
     | localTypeDeclaration
     ;
