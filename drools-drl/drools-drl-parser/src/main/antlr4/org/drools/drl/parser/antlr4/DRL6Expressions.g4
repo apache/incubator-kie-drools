@@ -146,7 +146,7 @@ type
 
 typeMatch
     : primitiveType (LBRACK RBRACK)*
-    |	IDENTIFIER (typeArguments)? (DOT IDENTIFIER (typeArguments)? )* (LBRACK RBRACK)*
+    |	drlIdentifier (typeArguments)? (DOT drlIdentifier (typeArguments)? )* (LBRACK RBRACK)*
     ;
 
 typeArguments
@@ -282,7 +282,7 @@ finally { ternOp--; }
 
 fullAnnotation [AnnotatedDescrBuilder inDescrBuilder] returns [AnnotationDescr result]
 @init{ String n = ""; AnnotationDescrBuilder annoBuilder = null; }
-  : AT name=IDENTIFIER { n = $name.text; } ( DOT x=IDENTIFIER { n += "." + $x.text; } )*
+  : AT name=drlIdentifier { n = $name.text; } ( DOT x=drlIdentifier { n += "." + $x.text; } )*
         { if( buildDescr ) {
                 if ( inDescrBuilder == null ) {
                     $result = new AnnotationDescr( n );
@@ -310,7 +310,7 @@ annotationElementValuePairs [AnnotationDescr descr, AnnotatedDescrBuilder inDesc
   ;
 
 annotationElementValuePair [AnnotationDescr descr, AnnotatedDescrBuilder inDescrBuilder]
-  : key=IDENTIFIER ASSIGN val=annotationValue[inDescrBuilder] { if ( buildDescr ) { $descr.setKeyValue( $key.text, $val.result ); } }
+  : key=drlIdentifier ASSIGN val=annotationValue[inDescrBuilder] { if ( buildDescr ) { $descr.setKeyValue( $key.text, $val.result ); } }
   ;
 
 annotationValue[AnnotatedDescrBuilder inDescrBuilder] returns [Object result]
@@ -615,10 +615,10 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     |   castExpression
     |   backReferenceExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
-        ( ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.COLON}? (var=IDENTIFIER COLON
-                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
-        | ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.DRL_UNIFY}? (var=IDENTIFIER DRL_UNIFY
-                { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($DRL_UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
+        ( ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.COLON}? (var=drlIdentifier COLON
+                { hasBindings = true; helper.emit($var.token, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var.token ); } } ))
+        | ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.DRL_UNIFY}? (var=drlIdentifier DRL_UNIFY
+                { hasBindings = true; helper.emit($var.token, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($DRL_UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var.token ); } } ))
         )?
 
         ( left2=xpathPrimary { if( buildDescr ) { $result = $left2.result; } }
@@ -677,7 +677,7 @@ xpathPrimary returns [BaseDescr result]
     ;
 
 xpathChunk returns [BaseDescr result]
-    : xpathSeparator IDENTIFIER (DOT IDENTIFIER)* (HASH IDENTIFIER)? (LBRACK xpathExpressionList RBRACK)?
+    : xpathSeparator drlIdentifier (DOT drlIdentifier)* (HASH drlIdentifier)? (LBRACK xpathExpressionList RBRACK)?
     ;
 
 xpathExpressionList returns [java.util.List<String> exprs]
@@ -761,13 +761,14 @@ creator
     ;
 
 createdName
-    :	IDENTIFIER typeArguments?
-        ( DOT IDENTIFIER typeArguments?)*
+    :	drlIdentifier typeArguments?
+        ( DOT drlIdentifier typeArguments?)*
         |	primitiveType
     ;
 
+// Old parser cannot parse innerCreator with selector expression (outer.new InnerClass() != null) TODO: Delete this after investigation
 innerCreator
-    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? IDENTIFIER classCreatorRest
+    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? drlIdentifier classCreatorRest
     ;
 
 arrayCreatorRest
@@ -800,7 +801,7 @@ nonWildcardTypeArguments
 
 explicitGenericInvocationSuffix
     :	super_key superSuffix
-    |   	IDENTIFIER arguments
+    |   	drlIdentifier arguments
     ;
 
 selector
@@ -820,7 +821,7 @@ selector
 
 superSuffix
     :	arguments
-    |   	DOT IDENTIFIER (arguments)?
+    |   	DOT drlIdentifier (arguments)?
     ;
 
 squareArguments returns [java.util.List<String> args]
