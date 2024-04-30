@@ -37,12 +37,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getBaseNodes;
 
-public class RangeNodeSchemaMapperTest {
+class RangeNodeSchemaMapperTest {
 
     private static final FEEL feel = FEEL.newInstance();
 
     @Test
-    public void testEvaluateUnaryTestsForNumberRange() {
+    void testEvaluateUnaryTestsForNumberRange() {
         List<String> toRange = Arrays.asList("(>1)", "(<=10)");
         List<RangeNode> ranges = getBaseNodes(toRange, RangeNode.class);
         Schema toPopulate = OASFactory.createObject(Schema.class);
@@ -54,7 +54,7 @@ public class RangeNodeSchemaMapperTest {
     }
 
     @Test
-    public void testEvaluateUnaryTestsForDateRange() {
+    void testEvaluateUnaryTestsForDateRange() {
         List<LocalDate> expectedDates = Arrays.asList(LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1));
         List<String> formattedDates = expectedDates.stream()
                 .map(toFormat -> String.format("@\"%s-0%s-0%s\"", toFormat.getYear(), toFormat.getMonthValue(), toFormat.getDayOfMonth()))
@@ -72,7 +72,7 @@ public class RangeNodeSchemaMapperTest {
     }
 
     @Test
-    public void testConsolidateRangesForNumberRange() {
+    void testConsolidateRangesForNumberRange() {
         Range lowRange = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null, Range.RangeBoundary.OPEN);
         Range highRange = new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.TEN, Range.RangeBoundary.CLOSED);
         List<RangeNode> ranges = getRangeNodes(lowRange, highRange);
@@ -83,7 +83,7 @@ public class RangeNodeSchemaMapperTest {
     }
 
     @Test
-    public void testConsolidateRangesForDateRange() {
+    void testConsolidateRangesForDateRange() {
         List<LocalDate> expectedDates = Arrays.asList(LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1));
         Range lowRange = new RangeImpl(Range.RangeBoundary.OPEN, expectedDates.get(0), null, Range.RangeBoundary.OPEN);
         Range highRange = new RangeImpl(Range.RangeBoundary.OPEN, null, expectedDates.get(1),
@@ -102,7 +102,7 @@ public class RangeNodeSchemaMapperTest {
     }
 
     @Test
-    public void testConsolidateRangesInvalidRepeatedLB() {
+    void testConsolidateRangesInvalidRepeatedLB() {
         Range lowRange = new RangeImpl(Range.RangeBoundary.CLOSED, 0, null, Range.RangeBoundary.CLOSED);
         Range highRange = new RangeImpl(Range.RangeBoundary.CLOSED, 0, 100, Range.RangeBoundary.CLOSED);
         List<RangeNode> ranges = getRangeNodes(lowRange, highRange);
@@ -111,7 +111,7 @@ public class RangeNodeSchemaMapperTest {
     }
 
     @Test
-    public void testConsolidateRangesInvalidRepeatedUB() {
+    void testConsolidateRangesInvalidRepeatedUB() {
         Range lowRange = new RangeImpl(Range.RangeBoundary.CLOSED, null, 50, Range.RangeBoundary.CLOSED);
         Range highRange = new RangeImpl(Range.RangeBoundary.CLOSED, null, 100, Range.RangeBoundary.CLOSED);
         List<RangeNode> ranges = getRangeNodes(lowRange, highRange);

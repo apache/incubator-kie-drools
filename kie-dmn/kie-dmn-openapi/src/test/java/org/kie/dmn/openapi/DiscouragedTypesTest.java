@@ -27,10 +27,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DiscouragedTypesTest extends BaseDMNOASTest {
+class DiscouragedTypesTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("discouragedTypes.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

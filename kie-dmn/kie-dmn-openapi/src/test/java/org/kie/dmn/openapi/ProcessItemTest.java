@@ -30,10 +30,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class ProcessItemTest extends BaseDMNOASTest {
+class ProcessItemTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("processItem.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -51,7 +51,7 @@ public class ProcessItemTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void test_2() throws Exception {
+    void test_2() throws Exception {
         final DMNRuntime runtime = createRuntime("processItem_2.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -69,7 +69,7 @@ public class ProcessItemTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void test_together() throws Exception {
+    void test_together() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("processItem.dmn", this.getClass(), "processItem_2.dmn");
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -78,7 +78,7 @@ public class ProcessItemTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void test_Colliding() {
+    void test_Colliding() {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("processItem.dmn", this.getClass(), "processItemCollidingNS.dmn");
         assertThatExceptionOfType(IllegalStateException.class)
                   .isThrownBy(() -> DMNOASGeneratorFactory.generator(runtime.getModels()).build())

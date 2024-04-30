@@ -28,10 +28,10 @@ import com.networknt.schema.JsonSchema;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PersonTest extends BaseDMNOASTest {
+class PersonTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("personF.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

@@ -30,10 +30,10 @@ import com.networknt.schema.JsonSchema;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ImportingTest extends BaseDMNOASTest {
+class ImportingTest extends BaseDMNOASTest {
 
     @Test
-    public void testBasicImports() throws Exception {
+    void testBasicImports() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("baseSum.dmn",
                                                                         ImportsTest.class,
                                                                         "importingSum.dmn");

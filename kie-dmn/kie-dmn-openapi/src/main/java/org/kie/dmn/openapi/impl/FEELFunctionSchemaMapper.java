@@ -39,6 +39,7 @@ public class FEELFunctionSchemaMapper {
 
     private static TriConsumer<InfixOperator, Object, Schema> COUNT_CONSUMER = (o, rightValue, schema) -> {
         switch (o) {
+
             case GT ->
                     schema.setMinItems(((BigDecimal) rightValue).intValue() + 1);
             case GTE ->

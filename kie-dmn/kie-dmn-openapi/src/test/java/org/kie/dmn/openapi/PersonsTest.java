@@ -27,10 +27,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PersonsTest extends BaseDMNOASTest {
+class PersonsTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("persons.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -43,7 +43,7 @@ public class PersonsTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void testForPrefix() throws Exception {
+    void testForPrefix() throws Exception {
         final DMNRuntime runtime = createRuntime("persons.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels(), "#/definitions/").build();
 

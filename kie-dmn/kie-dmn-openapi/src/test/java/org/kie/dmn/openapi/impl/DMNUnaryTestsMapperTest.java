@@ -45,10 +45,10 @@ import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.feel;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
 
-public class DMNUnaryTestsMapperTest {
+class DMNUnaryTestsMapperTest {
 
     @Test
-    public void testPopulateSchemaFromUnaryTestsForEnumsWithoutNull() {
+    void testPopulateSchemaFromUnaryTestsForEnumsWithoutNull() {
         Schema toPopulate = OASFactory.createObject(Schema.class);
         List<String> expectedStrings = Arrays.asList("ONE", "TWO");
         List<Object> toEnum = expectedStrings.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
@@ -63,7 +63,7 @@ public class DMNUnaryTestsMapperTest {
     }
 
     @Test
-    public void testPopulateSchemaFromUnaryTestsForEnumsWithNull() {
+    void testPopulateSchemaFromUnaryTestsForEnumsWithNull() {
         Schema toPopulate = OASFactory.createObject(Schema.class);
         List<String> expectedStrings = Arrays.asList(null, "ONE", "TWO");
         List<Object> toEnum = expectedStrings.stream().map(toFormat -> toFormat == null ? "null": String.format("\"%s\"", toFormat)).collect(Collectors.toUnmodifiableList());
@@ -77,7 +77,7 @@ public class DMNUnaryTestsMapperTest {
     }
 
     @Test
-    public void testPopulateSchemaFromUnaryTestsForEnumSucceed() {
+    void testPopulateSchemaFromUnaryTestsForEnumSucceed() {
         List<String> enumBase = Arrays.asList("DMN", "PMML", "JBPMN", "DRL");
         List<Object> toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
@@ -112,7 +112,7 @@ public class DMNUnaryTestsMapperTest {
     }
 
     @Test
-    public void testPopulateSchemaFromUnaryTestsFails() {
+    void testPopulateSchemaFromUnaryTestsFails() {
         List<Object> toEnum = Arrays.asList(null, null, "@\"2024-01-01\"");
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> toCheck =
@@ -123,7 +123,7 @@ public class DMNUnaryTestsMapperTest {
     }
 
     @Test
-    public void testPopulateSchemaFromBaseNodeSucceed() {
+    void testPopulateSchemaFromBaseNodeSucceed() {
         List<String> enumBase = List.of("DMN");
         List<String> toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).toList();
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());

@@ -37,10 +37,10 @@ import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSimpleType;
 
-public class DMNTypeSchemasTest {
+class DMNTypeSchemasTest {
 
     @Test
-    public void testPopulateSchemaWithConstraintsForAllowedValues() {
+    void testPopulateSchemaWithConstraintsForAllowedValues() {
         List<String> enumBase = Arrays.asList("DMN", "PMML", "JBPMN", "DRL");
         List<Object> toEnum =
                 enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
@@ -71,7 +71,7 @@ public class DMNTypeSchemasTest {
     }
 
     @Test
-    public void testPopulateSchemaWithConstraintsForTypeConstraints() {
+    void testPopulateSchemaWithConstraintsForTypeConstraints() {
         List<String> enumBase = Arrays.asList("DMN", "PMML", "JBPMN", "DRL");
         List<Object> toEnum =
                 enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).collect(Collectors.toUnmodifiableList());
@@ -103,7 +103,7 @@ public class DMNTypeSchemasTest {
     }
 
     @Test
-    public void testPopulateSchemaWithRangesForAllowedValues() {
+    void testPopulateSchemaWithRangesForAllowedValues() {
         List<Object> toRange = Arrays.asList("(>1)", "(<=10)");
         String allowedValuesString = String.join(",",
                                                  toRange.stream().map(toMap -> String.format("%s", toMap)).toList());
@@ -122,7 +122,7 @@ public class DMNTypeSchemasTest {
     }
 
     @Test
-    public void testPopulateSchemaWithRangesForTypeConstraints() {
+    void testPopulateSchemaWithRangesForTypeConstraints() {
         List<Object> toRange = Arrays.asList("(>1)", "(<=10)");
         String typeConstraintsString = String.join(",",
                                                    toRange.stream().map(toMap -> String.format("%s", toMap)).toList());

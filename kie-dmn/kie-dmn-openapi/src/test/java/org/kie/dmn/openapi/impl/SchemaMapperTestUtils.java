@@ -33,7 +33,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
-public class SchemaMapperTestUtils {
+class SchemaMapperTestUtils {
 
     static final FEEL feel = FEEL.newInstance();
 

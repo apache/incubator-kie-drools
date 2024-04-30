@@ -33,11 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
 
-public class FEELFunctionSchemaMapperTest {
+class FEELFunctionSchemaMapperTest {
 
     @ParameterizedTest
     @EnumSource(InfixOperator.class)
-    public void populateSchemaFromFEELFunction(InfixOperator operator) {
+    void populateSchemaFromFEELFunction(InfixOperator operator) {
         List<Integer> toEnum = Arrays.asList(1, 3, 6, 78);
         toEnum.forEach(rightValue -> {
             Schema toPopulate = getSchemaForSimpleType(null, null, FEEL_NUMBER, BuiltInType.NUMBER);

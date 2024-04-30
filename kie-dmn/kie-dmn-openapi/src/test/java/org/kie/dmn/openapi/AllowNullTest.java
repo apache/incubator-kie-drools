@@ -28,10 +28,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AllowNullTest extends BaseDMNOASTest {
+class AllowNullTest extends BaseDMNOASTest {
 
     @Test
-    public void testVowels() throws Exception {
+    void testVowels() throws Exception {
         final DMNRuntime runtime = createRuntime("vowels.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -46,7 +46,7 @@ public class AllowNullTest extends BaseDMNOASTest {
     }
     
     @Test
-    public void testVowelsAllowNull() throws Exception {
+    void testVowelsAllowNull() throws Exception {
         final DMNRuntime runtime = createRuntime("vowelsAllowNull.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -61,7 +61,7 @@ public class AllowNullTest extends BaseDMNOASTest {
     }
     
     @Test
-    public void testSoundItemDefAllowNull() throws Exception {
+    void testSoundItemDefAllowNull() throws Exception {
         final DMNRuntime runtime = createRuntime("RecommenderHitPolicy1_allowNull_itemDef.dmn", DMNRuntimeTest.class);
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
