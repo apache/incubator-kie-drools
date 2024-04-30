@@ -31,7 +31,7 @@ packagedef : PACKAGE name=drlQualifiedName SEMI? ;
 unitdef : DRL_UNIT name=drlQualifiedName SEMI? ;
 
 importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)?          #importStandardDef
-          | IMPORT (DRL_ACCUMULATE|DRL_ACC) drlQualifiedName IDENTIFIER        #importAccumulateDef
+          | IMPORT (DRL_ACCUMULATE|DRL_ACC) drlQualifiedName drlIdentifier     #importAccumulateDef
           ;
 
 globaldef : DRL_GLOBAL type drlIdentifier ;
@@ -69,7 +69,7 @@ entryPointDeclaration : DRL_ENTRY_POINT name=stringId drlAnnotation* DRL_END ;
 
 // windowDeclaration := WINDOW ID annotation* lhsPatternBind END
 
-windowDeclaration : DRL_WINDOW name=IDENTIFIER drlAnnotation* lhsPatternBind DRL_END ;
+windowDeclaration : DRL_WINDOW name=drlIdentifier drlAnnotation* lhsPatternBind DRL_END ;
 
 // (enum)typeDeclaration := [ENUM] qualifiedIdentifier annotation* enumerative+ field* END
 
@@ -151,7 +151,7 @@ lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints?
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : ( nestedConstraint | conditionalOrExpression ) ;
-nestedConstraint : ( IDENTIFIER ( DOT | NULL_SAFE_DOT | HASH ) )* IDENTIFIER (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
+nestedConstraint : ( drlIdentifier ( DOT | NULL_SAFE_DOT | HASH ) )* drlIdentifier (DOT | NULL_SAFE_DOT ) LPAREN constraints RPAREN ;
 
 // named consequence
 
@@ -309,7 +309,7 @@ mapEntry
  patternFilter :=   OVER filterDef
  filterDef := label ID LEFT_PAREN parameters RIGHT_PAREN
 */
-patternFilter : DRL_WINDOW COLON IDENTIFIER LPAREN expressionList RPAREN ;
+patternFilter : DRL_WINDOW COLON drlIdentifier LPAREN expressionList RPAREN ;
 
 /*
  patternSource := FROM
@@ -348,7 +348,7 @@ blockStatements : drlBlockStatement* ;
 /*
 accumulateFunction := label? ID parameters
 */
-accumulateFunction : label? IDENTIFIER conditionalExpressions ;
+accumulateFunction : label? drlIdentifier conditionalExpressions ;
 
 // parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
 conditionalExpressions : LPAREN (conditionalExpression (COMMA conditionalExpression)* )? RPAREN ;
@@ -360,7 +360,7 @@ fromCollect : DRL_COLLECT LPAREN lhsPatternBind RPAREN ;
 fromEntryPoint : DRL_ENTRY_POINT stringId ;
 
 // fromWindow := WINDOW ID
-fromWindow : DRL_WINDOW IDENTIFIER ;
+fromWindow : DRL_WINDOW drlIdentifier ;
 
 /*
  lhsExists := EXISTS
@@ -424,8 +424,7 @@ namedConsequence : RHS_NAMED_CONSEQUENCE_THEN consequenceBody ;
 
 stringId : ( drlIdentifier | DRL_STRING_LITERAL ) ;
 
-type : (classOrInterfaceType | primitiveType) typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRACK)* ;
-
+//type := ID typeArguments? ( DOT ID typeArguments? )* (LEFT_SQUARE RIGHT_SQUARE)*
 //typeArguments : LT typeArgument (COMMA typeArgument)* GT ;
 //typeArgument : QUESTION (( EXTENDS | SUPER ) type )? |  type ;
 
@@ -462,7 +461,7 @@ assignmentOperator : ASSIGN
                    |   LT LT ASSIGN ;
 
 label : drlIdentifier COLON ;
-unif : IDENTIFIER DRL_UNIFY ;
+unif : drlIdentifier DRL_UNIFY ;
 
 /* extending JavaParser variableInitializer */
 drlVariableInitializer
