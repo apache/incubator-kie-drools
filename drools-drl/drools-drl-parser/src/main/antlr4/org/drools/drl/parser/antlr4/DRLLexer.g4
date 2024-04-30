@@ -60,6 +60,7 @@ DRL_ENTRY_POINT : 'entry-point';
 DRL_EVAL : 'eval';
 DRL_FORALL : 'forall';
 DRL_OVER : 'over';
+DRL_GROUPBY : 'groupby';
 
 // constraint operators
 DRL_MATCHES : 'matches';
