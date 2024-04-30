@@ -18,17 +18,6 @@
  */
 package org.drools.drl.parser.antlr4;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
@@ -38,7 +27,6 @@ import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
@@ -50,7 +38,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.drl.parser.antlr4.ParserTestUtils.enableOldParser;
 
 /*
  * This test class is to test parse rules to accept drlIdentifier insteadof IDENTIFIER. (e.g. drl keyword like "contains")
@@ -64,25 +51,6 @@ class DRLParserIdentifierTest {
         parser = ParserTestUtils.getParser();
     }
 
-    private String readResource(final String filename) {
-        Path path;
-        try {
-            path = Paths.get(getClass().getResource(filename).toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        final StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            for (String line; (line = br.readLine()) != null; ) {
-                sb.append(line);
-                sb.append("\n");
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return sb.toString();
-    }
-
     private PackageDescr parseAndGetPackageDescr(String drl) {
         try {
             PackageDescr pkg = parser.parse(null, drl);
@@ -93,26 +61,10 @@ class DRLParserIdentifierTest {
         }
     }
 
-    private PackageDescr parseAndGetPackageDescrWithoutErrorCheck(String drl) {
-        try {
-            return parser.parse(null, drl);
-        } catch (DroolsParserException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private RuleDescr parseAndGetFirstRuleDescr(String drl) {
         PackageDescr pkg = parseAndGetPackageDescr(drl);
         assertThat(pkg.getRules()).isNotEmpty();
         return pkg.getRules().get(0);
-    }
-
-    private QueryDescr parseAndGetFirstQueryDescr(String drl) {
-        PackageDescr pkg = parseAndGetPackageDescr(drl);
-        assertThat(pkg.getRules()).isNotEmpty();
-        Optional<QueryDescr> optQuery = pkg.getRules().stream().filter(QueryDescr.class::isInstance).map(QueryDescr.class::cast).findFirst();
-        assertThat(optQuery).isPresent();
-        return optQuery.get();
     }
 
     @Test
