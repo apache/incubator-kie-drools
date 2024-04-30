@@ -134,6 +134,7 @@ lhsUnary : (
            | lhsEval consequenceInvocation*
            | lhsForall
            | lhsAccumulate
+           | lhsGroupBy
            | conditionalBranch // not in the above old parser definition, but actually implemented in the old parser
            | lhsPatternBind consequenceInvocation*
            ) SEMI? ;
@@ -335,7 +336,7 @@ fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
                         ) RIGHT_PAREN
 */
 fromAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
-                   ( DRL_INIT LPAREN initBlockStatements=blockStatements RPAREN COMMA DRL_ACTION LPAREN actionBlockStatements=blockStatements RPAREN COMMA ( DRL_REVERSE LPAREN reverseBlockStatements=blockStatements RPAREN COMMA)? DRL_RESULT LPAREN expression RPAREN
+                   ( DRL_INIT LPAREN initBlockStatements=chunk RPAREN COMMA? DRL_ACTION LPAREN actionBlockStatements=chunk RPAREN COMMA? ( DRL_REVERSE LPAREN reverseBlockStatements=chunk RPAREN COMMA?)? DRL_RESULT LPAREN expression RPAREN
                    | accumulateFunction
                    )
                  RPAREN (SEMI)?
@@ -346,7 +347,10 @@ blockStatements : drlBlockStatement* ;
 /*
 accumulateFunction := label? ID parameters
 */
-accumulateFunction : label? drlIdentifier LPAREN drlExpression RPAREN;
+accumulateFunction : label? drlIdentifier conditionalExpressions ;
+
+// parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
+conditionalExpressions : LPAREN (conditionalExpression (COMMA conditionalExpression)* )? RPAREN ;
 
 // fromCollect := COLLECT LEFT_PAREN lhsPatternBind RIGHT_PAREN
 
@@ -408,6 +412,15 @@ lhsAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
                    (SEMI constraints)?
                  RPAREN (SEMI)?
                  ;
+
+lhsGroupBy : DRL_GROUPBY LPAREN lhsAndDef (COMMA|SEMI)
+               groupByKeyBinding SEMI
+               accumulateFunction (COMMA accumulateFunction)*
+               (SEMI constraints)?
+             RPAREN (SEMI)?
+             ;
+
+groupByKeyBinding : label? conditionalExpression ;
 
 rhs : DRL_THEN consequenceBody namedConsequence* ;
 
@@ -482,7 +495,7 @@ drlBlock
     ;
 /* extending JavaParser blockStatement */
 drlBlockStatement
-    : drlLocalVariableDeclaration SEMI
+    : drlLocalVariableDeclaration SEMI?
     | drlStatement
     | localTypeDeclaration
     ;

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -48,6 +49,7 @@ import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
@@ -701,6 +703,31 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitLhsGroupBy(DRLParser.LhsGroupByContext ctx) {
+        GroupByDescr groupByDescr = BaseDescrFactory.builder(new GroupByDescr())
+                .withParserRuleContext(ctx)
+                .build();
+        groupByDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
+
+        if (ctx.groupByKeyBinding().label() != null) {
+            groupByDescr.setGroupingKey(ctx.groupByKeyBinding().label().drlIdentifier().getText());
+        }
+        groupByDescr.setGroupingFunction(getTextPreservingWhitespace(ctx.groupByKeyBinding().conditionalExpression()));
+
+        // accumulate function
+        for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
+            groupByDescr.addFunction(visitAccumulateFunction(accumulateFunctionContext));
+        }
+
+        PatternDescr patternDescr = new PatternDescr("Object");
+        patternDescr.setSource(groupByDescr);
+        List<ExprConstraintDescr> constraintDescrList = visitConstraints(ctx.constraints());
+        constraintDescrList.forEach(patternDescr::addConstraint);
+
+        return patternDescr;
+    }
+
+    @Override
     public BehaviorDescr visitPatternFilter(DRLParser.PatternFilterContext ctx) {
         BehaviorDescr behaviorDescr = BaseDescrFactory.builder(new BehaviorDescr())
                 .withParserRuleContext(ctx)
@@ -756,7 +783,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
         String function = ctx.drlIdentifier().getText();
         String bind = ctx.label() == null ? null : ctx.label().drlIdentifier().getText();
-        String[] params = new String[]{getTextPreservingWhitespace(ctx.drlExpression())};
+
+        String[] params = ctx.conditionalExpressions().conditionalExpression().stream()
+                .map(RuleContext::getText)
+                .toArray(String[]::new);
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
     }
 
