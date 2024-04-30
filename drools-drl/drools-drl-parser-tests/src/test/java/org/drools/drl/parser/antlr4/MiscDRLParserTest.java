@@ -34,6 +34,7 @@ import org.drools.drl.ast.descr.ForallDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
+import org.drools.drl.ast.descr.GroupByDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NamedConsequenceDescr;
@@ -479,7 +480,7 @@ class MiscDRLParserTest {
         // e.g. "package" is not allowed in a package value in Java, so it doesn't make sense to test. (Right to raise a parser error)
 
         PackageDescr pkg = parseAndGetPackageDescr(source);
-        
+
         assertThat(pkg.getRules()).hasSize(1);
     }
 
@@ -2086,6 +2087,43 @@ class MiscDRLParserTest {
     }
 
     @Test
+    public void parse_GroupBy() throws Exception {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile( "groupBy.drl" );
+
+        assertThat(pkg.getRules().size()).isEqualTo(1);
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final GroupByDescr groupBy = (GroupByDescr) outPattern.getSource();
+        assertThat(groupBy.getGroupingKey()).isEqualToIgnoringWhitespace("$initial");
+        assertThat(groupBy.getGroupingFunction()).isEqualToIgnoringWhitespace("$p.getName().substring(0, 1)");
+        assertThat(groupBy.getActionCode()).isNull();
+        assertThat(groupBy.getReverseCode()).isNull();
+        assertThat(groupBy.getFunctions()).hasSize(2);
+        assertThat(groupBy.getFunctions().get(0).getFunction()).isEqualToIgnoringWhitespace("sum");
+        assertThat(groupBy.getFunctions().get(1).getFunction()).isEqualToIgnoringWhitespace("count");
+
+        assertThat(groupBy.getFunctions().get(0).getParams()).hasSize(1);
+        assertThat(groupBy.getFunctions().get(0).getParams()[0]).isEqualToIgnoringWhitespace("$age");
+
+        assertThat(groupBy.getFunctions().get(1).getParams()).hasSize(0);
+
+        assertThat(groupBy.isExternalFunction()).isTrue();
+
+        final PatternDescr pattern = groupBy.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(pattern.getConstraint().getDescrs().get(0).getText()).isEqualToIgnoringWhitespace("$age : age < 30");
+
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(pattern.getConstraint().getDescrs().get(0).getText()).isEqualToIgnoringWhitespace("$age : age < 30");
+
+        assertThat(outPattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(outPattern.getConstraint().getDescrs().get(0).getText()).isEqualToIgnoringWhitespace("$sumOfAges > 10");
+    }
+
+    @Test
     public void parse_QualifiedClassname() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "qualified_classname.drl" );
@@ -2137,6 +2175,68 @@ class MiscDRLParserTest {
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
+    }
+
+    /**
+     * - Optional semicolon at the end of statements (int x = 0).
+     * - Optional comma delimiting init, action, and result.
+     */
+    @Test
+    public void accumulateWithoutOptionalDelimiters() throws Exception {
+        String source = "rule \"AccumulateParserTest\"\n"
+                + "when\n"
+                + "     $counter:Integer() from accumulate( $person : Person( age > 21 ),\n"
+                + "                                         init( int x = 0 )\n"
+                + "                                         action( x++ )\n"
+                + "                                         result( new Integer(x) ) );\n"
+                + "then\n"
+                + "end\n";
+        final PackageDescr pkg = parseAndGetPackageDescr( source );
+
+        assertThat(pkg.getRules().size()).isEqualTo(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
+        assertThat(outPattern.getIdentifier()).isEqualToIgnoringWhitespace( "$counter");
+        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace( "int x = 0");
+        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace( "x++");
+        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace( "new Integer(x)");
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+    }
+
+    /**
+     * When the accumulate function (e.g. count()) has no arguments.
+     */
+    @Test
+    public void accumulateCount() throws Exception {
+        String source = "rule R when\n" +
+                        "   accumulate (\n" +
+                        "       Person(), $result : count() " +
+                        "         )" +
+                        "then\n" +
+                        "end";
+        final PackageDescr pkg = parseAndGetPackageDescr( source );
+
+        assertThat(pkg.getRules().size()).isEqualTo(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
+        assertThat(accum).isNotNull();
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+
+        assertThat(accum.getFunctions()).hasSize(1);
+        AccumulateDescr.AccumulateFunctionCallDescr accumulateFunction = accum.getFunctions().get(0);
+        assertThat(accumulateFunction.getBind()).isEqualTo("$result");
+        assertThat(accumulateFunction.getFunction()).isEqualTo("count");
+        assertThat(accumulateFunction.getParams()).isEmpty();
     }
 
     @Test
