@@ -4388,6 +4388,34 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void namedConsequenceOrWithBindVariables() {
+        final String text =
+                "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  ( $p1 : Person(name == \"Mark\") or $p1 : Person(name == \"Mario\") )\n" +
+                        "  do[FoundMarkOrMario]\n" +
+                        "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                        "then\n" +
+                        "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                        "then[FoundMark]\n" +
+                        "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                        "end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+
+        OrDescr orDescr = (OrDescr) ruleDescr.getLhs().getDescrs().get(1);
+        PatternDescr patternDescr1 = (PatternDescr) orDescr.getDescrs().get(0);
+        assertThat(patternDescr1.getIdentifier()).isEqualTo("$p1");
+        assertThat(((ExprConstraintDescr)patternDescr1.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("name == \"Mark\"");
+        PatternDescr patternDescr2 = (PatternDescr) orDescr.getDescrs().get(1);
+        assertThat(patternDescr2.getIdentifier()).isEqualTo("$p1");
+        assertThat(((ExprConstraintDescr)patternDescr2.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("name == \"Mario\"");
+
+        NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
+        assertThat(namedConsequenceDescr.getName()).isEqualTo("FoundMarkOrMario");
+    }
+
+    @Test
     public void queryComplexLhs() {
         final String text = "query isContainedIn(String x, String y)\n" +
                 "    Location (x, y;)\n" +
@@ -4461,6 +4489,70 @@ class MiscDRLParserTest {
                                         });
                             });
                 });
+    }
+
+    @Test
+    void notWithPrefixAnd() {
+        final String text =
+                "package org.drools.compiler\n" +
+                        "rule R when\n" +
+                        "  (not (and Integer( $i : intValue )\n" +
+                        "            String( length > $i ) \n" +
+                        "       )\n" +
+                        "  )\n" +
+                        "then\n" +
+                        "end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
+            assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                assertThat(andDescr.getDescrs()).hasSize(2);
+                assertThat(andDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("Integer");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("$i : intValue");
+                    });
+                });
+                assertThat(andDescr.getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("String");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("length > $i");
+                    });
+                });
+            });
+        });
+    }
+
+    @Test
+    void existsWithPrefixAnd() {
+        final String text =
+                "package org.drools.compiler\n" +
+                        "rule R when\n" +
+                        "  (exists (and Integer( $i : intValue )\n" +
+                        "            String( length > $i ) \n" +
+                        "       )\n" +
+                        "  )\n" +
+                        "then\n" +
+                        "end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(ExistsDescr.class, existsDescr -> {
+            assertThat(existsDescr.getDescrs().get(0)).isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                assertThat(andDescr.getDescrs()).hasSize(2);
+                assertThat(andDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("Integer");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("$i : intValue");
+                    });
+                });
+                assertThat(andDescr.getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("String");
+                    assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                        assertThat(exprConstraintDescr.getExpression()).isEqualTo("length > $i");
+                    });
+                });
+            });
+        });
     }
 
     @Test
