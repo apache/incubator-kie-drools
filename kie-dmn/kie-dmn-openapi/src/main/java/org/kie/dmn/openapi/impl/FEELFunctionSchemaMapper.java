@@ -51,9 +51,7 @@ public class FEELFunctionSchemaMapper {
                 schema.setMinItems(((BigDecimal) rightValue).intValue());
                 schema.setMaxItems(((BigDecimal) rightValue).intValue());
             }
-            default -> {
-                LOG.debug("Ignore operator {}", o);
-            }
+            default -> LOG.debug("Ignore operator {}", o);
         }
     };
 

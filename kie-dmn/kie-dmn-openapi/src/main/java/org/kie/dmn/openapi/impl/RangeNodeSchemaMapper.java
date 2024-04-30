@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
@@ -33,11 +34,19 @@ public class RangeNodeSchemaMapper {
         Range range = consolidateRanges(ranges);
         if (range != null) {
             if (range.getLowEndPoint() != null) {
-                toPopulate.minimum((BigDecimal) range.getLowEndPoint());
+                if (range.getLowEndPoint() instanceof BigDecimal bigDecimal) {
+                    toPopulate.minimum(bigDecimal);
+                } else {
+                    toPopulate.addExtension(DMNOASConstants.X_DMN_MINIMUM_VALUE, range.getLowEndPoint());
+                }
                 toPopulate.exclusiveMinimum(range.getLowBoundary() == Range.RangeBoundary.OPEN);
             }
             if (range.getHighEndPoint() != null) {
-                toPopulate.maximum((BigDecimal) range.getHighEndPoint());
+                if (range.getHighEndPoint() instanceof BigDecimal bigDecimal) {
+                    toPopulate.maximum(bigDecimal);
+                } else {
+                    toPopulate.addExtension(DMNOASConstants.X_DMN_MAXIMUM_VALUE, range.getHighEndPoint());
+                }
                 toPopulate.exclusiveMaximum(range.getHighBoundary() == Range.RangeBoundary.OPEN);
             }
         }
@@ -50,6 +59,9 @@ public class RangeNodeSchemaMapper {
             Comparable lowValue = null;
             if (r.getStart() instanceof NumberNode startNode) {
                 lowValue = startNode.getValue();
+            } else if (r.getStart() instanceof AtLiteralNode atLiteralNode) {
+                Object evaluated = MapperHelper.evaluateAtLiteralNode(atLiteralNode);
+                lowValue = evaluated instanceof Comparable<?> ? (Comparable) evaluated : null;
             }
             if (lowValue != null) {
                 if (result.getLowEndPoint() == null) {
@@ -63,6 +75,9 @@ public class RangeNodeSchemaMapper {
             Comparable highValue = null;
             if (r.getEnd() instanceof NumberNode endNode) {
                 highValue = endNode.getValue();
+            } else if (r.getEnd() instanceof AtLiteralNode atLiteralNode) {
+                Object evaluated = MapperHelper.evaluateAtLiteralNode(atLiteralNode);
+                highValue = evaluated instanceof Comparable<?> ? (Comparable) evaluated : null;
             }
             if (highValue != null) {
                 if (result.getHighEndPoint() == null) {
