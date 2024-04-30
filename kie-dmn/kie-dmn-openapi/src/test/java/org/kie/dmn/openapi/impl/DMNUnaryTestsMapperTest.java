@@ -29,12 +29,9 @@ import java.util.stream.Collectors;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.junit.Test;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.DMNUnaryTest;
-import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.UnaryTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -130,7 +127,7 @@ public class DMNUnaryTestsMapperTest {
 
     @Test
     public void testPopulateSchemaFromBaseNodeSucceed() {
-        List<String> enumBase = Arrays.asList("DMN");
+        List<String> enumBase = List.of("DMN");
         List<String> toEnum = enumBase.stream().map(toMap -> String.format("\"%s\"", toMap)).toList();
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> dmnUnaryTests =
