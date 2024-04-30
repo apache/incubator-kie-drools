@@ -1,8 +1,6 @@
-name: Create a PR to sync main branch with main-apache
+name: Sync main branch
 
 env:
-  USERNAME: kie-ci
-  USEREMAIL: kie-ci0@redhat.com
   GITHUB_TOKEN: ${{ secrets.APACHE_SYNC_MIDSTREAM_TOKEN }}
 
 on:
@@ -12,79 +10,12 @@ on:
 
 jobs:
   sync-main:
-    if: github.repository_owner == 'kiegroup'
-    name: Sync main with main-apache branch
+    name: Sync main branch
     runs-on: ubuntu-latest
- 
+
     steps:
-      - name: Generate PR ID
-        id: generate_pr_id
-        run: echo "pr_id=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Create a PR to sync main branch with main-apache
+        uses: kiegroup/kie-ci/.ci/actions/main-sync@main
         with:
-          ref: main
-            # By default, checkout@v4 fetches only a single commit unless you specify "fetch-depth: 0". Without this "git merge" throwns an "unrelated histories".
-          fetch-depth: '0'
-
-      - name: Setup git environment
-        run: |
-          git config --global user.name "$USERNAME"
-          git config --global user.email "$USEREMAIL"
-
-      - name: Fetch all
-        run: git fetch --all
-
-      - name: Checkout main branch
-        run: git checkout main
-
-      - name: Create the PR branch
-        run: git checkout -b sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
-
-      - name: Merge main-apache branch excluding white-listed paths
-        id: merge
-        run: |
-          set -x
-          git merge --no-commit origin/main-apache || true
-          git reset origin/main ${{vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS}}
-          if git diff --cached --quiet; then
-              echo "No changes staged for commit."
-          else
-              git commit -m "Merge main-apache and exclude white-listed changes from the merge"
-          fi
-          echo "excluded_files=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
-
-      - name: Check for changes
-        id: check_changes
-        run: |
-          if git diff --quiet origin/main; then
-            echo "No changes detected."
-            echo "is_changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "Changes detected."
-            echo "is_changed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Push changes
-        if: steps.check_changes.outputs.is_changed == 'true'
-        run: git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
-
-      - name: Create the PR
-        if: steps.check_changes.outputs.is_changed == 'true'
-        run: |
-            runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            if [[ -n "${{ steps.merge.outputs.excluded_files }}" ]]; then
-              excludedFiles="${{ steps.merge.outputs.excluded_files }}"
-            else
-              excludedFiles="No files have been excluded<br />"
-            fi
-            prTitle="Automatic PR: Sync main with main-apache (${{steps.generate_pr_id.outputs.pr_id}})"
-            prBody="This pull request has been created by a GitHub workflow to synchronize the main branch with main-apache branch.<br /><br />\
-                <b>:warning:Important:warning:</b><br />Please don't merge using squash, not to loose the git history.<br /><br />\
-                <b>Excluded files:</b><br />${excludedFiles}<br />\
-                [View Action](${runUrl})"
-            if [[ -n "${{ vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS }}" ]]; then
-                reviewersOption="--reviewer ${{vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS}}"
-            fi
-            gh pr create --title "${prTitle}" --body "${prBody}" --base main $reviewersOption
+          main_sync_workflow_exclude_paths: ${{ vars.MAIN_SYNC_WORKFLOW_EXCLUDE_PATHS }}
+          main_sync_workflow_pr_reviewers: ${{ vars.MAIN_SYNC_WORKFLOW_PR_REVIEWERS }}
