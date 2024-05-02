@@ -26,7 +26,7 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.CountFunction;
-import org.kie.dmn.openapi.functions.TriConsumer;
+import org.drools.util.functions.TriConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

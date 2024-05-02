@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.openapi.functions;
+package org.drools.util.functions;
 
 import java.util.Objects;
 
