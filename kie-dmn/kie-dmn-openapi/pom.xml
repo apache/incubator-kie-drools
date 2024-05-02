@@ -32,7 +32,6 @@
 
   <properties>
     <java.module.name>org.kie.dmn.openapi</java.module.name>
-    <junit.version></junit.version>
   </properties>
 
   <dependencyManagement>

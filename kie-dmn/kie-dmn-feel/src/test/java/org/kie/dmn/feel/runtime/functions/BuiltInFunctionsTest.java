@@ -19,15 +19,19 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.kie.dmn.feel.runtime.functions.BuiltInFunctions.FUNCTIONS;
 
@@ -42,6 +46,16 @@ public class BuiltInFunctionsTest {
         assertEquals(FUNCTIONS.length, verifiedClasses.size());
     }
 
+    @Test
+    public void getFunctionsByClassFails() {
+        assertThrows(IllegalArgumentException.class, () -> BuiltInFunctions.getFunction(FakeFunction.class));
+    }
+
+    @Test
+    public void getFunctionsByNameFails() {
+        assertThrows(IllegalArgumentException.class, () -> BuiltInFunctions.getFunction(FakeFunction.FAKE_NAME));
+    }
+
     private Class<? extends FEELFunction> validateFunction(FEELFunction toValidate) {
         Class<? extends FEELFunction> aClass = toValidate.getClass();
         try {
@@ -50,6 +64,30 @@ public class BuiltInFunctionsTest {
             return aClass;
         } catch (NoSuchFieldException e) {
             fail("No INSTANCE field found for " + aClass);
+            return null;
+        }
+    }
+
+    static class FakeFunction implements FEELFunction {
+
+        static String FAKE_NAME = "FAKE_NAME";
+        @Override
+        public String getName() {
+            return FAKE_NAME;
+        }
+
+        @Override
+        public Symbol getSymbol() {
+            return null;
+        }
+
+        @Override
+        public List<List<Param>> getParameters() {
+            return List.of();
+        }
+
+        @Override
+        public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
             return null;
         }
     }
