@@ -53,29 +53,24 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     private String state;
     private String actualOwner;
     @ElementCollection
-    @JoinColumn(name = "task_id")
     @CollectionTable(name = "tasks_admin_groups", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_admin_groups_tasks")))
     @Column(name = "group_id", nullable = false)
     private Set<String> adminGroups;
     @ElementCollection
-    @JoinColumn(name = "task_id")
     @CollectionTable(name = "tasks_admin_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_admin_users_tasks")))
     @Column(name = "user_id", nullable = false)
     private Set<String> adminUsers;
     private ZonedDateTime completed;
     private ZonedDateTime started;
     @ElementCollection
-    @JoinColumn(name = "task_id")
     @CollectionTable(name = "tasks_excluded_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_excluded_users_tasks")))
     @Column(name = "user_id", nullable = false)
     private Set<String> excludedUsers;
     @ElementCollection
-    @JoinColumn(name = "task_id")
     @CollectionTable(name = "tasks_potential_groups", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_potential_groups_tasks")))
     @Column(name = "group_id", nullable = false)
     private Set<String> potentialGroups;
     @ElementCollection
-    @JoinColumn(name = "task_id")
     @CollectionTable(name = "tasks_potential_users", joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_tasks_potential_users_tasks")))
     @Column(name = "user_id", nullable = false)
     private Set<String> potentialUsers;

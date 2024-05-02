@@ -53,7 +53,6 @@ public class ProcessInstanceEntity extends AbstractEntity {
     private String businessKey;
     private String endpoint;
     @ElementCollection
-    @JoinColumn(name = "process_id")
     @CollectionTable(name = "processes_roles", joinColumns = @JoinColumn(name = "process_id", foreignKey = @ForeignKey(name = "fk_processes_roles_processes")))
     @Column(name = "role", nullable = false)
     private Set<String> roles;
@@ -77,7 +76,6 @@ public class ProcessInstanceEntity extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processInstance")
     private List<MilestoneEntity> milestones;
     @ElementCollection
-    @JoinColumn(name = "process_id")
     @CollectionTable(name = "processes_addons", joinColumns = @JoinColumn(name = "process_id", foreignKey = @ForeignKey(name = "fk_processes_addons_processes")))
     @Column(name = "addon", nullable = false)
     private Set<String> addons;

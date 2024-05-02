@@ -54,14 +54,12 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     private byte[] source;
 
     @ElementCollection
-    @JoinColumn(name = "id")
     @CollectionTable(name = "definitions_roles", joinColumns = { @JoinColumn(name = "process_id"),
             @JoinColumn(name = "process_version") }, foreignKey = @ForeignKey(name = "fk_definitions_roles_definitions"))
     @Column(name = "role", nullable = false)
     private Set<String> roles;
 
     @ElementCollection
-    @JoinColumn(name = "id")
     @CollectionTable(name = "definitions_addons", joinColumns = { @JoinColumn(name = "process_id"),
             @JoinColumn(name = "process_version") }, foreignKey = @ForeignKey(name = "fk_definitions_addons_definitions"))
     @Column(name = "addon", nullable = false)
@@ -72,13 +70,11 @@ public class ProcessDefinitionEntity extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processDefinition")
     private List<NodeEntity> nodes;
     @ElementCollection
-    @JoinColumn(name = "id")
     @CollectionTable(name = "definitions_annotations", joinColumns = { @JoinColumn(name = "process_id", referencedColumnName = "id"),
             @JoinColumn(name = "process_version", referencedColumnName = "version") }, foreignKey = @ForeignKey(name = "fk_definitions_annotations"))
     @Column(name = "value")
     private Set<String> annotations;
     @ElementCollection
-    @JoinColumn(name = "id")
     @CollectionTable(name = "definitions_metadata", joinColumns = {
             @JoinColumn(name = "process_id", referencedColumnName = "id"), @JoinColumn(name = "process_version", referencedColumnName = "version") },
             foreignKey = @ForeignKey(name = "fk_definitions_metadata"))

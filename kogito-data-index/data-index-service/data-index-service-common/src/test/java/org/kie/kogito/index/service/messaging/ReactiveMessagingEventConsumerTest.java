@@ -52,7 +52,7 @@ public class ReactiveMessagingEventConsumerTest {
     IndexingService service;
 
     @Mock
-    Event<DataEvent> eventPublisher;
+    Event<DataEvent<?>> eventPublisher;
 
     @InjectMocks
     @Spy

@@ -50,7 +50,6 @@ public class NodeEntity extends AbstractEntity {
     private String type;
 
     @ElementCollection
-    @JoinColumn(name = "node_id")
     @CollectionTable(name = "definitions_nodes_metadata", joinColumns = { @JoinColumn(name = "node_id", referencedColumnName = "id"),
             @JoinColumn(name = "process_id", referencedColumnName = "process_id"), @JoinColumn(name = "process_version", referencedColumnName = "process_version") },
             foreignKey = @ForeignKey(name = "fk_definitions_nodes_metadata_definitions_nodes"))
