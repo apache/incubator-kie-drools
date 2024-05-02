@@ -38,11 +38,11 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 public abstract class BaseDMNOASTest {
 
-    protected DMNRuntime createRuntime(String string, Class<?> class1) {
+    protected static DMNRuntime createRuntime(String string, Class<?> class1) {
         return BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK.createRuntime(string, class1);
     }
 
-    protected DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
+    protected static DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
         return BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK.createRuntimeWithAdditionalResources(string, class1, string2);
     }
     
@@ -54,7 +54,7 @@ public abstract class BaseDMNOASTest {
         return mapper.readTree(content);
     }
 
-    protected JsonSchema getJSONSchema(JsonNode schemaContent) {
+    protected static JsonSchema getJSONSchema(JsonNode schemaContent) {
         JsonSchemaFactory factory = JsonSchemaFactory.getInstance(com.networknt.schema.SpecVersion.VersionFlag.V4);
         return factory.getSchema(schemaContent);
     }
@@ -63,12 +63,12 @@ public abstract class BaseDMNOASTest {
         return validator.validate(readJSON(json));
     }
 
-    protected ObjectNode synthesizeSchema(DMNOASResult result, DMNModel modelUnderTest) {
+    protected static ObjectNode synthesizeSchema(DMNOASResult result, DMNModel modelUnderTest) {
         DMNType InputSetTypeUT = result.lookupIOSetsByModel(modelUnderTest).getInputSet();
         return synthesizeSchema(result, InputSetTypeUT);
     }
 
-    private ObjectNode synthesizeSchema(DMNOASResult result, DMNType InputSetTypeUT) {
+    private static ObjectNode synthesizeSchema(DMNOASResult result, DMNType InputSetTypeUT) {
         String dollarRef = result.getNamingPolicy().getRef(InputSetTypeUT);
         ObjectNode syntheticJSONSchema = result.getJsonSchemaNode().deepCopy();
         JsonUtil.stringProperty(syntheticJSONSchema, "$ref", dollarRef);
