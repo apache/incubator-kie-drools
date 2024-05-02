@@ -1,7 +1,6 @@
 specVersion: alpha
 kind: YaRD
 name: "Traffic Violation"
-expressionLang: jshell
 inputs:
   - name: "Tickets"
     type: List

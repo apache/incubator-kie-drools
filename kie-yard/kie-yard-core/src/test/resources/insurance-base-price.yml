@@ -1,7 +1,6 @@
 specVersion: alpha
 kind: YaRD
 name: 'BasePrice'
-expressionLang: jshell
 inputs:
   - name: 'Age'
     type: number

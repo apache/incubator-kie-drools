@@ -28,20 +28,21 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-public class LiteralExpressionInterpreter implements Firable {
+public class JShellLiteralExpressionInterpreter implements Firable {
 
     private final String name;
     private final QuotedExprParsed quoted;
     private final ScriptEngine engine;
     private final CompiledScript compiledScript;
 
-    public LiteralExpressionInterpreter(String nameString, QuotedExprParsed quotedExprParsed) {
+    public JShellLiteralExpressionInterpreter(final String nameString,
+                                              final QuotedExprParsed quotedExprParsed) {
         this.name = nameString;
         this.quoted = quotedExprParsed;
         try {
-            ScriptEngineManager manager = new ScriptEngineManager();
+            final ScriptEngineManager manager = new ScriptEngineManager();
             engine = manager.getEngineByName("jshell");
-            Compilable compiler = (Compilable) engine;
+            final Compilable compiler = (Compilable) engine;
             compiledScript = compiler.compile(quoted.getRewrittenExpression());
         } catch (Exception e) {
             throw new IllegalArgumentException("parse error", e);
@@ -49,8 +50,9 @@ public class LiteralExpressionInterpreter implements Firable {
     }
 
     @Override
-    public int fire(Map<String, Object> context, YaRDDefinitions units) {
-        Bindings bindings = engine.createBindings();
+    public int fire(final Map<String, Object> context,
+                    final YaRDDefinitions units) {
+        final Bindings bindings = engine.createBindings();
         // deliberately escape all symbols; a normal symbol will
         // never be in the detected-by-unquoting set, so this
         // set can't be used to selectively put in scope

@@ -86,9 +86,6 @@ public class YaRDParser {
 
     private YaRDDefinitions parse(String yaml) throws IOException {
         final YaRD sd = new YaRD_YamlMapperImpl().read(yaml);
-        if (!Objects.equals(sd.getExpressionLang(), "jshell")) {
-            throw new IllegalArgumentException("Only `jshell` is supported as an expression language");
-        }
         appendInputs(sd.getInputs());
         appendUnits(sd.getElements());
         return definitions;
@@ -107,7 +104,7 @@ public class YaRDParser {
         if (decisionLogic instanceof org.kie.yard.api.model.DecisionTable decisionTable) {
             return new SyntheticRuleUnitWrapper(new DTableUnitBuilder(definitions, nameString, decisionTable).build());
         } else if (decisionLogic instanceof org.kie.yard.api.model.LiteralExpression literalExpression) {
-            return new LiteralExpressionBuilder(definitions, nameString, literalExpression).build();
+            return new LiteralExpressionBuilder(model.getExpressionLang(), definitions, nameString, literalExpression).build();
         } else {
             throw new UnsupportedOperationException("Not implemented.");
         }
