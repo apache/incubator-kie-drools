@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Singleton;
 
 import org.jboss.jandex.AnnotationInstance;
@@ -68,7 +69,9 @@ import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
-import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
+import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesRPCService;
+import org.optaplanner.quarkus.devui.OptaPlannerDevUIRecorder;
+import org.optaplanner.quarkus.devui.SolverConfigText;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -89,11 +92,12 @@ import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
 import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
-import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeBuild;
 import io.quarkus.deployment.recording.RecorderContext;
 import io.quarkus.deployment.util.ServiceUtil;
-import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
+import io.quarkus.devui.spi.JsonRPCProvidersBuildItem;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
+import io.quarkus.devui.spi.page.Page;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
@@ -167,20 +171,48 @@ class OptaPlannerProcessor {
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
-    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildItem solverConfigBuildItem,
-            CurateOutcomeBuildItem curateOutcomeBuildItem) {
+    @Record(STATIC_INIT)
+    public CardPageBuildItem registerDevUICard(
+            OptaPlannerDevUIRecorder devUIRecorder,
+            SolverConfigBuildItem solverConfigBuildItem,
+            BuildProducer<SyntheticBeanBuildItem> syntheticBeans) {
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
         SolverConfig solverConfig = solverConfigBuildItem.getSolverConfig();
         if (solverConfig != null) {
             StringWriter effectiveSolverConfigWriter = new StringWriter();
             SolverConfigIO solverConfigIO = new SolverConfigIO();
             solverConfigIO.write(solverConfig, effectiveSolverConfigWriter);
-            return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
-                    new OptaPlannerDevUIPropertiesSupplier(effectiveSolverConfigWriter.toString()), this.getClass(),
-                    curateOutcomeBuildItem);
+            syntheticBeans.produce(SyntheticBeanBuildItem.configure(SolverConfigText.class)
+                    .scope(ApplicationScoped.class)
+                    .supplier(devUIRecorder.solverConfigTextSupplier(effectiveSolverConfigWriter.toString()))
+                    .done());
         } else {
-            return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
-                    new OptaPlannerDevUIPropertiesSupplier(), this.getClass(), curateOutcomeBuildItem);
+            syntheticBeans.produce(SyntheticBeanBuildItem.configure(SolverConfigText.class)
+                    .scope(ApplicationScoped.class)
+                    .supplier(devUIRecorder.solverConfigTextSupplier(""))
+                    .done());
         }
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .title("Configuration")
+                .icon("font-awesome-solid:wrench")
+                .componentLink("config-component.js"));
+
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .title("Model")
+                .icon("font-awesome-solid:wrench")
+                .componentLink("model-component.js"));
+
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .title("Constraints")
+                .icon("font-awesome-solid:wrench")
+                .componentLink("constraints-component.js"));
+
+        return cardPageBuildItem;
+    }
+
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public JsonRPCProvidersBuildItem registerRPCService() {
+        return new JsonRPCProvidersBuildItem("OptaPlanner Solver", OptaPlannerDevUIPropertiesRPCService.class);
     }
 
     /**

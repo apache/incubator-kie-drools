@@ -24,7 +24,6 @@ import java.util.Map;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
@@ -37,9 +36,8 @@ public final class ConfigMapDependentResource extends CRUDKubernetesDependentRes
     public static final String SOLVER_MESSAGE_AMQ_HOST_KEY = "solver.amq.host";
     public static final String SOLVER_MESSAGE_AMQ_PORT_KEY = "solver.amq.port";
 
-    public ConfigMapDependentResource(KubernetesClient kubernetesClient) {
+    public ConfigMapDependentResource() {
         super(ConfigMap.class);
-        setKubernetesClient(kubernetesClient);
     }
 
     @Override
@@ -63,7 +61,7 @@ public final class ConfigMapDependentResource extends CRUDKubernetesDependentRes
     public ConfigMap update(ConfigMap actual, ConfigMap target, OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         ConfigMap resultingConfigMap = super.update(actual, target, solver, context);
         String namespace = actual.getMetadata().getNamespace();
-        getKubernetesClient()
+        context.getClient()
                 .pods()
                 .inNamespace(namespace)
                 .withLabel("app", solver.getMetadata().getName())

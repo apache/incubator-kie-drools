@@ -44,19 +44,6 @@
     <java.module.name>org.optaplanner.operator</java.module.name>
   </properties>
 
-  <!-- TODO: Remove when OptaPlanner no longer supports Quarkus 2.13 -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>io.quarkiverse.operatorsdk</groupId>

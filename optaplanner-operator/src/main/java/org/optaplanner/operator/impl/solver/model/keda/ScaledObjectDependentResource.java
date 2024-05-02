@@ -25,7 +25,6 @@ import org.optaplanner.operator.impl.solver.model.common.ResourceNameReference;
 
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
@@ -75,9 +74,8 @@ public final class ScaledObjectDependentResource extends CRUDKubernetesDependent
      */
     private static final int TARGET_QUEUE_LENGTH = 1;
 
-    public ScaledObjectDependentResource(KubernetesClient kubernetesClient) {
+    public ScaledObjectDependentResource() {
         super(ScaledObject.class);
-        setKubernetesClient(kubernetesClient);
     }
 
     @Override

@@ -21,105 +21,74 @@ package org.optaplanner.quarkus.it.devui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.xml.sax.SAXException;
+import org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowEntity;
+import org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowSolution;
+import org.optaplanner.quarkus.it.devui.solver.TestdataStringLengthConstraintProvider;
 
-import groovy.util.Node;
-import groovy.xml.XmlParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+
+import io.quarkus.devui.tests.DevUIJsonRPCTest;
 import io.quarkus.test.QuarkusDevModeTest;
-import io.restassured.RestAssured;
 
-public class OptaPlannerDevUITest {
+public class OptaPlannerDevUITest extends DevUIJsonRPCTest {
 
     @RegisterExtension
     static final QuarkusDevModeTest config = new QuarkusDevModeTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addPackages(true, "org.optaplanner.quarkus.it.devui"));
+                    .addPackages(true, OptaPlannerTestResource.class.getPackage().getName()));
 
-    // Use the Quarkus 3 context root by default as the Quarkus platform does not pass the system property.
-    static final String OPTAPLANNER_DEV_UI_BASE_URL =
-            System.getProperty("dev.iu.root", "/q/dev-v1") + "/org.optaplanner.optaplanner-quarkus/";
-
-    public static String getPage(String pageName) {
-        return OPTAPLANNER_DEV_UI_BASE_URL + pageName;
+    public OptaPlannerDevUITest() {
+        super("OptaPlanner Solver");
     }
 
     @Test
-    void testSolverConfigPage() throws ParserConfigurationException, SAXException, IOException {
-        String body = RestAssured.get(getPage("solverConfig"))
-                .then()
-                .extract()
-                .body()
-                .asPrettyString();
-        XmlParser xmlParser = new XmlParser();
-        Node node = xmlParser.parseText(body);
-        String solverConfig = Objects.requireNonNull(findById("optaplanner-solver-config", node)).text();
+    void testSolverConfigPage() throws Exception {
+        JsonNode configResponse = super.executeJsonRPCMethod("getConfig");
+        String solverConfig = configResponse.get("config").asText();
         assertThat(solverConfig).isEqualToIgnoringWhitespace(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                         + "<!--Properties that can be set at runtime are not included-->\n"
                         + "<solver>\n"
-                        + "  <solutionClass>org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowSolution</solutionClass>\n"
-                        + "  <entityClass>org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowEntity</entityClass>\n"
+                        + "  <solutionClass>" + TestdataStringLengthShadowSolution.class.getCanonicalName()
+                        + "</solutionClass>\n"
+                        + "  <entityClass>" + TestdataStringLengthShadowEntity.class.getCanonicalName() + "</entityClass>\n"
                         + "  <domainAccessType>GIZMO</domainAccessType>\n"
                         + "  <scoreDirectorFactory>\n"
-                        + "    <constraintProviderClass>org.optaplanner.quarkus.it.devui.solver.TestdataStringLengthConstraintProvider</constraintProviderClass>\n"
+                        + "    <constraintProviderClass>" + TestdataStringLengthConstraintProvider.class.getCanonicalName()
+                        + "</constraintProviderClass>\n"
                         + "  </scoreDirectorFactory>\n"
                         + "</solver>");
     }
 
     @Test
-    void testModelPage() throws ParserConfigurationException, SAXException, IOException {
-        String body = RestAssured.get(getPage("model"))
-                .then()
-                .extract()
-                .body()
-                .asPrettyString();
-        XmlParser xmlParser = new XmlParser();
-        Node node = xmlParser.parseText(body);
-        String model = Objects.requireNonNull(findById("optaplanner-model", node)).toString();
-        assertThat(model)
-                .contains("value=[Solution: org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowSolution]");
-        assertThat(model).contains("value=[Entity: org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowEntity]");
-        assertThat(model).contains(
-                "value=[Genuine Variables]]]]]], tbody[attributes={}; value=[tr[attributes={}; value=[td[attributes={colspan=1, rowspan=1}; value=[value]]");
-        assertThat(model).contains(
-                "value=[Shadow Variables]]]]]], tbody[attributes={}; value=[tr[attributes={}; value=[td[attributes={colspan=1, rowspan=1}; value=[length]]");
+    void testModelPage() throws Exception {
+        JsonNode modelResponse = super.executeJsonRPCMethod("getModelInfo");
+        assertThat(modelResponse.get("solutionClass").asText())
+                .contains(TestdataStringLengthShadowSolution.class.getCanonicalName());
+        assertThat(modelResponse.get("entityClassList"))
+                .containsExactly(
+                        new TextNode(TestdataStringLengthShadowEntity.class.getCanonicalName()));
+        assertThat(modelResponse.get("entityClassToGenuineVariableListMap")).hasSize(1);
+        assertThat(modelResponse.get("entityClassToGenuineVariableListMap")
+                .get(TestdataStringLengthShadowEntity.class.getCanonicalName()))
+                .containsExactly(new TextNode("value"));
+        assertThat(modelResponse.get("entityClassToShadowVariableListMap")).hasSize(1);
+        assertThat(modelResponse.get("entityClassToShadowVariableListMap")
+                .get(TestdataStringLengthShadowEntity.class.getCanonicalName()))
+                .containsExactly(new TextNode("length"));
     }
 
     @Test
-    void testConstraintsPage() throws ParserConfigurationException, SAXException, IOException {
-        String body = RestAssured.get(getPage("constraints"))
-                .then()
-                .extract()
-                .body()
-                .asPrettyString();
-        XmlParser xmlParser = new XmlParser();
-        Node node = xmlParser.parseText(body);
-        String constraints = Objects.requireNonNull(findById("optaplanner-constraints", node)).text();
-        assertThat(constraints).contains("org.optaplanner.quarkus.it.devui.domain/Don't assign 2 entities the same value");
-        assertThat(constraints).contains("org.optaplanner.quarkus.it.devui.domain/Maximize value length");
-    }
-
-    private Node findById(String id, Node node) {
-        if (id.equals(node.attribute("id"))) {
-            return node;
-        }
-        for (Object child : node.children()) {
-            if (child instanceof Node) {
-                Node maybeFoundNodeText = findById(id, (Node) child);
-                if (maybeFoundNodeText != null) {
-                    return maybeFoundNodeText;
-                }
-            }
-        }
-        return null;
+    void testConstraintsPage() throws Exception {
+        JsonNode constraintsResponse = super.executeJsonRPCMethod("getConstraints");
+        assertThat(constraintsResponse).containsExactlyInAnyOrder(
+                new TextNode(TestdataStringLengthShadowSolution.class.getPackage()
+                        .getName() + "/Don't assign 2 entities the same value."),
+                new TextNode(TestdataStringLengthShadowSolution.class.getPackage().getName() + "/Maximize value length"));
     }
 }

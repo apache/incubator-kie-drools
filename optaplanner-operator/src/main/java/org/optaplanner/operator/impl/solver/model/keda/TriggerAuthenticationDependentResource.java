@@ -24,7 +24,6 @@ import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
@@ -54,9 +53,8 @@ public final class TriggerAuthenticationDependentResource
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";
 
-    public TriggerAuthenticationDependentResource(KubernetesClient kubernetesClient) {
+    public TriggerAuthenticationDependentResource() {
         super(TriggerAuthentication.class);
-        setKubernetesClient(kubernetesClient);
     }
 
     @Override

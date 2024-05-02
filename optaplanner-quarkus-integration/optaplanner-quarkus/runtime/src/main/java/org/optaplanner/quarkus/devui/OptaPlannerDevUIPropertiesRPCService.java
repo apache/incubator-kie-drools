@@ -25,8 +25,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -40,46 +43,66 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 
 import io.quarkus.arc.Arc;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
-public class OptaPlannerDevUIPropertiesSupplier implements Supplier<OptaPlannerDevUIProperties> {
-    private String effectiveSolverConfigXml;
+@ApplicationScoped
+public class OptaPlannerDevUIPropertiesRPCService {
 
-    public OptaPlannerDevUIPropertiesSupplier() {
-        this.effectiveSolverConfigXml = null;
+    private final String effectiveSolverConfigXml;
+
+    private OptaPlannerDevUIProperties devUIProperties;
+
+    @Inject
+    public OptaPlannerDevUIPropertiesRPCService(SolverConfigText solverConfigText) {
+        this.effectiveSolverConfigXml = solverConfigText.getSolverConfigText();
     }
 
-    public OptaPlannerDevUIPropertiesSupplier(String effectiveSolverConfigXml) {
-        this.effectiveSolverConfigXml = effectiveSolverConfigXml;
-    }
-
-    // Needed for Quarkus Dev UI serialization
-    public String getEffectiveSolverConfigXml() {
-        return effectiveSolverConfigXml;
-    }
-
-    public void setEffectiveSolverConfigXml(String effectiveSolverConfigXml) {
-        this.effectiveSolverConfigXml = effectiveSolverConfigXml;
-    }
-
-    @Override
-    public OptaPlannerDevUIProperties get() {
+    @PostConstruct
+    public void init() {
         if (effectiveSolverConfigXml != null) {
             // SolverConfigIO does not work at runtime,
             // but the build time SolverConfig does not have properties
             // that can be set at runtime (ex: termination), so the
             // effective solver config will be missing some properties
-            return new OptaPlannerDevUIProperties(getModelInfo(),
-                    getXmlContentWithComment("Properties that can be set at runtime are not included"),
-                    getConstraintList());
+            devUIProperties = new OptaPlannerDevUIProperties(buildModelInfo(),
+                    buildXmlContentWithComment("Properties that can be set at runtime are not included"),
+                    buildConstraintList());
         } else {
-            return new OptaPlannerDevUIProperties(getModelInfo(),
+            devUIProperties = new OptaPlannerDevUIProperties(buildModelInfo(),
                     "<!-- Plugin execution was skipped " + "because there are no @" + PlanningSolution.class.getSimpleName()
                             + " or @" + PlanningEntity.class.getSimpleName() + " annotated classes. -->\n<solver />",
                     Collections.emptyList());
         }
     }
 
-    private OptaPlannerModelProperties getModelInfo() {
+    public JsonObject getConfig() {
+        JsonObject out = new JsonObject();
+        out.put("config", devUIProperties.getEffectiveSolverConfig());
+        return out;
+    }
+
+    public JsonArray getConstraints() {
+        return JsonArray.of(devUIProperties.getConstraintList().toArray());
+    }
+
+    public JsonObject getModelInfo() {
+        OptaPlannerModelProperties modelProperties = devUIProperties.getOptaPlannerModelProperties();
+        JsonObject out = new JsonObject();
+        out.put("solutionClass", modelProperties.solutionClass);
+        out.put("entityClassList", JsonArray.of(modelProperties.entityClassList.toArray()));
+        out.put("entityClassToGenuineVariableListMap",
+                new JsonObject(modelProperties.entityClassToGenuineVariableListMap.entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, entry -> JsonArray.of(entry.getValue().toArray())))));
+        out.put("entityClassToShadowVariableListMap",
+                new JsonObject(modelProperties.entityClassToShadowVariableListMap.entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, entry -> JsonArray.of(entry.getValue().toArray())))));
+        return out;
+    }
+
+    private OptaPlannerModelProperties buildModelInfo() {
         if (effectiveSolverConfigXml != null) {
             DefaultSolverFactory<?> solverFactory =
                     (DefaultSolverFactory<?>) Arc.container().instance(SolverFactory.class).get();
@@ -114,7 +137,7 @@ public class OptaPlannerDevUIPropertiesSupplier implements Supplier<OptaPlannerD
         }
     }
 
-    private List<String> getConstraintList() {
+    private List<String> buildConstraintList() {
         if (effectiveSolverConfigXml != null) {
             DefaultSolverFactory<?> solverFactory =
                     (DefaultSolverFactory<?>) Arc.container().instance(SolverFactory.class).get();
@@ -128,7 +151,7 @@ public class OptaPlannerDevUIPropertiesSupplier implements Supplier<OptaPlannerD
         return Collections.emptyList();
     }
 
-    private String getXmlContentWithComment(String comment) {
+    private String buildXmlContentWithComment(String comment) {
         int indexOfPreambleEnd = effectiveSolverConfigXml.indexOf("?>");
         if (indexOfPreambleEnd != -1) {
             return effectiveSolverConfigXml.substring(0, indexOfPreambleEnd + 2) +

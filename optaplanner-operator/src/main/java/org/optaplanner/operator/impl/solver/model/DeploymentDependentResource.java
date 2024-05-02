@@ -32,7 +32,6 @@ import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
@@ -47,9 +46,8 @@ public final class DeploymentDependentResource extends CRUDKubernetesDependentRe
     private static final String ENV_AMQ_USERNAME = "SOLVER_MESSAGE_AMQ_USERNAME";
     private static final String ENV_AMQ_PASSWORD = "SOLVER_MESSAGE_AMQ_PASSWORD";
 
-    public DeploymentDependentResource(KubernetesClient k8s) {
+    public DeploymentDependentResource() {
         super(Deployment.class);
-        setKubernetesClient(k8s);
     }
 
     @Override

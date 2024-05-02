@@ -46,6 +46,7 @@ import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import io.javaoperatorsdk.operator.processing.event.ResourceID;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
+import io.quarkiverse.operatorsdk.runtime.QuarkusConfigurationService;
 
 @ControllerConfiguration(name = "optaplanner-solver")
 public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlannerSolver>, ErrorStatusHandler<OptaPlannerSolver>,
@@ -61,13 +62,17 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
     private final ScaledObjectDependentResource scaledObjectDependentResource;
 
     @Inject
-    public OptaPlannerSolverReconciler(KubernetesClient kubernetesClient) {
-        deploymentDependentResource = new DeploymentDependentResource(kubernetesClient);
-        inputQueueDependentResource = new ArtemisQueueDependentResource(MessageAddress.INPUT, kubernetesClient);
-        outputQueueDependentResource = new ArtemisQueueDependentResource(MessageAddress.OUTPUT, kubernetesClient);
-        configMapDependentResource = new ConfigMapDependentResource(kubernetesClient);
-        triggerAuthenticationDependentResource = new TriggerAuthenticationDependentResource(kubernetesClient);
-        scaledObjectDependentResource = new ScaledObjectDependentResource(kubernetesClient);
+    QuarkusConfigurationService configurationService;
+
+    @Inject
+    public OptaPlannerSolverReconciler() {
+
+        deploymentDependentResource = new DeploymentDependentResource();
+        inputQueueDependentResource = new ArtemisQueueDependentResource(MessageAddress.INPUT);
+        outputQueueDependentResource = new ArtemisQueueDependentResource(MessageAddress.OUTPUT);
+        configMapDependentResource = new ConfigMapDependentResource();
+        triggerAuthenticationDependentResource = new TriggerAuthenticationDependentResource();
+        scaledObjectDependentResource = new ScaledObjectDependentResource();
 
         inputQueueDependentResource.setResourceDiscriminator(new ResourceIDMatcherDiscriminator<>(
                 optaPlannerSolver -> new ResourceID(optaPlannerSolver.getInputMessageAddressName(),
