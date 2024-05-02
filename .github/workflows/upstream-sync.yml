@@ -1,9 +1,6 @@
-name: Sync main-apache branch with upstream/main
+name: Sync main-apache branch
 
 env:
-  USERNAME: kie-ci
-  USEREMAIL: kie-ci0@redhat.com
-  UPSTREAM_REMOTE: https://github.com/apache/incubator-kie-drools.git
   GITHUB_TOKEN: ${{ secrets.APACHE_SYNC_MIDSTREAM_TOKEN }}
 
 on:
@@ -13,36 +10,11 @@ on:
 
 jobs:
   sync-main-apache:
-    if: github.repository_owner == 'kiegroup'
     name: Sync main-apache branch
     runs-on: ubuntu-latest
  
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Sync main-apache branch with upstream/main
+        uses: kiegroup/kie-ci/.ci/actions/upstream-sync@main
         with:
-          token: ${{ secrets.APACHE_SYNC_MIDSTREAM_TOKEN }}
-
-      - name: Setup git environment
-        run: |
-          git config --global user.name "$USERNAME"
-          git config --global user.email "$USEREMAIL"
-          git remote add upstream $UPSTREAM_REMOTE
-
-      - name: Fetch all
-        run: git fetch --all --tags
-
-      - name: Checkout main-apache branch
-        run: git checkout --track origin/main-apache
-
-      - name: Pull main-apache branch
-        run: git pull
-
-      - name: Merge upstream/main branch
-        run: git merge --no-edit upstream/main
-
-      - name: Push changes
-        run: git push
-
-      - name: Push last tag
-        run: git push origin $(git tag --sort=creatordate | tail -n 1)
+          upstream_remote: https://github.com/apache/incubator-kie-drools.git
