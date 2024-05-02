@@ -41,7 +41,7 @@ public class QuarkusTopicDiscovery extends AbstractTopicDiscovery {
     @Override
     protected List<Topic> getTopics() {
         final List<Topic> topics = new ArrayList<>();
-        ConfigProvider.getConfig().getPropertyNames().forEach(n -> {
+        getPropertyNames().forEach(n -> {
             if (n.startsWith(OUTGOING_PREFIX)) {
                 final String topicName = this.extractChannelName(n, OUTGOING_PREFIX);
                 if (topics.stream().noneMatch(t -> t.getName().equals(topicName) && t.getType() == ChannelType.OUTGOING)) {
@@ -68,7 +68,15 @@ public class QuarkusTopicDiscovery extends AbstractTopicDiscovery {
         if (channelName.contains(".")) {
             channelName = channelName.substring(0, channelName.indexOf("."));
         }
-        final Optional<String> topicName = ConfigProvider.getConfig().getOptionalValue(prefix + channelName + TOPIC_SUFFIX, String.class);
+        final Optional<String> topicName = getOptionalValue(prefix + channelName + TOPIC_SUFFIX);
         return topicName.orElse(channelName);
+    }
+
+    Iterable<String> getPropertyNames() {
+        return ConfigProvider.getConfig().getPropertyNames();
+    }
+
+    Optional<String> getOptionalValue(String key) {
+        return ConfigProvider.getConfig().getOptionalValue(key, String.class);
     }
 }

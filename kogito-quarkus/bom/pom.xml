@@ -37,7 +37,7 @@
   <description>Internal BOM descriptor for Kogito modules targeting Quarkus use-cases. Specific dependencies targeting the Quarkus platform must be added here.</description>
 
   <properties>
-    <version.io.fabric8.kubernetes-client>6.7.2</version.io.fabric8.kubernetes-client>
+    <version.io.fabric8.kubernetes-client>6.10.0</version.io.fabric8.kubernetes-client>
   </properties>
   <dependencyManagement>
     <dependencies>

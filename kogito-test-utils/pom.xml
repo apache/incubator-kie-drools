@@ -54,8 +54,13 @@
       <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
-    
-    
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
