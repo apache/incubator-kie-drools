@@ -102,13 +102,7 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
                             "    <property key=\"org.kie.dmn.runtime.listeners.X\" value=\"com.acme.TestListener\"/>\n" +
                             "  </configuration>\n" +
                             "</kmodule>");
-        kfs.writePomXML(DMNClassloaderTest.getPom(releaseId,
-                                                  ks.newReleaseId("org.kie", "kie-dmn-api", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie", "kie-dmn-model", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie", "kie-api", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie", "kie-internal", Drools.getFullVersion())
-                                                  )
-                        );
+        kfs.writePomXML(DMNClassloaderTest.getPom(releaseId));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
