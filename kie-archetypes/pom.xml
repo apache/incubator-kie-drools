@@ -48,6 +48,12 @@
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -76,6 +82,18 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-scenario-simulation-backend</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-bom</artifactId>
       <type>pom</type>
       <scope>test</scope>
       <exclusions>
