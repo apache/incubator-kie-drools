@@ -66,24 +66,38 @@ pipeline {
             }
         }
 
-        stage('Build & Test & Install/Deploy') {
+        stage('Build & Test & Deploy locally') {
+            steps {
+                script {
+                    runMavenLocalDeploy(params.SKIP_TESTS)
+                }
+            }
+            post {
+                always {
+                    script {
+                        saveReports()
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Upload artifacts to given repository') {
+            when {
+                expression { return shouldDeployToRepository() }
+            }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                        def installOrDeploy
-                        if (shouldDeployToRepository()) {
-                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
-                        } else {
-                            installOrDeploy = 'install'
-                        }
-                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
                             getMavenCommand()
-                                .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-                                .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                                .withProperty('maven.test.failure.ignore', true)
-                                .skipTests(params.SKIP_TESTS)
                                 .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                .run("clean $installOrDeploy")
+                                .withProperty('wagon.source', "file://${getLocalDeploymentFolder()}")
+                                .withProperty('wagon.target', env.MAVEN_DEPLOY_REPOSITORY)
+                                .withProperty('wagon.targetId', 'apache-snapshots-repository')
+                                .withProperty('apache.snapshot.repository.username', REPOSITORY_USER)
+                                .withProperty('apache.snapshot.repository.password', REPOSITORY_TOKEN)
+                                .run("org.codehaus.mojo:wagon-maven-plugin:2.0.2:merge-maven-repos")
                         }
                     }
                 }
@@ -191,6 +205,24 @@ MavenCommand getMavenCommand(String directory = '') {
         mvnCmd.withProperty('full')
     }
     return mvnCmd
+}
+
+void runMavenLocalDeploy(boolean skipTests = true) {
+    mvnCmd = getMavenCommand()
+    mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
+
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+        mvnCmd.withProperty('maven.test.failure.ignore', true)
+            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+            .skipTests(skipTests)
+            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+            .run('clean deploy')
+    }
+}
+
+String getLocalDeploymentFolder() {
+    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
 }
 
 boolean isMainStream() {
