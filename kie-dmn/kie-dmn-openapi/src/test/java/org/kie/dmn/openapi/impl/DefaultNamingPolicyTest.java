@@ -20,17 +20,16 @@ package org.kie.dmn.openapi.impl;
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.openapi.impl.DefaultNamingPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultNamingPolicyTest {
+class DefaultNamingPolicyTest {
 
     @Test
-    public void test() {
+    void test() {
         DefaultNamingPolicy ut = new DefaultNamingPolicy("#/definitions/");
 
         assertThat(ut.getName(unregisteredType("tPerson"))).isEqualTo("tPerson");

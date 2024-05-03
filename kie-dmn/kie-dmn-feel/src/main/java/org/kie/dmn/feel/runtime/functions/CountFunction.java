@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 public class CountFunction
         extends BaseFEELFunction {
 
+    public static final CountFunction INSTANCE = new CountFunction();
+
     public CountFunction() {
         super( "count" );
     }

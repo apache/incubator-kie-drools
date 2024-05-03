@@ -45,6 +45,8 @@ import org.slf4j.LoggerFactory;
 public class DecisionTableFunction
         extends BaseFEELFunction {
 
+    public static final DecisionTableFunction INSTANCE = new DecisionTableFunction();
+
     private static final Logger LOG = LoggerFactory.getLogger( DecisionTableFunction.class );
 
     public DecisionTableFunction() {

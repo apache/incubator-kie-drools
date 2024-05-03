@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class GetValueFunction extends BaseFEELFunction {
 
+    public static final GetValueFunction INSTANCE = new GetValueFunction();
+
     public GetValueFunction() {
         super("get value");
     }

@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class NotFunction
         extends BaseFEELFunction {
 
+    public static final NotFunction INSTANCE = new NotFunction();
+
     public NotFunction() {
         super( "not" );
     }

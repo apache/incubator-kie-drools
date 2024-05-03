@@ -24,6 +24,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class ContainsFunction
         extends BaseFEELFunction {
 
+    public static final ContainsFunction INSTANCE = new ContainsFunction();
+
     public ContainsFunction() {
         super( "contains" );
     }

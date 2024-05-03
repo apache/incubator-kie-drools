@@ -20,7 +20,7 @@ package org.kie.dmn.openapi;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.stronglytyped.DMNRuntimeTypesTest;
@@ -29,10 +29,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MultipleModelsTest extends BaseDMNOASTest {
+class MultipleModelsTest extends BaseDMNOASTest {
 
     @Test
-    public void testNSEW() throws Exception {
+    void testNSEW() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("NSEW.dmn",
                                                                         DMNRuntimeTypesTest.class,
                                                                         "Traffic Violation.dmn");
@@ -50,7 +50,7 @@ public class MultipleModelsTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void testTF() throws Exception {
+    void testTF() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("NSEW.dmn",
                                                                         DMNRuntimeTypesTest.class,
                                                                         "Traffic Violation.dmn");
@@ -71,7 +71,7 @@ public class MultipleModelsTest extends BaseDMNOASTest {
     }
     
     @Test
-    public void testCH11() throws Exception {
+    void testCH11() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn",
                                                                         DMN13specificTest.class,
                                                                         "Financial.dmn");
@@ -87,7 +87,7 @@ public class MultipleModelsTest extends BaseDMNOASTest {
     }
     
     @Test
-    public void testSameName() throws Exception {
+    void testSameName() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("sameNameNS1.dmn",
                                                                         this.getClass(),
                                                                         "sameNameNS2.dmn");

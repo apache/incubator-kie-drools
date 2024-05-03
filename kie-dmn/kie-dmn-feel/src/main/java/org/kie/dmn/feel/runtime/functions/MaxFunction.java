@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class MaxFunction
         extends BaseFEELFunction {
 
+    public static final MaxFunction INSTANCE = new MaxFunction();
+
     public MaxFunction() {
         super( "max" );
     }

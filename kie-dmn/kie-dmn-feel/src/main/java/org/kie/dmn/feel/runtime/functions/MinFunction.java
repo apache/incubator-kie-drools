@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class MinFunction
         extends BaseFEELFunction {
 
+    public static final MinFunction INSTANCE = new MinFunction();
+
     public MinFunction() {
         super( "min" );
     }

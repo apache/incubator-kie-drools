@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class DistinctValuesFunction
         extends BaseFEELFunction {
 
+    public static final DistinctValuesFunction INSTANCE = new DistinctValuesFunction();
+
     public DistinctValuesFunction() {
         super( "distinct values" );
     }

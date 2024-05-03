@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class RemoveFunction
         extends BaseFEELFunction {
 
+    public static final RemoveFunction INSTANCE = new RemoveFunction();
+
     public RemoveFunction() {
         super( "remove" );
     }
