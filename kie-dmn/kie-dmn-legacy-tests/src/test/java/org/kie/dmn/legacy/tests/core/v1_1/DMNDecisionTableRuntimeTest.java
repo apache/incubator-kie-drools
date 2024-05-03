@@ -27,8 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
@@ -53,12 +57,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionTableRuntimeTest.class);
 
-    public DMNDecisionTableRuntimeTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testDecisionTableWithCalculatedResult() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")    
+    void decisionTableWithCalculatedResult(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
         checkDecisionTableWithCalculatedResult(runtime);
     }
@@ -78,9 +80,11 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNContext result = dmnResult.getContext();
         assertThat( ((BigDecimal) result.get( "Logique de décision 1" )).setScale( 1, RoundingMode.CEILING )).isEqualTo(BigDecimal.valueOf( 0.5 ) );
     }
-    
-    @Test(timeout = 30_000L)
-    public void testDecisionTableWithCalculatedResult_parallel() throws Throwable {
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    @Timeout(value = 30_000L, unit = TimeUnit.MILLISECONDS)
+    void decisionTableWithCalculatedResultParallel() throws Throwable {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
         final Runnable task = () -> checkDecisionTableWithCalculatedResult(runtime);
         final List<Throwable> problems = Collections.synchronizedList(new ArrayList<>());
@@ -97,8 +101,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         }
     }
 
-    @Test
-    public void testDecisionTableMultipleResults() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableMultipleResults(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "car_damage_responsibility.dmn", this.getClass() );
         final DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -131,8 +137,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( second.getSelected()).containsExactly(3);
     }
 
-    @Test
-    public void testSimpleDecisionTableMultipleOutputWrongOutputType() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void simpleDecisionTableMultipleOutputWrongOutputType(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-P-multiple-outputs-wrong-output.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-P-multiple-outputs-wrong-output" );
         assertThat(dmnModel).isNotNull();
@@ -148,8 +156,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
                 message -> message.getFeelEvent().getSourceException() instanceof NullPointerException ).count()).isEqualTo(0L );
     }
 
-    @Test
-    public void testDecisionTableInvalidInputErrorMessage() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableInvalidInputErrorMessage(VariantTestConf conf) {
+        testConfig = conf;
         final DMNContext context = DMNFactory.newContext();
         context.set( "Branches dispersion", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
@@ -157,8 +167,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         testDecisionTableInvalidInput( context );
     }
 
-    @Test
-    public void testDecisionTableInvalidInputTypeErrorMessage() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableInvalidInputTypeErrorMessage(VariantTestConf conf) {
+        testConfig = conf;
         final DMNContext context = DMNFactory.newContext();
         context.set( "Branches dispersion", 1 );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
@@ -166,8 +178,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         testDecisionTableInvalidInput( context );
     }
 
-    @Test
-    public void testDecisionTableNonexistingInputErrorMessage() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableNonexistingInputErrorMessage(VariantTestConf conf) {
+        testConfig = conf;
         final DMNContext context = DMNFactory.newContext();
         context.set( "Not exists", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
@@ -187,8 +201,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(result.isDefined( "Branches distribution")).isEqualTo(Boolean.FALSE);
     }
 
-    @Test
-    public void testDecisionTableDefaultValue() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableDefaultValue(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "decisiontable-default-value.dmn", this.getClass() );
         final DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -215,8 +231,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( captor.getValue().getSelected()).isEmpty();
     }
 
-    @Test
-    public void testTwoDecisionTables() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void twoDecisionTables(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "two_decision_tables.dmn", this.getClass() );
         final DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -242,8 +260,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( captor.getAllValues().get( 1 ).getDecisionTableName()).isEqualTo("b" );
     }
 
-    @Test
-    public void testDTInputExpressionLocalXmlnsInference() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void dTInputExpressionLocalXmlnsInference(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools1502-InputExpression.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "https://www.drools.org/kie-dmn/definitions",
@@ -261,8 +281,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( result.get( "MyDecision" )).isEqualTo("Decision taken" );
     }
 
-    @Test
-    public void testDTInContext() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void dTInContext(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_in_context.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5", "Drawing 1" );
         assertThat(dmnModel).isNotNull();
@@ -277,8 +299,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( ((Map) result.get( "D1" )).get( "Text color" )).isEqualTo("red" );
     }
 
-    @Test
-    public void testDTUsingEqualsUnaryTestWithVariable1() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void dTUsingEqualsUnaryTestWithVariable1(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_using_variables.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat(dmnModel).isNotNull();
@@ -302,8 +326,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( result.get( "Compare String" )).isEqualTo("Same String" );
     }
 
-    @Test
-    public void testDTUsingEqualsUnaryTestWithVariable2() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void dTUsingEqualsUnaryTestWithVariable2(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_using_variables.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat(dmnModel).isNotNull();
@@ -327,8 +353,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat( result.get( "Compare String" )).isEqualTo("Different String" );
     }
 
-    @Test
-    public void testEmptyOutputCell() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void emptyOutputCell(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_empty_output_cell.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
         assertThat(dmnModel).isNotNull();
@@ -342,8 +370,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(dmnResult.getContext().get("Logique de décision 1")).isNull();
     }
 
-    @Test
-    public void testNullRelation() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void nullRelation(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nullrelation.dmn", getClass());
         final DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101", "Null in relations");
         assertThat(model).isNotNull();
@@ -354,8 +384,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(result.hasErrors()).as(DMNRuntimeUtil.formatMessages(result.getMessages())).isFalse();
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollection() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollection(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2359
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollection.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
@@ -372,8 +404,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "xyz");
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollection_NOtypecheck() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollectionNOtypecheck(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2359
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieServices ks = KieServices.Factory.get();
@@ -394,8 +428,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "xyz");
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollectionWithLOV() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollectionWithLOV(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2359
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
@@ -412,8 +448,10 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "a");
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollectionWithLOV_NOtypecheck() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollectionWithLOVNOtypecheck(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2359
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieServices ks = KieServices.Factory.get();

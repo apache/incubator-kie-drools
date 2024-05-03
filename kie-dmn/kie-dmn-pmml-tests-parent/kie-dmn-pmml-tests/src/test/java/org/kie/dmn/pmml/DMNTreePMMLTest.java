@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.pmml;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -38,7 +38,7 @@ public abstract class DMNTreePMMLTest {
     private static final String NOTHING = "nothing";
 
     @Test
-    public void testTreeWithOutput() {
+    public void treeWithOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree.dmn",
                 DMNTreePMMLTest.class,
                 "test_tree.pmml");
@@ -49,7 +49,7 @@ public abstract class DMNTreePMMLTest {
     }
 
     @Test
-    public void testTreeWithoutOutput() {
+    public void treeWithoutOutput() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLTree_no_output.dmn",
                 DMNTreePMMLTest.class,
                 "test_tree_no_output.pmml");

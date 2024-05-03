@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.EvenFunction;
 import org.kie.dmn.feel.runtime.functions.ExpFunction;
@@ -46,7 +46,7 @@ import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ExtendedDMNProfileTest {
+class ExtendedDMNProfileTest {
     private final DateFunction dateFunction = DateFunction.INSTANCE;
     private final TimeFunction timeFunction = TimeFunction.INSTANCE;
     private final SplitFunction splitFunction = SplitFunction.INSTANCE;
@@ -63,101 +63,101 @@ public class ExtendedDMNProfileTest {
     private final OddFunction oddFunction = OddFunction.INSTANCE;
 
     @Test
-    public void testDateFunction_invokeParamStringDateTime() {
+    void dateFunctionInvokeParamStringDateTime() {
         assertResult(dateFunction.invoke("2017-09-07T10:20:30"), LocalDate.of(2017, 9, 7));
     }
 
     @Test
-    public void testDateFunction_invokeExtended() {
+    void dateFunctionInvokeExtended() {
         assertResult(dateFunction.invoke("2016-12-20T14:30:22"), DateTimeFormatter.ISO_DATE.parse( "2016-12-20", LocalDate::from ));
         assertResult(dateFunction.invoke("2016-12-20T14:30:22-05:00"), DateTimeFormatter.ISO_DATE.parse( "2016-12-20", LocalDate::from ));
         assertResult(dateFunction.invoke("2016-12-20T14:30:22z"), DateTimeFormatter.ISO_DATE.parse( "2016-12-20", LocalDate::from ));
     }
 
     @Test
-    public void testTimeFunction_invokeStringParamDate() {
+    void timeFunctionInvokeStringParamDate() {
         assertResult(timeFunction.invoke("2017-10-09"), LocalTime.of(0,0,0));
         assertResult(timeFunction.invoke("2017-10-09T10:15:06"), LocalTime.of(10,15,6));
     }
 
     @Test
-    public void testTimeFunction_invokeExtended() {
+    void timeFunctionInvokeExtended() {
         assertResult(timeFunction.invoke("2016-12-20T14:30:22"), DateTimeFormatter.ISO_TIME.parse( "14:30:22", LocalTime::from ));
         assertResult(timeFunction.invoke("2016-12-20T14:30:22-05:00"), DateTimeFormatter.ISO_TIME.parse( "14:30:22-05:00", OffsetTime::from ));
         assertResult(timeFunction.invoke("2016-12-20T14:30:22z"), DateTimeFormatter.ISO_TIME.parse( "14:30:22z", OffsetTime::from ));
     }
 
     @Test
-    public void testSplitFunction() {
+    void splitFunction() {
         assertResult(splitFunction.invoke("John Doe", "\\s"), Arrays.asList("John", "Doe"));
         assertResult(splitFunction.invoke("a;b;c;;", ";"), Arrays.asList("a", "b", "c", "", ""));
     }
 
     @Test
-    public void testProductFunction() {
+    void productFunction() {
         assertResult(productFunction.invoke(Arrays.asList(valueOf(2), valueOf(3), valueOf(4))), valueOf(24));
     }
 
     @Test
-    public void testMedianFunction() {
+    void medianFunction() {
         assertResult(medianFunction.invoke(new Object[]{valueOf(8), valueOf(2), valueOf(5), valueOf(3), valueOf(4)}), valueOf(4));
         assertResult(medianFunction.invoke(Arrays.asList(valueOf(6), valueOf(1), valueOf(2), valueOf(3))), valueOf(2.5));
         assertNull(medianFunction.invoke(new Object[]{}));
     }
 
     @Test
-    public void testStddevFunction() {
+    void stddevFunction() {
         assertResultDoublePrecision(stddevFunction.invoke(new Object[]{2, 4, 7, 5}), valueOf(2.0816659994661326));
     }
 
     @Test
-    public void testModeFunction() {
+    void modeFunction() {
         assertResult(modeFunction.invoke(new Object[]{6, 3, 9, 6, 6}), Collections.singletonList(valueOf(6)));
         assertResult(modeFunction.invoke(Arrays.asList(6, 1, 9, 6, 1)), Arrays.asList(valueOf(1), valueOf(6)));
         assertResult(modeFunction.invoke(Collections.emptyList()), Collections.emptyList());
     }
 
     @Test
-    public void testModuloFunction() {
+    void moduloFunction() {
         assertResult(moduloFunction.invoke(valueOf(12), valueOf(5)), valueOf(2));
     }
 
     @Test
-    public void testSqrtFunction() {
+    void sqrtFunction() {
         assertResultDoublePrecision(sqrtFunction.invoke(valueOf(16)), valueOf(4));
         assertResultDoublePrecision(sqrtFunction.invoke(valueOf(2)), valueOf(1.4142135623730951));
     }
 
     @Test
-    public void testLogFunction() {
+    void logFunction() {
         assertResultDoublePrecision(logFunction.invoke(valueOf(10)), valueOf(2.302585092994046));
     }
 
     @Test
-    public void testExpFunction() {
+    void expFunction() {
         assertResultDoublePrecision(expFunction.invoke(valueOf(5)), valueOf(148.4131591025766));
     }
 
     @Test
-    public void testOddFunction() {
+    void oddFunction() {
         assertResult(oddFunction.invoke(valueOf(5)), Boolean.TRUE);
         assertResult(oddFunction.invoke(valueOf(2)), Boolean.FALSE);
     }
 
     @Test
-    public void testOddFunction_fractional() {
+    void oddFunctionFractional() {
         assertNull(oddFunction.invoke(valueOf(5.5)));
         assertResult(oddFunction.invoke(valueOf(5.0)), Boolean.TRUE);
     }
 
     @Test
-    public void testEvenFunction() {
+    void evenFunction() {
         assertResult(evenFunction.invoke(valueOf(5)), Boolean.FALSE);
         assertResult(evenFunction.invoke(valueOf(2)), Boolean.TRUE);
     }
 
     @Test
-    public void testEvenFunction_fractional() {
+    void evenFunctionFractional() {
         assertNull(evenFunction.invoke(valueOf(5.5)));
         assertResult(evenFunction.invoke(valueOf(2.0)), Boolean.TRUE);
     }

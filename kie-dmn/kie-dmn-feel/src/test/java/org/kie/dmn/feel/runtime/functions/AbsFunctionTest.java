@@ -18,34 +18,34 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Period;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
 import static java.math.BigDecimal.valueOf;
 
-public class AbsFunctionTest {
+class AbsFunctionTest {
 
     private AbsFunction absFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         absFunction = AbsFunction.INSTANCE;
     }
 
     @Test
-    public void testAbsFunctionNumber() {
+    void absFunctionNumber() {
         FunctionTestUtil.assertResult(absFunction.invoke(valueOf(10)), valueOf(10));
         FunctionTestUtil.assertResult(absFunction.invoke(valueOf(-10)), valueOf(10));
         FunctionTestUtil.assertResultError(absFunction.invoke((BigDecimal) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void testAbsFunctionDuration() {
+    void absFunctionDuration() {
         FunctionTestUtil.assertResult(absFunction.invoke(Duration.ofSeconds(100, 50 )),
                 Duration.ofSeconds(100, 50));
         FunctionTestUtil.assertResult(absFunction.invoke(Duration.ofSeconds(-100, 50 )),
@@ -59,7 +59,7 @@ public class AbsFunctionTest {
     }
 
     @Test
-    public void testAbsFunctionPeriod() {
+    void absFunctionPeriod() {
         FunctionTestUtil.assertResult(absFunction.invoke(Period.of( 100, 50, 0 ) ),
                 Period.of(100, 50, 0));
         FunctionTestUtil.assertResult(absFunction.invoke(Period.of( -100, 50, 0 ) ),

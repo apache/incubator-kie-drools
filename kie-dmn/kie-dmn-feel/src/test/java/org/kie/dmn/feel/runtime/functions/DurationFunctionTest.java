@@ -22,27 +22,27 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class DurationFunctionTest {
+class DurationFunctionTest {
 
     private DurationFunction durationFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         durationFunction = new DurationFunction();
     }
 
     @Test
-    public void invokeParamStringNull() {
+    void invokeParamStringNull() {
         FunctionTestUtil.assertResultError(durationFunction.invoke((String) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamStringInvalid() {
+    void invokeParamStringInvalid() {
         FunctionTestUtil.assertResultError(durationFunction.invoke("test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(durationFunction.invoke("test HHH"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(durationFunction.invoke("testP2Y3D"), InvalidParametersEvent.class);
@@ -54,7 +54,7 @@ public class DurationFunctionTest {
     }
 
     @Test
-    public void invokeParamStringDuration() {
+    void invokeParamStringDuration() {
         FunctionTestUtil.assertResult(durationFunction.invoke("P2D"), Duration.of(2, ChronoUnit.DAYS));
         FunctionTestUtil.assertResult(durationFunction.invoke("P2DT3H"), Duration.of(2, ChronoUnit.DAYS).plusHours(3));
         FunctionTestUtil.assertResult(
@@ -66,25 +66,25 @@ public class DurationFunctionTest {
     }
 
     @Test
-    public void invokeParamStringPeriod() {
+    void invokeParamStringPeriod() {
         FunctionTestUtil.assertResult(durationFunction.invoke("P2Y3M"), ComparablePeriod.of(2, 3, 0));
         FunctionTestUtil.assertResult(durationFunction.invoke("P2Y3M4D"), ComparablePeriod.of(2, 3, 4));
     }
 
     @Test
-    public void invokeParamTemporalAmountNull() {
+    void invokeParamTemporalAmountNull() {
         FunctionTestUtil.assertResultError(durationFunction.invoke((TemporalAmount) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamTemporalDuration() {
+    void invokeParamTemporalDuration() {
         FunctionTestUtil.assertResult(
                 durationFunction.invoke(Duration.parse("P2DT3H28M15S")),
                 Duration.of(2, ChronoUnit.DAYS).plusHours(3).plusMinutes(28).plusSeconds(15));
     }
 
     @Test
-    public void invokeParamTemporalPeriod() {
+    void invokeParamTemporalPeriod() {
         FunctionTestUtil.assertResult(durationFunction.invoke(ComparablePeriod.parse("P2Y3M4D")), ComparablePeriod.of(2, 3, 4));
     }
 

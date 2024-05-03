@@ -18,21 +18,21 @@
  */
 package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
-import org.junit.Test;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-public class BigDecimalRangeIteratorTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class BigDecimalRangeIteratorTest {
 
     @Test
-    public void hasNextAscendantTest() {
+    void hasNextAscendantTest() {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
@@ -46,7 +46,7 @@ public class BigDecimalRangeIteratorTest {
     }
 
     @Test
-    public void hasNextDescendantTest() {
+    void hasNextDescendantTest() {
         BigDecimal start = BigDecimal.valueOf(3);
         BigDecimal end = BigDecimal.valueOf(1);
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
@@ -60,7 +60,7 @@ public class BigDecimalRangeIteratorTest {
     }
 
     @Test
-    public void nextAscendantTest() {
+    void nextAscendantTest() {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3));
@@ -69,7 +69,7 @@ public class BigDecimalRangeIteratorTest {
     }
 
     @Test
-    public void nextDescendantTest() {
+    void nextDescendantTest() {
         BigDecimal start = BigDecimal.valueOf(3);
         BigDecimal end = BigDecimal.valueOf(1);
         List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2), BigDecimal.valueOf(1));

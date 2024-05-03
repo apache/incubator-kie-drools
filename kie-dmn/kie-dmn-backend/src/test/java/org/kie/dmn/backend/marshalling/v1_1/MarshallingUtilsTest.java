@@ -21,7 +21,7 @@ package org.kie.dmn.backend.marshalling.v1_1;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.MarshallingUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class MarshallingUtilsTest {
+class MarshallingUtilsTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(MarshallingUtilsTest.class);
 
@@ -65,32 +65,32 @@ public class MarshallingUtilsTest {
         }
     }
 
-    @Test 
-    public void testLocal() throws Exception {
+    @Test
+    void local() throws Exception {
         QName qname = new QName("local1");
         checkAndRoundTrip(qname, "local1");
     }
 
     @Test
-    public void testPrefixLocal() throws Exception {
+    void prefixLocal() throws Exception {
         QName qname = new QName(XMLConstants.NULL_NS_URI, "local2", "prefix");
         checkAndRoundTrip(qname, "prefix:local2");
     }
 
     @Test
-    public void testNamespaceLocal() throws Exception {
+    void namespaceLocal() throws Exception {
         QName qname = new QName("http://namespace", "local3");
         checkAndRoundTrip(qname, "{http://namespace}local3");
     }
 
     @Test
-    public void testNamespaceLocal_b() throws Exception {
+    void namespaceLocalB() throws Exception {
         QName qname = new QName("http://namespace", "local3", XMLConstants.DEFAULT_NS_PREFIX);
         checkAndRoundTrip(qname, "{http://namespace}local3");
     }
 
     @Test
-    public void testNamespacePrefixLocal() throws Exception {
+    void namespacePrefixLocal() throws Exception {
         QName qname = new QName("http://namespace", "local4", "prefix");
         checkAndRoundTrip(qname, "prefix:local4");
     }

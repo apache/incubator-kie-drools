@@ -18,13 +18,13 @@
  */
 package org.kie.dmn.pmml;
 
-import org.junit.Test;
+import java.io.InputStream;
+
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.core.pmml.PMMLInfo;
 import org.kie.dmn.core.pmml.PMMLModelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +34,7 @@ public abstract class PMMLInfoTest {
     public static final Logger LOG = LoggerFactory.getLogger(PMMLInfoTest.class);
 
     @Test
-    public void testPMMLInfo() throws Exception {
+    public void pmmlInfo() throws Exception {
         InputStream inputStream = PMMLInfoTest.class.getResourceAsStream("test_scorecard.pmml");
         PMMLInfo<PMMLModelInfo> p0 = PMMLInfo.from(inputStream);
         assertThat(p0.getModels()).hasSize(1);

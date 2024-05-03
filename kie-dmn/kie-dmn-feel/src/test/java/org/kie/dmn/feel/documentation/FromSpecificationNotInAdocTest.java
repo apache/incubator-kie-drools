@@ -20,7 +20,9 @@ package org.kie.dmn.feel.documentation;
 
 import java.util.Collection;
 
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.BaseFEELTest;
 
 /**
@@ -29,8 +31,13 @@ import org.kie.dmn.feel.runtime.BaseFEELTest;
  */
 public class FromSpecificationNotInAdocTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile) {
+        expression( expression,  result, severity, testFEELTarget, useExtendedProfile);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 {"substring(\"foobar\",3) = \"obar\"", Boolean.TRUE, null},
                 {"substring(\"foobar\",3,3) = \"oba\"", Boolean.TRUE, null},

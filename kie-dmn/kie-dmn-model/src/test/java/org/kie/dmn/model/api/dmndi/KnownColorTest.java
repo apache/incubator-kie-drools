@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.model.api.dmndi;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-public class KnownColorTest {
+class KnownColorTest {
 
     @Test
-    public void testFromValue() {
+    void fromValue() {
         assertThat(KnownColor.fromValue("maroon")).isEqualTo(KnownColor.MAROON).hasFieldOrPropertyWithValue("value", "maroon");
         assertThat(KnownColor.fromValue("red")).isEqualTo(KnownColor.RED);
         assertThat(KnownColor.fromValue("orange")).isEqualTo(KnownColor.ORANGE);

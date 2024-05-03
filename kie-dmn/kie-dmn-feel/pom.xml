@@ -40,87 +40,93 @@
     <enforcer.skip>true</enforcer.skip>
   </properties>
 
-  <dependencies>
-    <!-- Internal dependencies -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-api</artifactId>
-    </dependency>
+	<dependencies>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-dmn-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-dmn-api</artifactId>
+		</dependency>
 
-    <!-- External dependencies -->
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4</artifactId>
-      <version>${version.org.antlr4}</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.glassfish</groupId>
-          <artifactId>javax.json</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
-    </dependency>
+		<!-- External dependencies -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>${version.org.antlr4}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.glassfish</groupId>
+					<artifactId>javax.json</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-compiler</artifactId>
+		</dependency>
 
-    <dependency>
-      <groupId>com.github.javaparser</groupId>
-      <artifactId>javaparser-core</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
+		</dependency>
 
-    <!-- BigMath dependency to obtain BigDecimal advanced math -->
-    <dependency>
-        <groupId>ch.obermuhlner</groupId>
-        <artifactId>big-math</artifactId>
-    </dependency>
+		<!-- BigMath dependency to obtain BigDecimal advanced math -->
+		<dependency>
+			<groupId>ch.obermuhlner</groupId>
+			<artifactId>big-math</artifactId>
+		</dependency>
 
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-    <!-- Tests -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>jandex</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>yasson</artifactId>
-      <scope>test</scope>
-    </dependency>
+		<!-- Tests -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.smallrye</groupId>
+			<artifactId>jandex</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>yasson</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
     <dependency>
       <groupId>org.asciidoctor</groupId>
       <artifactId>asciidoctorj</artifactId>

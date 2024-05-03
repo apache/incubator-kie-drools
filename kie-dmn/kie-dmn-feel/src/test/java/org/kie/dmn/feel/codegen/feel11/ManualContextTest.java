@@ -20,7 +20,7 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class ManualContextTest {
     }
 
     @Test
-    public void testManualContext() {
+    void manualContext() {
         CompiledFEELExpression compiledExpression = new ManualContext();
         LOG.debug("{}", compiledExpression);
 

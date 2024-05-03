@@ -25,7 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -44,12 +45,10 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN12specificTest.class);
 
-    public DMN12specificTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
-    @Test
-    public void testDMN12typeAliases() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dmn12typeAliases(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("typeAliases.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9f6be450-17c0-49d9-a67f-960ad04b046f", "Drawing 1");
@@ -67,8 +66,10 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("a decision")).isEqualTo(LocalDateTime.of(2018, 9, 28, 16, 7).plusDays(1));
     }
 
-    @Test
-    public void testItemDefCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void itemDefCollection(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-filter.dmn", getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01");
         assertThat(dmnModel).isNotNull();
@@ -96,14 +97,18 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getContext().get("filter01")).asList().containsExactly("Adams", "Ford");
     }
 
-    @Test
-    public void testDMN12typeRefInformationItem() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dmn12typeRefInformationItem(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-3544
         check_testDMN12typeRefInformationItem("typeRefInformationItem_original.dmn");
     }
 
-    @Test
-    public void testDMN12typeRefInformationItem_modified() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dmn12typeRefInformationItemModified(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-3544
         check_testDMN12typeRefInformationItem("typeRefInformationItem_modified.dmn");
     }

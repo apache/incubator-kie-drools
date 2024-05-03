@@ -18,32 +18,24 @@
  */
 package org.kie.dmn.core;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.dmn.core.compiler.AlphaNetworkOption;
 
-@RunWith(Parameterized.class)
 public abstract class BaseInterpretedVsAlphaNetworkTest {
 
-    @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{true, false};
     }
 
-    private final boolean alphaNetwork;
+    protected boolean alphaNetwork;
 
-    public BaseInterpretedVsAlphaNetworkTest(final boolean useAlphaNetwork) {
-        this.alphaNetwork = useAlphaNetwork;
-    }
-
-    @Before
+    @BeforeEach
     public void before() {
         System.setProperty(AlphaNetworkOption.PROPERTY_NAME, Boolean.toString(alphaNetwork));
     }
 
-    @After
+    @AfterEach
     public void after() {
         System.clearProperty(AlphaNetworkOption.PROPERTY_NAME);
     }

@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -71,7 +71,7 @@ public class DMNRuntimeListenerDSTest {
     }
 
     @Test
-    public void testWholeModel() {
+    void wholeModel() {
         final DSListener listenerUT = new DSListener();
 
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("helloDS.dmn", this.getClass());
@@ -105,7 +105,7 @@ public class DMNRuntimeListenerDSTest {
     }
 
     @Test
-    public void testDS() {
+    void ds() {
         final DSListener listenerUT = new DSListener();
 
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("helloDS.dmn", this.getClass());

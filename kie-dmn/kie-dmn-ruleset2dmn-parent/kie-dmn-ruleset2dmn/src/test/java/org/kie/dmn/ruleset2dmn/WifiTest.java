@@ -19,10 +19,9 @@
 package org.kie.dmn.ruleset2dmn;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
@@ -31,10 +30,10 @@ import org.kie.internal.io.ResourceFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.ruleset2dmn.TestUtils.ctxFromJson;
 
-public class WifiTest {
-    
+class WifiTest {
+
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final String dmnXml = Converter.parse("wifi", this.getClass().getResourceAsStream("/wifi.pmml"));
         // Files.write(new File("src/test/resources/wifi.dmn").toPath(), dmnXml.getBytes());
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()

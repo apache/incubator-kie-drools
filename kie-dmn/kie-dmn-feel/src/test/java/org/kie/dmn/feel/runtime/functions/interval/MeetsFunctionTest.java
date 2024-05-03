@@ -18,37 +18,37 @@
  */
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-public class MeetsFunctionTest {
+class MeetsFunctionTest {
 
     private MeetsFunction meetsFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         meetsFunction = MeetsFunction.INSTANCE;
     }
 
     @Test
-    public void invokeParamIsNull() {
+    void invokeParamIsNull() {
         FunctionTestUtil.assertResultError(meetsFunction.invoke(null, new RangeImpl()), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(meetsFunction.invoke(new RangeImpl(), null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamsCantBeCompared() {
+    void invokeParamsCantBeCompared() {
         FunctionTestUtil.assertResultError( meetsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
     }
 
     @Test
-    public void invokeParamRangeAndRange() {
+    void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( meetsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),

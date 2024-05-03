@@ -21,7 +21,8 @@ package org.kie.dmn.core.v1_3;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -40,12 +41,10 @@ public class DMN13specificTestNonTypesafe extends BaseVariantNonTypeSafeTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN13specificTestNonTypesafe.class);
 
-    public DMN13specificTestNonTypesafe(final VariantTestConf conf) {
-        super(conf);
-    }
-
-    @Test
-    public void testDMNv1_3_ch11_Example2() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dMNv13Ch11Example2(VariantTestConf conf) {
+        testConfig = conf;
         testName = "testDMNv1_3_ch11_Example2";
 
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Recommended Loan Products.dmn", this.getClass(), "Loan info.dmn");

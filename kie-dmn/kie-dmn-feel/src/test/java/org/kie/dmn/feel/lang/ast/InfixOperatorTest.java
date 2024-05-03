@@ -18,21 +18,21 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import org.junit.Test;
-import org.kie.dmn.feel.lang.EvaluationContext;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class InfixOperatorTest {
+class InfixOperatorTest {
 
     @Test
-    public void addLocalDateAndDuration() {
+    void addLocalDateAndDuration() {
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
         LocalDate retrieved = (LocalDate) InfixOperator.ADD.evaluate(left, right, null);
@@ -75,7 +75,7 @@ public class InfixOperatorTest {
     }
 
     @Test
-    public void subLocalDateAndDuration() {
+    void subLocalDateAndDuration() {
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
         LocalDate retrieved = (LocalDate) InfixOperator.SUB.evaluate(left, right, null);
@@ -118,7 +118,7 @@ public class InfixOperatorTest {
     }
 
     @Test
-    public void mulDurationAndDuration() {
+    void mulDurationAndDuration() {
         Object left = Duration.of(5, DAYS);
         Object right = Duration.of(5, DAYS);
         assertThat(InfixOperator.MULT.evaluate(left, right, mock(EvaluationContext.class))).isNull();

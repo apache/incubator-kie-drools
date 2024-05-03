@@ -18,22 +18,21 @@
  */
 package org.kie.dmn.openapi;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.networknt.schema.JsonSchema;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.imports.ImportsTest;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.networknt.schema.JsonSchema;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ImportingTest extends BaseDMNOASTest {
 
     @Test
-    void testBasicImports() throws Exception {
+    void basicImports() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("baseSum.dmn",
                                                                         ImportsTest.class,
                                                                         "importingSum.dmn");

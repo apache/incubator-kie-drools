@@ -18,37 +18,37 @@
  */
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.math.BigDecimal;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-import java.math.BigDecimal;
-
-public class CoincidesFunctionTest {
+class CoincidesFunctionTest {
 
     private CoincidesFunction coincidesFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         coincidesFunction = CoincidesFunction.INSTANCE;
     }
 
     @Test
-    public void invokeParamIsNull() {
+    void invokeParamIsNull() {
         FunctionTestUtil.assertResultError(coincidesFunction.invoke(null, "b"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(coincidesFunction.invoke("a", null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamsCantBeCompared() {
+    void invokeParamsCantBeCompared() {
         FunctionTestUtil.assertResultError( coincidesFunction.invoke("a", BigDecimal.valueOf(2) ), InvalidParametersEvent.class );
     }
 
     @Test
-    public void invokeParamSingles() {
+    void invokeParamSingles() {
         FunctionTestUtil.assertResult( coincidesFunction.invoke( "a", "b" ), Boolean.FALSE );
         FunctionTestUtil.assertResult( coincidesFunction.invoke( "a", "a" ), Boolean.TRUE );
         FunctionTestUtil.assertResult( coincidesFunction.invoke( "b", "a" ), Boolean.FALSE );
@@ -58,7 +58,7 @@ public class CoincidesFunctionTest {
     }
 
     @Test
-    public void invokeParamRangeAndRange() {
+    void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( coincidesFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),

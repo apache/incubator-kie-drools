@@ -18,21 +18,21 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class ReplaceFunctionTest {
+class ReplaceFunctionTest {
 
     private ReplaceFunction replaceFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         replaceFunction = new ReplaceFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null), InvalidParametersEvent.class);
@@ -42,7 +42,7 @@ public class ReplaceFunctionTest {
     }
 
     @Test
-    public void invokeNullWithFlags() {
+    void invokeNullWithFlags() {
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, null), InvalidParametersEvent.class);
@@ -59,34 +59,34 @@ public class ReplaceFunctionTest {
     }
 
     @Test
-    public void invokeWithoutFlagsPatternMatches() {
+    void invokeWithoutFlagsPatternMatches() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "^test", "ttt"), "tttString");
         FunctionTestUtil.assertResult(replaceFunction.invoke("testStringtest", "^test", "ttt"), "tttStringtest");
     }
 
     @Test
-    public void invokeWithoutFlagsPatternNotMatches() {
+    void invokeWithoutFlagsPatternNotMatches() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "ttest", "ttt"), "testString");
         FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "$test", "ttt"), "testString");
     }
 
     @Test
-    public void invokeWithFlagDotAll() {
+    void invokeWithFlagDotAll() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("fo\nbar", "o.b", "ttt", "s"), "ftttar");
     }
 
     @Test
-    public void invokeWithFlagMultiline() {
+    void invokeWithFlagMultiline() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("foo\nbar", "^b", "ttt", "m"), "foo\ntttar");
     }
 
     @Test
-    public void invokeWithFlagCaseInsensitive() {
+    void invokeWithFlagCaseInsensitive() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("foobar", "^fOO", "ttt", "i"), "tttbar");
     }
 
     @Test
-    public void invokeWithAllFlags() {
+    void invokeWithAllFlags() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("fo\nbar", "O.^b", "ttt", "smi"), "ftttar");
     }
 }

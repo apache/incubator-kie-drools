@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
@@ -32,10 +32,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorDMNDITest extends AbstractValidatorTest {
+class ValidatorDMNDITest extends AbstractValidatorTest {
 
     @Test
-    public void testAllElements() throws IOException {
+    void allElements() throws IOException {
         try (final Reader reader = getReader("dmndi/all-elements.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
@@ -44,7 +44,7 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testMISSING_DMNSHAPE_MISSING_DMNEDGE() throws IOException {
+    void missingDmnshapeMissingDmnedge() throws IOException {
         try (final Reader reader = getReader("dmndi/all-elements-with-dmndi-no-dmnshape.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
@@ -55,7 +55,7 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testUNKNOWN_REF() throws IOException {
+    void unknownRef() throws IOException {
         try (final Reader reader = getReader("dmndi/all-elements-invalid-ref.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 

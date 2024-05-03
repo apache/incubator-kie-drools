@@ -18,23 +18,23 @@
  */
 package org.kie.dmn.validation;
 
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
+class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
 
     @Test
-    public void testKNOWREQ_MISSING_BKM_ReaderInput() throws IOException {
+    void knowreq_missing_bkm_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -46,7 +46,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testKNOWREQ_MISSING_BKM_FileInput() {
+    void knowreq_missing_bkm_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -56,7 +56,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testKNOWREQ_MISSING_BKM_DefinitionsInput() {
+    void knowreq_missing_bkm_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn",
                                 "https://github.com/kiegroup/kie-dmn",
@@ -68,7 +68,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testKNOWREQ_REQ_DECISION_NOT_BKM_ReaderInput() throws IOException {
+    void knowreq_req_decision_not_bkm_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -80,7 +80,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testKNOWREQ_REQ_DECISION_NOT_BKM_FileInput() {
+    void knowreq_req_decision_not_bkm_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -90,7 +90,7 @@ public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testKNOWREQ_REQ_DECISION_NOT_BKM_DefinitionsInput() {
+    void knowreq_req_decision_not_bkm_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn",
                                 "https://github.com/kiegroup/kie-dmn",

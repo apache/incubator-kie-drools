@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
@@ -31,10 +31,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorArtifactTest extends AbstractValidatorTest {
+class ValidatorArtifactTest extends AbstractValidatorTest {
 
     @Test
-    public void testASSOC_REFERENCES_NOT_EMPTY_ReaderInput() throws IOException {
+    void assoc_references_not_empty_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "artifact/ASSOC_REFERENCES_NOT_EMPTY.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -45,7 +45,7 @@ public class ValidatorArtifactTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testASSOC_REFERENCES_NOT_EMPTY_FileInput() {
+    void assoc_references_not_empty_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "artifact/ASSOC_REFERENCES_NOT_EMPTY.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -54,7 +54,7 @@ public class ValidatorArtifactTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testASSOC_REFERENCES_NOT_EMPTY_DefinitionsInput() {
+    void assoc_references_not_empty_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "artifact/ASSOC_REFERENCES_NOT_EMPTY.dmn",
                                 "https://github.com/kiegroup/kie-dmn",

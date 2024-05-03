@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -34,10 +34,10 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class ContractionRulesTest extends AbstractDTAnalysisTest {
+class ContractionRulesTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testContractionRules() {
+    void contractionRules() {
         List<DMNMessage> validate = validator.validate(getReader("Contraction.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_01d9abb9-b968-49c0-b6ab-909f3e03d8d3");
         assertThat(analysis.getGaps()).hasSize(0);

@@ -18,7 +18,10 @@
  */
 package org.kie.dmn.validation.dtanalysis;
 
-import org.junit.Test;
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
@@ -26,25 +29,21 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 
-public class NullTest extends AbstractDTAnalysisTest {
+class NullTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testNullBooleanBefore() {
+    void nullBooleanBefore() {
         List<DMNMessage> validate = validator.validate(getReader("NullBooleanBefore.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkNullBoolean(validate);
     }
 
     @Test
-    public void testNullBooleanAfter() {
+    void nullBooleanAfter() {
         List<DMNMessage> validate = validator.validate(getReader("NullBooleanAfter.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkNullBoolean(validate);
     }
@@ -72,13 +71,13 @@ public class NullTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testNullNumberBefore() {
+    void nullNumberBefore() {
         List<DMNMessage> validate = validator.validate(getReader("NullNumberBefore.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkNullNumber(validate);
     }
 
     @Test
-    public void testNullNumberAfter() {
+    void nullNumberAfter() {
         List<DMNMessage> validate = validator.validate(getReader("NullNumberAfter.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkNullNumber(validate);
     }
@@ -106,13 +105,13 @@ public class NullTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testGapsXYv2WithNull() {
+    void gapsXYv2WithNull() {
         List<DMNMessage> validate = validator.validate(getReader("GapsXYv2WithNull.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         GapsXYTest.checkAnalysis(validate);
     }
 
     @Test
-    public void testNotNullAndEmptyRule() {
+    void notNullAndEmptyRule() {
         final List<DMNMessage> validate = validator.validate(getReader("notnulltest.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         final DTAnalysis analysis = getAnalysis(validate, "_850C5F03-DA51-4DE7-89E4-61D2C502A03E");
         assertThat(analysis.getOverlaps()).hasSize(1);
@@ -126,7 +125,7 @@ public class NullTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testNullsWithActiveRules() {
+    void nullsWithActiveRules() {
         final List<DMNMessage> validate = validator.validate(getReader("nulltestdt.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         final DTAnalysis analysis = getAnalysis(validate, "decisiontablewithnulls");
         assertThat(analysis.getOverlaps()).isEmpty();

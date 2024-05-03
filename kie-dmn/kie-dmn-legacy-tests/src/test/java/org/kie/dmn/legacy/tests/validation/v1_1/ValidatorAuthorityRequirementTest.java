@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.AbstractValidatorTest;
@@ -33,10 +33,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
+class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_AUTH_ReaderInput() throws IOException {
+    void auth_req_missing_dependency_req_auth_ReaderInput() throws IOException {
         try (final Reader reader = getReader("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -47,7 +47,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_AUTH_FileInput() {
+    void auth_req_missing_dependency_req_auth_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -56,7 +56,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_AUTH_DefinitionsInput() {
+    void auth_req_missing_dependency_req_auth_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -67,7 +67,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_DEC_ReaderInput() throws IOException {
+    void auth_req_missing_dependency_req_dec_ReaderInput() throws IOException {
         try (final Reader reader = getReader("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_DEC.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -78,7 +78,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_DEC_FileInput() {
+    void auth_req_missing_dependency_req_dec_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_DEC.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -87,7 +87,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_DEC_DefinitionsInput() {
+    void auth_req_missing_dependency_req_dec_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_DEC.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -98,7 +98,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_INPUT_ReaderInput() throws IOException {
+    void auth_req_missing_dependency_req_input_ReaderInput() throws IOException {
         try (final Reader reader = getReader("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -109,7 +109,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_INPUT_FileInput() {
+    void auth_req_missing_dependency_req_input_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -118,7 +118,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_INPUT_DefinitionsInput() {
+    void auth_req_missing_dependency_req_input_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("authorityrequirement/AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -129,7 +129,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE_ReaderInput() throws IOException {
+    void authreq_dep_req_auth_not_knowledgesource_ReaderInput() throws IOException {
         try (final Reader reader = getReader("authorityrequirement/AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -140,7 +140,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE_FileInput() {
+    void authreq_dep_req_auth_not_knowledgesource_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -149,7 +149,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE_DefinitionsInput() {
+    void authreq_dep_req_auth_not_knowledgesource_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("authorityrequirement/AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -160,7 +160,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_DEC_NOT_DECISION_ReaderInput() throws IOException {
+    void authreq_dep_req_dec_not_decision_ReaderInput() throws IOException {
         try (final Reader reader = getReader("authorityrequirement/AUTHREQ_DEP_REQ_DEC_NOT_DECISION.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -171,7 +171,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_DEC_NOT_DECISION_FileInput() {
+    void authreq_dep_req_dec_not_decision_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_DEP_REQ_DEC_NOT_DECISION.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -180,7 +180,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_DEC_NOT_DECISION_DefinitionsInput() {
+    void authreq_dep_req_dec_not_decision_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("authorityrequirement/AUTHREQ_DEP_REQ_DEC_NOT_DECISION.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -191,7 +191,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_INPUT_NOT_INPUT_ReaderInput() throws IOException {
+    void authreq_dep_req_input_not_input_ReaderInput() throws IOException {
         try (final Reader reader = getReader("authorityrequirement/AUTHREQ_DEP_REQ_INPUT_NOT_INPUT.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -202,7 +202,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_INPUT_NOT_INPUT_FileInput() {
+    void authreq_dep_req_input_not_input_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("authorityrequirement/AUTHREQ_DEP_REQ_INPUT_NOT_INPUT.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -211,7 +211,7 @@ public class ValidatorAuthorityRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTHREQ_DEP_REQ_INPUT_NOT_INPUT_DefinitionsInput() {
+    void authreq_dep_req_input_not_input_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("authorityrequirement/AUTHREQ_DEP_REQ_INPUT_NOT_INPUT.dmn",
                                "https://github.com/kiegroup/kie-dmn",

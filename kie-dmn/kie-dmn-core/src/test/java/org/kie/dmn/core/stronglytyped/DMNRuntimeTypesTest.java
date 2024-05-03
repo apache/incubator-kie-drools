@@ -33,8 +33,9 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNModel;
@@ -63,12 +64,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTypesTest.class);
 
-    public DMNRuntimeTypesTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testOneOfEachType() throws Exception {
+    @ParameterizedTest
+    @MethodSource("params")
+    void oneOfEachType(VariantTestConf conf) throws Exception {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
         assertThat(dmnModel).isNotNull();
@@ -129,8 +128,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testJavaKeywords() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void javaKeywords(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("javaKeywords.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_C41C1676-0DA9-47EA-90AD-F9BAA257129F", "A1B1A8AD-B0DC-453D-86A7-C9475450C982");
         assertThat(dmnModel).isNotNull();
@@ -154,8 +155,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testInnerComposite() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void innerComposite(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("innerComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_641BCEBF-8D10-4E08-B47F-A9181C737A82", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -187,8 +190,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testFixInnerComposite() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void fixInnerComposite(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("fixInnerComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_E82058C1-27D3-44F3-B1B3-4C02D17B7A05", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -211,8 +216,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testInnerCompositeCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void innerCompositeCollection(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("innerCompositeCollection.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_D8AE5AF4-1F9E-4423-873A-B8F3C3BE5FE5", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -238,8 +245,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testInputAny() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputAny(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("inputAny.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7D9140EF-DC52-4DC1-8983-9C2EC5B89BAE", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -260,8 +269,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testRecursiveEmployee() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void recursiveEmployee(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("recursiveEmployee.dmn", this.getClass());
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_d1e3d83e-230d-42fb-bc58-313463f7f40b", "Drawing 1");
@@ -300,8 +311,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testListBasic() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void listBasic(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("listBasic.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B84B17F3-3E84-4DED-996E-AA630A6BF9C4", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -334,8 +347,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testListBasic_LOVerror() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void listBasicLOVerror(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("listBasic.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B84B17F3-3E84-4DED-996E-AA630A6BF9C4", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -368,8 +383,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testSameTypeNameMultiple() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void sameTypeNameMultiple(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("class_imported.dmn", this.getClass(), "class_importing.dmn");
         final DMNModel dmnModel0 = runtime.getModel("http://www.trisotech.com/definitions/_b3deed2b-245f-4cc4-a4bf-1e95cd240664", "imported");
         assertThat(dmnModel0).isNotNull();
@@ -398,8 +415,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testFieldCapitalization() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void fieldCapitalization(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Traffic Violation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "Traffic Violation");
         assertThat(dmnModel).isNotNull();
@@ -457,8 +476,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testDecisionService() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionService(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("DecisionServiceABC_DMN12.dmn", DMNDecisionServicesTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
         assertThat(dmnModel).isNotNull();
@@ -512,8 +533,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testBKM() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void bkm(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("0009-invocation-arithmetic.dmn", DMNRuntimeTest.class);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1");
         assertThat(dmnModel).isNotNull();
@@ -552,8 +575,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testCapitalLetterConflict() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void capitalLetterConflict(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("capitalLetterConflict.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B321C9B1-856E-45DE-B05D-5B4D4D301D37", "capitalLetterConflict");
         assertThat(dmnModel).isNotNull();
@@ -593,8 +618,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testCapitalLetterConflictWithInputAndDecision() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void capitalLetterConflictWithInputAndDecision(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("capitalLetterConflictWithInputAndDecision.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_EE9DAFC0-D50D-4D23-8676-FF8A40E02919", "capitalLetterConflictWithInputAndDecision");
         assertThat(dmnModel).isNotNull();
@@ -623,8 +650,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testCapitalLetterConflictItemDef() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void capitalLetterConflictItemDef(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("capitalLetterConflictItemDef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_DA986720-823F-4334-8AB5-5CBA76FD1B9E", "capitalLetterConflictItemDef");
         assertThat(dmnModel).isNotNull();
@@ -654,8 +683,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testShareTypeForInputAndOutput() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void shareTypeForInputAndOutput(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("shareTypeForInputAndOutput.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_DBEFBA7B-C568-4631-A89E-AA31F7C6564B", "shareTypeForInputAndOutput");
         assertThat(dmnModel).isNotNull();
@@ -688,8 +719,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testTopLevelTypeCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void topLevelTypeCollection(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("PersonListHelloBKM2.dmn", DMNRuntimeTest.class);
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6", "PersonListHelloBKM2");
@@ -723,8 +756,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testTopLevelCompositeCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void topLevelCompositeCollection(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("topLevelCompositeCollection.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel(
                 "https://kiegroup.org/dmn/_3ED2F714-24F0-4764-88FA-04217901C05A", "topLevelCompositeCollection");
@@ -759,8 +794,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testComponentCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void componentCollection(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("collections.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2A93F258-EF3B-4150-A202-1D02A893DF2B", "collections");
         assertThat(dmnModel).isNotNull();
@@ -805,8 +842,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testComponentCollectionPassTypedObject() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void componentCollectionPassTypedObject(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("collectionsPassTypedObject.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10C4DB2B-1DCA-4B4F-A994-FA046AE5C7B0", "collectionsPassTypedObject");
         assertThat(dmnModel).isNotNull();
@@ -852,8 +891,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testEvaluateByIdAndName() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void evaluateByIdAndName(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("2decisions.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_6453A539-85B5-4A4E-800E-6721C50B6B55", "2decisions");
         assertThat(dmnModel).isNotNull();
@@ -905,7 +946,8 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         }
     }
 
-    public void testCollectionOfCollection() {
+    public void testCollectionOfCollection(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("topLevelColOfCol.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_74636626-ACB0-4A1F-9AD3-D4E0AFA1A24A", "topLevelColOfCol");
         assertThat(dmnModel).isNotNull();
@@ -958,8 +1000,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         assertThat(personMap.get("age")).isIn(coerceNumber(21), coerceNumber(22), coerceNumber(23), coerceNumber(24));
     }
 
-    @Test
-    public void testCollectionOfCollectionOfCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void collectionOfCollectionOfCollection(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("topLevelColOfColOfCol.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_74636626-ACB0-4A1F-9AD3-D4E0AFA1A24A", "topLevelColOfColOfCol");
         assertThat(dmnModel).isNotNull();

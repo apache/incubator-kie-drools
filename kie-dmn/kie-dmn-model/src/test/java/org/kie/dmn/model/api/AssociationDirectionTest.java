@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.model.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-public class AssociationDirectionTest {
+class AssociationDirectionTest {
 
     @Test
-    public void testFromValue() {
+    void fromValue() {
         assertThat(AssociationDirection.fromValue("None")).isEqualTo(AssociationDirection.NONE);
         assertThat(AssociationDirection.fromValue("One")).isEqualTo(AssociationDirection.ONE);
         assertThat(AssociationDirection.fromValue("Both")).isEqualTo(AssociationDirection.BOTH);

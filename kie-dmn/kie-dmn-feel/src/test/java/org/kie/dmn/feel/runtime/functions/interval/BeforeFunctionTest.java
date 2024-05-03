@@ -18,37 +18,37 @@
  */
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.math.BigDecimal;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-import java.math.BigDecimal;
-
-public class BeforeFunctionTest {
+class BeforeFunctionTest {
 
     private BeforeFunction beforeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         beforeFunction = BeforeFunction.INSTANCE;
     }
 
     @Test
-    public void invokeParamIsNull() {
+    void invokeParamIsNull() {
         FunctionTestUtil.assertResultError(beforeFunction.invoke((Comparable) null, "b"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(beforeFunction.invoke("a", (Comparable) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamsCantBeCompared() {
+    void invokeParamsCantBeCompared() {
         FunctionTestUtil.assertResultError( beforeFunction.invoke("a", BigDecimal.valueOf(2) ), InvalidParametersEvent.class );
     }
 
     @Test
-    public void invokeParamSingles() {
+    void invokeParamSingles() {
         FunctionTestUtil.assertResult( beforeFunction.invoke( "a", "b" ), Boolean.TRUE );
         FunctionTestUtil.assertResult( beforeFunction.invoke( "a", "a" ), Boolean.FALSE );
         FunctionTestUtil.assertResult( beforeFunction.invoke( "b", "a" ), Boolean.FALSE );
@@ -58,7 +58,7 @@ public class BeforeFunctionTest {
     }
 
     @Test
-    public void invokeParamSingleAndRange() {
+    void invokeParamSingleAndRange() {
         FunctionTestUtil.assertResult( beforeFunction.invoke( "a",
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
                 Boolean.FALSE );
@@ -74,7 +74,7 @@ public class BeforeFunctionTest {
     }
 
     @Test
-    public void invokeParamRangeAndSingle() {
+    void invokeParamRangeAndSingle() {
         FunctionTestUtil.assertResult( beforeFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 "f" ),
@@ -94,7 +94,7 @@ public class BeforeFunctionTest {
     }
 
     @Test
-    public void invokeParamRangeAndRange() {
+    void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( beforeFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),

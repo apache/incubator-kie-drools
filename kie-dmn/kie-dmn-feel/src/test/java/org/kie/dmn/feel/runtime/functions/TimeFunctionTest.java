@@ -30,93 +30,93 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
-import org.junit.Before;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class TimeFunctionTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TimeFunctionTest {
 
     private TimeFunction timeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         timeFunction = new TimeFunction();
     }
 
     @Test
-    public void invokeStringParamNull() {
+    void invokeStringParamNull() {
         FunctionTestUtil.assertResultError(timeFunction.invoke((String) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeStringParamNotDateOrTime() {
+    void invokeStringParamNotDateOrTime() {
         FunctionTestUtil.assertResultError(timeFunction.invoke("test"), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeStringParamTimeWrongFormat() {
+    void invokeStringParamTimeWrongFormat() {
         FunctionTestUtil.assertResultError(timeFunction.invoke("10-15:06"), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeStringParamNoOffset() {
+    void invokeStringParamNoOffset() {
         FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06"), LocalTime.of(10,15,6));
     }
 
     @Test
-    public void invokeStringParamWithOffset() {
+    void invokeStringParamWithOffset() {
         FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06+01:00"), OffsetTime.of(10,15,6, 0, ZoneOffset.ofHours(1)));
         FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06-01:00"), OffsetTime.of(10,15,6, 0, ZoneOffset.ofHours(-1)));
     }
 
     @Test
-    public void parseWithZone() {
+    void parseWithZone() {
         final TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Etc/UTC").getOrElse(null);
         assertThat(parsedResult.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(0, 1, 0));
         assertThat(parsedResult.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Etc/UTC"));
     }
 
     @Test
-    public void parseWithZoneIANA() {
+    void parseWithZoneIANA() {
         final TemporalAccessor parsedResult = timeFunction.invoke("00:01:00@Europe/Paris").getOrElse(null);
         assertThat(parsedResult.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(0, 1, 0));
         assertThat(parsedResult.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Europe/Paris"));
     }
 
     @Test
-    public void invokeWrongIANAformat() {
+    void invokeWrongIANAformat() {
         FunctionTestUtil.assertResultError(timeFunction.invoke("13:20:00+02:00@Europe/Paris"), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeTemporalAccessorParamNull() {
+    void invokeTemporalAccessorParamNull() {
         FunctionTestUtil.assertResultError(timeFunction.invoke((TemporalAccessor) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeTemporalAccessorParamUnsupportedAccessor() {
+    void invokeTemporalAccessorParamUnsupportedAccessor() {
         FunctionTestUtil.assertResultError(timeFunction.invoke(DayOfWeek.MONDAY), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeTemporalAccessorParamDate() {
+    void invokeTemporalAccessorParamDate() {
         FunctionTestUtil.assertResult(timeFunction.invoke(LocalDate.of(2017, 6, 12)), OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC));
     }
 
     @Test
-    public void invokeTemporalAccessorParamTime() {
+    void invokeTemporalAccessorParamTime() {
         FunctionTestUtil.assertResult(timeFunction.invoke(LocalTime.of(11, 43)), LocalTime.of(11, 43, 0));
     }
 
     @Test
-    public void invokeTemporalAccessorParamDateTime() {
+    void invokeTemporalAccessorParamDateTime() {
         FunctionTestUtil.assertResult(timeFunction.invoke(LocalDateTime.of(2017, 6, 12, 11, 43)), LocalTime.of(11, 43, 0));
     }
 
     @Test
-    public void invokeTimeUnitsParamsNull() {
+    void invokeTimeUnitsParamsNull() {
         FunctionTestUtil.assertResultError(timeFunction.invoke(null, null, null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(timeFunction.invoke(null, null, 1, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(timeFunction.invoke(null, 1, null, null), InvalidParametersEvent.class);
@@ -127,7 +127,7 @@ public class TimeFunctionTest {
     }
 
     @Test
-    public void invokeTimeUnitsParamsUnsupportedNumber() {
+    void invokeTimeUnitsParamsUnsupportedNumber() {
         FunctionTestUtil.assertResultError(timeFunction.invoke(Double.POSITIVE_INFINITY, 1, 1, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(timeFunction.invoke(Double.NEGATIVE_INFINITY, 1, 1, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(timeFunction.invoke(1, Double.POSITIVE_INFINITY, 1, null), InvalidParametersEvent.class);
@@ -137,35 +137,35 @@ public class TimeFunctionTest {
     }
 
     @Test
-    public void invokeTimeUnitsParamsOutOfBounds() {
+    void invokeTimeUnitsParamsOutOfBounds() {
         FunctionTestUtil.assertResultError(timeFunction.invoke(40, 1, 1, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(timeFunction.invoke(1, 900, 1, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(timeFunction.invoke(1, 1, 900, null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeTimeUnitsParamsNoOffset() {
+    void invokeTimeUnitsParamsNoOffset() {
         FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, null), LocalTime.of(10, 43, 15));
     }
 
     @Test
-    public void invokeTimeUnitsParamsNoOffsetWithNanoseconds() {
+    void invokeTimeUnitsParamsNoOffsetWithNanoseconds() {
         FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, BigDecimal.valueOf(15.154), null), LocalTime.of(10, 43, 15, 154000000));
     }
 
     @Test
-    public void invokeTimeUnitsParamsWithOffset() {
+    void invokeTimeUnitsParamsWithOffset() {
         FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, Duration.ofHours(1)), OffsetTime.of(10, 43, 15, 0, ZoneOffset.ofHours(1)));
         FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, Duration.ofHours(-1)), OffsetTime.of(10, 43, 15, 0, ZoneOffset.ofHours(-1)));
     }
 
     @Test
-    public void invokeTimeUnitsParamsWithNoOffset() {
+    void invokeTimeUnitsParamsWithNoOffset() {
         FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15), LocalTime.of(10, 43, 15));
     }
 
     @Test
-    public void invokeTimeUnitsParamsWithOffsetWithNanoseconds() {
+    void invokeTimeUnitsParamsWithOffsetWithNanoseconds() {
         FunctionTestUtil.assertResult(
                 timeFunction.invoke(10, 43, BigDecimal.valueOf(15.154), Duration.ofHours(1)),
                 OffsetTime.of(10, 43, 15, 154000000, ZoneOffset.ofHours(1)));

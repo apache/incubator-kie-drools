@@ -18,37 +18,37 @@
  */
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-public class DuringFunctionTest {
+class DuringFunctionTest {
 
     private DuringFunction duringFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         duringFunction = DuringFunction.INSTANCE;
     }
 
     @Test
-    public void invokeParamIsNull() {
+    void invokeParamIsNull() {
         FunctionTestUtil.assertResultError(duringFunction.invoke((Comparable) null, new RangeImpl()), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(duringFunction.invoke("a", null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamsCantBeCompared() {
+    void invokeParamsCantBeCompared() {
         FunctionTestUtil.assertResultError( duringFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
     }
 
     @Test
-    public void invokeParamSingleAndRange() {
+    void invokeParamSingleAndRange() {
         FunctionTestUtil.assertResult( duringFunction.invoke( "c",
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
                 Boolean.TRUE );
@@ -64,7 +64,7 @@ public class DuringFunctionTest {
     }
 
     @Test
-    public void invokeParamRangeAndRange() {
+    void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( duringFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),

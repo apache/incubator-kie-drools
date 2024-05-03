@@ -21,7 +21,7 @@ package org.kie.dmn.xls2dmn.cli;
 import java.io.File;
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -29,13 +29,12 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.xls2dmn.cli.TestUtils.getRuntime;
 
-import picocli.CommandLine;
-
-public class CardApprovalTest {
+class CardApprovalTest {
 
     static final Logger LOG = LoggerFactory.getLogger(CardApprovalTest.class);
 
@@ -50,13 +49,13 @@ public class CardApprovalTest {
     }
 
     @Test
-    public void testCLI() throws Exception {
+    void cli() throws Exception {
         final DMNRuntime dmnRuntime = getDMNRuntimeWithCLI();
         checkCardApprovalDMNModel(dmnRuntime);
     }
 
     @Test
-    public void testSameVMApp() throws Exception {
+    void sameVMApp() throws Exception {
         final DMNRuntime dmnRuntime = getDMNRuntimeWithSameVMApp();
         checkCardApprovalDMNModel(dmnRuntime);
     }

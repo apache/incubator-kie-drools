@@ -27,9 +27,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TItemDefinition;
 import org.slf4j.Logger;
@@ -37,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ItemDefinitionDependenciesGeneratedTest {
 
     private final Logger logger = LoggerFactory.getLogger(ItemDefinitionDependenciesGeneratedTest.class);
@@ -46,11 +44,8 @@ public class ItemDefinitionDependenciesGeneratedTest {
     private static final int LEVELS_OF_DEPENDENCIES = 3;
     private static final String ITEM_DEFINITION_NAME_BASE = "ItemDefinition";
     private static final String TEST_NS = "https://www.drools.org/";
-
-    @Parameterized.Parameter
     public static List<ItemDefinition> itemDefinitions;
 
-    @Parameterized.Parameters
     public static Collection<List<ItemDefinition>> generateParameters() {
         final List<ItemDefinition> baseItemDefinitions = getBaseListOfItemDefinitions(1);
 
@@ -181,8 +176,10 @@ public class ItemDefinitionDependenciesGeneratedTest {
         return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
     }
 
-    @Test
-    public void testOrdering() {
+    @MethodSource("generateParameters")
+    @ParameterizedTest
+    public void ordering(List<ItemDefinition> itemDefinitions) {
+        initItemDefinitionDependenciesGeneratedTest(itemDefinitions);
         logger.trace("Item definitions:");
         itemDefinitions.forEach(itemDefinition -> {
             logger.trace(itemDefinition.getName());
@@ -216,5 +213,9 @@ public class ItemDefinitionDependenciesGeneratedTest {
             index++;
         }
         return -1;
+    }
+
+    public void initItemDefinitionDependenciesGeneratedTest(List<ItemDefinition> itemDefinitions) {
+        this.itemDefinitions = itemDefinitions;
     }
 }

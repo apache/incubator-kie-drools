@@ -25,7 +25,8 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
@@ -33,8 +34,13 @@ import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile) {
+        expression( expression,  result, severity, testFEELTarget, useExtendedProfile);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 { "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
                 { "now()", ZonedDateTime.class , null},

@@ -22,53 +22,53 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class InsertBeforeFunctionTest {
+class InsertBeforeFunctionTest {
 
     private InsertBeforeFunction insertBeforeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         insertBeforeFunction = new InsertBeforeFunction();
     }
 
     @Test
-    public void invokeListNull() {
+    void invokeListNull() {
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(null, BigDecimal.ZERO, new Object()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionNull() {
+    void invokePositionNull() {
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(Collections.emptyList(), null, new Object()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListPositionNull() {
+    void invokeListPositionNull() {
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(null, null, new Object()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionZero() {
+    void invokePositionZero() {
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(Collections.emptyList(), BigDecimal.ZERO, new Object()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionOutsideListBounds() {
+    void invokePositionOutsideListBounds() {
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(Collections.emptyList(), BigDecimal.ONE, new Object()), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(Collections.emptyList(), BigDecimal.valueOf(-1), new Object()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeInsertIntoEmptyList() {
+    void invokeInsertIntoEmptyList() {
         // According to spec, inserting into empty list shouldn't be possible. For inserting into empty list, user should use append() function.
         FunctionTestUtil.assertResultError(insertBeforeFunction.invoke(Collections.emptyList(), BigDecimal.ONE, null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionPositive() {
+    void invokePositionPositive() {
         FunctionTestUtil.assertResult(insertBeforeFunction.invoke(Collections.singletonList("test"), BigDecimal.ONE, null), Arrays.asList(null, "test"));
         FunctionTestUtil.assertResult(
                 insertBeforeFunction.invoke(Arrays.asList("test", null, BigDecimal.ZERO), BigDecimal.valueOf(2), "testtt"),
@@ -79,7 +79,7 @@ public class InsertBeforeFunctionTest {
     }
 
     @Test
-    public void invokePositionNegative() {
+    void invokePositionNegative() {
         FunctionTestUtil.assertResult(insertBeforeFunction.invoke(Collections.singletonList("test"), BigDecimal.valueOf(-1), null), Arrays.asList(null, "test"));
         FunctionTestUtil.assertResult(
                 insertBeforeFunction.invoke(Arrays.asList("test", null, BigDecimal.ZERO), BigDecimal.valueOf(-2), "testtt"),

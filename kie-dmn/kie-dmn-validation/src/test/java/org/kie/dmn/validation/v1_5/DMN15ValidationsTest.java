@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.io.ClassPathResource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -39,8 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -53,7 +53,7 @@ public class DMN15ValidationsTest {
 
 
     @Test
-    public void overridingUnnamedImportValidation() {
+    void overridingUnnamedImportValidation() {
         String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
         String importingModelFileName = "valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn";
         String modelName = "Importing empty-named Model";
@@ -64,7 +64,7 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void namedImportValidation() {
+    void namedImportValidation() {
         String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
         String importingModelFileName = "valid_models/DMNv1_5/Importing_Named_Model.dmn";
         String modelName = "Importing named Model";
@@ -75,19 +75,19 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void unnamedImportValidationWithHrefNamespace() {
+    void unnamedImportValidationWithHrefNamespace() {
         commonUnnamedImportValidation("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
-    public void unnamedImportValidationWithoutHrefNamespace() {
+    void unnamedImportValidationWithoutHrefNamespace() {
         commonUnnamedImportValidation("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
                                       "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
-    public void forLoopDatesEvaluateValidation() {
+    void forLoopDatesEvaluateValidation() {
         String modelFileName = "valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn";
         String modelName = "For Loop Dates Evaluate";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
@@ -96,7 +96,7 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void listReplaceEvaluateValidation() {
+    void listReplaceEvaluateValidation() {
         String modelFileName = "valid_models/DMNv1_5/ListReplaceEvaluate.dmn";
         String modelName = "List Replace Evaluate";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
@@ -105,7 +105,7 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void negationOfDurationEvaluateValidation() {
+    void negationOfDurationEvaluateValidation() {
         String modelFileName = "valid_models/DMNv1_5/NegationOfDurationEvaluate.dmn";
         String modelName = "Negation of Duration Evaluate";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_09E8A38A-AD24-4C3D-8307-029C0C4D373F";
@@ -114,7 +114,7 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void dateToDateTimeFunctionValidation() {
+    void dateToDateTimeFunctionValidation() {
         String modelFileName = "valid_models/DMNv1_5/DateToDateTimeFunction.dmn";
         String modelName = "new-file";
         String modelNamespace = "https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FBEE";
@@ -123,7 +123,7 @@ public class DMN15ValidationsTest {
     }
 
     @Test
-    public void typeConstraintsChecksValidation() {
+    void typeConstraintsChecksValidation() {
         String modelFileName = "valid_models/DMNv1_5/TypeConstraintsChecks.dmn";
         String modelName = "TypeConstraintsChecks";
         String modelNamespace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";

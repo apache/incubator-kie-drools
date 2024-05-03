@@ -21,8 +21,10 @@ package org.kie.dmn.legacy.tests.core.v1_1;
 import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message.Level;
@@ -41,13 +43,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNAssemblerTest extends BaseDMN1_1VariantTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNAssemblerTest.class);
-
-    public DMNAssemblerTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testDuplicateModel() {
+    
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void duplicateModel(VariantTestConf conf) {
+        testConfig = conf;
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
         
@@ -62,8 +62,10 @@ public class DMNAssemblerTest extends BaseDMN1_1VariantTest {
         assertThat(results.getMessages(Level.ERROR)).hasSizeGreaterThan(0);
     }
 
-    @Test
-    public void testExtendedMode() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void extendedMode(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("strictMode.dmn", this.getClass() );
         final DMNModel model = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "strictMode" );
         final DMNContext ctx = runtime.newContext();
@@ -72,8 +74,10 @@ public class DMNAssemblerTest extends BaseDMN1_1VariantTest {
         assertThat(result.getDecisionResultByName("time").getResult()).isEqualTo(DateTimeFormatter.ISO_TIME.parse("14:30:22z", OffsetTime::from));
     }
 
-    @Test
-    public void testStrictMode() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void strictMode(VariantTestConf conf) {
+        testConfig = conf;
         System.setProperty("org.kie.dmn.strictConformance", "true");
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("strictMode.dmn", this.getClass() );
         final DMNModel model = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "strictMode" );
@@ -83,8 +87,10 @@ public class DMNAssemblerTest extends BaseDMN1_1VariantTest {
         assertThat(result.getDecisionResultByName("time").getResult()).isNull();
     }
 
-    @Test
-    public void testStrictModeProp() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void strictModeProp(VariantTestConf conf) {
+        testConfig = conf;
         final KieServices services = KieServices.Factory.get();
         final KieFileSystem fileSystem = services.newKieFileSystem();
         final KieModuleModel moduleModel = services.newKieModuleModel();
@@ -101,8 +107,8 @@ public class DMNAssemblerTest extends BaseDMN1_1VariantTest {
         assertThat(result.getDecisionResultByName("time").getResult()).isNull();
     }
 
-    @After
-    public void clearSystemProperty() {
+    @AfterEach
+    void clearSystemProperty() {
         System.clearProperty("org.kie.dmn.strictConformance");
     }
 }

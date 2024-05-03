@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.Domain;
@@ -31,10 +31,10 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntervalTest {
+class IntervalTest {
 
     @Test
-    public void testFlatten() {
+    void flatten() {
         Interval a = new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.OPEN, 0, 0);
         Interval b = new Interval(RangeBoundary.CLOSED, 1, 2, RangeBoundary.CLOSED, 0, 0);
         Interval c = new Interval(RangeBoundary.CLOSED, 3, 4, RangeBoundary.CLOSED, 0, 0);
@@ -44,7 +44,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testFlatten2() {
+    void flatten2() {
         Interval a = new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.OPEN, 0, 0);
         Interval b = new Interval(RangeBoundary.CLOSED, 1, 2, RangeBoundary.CLOSED, 0, 0);
         Interval c = new Interval(RangeBoundary.OPEN, 3, 4, RangeBoundary.CLOSED, 0, 0);
@@ -55,7 +55,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testFlatten3() {
+    void flatten3() {
         Interval a = new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.CLOSED, 0, 0);
         Interval b = new Interval(RangeBoundary.CLOSED, 1, 2, RangeBoundary.CLOSED, 0, 0);
         Interval c = new Interval(RangeBoundary.CLOSED, 3, 4, RangeBoundary.CLOSED, 0, 0);
@@ -65,7 +65,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testInvertOverDomain() {
+    void invertOverDomain() {
         Interval a = new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.OPEN, 1, 2);
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
 
@@ -76,7 +76,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testInvertOverDomain2() {
+    void invertOverDomain2() {
         Interval a = new Interval(RangeBoundary.CLOSED, "i", "o", RangeBoundary.OPEN, 9, 8);
         Interval domain = new Interval(RangeBoundary.CLOSED, "a", "u", RangeBoundary.CLOSED, 0, 0);
 
@@ -85,9 +85,9 @@ public class IntervalTest {
         assertInterval(result.get(0), RangeBoundary.CLOSED, "a", "i", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.CLOSED, "o", "u", RangeBoundary.CLOSED, 9, 8);
     }
-    
+
     @Test
-    public void testInvertOverDomainList1() {
+    void invertOverDomainList1() {
         Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "a", RangeBoundary.CLOSED, 9, 8);
         Interval i1 = new Interval(RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
@@ -98,9 +98,9 @@ public class IntervalTest {
         assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "e", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
     }
-    
+
     @Test
-    public void testInvertOverDomainList2() {
+    void invertOverDomainList2() {
         Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "e", RangeBoundary.OPEN, 9, 8);
         Interval i1 = new Interval(RangeBoundary.CLOSED, "e", "i", RangeBoundary.CLOSED, 9, 8);
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
@@ -110,9 +110,9 @@ public class IntervalTest {
         assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
         assertInterval(result.get(1), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
     }
-    
+
     @Test
-    public void testInvertOverDomainList3() {
+    void invertOverDomainList3() {
         Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "e", RangeBoundary.OPEN, 9, 8);
         Interval i1 = new Interval(RangeBoundary.OPEN, "e", "i", RangeBoundary.CLOSED, 9, 8);
         Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
@@ -123,9 +123,9 @@ public class IntervalTest {
         assertInterval(result.get(1), RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
         assertInterval(result.get(2), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
     }
-    
+
     @Test
-    public void testInvertOverDomainList4() {
+    void invertOverDomainList4() {
         Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "a", RangeBoundary.CLOSED, 9, 8);
         Interval i1 = new Interval(RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
         Interval i2 = new Interval(RangeBoundary.CLOSED, "i", "i", RangeBoundary.CLOSED, 9, 8);
@@ -183,7 +183,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testHumanFriendlyContinuous() {
+    void humanFriendlyContinuous() {
         Interval domainInterval = new Interval(RangeBoundary.CLOSED, 0, 100, RangeBoundary.CLOSED, 0, 0);
         DummyDomain domain = new DummyDomain(domainInterval, Collections.emptyList());
 
@@ -195,18 +195,18 @@ public class IntervalTest {
         assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain)).startsWith("<");
         assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain)).doesNotStartWith("<=");
     }
-    
+
     @Test
-    public void testFlatten4() {
+    void flatten4() {
         Interval a = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-31"), RangeBoundary.CLOSED, 0, 0);
         Interval b = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-04-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0);
 
         List<Interval> result = Interval.flatten(Arrays.asList(b, a));
         assertThat(result).containsExactly(new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0));
     }
-    
+
     @Test
-    public void testNoFlatten() {
+    void noFlatten() {
         Interval a = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-31"), RangeBoundary.CLOSED, 0, 0);
         Interval b = new Interval(RangeBoundary.OPEN, LocalDate.parse("2021-04-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0);
 

@@ -20,7 +20,7 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class ManualFilterTest {
     }
 
     @Test
-    public void testManualContext() {
+    void manualContext() {
         CompiledFEELExpression compiledExpression = new ManualFilterExpression();
         LOG.debug("{}", compiledExpression);
 
