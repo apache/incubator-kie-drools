@@ -1,0 +1,18 @@
+{
+  "id": "errorWithMetadata",
+  "version": "1.0",
+  "name": "Workflow Error example with metadata",
+  "description": "An example of how to abort a workflow with error given a condition",
+  "start": "checkEven",
+  "states": [
+    {
+      "name": "checkEven",
+      "type": "operation",
+      "actions": [],
+      "end" : true,
+      "metadata": {
+         "errorMessage": "if .number % 2 != 0 then \"Is Odd number!!!!\" else null end"
+       } 
+    }
+  ]
+}

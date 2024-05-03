@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -51,6 +52,7 @@ import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.ErrorExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ExpressionActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.MergeActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
@@ -517,15 +519,26 @@ public abstract class StateHandler<S extends State> {
         WorkflowElementIdentifier id = parserContext.newId();
         EndNodeFactory<?> nodeFactory = factory.endNode(id);
         NodeFactory<?, ?> startNode = nodeFactory;
+
         List<ProduceEvent> produceEvents = end.getProduceEvents();
         if (produceEvents != null && !produceEvents.isEmpty()) {
             startNode = handleProduceEvents(factory, nodeFactory, produceEvents);
+        }
+
+        Map<String, String> metadata = state.getMetadata();
+        if (metadata != null) {
+            String errorMessage = metadata.get("errorMessage");
+            if (errorMessage != null && !errorMessage.isBlank()) {
+                NodeFactory<?, ?> errorMessageNode =
+                        factory.actionNode(parserContext.newId()).action(new ErrorExpressionActionSupplier(workflow.getExpressionLang(), errorMessage, SWFConstants.DEFAULT_WORKFLOW_VAR));
+                connect(errorMessageNode, startNode);
+                startNode = errorMessageNode;
+            }
         }
         nodeFactory.terminate(end.isTerminate());
         return startNode;
     }
 
-    @SuppressWarnings("squid:S1452")
     private NodeFactory<?, ?> compensationEvent(RuleFlowNodeContainerFactory<?, ?> factory, NodeFactory<?, ?> sourceFactory) {
         WorkflowElementIdentifier eventId = parserContext.newId();
         NodeFactory<?, ?> compensationNode =

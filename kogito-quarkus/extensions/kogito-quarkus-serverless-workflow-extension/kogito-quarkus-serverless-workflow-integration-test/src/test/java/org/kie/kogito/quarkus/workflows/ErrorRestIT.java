@@ -75,4 +75,25 @@ public class ErrorRestIT {
                 .body("workflowdata.numberType", is("even"))
                 .body("workflowdata.perfect", is(false));
     }
+
+    @Test
+    public void testErrorWithMetadata() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"number\" : 12342}")
+                .when()
+                .post("/errorWithMetadata")
+                .then()
+                .statusCode(201);
+
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"number\" : 12341}")
+                .when()
+                .post("/errorWithMetadata")
+                .then()
+                .statusCode(400);
+    }
 }
