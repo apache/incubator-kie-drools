@@ -579,6 +579,20 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      */
     @Override
     public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
+        if (ctx.xpathPrimary() != null) {
+            String constraint = visitConstraintChildren(ctx);
+            ExprConstraintDescr constraintDescr = BaseDescrFactory.builder(new ExprConstraintDescr(constraint))
+                    .withParserRuleContext(ctx)
+                    .build();
+            constraintDescr.setType(ExprConstraintDescr.Type.NAMED);
+            constraintDescr.setPosition(0);
+            PatternDescr patternDescr = BaseDescrFactory.builder(new PatternDescr())
+                    .withParserRuleContext(ctx)
+                    .build();
+            patternDescr.addConstraint(constraintDescr);
+            return patternDescr;
+        }
+
         PatternDescr patternDescr = BaseDescrFactory.builder(new PatternDescr(ctx.objectType.getText()))
                 .withParserRuleContext(ctx)
                 .build();

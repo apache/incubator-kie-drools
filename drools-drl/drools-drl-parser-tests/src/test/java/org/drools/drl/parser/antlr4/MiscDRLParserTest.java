@@ -4091,6 +4091,28 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void ooPathLhsPattern() {
+        final String text = "package org.drools\n"
+                + "rule PlainNot when\n"
+                + "    not( /strings [ this == \"It Does Work\" ] )\n"
+                + "then\n"
+                + "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
+            assertThat(notDescr.getDescrs()).hasSize(1);
+            assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+               assertThat(patternDescr.getConstraint().getDescrs()).hasSize(1);
+               assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                   assertThat(exprConstraintDescr.getExpression()).isEqualTo("/strings [ this == \"It Does Work\" ]");
+                   assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
+                   assertThat(exprConstraintDescr.getPosition()).isEqualTo(0);
+               });
+            });
+        });
+    }
+
+    @Test
     void inlineCast() {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
