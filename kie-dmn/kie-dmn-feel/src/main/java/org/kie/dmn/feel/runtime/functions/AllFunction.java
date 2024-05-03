@@ -26,6 +26,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class AllFunction
         extends BaseFEELFunction {
 
+    public static final AllFunction INSTANCE = new AllFunction();
+
     public AllFunction() {
         super( "all" );
     }

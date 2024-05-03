@@ -24,6 +24,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class StringUpperCaseFunction
         extends BaseFEELFunction {
 
+    public static final StringUpperCaseFunction INSTANCE = new StringUpperCaseFunction();
+
     public StringUpperCaseFunction() {
         super( "upper case" );
     }

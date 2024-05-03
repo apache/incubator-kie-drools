@@ -28,6 +28,8 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 public class DecimalFunction
         extends BaseFEELFunction {
 
+    public static final DecimalFunction INSTANCE = new DecimalFunction();
+
     public DecimalFunction() {
         super( "decimal" );
     }

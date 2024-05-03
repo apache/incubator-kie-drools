@@ -22,17 +22,17 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.openapi.impl.DMNOASConstants.X_DMN_DESCRIPTIONS;
 
-public class DMNDescriptionTest extends BaseDMNOASTest {
+class DMNDescriptionTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("dmnDescription.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
         JacksonUtils.printoutJSON(result.getJsonSchemaNode());

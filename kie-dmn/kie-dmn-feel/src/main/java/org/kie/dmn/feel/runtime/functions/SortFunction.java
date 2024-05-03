@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class SortFunction
         extends BaseFEELFunction {
 
+    public static final SortFunction INSTANCE = new SortFunction();
+
     public SortFunction() {
         super( "sort" );
     }

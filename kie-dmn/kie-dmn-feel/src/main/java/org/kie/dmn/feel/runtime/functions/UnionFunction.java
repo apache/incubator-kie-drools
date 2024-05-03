@@ -29,6 +29,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class UnionFunction
         extends BaseFEELFunction {
 
+    public static final UnionFunction INSTANCE = new UnionFunction();
+
     public UnionFunction() {
         super( "union" );
     }

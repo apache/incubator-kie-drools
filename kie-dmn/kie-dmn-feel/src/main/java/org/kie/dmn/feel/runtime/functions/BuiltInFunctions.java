@@ -44,46 +44,46 @@ public class BuiltInFunctions {
             DateAndTimeFunction.INSTANCE,
             DurationFunction.INSTANCE,
             YearsAndMonthsFunction.INSTANCE,
-            new StringFunction(),
-            new NumberFunction(),
-            new SubstringFunction(),
-            new SubstringBeforeFunction(),
-            new SubstringAfterFunction(),
-            new StringLengthFunction(),
-            new StringUpperCaseFunction(),
-            new StringLowerCaseFunction(),
-            new ContainsFunction(),
-            new StartsWithFunction(),
-            new EndsWithFunction(),
-            new MatchesFunction(),
-            new ReplaceFunction(),
-            new ListContainsFunction(),
-            new CountFunction(),
-            new MinFunction(),
-            new MaxFunction(),
-            new SumFunction(),
-            new MeanFunction(),
-            new SublistFunction(),
-            new AppendFunction(),
-            new ConcatenateFunction(),
-            new InsertBeforeFunction(),
-            new RemoveFunction(),
-            new ReverseFunction(),
-            new IndexOfFunction(),
-            new UnionFunction(),
-            new DistinctValuesFunction(),
-            new FlattenFunction(),
-            new DecimalFunction(),
-            new FloorFunction(),
-            new CeilingFunction(),
-            new DecisionTableFunction(),
-            new NotFunction(),
-            new SortFunction(),
-            new GetEntriesFunction(),
-            new GetValueFunction(),
+            StringFunction.INSTANCE,
+            NumberFunction.INSTANCE,
+            SubstringFunction.INSTANCE,
+            SubstringBeforeFunction.INSTANCE,
+            SubstringAfterFunction.INSTANCE,
+            StringLengthFunction.INSTANCE,
+            StringUpperCaseFunction.INSTANCE,
+            StringLowerCaseFunction.INSTANCE,
+            ContainsFunction.INSTANCE,
+            StartsWithFunction.INSTANCE,
+            EndsWithFunction.INSTANCE,
+            MatchesFunction.INSTANCE,
+            ReplaceFunction.INSTANCE,
+            ListContainsFunction.INSTANCE,
+            CountFunction.INSTANCE,
+            MinFunction.INSTANCE,
+            MaxFunction.INSTANCE,
+            SumFunction.INSTANCE,
+            MeanFunction.INSTANCE,
+            SublistFunction.INSTANCE,
+            AppendFunction.INSTANCE,
+            ConcatenateFunction.INSTANCE,
+            InsertBeforeFunction.INSTANCE,
+            RemoveFunction.INSTANCE,
+            ReverseFunction.INSTANCE,
+            IndexOfFunction.INSTANCE,
+            UnionFunction.INSTANCE,
+            DistinctValuesFunction.INSTANCE,
+            FlattenFunction.INSTANCE,
+            DecimalFunction.INSTANCE,
+            FloorFunction.INSTANCE,
+            CeilingFunction.INSTANCE,
+            DecisionTableFunction.INSTANCE,
+            NotFunction.INSTANCE,
+            SortFunction.INSTANCE,
+            GetEntriesFunction.INSTANCE,
+            GetValueFunction.INSTANCE,
 
-            new AllFunction(),
-            new AnyFunction(),
+            AllFunction.INSTANCE,
+            AnyFunction.INSTANCE,
             AbsFunction.INSTANCE,
             ModuloFunction.INSTANCE,
             ProductFunction.INSTANCE,
@@ -126,10 +126,21 @@ public class BuiltInFunctions {
         return FUNCTIONS;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends FEELFunction> T getFunction(Class<T> functionClazz) {
-        return (T) Stream.of(FUNCTIONS)
+        return Stream.of(FUNCTIONS)
                 .filter(f -> functionClazz.isAssignableFrom(f.getClass()))
+                .map(f -> (T) f)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find function by class " + functionClazz.getCanonicalName() + "!"));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends FEELFunction> T getFunction(String functionName) {
+        return Stream.of(FUNCTIONS)
+                .filter(f -> f.getName().equals(functionName))
+                .map(f -> (T) f)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find function by name " + functionName + "!"));
     }
 }

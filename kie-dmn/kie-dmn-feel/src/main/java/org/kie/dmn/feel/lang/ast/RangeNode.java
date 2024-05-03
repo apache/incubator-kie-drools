@@ -33,7 +33,7 @@ import org.kie.dmn.feel.util.Msg;
 public class RangeNode
         extends BaseNode {
 
-    public static enum IntervalBoundary {
+    public enum IntervalBoundary {
         OPEN, CLOSED;
         public static IntervalBoundary low(String input) {
             switch (input) {

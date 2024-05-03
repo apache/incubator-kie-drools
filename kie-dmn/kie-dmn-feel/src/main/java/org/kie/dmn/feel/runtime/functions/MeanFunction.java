@@ -31,7 +31,9 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class MeanFunction
         extends BaseFEELFunction {
 
-    private SumFunction sum = new SumFunction();
+    public static final MeanFunction INSTANCE = new MeanFunction();
+
+    private SumFunction sum = SumFunction.INSTANCE;
 
     public MeanFunction() {
         super( "mean" );
