@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -4626,5 +4627,43 @@ class MiscDRLParserTest {
 
         TypeFieldDescr romanStr = enumDeclarationDescr.getFields().get("romanStr");
         assertThat(romanStr.getPattern().getObjectType()).isEqualTo("String");
+    }
+
+    @Test
+    void packageChildrenNamespaceAndUnitProperties() {
+        String namespace = "org.drools.compiler.test";
+        String source = readResource("package_children.drl");
+        PackageDescr pkg = parseAndGetPackageDescr(source);
+
+        // Package and Rule Unit's namespace.
+        assertThat(pkg.getName()).isEqualTo(namespace);
+        assertThat(pkg.getUnit().getNamespace()).isEqualTo(namespace);
+
+        // Children that are expected to have the package name as their namespace.
+        assertNamespace(pkg.getImports(), namespace);
+        assertNamespace(pkg.getFunctionImports(), namespace);
+        assertNamespace(pkg.getAccumulateImports(), namespace);
+        assertNamespace(pkg.getGlobals(), namespace);
+        assertNamespace(pkg.getFunctions(), namespace);
+        assertNamespace(pkg.getRules(), namespace);
+        assertNamespace(pkg.getAttributes(), namespace);
+
+        // Children that are expected to have no namespace.
+        assertNamespace(pkg.getTypeDeclarations(), "");
+        assertNamespace(pkg.getEnumDeclarations(), "");
+        assertNamespace(pkg.getEntryPointDeclarations(), "");
+        assertNamespace(pkg.getWindowDeclarations(), "");
+
+        assertThat(pkg.getRules())
+                .allSatisfy(ruleDescr -> assertThat(ruleDescr.getUnit()).isNotNull())
+                .allSatisfy(ruleDescr -> assertThat(ruleDescr.getUnit().getTarget()).isEqualTo("TestUnit"));
+
+        assertThat(pkg.getRules().get(0).getUnitQualifiedName()).isEqualTo("TestUnit.MyQuery");
+        assertThat(pkg.getRules().get(1).getUnitQualifiedName()).isEqualTo("TestUnit.My Rule");
+    }
+
+    static void assertNamespace(Collection<? extends BaseDescr> children, String namespace) {
+        assertThat(children).isNotEmpty(); // Make sure that every child type is represented.
+        assertThat(children).allSatisfy(baseDescr -> assertThat(baseDescr.getNamespace()).isEqualTo(namespace));
     }
 }
