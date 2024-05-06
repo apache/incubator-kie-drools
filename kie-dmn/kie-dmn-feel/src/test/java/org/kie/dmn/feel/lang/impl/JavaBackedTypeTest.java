@@ -20,17 +20,17 @@ package org.kie.dmn.feel.lang.impl;
 
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.FEELType;
 import org.kie.dmn.feel.model.Person;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JavaBackedTypeTest {
+class JavaBackedTypeTest {
 
     @Test
-    public void testPerson() {
+    void person() {
         CompositeType personType = (CompositeType) JavaBackedType.of( Person.class );
         Set<String> personProperties = personType.getFields().keySet();
         
@@ -72,9 +72,9 @@ public class JavaBackedTypeTest {
             return b;
         }
     }
-    
+
     @Test
-    public void testMyPojoNoMethodAnn() {
+    void myPojoNoMethodAnn() {
         CompositeType personType = (CompositeType) JavaBackedType.of( MyPojoNoMethodAnn.class );
         Set<String> personProperties = personType.getFields().keySet();
         

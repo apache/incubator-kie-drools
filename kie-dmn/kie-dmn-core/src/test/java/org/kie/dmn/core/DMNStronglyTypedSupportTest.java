@@ -29,10 +29,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -56,17 +58,14 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 /* These are duplicated test that are run against the Typesafe DMN, see https://issues.redhat.com/browse/DROOLS-5061 */
 public class DMNStronglyTypedSupportTest extends BaseVariantTest {
 
-    public DMNStronglyTypedSupportTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
-    @Test
-    public void testDMNInputDataNodeTypeTest() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void dmnInputDataNodeTypeTest(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-1569
         final DMNRuntime runtime = createRuntime("DMNInputDataNodeTypeTest.dmn", this.getClass());
         final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c";
@@ -106,8 +105,10 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         assertThat(idnCarDamageResponsibility.getType().isComposite()).isTrue();
     }
 
-    @Test
-    public void testDateAndTime() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void dateAndTime(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("0007-date-time.dmn", getClass());
         runtime.addListener(DMNRuntimeUtil.createListener());
 
@@ -190,8 +191,10 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testTimeFunction() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void timeFunction(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("TimeFromDate.dmn", getClass());
         runtime.addListener(DMNRuntimeUtil.createListener());
 
@@ -211,8 +214,10 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testSO58507157() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void so58507157(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-4679 DMN FEEL list contains() invocation from DMN layer fixes
         final DMNRuntime runtime = createRuntime("so58507157.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://sample.dmn", "DecisionNumberInList");
@@ -243,8 +248,10 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testDTinputExprCollectionWithAllowedValuesA() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void dTinputExprCollectionWithAllowedValuesA(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("DROOLS-4379.dmn", this.getClass());
         // DROOLS-4379 DMN decision table input expr collection with allowedValues
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_95436b7a-7268-4713-bf84-58bff10407b4", "Dessin 1");
@@ -268,9 +275,12 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         }
     }
 
-    @Test(timeout = 30_000L)
-    @Ignore("This shouldn't be supported by Typesafe DMN")
-    public void testAccessorCache() {
+    @ParameterizedTest(name = "{0}")
+    @Timeout(value = 30_000L, unit = TimeUnit.MILLISECONDS)
+    @Disabled("This shouldn't be supported by Typesafe DMN")
+    @MethodSource("params")
+    public void accessorCache(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("20180731-pr1997.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997");
         assertThat(dmnModel).isNotNull();
@@ -288,9 +298,11 @@ public class DMNStronglyTypedSupportTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    @Ignore("This test has a different assertion as the output is typesafe")
-    public void testNotWithPredicates20180601b() {
+    @ParameterizedTest(name = "{0}")
+    @Disabled("This test has a different assertion as the output is typesafe")
+    @MethodSource("params")
+    public void notWithPredicates20180601b(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2605
         final DMNRuntime runtime = createRuntime("BruceTask20180601.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab", "Bruce Task");

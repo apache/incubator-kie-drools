@@ -18,7 +18,22 @@
  */
 package org.kie.dmn.backend.marshalling.v1_5;
 
-import org.junit.Test;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_3.extensions.TrisoExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -38,20 +53,6 @@ import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
 
-import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnmarshalMarshalTest {
@@ -61,48 +62,48 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void testv15_simple() throws Exception {
+    void testv15_simple() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "simple.dmn");
     }
 
     @Test
-    public void testv15_ch11example_asFromOMG() throws Exception {
+    void testv15_ch11example_asFromOMG() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving (re-using from package of 1.3)
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_5/", "Chapter 11 Example.dmn", marshaller, DMN15_SCHEMA_SOURCE);
     }
 
     @Test
-    public void testv15_financial() throws Exception {
+    void testv15_financial() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "Financial.dmn");
     }
 
     @Test
-    public void testv15_loan_info() throws Exception {
+    void testv15_loan_info() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "Loan info.dmn");
     }
 
     @Test
-    public void testv15_recommended_loan_product() throws Exception {
+    void testv15_recommended_loan_product() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "Recommended Loan Products.dmn");
     }
-    
+
     @Test
-    public void testv15_for() throws Exception {
+    void testv15_for() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleFor.dmn");
     }
-    
+
     @Test
-    public void testv15_quantified() throws Exception {
+    void testv15_quantified() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleQuantified.dmn");
     }
-    
+
     @Test
-    public void testv15_conditional() throws Exception {
+    void testv15_conditional() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleConditional.dmn");
     }
-    
+
     @Test
-    public void testv15_filter() throws Exception {
+    void testv15_filter() throws Exception {
         testRoundTripV15("org/kie/dmn/backend/marshalling/v1_5/", "sampleFilter.dmn");
     }
 

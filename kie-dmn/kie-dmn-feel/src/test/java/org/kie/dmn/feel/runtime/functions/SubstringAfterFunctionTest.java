@@ -18,34 +18,34 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class SubstringAfterFunctionTest {
+class SubstringAfterFunctionTest {
 
     private SubstringAfterFunction substringAfterFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         substringAfterFunction = new SubstringAfterFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultError(substringAfterFunction.invoke((String) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(substringAfterFunction.invoke(null, "test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(substringAfterFunction.invoke("test", null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeMatchExists() {
+    void invokeMatchExists() {
         FunctionTestUtil.assertResult(substringAfterFunction.invoke("foobar", "ob"), "ar");
         FunctionTestUtil.assertResult(substringAfterFunction.invoke("foobar", "o"), "obar");
     }
 
     @Test
-    public void invokeMatchNotExists() {
+    void invokeMatchNotExists() {
         FunctionTestUtil.assertResult(substringAfterFunction.invoke("foobar", "oook"), "");
     }
 }

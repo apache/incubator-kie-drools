@@ -23,14 +23,14 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 
-public class FEELNumberCoercionTest {
+class FEELNumberCoercionTest {
     private final FEEL feel = FEEL.newInstance();
     
     private Object evaluateInfix(final Object x, final InfixOperator op, final Object y) {
@@ -41,9 +41,9 @@ public class FEELNumberCoercionTest {
         System.out.println(expression);
         return feel.evaluate(expression, inputVariables);
     }
-    
+
     @Test
-    public void test() {
+    void test() {
         assertThat( evaluateInfix( 1  , InfixOperator.LT  , 2d  )).isEqualTo(Boolean.TRUE);
         assertThat( evaluateInfix( 2d , InfixOperator.LT  ,  1  )).isEqualTo(Boolean.FALSE);
         assertThat( evaluateInfix( 1  , InfixOperator.LTE , 2d  )).isEqualTo(Boolean.TRUE);
@@ -66,9 +66,9 @@ public class FEELNumberCoercionTest {
     private static Map.Entry<String, Object> var(final String name, final Object value) {
         return new SimpleEntry<>(name, value);
     }
-    
+
     @Test
-    public void testOthers() {
+    void others() {
         assertThat( evaluate("ceiling( 1.01 )") ).isEqualTo(getBigDecimalOrNull( 2d ) );
         assertThat( evaluate("ceiling( x )", var("x", 1.01d )) ).isEqualTo(getBigDecimalOrNull( 2d ) );
         assertThat( ((Map) evaluate("{ myf : function( v1, v2 ) ceiling(v1), invoked: myf(v2: false, v1: x) }", var("x", 1.01d) )).get("invoked")).isEqualTo(getBigDecimalOrNull( 2d ) );
@@ -79,7 +79,7 @@ public class FEELNumberCoercionTest {
     }
 
     @Test
-    public void testMethodGetBigDecimalOrNull() {
+    void methodGetBigDecimalOrNull() {
         assertThat( getBigDecimalOrNull((short) 1)).isEqualTo(BigDecimal.ONE);
         assertThat( getBigDecimalOrNull((byte) 1)).isEqualTo(BigDecimal.ONE);
         assertThat( getBigDecimalOrNull(1)).isEqualTo(BigDecimal.ONE);

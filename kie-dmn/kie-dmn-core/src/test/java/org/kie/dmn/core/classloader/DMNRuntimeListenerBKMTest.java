@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -70,7 +70,7 @@ public class DMNRuntimeListenerBKMTest {
     }
 
     @Test
-    public void test() {
+    void test() {
         final BKMListener listenerUT = new BKMListener();
 
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("sumWithBKM.dmn", this.getClass());

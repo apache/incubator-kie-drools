@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.Type;
@@ -47,17 +47,17 @@ public class DirectCompilerTest {
 
 
     @Test
-    public void test_FEEL_number() {
+    void feel_number() {
         assertThat(parseCompileEvaluate("10")).isEqualTo(BigDecimal.valueOf(10));
     }
-    
+
     @Test
-    public void test_FEEL_negative_number() {
+    void feel_negative_number() {
         assertThat(parseCompileEvaluate("-10")).isEqualTo(BigDecimal.valueOf(-10));
     }
-    
+
     @Test
-    public void test_FEEL_DROOLS_2143() {
+    void feel_drools_2143() {
         // DROOLS-2143: Allow ''--1' expression as per FEEL grammar rule 26 
         assertThat(parseCompileEvaluate("--10")).isEqualTo(BigDecimal.valueOf(10));
         assertThat(parseCompileEvaluate("---10")).isEqualTo(BigDecimal.valueOf(-10));
@@ -65,24 +65,24 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_FEEL_boolean() {
+    void feel_boolean() {
         assertThat(parseCompileEvaluate("false")).isEqualTo(Boolean.FALSE);
         assertThat(parseCompileEvaluate("true")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate("null")).isNull();
     }
-    
+
     @Test
-    public void test_FEEL_null() {
+    void feel_null() {
         assertThat(parseCompileEvaluate("null")).isNull();
     }
-    
+
     @Test
-    public void test_FEEL_string() {
+    void feel_string() {
         assertThat(parseCompileEvaluate("\"some string\"")).isEqualTo("some string" );
     }
-    
+
     @Test
-    public void test_primary_parens() {
+    void primary_parens() {
         assertThat(parseCompileEvaluate("(\"some string\")")).isEqualTo("some string" );
         assertThat(parseCompileEvaluate("(123)")).isEqualTo(BigDecimal.valueOf(123));
         assertThat(parseCompileEvaluate("(-123)")).isEqualTo(BigDecimal.valueOf(-123));
@@ -90,12 +90,12 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("(false)")).isEqualTo(Boolean.FALSE);
         assertThat(parseCompileEvaluate("(true)")).isEqualTo(Boolean.TRUE);
     }
-    
+
     /**
      * See {@link FEELTernaryLogicTest}
      */
     @Test
-    public void test_ternary_logic() {
+    void ternary_logic() {
         assertThat(parseCompileEvaluate( "true and true")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate( "true and false")).isEqualTo(Boolean.FALSE);
         assertThat(parseCompileEvaluate( "true and null")).isNull();
@@ -120,29 +120,29 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate( "true or false and false")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate( "(true or false) and false")).isEqualTo(Boolean.FALSE);
     }
-    
+
     /**
      * Partially from {@link FEELConditionsAndLoopsTest}
      */
     @Test
-    public void test_if() {
+    void test_if() {
         assertThat(parseCompileEvaluate( "if true then 15 else 5")).isEqualTo(BigDecimal.valueOf( 15 ));
         assertThat(parseCompileEvaluate( "if false then 15 else 5")).isEqualTo(BigDecimal.valueOf( 5 ));
         assertThat(parseCompileEvaluate("if null then 15 else 5")).isEqualTo(BigDecimal.valueOf(5));
         assertThat(parseCompileEvaluate("if \"hello\" then 15 else 5")).isEqualTo(BigDecimal.valueOf(5));
     }
-    
+
     @Test
-    public void test_additiveExpression() {
+    void additive_expression() {
         assertThat(parseCompileEvaluate( "1 + 2")).isEqualTo(BigDecimal.valueOf( 3 ));
         assertThat(parseCompileEvaluate( "1 + null")).isNull();
         assertThat(parseCompileEvaluate( "1 - 2")).isEqualTo(BigDecimal.valueOf( -1 ));
         assertThat(parseCompileEvaluate( "1 - null")).isNull();
         assertThat(parseCompileEvaluate( "\"Hello, \" + \"World\"")).isEqualTo("Hello, World");
     }
-    
+
     @Test
-    public void test_multiplicativeExpression() {
+    void multiplicative_expression() {
         assertThat(parseCompileEvaluate("3 * 5")).isEqualTo(BigDecimal.valueOf(15));
         assertThat(parseCompileEvaluate("3 * null")).isNull();
         assertThat(parseCompileEvaluate("10 / 2")).isEqualTo(BigDecimal.valueOf(5));
@@ -150,13 +150,13 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_exponentiationExpression() {
+    void exponentiation_expression() {
         assertThat(parseCompileEvaluate("3 ** 3")).isEqualTo(BigDecimal.valueOf(27));
         assertThat(parseCompileEvaluate("3 ** null")).isNull();
     }
 
     @Test
-    public void test_logicalNegationExpression() {
+    void logical_negation_expression() {
         // this is all invalid syntax
         assertThat(parseCompileEvaluate("not true")).isNull();
         assertThat(parseCompileEvaluate("not false")).isNull();
@@ -165,7 +165,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_listExpression() {
+    void list_expression() {
         assertThat(parseCompileEvaluate("[]")).asList().isEmpty();
         assertThat(parseCompileEvaluate("[ ]")).asList().isEmpty();
         assertThat(parseCompileEvaluate("[1]")).asList().containsExactly(BigDecimal.valueOf(1));
@@ -173,7 +173,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_instanceOfExpression() {
+    void instance_of_expression() {
         assertThat(parseCompileEvaluate("123 instance of number")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate("\"ciao\" instance of number")).isEqualTo(Boolean.FALSE);
         assertThat(parseCompileEvaluate("123 instance of string")).isEqualTo(Boolean.FALSE);
@@ -181,7 +181,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_between() {
+    void between() {
         assertThat(parseCompileEvaluate("10 between 5 and 12")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate("10 between 20 and 30")).isEqualTo(Boolean.FALSE);
         assertThat(parseCompileEvaluate("10 between 5 and \"foo\"")).isNull();
@@ -191,7 +191,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_filterPath() {
+    void filter_path() {
         // Filtering by index
         assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][1]")).isEqualTo("a");
         assertThat(parseCompileEvaluate("[\"a\", \"b\", \"c\"][2]")).isEqualTo("b");
@@ -218,7 +218,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_filterPath_tricky1() {
+    void filter_path_tricky1() {
         CompiledFEELExpression nameRef = parse( "[ {x:1, y:2}, {x:2, y:3} ][x]");
         LOG.debug("{}", nameRef);
         
@@ -231,7 +231,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_filterPath_tricky2() {
+    void filter_path_tricky2() {
         CompiledFEELExpression nameRef = parse("[ {x:1, y:2}, {x:2, y:3} ][x]");
         LOG.debug("{}", nameRef);
 
@@ -244,7 +244,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_filterPathSelection() {
+    void filter_path_selection() {
         // Selection
         assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].y")).asList().containsExactly(BigDecimal.valueOf(2), BigDecimal.valueOf(3));
         assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2} ].y")).asList().containsExactly(BigDecimal.valueOf(2), null);
@@ -252,7 +252,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_for() {
+    void test_for() {
         // for
         Object parseCompileEvaluate = parseCompileEvaluate("for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y");
 		assertThat(parseCompileEvaluate).asList().
@@ -266,7 +266,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_quantifiedExpressions() {
+    void quantified_expressions() {
         // quantified expressions
         assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > 100")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate("some price in [ 80, 11, 90 ] satisfies price > 100")).isEqualTo(Boolean.FALSE);
@@ -278,24 +278,24 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_basicFunctionInvocation() {
+    void basic_function_invocation() {
         assertThat(parseCompileEvaluate("max(1, 2, 3)")).isEqualTo(new BigDecimal(3));
     }
 
     @Test
-    public void test_basicFunctionDefinition() {
+    void basic_function_definition() {
         assertThat(parseCompileEvaluate("function (a, b) a + b")).isInstanceOf(CompiledCustomFEELFunction.class);
         assertThat(parseCompileEvaluate("{ s : function (a, b) a + b, x : 1, y : 2, r : s(x,y) }.r")).isEqualTo(new BigDecimal(3));
     }
 
     @Test
-    public void test_namedFunctionInvocation() {
+    void named_function_invocation() {
         assertThat(parseCompileEvaluate("substring(start position: 2, string: \"FOOBAR\")")).isEqualTo("OOBAR");
         assertThat(parseCompileEvaluate("ceiling( n : 1.5 )")).isEqualTo(new BigDecimal("2"));
     }
 
     @Test
-    public void test_Misc_fromOriginalFEELInterpretedTestSuite() {
+    void misc_from_original_feelinterpreted_test_suite() {
         assertThat(parseCompileEvaluate("if null then \"foo\" else \"bar\"")).isEqualTo("bar");
         assertThat(parseCompileEvaluate("{ hello world : function() \"Hello World!\", message : hello world() }.message")).isEqualTo("Hello World!");
         assertThat(parseCompileEvaluate("1 + if true then 1 else 2")).isEqualTo(new BigDecimal("2"));
@@ -308,14 +308,14 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void test_Benchmark_feelExpressions() {
+    void benchmark_feel_expressions() {
         assertThat(parseCompileEvaluate("{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name")).isEqualTo("Doe");
         assertThat(parseCompileEvaluate("some price in [ 80, 11, 110 ] satisfies price > 100")).isEqualTo(Boolean.TRUE);
         assertThat(parseCompileEvaluate("every price in [ 80, 11, 90 ] satisfies price > 10")).isEqualTo(Boolean.TRUE);
     }
 
     @Test
-    public void test_contextExpression() {
+    void context_expression() {
         assertThat(parseCompileEvaluate("{}")).isEqualTo(Collections.emptyMap());
         assertThat(parseCompileEvaluate("{ }")).isEqualTo(Collections.emptyMap());
         assertThat(parseCompileEvaluate("{ a : 1 }")).isEqualTo(mapOf(entry("a", new BigDecimal(1))));
@@ -326,23 +326,23 @@ public class DirectCompilerTest {
 
         assertThat(parseCompileEvaluate("{ a : 1, b : a }")).isEqualTo(mapOf(entry("a", new BigDecimal(1)), entry("b", new BigDecimal(1))));
     }
-    
+
     /**
      * See {@link FEELParserTest}
      */
     @Test
-    public void testContextWithMultipleEntries() {
+    void contextWithMultipleEntries() {
         String inputExpression = "{ \"a string key\" : 10," + "\n"
                                + " a non-string key : 11," + "\n"
                                + " a key.with + /' odd chars : 12 }";
         assertThat(parseCompileEvaluate(inputExpression)).isEqualTo(mapOf(entry("a string key", new BigDecimal(10)), entry("a non-string key", new BigDecimal(11)), entry("a key.with + /' odd chars", new BigDecimal(12))));
     }
-    
+
     /**
      * See {@link FEELParserTest}
      */
     @Test
-    public void testNestedContexts() {
+    void nestedContexts() {
         String inputExpression = "{ a value : 10," + "\n"
                        + " an applicant : { " + "\n"
                        + "    first name : \"Edson\", " + "\n"
@@ -368,7 +368,7 @@ public class DirectCompilerTest {
      * See {@link FEELParserTest}
      */
     @Test
-    public void testNestedContexts2() {
+    void nestedContexts2() {
         String complexContext = "{ an applicant : {                                \n" +
                                 "    home address : {                              \n" +
                                 "        street name: \"broadway st\",             \n" +
@@ -383,7 +383,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void testNameReference() {
+    void nameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
         LOG.debug("{}", nameRef);
@@ -395,9 +395,9 @@ public class DirectCompilerTest {
         
         assertThat(result).isEqualTo(BigDecimal.valueOf(123));
     }
-    
+
     @Test
-    public void testQualifiedName() {
+    void qualifiedName() {
         String inputExpression = "My Person.Full Name";
         Type personType = new MapBackedType("Person", mapOf( entry("Full Name", BuiltInType.STRING), entry("Age", BuiltInType.NUMBER) ) );
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
@@ -426,8 +426,9 @@ public class DirectCompilerTest {
             return "John Doe";
         }
     }
+
     @Test
-    public void testQualifiedName2() {
+    void qualifiedName2() {
         String inputExpression = "My Person.Full Name";
         Type personType = JavaBackedType.of(MyPerson.class);
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
@@ -442,7 +443,7 @@ public class DirectCompilerTest {
     }
 
     @Test
-    public void testQualifiedName3() {
+    void qualifiedName3() {
         String inputExpression = "a date.year";
         Type dateType = BuiltInType.DATE;
         CompiledFEELExpression qualRef = parse(inputExpression, mapOf(entry("a date", dateType)));

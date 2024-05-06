@@ -18,20 +18,20 @@
  */
 package org.kie.dmn.model.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-public class HitPolicyTest {
+class HitPolicyTest {
 
     @Test
-    public void testFromValue() {
+    void fromValue() {
         assertThatIllegalArgumentException().isThrownBy(() -> HitPolicy.fromValue("asd"));
     }
 
     @Test
-    public void testMultiHit() {
+    void multiHit() {
         assertThat(HitPolicy.UNIQUE.isMultiHit()).isFalse();
         assertThat(HitPolicy.FIRST.isMultiHit()).isFalse();
         assertThat(HitPolicy.PRIORITY.isMultiHit()).isFalse();

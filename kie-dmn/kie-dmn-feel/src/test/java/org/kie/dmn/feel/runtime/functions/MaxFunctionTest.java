@@ -27,37 +27,37 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class MaxFunctionTest {
+class MaxFunctionTest {
 
     private MaxFunction maxFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         maxFunction = new MaxFunction();
     }
 
     @Test
-    public void invokeNullList() {
+    void invokeNullList() {
         FunctionTestUtil.assertResultError(maxFunction.invoke((List) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEmptyList() {
+    void invokeEmptyList() {
         FunctionTestUtil.assertResultError(maxFunction.invoke(Collections.emptyList()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListWithHeterogenousTypes() {
+    void invokeListWithHeterogenousTypes() {
         FunctionTestUtil.assertResultError(maxFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListOfIntegers() {
+    void invokeListOfIntegers() {
         FunctionTestUtil.assertResult(maxFunction.invoke(Collections.singletonList(1)), 1);
         FunctionTestUtil.assertResult(maxFunction.invoke(Arrays.asList(1, 2, 3)), 3);
         FunctionTestUtil.assertResult(maxFunction.invoke(Arrays.asList(1, 3, 2)), 3);
@@ -65,7 +65,7 @@ public class MaxFunctionTest {
     }
 
     @Test
-    public void invokeListOfStrings() {
+    void invokeListOfStrings() {
         FunctionTestUtil.assertResult(maxFunction.invoke(Collections.singletonList("a")), "a");
         FunctionTestUtil.assertResult(maxFunction.invoke(Arrays.asList("a", "b", "c")), "c");
         FunctionTestUtil.assertResult(maxFunction.invoke(Arrays.asList("a", "c", "b")), "c");
@@ -73,7 +73,7 @@ public class MaxFunctionTest {
     }
 
     @Test
-    public void invokeListOfChronoPeriods() {
+    void invokeListOfChronoPeriods() {
         final ChronoPeriod p1Period = Period.parse("P1Y");
         final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
         final ChronoPeriod p2Period = Period.parse("P1M");
@@ -88,22 +88,22 @@ public class MaxFunctionTest {
     }
 
     @Test
-    public void invokeNullArray() {
+    void invokeNullArray() {
         FunctionTestUtil.assertResultError(maxFunction.invoke((Object[]) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEmptyArray() {
+    void invokeEmptyArray() {
         FunctionTestUtil.assertResultError(maxFunction.invoke(new Object[]{}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayWithHeterogenousTypes() {
+    void invokeArrayWithHeterogenousTypes() {
         FunctionTestUtil.assertResultError(maxFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayOfIntegers() {
+    void invokeArrayOfIntegers() {
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{1}), 1);
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{1, 2, 3}), 3);
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{1, 3, 2}), 3);
@@ -111,7 +111,7 @@ public class MaxFunctionTest {
     }
 
     @Test
-    public void invokeArrayOfStrings() {
+    void invokeArrayOfStrings() {
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{"a"}), "a");
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{"a", "b", "c"}), "c");
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{"a", "c", "b"}), "c");
@@ -119,7 +119,7 @@ public class MaxFunctionTest {
     }
 
     @Test
-    public void invokeArrayOfChronoPeriods() {
+    void invokeArrayOfChronoPeriods() {
         final ChronoPeriod p1Period = Period.parse("P1Y");
         final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
         final ChronoPeriod p2Period = Period.parse("P1M");

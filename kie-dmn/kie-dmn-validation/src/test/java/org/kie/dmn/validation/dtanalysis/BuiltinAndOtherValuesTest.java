@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -36,10 +36,10 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
+class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testComplexDTdates() {
+    void complexDTdates() {
         List<DMNMessage> validate = validator.validate(getReader("complexDTdates.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_a8a4362e-9f2d-4051-9bd6-e7356244f6b7");
 
@@ -47,7 +47,7 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testComplexDTdatesV2() {
+    void complexDTdatesV2() {
         List<DMNMessage> validate = validator.validate(getReader("complexDTdatesV2.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_a8a4362e-9f2d-4051-9bd6-e7356244f6b7");
 
@@ -94,7 +94,7 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testWeirdPosNeg() {
+    void weirdPosNeg() {
         List<DMNMessage> validate = validator.validate(getReader("weirdPosNeg.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_54ae95be-6866-4dc1-8c10-1c5a4dd15c93");
 
@@ -117,7 +117,7 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testWeirdYMduration() {
+    void weirdYMduration() {
         List<DMNMessage> validate = validator.validate(getReader("weirdYMduration.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_fe7d267b-d770-461e-8300-e09981147341");
 

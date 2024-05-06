@@ -20,7 +20,8 @@ package org.kie.dmn.core.extra;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -36,16 +37,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNRecursionTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNRecursionTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
     public static final Logger LOG = LoggerFactory.getLogger(DMNRecursionTest.class);
 
-    @Test
-    public void testBasicRecursion() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void basicRecursion(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("basicRecursion.dmn", this.getClass());
-        runtime.addListener(new DMNRuntimeEventListener() {});
+        runtime.addListener(new DMNRuntimeEventListener(){});
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_16EF6BF4-9B59-40E8-8C99-A3A3D58B88CC", "factorial");
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();

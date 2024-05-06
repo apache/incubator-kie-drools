@@ -19,31 +19,32 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class StringLengthFunctionTest {
+class StringLengthFunctionTest {
 
     private StringLengthFunction stringLengthFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         stringLengthFunction = new StringLengthFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultError(stringLengthFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEmptyString() {
+    void invokeEmptyString() {
         FunctionTestUtil.assertResult(stringLengthFunction.invoke(""), BigDecimal.ZERO);
     }
 
     @Test
-    public void invoke() {
+    void invoke() {
         FunctionTestUtil.assertResult(stringLengthFunction.invoke("testString"), BigDecimal.TEN);
     }
 }

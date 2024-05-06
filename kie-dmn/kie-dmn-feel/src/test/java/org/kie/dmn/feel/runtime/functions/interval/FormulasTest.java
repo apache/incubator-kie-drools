@@ -18,12 +18,12 @@
  */
 package org.kie.dmn.feel.runtime.functions.interval;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 // ScratchPad to support discussion on https://issues.omg.org/browse/DMN14-125
-public class FormulasTest {
+class FormulasTest {
 
     private static class R {
         public int start;
@@ -81,7 +81,7 @@ public class FormulasTest {
     }
 
     @Test
-    public void testOverlapsBeforeFormula() {
+    void overlapsBeforeFormula() {
         assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 3, 8, true))).isEqualTo(true);
         assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 6, 8, true))).isEqualTo(false);
         assertThat(overlapsBefore(new R(true, 1, 5, true), new R(true, 5, 8, true))).isEqualTo(true);
@@ -115,7 +115,7 @@ public class FormulasTest {
     }
 
     @Test
-    public void testOverlapsFormula() {
+    void overlapsFormula() {
         assertThat(        overlaps( new R(true, 1, 5, true ), new R( true, 3, 8, true )  ) ).isEqualTo( true );   
         assertThat(        overlaps( new R(true, 3, 8, true ), new R( true, 1, 5, true )  ) ).isEqualTo( true );   
         assertThat(        overlaps( new R(true, 1, 8, true ), new R( true, 3, 5, true )  ) ).isEqualTo( true );   

@@ -20,7 +20,7 @@ package org.kie.dmn.core;
 
 import java.io.StringReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
@@ -29,10 +29,10 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DMNBuildFromReaderTest {
+class DMNBuildFromReaderTest {
 
     @Test
-    public void test() {
+    void test() {
         // DROOLS-5127
         String dmn =
                 "<definitions id=\"business-knowledge-model\" name=\"business-knowledge-model\"\n" +

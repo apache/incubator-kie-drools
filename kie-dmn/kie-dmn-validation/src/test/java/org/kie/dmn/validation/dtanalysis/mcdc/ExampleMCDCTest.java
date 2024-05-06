@@ -40,7 +40,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -68,7 +68,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
     private static final Logger LOG = LoggerFactory.getLogger(ExampleMCDCTest.class);
 
     @Test
-    public void test1() throws Exception {
+    void test1() throws Exception {
         final String resourceFileName = "example1.dmn";
         List<DMNMessage> validate = validator.validate(getReader(resourceFileName), ANALYZE_DECISION_TABLE, COMPUTE_DECISION_TABLE_MCDC);
 
@@ -83,7 +83,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void test2() throws Exception {
+    void test2() throws Exception {
         final String resourceFileName = "example2.dmn";
         List<DMNMessage> validate = validator.validate(getReader(resourceFileName), ANALYZE_DECISION_TABLE, COMPUTE_DECISION_TABLE_MCDC);
 

@@ -20,7 +20,7 @@ package org.kie.dmn.pmml;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -40,7 +40,7 @@ public abstract class DMNNeuralNetworkPMMLTest {
     private DMNModel dmnModel;
 
     @Test
-    public void testNeuralNetworks() {
+    public void neuralNetworks() {
         runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("NeuralNetwork.dmn",
                                                                       DMNKMeansModelPMMLTest.class,
                                                                       "test_nn.pmml");

@@ -43,7 +43,7 @@ class PersonsTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testForPrefix() throws Exception {
+    void forPrefix() throws Exception {
         final DMNRuntime runtime = createRuntime("persons.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels(), "#/definitions/").build();
 

@@ -24,23 +24,23 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static java.math.BigDecimal.valueOf;
 
-public class WeekOfYearTest {
+class WeekOfYearTest {
 
     private WeekOfYearFunction fut;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         fut = WeekOfYearFunction.INSTANCE;
     }
 
     @Test
-    public void testWeekOfYearFunctionTemporalAccessor() {
+    void weekOfYearFunctionTemporalAccessor() {
         FunctionTestUtil.assertResult(fut.invoke(LocalDate.of(2019, 9, 17)), valueOf(38));
         FunctionTestUtil.assertResult(fut.invoke(LocalDateTime.of(2019, 9, 17, 0, 0, 0)), valueOf(38));
         FunctionTestUtil.assertResult(fut.invoke(OffsetDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)), valueOf(38));

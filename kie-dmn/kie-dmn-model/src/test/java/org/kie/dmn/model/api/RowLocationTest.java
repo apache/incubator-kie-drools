@@ -20,14 +20,14 @@ package org.kie.dmn.model.api;
 
 import javax.xml.stream.Location;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RowLocationTest {
+class RowLocationTest {
 
     @Test
-    public void smokeTest() {
+    void smokeTest() {
         RowLocation ut = new RowLocation(new DummyLocation());
         assertThat(ut.getCharacterOffset()).isEqualTo(-1);
         assertThat(ut.getColumnNumber()).isEqualTo(-1);

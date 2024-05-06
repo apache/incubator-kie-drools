@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.model.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.model.v1_2.TDMNElement;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class TUnaryTestsTest {
+class TUnaryTestsTest {
 
     @Test
-    public void smokeTest() {
+    void smokeTest() {
         UnaryTests ut = new STUnaryTests();
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> ut.getTypeRef());
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> ut.setTypeRef(null));

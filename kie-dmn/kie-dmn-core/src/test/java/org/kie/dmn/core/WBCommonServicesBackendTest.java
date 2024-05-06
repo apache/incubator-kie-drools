@@ -25,7 +25,9 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.KieProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -49,12 +51,10 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(WBCommonServicesBackendTest.class);
 
-    public WBCommonServicesBackendTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
-    @Test
-    public void testAsKieWbCommonServicesBackendBuilder() throws Exception {
+    @ParameterizedTest
+    @MethodSource("params")
+    void asKieWbCommonServicesBackendBuilder(boolean useExecModelCompiler) throws Exception {
+        init(useExecModelCompiler);
         final KieServices ks = KieServices.Factory.get();
 
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
@@ -95,9 +95,11 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("the shortest distance")).isEqualTo(new BigDecimal("5"));
     }
-    
-    @Test
-    public void testProfileWithKieWbCommonServicesBackendBuilder() throws Exception {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void profileWithKieWbCommonServicesBackendBuilder(boolean useExecModelCompiler) throws Exception {
+        init(useExecModelCompiler);
         final KieServices ks = KieServices.Factory.get();
 
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0.0");

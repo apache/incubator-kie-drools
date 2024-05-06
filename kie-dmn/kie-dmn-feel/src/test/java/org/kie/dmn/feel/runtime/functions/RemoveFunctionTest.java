@@ -22,33 +22,34 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class RemoveFunctionTest {
+class RemoveFunctionTest {
 
     private RemoveFunction removeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         removeFunction = new RemoveFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultError(removeFunction.invoke((List) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(removeFunction.invoke(null, BigDecimal.ONE), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(removeFunction.invoke(Collections.emptyList(), null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionZero() {
+    void invokePositionZero() {
         FunctionTestUtil.assertResultError(removeFunction.invoke(Collections.singletonList(1), BigDecimal.ZERO), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionOutOfListBounds() {
+    void invokePositionOutOfListBounds() {
         FunctionTestUtil.assertResultError(removeFunction.invoke(Collections.singletonList(1), BigDecimal.valueOf(2)), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(removeFunction.invoke(Collections.singletonList(1), BigDecimal.valueOf(154)), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(removeFunction.invoke(Collections.singletonList(1), BigDecimal.valueOf(-2)), InvalidParametersEvent.class);
@@ -56,7 +57,7 @@ public class RemoveFunctionTest {
     }
 
     @Test
-    public void invokePositionPositive() {
+    void invokePositionPositive() {
         FunctionTestUtil.assertResultList(removeFunction.invoke(Collections.singletonList(1), BigDecimal.ONE), Collections.emptyList());
         FunctionTestUtil.assertResultList(
                 removeFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(14)), BigDecimal.ONE),
@@ -70,7 +71,7 @@ public class RemoveFunctionTest {
     }
 
     @Test
-    public void invokePositionNegative() {
+    void invokePositionNegative() {
         FunctionTestUtil.assertResultList(removeFunction.invoke(Collections.singletonList(1), BigDecimal.valueOf(-1)), Collections.emptyList());
         FunctionTestUtil.assertResultList(
                 removeFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(14)), BigDecimal.valueOf(-1)),

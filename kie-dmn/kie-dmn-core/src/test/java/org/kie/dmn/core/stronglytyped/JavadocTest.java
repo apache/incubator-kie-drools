@@ -27,8 +27,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
 import org.drools.util.StringUtils;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.BaseVariantTest;
@@ -45,17 +45,14 @@ public class JavadocTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(JavadocTest.class);
 
-    public JavadocTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
-    @Test
-    public void testDateAndTime() throws Exception {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void dateAndTime(VariantTestConf conf) throws Exception {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("0007-date-time.dmn", DMNRuntimeTest.class);
         runtime.addListener(DMNRuntimeUtil.createListener());
 

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
@@ -36,22 +36,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class AgeKittenTest extends AbstractDTAnalysisTest {
+class AgeKittenTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test_AgeKitten_domainOnTable() {
+    void age_kitten_domain_on_table() {
         List<DMNMessage> validate = validator.validate(getReader("AgeKitten-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkAnalysis(validate);
     }
 
     @Test
-    public void test_AgeKitten() {
+    void age_kitten() {
         List<DMNMessage> validate = validator.validate(getReader("AgeKitten.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkAnalysis(validate);
     }
 
     @Test
-    public void test_AgeKittenImport() throws IOException {
+    void age_kitten_import() throws IOException {
         try (final Reader reader0 = getReader("AgeKittenItemDef.dmn");
                 final Reader reader1 = getReader("AgeKittenImporting.dmn");) {
             final List<DMNMessage> validate = validator.validateUsing(VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE)

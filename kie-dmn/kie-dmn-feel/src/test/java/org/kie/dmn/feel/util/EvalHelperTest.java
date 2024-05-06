@@ -22,17 +22,16 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.FEELProperty;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 import static org.kie.dmn.feel.util.EvalHelper.normalizeVariableName;
 
-public class EvalHelperTest {
+class EvalHelperTest {
 
     @Test
-    public void testNormalizeSpace() {
+    void normalizeSpace() {
         assertThat(normalizeVariableName(null)).isNull();
         assertThat(normalizeVariableName("")).isEqualTo("");
         assertThat(normalizeVariableName(" ")).isEqualTo("");
@@ -58,14 +57,14 @@ public class EvalHelperTest {
     }
 
     @Test
-    public void testGetBigDecimalOrNull() {
-        assertThat(getBigDecimalOrNull(10d)).isEqualTo(new BigDecimal("10"));
-        assertThat(getBigDecimalOrNull(10.00000000D)).isEqualTo(new BigDecimal("10"));
-        assertThat(getBigDecimalOrNull(10000000000.5D)).isEqualTo(new BigDecimal("10000000000.5"));
+    void getBigDecimalOrNull() {
+        assertThat(EvalHelper.getBigDecimalOrNull(10d)).isEqualTo(new BigDecimal("10"));
+        assertThat(EvalHelper.getBigDecimalOrNull(10.00000000D)).isEqualTo(new BigDecimal("10"));
+        assertThat(EvalHelper.getBigDecimalOrNull(10000000000.5D)).isEqualTo(new BigDecimal("10000000000.5"));
     }
 
     @Test
-    public void testGetGenericAccessor() throws NoSuchMethodException {
+    void getGenericAccessor() throws NoSuchMethodException {
         Method expectedAccessor = TestPojo.class.getMethod("getAProperty");
 
         assertThat(EvalHelper.getGenericAccessor(TestPojo.class, "aProperty")).as("getGenericAccessor should work on Java bean accessors.").isEqualTo(expectedAccessor);
@@ -74,7 +73,7 @@ public class EvalHelperTest {
     }
 
     @Test
-    public void testNumericValuesComparative() {
+    void numericValuesComparative() {
         assertThat(EvalHelper.compare(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, (l, r) -> l.compareTo(r) < 0)).isTrue();
         assertThat(EvalHelper.compare(1.0, 2.0, null, (l, r) -> l.compareTo(r) < 0)).isTrue();
         assertThat(EvalHelper.compare(1, 2, null, (l, r) -> l.compareTo(r) > 0)).isFalse();

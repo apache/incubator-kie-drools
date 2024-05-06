@@ -25,7 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -34,12 +35,10 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 public class OnlineDatingTest extends BaseDMN1_1VariantTest {
 
-    public OnlineDatingTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testDMChallengeMarch2017() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void dMChallengeMarch2017(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dmcommunity_challenge_2017_03.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_1b5a3a8f-ccf0-459b-8783-38601977e828",

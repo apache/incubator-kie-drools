@@ -69,7 +69,7 @@ class ProcessItemTest extends BaseDMNOASTest {
     }
 
     @Test
-    void test_together() throws Exception {
+    void together() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("processItem.dmn", this.getClass(), "processItem_2.dmn");
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -78,7 +78,7 @@ class ProcessItemTest extends BaseDMNOASTest {
     }
 
     @Test
-    void test_Colliding() {
+    void colliding() {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("processItem.dmn", this.getClass(), "processItemCollidingNS.dmn");
         assertThatExceptionOfType(IllegalStateException.class)
                   .isThrownBy(() -> DMNOASGeneratorFactory.generator(runtime.getModels()).build())

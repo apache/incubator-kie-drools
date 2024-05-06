@@ -18,7 +18,12 @@
  */
 package org.kie.dmn.core;
 
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
@@ -29,23 +34,18 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
-public class DMNTypeTest {
+class DMNTypeTest {
 
     private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV15(Collections.emptyMap());
     private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
     private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
 
     @Test
-    public void testDROOLS2147() {
+    void drools2147() {
         // DROOLS-2147
         final String testNS = "testDROOLS2147";
         
@@ -89,7 +89,7 @@ public class DMNTypeTest {
     }
 
     @Test
-    public void testAllowedValuesForASimpleTypeCollection() {
+    void allowedValuesForASimpleTypeCollection() {
         // DROOLS-2357
         final String testNS = "testDROOLS2357";
 
@@ -107,7 +107,7 @@ public class DMNTypeTest {
     }
 
     @Test
-    public void testTypeConstraintForASimpleTypeCollection() {
+    void typeConstraintForASimpleTypeCollection() {
         // incubator-kie-issues#926
         final String testNS = "testINCUBATORKIEISSUES926";
 

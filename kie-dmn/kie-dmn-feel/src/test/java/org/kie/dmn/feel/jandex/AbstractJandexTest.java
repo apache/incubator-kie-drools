@@ -34,12 +34,11 @@ import java.util.stream.Collectors;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
-
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public abstract class AbstractJandexTest {
     }
 
     @Test
-    public void testReflectConfigJSON() throws Exception {
+    public void reflectConfigJSON() throws Exception {
         Indexer indexer = new Indexer();
         InputStream stream = getClass().getClassLoader()
                                        .getResourceAsStream("org/kie/dmn/feel/runtime/FEELFunction.class");

@@ -23,7 +23,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -41,14 +43,12 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
-    public ImportsTest(final boolean useExecModelCompiler ) {
-        super( useExecModelCompiler );
-    }
-
     public static final Logger LOG = LoggerFactory.getLogger(ImportsTest.class);
 
-    @Test
-    public void testImportDependenciesForDTInAContext() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importDependenciesForDTInAContext(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Imported_Model.dmn",
                                                                                        this.getClass(),
                                                                                        "Import_BKM_and_have_a_Decision_Ctx_with_DT.dmn");
@@ -72,9 +72,11 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("A Decision Ctx with DT").getResult()).isEqualTo("Respectfully, Hello John!");
     }
-    
-    @Test
-    public void testImport2BKMs() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void import2BKMs(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Do_say_hello_with_2_bkms.dmn",
                                                                                        this.getClass(),
                                                                                        "Saying_hello_2_bkms.dmn");
@@ -100,8 +102,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("what about hello").getResult()).isEqualTo("Hello");
     }
 
-    @Test
-    public void testImport2BKMsInvoke() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void import2BKMsInvoke(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Do_invoke_hello_with_2_bkms.dmn",
                                                                                        this.getClass(),
                                                                                        "Saying_hello_2_bkms.dmn");
@@ -125,8 +129,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("invocation of hello").getResult()).isEqualTo("Hello, John");
     }
 
-    @Test
-    public void testImport2BKMsInvokeUsingInputData() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void import2BKMsInvokeUsingInputData(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2746 DMN Invocation parameters resolution with imported function
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Do_invoke_hello_with_2_bkms_using_inputdata.dmn",
                                                                                        this.getClass(),
@@ -152,8 +158,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("what about hello").getResult()).isEqualTo("Hello, Bob");
     }
 
-    @Test
-    public void testImport3Levels() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void import3Levels(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("L3_Do_say_hello.dmn",
                                                                                        this.getClass(),
                                                                                        "Do_say_hello_with_2_bkms.dmn",
@@ -191,8 +199,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("L3 what about hello").getResult()).isEqualTo("Hello");
     }
 
-    @Test
-    public void testImportHardcodedDecisions() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importHardcodedDecisions(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Spell_Greeting.dmn",
                                                                                        this.getClass(),
                                                                                        "Import_Spell_Greeting.dmn");
@@ -217,8 +227,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Say the Greeting to Person").getResult()).isEqualTo("Hello, John");
     }
 
-    @Test
-    public void testImportTransitiveBaseModel() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importTransitiveBaseModel(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
                                                                                        "ModelB.dmn",
@@ -227,8 +239,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9", "Say hello 1ID1D");
     }
 
-    @Test
-    public void testImportTransitiveEvaluate2Layers() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importTransitiveEvaluate2Layers(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
                                                                                        "ModelB.dmn",
@@ -246,8 +260,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Evaluating Say Hello").getResult()).isEqualTo("Evaluating Say Hello to: Hello, John");
     }
 
-    @Test
-    public void testImportTransitiveEvaluate3Layers() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importTransitiveEvaluate3Layers(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
                                                                                        "ModelB.dmn",
@@ -266,8 +282,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Model C Decision based on Bs").getResult()).isEqualTo("B: Evaluating Say Hello to: Hello, B.A.John; B2:Evaluating Say Hello to: Hello, B2.A.John2");
     }
 
-    @Test
-    public void testImportingID() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingID(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2944 DMN decision logic referencing DMN<import> InputData
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
@@ -284,8 +302,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Hello decision using imported InputData").getResult()).isEqualTo("Hello, DROOLS-2944");
     }
 
-    @Test
-    public void testAllowDMNAPItoEvaluateDirectDependencyImportedDecisions() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void allowDMNAPItoEvaluateDirectDependencyImportedDecisions(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-3012 Allow DMN API to evaluate direct-dependency imported Decisions
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
@@ -317,8 +337,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("modelA.Greet the Person").getResult()).isEqualTo("Hello, John");
     }
 
-    @Test
-    public void testRetrieveDecisionByIDName() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void retrieveDecisionByIDName(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-3026
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
@@ -340,8 +362,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel.getInputByName("modelA.Person name").getId()).isEqualTo("_4f6c136c-8512-4d71-8bbf-7c9eb6e74063"); // this is an imported InputData node.
     }
 
-    @Test
-    public void testImportChain() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importChain(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-3045 DMN model API to display namespace transitive import dependencies
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Sayhello1ID1D.dmn",
                                                                                        this.getClass(),
@@ -372,8 +396,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
                                    Arrays.asList("Model B", "modelA"));
     }
 
-    @Test
-    public void testImportDependenciesBKMchain() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importDependenciesBKMchain(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("base join.dmn",
                                                                                        this.getClass(),
                                                                                        "use join.dmn");
@@ -399,8 +425,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("greet2").getResult()).isEqualTo("Hello, John Doe");
     }
 
-    @Test
-    public void testImportInstanceOf() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importInstanceOf(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("instanceof base model.dmn",
                                                                                        this.getClass(),
                                                                                        "instanceof checks.dmn");
@@ -433,8 +461,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("is yes yes collection of ps?").getResult()).isEqualTo(Boolean.TRUE);
     }
 
-    @Test
-    public void testImportCalculation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importCalculation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("baseSum.dmn",
                                                                                        this.getClass(),
                                                                                        "importingSum.dmn");
@@ -460,8 +490,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("importing Decision").getResult()).isEqualTo(new BigDecimal(3));
     }
 
-    @Test
-    public void testImportAliasedWithDots() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importAliasedWithDots(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("ComparatorModel.dmn",
                                                                                        this.getClass(),
                                                                                        "Import_ComparatorModel_and_alias_with_dots.dmn");
@@ -487,8 +519,10 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         assertThat(evaluateAll.getDecisionResultByName("Is A Bigger?").getResult()).isEqualTo(Boolean.TRUE);
     }
 
-    @Test
-    public void testImportContainingDotsAndAliasedWithDots() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importContainingDotsAndAliasedWithDots(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("ComparatorModelNamedWithDots.dmn",
                                                                                        this.getClass(),
                                                                                        "Import_ComparatorModelNamedWithDots_and_alias_with_dots.dmn");

@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -36,10 +36,10 @@ import org.kie.dmn.validation.dtanalysis.model.Subsumption;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class SubsumptionRulesTest extends AbstractDTAnalysisTest {
+class SubsumptionRulesTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testSubsumptionRules() {
+    void subsumptionRules() {
         List<DMNMessage> validate = validator.validate(getReader("Subsumption.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_82100fc5-8799-4ee2-981f-215ded39e68a");
         assertThat(analysis.getGaps()).hasSize(0);

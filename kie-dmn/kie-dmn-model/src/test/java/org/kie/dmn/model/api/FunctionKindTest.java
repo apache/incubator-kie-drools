@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.model.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-public class FunctionKindTest {
+class FunctionKindTest {
 
     @Test
-    public void testFromValue() {
+    void fromValue() {
         assertThat(FunctionKind.fromValue("FEEL")).isEqualTo(FunctionKind.FEEL);
         assertThat(FunctionKind.fromValue("Java")).isEqualTo(FunctionKind.JAVA);
         assertThat(FunctionKind.fromValue("JAVA")).isEqualTo(FunctionKind.JAVA);
