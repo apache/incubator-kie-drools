@@ -4666,4 +4666,15 @@ class MiscDRLParserTest {
         assertThat(children).isNotEmpty(); // Make sure that every child type is represented.
         assertThat(children).allSatisfy(baseDescr -> assertThat(baseDescr.getNamespace()).isEqualTo(namespace));
     }
+
+    @Test
+    public void noWhitespaceBetweenRuleKeywordAndName() {
+        final String text = "rule X when then end rule\"Y\" when then end rule'Z'when then end";
+
+        PackageDescr pkg = parseAndGetPackageDescr(text);
+
+        assertThat(pkg.getRules())
+                .map(RuleDescr::getName)
+                .containsExactly("X", "Y", "Z");
+    }
 }

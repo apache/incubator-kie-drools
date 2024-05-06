@@ -18,7 +18,7 @@
  */
 package org.drools.drl.parser.antlr4;
 
-import java.util.List;
+import java.util.Set;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.IntStream;
@@ -29,9 +29,10 @@ import org.drools.drl.parser.lang.DroolsSoftKeywords;
  */
 public class LexerHelper {
 
-    private static final List<Character> semiAndWS = List.of(';', ' ', '\t', '\n', '\r');
-    private static final List<String> statementKeywordsList = List.of(ParserHelper.statementKeywords);
-    private static final List<String> attributeKeywordsList = List.of(DroolsSoftKeywords.SALIENCE,
+    private static final Set<Character> semiAndWS = Set.of(';', ' ', '\t', '\n', '\r');
+    private static final Set<Character> delimiters = Set.of(';', ' ', '\t', '\n', '\r', '"', '\'');
+    private static final Set<String> statementKeywordsList = Set.of(ParserHelper.statementKeywords);
+    private static final Set<String> attributeKeywordsList = Set.of(DroolsSoftKeywords.SALIENCE,
                                                                       DroolsSoftKeywords.ENABLED,
                                                                       DroolsSoftKeywords.NO + "-" + DroolsSoftKeywords.LOOP,
                                                                       DroolsSoftKeywords.AUTO + "-" + DroolsSoftKeywords.FOCUS,
@@ -82,7 +83,7 @@ public class LexerHelper {
         StringBuilder sb = new StringBuilder();
         while (true) {
             int la = input.LA(lookAheadCounter);
-            if (semiAndWS.contains((char) la) || la == IntStream.EOF) {
+            if (delimiters.contains((char) la) || la == IntStream.EOF) {
                 break;
             }
             sb.append((char) la);
