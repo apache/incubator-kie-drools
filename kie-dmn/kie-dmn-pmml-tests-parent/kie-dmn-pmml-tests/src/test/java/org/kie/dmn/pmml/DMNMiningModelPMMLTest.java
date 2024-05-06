@@ -20,7 +20,7 @@ package org.kie.dmn.pmml;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -37,7 +37,7 @@ public abstract class DMNMiningModelPMMLTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNMiningModelPMMLTest.class);
 
     @Test
-    public void testMiningModelSum() {
+    public void miningModelSum() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("SumMiningModel.dmn",
                                                                                        DMNMiningModelPMMLTest.class,
                                                                                        "test_mining_model_summed.pmml");

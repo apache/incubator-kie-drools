@@ -20,7 +20,9 @@ package org.kie.dmn.core.internal.utils;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -37,12 +39,10 @@ public class MarshallingStubUtilsTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(MarshallingStubUtilsTest.class);
 
-    public MarshallingStubUtilsTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testComparablePeriod() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void comparablePeriod(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("comparablePeriod.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_CB283B9C-8581-447E-8625-4D1186F0B3A6", "A1B0FA02-D1C4-4386-AF36-0280AA45A7B7");
         assertThat(dmnModel).isNotNull();

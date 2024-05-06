@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -48,7 +48,7 @@ public class DMN14GenericSynthTest {
     }
 
     @Test
-    public void testFilterDatatype() throws Throwable {
+    void filterDatatype() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/filter-datatype.dmn", TrisotechValidationTest.class);
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
@@ -68,7 +68,7 @@ public class DMN14GenericSynthTest {
     }
 
     @Test
-    public void testFilterDatatype2() throws Throwable {
+    void filterDatatype2() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/filter-datatype2.dmn", TrisotechValidationTest.class);
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
@@ -78,7 +78,7 @@ public class DMN14GenericSynthTest {
     }
 
     @Test
-    public void testIteratorDatatype() throws Throwable {
+    void iteratorDatatype() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/iterator-datatype.dmn", TrisotechValidationTest.class);
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
@@ -98,7 +98,7 @@ public class DMN14GenericSynthTest {
     }
 
     @Test
-    public void testIteratorDatatype2() throws Throwable {
+    void iteratorDatatype2() throws Throwable {
         DMNRuntime runtime = createRuntime("boxedcontextextension/iterator-datatype2.dmn", TrisotechValidationTest.class);
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");

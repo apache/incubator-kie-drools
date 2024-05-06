@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CH11Test extends BaseDMNOASTest {
 
     @Test
-    void test_dmn14support() throws Exception {
+    void dmn14support() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", DMN14specificTest.class, "Financial.dmn");
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

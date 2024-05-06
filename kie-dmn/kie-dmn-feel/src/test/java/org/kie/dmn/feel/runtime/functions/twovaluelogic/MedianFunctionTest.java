@@ -18,88 +18,88 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MedianFunctionTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
+
+class MedianFunctionTest {
 
     private NNMedianFunction medianFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         medianFunction = NNMedianFunction.INSTANCE;
     }
 
     @Test
-    public void invokeListNull() {
+    void invokeListNull() {
         FunctionTestUtil.assertResult(medianFunction.invoke((List) null), null);
     }
 
     @Test
-    public void invokeListEmpty() {
+    void invokeListEmpty() {
         FunctionTestUtil.assertResult(medianFunction.invoke(Collections.emptyList()), null);
     }
 
     @Test
-    public void invokeListTypeHeterogenous() {
+    void invokeListTypeHeterogenous() {
         FunctionTestUtil.assertResultError(medianFunction.invoke(Arrays.asList(1, "test")), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListParamSupportedTypesWithNull() {
+    void invokeListParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(medianFunction.invoke(Arrays.asList(20, 30, null, (long) 40, null, BigDecimal.TEN)), BigDecimal.valueOf(25));
     }
 
     @Test
-    public void invokeListWithIntegers() {
+    void invokeListWithIntegers() {
         FunctionTestUtil.assertResult(medianFunction.invoke(Arrays.asList(10, 20, 30)), BigDecimal.valueOf(20));
         FunctionTestUtil.assertResult(medianFunction.invoke(Arrays.asList(10, 20, 30, -10, -20, -30)), BigDecimal.ZERO);
         FunctionTestUtil.assertResult(medianFunction.invoke(Arrays.asList(0, 0, 1)), BigDecimal.ZERO);
     }
 
     @Test
-    public void invokeListWithDoubles() {
+    void invokeListWithDoubles() {
         FunctionTestUtil.assertResult(medianFunction.invoke(Arrays.asList(10.0d, 20.0d, 30.0d)), BigDecimal.valueOf(20));
         FunctionTestUtil.assertResult(medianFunction.invoke(Arrays.asList(10.2d, 20.2d, 30.2d)), BigDecimal.valueOf(20.2));
     }
 
     @Test
-    public void invokeArrayNull() {
+    void invokeArrayNull() {
         FunctionTestUtil.assertResult(medianFunction.invoke((Object[]) null), null);
     }
 
     @Test
-    public void invokeArrayEmpty() {
+    void invokeArrayEmpty() {
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{}), null);
     }
 
     @Test
-    public void invokeArrayTypeHeterogenous() {
+    void invokeArrayTypeHeterogenous() {
         FunctionTestUtil.assertResultError(medianFunction.invoke(new Object[]{1, "test"}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayWithIntegers() {
+    void invokeArrayWithIntegers() {
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{10, 20, 30}), BigDecimal.valueOf(20));
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{10, 20, 30, -10, -20, -30}), BigDecimal.ZERO);
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{0, 0, 1}), BigDecimal.ZERO);
     }
 
     @Test
-    public void invokeArrayWithDoubles() {
+    void invokeArrayWithDoubles() {
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{10.0d, 20.0d, 30.0d}), BigDecimal.valueOf(20));
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{10.2d, 20.2d, 30.2d}), BigDecimal.valueOf(20.2));
     }
 
     @Test
-    public void invokeArrayParamSupportedTypesWithNull() {
+    void invokeArrayParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(medianFunction.invoke(new Object[]{20, 30, null, (long) 40, null, BigDecimal.TEN}), BigDecimal.valueOf(25));
     }
 

@@ -34,12 +34,11 @@ import java.util.stream.Collectors;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
-
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,7 @@ public class KieDMNModelJandexTest {
     private final String moduleName = "kie-dmn-model";
 
     @Test
-    public void testReflectConfigJSON() throws Exception {
+    void reflectConfigJSON() throws Exception {
         Indexer indexer = new Indexer();
         InputStream stream = getClass().getClassLoader()
                                        .getResourceAsStream("org/kie/dmn/model/api/DMNModelInstrumentedBase.class");

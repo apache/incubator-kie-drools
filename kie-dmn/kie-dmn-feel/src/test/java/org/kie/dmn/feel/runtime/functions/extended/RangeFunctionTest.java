@@ -18,9 +18,26 @@
  */
 package org.kie.dmn.feel.runtime.functions.extended;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.lang.ast.*;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
+import org.kie.dmn.feel.lang.ast.NumberNode;
+import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -28,32 +45,25 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-import java.math.BigDecimal;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RangeFunctionTest {
+class RangeFunctionTest {
 
     private RangeFunction rangeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         rangeFunction = new RangeFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         List<String> from = Arrays.asList(null, " ", "", "[..]");
         from.forEach(it ->  FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class, it));
     }
 
     @Test
-    public void invokeDifferentTypes() {
+    void invokeDifferentTypes() {
         List<String> from = Arrays.asList("[1..\"cheese\"]",
                 "[1..date(\"1978-09-12\")]",
                 "[1..date(\"1978-09-12\")]",
@@ -62,13 +72,13 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invokeInvalidTypes() {
+    void invokeInvalidTypes() {
         String from = "[if(false)..if(true)]";
         FunctionTestUtil.assertResultError(rangeFunction.invoke(from), InvalidParametersEvent.class, from);
     }
 
     @Test
-    public void invoke_LeftNull() {
+    void invoke_LeftNull() {
         String from = "(..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
@@ -99,7 +109,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invoke_RightNull() {
+    void invoke_RightNull() {
         String from = "(1..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null, Range.RangeBoundary.OPEN),
@@ -130,7 +140,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invoke_OpenOpenBoundaries() {
+    void invoke_OpenOpenBoundaries() {
         String from = "(1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
@@ -161,7 +171,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invoke_OpenClosedBoundaries() {
+    void invoke_OpenClosedBoundaries() {
         String from = "(1..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
@@ -181,7 +191,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invoke_ClosedOpenBoundaries() {
+    void invoke_ClosedOpenBoundaries() {
         String from = "[1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
@@ -201,7 +211,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invoke_ClosedClosedBoundaries() {
+    void invoke_ClosedClosedBoundaries() {
         String from = "[1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke("[1..2]"),
                 new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
@@ -225,7 +235,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void invoke_WithOneFunctionNode() {
+    void invoke_WithOneFunctionNode() {
         String from = "[number(\"1\", \",\", \".\")\"..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
@@ -237,7 +247,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodeIsAllowed_True() {
+    void nodeIsAllowed_True() {
         BaseNode node = rangeFunction.getNullNode();
         assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
         node = getNumberNode();
@@ -251,7 +261,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodeIsAllowed_False() {
+    void nodeIsAllowed_False() {
         BaseNode node = rangeFunction.parse("if(true)");
         assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isFalse();
         node = getBooleanNode();
@@ -259,7 +269,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodeValueIsAllowed_True() {
+    void nodeValueIsAllowed_True() {
         Object value = null;
         assertThat(rangeFunction.nodeValueIsAllowed(value))
                 .withFailMessage(String.format("%s", value)).isTrue();
@@ -284,7 +294,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodeValueIsAllowed_False() {
+    void nodeValueIsAllowed_False() {
         Object value = Boolean.TRUE;
         assertThat(rangeFunction.nodeValueIsAllowed(value))
                 .withFailMessage(String.format("%s", value)).isFalse();
@@ -297,7 +307,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodesReturnsSameType_True() {
+    void nodesReturnsSameType_True() {
         assertThat(rangeFunction.nodesReturnsSameType(null, null))
                 .withFailMessage("null - null")
                 .isTrue();
@@ -313,14 +323,14 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodesReturnsSameType_False() {
+    void nodesReturnsSameType_False() {
         assertThat(rangeFunction.nodesReturnsSameType("1", 1))
                 .withFailMessage("\"1\" - 1")
                 .isFalse();
     }
 
     @Test
-    public void evaluateWithValidFunctionInvocationNode() {
+    void evaluateWithValidFunctionInvocationNode() {
         Object[][] data = validFunctionInvocationNodeData();
         Arrays.stream(data).forEach(objects -> {
             String expression = String.format("[%1$s..%1$s]", objects[0]);
@@ -332,7 +342,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void evaluateWithInvalidFunctionInvocationNode() {
+    void evaluateWithInvalidFunctionInvocationNode() {
         Object[][] data = invalidFunctionInvocationNodeData();
         Arrays.stream(data).forEach(objects -> {
             String expression = String.format("[%1$s..%1$s]", objects[0]);
@@ -344,7 +354,7 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void parse_NotEmptyString() {
+    void parse_NotEmptyString() {
         String input = "";
         assertThat(rangeFunction.parse(input))
                 .withFailMessage(String.format("Check `%s`", input))
@@ -366,13 +376,14 @@ public class RangeFunctionTest {
         input = "duration(\"P2DT20H14M\")";
         assertThat(rangeFunction.parse(input)).withFailMessage(String.format("Check `%s`", input)).isInstanceOf(FunctionInvocationNode.class);
     }
+
     @Test
-    public void parse_emptyString() {
+    void parse_emptyString() {
         assertThat(rangeFunction.parse("")).withFailMessage("Check ``").isInstanceOf(NullNode.class);
     }
 
     @Test
-    public void getNullNode() {
+    void getNullNode() {
         assertThat(rangeFunction.getNullNode()).isInstanceOf(NullNode.class);
     }
 

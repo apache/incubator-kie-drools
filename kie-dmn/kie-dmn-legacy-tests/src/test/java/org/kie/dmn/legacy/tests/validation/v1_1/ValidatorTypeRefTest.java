@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.AbstractValidatorTest;
@@ -33,10 +33,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorTypeRefTest extends AbstractValidatorTest {
+class ValidatorTypeRefTest extends AbstractValidatorTest {
 
     @Test
-    public void testTYPEREF_NO_FEEL_TYPE_ReaderInput() throws IOException {
+    void typeref_no_feel_type_ReaderInput() throws IOException {
         try (final Reader reader = getReader("typeref/TYPEREF_NO_FEEL_TYPE.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -47,7 +47,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NO_FEEL_TYPE_FileInput() {
+    void typeref_no_feel_type_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NO_FEEL_TYPE.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -56,7 +56,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NO_FEEL_TYPE_DefinitionsInput() {
+    void typeref_no_feel_type_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NO_FEEL_TYPE.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NO_FEEL_TYPE"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -65,7 +65,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NO_NS_ReaderInput() throws IOException {
+    void typeref_no_ns_ReaderInput() throws IOException {
         try (final Reader reader = getReader("typeref/TYPEREF_NO_NS.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -77,7 +77,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NO_NS_FileInput() {
+    void typeref_no_ns_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NO_NS.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -87,7 +87,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NO_NS_DefinitionsInput() {
+    void typeref_no_ns_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NO_NS.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NO_NS"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -96,7 +96,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_ReaderInput() throws IOException {
+    void typeref_not_feel_not_def_ReaderInput() throws IOException {
         try (final Reader reader = getReader("typeref/TYPEREF_NOT_FEEL_NOT_DEF.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -108,7 +108,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_FileInput() {
+    void typeref_not_feel_not_def_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("typeref/TYPEREF_NOT_FEEL_NOT_DEF.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -118,7 +118,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_DefinitionsInput() {
+    void typeref_not_feel_not_def_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/TYPEREF_NOT_FEEL_NOT_DEF.dmn", "https://github.com/kiegroup/kie-dmn", "TYPEREF_NOT_FEEL_NOT_DEF"),
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -128,7 +128,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_valid_ResourceInput() throws IOException {
+    void typeref_not_feel_not_defValidResourceInput() throws IOException {
         // DROOLS-1433
         // the assumption is that the following document TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn should NOT contain any DMNMessageTypeId.TYPEREF_NOT_FEEL_NOT_DEF at all
         // the test also highlight typically in a DMN model many nodes would not define a typeRef, resulting in a large number of false negative
@@ -141,7 +141,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_valid_FileInput() {
+    void typeref_not_feel_not_defValidFileInput() {
         // DROOLS-1433
         // the assumption is that the following document TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn should NOT contain any DMNMessageTypeId.TYPEREF_NOT_FEEL_NOT_DEF at all
         // the test also highlight typically in a DMN model many nodes would not define a typeRef, resulting in a large number of false negative
@@ -152,7 +152,7 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_valid_DefinitionsInput() {
+    void typeref_not_feel_not_defValidDefinitionsInput() {
         // DROOLS-1433
         // the assumption is that the following document TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn should NOT contain any DMNMessageTypeId.TYPEREF_NOT_FEEL_NOT_DEF at all
         // the test also highlight typically in a DMN model many nodes would not define a typeRef, resulting in a large number of false negative
@@ -161,9 +161,9 @@ public class ValidatorTypeRefTest extends AbstractValidatorTest {
                 VALIDATE_MODEL, VALIDATE_COMPILATION);
          assertThat(validate).as(ValidatorUtil.formatMessages(validate)).hasSize(0);
     }
-    
+
     @Test
-    public void testBKM_WITH_NO_TYPEREF_IS_OK_DefinitionsInput() {
+    void bkm_with_no_typeref_is_ok_DefinitionsInput() {
         // DROOLS-2631
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("typeref/BKM_WITH_NO_TYPEREF_IS_OK.dmn", "http://www.trisotech.com/dmn/definitions/_7e8d7561-657a-4729-b2a9-5a6279df6d5d", "Drawing 1"),

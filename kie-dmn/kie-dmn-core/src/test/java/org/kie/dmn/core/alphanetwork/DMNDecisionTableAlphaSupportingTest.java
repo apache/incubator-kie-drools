@@ -19,8 +19,13 @@
 package org.kie.dmn.core.alphanetwork;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -36,12 +41,10 @@ public class DMNDecisionTableAlphaSupportingTest extends BaseInterpretedVsAlphaN
 
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(DMNDecisionTableAlphaSupportingTest.class);
 
-    public DMNDecisionTableAlphaSupportingTest(final boolean useAlphaNetwork ) {
-        super( useAlphaNetwork );
-    }
-
-    @Test
-    public void testSimpleDecision() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void simpleDecision(boolean useAlphaNetwork) {
+        alphaNetwork = useAlphaNetwork;
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime("alphasupport.dmn", this.getClass());
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c0cf6e20-0b43-43ce-9def-c759a5f86df2", "DMN Specification Chapter 11 Example Reduced");
         assertThat(dmnModel).isNotNull();
@@ -54,8 +57,10 @@ public class DMNDecisionTableAlphaSupportingTest extends BaseInterpretedVsAlphaN
         assertThat(dmnResult.getContext().get("Pre-bureau risk category table")).isEqualTo("LOW");
     }
 
-    @Test
-    public void testSimpleTableMultipleTests() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void simpleTableMultipleTests(boolean useAlphaNetwork) {
+        alphaNetwork = useAlphaNetwork;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("an-simpletable-multipletests.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "an-simpletable-multipletests");
         assertThat(dmnModel).isNotNull();

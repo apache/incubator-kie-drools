@@ -18,26 +18,30 @@
  */
 package org.kie.dmn.feel.marshaller;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.impl.RangeImpl;
-
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class FEELCodeMarshallerTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // numbers
                 { BigDecimal.valueOf( 2 ), "2" },
@@ -102,15 +106,13 @@ public class FEELCodeMarshallerTest {
         };
         return Arrays.asList( cases );
     }
-
-    @Parameterized.Parameter(0)
     public Object value;
-
-    @Parameterized.Parameter(1)
     public String result;
 
-    @Test
-    public void testExpression() {
+    @MethodSource("data")
+    @ParameterizedTest(name = "{index}: {0} ({1}) = {2}")
+    public void expression(Object value, String result) {
+        initFEELCodeMarshallerTest(value, result);
         assertResult( value, result );
     }
 
@@ -120,5 +122,10 @@ public class FEELCodeMarshallerTest {
         } else {
             assertThat(FEELCodeMarshaller.INSTANCE.marshall( value )).as("Marshalling: '" + value + "'").isEqualTo(result);
         }
+    }
+
+    public void initFEELCodeMarshallerTest(Object value, String result) {
+        this.value = value;
+        this.result = result;
     }
 }

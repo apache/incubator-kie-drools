@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -37,10 +37,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class MaskTest extends AbstractDTAnalysisTest {
+class MaskTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test_MaskBasic() {
+    void mask_basic() {
         List<DMNMessage> validate = validator.validate(getReader("MaskBasic.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_BA703D04-803A-44AA-8A31-F5EEDD4FD54E");
         assertThat(analysis.getGaps()).hasSize(0);
@@ -70,7 +70,7 @@ public class MaskTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void test_MaskTest() {
+    void mask_test() {
         List<DMNMessage> validate = validator.validate(getReader("MaskTest.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_BA703D04-803A-44AA-8A31-F5EEDD4FD54E");
         assertThat(analysis.getGaps()).hasSize(0);

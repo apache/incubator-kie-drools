@@ -18,42 +18,42 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MinFunctionTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
+
+class MinFunctionTest {
 
     private NNMinFunction minFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         minFunction = new NNMinFunction();
     }
 
     @Test
-    public void invokeNullList() {
+    void invokeNullList() {
         FunctionTestUtil.assertResult(minFunction.invoke((List) null), null);
     }
 
     @Test
-    public void invokeEmptyList() {
+    void invokeEmptyList() {
         FunctionTestUtil.assertResult(minFunction.invoke(Collections.emptyList()), null);
     }
 
     @Test
-    public void invokeListWithHeterogenousTypes() {
+    void invokeListWithHeterogenousTypes() {
         FunctionTestUtil.assertResultError(minFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListOfIntegers() {
+    void invokeListOfIntegers() {
         FunctionTestUtil.assertResult(minFunction.invoke(Collections.singletonList(1)), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(null, 1, 2, 3)), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(2, null, 1, 3)), 1);
@@ -61,7 +61,7 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeListOfStrings() {
+    void invokeListOfStrings() {
         FunctionTestUtil.assertResult(minFunction.invoke(Collections.singletonList("a")), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(null, "a", "b", "c")), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList("b", "a", null, "c")), "a");
@@ -69,22 +69,22 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeNullArray() {
+    void invokeNullArray() {
         FunctionTestUtil.assertResult(minFunction.invoke((Object[]) null), null);
     }
 
     @Test
-    public void invokeEmptyArray() {
+    void invokeEmptyArray() {
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{}), null);
     }
 
     @Test
-    public void invokeArrayWithHeterogenousTypes() {
+    void invokeArrayWithHeterogenousTypes() {
         FunctionTestUtil.assertResultError(minFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayOfIntegers() {
+    void invokeArrayOfIntegers() {
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{1}), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{1, 2, 3}), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{2, 1, 3}), 1);
@@ -92,7 +92,7 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeArrayOfStrings() {
+    void invokeArrayOfStrings() {
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{"a"}), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{"a", "b", "c"}), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{"b", "a", "c"}), "a");

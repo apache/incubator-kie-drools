@@ -25,20 +25,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.dmn.feel.runtime.functions.BuiltInFunctions.FUNCTIONS;
 
-public class BuiltInFunctionsTest {
+class BuiltInFunctionsTest {
 
     @Test
-    public void getFunctions() {
+    void getFunctions() {
         // This test is aimed at verify that all the "INSTANCE" fields are correctly populated, referring to the same class they are defined in
         Set< Class<? extends FEELFunction>> verifiedClasses = Stream.of(FUNCTIONS).map(this::validateFunction)
                 .filter(Objects::nonNull)
@@ -47,12 +47,12 @@ public class BuiltInFunctionsTest {
     }
 
     @Test
-    public void getFunctionsByClassFails() {
+    void getFunctionsByClassFails() {
         assertThrows(IllegalArgumentException.class, () -> BuiltInFunctions.getFunction(FakeFunction.class));
     }
 
     @Test
-    public void getFunctionsByNameFails() {
+    void getFunctionsByNameFails() {
         assertThrows(IllegalArgumentException.class, () -> BuiltInFunctions.getFunction(FakeFunction.FAKE_NAME));
     }
 

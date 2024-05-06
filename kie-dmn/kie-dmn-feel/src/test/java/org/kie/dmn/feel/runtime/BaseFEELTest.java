@@ -21,9 +21,6 @@ package org.kie.dmn.feel.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
@@ -39,7 +36,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
 
     public enum FEEL_TARGET {
@@ -49,23 +45,24 @@ public abstract class BaseFEELTest {
 
     private FEEL feel = null; // due to @Parameter injection by JUnit framework, need to defer FEEL init to actual instance method, to have the opportunity for the JUNit framework to initialize all the @Parameters
 
-    @Parameterized.Parameter(0)
     public String expression;
 
-    @Parameterized.Parameter(1)
     public Object result;
 
-    @Parameterized.Parameter(2)
     public FEELEvent.Severity severity;
 
-    @Parameterized.Parameter(3)
     public FEEL_TARGET testFEELTarget;
 
-    @Parameterized.Parameter(4)
     public boolean useExtendedProfile;
 
-    @Test
-    public void testExpression() {
+    public void expression(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget,
+                           Boolean useExtendedProfile) {
+        this.expression = expression;
+        this.result = result;
+        this.severity = severity;
+        this.testFEELTarget = testFEELTarget;
+        this.useExtendedProfile = useExtendedProfile;
+
         final List<FEELProfile> profiles = getFEELProfilesForTests();
         feel = FEEL.newInstance(profiles);
         final FEELEventListener listener = mock(FEELEventListener.class );
@@ -81,6 +78,9 @@ public abstract class BaseFEELTest {
             verify( listener, never() ).onEvent( any(FEELEvent.class) );
         }
     }
+
+    protected abstract void instanceTest(String expression, Object result, FEELEvent.Severity severity,
+                                         FEEL_TARGET testFEELTarget, Boolean useExtendedProfile);
 
     protected void assertResult(final String expression, final Object result ) {
         if( result == null ) {

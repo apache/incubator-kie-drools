@@ -18,11 +18,10 @@
  */
 package org.kie.dmn.feel.lang.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -34,10 +33,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
-public class FEELProfileTest {
+class FEELProfileTest {
 
     @Test
-    public void testFeelProfileFunctionsAndValues() {
+    void feelProfileFunctionsAndValues() {
 
         // Instantiate a new FEEL with the profile to try the method that uses the data cache
         FEEL feel = FEEL.newInstance(List.of(new TestFEELProfile()));

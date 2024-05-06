@@ -22,7 +22,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -43,12 +44,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNClassloaderTest.class);
 
-    public DMNClassloaderTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
-    @Test
-    public void testClassloaderFunctionInvocation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void classloaderFunctionInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final String javaSource = "package com.acme.functions;\n" +
                                   "\n" +
                                   "import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;\n" +
@@ -127,8 +126,10 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
         return pom.toString();
     }
 
-    @Test
-    public void testInvokeJavaReturnArrayPrimitives() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void invokeJavaReturnArrayPrimitives(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final String javaSource = "package org.acme.functions;\n" +
                                   "\n" +
                                   "public class MyFunctions {\n" +

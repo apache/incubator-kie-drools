@@ -18,16 +18,16 @@
  */
 package org.kie.dmn.feel.lang.types.impl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.model.SupportRequest;
 import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ImmutableFPAWrappingPOJOTest {
+class ImmutableFPAWrappingPOJOTest {
 
     @Test
-    public void testSupportRequest() {
+    void supportRequest() {
         ImmutableFPAWrappingPOJO fpa = new ImmutableFPAWrappingPOJO(new SupportRequest("John Doe", "47", "info@redhat.com", "+1", "somewhere", "tech", "app crashed", false));
 
         assertThat(fpa.getFEELProperty("full name").toOptional()).contains("John Doe");

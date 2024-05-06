@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -46,9 +46,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SignavioTest {
     public static final Logger LOG = LoggerFactory.getLogger(SignavioTest.class);
-    
+
     @Test
-    public void test() {
+    void test() {
         DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
         
         List<DMNModel> models = runtime.getModels();
@@ -63,9 +63,9 @@ public class SignavioTest {
         
         assertThat((List<String>) evaluateAll.getContext().get("Greeting for each Person in Persons")).contains("Hello p1", "Hello p2");
     }
-    
+
     @Test
-    public void testUnmarshall() {
+    void unmarshall() {
         DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
         DMNModel model0 = runtime.getModels().get(0);
         Definitions definitions = model0.getDefinitions();
@@ -81,7 +81,7 @@ public class SignavioTest {
     }
 
     @Test
-    public void testUsingSignavioFunctions() {
+    void usingSignavioFunctions() {
         DMNRuntime runtime = createRuntime("Using_Signavio_functions.dmn");
 
         List<DMNModel> models = runtime.getModels();
@@ -102,7 +102,7 @@ public class SignavioTest {
      * Check the custom Signavio functions work in the LiteralExpression too
      */
     @Test
-    public void testUsingSignavioFunctionsInLiteralExpression() {
+    void usingSignavioFunctionsInLiteralExpression() {
         DMNRuntime runtime = createRuntime("Starts_with_an_A.dmn");
 
         assertStartsWithAnA(runtime, "Abc", true);
@@ -123,7 +123,7 @@ public class SignavioTest {
     }
 
     @Test
-    public void testSurveyMIDSUM() {
+    void surveyMIDSUM() {
         DMNRuntime runtime = createRuntime("survey MID SUM.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, 2, 3), new BigDecimal(6));
     }
@@ -163,56 +163,56 @@ public class SignavioTest {
     }
 
     @Test
-    public void testSurveyMIDMIN() {
+    void surveyMIDMIN() {
         DMNRuntime runtime = createRuntime("survey MID MIN.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, 2, 3), new BigDecimal(1));
     }
 
     @Test
-    public void testSurveyMIDMAX() {
+    void surveyMIDMAX() {
         DMNRuntime runtime = createRuntime("survey MID MAX.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, 2, 3), new BigDecimal(3));
     }
 
     @Test
-    public void testSurveyMIDCOUNT() {
+    void surveyMIDCOUNT() {
         DMNRuntime runtime = createRuntime("survey MID COUNT.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, 1, 1), new BigDecimal(3));// the COUNT in MID is list size, checked on Simulator.
     }
 
     @Test
-    public void testSurveyMIDALLTRUE() {
+    void surveyMIDALLTRUE() {
         DMNRuntime runtime = createRuntime("survey MID ALLTRUE.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, 2), true);
         checkSurveryMID(runtime, Arrays.asList(-1, 2), false);
     }
 
     @Test
-    public void testSurveyMIDANYTRUE() {
+    void surveyMIDANYTRUE() {
         DMNRuntime runtime = createRuntime("survey MID ANYTRUE.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, -2), true);
         checkSurveryMID(runtime, Arrays.asList(-1, -2), false);
     }
 
     @Test
-    public void testSurveyMIDALLFALSE() {
+    void surveyMIDALLFALSE() {
         DMNRuntime runtime = createRuntime("survey MID ALLFALSE.dmn");
         checkSurveryMID(runtime, Arrays.asList(1, 2), false);
         checkSurveryMID(runtime, Arrays.asList(-1, 2), false);
         checkSurveryMID(runtime, Arrays.asList(1, -2), false);
         checkSurveryMID(runtime, Arrays.asList(-1, -2), true);
     }
-    
+
     @Test
-    public void testZipFunctions() {
+    void zipFunctions() {
         DMNRuntime runtime = createRuntime("Test_SignavioZipFunctions.dmn");
         checkBothFunctionsAreWorking(runtime);
     }
-    
-    
+
+
     @Test
     @SuppressWarnings("unchecked")
-    public void testMidTakesCareOfRequirements() {
+    void midTakesCareOfRequirements() {
         DMNRuntime runtime = createRuntime("Test_SignavioMID.dmn");
     
         List<DMNModel> models = runtime.getModels();
@@ -231,10 +231,10 @@ public class SignavioTest {
         
         assertThat(result).doesNotContainNull();
     }
-    
-    
+
+
     @Test
-    public void testSignavioConcatFunction() {
+    void signavioConcatFunction() {
         DMNRuntime runtime = createRuntime("Signavio_Concat.dmn");
         
         List<DMNModel> models = runtime.getModels();
@@ -266,9 +266,9 @@ public class SignavioTest {
         assertThat((List<?>) evaluateAll.getDecisionResultByName("zipvararg").getResult()).hasSize(2);
         assertThat((List<?>) evaluateAll.getDecisionResultByName("zipsinglelist").getResult()).hasSize(2);
     }
-    
+
     @Test
-    public void testSignavioIterateMultiinstanceWithComplexInputs() {
+    void signavioIterateMultiinstanceWithComplexInputs() {
         DMNRuntime runtime = createRuntime("Iterate Complex List.dmn");
         
         DMNContext context = runtime.newContext();
@@ -287,9 +287,9 @@ public class SignavioTest {
 
         assertThat(evaluateAll.getDecisionResultByName("extractNames").getResult()).isEqualTo(Arrays.asList("John Doe", "Alice"));
     }
-    
+
     @Test
-    public void testSignavioIterateMultiinstanceMultipleDecisions() {
+    void signavioIterateMultiinstanceMultipleDecisions() {
         DMNRuntime runtime = createRuntime("MID with multiple inside decisions.dmn");
         
         DMNContext context = runtime.newContext();
@@ -302,9 +302,9 @@ public class SignavioTest {
     
         assertThat(evaluateAll.getDecisionResultByName("overallage").getResult()).isEqualTo(new BigDecimal("18"));
     }
-    
+
     @Test
-    public void testSignavioIterateMultiinstanceMultipleDecisionsOutside() {
+    void signavioIterateMultiinstanceMultipleDecisionsOutside() {
         DMNRuntime runtime = createRuntime("MID with outside requirement.dmn");
         
         DMNContext context = runtime.newContext();

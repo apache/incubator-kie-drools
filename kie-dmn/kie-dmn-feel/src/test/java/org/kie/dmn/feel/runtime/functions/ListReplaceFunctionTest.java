@@ -25,34 +25,34 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.CompilerUtils.parseCompileEvaluate;
 
-public class ListReplaceFunctionTest {
+class ListReplaceFunctionTest {
 
     private ListReplaceFunction listReplaceFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         listReplaceFunction = ListReplaceFunction.INSTANCE;
     }
 
     @Test
-    public void invokeListNull() {
+    void invokeListNull() {
         FunctionTestUtil.assertResultError(listReplaceFunction.invoke(null, BigDecimal.ONE, ""), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionNull() {
+    void invokePositionNull() {
         FunctionTestUtil.assertResultError(listReplaceFunction.invoke(new ArrayList(), (BigDecimal) null, ""), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokePositionInvalid() {
+    void invokePositionInvalid() {
         FunctionTestUtil.assertResultError(listReplaceFunction.invoke(Collections.emptyList(), BigDecimal.ONE, ""), InvalidParametersEvent.class);
         List list = getList();
         FunctionTestUtil.assertResultError(listReplaceFunction.invoke(list, BigDecimal.ZERO, ""), InvalidParametersEvent.class);
@@ -60,7 +60,7 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
-    public void invokeReplaceByPositionWithNull() {
+    void invokeReplaceByPositionWithNull() {
         List list = getList();
         List expected = new ArrayList<>(list);
         expected.set(1, null);
@@ -68,7 +68,7 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
-    public void invokeReplaceByNegativePositionWithNotNull() {
+    void invokeReplaceByNegativePositionWithNotNull() {
         List list = getList();
         List expected = new ArrayList<>(list);
         expected.set(2, "test");
@@ -76,7 +76,7 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
-    public void invokeReplaceByNegativePositionWithNull() {
+    void invokeReplaceByNegativePositionWithNull() {
         List list = getList();
         List expected = new ArrayList<>(list);
         expected.set(2, null);
@@ -84,7 +84,7 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
-    public void invokeReplaceByPositionWithNotNull() {
+    void invokeReplaceByPositionWithNotNull() {
         List list = getList();
         List expected = new ArrayList<>(list);
         expected.set(1, "test");
@@ -93,12 +93,12 @@ public class ListReplaceFunctionTest {
 
 
     @Test
-    public void invokeMatchNull() {
+    void invokeMatchNull() {
         FunctionTestUtil.assertResultError(listReplaceFunction.invoke(new ArrayList(), (AbstractCustomFEELFunction) null, ""), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeMatchInvalid() {
+    void invokeMatchInvalid() {
         List list = Arrays.asList(2, 4, 7, 8);
         String validMatchFunction = "function(item, newItem) item + newItem";
         Object expressionObject = parseCompileEvaluate(validMatchFunction);
@@ -107,7 +107,7 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
-    public void invokeReplaceByMatchWithNull() {
+    void invokeReplaceByMatchWithNull() {
         List list = getList();
         List expected = new ArrayList<>(list);
         expected.set(1, null);
@@ -118,7 +118,7 @@ public class ListReplaceFunctionTest {
     }
 
     @Test
-    public void invokeReplaceByMatchWithNotNull() {
+    void invokeReplaceByMatchWithNotNull() {
         String validMatchFunction = "function(item, newItem) item < newItem";
         Object expressionObject = parseCompileEvaluate(validMatchFunction);
         assertThat(expressionObject).isInstanceOf(AbstractCustomFEELFunction.class);

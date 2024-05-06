@@ -23,10 +23,39 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.ast.ASTNode;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.BetweenNode;
+import org.kie.dmn.feel.lang.ast.BooleanNode;
+import org.kie.dmn.feel.lang.ast.ContextEntryNode;
+import org.kie.dmn.feel.lang.ast.ContextNode;
+import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
+import org.kie.dmn.feel.lang.ast.ForExpressionNode;
+import org.kie.dmn.feel.lang.ast.FunctionDefNode;
+import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.IfExpressionNode;
+import org.kie.dmn.feel.lang.ast.InNode;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.lang.ast.InfixOperator;
+import org.kie.dmn.feel.lang.ast.InstanceOfNode;
+import org.kie.dmn.feel.lang.ast.IterationContextNode;
+import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.NameDefNode;
+import org.kie.dmn.feel.lang.ast.NameRefNode;
+import org.kie.dmn.feel.lang.ast.NamedParameterNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
+import org.kie.dmn.feel.lang.ast.NumberNode;
+import org.kie.dmn.feel.lang.ast.PathExpressionNode;
+import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
+import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
@@ -38,7 +67,7 @@ import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 public class FEELParserTest {
 
     @Test
-    public void testIntegerLiteral() {
+    void integerLiteral() {
         String inputExpression = "10";
         BaseNode number = parse( inputExpression );
 
@@ -48,7 +77,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testNegativeIntegerLiteral() {
+    void negativeIntegerLiteral() {
         String inputExpression = "-10";
         BaseNode number = parse( inputExpression );
 
@@ -63,7 +92,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPositiveIntegerLiteral() {
+    void positiveIntegerLiteral() {
         String inputExpression = "+10";
         BaseNode number = parse( inputExpression );
 
@@ -78,7 +107,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFloatLiteral() {
+    void floatLiteral() {
         String inputExpression = "10.5";
         BaseNode number = parse( inputExpression );
 
@@ -88,7 +117,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testNegativeFloatLiteral() {
+    void negativeFloatLiteral() {
         String inputExpression = "-10.5";
         BaseNode number = parse( inputExpression );
 
@@ -103,7 +132,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPositiveFloatLiteral() {
+    void positiveFloatLiteral() {
         String inputExpression = "+10.5";
         BaseNode number = parse( inputExpression );
 
@@ -118,7 +147,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testBooleanTrueLiteral() {
+    void booleanTrueLiteral() {
         String inputExpression = "true";
         BaseNode bool = parse( inputExpression );
 
@@ -128,7 +157,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testBooleanFalseLiteral() {
+    void booleanFalseLiteral() {
         String inputExpression = "false";
         BaseNode bool = parse( inputExpression );
 
@@ -138,7 +167,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testAtLiteralDate() {
+    void atLiteralDate() {
         String inputExpression = "@\"2016-07-29\"";
         BaseNode bool = parse(inputExpression);
 
@@ -148,7 +177,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testAtLiteralTime() {
+    void atLiteralTime() {
         String inputExpression = "@\"23:59:00\"";
         BaseNode bool = parse(inputExpression);
 
@@ -158,7 +187,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testAtLiteralDateAndTime() {
+    void atLiteralDateAndTime() {
         String inputExpression = "@\"2016-07-29T05:48:23\"";
         BaseNode bool = parse(inputExpression);
 
@@ -168,7 +197,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testAtLiteralDuration() {
+    void atLiteralDuration() {
         String inputExpression = "@\"P2Y2M\"";
         BaseNode bool = parse(inputExpression);
 
@@ -178,7 +207,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testNullLiteral() {
+    void nullLiteral() {
         String inputExpression = "null";
         BaseNode nullLit = parse( inputExpression );
 
@@ -188,7 +217,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testStringLiteral() {
+    void stringLiteral() {
         String inputExpression = "\"some string\"";
         BaseNode stringLit = parse( inputExpression );
 
@@ -199,7 +228,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testNameReference() {
+    void nameReference() {
         String inputExpression = "someSimpleName";
         BaseNode nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING)));
 
@@ -209,7 +238,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testQualifiedName() {
+    void qualifiedName() {
         String inputExpression = "My Person.Full Name";
         MapBackedType personType = new MapBackedType("Person", mapOf( entry("Full Name", BuiltInType.STRING), entry("Age", BuiltInType.NUMBER)));
         BaseNode qualRef = parse( inputExpression, mapOf( entry("My Person", personType)));
@@ -229,7 +258,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testParensWithLiteral() {
+    void parensWithLiteral() {
         String inputExpression = "(10.5 )";
         BaseNode number = parse( inputExpression );
 
@@ -239,7 +268,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testLogicalNegation() {
+    void logicalNegation() {
         String inputExpression = "not ( true )";
         BaseNode neg = parse( inputExpression );
 
@@ -254,7 +283,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testMultiplication() {
+    void multiplication() {
         String inputExpression = "10 * x";
         BaseNode infix = parse( inputExpression, mapOf(entry("x", BuiltInType.NUMBER)) );
 
@@ -273,7 +302,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testDivision() {
+    void division() {
         String inputExpression = "y / 5 * ( x )";
         BaseNode infix = parse( inputExpression, mapOf(entry("x", BuiltInType.NUMBER), entry("y", BuiltInType.NUMBER)) );
 
@@ -301,7 +330,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPower1() {
+    void power1() {
         String inputExpression = "y * 5 ** 3";
         BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
@@ -329,7 +358,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPower2() {
+    void power2() {
         String inputExpression = "(y * 5) ** 3";
         BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
@@ -357,7 +386,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPower3() {
+    void power3() {
         String inputExpression = "y ** 5 * 3";
         BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
@@ -385,7 +414,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPower4() {
+    void power4() {
         String inputExpression = "y ** ( 5 * 3 )";
         BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
@@ -413,7 +442,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testAdd1() {
+    void add1() {
         String inputExpression = "y + 5 * 3";
         BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
@@ -441,7 +470,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testSub1() {
+    void sub1() {
         String inputExpression = "(y - 5) ** 3";
         BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
@@ -469,7 +498,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testBetween() {
+    void between() {
         String inputExpression = "x between 10+y and 3**z";
         BaseNode between = parse( inputExpression );
 
@@ -489,7 +518,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInValueList() {
+    void inValueList() {
         // TODO review this test might be wrong as list is not homogeneous 
         String inputExpression = "x / 4 in ( 10+y, true, 80, someVar )";
         BaseNode inNode = parse( inputExpression );
@@ -513,7 +542,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInUnaryTestList() {
+    void inUnaryTestList() {
         String inputExpression = "x ** y in ( <=1000, >t, null, (2000..z[, ]z..2000], [(10+5)..(a*b)) )";
         BaseNode inNode = parse( inputExpression );
 
@@ -565,7 +594,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInUnaryTest() {
+    void inUnaryTest() {
         String inputExpression = "x - y in [(10+5)..(a*b))";
         BaseNode inNode = parse( inputExpression );
 
@@ -582,7 +611,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInUnaryTestStrings() {
+    void inUnaryTestStrings() {
         final String inputExpression = "name in [\"A\"..\"Z...\")";
         final BaseNode inNode = parse( inputExpression );
 
@@ -598,7 +627,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testComparisonInFixOp() {
+    void comparisonInFixOp() {
         String inputExpression = "foo >= bar * 10";
         BaseNode infix = parse( inputExpression );
 
@@ -615,7 +644,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testConditionalLogicalOp() {
+    void conditionalLogicalOp() {
         String inputExpression = "foo < 10 and bar = \"x\" or baz";
         BaseNode infix = parse( inputExpression );
 
@@ -643,7 +672,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testEmptyList() {
+    void emptyList() {
         String inputExpression = "[]";
         BaseNode list = parse( inputExpression );
 
@@ -656,7 +685,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testExpressionList() {
+    void expressionList() {
         // TODO review this test is potentially wrong as the list is not homogeneous
         String inputExpression = "[ 10, foo * bar, true ]";
         BaseNode list = parse( inputExpression );
@@ -673,7 +702,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testEmptyContext() {
+    void emptyContext() {
         String inputExpression = "{}";
         BaseNode context = parse( inputExpression );
 
@@ -685,7 +714,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testContextWithMultipleEntries() {
+    void contextWithMultipleEntries() {
         String inputExpression = "{ \"a string key\" : 10,"
                        + " a non-string key : foo+bar,"
                        + " a key.with + /' odd chars : [10..50] }";
@@ -728,7 +757,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testVariableWithInKeyword() {
+    void variableWithInKeyword() {
         String inputExpression = "{ a variable with in keyword : 10, "
                 + " another variable : a variable with in keyword + 20, "
                 + " another in variable : an external in variable / 2 }";
@@ -772,7 +801,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testNestedContexts() {
+    void nestedContexts() {
         String inputExpression = "{ a value : 10,"
                        + " an applicant : { "
                        + "    first name : \"Edson\", "
@@ -827,7 +856,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testNestedContexts2() {
+    void nestedContexts2() {
         String inputExpression = "{ an applicant : { "
                                  + "    home address : {"
                                  + "        street name: \"broadway st\","
@@ -857,7 +886,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFunctionDefinition() {
+    void functionDefinition() {
         String inputExpression = "{ is minor : function( person's age ) person's age < 21 }";
         BaseNode ctxbase = parse( inputExpression );
 
@@ -882,7 +911,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testExternalFunctionDefinition() {
+    void externalFunctionDefinition() {
         String inputExpression = "{ trigonometric cosine : function( angle ) external {"
                        + "    java : {"
                        + "        class : \"java.lang.Math\","
@@ -932,7 +961,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testForExpression() {
+    void forExpression() {
         String inputExpression = "for item in order.items return item.price * item.quantity";
         BaseNode forbase = parse( inputExpression );
 
@@ -952,7 +981,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testIfExpression() {
+    void ifExpression() {
         String inputExpression = "if applicant.age < 18 then \"declined\" else \"accepted\"";
         BaseNode ifBase = parse( inputExpression );
 
@@ -967,7 +996,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testQuantifiedExpressionSome() {
+    void quantifiedExpressionSome() {
         String inputExpression = "some item in order.items satisfies item.price > 100";
         BaseNode someBase = parse( inputExpression );
 
@@ -983,7 +1012,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testQuantifiedExpressionEvery() {
+    void quantifiedExpressionEvery() {
         String inputExpression = "every item in order.items satisfies item.price > 100";
         BaseNode everyBase = parse( inputExpression );
 
@@ -999,7 +1028,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInstanceOfExpression() {
+    void instanceOfExpression() {
         String inputExpression = "\"foo\" instance of string";
         BaseNode instanceOfBase = parse( inputExpression );
 
@@ -1015,7 +1044,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInstanceOfExpressionAnd() {
+    void instanceOfExpressionAnd() {
         String inputExpression = "\"foo\" instance of string and 10 instance of number";
         BaseNode andExpr = parse( inputExpression );
 
@@ -1046,7 +1075,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testInstanceOfExpressionFunction() {
+    void instanceOfExpressionFunction() {
         String inputExpression = "duration instance of function";
         BaseNode instanceOfBase = parse( inputExpression );
 
@@ -1062,7 +1091,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testPathExpression() {
+    void pathExpression() {
         String inputExpression = "[ 10, 15 ].size";
         BaseNode pathBase = parse( inputExpression );
 
@@ -1077,7 +1106,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFilterExpression() {
+    void filterExpression() {
         String inputExpression = "[ {x:1, y:2}, {x:2, y:3} ][ x=1 ]";
         BaseNode filterBase = parse( inputExpression );
 
@@ -1092,7 +1121,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFunctionInvocationNamedParams() {
+    void functionInvocationNamedParams() {
         String inputExpression = "my.test.Function( named parameter 1 : x+10, named parameter 2 : \"foo\" )";
         BaseNode functionBase = parse( inputExpression );
 
@@ -1121,7 +1150,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFunctionInvocationPositionalParams() {
+    void functionInvocationPositionalParams() {
         String inputExpression = "my.test.Function( x+10, \"foo\" )";
         BaseNode functionBase = parse( inputExpression );
 
@@ -1138,7 +1167,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFunctionInvocationWithKeyword() {
+    void functionInvocationWithKeyword() {
         String inputExpression = "date and time( \"2016-07-29T19:47:53\" )";
         BaseNode functionBase = parse( inputExpression );
 
@@ -1154,7 +1183,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFunctionInvocationWithExpressionParameters() {
+    void functionInvocationWithExpressionParameters() {
         String inputExpression = "date and time( date(\"2016-07-29\"), time(\"19:47:53\") )";
         BaseNode functionBase = parse( inputExpression );
 
@@ -1171,7 +1200,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testFunctionInvocationEmptyParams() {
+    void functionInvocationEmptyParams() {
         String inputExpression = "my.test.Function()";
         BaseNode functionBase = parse( inputExpression );
 
@@ -1185,9 +1214,9 @@ public class FEELParserTest {
         assertThat( function.getParams().getElements()).isEmpty();
     }
 
-    @Ignore("dropped since DMNv1.2")
+    @Disabled("dropped since DMNv1.2")
     @Test
-    public void testFunctionDecisionTableInvocation() {
+    void functionDecisionTableInvocation() {
         String inputExpression = "decision table( "
                                  + "    outputs: \"Applicant Risk Rating\","
                                  + "    input expression list: [\"Applicant Age\", \"Medical History\"],"
@@ -1255,7 +1284,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testContextPathExpression() {
+    void contextPathExpression() {
         String inputExpression = "{ x : \"foo\" }.x";
         BaseNode pathBase = parse( inputExpression );
 
@@ -1271,7 +1300,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testContextPathExpression2() {
+    void contextPathExpression2() {
         String inputExpression = "{ x : { y : \"foo\" } }.x.y";
         BaseNode pathBase = parse( inputExpression );
 
@@ -1287,7 +1316,7 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testContextPathExpression3() {
+    void contextPathExpression3() {
         String inputExpression = "{ first name : \"bob\" }.first name";
         BaseNode pathBase = parse( inputExpression );
 
@@ -1303,53 +1332,53 @@ public class FEELParserTest {
     }
 
     @Test
-    public void testVariableName() {
+    void variableName() {
         String var = "valid variable name";
         assertThat( FEELParser.isVariableNameValid( var )).isEqualTo(true);
     }
 
     @Test
-    public void testVariableNameWithValidCharacters() {
+    void variableNameWithValidCharacters() {
         String var = "?_873./-'+*valid";
         assertThat( FEELParser.isVariableNameValid( var )).isEqualTo(true);
     }
 
     @Test
-    public void testVariableNameWithValidCharactersHorseEmoji() {
+    void variableNameWithValidCharactersHorseEmoji() {
         String var = "🐎";
         assertThat(FEELParser.isVariableNameValid(var)).isEqualTo(true);
     }
 
     @Test
-    public void testVariableNameWithInvalidCharacterPercentSimplified() {
+    void variableNameWithInvalidCharacterPercentSimplified() {
         String var = "banana%mango";
         assertThat(FEELParser.isVariableNameValid(var)).isEqualTo(false);
         assertThat(FEELParser.checkVariableName(var).get(0).getMessage()).isEqualTo(Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "character", "%"));
     }
 
     @Test
-    public void testVariableNameWithInvalidCharacterPercent() {
+    void variableNameWithInvalidCharacterPercent() {
         String var = "?_873./-'%+*valid";
         assertThat( FEELParser.isVariableNameValid( var )).isEqualTo(false);
         assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage()).isEqualTo( Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "character", "%"));
     }
 
     @Test
-    public void testVariableNameWithInvalidCharacterAt() {
+    void variableNameWithInvalidCharacterAt() {
         String var = "?_873./-'@+*valid";
         assertThat(FEELParser.isVariableNameValid(var)).isEqualTo(false);
         assertThat(FEELParser.checkVariableName(var).get(0).getMessage()).isEqualTo(Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "character", "@"));
     }
 
     @Test
-    public void testVariableNameInvalidStartCharacter() {
+    void variableNameInvalidStartCharacter() {
         String var = "5variable can't start with a number";
         assertThat( FEELParser.isVariableNameValid( var )).isEqualTo(false);
         assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage()).isEqualTo( Msg.createMessage(Msg.INVALID_VARIABLE_NAME_START, "character", "5"));
     }
 
     @Test
-    public void testVariableNameCantStartWithKeyword() {
+    void variableNameCantStartWithKeyword() {
         String var = "for keyword is an invalid start for a variable name";
         assertThat( FEELParser.isVariableNameValid( var )).isEqualTo(false);
         assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage()).isEqualTo( Msg.createMessage(Msg.INVALID_VARIABLE_NAME_START, "keyword", "for"));

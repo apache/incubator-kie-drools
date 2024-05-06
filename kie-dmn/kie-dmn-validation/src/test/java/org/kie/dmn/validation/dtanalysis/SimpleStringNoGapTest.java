@@ -20,7 +20,7 @@ package org.kie.dmn.validation.dtanalysis;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
@@ -30,10 +30,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TA
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 
-public class SimpleStringNoGapTest extends AbstractDTAnalysisTest {
+class SimpleStringNoGapTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
+    void test() {
         List<DMNMessage> validate = validator.validate(getReader("simpleStringNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
         assertThat(validate).hasSize(1); // Gap Analysis skipped because of free string.
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_GAP))).as("It should contain DMNMessage for the skipped gap analysis").isTrue();

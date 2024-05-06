@@ -42,7 +42,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     private static JsonNode definitions;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         DMNRuntime runtime = createRuntime(DMN_FILE, EnumGenerationTest.class);
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -54,7 +54,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testNumberAllowedValues() {
+    void numberAllowedValues() {
         JsonNode node = definitions.get("numberAllowedValues");
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
@@ -69,7 +69,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testStringAllowedValues() {
+    void stringAllowedValues() {
         JsonNode node = definitions.get("stringAllowedValues");
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
@@ -84,7 +84,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testStringNullableAllowedValues() {
+    void stringNullableAllowedValues() {
         JsonNode node = definitions.get("stringNullableAllowedValues");
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
@@ -98,7 +98,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testNumberTypeConstraint() {
+    void numberTypeConstraint() {
         JsonNode node = definitions.get("numberTypeConstraint");
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
@@ -113,7 +113,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testStringTypeConstraint() {
+    void stringTypeConstraint() {
         JsonNode node = definitions.get("stringTypeConstraint");
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
@@ -128,7 +128,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testStringNullableTypeConstraint() {
+    void stringNullableTypeConstraint() {
         JsonNode node = definitions.get("stringNullableTypeConstraint");
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");

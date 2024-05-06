@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
@@ -61,17 +61,17 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void testV13_conditional() throws Exception {
+    void v13Conditional() throws Exception {
         testRoundTripV13("org/kie/dmn/trisotech/backend/marshalling/v1_3/", "conditional.dmn");
     }
 
     @Test
-    public void testV13_iterator() throws Exception {
+    void v13Iterator() throws Exception {
         testRoundTripV13("org/kie/dmn/trisotech/backend/marshalling/v1_3/", "iterator.dmn");
     }
 
     @Test
-    public void testV13_filter() throws Exception {
+    void v13Filter() throws Exception {
         testRoundTripV13("org/kie/dmn/trisotech/backend/marshalling/v1_3/", "filter.dmn");
     }
 

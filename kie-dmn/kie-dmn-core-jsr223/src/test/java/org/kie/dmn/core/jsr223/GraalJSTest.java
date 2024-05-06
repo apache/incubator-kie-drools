@@ -31,28 +31,28 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GraalJSTest {
+class GraalJSTest {
     private static final Logger LOG = LoggerFactory.getLogger( GraalJSTest.class );
     private static final String POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY = "polyglot.engine.WarnInterpreterOnly";
     private String warnFlag;
 
     @BeforeEach
-    public void init() {
+    void init() {
         warnFlag = System.getProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY);
         System.setProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY, "false");
     }
-    
+
     @AfterEach
-    public void end() {
+    void end() {
         if (warnFlag != null) {
             System.setProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY, warnFlag);
         } else {
             System.clearProperty(POLYGLOT_ENGINE_WARN_INTERPRETER_ONLY);
         }
     }
-    
+
     @Test
-    public void testNashorn() {
+    void nashorn() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()

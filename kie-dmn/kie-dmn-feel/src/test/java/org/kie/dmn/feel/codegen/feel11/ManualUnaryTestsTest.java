@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -52,7 +52,7 @@ public class ManualUnaryTestsTest {
     }
 
     @Test
-    public void testManualUnaryTests() {
+    void manualUnaryTests() {
         Object left = EvalHelper.coerceNumber(7);
 
         CompiledFEELUnaryTests compiledUnaryTests = new ManualImpl1();

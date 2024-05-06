@@ -33,92 +33,92 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-public class CodeFunctionTest {
+class CodeFunctionTest {
 
     private CodeFunction codeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         codeFunction = new CodeFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResult(codeFunction.invoke(null), "null");
     }
 
     @Test
-    public void invokeString() {
+    void invokeString() {
         FunctionTestUtil.assertResult(codeFunction.invoke("test"), "\"test\"");
     }
 
     @Test
-    public void invokeBigDecimal() {
+    void invokeBigDecimal() {
         FunctionTestUtil.assertResult(codeFunction.invoke(BigDecimal.valueOf(10.7)), "10.7");
     }
 
     @Test
-    public void invokeLocalDate() {
+    void invokeLocalDate() {
         final LocalDate localDate = LocalDate.now();
         FunctionTestUtil.assertResult(codeFunction.invoke(localDate), "date( \"" + localDate.toString() + "\" )");
     }
 
     @Test
-    public void invokeLocalTime() {
+    void invokeLocalTime() {
         final LocalTime localTime = LocalTime.now();
         FunctionTestUtil.assertResult(codeFunction.invoke(localTime), "time( \"" + TimeFunction.FEEL_TIME.format(localTime) + "\" )");
     }
 
     @Test
-    public void invokeOffsetTime() {
+    void invokeOffsetTime() {
         final OffsetTime offsetTime = OffsetTime.now();
         FunctionTestUtil.assertResult(codeFunction.invoke(offsetTime), "time( \"" + TimeFunction.FEEL_TIME.format(offsetTime) + "\" )");
     }
 
     @Test
-    public void invokeLocalDateTime() {
+    void invokeLocalDateTime() {
         final LocalDateTime localDateTime = LocalDateTime.now();
         FunctionTestUtil.assertResult(codeFunction.invoke(localDateTime), "date and time( \"" + DateAndTimeFunction.FEEL_DATE_TIME.format(localDateTime) + "\" )");
     }
 
     @Test
-    public void invokeOffsetDateTime() {
+    void invokeOffsetDateTime() {
         final OffsetDateTime offsetDateTime = OffsetDateTime.now();
         FunctionTestUtil.assertResult(codeFunction.invoke(offsetDateTime), "date and time( \"" + DateAndTimeFunction.FEEL_DATE_TIME.format(offsetDateTime) + "\" )");
     }
 
     @Test
-    public void invokeZonedDateTime() {
+    void invokeZonedDateTime() {
         final ZonedDateTime zonedDateTime = ZonedDateTime.now();
         FunctionTestUtil.assertResult(codeFunction.invoke(zonedDateTime), "date and time( \"" + DateAndTimeFunction.REGION_DATETIME_FORMATTER.format(zonedDateTime) + "\" )");
     }
 
     @Test
-    public void invokeDurationZero() {
+    void invokeDurationZero() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ZERO), "duration( \"PT0S\" )");
     }
 
     @Test
-    public void invokeDurationDays() {
+    void invokeDurationDays() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofDays(9)), "duration( \"P9D\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofDays(-9)), "duration( \"-P9D\" )");
     }
 
     @Test
-    public void invokeDurationHours() {
+    void invokeDurationHours() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofHours(9)), "duration( \"PT9H\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofHours(200)), "duration( \"P8DT8H\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofHours(-200)), "duration( \"-P8DT8H\" )");
     }
 
     @Test
-    public void invokeDurationMinutes() {
+    void invokeDurationMinutes() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMinutes(9)), "duration( \"PT9M\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMinutes(200)), "duration( \"PT3H20M\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMinutes(5000)), "duration( \"P3DT11H20M\" )");
@@ -126,7 +126,7 @@ public class CodeFunctionTest {
     }
 
     @Test
-    public void invokeDurationSeconds() {
+    void invokeDurationSeconds() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofSeconds(9)), "duration( \"PT9S\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofSeconds(200)), "duration( \"PT3M20S\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofSeconds(5000)), "duration( \"PT1H23M20S\" )");
@@ -135,7 +135,7 @@ public class CodeFunctionTest {
     }
 
     @Test
-    public void invokeDurationNanosMillis() {
+    void invokeDurationNanosMillis() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofNanos(25)), "duration( \"PT0.000000025S\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofNanos(10000)), "duration( \"PT0.00001S\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofNanos(10025)), "duration( \"PT0.000010025S\" )");
@@ -145,30 +145,30 @@ public class CodeFunctionTest {
     }
 
     @Test
-    public void invokePeriodZero() {
+    void invokePeriodZero() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Period.ZERO), "duration( \"P0M\" )");
     }
 
     @Test
-    public void invokePeriodYears() {
+    void invokePeriodYears() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Period.ofYears(24)), "duration( \"P24Y\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Period.ofYears(-24)), "duration( \"-P24Y\" )");
     }
 
     @Test
-    public void invokePeriodMonths() {
+    void invokePeriodMonths() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Period.ofMonths(2)), "duration( \"P2M\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Period.ofMonths(27)), "duration( \"P2Y3M\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Period.ofMonths(-27)), "duration( \"-P2Y3M\" )");
     }
 
     @Test
-    public void invokeListEmpty() {
+    void invokeListEmpty() {
         FunctionTestUtil.assertResult(codeFunction.invoke(Collections.emptyList()), "[ ]");
     }
 
     @Test
-    public void invokeListNonEmpty() {
+    void invokeListNonEmpty() {
         final List<Object> values = new ArrayList<>();
         values.add(1);
         values.add(BigDecimal.valueOf(10.5));
@@ -177,40 +177,40 @@ public class CodeFunctionTest {
     }
 
     @Test
-    public void invokeRangeOpenOpen() {
+    void invokeRangeOpenOpen() {
         FunctionTestUtil.assertResult(
                 codeFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.OPEN)),
                 "( 12 .. 15 )");
     }
 
     @Test
-    public void invokeRangeOpenClosed() {
+    void invokeRangeOpenClosed() {
         FunctionTestUtil.assertResult(
                 codeFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.CLOSED)),
                 "( 12 .. 15 ]");
     }
 
     @Test
-    public void invokeRangeClosedOpen() {
+    void invokeRangeClosedOpen() {
         FunctionTestUtil.assertResult(
                 codeFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.OPEN)),
                 "[ 12 .. 15 )");
     }
 
     @Test
-    public void invokeRangeClosedClosed() {
+    void invokeRangeClosedClosed() {
         FunctionTestUtil.assertResult(
                 codeFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED)),
                 "[ 12 .. 15 ]");
     }
 
     @Test
-    public void invokeContextEmpty() {
+    void invokeContextEmpty() {
         FunctionTestUtil.assertResult(codeFunction.invoke(new HashMap<>()), "{ }");
     }
 
     @Test
-    public void invokeContextNonEmpty() {
+    void invokeContextNonEmpty() {
         final Map<String, Object> childContextMap = new HashMap<>();
         childContextMap.put("childKey1", "childValue1");
 

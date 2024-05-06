@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.AbstractValidatorTest;
@@ -33,10 +33,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
+class ValidatorInformationRequirementTest extends AbstractValidatorTest {
 
     @Test
-    public void testINFOREQ_MISSING_INPUT_ReaderInput() throws IOException {
+    void inforeq_missing_input_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "informationrequirement/INFOREQ_MISSING_INPUT.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -48,7 +48,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_MISSING_INPUT_FileInput() {
+    void inforeq_missing_input_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_MISSING_INPUT.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -58,7 +58,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_MISSING_INPUT_DefinitionsInput() {
+    void inforeq_missing_input_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "informationrequirement/INFOREQ_MISSING_INPUT.dmn",
                                 "https://github.com/kiegroup/kie-dmn",
@@ -70,7 +70,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_INPUT_NOT_INPUTDATA_ReaderInput() throws IOException {
+    void inforeq_input_not_inputdata_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "informationrequirement/INFOREQ_INPUT_NOT_INPUTDATA.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -82,7 +82,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_INPUT_NOT_INPUTDATA_FileInput() {
+    void inforeq_input_not_inputdata_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_INPUT_NOT_INPUTDATA.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -92,7 +92,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_INPUT_NOT_INPUTDATA_DefinitionsInput() {
+    void inforeq_input_not_inputdata_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "informationrequirement/INFOREQ_INPUT_NOT_INPUTDATA.dmn",
                                 "https://github.com/kiegroup/kie-dmn",
@@ -104,7 +104,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_MISSING_DECISION_ReaderInput() throws IOException {
+    void inforeq_missing_decision_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "informationrequirement/INFOREQ_MISSING_DECISION.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -116,7 +116,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_MISSING_DECISION_FileInput() {
+    void inforeq_missing_decision_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_MISSING_DECISION.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -126,7 +126,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_MISSING_DECISION_DefinitionsInput() {
+    void inforeq_missing_decision_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "informationrequirement/INFOREQ_MISSING_DECISION.dmn",
                                 "https://github.com/kiegroup/kie-dmn",
@@ -138,7 +138,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_DECISION_NOT_DECISION_ReaderInput() throws IOException {
+    void inforeq_decision_not_decision_ReaderInput() throws IOException {
         try (final Reader reader = getReader( "informationrequirement/INFOREQ_DECISION_NOT_DECISION.dmn" )) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -150,7 +150,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_DECISION_NOT_DECISION_FileInput() {
+    void inforeq_decision_not_decision_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile( "informationrequirement/INFOREQ_DECISION_NOT_DECISION.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -160,7 +160,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINFOREQ_DECISION_NOT_DECISION_DefinitionsInput() {
+    void inforeq_decision_not_decision_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions( "informationrequirement/INFOREQ_DECISION_NOT_DECISION.dmn",
                                 "https://github.com/kiegroup/kie-dmn",

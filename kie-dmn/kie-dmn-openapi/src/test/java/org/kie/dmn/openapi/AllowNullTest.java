@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AllowNullTest extends BaseDMNOASTest {
 
     @Test
-    void testVowels() throws Exception {
+    void vowels() throws Exception {
         final DMNRuntime runtime = createRuntime("vowels.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -46,7 +46,7 @@ class AllowNullTest extends BaseDMNOASTest {
     }
     
     @Test
-    void testVowelsAllowNull() throws Exception {
+    void vowelsAllowNull() throws Exception {
         final DMNRuntime runtime = createRuntime("vowelsAllowNull.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -61,7 +61,7 @@ class AllowNullTest extends BaseDMNOASTest {
     }
     
     @Test
-    void testSoundItemDefAllowNull() throws Exception {
+    void soundItemDefAllowNull() throws Exception {
         final DMNRuntime runtime = createRuntime("RecommenderHitPolicy1_allowNull_itemDef.dmn", DMNRuntimeTest.class);
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

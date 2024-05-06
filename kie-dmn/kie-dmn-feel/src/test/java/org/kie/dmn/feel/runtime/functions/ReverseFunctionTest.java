@@ -21,36 +21,37 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class ReverseFunctionTest {
+class ReverseFunctionTest {
 
     private ReverseFunction reverseFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         reverseFunction = new ReverseFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultError(reverseFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEmptyList() {
+    void invokeEmptyList() {
         FunctionTestUtil.assertResultList(reverseFunction.invoke(Collections.emptyList()), Collections.emptyList());
     }
 
     @Test
-    public void invokeListTypeHomogenous() {
+    void invokeListTypeHomogenous() {
         FunctionTestUtil.assertResultList(reverseFunction.invoke(Arrays.asList(1, 2, 3, 4)), Arrays.asList(4, 3, 2, 1));
     }
 
     @Test
-    public void invokeListTypeHeterogenous() {
+    void invokeListTypeHeterogenous() {
         FunctionTestUtil.assertResultList(
                 reverseFunction.invoke(Arrays.asList(1, "test", BigDecimal.TEN, Collections.emptyList())),
                 Arrays.asList(Collections.emptyList(), BigDecimal.TEN, "test", 1));

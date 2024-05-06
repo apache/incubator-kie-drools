@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UndefinedTest extends BaseDMNOASTest {
 
     @Test
-    void testUndefinedIO() throws Exception {
+    void undefinedIO() throws Exception {
         final DMNRuntime runtime = createRuntime("undefinedIO.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

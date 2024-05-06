@@ -18,20 +18,22 @@
  */
 package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
-import org.junit.Test;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-public class ForIterationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ForIterationTest {
 
     @Test
-    public void hasNextValueBigDecimalTest() {
+    void hasNextValueBigDecimalTest() {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         ForIteration iteration = new ForIteration("iteration", start, end);
@@ -45,7 +47,7 @@ public class ForIterationTest {
     }
 
     @Test
-    public void hasNextValueLocalDateTest() {
+    void hasNextValueLocalDateTest() {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 3);
         ForIteration iteration = new ForIteration("iteration", start, end);
@@ -59,7 +61,7 @@ public class ForIterationTest {
     }
 
     @Test
-    public void getNextValueBigDecimalTest() {
+    void getNextValueBigDecimalTest() {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3));
@@ -69,7 +71,7 @@ public class ForIterationTest {
     }
 
     @Test
-    public void getNextValueLocalDateTest() {
+    void getNextValueLocalDateTest() {
         LocalDate start = LocalDate.of(2021, 1, 3);
         LocalDate end = LocalDate.of(2021, 1, 1);
         List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));

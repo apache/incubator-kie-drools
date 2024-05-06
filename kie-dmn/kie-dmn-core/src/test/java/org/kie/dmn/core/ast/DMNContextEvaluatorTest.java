@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import org.drools.util.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -19,15 +19,15 @@ import org.kie.dmn.core.impl.DMNResultImplFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DMNContextEvaluatorTest {
+class DMNContextEvaluatorTest {
 
     private DMNResultImplFactory dmnResultFactory = new DMNResultImplFactory();
 
     @Test
-    public void  dateToDateTime() {
+    void dateToDateTime() {
         File file = FileUtils.getFile("0007-date-time.dmn");
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(file);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58");

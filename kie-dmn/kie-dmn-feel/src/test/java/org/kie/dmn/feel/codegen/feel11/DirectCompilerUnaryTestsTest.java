@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.Expression;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -64,13 +64,13 @@ public class DirectCompilerUnaryTestsTest {
     }
 
     @Test
-    public void test_Dash() {
+    void dash() {
         assertThat(parseCompileEvaluate("-", 1)).containsExactly(Boolean.TRUE);
         assertThat(parseCompileEvaluate("-, -", 1)).isEmpty();
     }
-    
+
     @Test
-    public void test_positiveUnaryTestIneq() {
+    void positive_unary_test_ineq() {
         assertThat(parseCompileEvaluate("<47", 1)).containsExactly(Boolean.TRUE);
         assertThat(parseCompileEvaluate("<47, <100", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE);
         assertThat(parseCompileEvaluate("<47, <100, <-47", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE);
@@ -82,9 +82,9 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate(">=1, >2, <3, <=4", 5)).containsExactly(Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
         assertThat(parseCompileEvaluate("!=1, !=42", 1)).containsExactly(Boolean.FALSE, Boolean.TRUE);
     }
-    
+
     @Test
-    public void test_positiveUnaryTestIneq_forEQ() {
+    void positive_unary_test_ineq_for_eq() {
         assertThat(parseCompileEvaluate("<47, =1", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE);
         assertThat(parseCompileEvaluate("<47, =47", 1)).containsExactly(Boolean.TRUE, Boolean.FALSE);
         assertThat(parseCompileEvaluate("<47, 1", 1)).containsExactly(Boolean.TRUE, Boolean.TRUE);
@@ -92,12 +92,12 @@ public class DirectCompilerUnaryTestsTest {
     }
 
     @Test
-    public void test_not() {
+    void not() {
         assertThat(parseCompileEvaluate("not(=47), not(<1), not(!=1)", 1)).isEmpty();
     }
 
     @Test
-    public void test_simpleUnaryTest_forRANGE() {
+    void simple_unary_test_for_range() {
         assertThat(parseCompileEvaluate("[1..2]", 1)).containsExactly(Boolean.TRUE);
         assertThat(parseCompileEvaluate("[1..2], [2..3]", 1)).containsExactly(Boolean.TRUE, Boolean.FALSE);
         assertThat(parseCompileEvaluate("(1..2], [2..3]", 1)).containsExactly(Boolean.FALSE, Boolean.FALSE);
@@ -105,7 +105,7 @@ public class DirectCompilerUnaryTestsTest {
     }
 
     @Test
-    public void t2() {
+    void t2() {
         assertThat(parseCompileEvaluate("\"asd\"", "asd")).containsExactly(Boolean.TRUE);
     }
 

@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MultipleModelsTest extends BaseDMNOASTest {
 
     @Test
-    void testNSEW() throws Exception {
+    void nsew() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("NSEW.dmn",
                                                                         DMNRuntimeTypesTest.class,
                                                                         "Traffic Violation.dmn");
@@ -50,7 +50,7 @@ class MultipleModelsTest extends BaseDMNOASTest {
     }
 
     @Test
-    void testTF() throws Exception {
+    void tf() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("NSEW.dmn",
                                                                         DMNRuntimeTypesTest.class,
                                                                         "Traffic Violation.dmn");
@@ -71,7 +71,7 @@ class MultipleModelsTest extends BaseDMNOASTest {
     }
     
     @Test
-    void testCH11() throws Exception {
+    void ch11() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn",
                                                                         DMN13specificTest.class,
                                                                         "Financial.dmn");
@@ -87,7 +87,7 @@ class MultipleModelsTest extends BaseDMNOASTest {
     }
     
     @Test
-    void testSameName() throws Exception {
+    void sameName() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("sameNameNS1.dmn",
                                                                         this.getClass(),
                                                                         "sameNameNS2.dmn");

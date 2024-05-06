@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BasicTest {
+class BasicTest {
     private static final Logger LOG = LoggerFactory.getLogger( BasicTest.class );
 
     private static final ScriptEngineManager SEMANAGER = new ScriptEngineManager();
@@ -41,12 +41,12 @@ public class BasicTest {
     private ScriptEngine engine;
 
     @BeforeEach
-    public void init() {
+    void init() {
         engine = SEMANAGER.getEngineByName("jq");        
     }
-    
+
     @Test
-    public void testEval() throws ScriptException {
+    void eval() throws ScriptException {
         Map<String, Object> ctx = new HashMap<>();
         ctx.put("a", 1);
         ctx.put("b", 2);
@@ -54,9 +54,9 @@ public class BasicTest {
         LOG.info("{}", result);
         assertThat(result).asString().isEqualTo("3");
     }
-    
+
     @Test
-    public void testEvalJSONKey() throws ScriptException {
+    void evalJSONKey() throws ScriptException {
         Map<String, Object> ctx = new HashMap<>();
         ctx.put("Age", 1);
         ctx.put("Previous incidents?", false);
@@ -64,9 +64,9 @@ public class BasicTest {
         LOG.info("{}", result);
         assertThat(result).isEqualTo(false);
     }
-    
+
     @Test
-    public void testTest() throws ScriptException {
+    void test() throws ScriptException {
         evalToStringEquals(testCtx(1), " . > 10 ", false);
         evalToStringEquals(testCtx(47), " . > 10 ", true);
         evalToStringEquals(testCtx(47), " . > $a ", true);

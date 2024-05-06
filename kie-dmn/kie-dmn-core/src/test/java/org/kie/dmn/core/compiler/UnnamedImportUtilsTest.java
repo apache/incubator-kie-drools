@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -17,28 +17,28 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.NamedElement;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.addIfNotPresent;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
 
-public class UnnamedImportUtilsTest {
+class UnnamedImportUtilsTest {
 
     @Test
-    public void isInUnnamedImportTrueWithHrefNamespace() {
+    void isInUnnamedImportTrueWithHrefNamespace() {
         commonIsInUnnamedImportTrue("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
                                     "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
-    public void isInUnnamedImportTrueWithoutHrefNamespace() {
+    void isInUnnamedImportTrueWithoutHrefNamespace() {
         commonIsInUnnamedImportTrue("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
                                     "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
-    public void isInUnnamedImportFalse() {
+    void isInUnnamedImportFalse() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("valid_models/DMNv1_5/Importing_Named_Model.dmn",
                                                                                        this.getClass(),
                                                                                        "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
@@ -57,7 +57,7 @@ public class UnnamedImportUtilsTest {
     }
 
     @Test
-    public void addIfNotPresentTrue() throws IOException {
+    void addIfNotPresentTrue() throws IOException {
         URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
                 "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
         assertNotNull(importedModelFileResource);
@@ -73,13 +73,13 @@ public class UnnamedImportUtilsTest {
     }
 
     @Test
-    public void addIfNotPresentFalseWithHrefNamespace() throws IOException {
+    void addIfNotPresentFalseWithHrefNamespace() throws IOException {
         commonAddIfNotPresentFalse("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
                                     "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
     @Test
-    public void addIfNotPresentFalseWithoutHrefNamespace() throws IOException {
+    void addIfNotPresentFalseWithoutHrefNamespace() throws IOException {
         commonAddIfNotPresentFalse("valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
                                     "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }

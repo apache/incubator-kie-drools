@@ -19,38 +19,39 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class NotFunctionTest {
+class NotFunctionTest {
 
     private NotFunction notFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         notFunction = new NotFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultNull(notFunction.invoke(null));
     }
 
     @Test
-    public void invokeWrongType() {
+    void invokeWrongType() {
         FunctionTestUtil.assertResultError(notFunction.invoke(1), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(notFunction.invoke("test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(notFunction.invoke(BigDecimal.ZERO), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeTrue() {
+    void invokeTrue() {
         FunctionTestUtil.assertResult(notFunction.invoke(true), false);
     }
 
     @Test
-    public void invokeFalse() {
+    void invokeFalse() {
         FunctionTestUtil.assertResult(notFunction.invoke(false), true);
     }
 }

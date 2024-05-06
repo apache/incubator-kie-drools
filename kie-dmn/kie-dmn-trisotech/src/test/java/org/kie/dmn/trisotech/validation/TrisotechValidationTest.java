@@ -20,13 +20,12 @@ package org.kie.dmn.trisotech.validation;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
@@ -46,16 +45,16 @@ public class TrisotechValidationTest {
     protected static DMNValidator validator;
     protected static DMNMarshaller marshaller;
 
-    @BeforeClass
-    public static void init() {
+    @BeforeAll
+    static void init() {
         List<DMNProfile> dmnProfiles = List.of(new TrisotechDMNProfile());
         Properties p = new Properties();
         p.put(DMNAssemblerService.DMN_DECISION_LOGIC_COMPILER, TrisotechDMNEvaluatorCompilerFactory.class.getCanonicalName());
         validator = DMNValidatorFactory.newValidator(dmnProfiles, p);
     }
 
-    @AfterClass
-    public static void dispose() {
+    @AfterAll
+    static void dispose() {
         validator.dispose();
     }
 
@@ -68,7 +67,7 @@ public class TrisotechValidationTest {
     }
 
     @Test
-    public void testBoxedExtension_Conditional13() {
+    void boxedExtensionConditional13() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .usingSchema(TrisotechSchema.INSTANCEv1_3)
                                              .theseModels(getReader("boxedcontextextension/conditional.dmn"));
@@ -76,14 +75,15 @@ public class TrisotechValidationTest {
     }
 
     @Test
-    public void testBoxedExtension_Iterator13() {
+    void boxedExtensionIterator13() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .usingSchema(TrisotechSchema.INSTANCEv1_3)
                                              .theseModels(getReader("boxedcontextextension/iterator.dmn"));
         assertThat(validate).hasSize(0);
     }
+
     @Test
-    public void testBoxedExtension_IteratorDataType13() {
+    void boxedExtensionIteratorDataType13() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .usingSchema(TrisotechSchema.INSTANCEv1_3)
                                              .theseModels(getReader("boxedcontextextension/iterator-datatype.dmn"));
@@ -91,7 +91,7 @@ public class TrisotechValidationTest {
     }
 
     @Test
-    public void testBoxedExtension_Filter13() {
+    void boxedExtensionFilter13() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .usingSchema(TrisotechSchema.INSTANCEv1_3)
                                              .theseModels(getReader("boxedcontextextension/filter.dmn"));
@@ -99,7 +99,7 @@ public class TrisotechValidationTest {
     }
 
     @Test
-    public void testBoxedExtension_FilterDataType13() {
+    void boxedExtensionFilterDataType13() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .usingSchema(TrisotechSchema.INSTANCEv1_3)
                                              .theseModels(getReader("boxedcontextextension/filter-datatype.dmn"));

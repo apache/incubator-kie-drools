@@ -21,13 +21,12 @@ package org.kie.dmn.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.core.compiler.ExecModelCompilerOption;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
@@ -46,7 +45,6 @@ import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 
-@RunWith(Parameterized.class)
 public abstract class BaseVariantTest {
 
     private DMNTypeSafePackageName.Factory factory;
@@ -146,16 +144,11 @@ public abstract class BaseVariantTest {
         }
     }
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Object[] params() {
+    protected static Object[] params() {
         return new Object[]{KIE_API_TYPECHECK, BUILDER_STRICT, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
-    private final VariantTestConf testConfig;
-
-    public BaseVariantTest(final VariantTestConf testConfig) {
-        this.testConfig = testConfig;
-    }
+    protected VariantTestConf testConfig;
 
     public boolean isTypeSafe() {
         return testConfig.isTypeSafe();

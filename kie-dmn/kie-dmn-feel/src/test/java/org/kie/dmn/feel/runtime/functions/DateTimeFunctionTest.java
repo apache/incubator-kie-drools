@@ -27,64 +27,65 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class DateTimeFunctionTest {
+class DateTimeFunctionTest {
 
     private DateAndTimeFunction dateTimeFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         dateTimeFunction = new DateAndTimeFunction();
     }
 
     @Test
-    public void invokeParamStringNull() {
+    void invokeParamStringNull() {
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamStringNotDateOrTime() {
+    void invokeParamStringNotDateOrTime() {
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke("test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke("2017-09-test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke("2017-09-T89"), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamStringDateTime() {
+    void invokeParamStringDateTime() {
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2017-09-07T10:20:30"), LocalDateTime.of(2017, 9, 7, 10, 20, 30));
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("99999-12-31T11:22:33"), LocalDateTime.of(99999, 12, 31, 11, 22, 33));
     }
 
     @Test
-    public void invokeParamStringDateTimeZoned() {
+    void invokeParamStringDateTimeZoned() {
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2011-12-31T10:15:30@Europe/Paris"), ZonedDateTime.of(2011, 12, 31, 10, 15, 30, 0, ZoneId.of("Europe/Paris")));
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2011-12-31T10:15:30.987@Europe/Paris"), ZonedDateTime.of(2011, 12, 31, 10, 15, 30, 987_000_000, ZoneId.of("Europe/Paris")));
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2011-12-31T10:15:30.123456789@Europe/Paris"), ZonedDateTime.of(2011, 12, 31, 10, 15, 30, 123_456_789, ZoneId.of("Europe/Paris")));
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("999999999-12-31T23:59:59.999999999@Europe/Paris"), ZonedDateTime.of(999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneId.of("Europe/Paris")));
     }
+
     @Test
-    public void invokeParamStringDateOffset() {
+    void invokeParamStringDateOffset() {
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2017-12-31T23:59:59.999999999+02:00"), ZonedDateTime.of(2017, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.of("+02:00")));
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("-999999999-12-31T23:59:59.999999999+02:00"), ZonedDateTime.of(-999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.of("+02:00")));
     }
 
     @Test
-    public void invokeParamStringDate() {
+    void invokeParamStringDate() {
         FunctionTestUtil.assertResult(dateTimeFunction.invoke("2017-09-07"), LocalDateTime.of(2017, 9, 7, 0, 0, 0));
     }
 
     @Test
-    public void invokeParamTemporalNulls() {
+    void invokeParamTemporalNulls() {
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke((Temporal) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke(null, LocalTime.of(10, 6, 20)), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(dateTimeFunction.invoke(LocalDate.of(2017, 6, 12), null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeParamTemporalWrongTemporal() {
+    void invokeParamTemporalWrongTemporal() {
         // reminder: 1st parameter accordingly to FEEL Spec Table 58 "date is a date or date time [...] creates a date time from the given date (ignoring any time component)" [that means ignoring any TZ from `date` parameter, too]
         FunctionTestUtil.assertResultError(
                 dateTimeFunction.invoke(
@@ -97,7 +98,7 @@ public class DateTimeFunctionTest {
     }
 
     @Test
-    public void invokeParamTemporalLocalTime() {
+    void invokeParamTemporalLocalTime() {
         FunctionTestUtil.assertResult(
                 dateTimeFunction.invoke(
                         LocalDate.of(2017, 6, 12),
@@ -106,7 +107,7 @@ public class DateTimeFunctionTest {
     }
 
     @Test
-    public void invokeParamTemporalOffsetTime() {
+    void invokeParamTemporalOffsetTime() {
         FunctionTestUtil.assertResult(
                 dateTimeFunction.invoke(
                         LocalDate.of(2017, 6, 12),

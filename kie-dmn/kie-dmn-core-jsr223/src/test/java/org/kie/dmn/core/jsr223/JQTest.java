@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JQTest {
+class JQTest {
     private static final Logger LOG = LoggerFactory.getLogger( JQTest.class );
 
     @Test
-    public void testJQ_BMI() {
+    void jqBmi() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
@@ -48,9 +48,9 @@ public class JQTest {
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("BMI value classification").getResult()).isEqualTo("Normal range");
     }
-    
+
     @Test
-    public void testJQ_isAdult() {
+    void jQIsAdult() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
@@ -64,9 +64,9 @@ public class JQTest {
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("Is Adult?").getResult()).isEqualTo(true);
     }
-    
+
     @Test
-    public void testJQ_isAdult2() {
+    void jQIsAdult2() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
@@ -80,9 +80,9 @@ public class JQTest {
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("Is Adult?").getResult()).isEqualTo(false);
     }
-    
+
     @Test
-    public void testIsPersonNameAnAdult() {
+    void isPersonNameAnAdult() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()

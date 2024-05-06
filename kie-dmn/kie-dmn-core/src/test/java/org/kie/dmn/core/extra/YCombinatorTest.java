@@ -20,7 +20,8 @@ package org.kie.dmn.core.extra;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -34,14 +35,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
 
-    public YCombinatorTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
     public static final Logger LOG = LoggerFactory.getLogger(YCombinatorTest.class);
 
-    @Test
-    public void testY() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void y(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Y.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4",
                                                    "new-file");
@@ -61,8 +60,10 @@ public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
                                                                                            new BigDecimal(5));
     }
 
-    @Test
-    public void testYboxed() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void yboxed(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Yboxed.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4",
                                                    "new-file");

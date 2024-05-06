@@ -18,18 +18,21 @@
  */
 package org.kie.dmn.core;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.kie.dmn.api.core.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,14 +49,10 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
     private static DMNContext context;
     private static DMNModel dmnModel;
 
-    public DMNTwoValueLogicTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
     public static final Logger LOG = LoggerFactory.getLogger(DMNTwoValueLogicTest.class);
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeAll
+    static void setup() {
         runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
                 DMNTwoValueLogicTest.class,
                 "/libs/Two-Value Logic.dmn");
@@ -74,53 +73,73 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get(decisionName)).isEqualTo(expected);
     }
 
-    @Test
-    public void testFunctionAll() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test all", Boolean.TRUE);
     }
 
-    @Test
-    public void testFunctionAny() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionAny(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test any", Boolean.TRUE);
     }
 
-    @Test
-    public void testFunctionSum() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionSum(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test sum", new BigDecimal(6, MathContext.DECIMAL128 ));
     }
 
-    @Test
-    public void testFunctionMean() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionMean(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test mean", new BigDecimal(20, MathContext.DECIMAL128 ));
     }
 
-    @Test
-    public void testFunctionCount() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionCount(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test count", new BigDecimal(3, MathContext.DECIMAL128 ));
     }
 
-    @Test
-    public void testFunctionMax() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionMax(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test max", new BigDecimal(30, MathContext.DECIMAL128 ));
     }
 
-    @Test
-    public void testFunctionMin() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionMin(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test min", new BigDecimal(10, MathContext.DECIMAL128 ));
     }
 
-    @Test
-    public void testFunctionMedian() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionMedian(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test median", new BigDecimal(20, MathContext.DECIMAL128 ));
     }
 
-    @Test
-    public void testFunctionMode() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionMode(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test mode", List.of(new BigDecimal(20, MathContext.DECIMAL128)));
     }
 
-    @Test
-    public void testFunctionStddev() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void functionStddev(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         runTest("Test stddev", new BigDecimal("8.164965809277260327324280249019638", MathContext.DECIMAL128 ) );
     }
 }

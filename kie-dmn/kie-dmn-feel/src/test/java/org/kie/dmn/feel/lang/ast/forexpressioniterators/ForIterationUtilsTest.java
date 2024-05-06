@@ -18,8 +18,11 @@
  */
 package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
@@ -28,11 +31,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.mockito.ArgumentCaptor;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.validateValues;
@@ -44,13 +44,13 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ForIterationUtilsTest {
+class ForIterationUtilsTest {
 
     private FEELEventListener listener;
     private EvaluationContext ctx;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         final FEELEventListenersManager mngr = new FEELEventListenersManager();
         listener = mock(FEELEventListener.class);
         mngr.addListener(listener);
@@ -58,7 +58,7 @@ public class ForIterationUtilsTest {
     }
 
     @Test
-    public void getForIterationValidTest() {
+    void getForIterationValidTest() {
         ForIteration retrieved = getForIteration(ctx, "iteration", BigDecimal.valueOf(1), BigDecimal.valueOf(3));
         assertNotNull(retrieved);
         verify(listener, never()).onEvent(any(FEELEvent.class));
@@ -68,7 +68,7 @@ public class ForIterationUtilsTest {
     }
 
     @Test
-    public void getForIterationNotValidTest() {
+    void getForIterationNotValidTest() {
         try {
             getForIteration(ctx, "iteration", "NOT", "VALID");
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class ForIterationUtilsTest {
     }
 
     @Test
-    public void valueMustBeValidTrueTest() {
+    void valueMustBeValidTrueTest() {
         valueMustBeValid(ctx, BigDecimal.valueOf(1));
         verify(listener, never()).onEvent(any(FEELEvent.class));
         valueMustBeValid(ctx, LocalDate.of(2021, 1, 3));
@@ -104,7 +104,7 @@ public class ForIterationUtilsTest {
     }
 
     @Test
-    public void valueMustBeValidFalseTest() {
+    void valueMustBeValidFalseTest() {
         try {
             valueMustBeValid(ctx, "INVALID");
         } catch (Exception e) {
@@ -115,7 +115,7 @@ public class ForIterationUtilsTest {
     }
 
     @Test
-    public void validateValuesTrueTest() {
+    void validateValuesTrueTest() {
         validateValues(ctx, BigDecimal.valueOf(1), BigDecimal.valueOf(3));
         verify(listener, never()).onEvent(any(FEELEvent.class));
         validateValues(ctx, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 3));
@@ -123,7 +123,7 @@ public class ForIterationUtilsTest {
     }
 
     @Test
-    public void validateValuesFalseTest() {
+    void validateValuesFalseTest() {
         try {
             validateValues(ctx, "INVALID", "INVALID");
         } catch (Exception e) {
