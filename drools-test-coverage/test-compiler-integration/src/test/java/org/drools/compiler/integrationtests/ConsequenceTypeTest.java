@@ -43,9 +43,12 @@ public class ConsequenceTypeTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl.toString());
         final KieSession wm = kbase.newKieSession();
-
-        wm.insert("test");
-        assertThat(wm.fireAllRules()).isEqualTo(ruleNr);
+        try {
+            wm.insert("test");
+            assertThat(wm.fireAllRules()).isEqualTo(ruleNr);
+        } finally {
+            wm.dispose();
+        }
     }
 
     private String generatedRule(int seed) {
