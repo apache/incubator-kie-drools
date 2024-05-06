@@ -18,9 +18,6 @@
  */
 package org.kie.dmn.core;
 
-import java.util.Arrays;
-import java.util.Map;
-
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -32,6 +29,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -45,10 +43,14 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
+import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNCompilerTest extends BaseVariantTest {
 
@@ -343,6 +345,49 @@ public class DMNCompilerTest extends BaseVariantTest {
                                         m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
                                         m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
                            .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
+    }
+
+    @Test
+    public void testAllowedValuesForSimpleTypeInherited() {
+        String nameSpace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/InheritedConstraints.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "InheritedConstraints");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNType aStringType = ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AString");
+        assertThat(aStringType.isAssignableValue("Bob")).isTrue();
+        assertThat(aStringType.isAssignableValue("Joe")).isTrue();
+        final DMNType aConstrainedStringType = ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AConstrainedString");
+        assertThat(aConstrainedStringType.isAssignableValue("Bob")).isTrue();
+        assertThat(aConstrainedStringType.isAssignableValue("Joe")).isFalse();
+    }
+
+    @Test
+    public void testAllowedValuesForComplexTypeInherited() {
+        String nameSpace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/InheritedConstraints.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "InheritedConstraints");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final BaseDMNTypeImpl dmnAdultPerson = (BaseDMNTypeImpl) ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AdultPerson");
+        final Map<String, Object> instanceAdultBob = prototype(entry("name", "Bob"), entry("age", 42));
+        assertThat(dmnAdultPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        final Map<String, Object> instanceYoungBob = prototype(entry("name", "Bob"), entry("age", 12));
+        assertThat(dmnAdultPerson.isAssignableValue(instanceYoungBob)).isFalse();
+
+        final BaseDMNTypeImpl dmnAdultBobPerson = (BaseDMNTypeImpl) ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AdultBob");
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        // UnaryTests are AND - based for constraints defined on different/inherited types
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungBob)).isFalse();
+        final Map<String, Object> instanceAdultJoe = prototype(entry("name", "Joe"), entry("age", 42));
+        // UnaryTests are AND - based for constraints defined on different/inherited types
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultJoe)).isFalse();
+        final Map<String, Object> instanceYoungJoe = prototype(entry("name", "Joe"), entry("age", 12));
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungJoe)).isFalse();
     }
 
     private void commonValidateUnnamedImport(String importingModelRef, String importedModelRef) {
