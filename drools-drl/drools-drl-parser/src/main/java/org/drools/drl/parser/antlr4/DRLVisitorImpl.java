@@ -771,7 +771,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             if (ctx.DRL_REVERSE() != null) {
                 accumulateDescr.setReverseCode(getTextPreservingWhitespace(ctx.reverseBlockStatements));
             }
-            accumulateDescr.setResultCode(ctx.expression().getText());
+            accumulateDescr.setResultCode(getTextPreservingWhitespace(ctx.expression()));
         } else {
             // accumulate function
             accumulateDescr.addFunction(visitAccumulateFunction(ctx.accumulateFunction()));
