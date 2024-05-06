@@ -97,13 +97,13 @@
 
     <!-- Tests -->
     <dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
+      <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -121,11 +121,11 @@
       <artifactId>yasson</artifactId>
       <scope>test</scope>
     </dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.asciidoctor</groupId>
       <artifactId>asciidoctorj</artifactId>
@@ -140,11 +140,11 @@
           <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
       <testResource>
-          <directory>${project.basedir}/../</directory>
-          <includes>
-              <include>ref-dmn-feel-builtin-functions.adoc</include>
-          </includes>
-          <filtering>false</filtering>
+        <directory>${project.basedir}/../</directory>
+        <includes>
+          <include>ref-dmn-feel-builtin-functions.adoc</include>
+        </includes>
+        <filtering>false</filtering>
       </testResource>
     </testResources>
     <plugins>
