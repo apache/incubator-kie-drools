@@ -33,6 +33,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -50,6 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
+import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNCompilerTest extends BaseVariantTest {
 
@@ -87,8 +89,10 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(evaluateAll.hasErrors()).isFalse();
     }
 
-    @Test
-    public void testJavadocComposite() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void javadocComposite(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("javadocComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -150,8 +154,10 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
     }
 
-    @Test
-    public void testItemDefAllowedValuesString() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void itemDefAllowedValuesString(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat(dmnModel).isNotNull();
@@ -219,8 +225,10 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(((SimpleTypeImpl)termMonths).getFeelType()).isEqualTo(BuiltInType.NUMBER);
     }
 
-    @Test
-    public void testCompilationThrowsNPE() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void compilationThrowsNPE(VariantTestConf conf) {
+        testConfig = conf;
         try {
             createRuntime("compilationThrowsNPE.dmn", this.getClass());
             fail("shouldn't have reached here.");
@@ -229,8 +237,10 @@ public class DMNCompilerTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testRecursiveFunctions() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void recursiveFunctions(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2161
         final DMNRuntime runtime = createRuntime("Recursive.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Recursive" );
@@ -358,8 +368,10 @@ public class DMNCompilerTest extends BaseVariantTest {
                            .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
     }
 
-    @Test
-    public void testAllowedValuesForSimpleTypeInherited() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void allowedValuesForSimpleTypeInherited(VariantTestConf conf) {
+        testConfig = conf;
         String nameSpace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/InheritedConstraints.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel(
@@ -375,8 +387,10 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(aConstrainedStringType.isAssignableValue("Joe")).isFalse();
     }
 
-    @Test
-    public void testAllowedValuesForComplexTypeInherited() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void allowedValuesForComplexTypeInherited(VariantTestConf conf) {
+        testConfig = conf;
         String nameSpace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/InheritedConstraints.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel(
