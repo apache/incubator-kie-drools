@@ -1,0 +1,14 @@
+org.jbpm.flow.serialization.impl.marshallers.state.AsyncEventNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.CompositeContextNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.DynamicNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.EventNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.EventSubProcessNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.ForEachNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.JoinNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.LambdaSubProcessNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.MilestoneNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.RuleSetNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.StateNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.SubProcessNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.TimerNodeInstanceWriter
+org.jbpm.flow.serialization.impl.marshallers.state.WorkItemNodeInstanceWriter

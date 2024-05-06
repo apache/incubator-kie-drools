@@ -31,7 +31,7 @@ import com.google.protobuf.Any;
 
 public abstract class ProtobufAbstractMarshallerContext implements MarshallerContext {
 
-    private Map<MarshallerContextName, Object> env;
+    private Map<MarshallerContextName<?>, Object> env;
 
     public ProtobufAbstractMarshallerContext() {
         this.env = new HashMap<>();
@@ -40,7 +40,8 @@ public abstract class ProtobufAbstractMarshallerContext implements MarshallerCon
     @SuppressWarnings("unchecked")
     @Override
     public <T> T get(MarshallerContextName<T> key) {
-        return (T) env.get(key);
+        T value = (T) env.get(key);
+        return value != null ? value : key.defaultValue();
     }
 
     @Override

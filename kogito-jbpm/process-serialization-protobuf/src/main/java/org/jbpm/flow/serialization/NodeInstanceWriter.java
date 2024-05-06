@@ -18,14 +18,24 @@
  */
 package org.jbpm.flow.serialization;
 
-import java.io.OutputStream;
-
 import org.kie.api.runtime.process.NodeInstance;
 
-public interface MarshallerWriterContext extends MarshallerContext {
+import com.google.protobuf.GeneratedMessageV3;
 
-    OutputStream output();
+public interface NodeInstanceWriter extends Comparable<NodeInstanceWriter> {
+    Integer DEFAULT_ORDER = 10;
 
-    NodeInstanceWriter findNodeInstanceWriter(NodeInstance nodeInstance);
+    default Integer order() {
+        return DEFAULT_ORDER;
+    }
+
+    @Override
+    default int compareTo(NodeInstanceWriter that) {
+        return this.order().compareTo(that.order());
+    }
+
+    boolean accept(NodeInstance value);
+
+    GeneratedMessageV3.Builder<?> write(MarshallerWriterContext writer, NodeInstance value);
 
 }

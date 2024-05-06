@@ -16,40 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.flow.serialization.impl;
+package org.jbpm.flow.serialization.impl.marshallers.state;
 
-import java.io.OutputStream;
-
-import org.jbpm.flow.serialization.MarshallerContextName;
 import org.jbpm.flow.serialization.MarshallerWriterContext;
 import org.jbpm.flow.serialization.NodeInstanceWriter;
+import org.jbpm.flow.serialization.protobuf.KogitoNodeInstanceContentsProtobuf.RuleSetNodeInstanceContent;
+import org.jbpm.workflow.instance.node.RuleSetNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 
-/**
- * Extension to default <code>MarshallerWriteContext</code>
- */
+import com.google.protobuf.GeneratedMessageV3.Builder;
 
-public class ProtobufProcessMarshallerWriteContext extends ProtobufAbstractMarshallerContext implements MarshallerWriterContext {
-    private OutputStream os;
+public class RuleSetNodeInstanceWriter implements NodeInstanceWriter {
 
-    public ProtobufProcessMarshallerWriteContext(OutputStream os) {
-        this.os = os;
+    @Override
+    public boolean accept(NodeInstance value) {
+        return value instanceof RuleSetNodeInstance;
     }
 
     @Override
-    public OutputStream output() {
-        return os;
-    }
-
-    @Override
-    public NodeInstanceWriter findNodeInstanceWriter(NodeInstance nodeInstance) {
-        NodeInstanceWriter[] writers = this.get(MarshallerContextName.MARSHALLER_NODE_INSTANCE_WRITER);
-        for (NodeInstanceWriter writer : writers) {
-            if (writer.accept(nodeInstance)) {
-                return writer;
-            }
+    public Builder<?> write(MarshallerWriterContext context, NodeInstance value) {
+        RuleSetNodeInstance nodeInstance = (RuleSetNodeInstance) value;
+        RuleSetNodeInstanceContent.Builder ruleSet = RuleSetNodeInstanceContent.newBuilder();
+        ruleSet.setRuleFlowGroup(nodeInstance.getRuleFlowGroup());
+        ruleSet.addAllTimerInstanceId(nodeInstance.getTimerInstances());
+        if (nodeInstance.getTimerInstancesReference() != null) {
+            ruleSet.putAllTimerInstanceReference(nodeInstance.getTimerInstancesReference());
         }
-        return null;
+
+        return ruleSet;
     }
 
 }

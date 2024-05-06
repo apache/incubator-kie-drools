@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jbpm.flow.serialization.impl.ProtobufProcessInstanceMarshallerFactory;
+import org.jbpm.util.JbpmClassLoaderUtil;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
@@ -49,6 +50,9 @@ public class ProcessInstanceMarshallerService {
 
     private ProcessInstanceMarshallerFactory processInstanceMarshallerFactory;
 
+    private List<NodeInstanceReader> readers;
+    private List<NodeInstanceWriter> writers;
+
     public class Builder {
 
         public Builder() {
@@ -60,9 +64,10 @@ public class ProcessInstanceMarshallerService {
             return this;
         }
 
+        @SuppressWarnings("unchecked")
         public <T> Builder withContextEntries(Map<MarshallerContextName<T>, T> contextEntries) {
             for (Map.Entry<MarshallerContextName<T>, T> item : contextEntries.entrySet()) {
-                ProcessInstanceMarshallerService.this.contextEntries.put((MarshallerContextName<Object>) item.getKey(), (Object) item.getValue());
+                ProcessInstanceMarshallerService.this.contextEntries.put((MarshallerContextName<Object>) item.getKey(), item.getValue());
             }
             return this;
         }
@@ -77,10 +82,22 @@ public class ProcessInstanceMarshallerService {
         }
 
         public Builder withDefaultObjectMarshallerStrategies() {
-            ServiceLoader<ObjectMarshallerStrategy> loader = ServiceLoader.load(ObjectMarshallerStrategy.class);
+            ServiceLoader<ObjectMarshallerStrategy> loader = ServiceLoader.load(ObjectMarshallerStrategy.class, JbpmClassLoaderUtil.findClassLoader());
 
             for (ObjectMarshallerStrategy strategy : loader) {
                 ProcessInstanceMarshallerService.this.strats.add(strategy);
+            }
+
+            ServiceLoader<NodeInstanceReader> readerLoader = ServiceLoader.load(NodeInstanceReader.class, JbpmClassLoaderUtil.findClassLoader());
+
+            for (NodeInstanceReader reader : readerLoader) {
+                ProcessInstanceMarshallerService.this.readers.add(reader);
+            }
+
+            ServiceLoader<NodeInstanceWriter> writerLoader = ServiceLoader.load(NodeInstanceWriter.class, JbpmClassLoaderUtil.findClassLoader());
+
+            for (NodeInstanceWriter writer : writerLoader) {
+                ProcessInstanceMarshallerService.this.writers.add(writer);
             }
             return this;
         }
@@ -101,6 +118,8 @@ public class ProcessInstanceMarshallerService {
 
         public ProcessInstanceMarshallerService build() {
             Collections.sort(ProcessInstanceMarshallerService.this.strats);
+            Collections.sort(ProcessInstanceMarshallerService.this.readers);
+            Collections.sort(ProcessInstanceMarshallerService.this.writers);
             return ProcessInstanceMarshallerService.this;
         }
 
@@ -113,6 +132,8 @@ public class ProcessInstanceMarshallerService {
     private ProcessInstanceMarshallerService() {
         this.listeners = new ArrayList<>();
         this.strats = new ArrayList<>();
+        this.readers = new ArrayList<>();
+        this.writers = new ArrayList<>();
         this.contextEntries = new HashMap<>();
     }
 
@@ -129,6 +150,7 @@ public class ProcessInstanceMarshallerService {
             MarshallerWriterContext context = processInstanceMarshallerFactory.newWriterContext(baos);
             context.set(MarshallerContextName.MARSHALLER_PROCESS, processInstance.process());
             context.set(MarshallerContextName.MARSHALLER_INSTANCE_LISTENER, listeners.toArray(ProcessInstanceMarshallerListener[]::new));
+            context.set(MarshallerContextName.MARSHALLER_NODE_INSTANCE_WRITER, this.writers.toArray(NodeInstanceWriter[]::new));
             setupEnvironment(context);
             org.jbpm.flow.serialization.ProcessInstanceMarshaller marshaller = processInstanceMarshallerFactory.newKogitoProcessInstanceMarshaller();
             marshaller.writeProcessInstance(context, processInstance);
@@ -144,6 +166,7 @@ public class ProcessInstanceMarshallerService {
             context.set(MarshallerContextName.MARSHALLER_PROCESS, process);
             context.set(MarshallerContextName.MARSHALLER_INSTANCE_READ_ONLY, readOnly);
             context.set(MarshallerContextName.MARSHALLER_INSTANCE_LISTENER, listeners.toArray(ProcessInstanceMarshallerListener[]::new));
+            context.set(MarshallerContextName.MARSHALLER_NODE_INSTANCE_READER, this.readers.toArray(NodeInstanceReader[]::new));
             setupEnvironment(context);
             org.jbpm.flow.serialization.ProcessInstanceMarshaller marshaller = processInstanceMarshallerFactory.newKogitoProcessInstanceMarshaller();
             return marshaller.readProcessInstance(context);
@@ -170,6 +193,7 @@ public class ProcessInstanceMarshallerService {
                 MarshallerReaderContext context = processInstanceMarshallerFactory.newReaderContext(bais);
                 context.set(MarshallerContextName.MARSHALLER_PROCESS, processInstance.process());
                 context.set(MarshallerContextName.MARSHALLER_INSTANCE_LISTENER, listeners.toArray(ProcessInstanceMarshallerListener[]::new));
+                context.set(MarshallerContextName.MARSHALLER_NODE_INSTANCE_READER, this.readers.toArray(NodeInstanceReader[]::new));
                 setupEnvironment(context);
                 org.jbpm.flow.serialization.ProcessInstanceMarshaller marshaller =
                         processInstanceMarshallerFactory.newKogitoProcessInstanceMarshaller();

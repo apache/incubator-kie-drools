@@ -20,7 +20,11 @@ package org.jbpm.flow.serialization.impl;
 
 import java.io.InputStream;
 
+import org.jbpm.flow.serialization.MarshallerContextName;
 import org.jbpm.flow.serialization.MarshallerReaderContext;
+import org.jbpm.flow.serialization.NodeInstanceReader;
+
+import com.google.protobuf.Any;
 
 public class ProtobufMarshallerReaderContext extends ProtobufAbstractMarshallerContext implements MarshallerReaderContext {
 
@@ -33,6 +37,17 @@ public class ProtobufMarshallerReaderContext extends ProtobufAbstractMarshallerC
     @Override
     public InputStream input() {
         return is;
+    }
+
+    @Override
+    public NodeInstanceReader findNodeInstanceReader(Any nodeInstance) {
+        NodeInstanceReader[] readers = this.get(MarshallerContextName.MARSHALLER_NODE_INSTANCE_READER);
+        for (NodeInstanceReader reader : readers) {
+            if (reader.accept(nodeInstance)) {
+                return reader;
+            }
+        }
+        return null;
     }
 
 }

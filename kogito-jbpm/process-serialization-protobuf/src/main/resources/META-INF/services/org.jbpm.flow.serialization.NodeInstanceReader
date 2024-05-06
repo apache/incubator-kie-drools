@@ -1,0 +1,14 @@
+org.jbpm.flow.serialization.impl.marshallers.state.AsyncEventNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.CompositeContextNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.DynamicNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.EventNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.EventSubProcessNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.ForEachNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.JoinNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.LambdaSubProcessNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.MilestoneNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.RuleSetNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.StateNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.SubProcessNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.TimerNodeInstanceReader
+org.jbpm.flow.serialization.impl.marshallers.state.WorkItemNodeInstanceReader

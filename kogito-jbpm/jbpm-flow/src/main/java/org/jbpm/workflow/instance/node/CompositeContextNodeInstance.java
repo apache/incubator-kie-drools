@@ -51,6 +51,7 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
         this.contextInstances.put(contextId, contextInstance);
     }
 
+    @Override
     public ContextInstance getContextInstance(String contextId) {
         ContextInstance contextInstance = this.contextInstances.get(contextId);
         if (contextInstance != null) {

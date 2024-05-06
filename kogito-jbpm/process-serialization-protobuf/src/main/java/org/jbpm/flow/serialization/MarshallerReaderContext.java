@@ -20,8 +20,12 @@ package org.jbpm.flow.serialization;
 
 import java.io.InputStream;
 
+import com.google.protobuf.Any;
+
 public interface MarshallerReaderContext extends MarshallerContext {
 
     InputStream input();
+
+    NodeInstanceReader findNodeInstanceReader(Any nodeInstance);
 
 }

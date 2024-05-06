@@ -22,6 +22,10 @@ public class ProcessInstanceMarshallerException extends RuntimeException {
 
     private static final long serialVersionUID = -1676023219884892322L;
 
+    public ProcessInstanceMarshallerException(Throwable th) {
+        super(th);
+    }
+
     public ProcessInstanceMarshallerException(String msg) {
         super(msg);
     }

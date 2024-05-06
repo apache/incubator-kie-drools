@@ -16,40 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.flow.serialization.impl;
+package org.jbpm.flow.serialization.impl.marshallers.state;
 
-import java.io.OutputStream;
-
-import org.jbpm.flow.serialization.MarshallerContextName;
 import org.jbpm.flow.serialization.MarshallerWriterContext;
 import org.jbpm.flow.serialization.NodeInstanceWriter;
+import org.jbpm.flow.serialization.protobuf.KogitoNodeInstanceContentsProtobuf.AsyncEventNodeInstanceContent;
+import org.jbpm.workflow.core.node.AsyncEventNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 
-/**
- * Extension to default <code>MarshallerWriteContext</code>
- */
+import com.google.protobuf.GeneratedMessageV3.Builder;
 
-public class ProtobufProcessMarshallerWriteContext extends ProtobufAbstractMarshallerContext implements MarshallerWriterContext {
-    private OutputStream os;
+public class AsyncEventNodeInstanceWriter implements NodeInstanceWriter {
 
-    public ProtobufProcessMarshallerWriteContext(OutputStream os) {
-        this.os = os;
+    @Override
+    public boolean accept(NodeInstance value) {
+        return value instanceof AsyncEventNodeInstance;
     }
 
     @Override
-    public OutputStream output() {
-        return os;
-    }
-
-    @Override
-    public NodeInstanceWriter findNodeInstanceWriter(NodeInstance nodeInstance) {
-        NodeInstanceWriter[] writers = this.get(MarshallerContextName.MARSHALLER_NODE_INSTANCE_WRITER);
-        for (NodeInstanceWriter writer : writers) {
-            if (writer.accept(nodeInstance)) {
-                return writer;
-            }
+    public Builder<?> write(MarshallerWriterContext context, NodeInstance value) {
+        AsyncEventNodeInstance nodeInstance = (AsyncEventNodeInstance) value;
+        AsyncEventNodeInstanceContent.Builder builder = AsyncEventNodeInstanceContent.newBuilder();
+        if (nodeInstance.getJobId() != null) {
+            builder.setJobId(nodeInstance.getJobId());
         }
-        return null;
+        return builder;
     }
 
 }

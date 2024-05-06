@@ -19,6 +19,7 @@
 package org.jbpm.workflow.instance;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.kie.api.definition.process.Node;
@@ -99,4 +100,6 @@ public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
         }
         return node;
     }
+
+    Map<String, Integer> getIterationLevels();
 }
