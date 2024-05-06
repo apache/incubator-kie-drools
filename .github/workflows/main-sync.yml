@@ -10,6 +10,7 @@ on:
 
 jobs:
   sync-main:
+    if: github.repository_owner == 'kiegroup'
     name: Sync main branch
     runs-on: ubuntu-latest
 
