@@ -1,0 +1,2 @@
+org.jbpm.process.builder.action.JavaActionCompiler
+org.jbpm.process.builder.action.MVELActionCompiler

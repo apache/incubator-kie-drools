@@ -21,7 +21,10 @@ package org.jbpm.test.utils;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
+import org.kie.api.event.process.ProcessNodeEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.StaticApplication;
@@ -74,6 +77,12 @@ public class ProcessTestHelper {
     public static WorkItem findWorkItem(ProcessInstance<? extends Model> processInstance, String userName) {
         List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(userName, emptyList()));
         return workItems.stream().findFirst().get();
+    }
+
+    public static <T extends ProcessNodeEvent> Predicate<T> triggered(String nodeName) {
+        return e -> {
+            return e instanceof ProcessNodeTriggeredEvent && nodeName.equals(((ProcessNodeTriggeredEvent) e).getNodeInstance().getNodeName());
+        };
     }
 
 }

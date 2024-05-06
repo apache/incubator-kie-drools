@@ -20,8 +20,11 @@ package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.jbpm.process.builder.action.ActionCompilerRegistry;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
@@ -33,6 +36,8 @@ import org.jbpm.ruleflow.core.factory.MappableNodeFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DataDefinition;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
@@ -69,6 +74,7 @@ import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_DONE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_NAME;
+import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeString;
 
 public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisitor {
 
@@ -79,6 +85,43 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         if (isAdHocNode(node) && !(node instanceof HumanTaskNode)) {
             metadata.addSignal(node.getName(), null);
         }
+        if (isExtendedNode(node)) {
+            ExtendedNodeImpl extendedNodeImpl = (ExtendedNodeImpl) node;
+            addScript(extendedNodeImpl, body, ON_ACTION_SCRIPT_METHOD, ExtendedNodeImpl.EVENT_NODE_ENTER);
+            addScript(extendedNodeImpl, body, ON_ACTION_SCRIPT_METHOD, ExtendedNodeImpl.EVENT_NODE_EXIT);
+        }
+    }
+
+    private void addScript(ExtendedNodeImpl extendedNodeImpl, BlockStmt body, String factoryMethod, String actionType) {
+        if (!extendedNodeImpl.hasActions(actionType)) {
+            return;
+        }
+        List<DroolsConsequenceAction> scripts = extendedNodeImpl.getActions(actionType).stream()
+                .filter(Predicate.not(Objects::isNull))
+                .filter(DroolsConsequenceAction.class::isInstance)
+                .map(DroolsConsequenceAction.class::cast)
+                .filter(e -> e.getConsequence() != null && !e.getConsequence().isBlank())
+                .toList();
+
+        for (DroolsConsequenceAction script : scripts) {
+            body.addStatement(getFactoryMethod(getNodeId((T) extendedNodeImpl), factoryMethod,
+                    new StringLiteralExpr(actionType),
+                    new StringLiteralExpr(script.getDialect()),
+                    new StringLiteralExpr(sanitizeString(script.getConsequence())),
+                    buildDroolsConsequenceAction(extendedNodeImpl, script.getDialect(), script.getConsequence())));
+            ;
+        }
+    }
+
+    private Expression buildDroolsConsequenceAction(ExtendedNodeImpl extendedNodeImpl, String dialect, String script) {
+        if (script == null) {
+            return new NullLiteralExpr();
+        }
+        return ActionCompilerRegistry.instance().find(dialect).buildAction(extendedNodeImpl, script);
+    }
+
+    private boolean isExtendedNode(T node) {
+        return node instanceof ExtendedNodeImpl;
     }
 
     private boolean isAdHocNode(Node node) {

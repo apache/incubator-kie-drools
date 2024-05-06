@@ -39,6 +39,10 @@ public class ExtendedNodeImpl extends NodeImpl {
         this.actions.put(type, actions);
     }
 
+    public boolean hasActions(String type) {
+        return this.actions.get(type) != null;
+    }
+
     public List<DroolsAction> getActions(String type) {
         return this.actions.get(type);
     }

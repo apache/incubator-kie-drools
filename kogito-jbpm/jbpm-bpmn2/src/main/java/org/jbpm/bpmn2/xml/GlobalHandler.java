@@ -18,13 +18,18 @@
  */
 package org.jbpm.bpmn2.xml;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.core.BaseAbstractHandler;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.definition.process.Process;
 import org.xml.sax.Attributes;
@@ -53,6 +58,7 @@ public class GlobalHandler extends BaseAbstractHandler implements Handler {
 
         final String identifier = attrs.getValue("identifier");
         final String type = attrs.getValue("type");
+        process.addImports(Collections.singleton(type));
         emptyAttributeCheck(localName, "identifier", identifier, parser);
         emptyAttributeCheck(localName, "type", type, parser);
 
@@ -62,6 +68,21 @@ public class GlobalHandler extends BaseAbstractHandler implements Handler {
             process.setGlobals(map);
         }
         map.put(identifier, type);
+
+        VariableScope variableScope = (VariableScope) process.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        List<Variable> variables = variableScope.getVariables();
+        Variable variable = new Variable();
+        variable.setId(identifier);
+        variable.setType(DataTypeResolver.fromType(type, parser.getClassLoader()));
+        // if name is given use it as variable name instead of id
+        if (identifier != null && identifier.length() > 0) {
+            variable.setName(identifier);
+            variable.setMetaData(identifier, variable.getName());
+        } else {
+            variable.setName(identifier);
+        }
+        variable.setMetaData(identifier, variable.getName());
+        variables.add(variable);
 
         return null;
     }

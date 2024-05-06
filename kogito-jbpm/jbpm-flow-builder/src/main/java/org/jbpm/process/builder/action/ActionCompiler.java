@@ -16,22 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.ruleflow.core.factory;
+package org.jbpm.process.builder.action;
 
-import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.kie.api.definition.process.WorkflowElementIdentifier;
+import java.util.Arrays;
 
-public abstract class ExtendedNodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends NodeFactory<T, P> {
+import org.jbpm.workflow.core.impl.NodeImpl;
 
-    protected ExtendedNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, WorkflowElementIdentifier id) {
-        super(nodeContainerFactory, nodeContainer, node, id);
+import com.github.javaparser.ast.expr.Expression;
+
+public interface ActionCompiler {
+
+    String[] dialects();
+
+    default boolean accept(String dialect) {
+        return Arrays.asList(dialect).contains(dialect);
     }
 
-    protected ExtendedNodeImpl getExtendedNode() {
-        return (ExtendedNodeImpl) getNode();
-    }
-
+    Expression buildAction(NodeImpl nodeImpl, String scrtip);
 }

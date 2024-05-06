@@ -26,26 +26,17 @@ import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
-import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.ForEachNode;
-import org.jbpm.workflow.core.node.MilestoneNode;
-import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
-import org.jbpm.workflow.instance.rule.RuleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -209,32 +200,6 @@ public class RuleFlowProcessValidatorTest {
         ProcessValidationError[] errors = validator.validateProcess(process);
         assertThat(errors).isNotNull().hasSize(1);
         assertThat(errors[0].getMessage()).isEqualTo("Node 'CompositeNode' [3] Composite has no start node defined.");
-    }
-
-    //TODO To be removed once https://issues.redhat.com/browse/KOGITO-2067 is fixed
-    @Test
-    void testOnEntryOnExitValidation() {
-        testNodeOnEntryOnExit(new MilestoneNode());
-        RuleSetNode ruleSetNode = new RuleSetNode();
-        ruleSetNode.setRuleType(mock(RuleType.class));
-        testNodeOnEntryOnExit(ruleSetNode);
-        testNodeOnEntryOnExit(new SubProcessNode());
-        testNodeOnEntryOnExit(new WorkItemNode());
-        testNodeOnEntryOnExit(new ForEachNode(one));
-        testNodeOnEntryOnExit(new DynamicNode());
-        testNodeOnEntryOnExit(new CompositeNode());
-    }
-
-    private void testNodeOnEntryOnExit(ExtendedNodeImpl node) {
-        List<ProcessValidationError> errors = new ArrayList<>();
-        node.setName("name");
-        node.setId(node.getId());
-        node.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, singletonList(new DroolsAction()));
-        node.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, singletonList(new DroolsAction()));
-        validator.validateNodes(new org.kie.api.definition.process.Node[] { node }, errors, process);
-        assertThat(errors).extracting("message").contains(
-                "Node 'name' [" + node.getId().toExternalFormat() + "] On Entry Action is not yet supported in Kogito",
-                "Node 'name' [" + node.getId().toExternalFormat() + "] On Exit Action is not yet supported in Kogito");
     }
 
     @Test
