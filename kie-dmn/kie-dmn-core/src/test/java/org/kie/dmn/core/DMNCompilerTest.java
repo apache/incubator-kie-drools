@@ -87,10 +87,8 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(evaluateAll.hasErrors()).isFalse();
     }
 
-    @ParameterizedTest
-    @MethodSource("params")
-    void javadocComposite(VariantTestConf conf) {
-        testConfig = conf;
+    @Test
+    public void testJavadocComposite() {
         final DMNRuntime runtime = createRuntime("javadocComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -152,10 +150,8 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(evaluateAll.hasErrors()).as(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages())).isFalse();
     }
 
-    @ParameterizedTest
-    @MethodSource("params")
-    void itemDefAllowedValuesString(VariantTestConf conf) {
-        testConfig = conf;
+    @Test
+    public void testItemDefAllowedValuesString() {
         final DMNRuntime runtime = createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat(dmnModel).isNotNull();
@@ -223,10 +219,8 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(((SimpleTypeImpl)termMonths).getFeelType()).isEqualTo(BuiltInType.NUMBER);
     }
 
-    @ParameterizedTest
-    @MethodSource("params")
-    void compilationThrowsNPE(VariantTestConf conf) {
-        testConfig = conf;
+    @Test
+    public void testCompilationThrowsNPE() {
         try {
             createRuntime("compilationThrowsNPE.dmn", this.getClass());
             fail("shouldn't have reached here.");
@@ -235,10 +229,8 @@ public class DMNCompilerTest extends BaseVariantTest {
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("params")
-    void recursiveFunctions(VariantTestConf conf) {
-        testConfig = conf;
+    @Test
+    public void testRecursiveFunctions() {
         // DROOLS-2161
         final DMNRuntime runtime = createRuntime("Recursive.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Recursive" );
@@ -364,6 +356,49 @@ public class DMNCompilerTest extends BaseVariantTest {
                                         m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
                                         m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
                            .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
+    }
+
+    @Test
+    public void testAllowedValuesForSimpleTypeInherited() {
+        String nameSpace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/InheritedConstraints.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "InheritedConstraints");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final DMNType aStringType = ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AString");
+        assertThat(aStringType.isAssignableValue("Bob")).isTrue();
+        assertThat(aStringType.isAssignableValue("Joe")).isTrue();
+        final DMNType aConstrainedStringType = ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AConstrainedString");
+        assertThat(aConstrainedStringType.isAssignableValue("Bob")).isTrue();
+        assertThat(aConstrainedStringType.isAssignableValue("Joe")).isFalse();
+    }
+
+    @Test
+    public void testAllowedValuesForComplexTypeInherited() {
+        String nameSpace = "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/InheritedConstraints.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "InheritedConstraints");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        final BaseDMNTypeImpl dmnAdultPerson = (BaseDMNTypeImpl) ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AdultPerson");
+        final Map<String, Object> instanceAdultBob = prototype(entry("name", "Bob"), entry("age", 42));
+        assertThat(dmnAdultPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        final Map<String, Object> instanceYoungBob = prototype(entry("name", "Bob"), entry("age", 12));
+        assertThat(dmnAdultPerson.isAssignableValue(instanceYoungBob)).isFalse();
+
+        final BaseDMNTypeImpl dmnAdultBobPerson = (BaseDMNTypeImpl) ((DMNModelImpl) dmnModel).getTypeRegistry().getTypes().get(nameSpace).get("AdultBob");
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultBob)).isTrue();
+        // UnaryTests are AND - based for constraints defined on different/inherited types
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungBob)).isFalse();
+        final Map<String, Object> instanceAdultJoe = prototype(entry("name", "Joe"), entry("age", 42));
+        // UnaryTests are AND - based for constraints defined on different/inherited types
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultJoe)).isFalse();
+        final Map<String, Object> instanceYoungJoe = prototype(entry("name", "Joe"), entry("age", 12));
+        assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungJoe)).isFalse();
     }
 
     private void commonValidateUnnamedImport(String importingModelRef, String importedModelRef) {
