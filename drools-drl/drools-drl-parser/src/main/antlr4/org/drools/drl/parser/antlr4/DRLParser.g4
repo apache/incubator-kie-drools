@@ -101,7 +101,7 @@ parameter : type? drlIdentifier ; // type is optional. Removed (LEFT_SQUARE RIGH
 
 lhs : DRL_WHEN lhsExpression* ;
 
-queryLhs : lhsExpression+ ;
+queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
               | lhsUnary                                                #lhsUnarySingle
