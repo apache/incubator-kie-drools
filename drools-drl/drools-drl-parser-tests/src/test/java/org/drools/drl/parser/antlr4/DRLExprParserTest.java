@@ -462,4 +462,22 @@ public class DRLExprParserTest {
             assertThat(parser.hasErrors()).isFalse();
         }
     }
+
+    @Test
+    void orWithMethodCall() {
+        String source = "value == 10 || someMethod() == 4";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+//      TODO: assert
+    }
+
+    @Test
+    void orWithMethodCallWithArg() {
+        String source = "value == 10 || someMethod(value) == 4";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+//      TODO: assert
+    }
 }

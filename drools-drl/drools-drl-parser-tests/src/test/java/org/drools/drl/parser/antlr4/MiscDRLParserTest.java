@@ -4666,4 +4666,28 @@ class MiscDRLParserTest {
         assertThat(children).isNotEmpty(); // Make sure that every child type is represented.
         assertThat(children).allSatisfy(baseDescr -> assertThat(baseDescr.getNamespace()).isEqualTo(namespace));
     }
+
+    @Test
+    void orWithMethodCall() {
+        //ParserTestUtils.enableOldParser();
+        final String text =
+                "rule R1\n" +
+                        "when\n" +
+                        "  MyFact( value == 10 || someMethod() == 4 )\n" +
+                        "then\n" +
+                        "end";
+        PackageDescr pkg = parseAndGetPackageDescr(text);
+    }
+
+    @Test
+    void orWithMethodCallWithArg() {
+        //ParserTestUtils.enableOldParser();
+        final String text =
+                "rule R1\n" +
+                        "when\n" +
+                        "  MyFact( value == 10 || someMethod(value) == 4 )\n" +
+                        "then\n" +
+                        "end";
+        PackageDescr pkg = parseAndGetPackageDescr(text);
+    }
 }
