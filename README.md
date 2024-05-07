@@ -1,3 +1,20 @@
+[//]: # (  Licensed to the Apache Software Foundation &#40;ASF&#41; under one)
+[//]: # (  or more contributor license agreements.  See the NOTICE file)
+[//]: # (  distributed with this work for additional information)
+[//]: # (  regarding copyright ownership.  The ASF licenses this file)
+[//]: # (  to you under the Apache License, Version 2.0 &#40;the)
+[//]: # (  "License"&#41;; you may not use this file except in compliance)
+[//]: # (  with the License.  You may obtain a copy of the License at)
+[//]: # ()
+[//]: # (    http://www.apache.org/licenses/LICENSE-2.0)
+[//]: # ()
+[//]: # (  Unless required by applicable law or agreed to in writing,)
+[//]: # (  software distributed under the License is distributed on an)
+[//]: # (  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY)
+[//]: # (  KIND, either express or implied.  See the License for the)
+[//]: # (  specific language governing permissions and limitations)
+[//]: # (  under the License.)
+
 An open source rule engine, [DMN engine](https://drools.org/learn/dmn.html) and complex event processing (CEP) engine for Java™ and the JVM Platform.
 
 Drools is a business rule management system with a forward-chaining and backward-chaining inference based rules engine, allowing fast and reliable evaluation of business rules and complex event processing. A rule engine is also a fundamental building block to create an expert system which, in artificial intelligence, is a computer system that emulates the decision-making ability of a human expert.

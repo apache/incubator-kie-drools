@@ -162,6 +162,7 @@
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <version.apache-rat-plugin>0.16.1</version.apache-rat-plugin>
   </properties>
 
   <build>
@@ -174,6 +175,11 @@
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${version.apache-rat-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
