@@ -33,38 +33,53 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"name", "dialect", "imports", "globals", "rules", "functions"})
+@JsonPropertyOrder({"name", "unit", "dialect", "imports", "globals", "rules", "functions"})
 public class DrlPackage {
+
     @JsonInclude(Include.NON_EMPTY)
     private String name = ""; // default empty, consistent with DRL parser.
+
     @JsonInclude(Include.NON_EMPTY)
-    private String dialect = "java";
+    private String unit = "";
+
+    @JsonInclude(Include.NON_EMPTY)
+    private String dialect = "";
+
     @JsonInclude(Include.NON_EMPTY)
     private List<Import> imports = new ArrayList<>();
+
     @JsonInclude(Include.NON_EMPTY)
     private List<Global> globals = new ArrayList<>();
+
     private List<Rule> rules = new ArrayList<>();
+
     @JsonInclude(Include.NON_EMPTY)
     private List<Function> functions = new ArrayList<>();
     
-    public static DrlPackage from(PackageDescr o) {
-        Objects.requireNonNull(o);
+    public static DrlPackage from(PackageDescr pkg) {
+        Objects.requireNonNull(pkg);
         DrlPackage result = new DrlPackage();
-        result.name = o.getName();
-        AttributeDescr dialectAttr = o.getAttribute("dialect");
+        result.name = pkg.getName();
+
+        if (pkg.getUnit() != null) {
+            result.unit = pkg.getUnit().getTarget();
+        }
+
+        AttributeDescr dialectAttr = pkg.getAttribute("dialect");
         if (dialectAttr != null) {
             result.dialect = dialectAttr.getValue();
         }
-        for (ImportDescr i : o.getImports()) {
+
+        for (ImportDescr i : pkg.getImports()) {
             result.imports.add(Import.from(i));
         }
-        for (GlobalDescr g : o.getGlobals()) {
+        for (GlobalDescr g : pkg.getGlobals()) {
             result.globals.add(Global.from(g));
         }
-        for (RuleDescr r : o.getRules()) {
+        for (RuleDescr r : pkg.getRules()) {
             result.rules.add(Rule.from(r));
         }
-        for (FunctionDescr f : o.getFunctions()) {
+        for (FunctionDescr f : pkg.getFunctions()) {
             result.functions.add(Function.from(f));
         }
         return result;
@@ -72,6 +87,10 @@ public class DrlPackage {
 
     public String getName() {
         return name;
+    }
+
+    public String getUnit() {
+        return unit;
     }
 
     public String getDialect() {

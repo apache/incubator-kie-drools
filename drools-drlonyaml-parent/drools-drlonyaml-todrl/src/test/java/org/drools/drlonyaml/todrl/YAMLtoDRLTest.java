@@ -18,12 +18,13 @@
  */
 package org.drools.drlonyaml.todrl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import org.assertj.core.api.Assertions;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
@@ -32,9 +33,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class YAMLtoDRLTest {
     private static final Logger LOG = LoggerFactory.getLogger(YAMLtoDRLTest.class);
@@ -50,22 +49,17 @@ public class YAMLtoDRLTest {
     private void assertDumpingYAMLtoDRLisValid(String filename) {
         try {
             final String yamlText = Files.readString(Paths.get(YAMLtoDRLTest.class.getResource(filename).toURI()));
-            assertThat(yamlText).as("Failed to read test resource")
-                .isNotNull();
+            assertThat(yamlText).as("Failed to read test resource").isNotNull();
             
             DrlPackage readValue = mapper.readValue(yamlText, DrlPackage.class);
-            assertThat(readValue).as("Failed to parse YAML as model")
-                .isNotNull();
+            assertThat(readValue).as("Failed to parse YAML as model").isNotNull();
             
             final String drlText = YAMLtoDrlDumper.dumpDRL(readValue);
             LOG.debug(drlText);
-            assertThat(drlText).as("result of DRL dumper shall not be null or empty")
-                .isNotNull()
-                .isNotEmpty();
+            assertThat(drlText).as("result of DRL dumper shall not be null or empty").isNotNull().isNotEmpty();
             
             PackageDescr parseResult = drlParser.parse(new StringReader(drlText));
-            assertThat(parseResult).as("The result of DRL dumper must be syntactically valid DRL")
-                .isNotNull();
+            assertThat(parseResult).as("The result of DRL dumper must be syntactically valid DRL").isNotNull();
         } catch (Exception e) {
             Assertions.fail("Failed to generate a valid DRL while processing YAML", e);
         }
@@ -119,5 +113,10 @@ public class YAMLtoDRLTest {
     @Test
     public void smokeTestFromYAML11() {
         assertDumpingYAMLtoDRLisValid("/smoketests/yaml11.yml");
+    }
+
+    @Test
+    public void smokeTestRuleUnit() {
+        assertDumpingYAMLtoDRLisValid("/smoketests/ruleunit.yml");
     }
 }
