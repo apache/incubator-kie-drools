@@ -194,6 +194,11 @@
               <exclude>**/DMN*.xsd</exclude>
               <exclude>**/DC.xsd</exclude>
               <exclude>**/DI.xsd</exclude>
+              <exclude>**/KiePMML*.txt</exclude>
+              <exclude>**/TargetValueFactoryTest_01.txt</exclude>
+              <exclude>**/TargetFieldFactoryTest_01.txt</exclude>
+              <exclude>**/*.uml</exclude>
+              <exclude>**/drools-model</exclude>
             </excludes>
           </configuration>
         </plugin>
