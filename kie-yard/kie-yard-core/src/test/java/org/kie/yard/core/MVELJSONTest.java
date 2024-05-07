@@ -57,5 +57,4 @@ public class MVELJSONTest
         final Map mapTest = (Map) output.get("Map Test");
         assertEquals("Hello", mapTest.get("Map"));
     }
-    // TODO Validate two elements can not have the same name
 }

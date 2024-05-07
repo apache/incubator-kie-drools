@@ -25,14 +25,14 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 public class YaRDRunner {
 
-    private final YaRDDefinitions units;
+    private final YaRDDefinitions definitions;
     private final JsonMapper jsonMapper = JsonMapper.builder().build();
     private final String name;
 
     public YaRDRunner(final String yaml) throws IOException {
         final YaRDParser parser = new YaRDParser(yaml);
         name = parser.getModel().getName();
-        units = parser.getDefinitions();
+        definitions = parser.getDefinitions();
     }
 
     public String getName() {
@@ -40,7 +40,7 @@ public class YaRDRunner {
     }
 
     public Map<String, Object> evaluate(final Map<String, Object> map) {
-        return units.evaluate(map);
+        return definitions.evaluate(map);
     }
 
     public String evaluate(String jsonInputCxt) throws Exception {
