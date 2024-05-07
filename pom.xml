@@ -187,6 +187,7 @@
               <exclude>**/mvel.jj</exclude>
               <exclude>**/*.csv</exclude>
               <exclude>**/*.sdo</exclude>
+              <exclude>**/*.sdt</exclude>
             </excludes>
           </configuration>
         </plugin>
