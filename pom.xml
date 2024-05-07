@@ -183,9 +183,10 @@
           <configuration>
             <excludes>
               <exclude>.git-blame-ignore-revs</exclude>
-              <exclude>**/drools-docs/supplemental-ui/js/vendor/lunr-2.3.9.min.js</exclude>
+              <exclude>**/lunr-2.3.9.min.js</exclude>
               <exclude>**/mvel.jj</exclude>
               <exclude>**/*.csv</exclude>
+              <exclude>**/*.sdo</exclude>
             </excludes>
           </configuration>
         </plugin>
