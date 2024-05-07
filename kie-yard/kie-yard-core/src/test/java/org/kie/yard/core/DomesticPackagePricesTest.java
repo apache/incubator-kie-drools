@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DomesticPackagePricesTest
         extends TestBase {
@@ -41,7 +42,8 @@ public class DomesticPackagePricesTest
                 }
                 """;
         Map<String, Object> outputJSONasMap = evaluate(CTX, FILE_NAME);
-        assertThat(outputJSONasMap).hasFieldOrPropertyWithValue("Package", "{ \"Size\": \"M\", \"Cost\": 6.90 }");
+        assertEquals(6.9, ((Map) outputJSONasMap.get("Package")).get("Cost"));
+        assertEquals("M", ((Map) outputJSONasMap.get("Package")).get("Size"));
     }
 
     @Test
@@ -55,6 +57,7 @@ public class DomesticPackagePricesTest
                 }
                 """;
         Map<String, Object> outputJSONasMap = evaluate(CTX, FILE_NAME);
-        assertThat(outputJSONasMap).hasFieldOrPropertyWithValue("Package", "{ \"Size\": \"L\", \"Cost\": 8.90 }");
+        assertEquals(8.9, ((Map) outputJSONasMap.get("Package")).get("Cost"));
+        assertEquals("L", ((Map) outputJSONasMap.get("Package")).get("Size"));
     }
 }
