@@ -191,6 +191,7 @@
               <exclude>**/TestingEmptyFile.txt</exclude>
               <exclude>**/*.test_json</exclude>
               <exclude>**/*.pmml_json</exclude>
+              <exclude>**/*.drl_json</exclude>
               <exclude>**/DMN*.xsd</exclude>
               <exclude>**/DC.xsd</exclude>
               <exclude>**/DI.xsd</exclude>
@@ -199,6 +200,16 @@
               <exclude>**/TargetFieldFactoryTest_01.txt</exclude>
               <exclude>**/*.uml</exclude>
               <exclude>**/drools-model</exclude>
+              <exclude>**/testFile.txt</exclude>
+              <exclude>**/simple.dot</exclude>
+              <exclude>**/*.log</exclude>
+              <exclude>**/*.lst</exclude>
+              <exclude>**/checkstyle-cachefile</exclude>
+              <exclude>**/smoke*.drl.txt</exclude>
+              <exclude>**/test*.txt</exclude>
+              <exclude>**/drl.ftl</exclude>
+              <exclude>**/goal.txt</exclude>
+              <exclude>**/adult.txt</exclude>
             </excludes>
           </configuration>
         </plugin>
