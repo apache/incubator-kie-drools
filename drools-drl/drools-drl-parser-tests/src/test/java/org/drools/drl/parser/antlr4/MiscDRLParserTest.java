@@ -2165,10 +2165,10 @@ class MiscDRLParserTest {
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace( "int x = 0 ;");
-        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace( "x++;");
+        assertThat(accum.getInitCode()).isEqualTo( "int x = 0;");
+        assertThat(accum.getActionCode()).isEqualTo( "x++;");
         assertThat(accum.getReverseCode()).isNull();
-        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace( "new Integer(x)");
+        assertThat(accum.getResultCode()).isEqualTo( "new Integer(x)");
 
         assertThat(accum.isExternalFunction()).isFalse();
 
@@ -2187,10 +2187,10 @@ class MiscDRLParserTest {
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(outPattern.getIdentifier()).isEqualToIgnoringWhitespace( "$counter");
-        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace( "int x = 0 ;");
-        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace( "x++;");
-        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace( "new Integer(x)");
+        assertThat(outPattern.getIdentifier()).isEqualTo( "$counter");
+        assertThat(accum.getInitCode()).isEqualTo( "int x = 0;");
+        assertThat(accum.getActionCode()).isEqualTo( "x++;");
+        assertThat(accum.getResultCode()).isEqualTo( "new Integer(x)");
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
@@ -2218,10 +2218,10 @@ class MiscDRLParserTest {
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(outPattern.getIdentifier()).isEqualToIgnoringWhitespace( "$counter");
-        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace( "int x = 0");
-        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace( "x++");
-        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace( "new Integer(x)");
+        assertThat(outPattern.getIdentifier()).isEqualTo( "$counter");
+        assertThat(accum.getInitCode()).isEqualTo( "int x = 0");
+        assertThat(accum.getActionCode()).isEqualTo( "x++");
+        assertThat(accum.getResultCode()).isEqualTo( "new Integer(x)");
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
