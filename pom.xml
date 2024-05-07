@@ -180,6 +180,12 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <version>${version.apache-rat-plugin}</version>
+          <configuration>
+            <excludes>
+              <exclude>.git-blame-ignore-revs</exclude>
+              <exclude>drools-docs/supplemental-ui/js/vendor/lunr-2.3.9.min.js</exclude>
+            </excludes>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
