@@ -19,10 +19,14 @@
 package org.kie.kogito.jitexecutor.dmn;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.type.CollectionType;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
@@ -31,13 +35,6 @@ import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.type.CollectionType;
-
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -75,9 +72,10 @@ class DMN15Test {
     private void commonUnnamedImport(String importingModelRef, String importedModelRef) throws IOException {
         ResourceWithURI model1 = new ResourceWithURI(importingModelRef, getModelFromIoUtils(importingModelRef));
         ResourceWithURI model2 = new ResourceWithURI(importedModelRef, getModelFromIoUtils(importedModelRef));
-
+        Map<String, Object> context =
+                Map.of("A Person", Map.of("name", "John", "age", 47));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2),
-                Collections.EMPTY_MAP);
+                                                        context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -100,8 +98,6 @@ class DMN15Test {
         List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(0, messages.size());
 
-        Map<String, Object> context =
-                Map.of("A Person", Map.of("name", "John", "age", 47));
         jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2), context);
         given()
                 .contentType(ContentType.JSON)
