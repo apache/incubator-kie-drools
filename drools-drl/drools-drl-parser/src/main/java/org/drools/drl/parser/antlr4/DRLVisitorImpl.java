@@ -111,14 +111,19 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         // This bunch of if-blocks will be refactored by DROOLS-7564
         descrList.forEach(descr -> {
             if (descr instanceof UnitDescr) {
+                descr.setNamespace(packageDescr.getNamespace());
                 packageDescr.setUnit((UnitDescr) descr);
             } else if (descr instanceof GlobalDescr) {
+                descr.setNamespace(packageDescr.getNamespace());
                 packageDescr.addGlobal((GlobalDescr) descr);
             } else if (descr instanceof FunctionImportDescr) {
+                descr.setNamespace(packageDescr.getNamespace());
                 packageDescr.addFunctionImport((FunctionImportDescr) descr);
             } else if (descr instanceof AccumulateImportDescr) {
+                descr.setNamespace(packageDescr.getNamespace());
                 packageDescr.addAccumulateImport((AccumulateImportDescr) descr);
             } else if (descr instanceof ImportDescr) {
+                descr.setNamespace(packageDescr.getNamespace());
                 packageDescr.addImport((ImportDescr) descr);
             } else if (descr instanceof FunctionDescr) {
                 FunctionDescr functionDescr = (FunctionDescr) descr;
@@ -137,12 +142,14 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             } else if (descr instanceof EnumDeclarationDescr) {
                 packageDescr.addEnumDeclaration((EnumDeclarationDescr) descr);
             } else if (descr instanceof AttributeDescr) {
+                descr.setNamespace(packageDescr.getNamespace());
                 packageDescr.addAttribute((AttributeDescr) descr);
             } else if (descr instanceof RuleDescr) { // QueryDescr extends RuleDescr
                 RuleDescr ruleDescr = (RuleDescr) descr;
                 packageDescr.addRule(ruleDescr);
                 packageDescr.afterRuleAdded(ruleDescr);
                 ruleDescr.setNamespace(packageDescr.getNamespace());
+                ruleDescr.setUnit(packageDescr.getUnit());
             }
         });
     }
@@ -579,6 +586,20 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      */
     @Override
     public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
+        if (ctx.xpathPrimary() != null) {
+            String constraint = visitConstraintChildren(ctx);
+            ExprConstraintDescr constraintDescr = BaseDescrFactory.builder(new ExprConstraintDescr(constraint))
+                    .withParserRuleContext(ctx)
+                    .build();
+            constraintDescr.setType(ExprConstraintDescr.Type.NAMED);
+            constraintDescr.setPosition(0);
+            PatternDescr patternDescr = BaseDescrFactory.builder(new PatternDescr())
+                    .withParserRuleContext(ctx)
+                    .build();
+            patternDescr.addConstraint(constraintDescr);
+            return patternDescr;
+        }
+
         PatternDescr patternDescr = BaseDescrFactory.builder(new PatternDescr(ctx.objectType.getText()))
                 .withParserRuleContext(ctx)
                 .build();
