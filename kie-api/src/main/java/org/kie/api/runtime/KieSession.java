@@ -94,7 +94,8 @@ public interface KieSession
         StatefulRuleSession,
         StatefulProcessSession,
         CommandExecutor,
-        KieRuntime {
+        KieRuntime,
+        AutoCloseable {
 
     /**
      * Deprecated. use {@link #getIdentifier()} instead
@@ -114,6 +115,14 @@ public interface KieSession
      */
     void dispose();
 
+    /**
+     * Disposes the KieSession when used as AutoClosable. Wrapper method that calls {@link #dispose()}.
+     * To see more details, please see documentation on the method {@link #dispose()}.
+     */
+    @Override
+    default void close() {
+        dispose();
+    }
 
     /**
      * Destroys session permanently. In case of session state being persisted in data store
