@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.core.decisiontable;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -40,13 +40,11 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class DTListenerTest extends BaseInterpretedVsAlphaNetworkTest {
 
     private static final String E1 = "e1";
-
-    public DTListenerTest(boolean useAlphaNetwork) {
-        super(useAlphaNetwork);
-    }
 
     public static final Logger LOG = LoggerFactory.getLogger(DTListenerTest.class);
 
@@ -63,8 +61,10 @@ public class DTListenerTest extends BaseInterpretedVsAlphaNetworkTest {
         }
     }
 
-    @Test
-    public void test() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void test(boolean useAlphaNetwork) {
+        alphaNetwork = useAlphaNetwork;
         final ExampleDTListener listenerUT = new ExampleDTListener();
 
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dtevent.dmn", this.getClass());

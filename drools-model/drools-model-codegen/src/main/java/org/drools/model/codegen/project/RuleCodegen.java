@@ -18,6 +18,11 @@
  */
 package org.drools.model.codegen.project;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.drl.extensions.DecisionTableFactory;
@@ -28,9 +33,7 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import static org.drools.model.codegen.project.KieModuleModelWrapper.hasKieModule;
 
 public class RuleCodegen {
 
@@ -47,11 +50,11 @@ public class RuleCodegen {
 
     private final Collection<Resource> resources;
     private Collection<PackageModel> packageModels;
-    private Collection<KieBaseModel> kmoduleKieBaseModels;
 
     private boolean hotReloadMode = false;
     private final boolean decisionTableSupported;
 
+    private Map<String, KieBaseModel> kieBaseModels;
 
     private RuleCodegen(DroolsModelBuildContext context, Collection<Resource> resources) {
         Objects.requireNonNull(context, "context cannot be null");
@@ -73,10 +76,16 @@ public class RuleCodegen {
         Collection<GeneratedFile> generatedFiles = droolsModelBuilder.generateCanonicalModelSources();
 
         if (!droolsModelBuilder.hasRuleUnits()) {
-            KieSessionModelBuilder kieSessionModelBuilder = new KieSessionModelBuilder(context(),
-                    droolsModelBuilder.packageSources());
-            generatedFiles.addAll(kieSessionModelBuilder.generate());
-            this.kmoduleKieBaseModels = kieSessionModelBuilder.getKieBaseModels().values();
+            if (kieBaseModels != null) {
+                if (hasKieModule(context.getAppPaths().getPaths())) {
+                    LOGGER.warn("The Kie Module configuration has been provided externally, so the existing kmodule.xml file will be ignored.");
+                }
+                generatedFiles.addAll(new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources(), kieBaseModels).generate());
+            } else {
+                KieSessionModelBuilder kieSessionModelBuilder = new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
+                generatedFiles.addAll(kieSessionModelBuilder.generate());
+                this.kieBaseModels = kieSessionModelBuilder.getKieBaseModels();
+            }
         }
 
         if (LOGGER.isDebugEnabled()) {
@@ -110,12 +119,23 @@ public class RuleCodegen {
         hotReloadMode = true;
         return this;
     }
-    
+
+    public RuleCodegen withKieBaseModels(Map<String, KieBaseModel> kieBaseModels) {
+        if (!kieBaseModels.isEmpty()) {
+            this.kieBaseModels = kieBaseModels;
+        }
+        return this;
+    }
+
     public Collection<PackageModel> getPackageModels() {
         return packageModels;
     }
     
     public Collection<KieBaseModel> getKmoduleKieBaseModels() {
-        return kmoduleKieBaseModels;
+        return hasKieBaseModels() ? kieBaseModels.values() : Collections.emptyList();
+    }
+
+    public boolean hasKieBaseModels() {
+        return kieBaseModels != null && !kieBaseModels.isEmpty();
     }
 }

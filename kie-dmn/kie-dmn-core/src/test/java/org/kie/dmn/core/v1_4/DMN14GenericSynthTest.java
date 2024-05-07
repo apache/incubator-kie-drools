@@ -23,8 +23,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -43,17 +43,14 @@ public class DMN14GenericSynthTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN14GenericSynthTest.class);
 
-    public DMN14GenericSynthTest(final BaseVariantTest.VariantTestConf conf) {
-        super(conf);
-    }
-
-    @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK}; // only variants needed until DMNv1.4 is actually published
     }
 
-    @Test
-    public void testFilterDatatype() throws Throwable {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void filterDatatype(final BaseVariantTest.VariantTestConf conf) throws Throwable {
+        testConfig = conf;
         DMNRuntime runtime = createRuntime("filter-datatype.dmn", this.getClass());
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
@@ -72,8 +69,10 @@ public class DMN14GenericSynthTest extends BaseVariantTest {
         assertThat(results.getDecisionResultByName("Decision").getResult()).isEqualTo(Arrays.asList(tc1, tc3));
     }
 
-    @Test
-    public void testFilterDatatype2() throws Throwable {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void filterDatatype2(final BaseVariantTest.VariantTestConf conf) throws Throwable {
+        testConfig = conf;
         DMNRuntime runtime = createRuntime("filter-datatype2.dmn", this.getClass());
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
@@ -82,8 +81,10 @@ public class DMN14GenericSynthTest extends BaseVariantTest {
         checkFilterDatatype(runtime, model);
     }
 
-    @Test
-    public void testIteratorDatatype() throws Throwable {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void iteratorDatatype(final BaseVariantTest.VariantTestConf conf) throws Throwable {
+        testConfig = conf;
         DMNRuntime runtime = createRuntime("iterator-datatype.dmn", this.getClass());
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");
@@ -102,8 +103,10 @@ public class DMN14GenericSynthTest extends BaseVariantTest {
         assertThat(results.getDecisionResultByName("Decision").getResult()).isEqualTo(Arrays.asList("x", "y", "z"));
     }
 
-    @Test
-    public void testIteratorDatatype2() throws Throwable {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void iteratorDatatype2(final BaseVariantTest.VariantTestConf conf) throws Throwable {
+        testConfig = conf;
         DMNRuntime runtime = createRuntime("iterator-datatype2.dmn", this.getClass());
         assertThat(runtime).isNotNull();
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_caa02430-93c6-4ba7-a646-81bbcef32978", "Drawing 1");

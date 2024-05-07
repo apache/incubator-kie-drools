@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.feel.runtime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
@@ -33,11 +33,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-
-public class FEELErrorMessagesTest {
+class FEELErrorMessagesTest {
 
     @Test
-    public void unknownVariable() {
+    void unknownVariable() {
         final FEEL feel = FEEL.newInstance();
         final FEELEventListener fel = Mockito.mock(FEELEventListener.class );
         feel.addListener( fel );
@@ -54,7 +53,7 @@ public class FEELErrorMessagesTest {
     }
 
     @Test
-    public void ifWithoutElse() {
+    void ifWithoutElse() {
         final FEEL feel = FEEL.newInstance();
         final FEELEventListener fel = Mockito.mock(FEELEventListener.class);
         feel.addListener(fel);
@@ -71,7 +70,7 @@ public class FEELErrorMessagesTest {
     }
 
     @Test
-    public void ifWithoutElse2() {
+    void ifWithoutElse2() {
         final FEEL feel = FEEL.newInstance();
         final FEELEventListener fel = Mockito.mock(FEELEventListener.class);
         feel.addListener(fel);
@@ -88,7 +87,7 @@ public class FEELErrorMessagesTest {
     }
 
     @Test
-    public void ifWithoutThen() {
+    void ifWithoutThen() {
         final FEEL feel = FEEL.newInstance();
         final FEELEventListener fel = Mockito.mock(FEELEventListener.class);
         feel.addListener(fel);
@@ -105,7 +104,7 @@ public class FEELErrorMessagesTest {
     }
 
     @Test
-    public void ifWithoutThen2() {
+    void ifWithoutThen2() {
         final FEEL feel = FEEL.newInstance();
         final FEELEventListener fel = Mockito.mock(FEELEventListener.class);
         feel.addListener(fel);

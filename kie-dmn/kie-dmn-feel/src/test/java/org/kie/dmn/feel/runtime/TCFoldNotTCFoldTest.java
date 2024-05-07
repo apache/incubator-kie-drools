@@ -22,12 +22,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class TCFoldNotTCFoldTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2},   Kie-Extended: {4}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile) {
+        expression( expression,  result, severity, testFEELTarget, useExtendedProfile);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases =
                 new Object[][]{
                                {"date(\"2021-02-12\")", LocalDate.of(2021, 2, 12), null},

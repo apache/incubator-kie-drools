@@ -27,37 +27,37 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class MinFunctionTest {
+class MinFunctionTest {
 
     private MinFunction minFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         minFunction = new MinFunction();
     }
 
     @Test
-    public void invokeNullList() {
+    void invokeNullList() {
         FunctionTestUtil.assertResultError(minFunction.invoke((List) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEmptyList() {
+    void invokeEmptyList() {
         FunctionTestUtil.assertResultError(minFunction.invoke(Collections.emptyList()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListWithHeterogenousTypes() {
+    void invokeListWithHeterogenousTypes() {
         FunctionTestUtil.assertResultError(minFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListOfIntegers() {
+    void invokeListOfIntegers() {
         FunctionTestUtil.assertResult(minFunction.invoke(Collections.singletonList(1)), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(1, 2, 3)), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(2, 1, 3)), 1);
@@ -65,7 +65,7 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeListOfStrings() {
+    void invokeListOfStrings() {
         FunctionTestUtil.assertResult(minFunction.invoke(Collections.singletonList("a")), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList("a", "b", "c")), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList("b", "a", "c")), "a");
@@ -73,7 +73,7 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeListOfChronoPeriods() {
+    void invokeListOfChronoPeriods() {
         final ChronoPeriod p1Period = Period.parse("P1Y");
         final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
         final ChronoPeriod p2Period = Period.parse("P1M");
@@ -88,22 +88,22 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeNullArray() {
+    void invokeNullArray() {
         FunctionTestUtil.assertResultError(minFunction.invoke((Object[]) null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEmptyArray() {
+    void invokeEmptyArray() {
         FunctionTestUtil.assertResultError(minFunction.invoke(new Object[]{}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayWithHeterogenousTypes() {
+    void invokeArrayWithHeterogenousTypes() {
         FunctionTestUtil.assertResultError(minFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayOfIntegers() {
+    void invokeArrayOfIntegers() {
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{1}), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{1, 2, 3}), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{2, 1, 3}), 1);
@@ -111,7 +111,7 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeArrayOfStrings() {
+    void invokeArrayOfStrings() {
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{"a"}), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{"a", "b", "c"}), "a");
         FunctionTestUtil.assertResult(minFunction.invoke(new Object[]{"b", "a", "c"}), "a");
@@ -119,7 +119,7 @@ public class MinFunctionTest {
     }
 
     @Test
-    public void invokeArrayOfChronoPeriods() {
+    void invokeArrayOfChronoPeriods() {
         final ChronoPeriod p1Period = Period.parse("P1Y");
         final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
         final ChronoPeriod p2Period = Period.parse("P1M");

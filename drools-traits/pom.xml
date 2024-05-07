@@ -157,7 +157,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
-      <artifactId>jboss-transaction-spi-jakarta</artifactId>
+      <artifactId>jboss-transaction-spi</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -18,18 +18,19 @@
  */
 package org.kie.dmn.feel.lang.impl;
 
-import static org.kie.dmn.feel.util.DynamicTypeUtils.*;
-
 import java.util.Map;
 
-import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-public class MapBackedTypeTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.prototype;
+
+class MapBackedTypeTest {
     @Test
-    public void testBasic() {
+    void basic() {
         MapBackedType personType = new MapBackedType( "Person" , mapOf( entry("First Name", BuiltInType.STRING), entry("Last Name", BuiltInType.STRING) ));
         
         Map<?, ?> aPerson = prototype( entry("First Name", "John"), entry("Last Name", "Doe") );

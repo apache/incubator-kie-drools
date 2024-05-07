@@ -18,36 +18,36 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-public class SumFunctionTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
+
+class SumFunctionTest {
 
     private NNSumFunction sumFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         sumFunction = new NNSumFunction();
     }
 
     @Test
-    public void invokeNumberParamNull() {
+    void invokeNumberParamNull() {
         FunctionTestUtil.assertResult(sumFunction.invoke((Number) null), null);
     }
 
     @Test
-    public void invokeNumberParamUnsupportedNumber() {
+    void invokeNumberParamUnsupportedNumber() {
         FunctionTestUtil.assertResultError(sumFunction.invoke(Double.NaN), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeNumberParamSupportedNumber() {
+    void invokeNumberParamSupportedNumber() {
         FunctionTestUtil.assertResult(sumFunction.invoke(BigDecimal.TEN), BigDecimal.TEN);
         FunctionTestUtil.assertResult(sumFunction.invoke(10), BigDecimal.TEN);
         FunctionTestUtil.assertResult(sumFunction.invoke(-10), BigDecimal.valueOf(-10));
@@ -55,52 +55,52 @@ public class SumFunctionTest {
     }
 
     @Test
-    public void invokeListParam() {
+    void invokeListParam() {
         FunctionTestUtil.assertResult(sumFunction.invoke((List) null), null);
     }
 
     @Test
-    public void invokeListParamContainsUnsupportedNumber() {
+    void invokeListParamContainsUnsupportedNumber() {
         FunctionTestUtil.assertResultError(sumFunction.invoke(Arrays.asList(10, 2, Double.NaN)), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListParamContainsUnsupportedType() {
+    void invokeListParamContainsUnsupportedType() {
         FunctionTestUtil.assertResultError(sumFunction.invoke(Arrays.asList(10, "test", 2)), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListParamSupportedTypes() {
+    void invokeListParamSupportedTypes() {
         FunctionTestUtil.assertResult(sumFunction.invoke(Arrays.asList(4, -1, 12.1, (long) 5, BigDecimal.TEN)), BigDecimal.valueOf(30.1));
     }
 
     @Test
-    public void invokeListParamSupportedTypesWithNull() {
+    void invokeListParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(sumFunction.invoke(Arrays.asList(4, -1, 12.1, null, (long) 5, null, BigDecimal.TEN)), BigDecimal.valueOf(30.1));
     }
 
     @Test
-    public void invokeArrayParam() {
+    void invokeArrayParam() {
         FunctionTestUtil.assertResult(sumFunction.invoke((Object[]) null), null);
     }
 
     @Test
-    public void invokeArrayParamContainsUnsupportedNumber() {
+    void invokeArrayParamContainsUnsupportedNumber() {
         FunctionTestUtil.assertResultError(sumFunction.invoke(new Object[]{10, 2, Double.NaN}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayParamContainsUnsupportedType() {
+    void invokeArrayParamContainsUnsupportedType() {
         FunctionTestUtil.assertResultError(sumFunction.invoke(new Object[]{10, "test", 2}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayParamSupportedTypes() {
+    void invokeArrayParamSupportedTypes() {
         FunctionTestUtil.assertResult(sumFunction.invoke(new Object[]{4, -1, 12.1, (long) 5, BigDecimal.TEN}), BigDecimal.valueOf(30.1));
     }
 
     @Test
-    public void invokeArrayParamSupportedTypesWithNull() {
+    void invokeArrayParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(sumFunction.invoke(new Object[]{4, -1, null, 12.1, (long) 5, null, BigDecimal.TEN, null}), BigDecimal.valueOf(30.1));
     }
 }

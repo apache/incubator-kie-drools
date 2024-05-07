@@ -27,6 +27,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class ConcatenateFunction
         extends BaseFEELFunction {
 
+    public static final ConcatenateFunction INSTANCE = new ConcatenateFunction();
+
     public ConcatenateFunction() {
         super( "concatenate" );
     }

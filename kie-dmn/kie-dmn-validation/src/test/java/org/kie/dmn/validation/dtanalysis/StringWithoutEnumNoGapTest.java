@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -39,10 +39,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TA
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 
-public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
+class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
+    void test() {
         List<DMNMessage> validate = validator.validate(getReader("stringWithoutEnumNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
         assertThat(validate).hasSize(3); // no gap but no enum "skip Gap analysis" message, (omit 2 overlaps DROOLS-5363), 2 masked, (omit 2 misleading as redundant with Masked).
         debugValidatorMsg(validate);

@@ -21,7 +21,7 @@ package org.kie.dmn.validation.classloader;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -47,12 +47,12 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorClassloaderTest extends AbstractValidatorTest {
+class ValidatorClassloaderTest extends AbstractValidatorTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidatorClassloaderTest.class);
 
     @Test
-    public void test() {
+    void test() {
         String JAVA_SOURCE = "package com.acme.functions;\n" +
                              "public class Dummy {\n" +
                              "    public static String hello() {\n" +

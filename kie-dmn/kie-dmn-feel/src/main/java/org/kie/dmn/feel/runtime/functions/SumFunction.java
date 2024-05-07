@@ -29,6 +29,8 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class SumFunction
         extends BaseFEELFunction {
 
+    public static final SumFunction INSTANCE = new SumFunction();
+
     public SumFunction() {
         super( "sum" );
     }

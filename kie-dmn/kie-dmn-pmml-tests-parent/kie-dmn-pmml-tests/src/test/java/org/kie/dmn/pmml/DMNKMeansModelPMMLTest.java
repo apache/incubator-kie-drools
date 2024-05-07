@@ -20,7 +20,7 @@ package org.kie.dmn.pmml;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -39,7 +39,7 @@ public abstract class DMNKMeansModelPMMLTest {
     private DMNModel dmnModel;
 
     @Test
-    public void testKMeans() {
+    public void kMeans() {
         runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KMeans.dmn",
                                                                       DMNKMeansModelPMMLTest.class,
                                                                       "test_kmeans.pmml");

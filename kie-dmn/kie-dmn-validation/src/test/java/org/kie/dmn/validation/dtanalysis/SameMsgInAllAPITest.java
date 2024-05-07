@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -38,16 +38,16 @@ import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TA
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 
-public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
+class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testSingleModelAPI() {
+    void singleModelAPI() {
         List<DMNMessage> validate = validator.validate(getReader("sameMsgInAllAPI.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
         verify(validate);
     }
 
     @Test
-    public void testFluentAPI() {
+    void fluentAPI() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE).theseModels(getReader("sameMsgInAllAPI.dmn"));
         verify(validate);
     }

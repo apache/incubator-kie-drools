@@ -23,27 +23,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class IndexOfFunctionTest {
+class IndexOfFunctionTest {
 
     private IndexOfFunction indexOfFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         indexOfFunction = new IndexOfFunction();
     }
 
     @Test
-    public void invokeListNull() {
+    void invokeListNull() {
         FunctionTestUtil.assertResultError(indexOfFunction.invoke((List) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(indexOfFunction.invoke(null, new Object()), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeMatchNull() {
+    void invokeMatchNull() {
         FunctionTestUtil.assertResultList(indexOfFunction.invoke(Collections.emptyList(), null), Collections.emptyList());
         FunctionTestUtil.assertResultList(indexOfFunction.invoke(Collections.singletonList("test"), null), Collections.emptyList());
         FunctionTestUtil.assertResultList(
@@ -61,7 +61,7 @@ public class IndexOfFunctionTest {
     }
 
     @Test
-    public void invokeBigDecimal() {
+    void invokeBigDecimal() {
         FunctionTestUtil.assertResult(indexOfFunction.invoke(Arrays.asList("test", null, 12), BigDecimal.valueOf(12)), Collections.emptyList());
         FunctionTestUtil.assertResult(
                 indexOfFunction.invoke(Arrays.asList("test", null, BigDecimal.valueOf(12)), BigDecimal.valueOf(12)),
@@ -79,7 +79,7 @@ public class IndexOfFunctionTest {
     }
 
     @Test
-    public void invokeMatchNotNull() {
+    void invokeMatchNotNull() {
         FunctionTestUtil.assertResult(indexOfFunction.invoke(Arrays.asList("test", null, 12), "testttt"), Collections.emptyList());
         FunctionTestUtil.assertResult(
                 indexOfFunction.invoke(Arrays.asList("test", null, BigDecimal.valueOf(12)), "test"),

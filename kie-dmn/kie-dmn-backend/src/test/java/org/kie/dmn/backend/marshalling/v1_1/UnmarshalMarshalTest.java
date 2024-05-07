@@ -33,8 +33,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.extensions.DecisionServicesExtensionRegister;
@@ -63,99 +63,99 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void test0001() throws Exception {
+    void test0001() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0001-input-data-string.dmn");
     }
 
     @Test
-    public void test0002() throws Exception {
+    void test0002() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0002-input-data-number.dmn");
     }
 
     @Test
-    public void test0003() throws Exception {
+    void test0003() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
     }
 
     @Test
-    public void test0004() throws Exception {
+    void test0004() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services.dmn", marshaller);
     }
 
     @Test
-    public void test0004_ns_other_location() throws Exception {
+    void test0004_ns_other_location() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services_ns_other_location.dmn", marshaller);
     }
 
     @Test
-    public void test0005_decision_list() throws Exception {
+    void test0005_decision_list() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0005-decision-list.dmn");
     }
 
     @Test
-    public void test_hardcoded_java_max_call() throws Exception {
+    void hardcoded_java_max_call() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "hardcoded-java-max-call.dmn");
     }
 
     @Test
-    public void testDish() throws Exception {
+    void dish() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "dish-decision.xml");
     }
 
-    @Ignore("failing to compare over a xsi:type=\"tImport\" attribute, but why content generated 'control' need to explicit it ?")
+    @Disabled("failing to compare over a xsi:type=\"tImport\" attribute, but why content generated 'control' need to explicit it ?")
     @Test
-    public void testDummyDefinitions() throws Exception {
+    void dummyDefinitions() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "dummy-definitions.xml");
     }
 
     @Test
-    public void testDummyRelation() throws Exception {
+    void dummyRelation() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "dummy-relation.xml");
     }
 
     @Test
-    public void testCh11() throws Exception {
+    void ch11() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "ch11example.xml");
     }
 
     @Test
-    public void testHello_World_semantic_namespace() throws Exception {
+    void helloWorldSemanticNamespace() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace.dmn");
     }
 
     @Test
-    public void testHello_World_semantic_namespace_with_extensions() throws Exception {
+    void helloWorldSemanticNamespaceWithExtensions() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new MyTestRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
     }
 
     @Test
-    public void testHello_World_semantic_namespace_with_extensions_other_ns_location() throws Exception {
+    void helloWorldSemanticNamespaceWithExtensionsOtherNsLocation() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new MyTestRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace_with_extensions_other_ns_location.dmn", marshaller);
     }
 
     @Test
-    public void testSemanticNamespace() throws Exception {
+    void semanticNamespace() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "semantic-namespace.xml");
     }
 
-    @Ignore("The current file cannot marshal back extension elements because they don't provide converters.")
+    @Disabled("The current file cannot marshal back extension elements because they don't provide converters.")
     @Test
-    public void test20161014() throws Exception {
+    void test20161014() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "test20161014.xml");
     }
 
     @Test
-    public void testQNameSerialization() throws Exception {
+    void qNameSerialization() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "hardcoded_function_definition.dmn");
     }
 
-    @Ignore("A problem with the StaxDriver has still to be resolved.")
+    @Disabled("A problem with the StaxDriver has still to be resolved.")
     @Test
-    public void testFAILforMissingNamespaces() {
+    void faiLforMissingNamespaces() {
         fail("PERFORM A MANUAL CHECK: does now the Stax driver do output the namespace for 'feel:' ?? ");
     }
 

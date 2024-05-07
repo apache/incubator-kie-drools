@@ -19,7 +19,7 @@
 package org.kie.dmn.core.incrementalcompilation;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -31,7 +31,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WBCompilationTest {
+class WBCompilationTest {
 
     static final String DMN_1 = "<?xml version=\"1.0\" ?>\n" +
                                 "<dmn:definitions xmlns:dmn=\"https://www.omg.org/spec/DMN/20230324/MODEL/\" xmlns=\"https://github.com/kiegroup/drools/kie-dmn/_E084990F-18BF-4D46-8617-56CF6D8B86B6\" xmlns:di=\"http://www.omg.org/spec/DMN/20180521/DI/\" xmlns:kie=\"http://www.drools.org/kie/dmn/1.5\" xmlns:feel=\"http://www.omg.org/spec/DMN/20180521/FEEL/\" xmlns:dmndi=\"http://www.omg.org/spec/DMN/20180521/DMNDI/\" xmlns:dc=\"http://www.omg.org/spec/DMN/20180521/DC/\" id=\"_F325E2BC-2565-45DD-A8E9-77A0D37F0875\" name=\"dmn1\" expressionLanguage=\"http://www.omg.org/spec/DMN/20180521/FEEL/\" typeLanguage=\"http://www.omg.org/spec/DMN/20180521/FEEL/\" namespace=\"https://github.com/kiegroup/drools/kie-dmn/_E084990F-18BF-4D46-8617-56CF6D8B86B6\">\n" +
@@ -78,7 +78,7 @@ public class WBCompilationTest {
                                 "</dmn:definitions>";
 
     @Test
-    public void testSteppedCompilation() {
+    void steppedCompilation() {
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId id = ks.newReleaseId("org.test", "foo", "1.0-SNAPSHOT");
@@ -100,7 +100,7 @@ public class WBCompilationTest {
     }
 
     @Test
-    public void testSteppedCompilationFromEmptyKbuilder() {
+    void steppedCompilationFromEmptyKbuilder() {
         // DROOLS-5584
         KieServices ks = KieServices.Factory.get();
 

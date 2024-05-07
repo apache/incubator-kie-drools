@@ -54,28 +54,28 @@
       - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
       - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
     -->
-    <version.ch.qos.logback>1.2.13</version.ch.qos.logback>
-    <version.commons-codec>1.16.0</version.commons-codec>
+    <version.ch.qos.logback>1.4.12</version.ch.qos.logback>
+    <version.commons-codec>1.16.1</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
-    <version.commons-io>2.13.0</version.commons-io>
-    <version.common-text>1.10.0</version.common-text>
-    <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.15.2</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.15.2</version.com.fasterxml.jackson.annotations>
+    <version.commons-io>2.15.1</version.commons-io>
+    <version.common-text>1.11.0</version.common-text>
+    <version.com.fasterxml.jackson>2.16.1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.16.1</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.16.1</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-    <version.com.google.protobuf>3.22.0</version.com.google.protobuf>
+    <version.com.google.protobuf>3.25.0</version.com.google.protobuf>
     <version.com.h2database>2.2.220</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
-    <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
+    <version.com.sun.xml.bind>4.0.4</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
-    <version.info.picocli>4.7.4</version.info.picocli>
-    <version.io.micrometer>1.11.1</version.io.micrometer>
-    <version.io.quarkus>3.2.10.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>3.4.0</version.io.smallrye.openapi.core>
+    <version.info.picocli>4.7.5</version.info.picocli>
+    <version.io.micrometer>1.12.2</version.io.micrometer>
+    <version.io.quarkus>3.8.4</version.io.quarkus>
+    <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -83,27 +83,27 @@
     <version.org.antlr>3.5.2</version.org.antlr>
     <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
     <version.org.apache.ant>1.10.11</version.org.apache.ant>
-    <version.org.apache.commons.lang3>3.12.0</version.org.apache.commons.lang3>
+    <version.org.apache.commons.lang3>3.14.0</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
-    <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.8.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
     <version.org.apache.poi>5.2.5</version.org.apache.poi>
     <version.org.apache.tomcat.tomcat-dbcp>10.1.7</version.org.apache.tomcat.tomcat-dbcp>
-    <version.org.assertj>3.23.1</version.org.assertj>
+    <version.org.assertj>3.24.2</version.org.assertj>
     <version.org.eclipse.jdt>3.33.0</version.org.eclipse.jdt>
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
-    <version.org.hamcrest>1.3</version.org.hamcrest>
+    <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>14.0.13.Final</version.org.infinispan>
+    <version.org.infinispan>14.0.25.Final</version.org.infinispan>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>6.0.1.Final</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.narayana.tomcat>7.0.1.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.logging>3.5.3.Final</version.org.jboss.logging>
-    <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
+    <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.org.eclipse.microprofile.config>3.0.3</version.org.eclipse.microprofile.config>
     <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
@@ -111,28 +111,21 @@
     <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
     <version.jakarta.inject-api>2.0.1</version.jakarta.inject-api>
     <version.jakarta.annotation-api>2.1.1</version.jakarta.annotation-api>
-    <version.jakarta.ejb-api>3.2.6</version.jakarta.ejb-api>
-    <version.jakarta.servlet.jsp-api>2.3.6</version.jakarta.servlet.jsp-api>
-    <version.jakarta.servlet.jsp.jstl-api>2.0.0</version.jakarta.servlet.jsp.jstl-api>
     <version.jakarta.transaction-api>2.0.1</version.jakarta.transaction-api>
-    <version.jakarta.ws.rs-api>3.1.0</version.jakarta.ws.rs-api>
-    <version.jakarta.xml.ws-api>4.0.1</version.jakarta.xml.ws-api>
     <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
-    <version.jakarta.servlet-api>6.0.0</version.jakarta.servlet-api>
-    <version.jakarta.xml.bind-api>4.0.0</version.jakarta.xml.bind-api>
+    <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
     <version.jakarta.json.bind-api>3.0.0</version.jakarta.json.bind-api>
     <version.jakarta.json>1.1.5</version.jakarta.json>
-    <version.jakarta.json-api>2.1.2</version.jakarta.json-api>
+    <version.jakarta.json-api>2.1.3</version.jakarta.json-api>
     <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
     <version.org.jpmml.model>1.6.4</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-    <version.org.junit>5.9.3</version.org.junit>
+    <version.org.junit>5.10.2</version.org.junit>
     <version.org.mvel>2.5.1.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
-    <version.org.slf4j>1.7.30</version.org.slf4j>
+    <version.org.slf4j>2.0.6</version.org.slf4j>
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.xerces>2.12.0.SP04</version.xerces>
-    <version.xmlunit>1.3</version.xmlunit>
 
     <!-- External dependency versions bom -->
     <!-- ################################################################################ -->
@@ -141,19 +134,16 @@
 
     <version.org.antlr4>4.10.1</version.org.antlr4>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
-    <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
-    <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.io.swagger>1.6.2</version.io.swagger>
-    <version.io.swagger.core.v3>2.0.6</version.io.swagger.core.v3>
-    <version.io.swagger.parser.v3>2.0.6</version.io.swagger.parser.v3>
+    <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
+    <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-    <version.org.xmlunit>2.8.2</version.org.xmlunit>
+    <version.org.xmlunit>2.9.1</version.org.xmlunit>
     <!-- therefore the property is rewritten in that repository parent -->
-    <version.javax.validation>2.0.1.Final</version.javax.validation>
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.11.0</version.org.mockito>
+    <version.org.mockito>5.2.0</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -198,17 +188,17 @@
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.shade.plugin>3.3.0</version.shade.plugin>
 
-    <version.net.byte-buddy>1.14.7</version.net.byte-buddy>
+    <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
 
-    <version.org.postgresql>42.6.1</version.org.postgresql>
+    <version.org.postgresql>42.7.2</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.1.6</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
-    <version.com.github.javaparser>3.25.3</version.com.github.javaparser>
+    <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
 
-    <version.com.google.guava>32.0.0-jre</version.com.google.guava>
+    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
 
     <!-- JaCoCo coverage data file location -->
     <!--suppress UnresolvedMavenProperty -->
@@ -453,39 +443,14 @@
         <version>${version.jakarta.annotation-api}</version>
       </dependency>
       <dependency>
-        <groupId>jakarta.servlet.jsp</groupId>
-        <artifactId>jakarta.servlet.jsp-api</artifactId>
-        <version>${version.jakarta.servlet.jsp-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.servlet.jsp.jstl</groupId>
-        <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-        <version>${version.jakarta.servlet.jsp.jstl-api}</version>
-      </dependency>
-      <dependency>
         <groupId>jakarta.transaction</groupId>
         <artifactId>jakarta.transaction-api</artifactId>
         <version>${version.jakarta.transaction-api}</version>
       </dependency>
       <dependency>
-        <groupId>jakarta.ws.rs</groupId>
-        <artifactId>jakarta.ws.rs-api</artifactId>
-        <version>${version.jakarta.ws.rs-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.xml.ws</groupId>
-        <artifactId>jakarta.xml.ws-api</artifactId>
-        <version>${version.jakarta.xml.ws-api}</version>
-      </dependency>
-      <dependency>
         <groupId>jakarta.persistence</groupId>
         <artifactId>jakarta.persistence-api</artifactId>
         <version>${version.jakarta.persistence-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
-        <version>${version.jakarta.servlet-api}</version>
       </dependency>
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
@@ -506,6 +471,11 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
+        <version>${version.org.junit}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
         <version>${version.org.junit}</version>
       </dependency>
       <dependency>
@@ -874,12 +844,6 @@
         <version>${version.xerces}</version>
       </dependency>
 
-      <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>${version.xmlunit}</version>
-      </dependency>
-
       <!--JMH (Benchmarks)-->
       <dependency>
         <groupId>org.openjdk.jmh</groupId>
@@ -905,70 +869,6 @@
         <artifactId>org.jacoco.agent</artifactId>
         <version>${version.jacoco.plugin}</version>
         <classifier>runtime</classifier>
-      </dependency>
-
-      <!-- Errai (needed for Guice exclusion) -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-ioc</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-tools</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-dom</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-core</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-promise</artifactId>
-        <version>${version.com.google.elemental2}</version>
       </dependency>
 
       <dependency>
@@ -1045,7 +945,7 @@
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
-        <artifactId>jboss-transaction-spi-jakarta</artifactId>
+        <artifactId>jboss-transaction-spi</artifactId>
         <version>${version.org.jboss.transaction.spi}</version>
         <exclusions>
           <exclusion>
@@ -1076,19 +976,6 @@
         <artifactId>xmlunit-assertj</artifactId>
         <version>${version.org.xmlunit}</version>
         <scope>test</scope>
-      </dependency>
-
-      <!-- Required for Errai Dynamic Bean validation  -->
-      <dependency>
-        <groupId>jakarta.validation</groupId>
-        <artifactId>jakarta.validation-api</artifactId>
-        <version>3.0.2</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.validation</groupId>
-        <artifactId>jakarta.validation-api</artifactId>
-        <version>3.0.2</version>
-        <classifier>sources</classifier>
       </dependency>
 
       <!-- Data source management libraries -->
@@ -1400,41 +1287,11 @@
                         </ignoreClasses>
                       </dependency>
                       <dependency>
-                        <!-- This JAR contains classes that override classes coming from jakarta.* -->
-                        <groupId>org.jboss.errai</groupId>
-                        <artifactId>errai-ioc</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>javax.inject.Provider</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <!-- This JAR contains classes that override classes coming from jakarta.* -->
-                        <groupId>org.jboss.errai</groupId>
-                        <artifactId>errai-javax-enterprise</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
                         <!-- quarkus-ide-launcher is a dependency of quarkus-core that they auto exclude during the build -->
                         <groupId>io.quarkus</groupId>
                         <artifactId>quarkus-ide-launcher</artifactId>
                         <ignoreClasses>
                           <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-
-                      <!-- ignore jboss-logging included in kie server router as it is required by undertow and uberjar usage-->
-                      <dependency>
-                        <groupId>org.kie.server</groupId>
-                        <artifactId>kie-server-router-proxy</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>org.jboss.logging.*</ignoreClass>
-                          <ignoreClass>org.jboss.threads.*</ignoreClass>
-                          <ignoreClass>org.xnio.*</ignoreClass>
-                          <ignoreClass>org.wildfly.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
                       <!-- sundr-codegen is required to compile test classes. -->
@@ -1868,48 +1725,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
         </plugin>
-        <!--Fix translations from Zanata -->
-        <plugin>
-          <groupId>com.google.code.maven-replacer-plugin</groupId>
-          <artifactId>replacer</artifactId>
-          <version>1.5.2</version>
-          <configuration>
-            <includes>
-              <include>**/*Constants_de.properties</include>
-              <include>**/*Constants_es_ES.properties</include>
-              <include>**/*Constants_fr_FR.properties</include>
-              <include>**/*Constants_ja_JP.properties</include>
-              <include>**/*Constants_pt_BR.properties</include>
-              <include>**/*Constants_zh_CN.properties</include>
-            </includes>
-            <excludes>
-              <exclude>**/ErraiApp.properties</exclude>
-            </excludes>
-            <replacements>
-              <replacement>
-                <token>''</token>
-                <value>'</value>
-              </replacement>
-              <replacement>
-                <token>'</token>
-                <value>''</value>
-              </replacement>
-            </replacements>
-          </configuration>
-        </plugin>
-        <!-- Zanata -->
-        <plugin>
-          <groupId>org.zanata</groupId>
-          <artifactId>zanata-maven-plugin</artifactId>
-          <version>2.3.0</version>
-          <configuration>
-            <excludes>**/ErraiApp.properties</excludes>
-            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-            <srcDir>src/main/resources/</srcDir>
-            <transDir>src/main/resources/</transDir>
-            <includes>**/*Constants.properties,**/*Constants_en.properties</includes>
-          </configuration>
-        </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
              It has no influence on the Maven build itself. -->
@@ -2315,8 +2130,6 @@
                                 folder during the build. These are not a subject of test coverage measurement.
                               -->
                               <exclude name="**/target/**/target/classes/**/*.class"/>
-                              <exclude name="**/.errai/**/*.class"/>
-                              <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
 
                               <!--
                                 TODO: there are multiple classes of the same fully qualified name in kie-server modules.

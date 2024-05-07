@@ -20,7 +20,7 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class ManualQuantTest {
     }
 
     @Test
-    public void testManualContext() {
+    void manualContext() {
         CompiledFEELExpression compiledExpression = new ManualFilterExpression();
         LOG.debug("{}", compiledExpression);
 

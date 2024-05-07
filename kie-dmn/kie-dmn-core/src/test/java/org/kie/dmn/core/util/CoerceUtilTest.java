@@ -6,17 +6,19 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CoerceUtilTest {
+class CoerceUtilTest {
 
     @Test
-    public void coerceValueCollectionToArrayConverted() {
+    void coerceValueCollectionToArrayConverted() {
         Object item = "TESTED_OBJECT";
         Object value = Collections.singleton(item);
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
@@ -33,7 +35,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceValueCollectionToArrayNotConverted() {
+    void coerceValueCollectionToArrayNotConverted() {
         Object item = "TESTED_OBJECT";
         Object value = Collections.singleton(item);
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
@@ -80,7 +82,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceValueDateToDateTimeConverted() {
+    void coerceValueDateToDateTimeConverted() {
         Object value = LocalDate.now();
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
                                                   "date and time",
@@ -102,7 +104,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceValueDateToDateTimeNotConverted() {
+    void coerceValueDateToDateTimeNotConverted() {
         Object value = "TEST_OBJECT";
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
                                                   "date and time",
@@ -130,7 +132,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void actualCoerceValueCollectionToArray() {
+    void actualCoerceValueCollectionToArray() {
         Object item = "TESTED_OBJECT";
         Object value = Collections.singleton(item);
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
@@ -147,7 +149,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void actualCoerceValueDateToDateTime() {
+    void actualCoerceValueDateToDateTime() {
         Object value = LocalDate.now();
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
                                                   "date and time",
@@ -169,7 +171,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void actualCoerceValueNotConverted() {
+    void actualCoerceValueNotConverted() {
         Object value = BigDecimal.valueOf(1L);
         DMNType requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
                                                   "number",

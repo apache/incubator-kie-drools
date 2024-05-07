@@ -24,6 +24,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class SubstringBeforeFunction
         extends BaseFEELFunction {
 
+    public static final SubstringBeforeFunction INSTANCE = new SubstringBeforeFunction();
+
     public SubstringBeforeFunction() {
         super( "substring before" );
     }

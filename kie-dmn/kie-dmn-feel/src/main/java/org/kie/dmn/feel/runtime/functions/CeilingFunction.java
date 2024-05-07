@@ -28,6 +28,8 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 public class CeilingFunction
         extends BaseFEELFunction {
 
+    public static final CeilingFunction INSTANCE = new CeilingFunction();
+
     public CeilingFunction() {
         super( "ceiling" );
     }

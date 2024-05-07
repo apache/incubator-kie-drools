@@ -50,13 +50,16 @@ public class ReteEvaluatorTest {
                         "end";
 
         ReteEvaluator reteEvaluator = new StatefulKnowledgeSessionImpl( 1L, getKBase( str ) );
+        try {
+            Person me = new Person( "Mario", 40 );
+            reteEvaluator.insert( "Mario" );
+            reteEvaluator.insert( me );
+            assertThat(reteEvaluator.fireAllRules()).isEqualTo(1);
 
-        Person me = new Person( "Mario", 40 );
-        reteEvaluator.insert( "Mario" );
-        reteEvaluator.insert( me );
-        assertThat(reteEvaluator.fireAllRules()).isEqualTo(1);
-
-        assertThat(me.getAge()).isEqualTo(41);
+            assertThat(me.getAge()).isEqualTo(41);
+        } finally {
+            reteEvaluator.dispose();
+        }
     }
 
     private InternalKnowledgeBase getKBase(String... stringRules) {

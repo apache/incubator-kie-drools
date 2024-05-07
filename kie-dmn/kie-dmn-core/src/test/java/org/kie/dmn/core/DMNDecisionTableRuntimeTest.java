@@ -28,8 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -74,12 +77,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionTableRuntimeTest.class);
 
-    public DMNDecisionTableRuntimeTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
-    @Test
-    public void testDecisionTableWithCalculatedResult() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableWithCalculatedResult(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
         checkDecisionTableWithCalculatedResult(runtime);
     }
@@ -99,9 +100,12 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat( ((BigDecimal) result.get( "Logique de décision 1" )).setScale( 1, RoundingMode.CEILING )).isEqualTo(BigDecimal.valueOf( 0.5 ) );
     }
-    
-    @Test(timeout = 30_000L)
-    public void testDecisionTableWithCalculatedResult_parallel() throws Throwable {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    @Timeout(value = 30_000L, unit = TimeUnit.MILLISECONDS)
+    void decisionTableWithCalculatedResultParallel(boolean useExecModelCompiler) throws Throwable {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
         final Runnable task = () -> checkDecisionTableWithCalculatedResult(runtime);
         final List<Throwable> problems = Collections.synchronizedList(new ArrayList<>());
@@ -118,8 +122,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         }
     }
 
-    @Test
-    public void testDecisionTableMultipleResults() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableMultipleResults(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "car_damage_responsibility.dmn", this.getClass() );
         final DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -152,8 +158,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( second.getSelected()).containsExactly(3);
     }
 
-    @Test
-    public void testSimpleDecisionTableMultipleOutputWrongOutputType() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void simpleDecisionTableMultipleOutputWrongOutputType(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-P-multiple-outputs-wrong-output.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-P-multiple-outputs-wrong-output" );
         assertThat(dmnModel).isNotNull();
@@ -169,8 +177,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
                 message -> message.getFeelEvent().getSourceException() instanceof NullPointerException ).count()).isEqualTo(0L );
     }
 
-    @Test
-    public void testDecisionTableInvalidInputErrorMessage() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableInvalidInputErrorMessage(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNContext context = DMNFactory.newContext();
         context.set( "Branches dispersion", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
@@ -178,8 +188,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         testDecisionTableInvalidInput( context );
     }
 
-    @Test
-    public void testDecisionTableInvalidInputTypeErrorMessage() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableInvalidInputTypeErrorMessage(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNContext context = DMNFactory.newContext();
         context.set( "Branches dispersion", 1 );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
@@ -187,8 +199,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         testDecisionTableInvalidInput( context );
     }
 
-    @Test
-    public void testDecisionTableNonexistingInputErrorMessage() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableNonexistingInputErrorMessage(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNContext context = DMNFactory.newContext();
         context.set( "Not exists", "Province" );
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
@@ -208,8 +222,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.isDefined( "Branches distribution" )).isEqualTo(Boolean.FALSE);
     }
 
-    @Test
-    public void testDecisionTableDefaultValue() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableDefaultValue(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "decisiontable-default-value.dmn", this.getClass() );
         final DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -236,8 +252,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( captor.getValue().getSelected()).isEmpty();
     }
 
-    @Test
-    public void testTwoDecisionTables() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void twoDecisionTables(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "two_decision_tables.dmn", this.getClass() );
         final DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -263,8 +281,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( captor.getAllValues().get( 1 ).getDecisionTableName()).isEqualTo("b" );
     }
 
-    @Test
-    public void testDTInputExpressionLocalXmlnsInference() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTInputExpressionLocalXmlnsInference(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools1502-InputExpression.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "https://www.drools.org/kie-dmn/definitions",
@@ -282,8 +302,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "MyDecision" )).isEqualTo("Decision taken" );
     }
 
-    @Test
-    public void testDTInContext() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTInContext(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_in_context.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5", "Drawing 1" );
         assertThat(dmnModel).isNotNull();
@@ -298,8 +320,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( ((Map) result.get( "D1" )).get( "Text color" )).isEqualTo("red" );
     }
 
-    @Test
-    public void testDTUsingEqualsUnaryTestWithVariable1() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTUsingEqualsUnaryTestWithVariable1(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_using_variables.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat(dmnModel).isNotNull();
@@ -323,8 +347,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Compare String" )).isEqualTo("Same String" );
     }
 
-    @Test
-    public void testDTUsingEqualsUnaryTestWithVariable2() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTUsingEqualsUnaryTestWithVariable2(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DT_using_variables.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat(dmnModel).isNotNull();
@@ -348,8 +374,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Compare String" )).isEqualTo("Different String" );
     }
 
-    @Test
-    public void testEmptyOutputCell() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void emptyOutputCell(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_empty_output_cell.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
         assertThat(dmnModel).isNotNull();
@@ -363,8 +391,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getContext().get("Logique de décision 1")).isNull();
     }
 
-    @Test
-    public void testNullRelation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void nullRelation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nullrelation.dmn", getClass());
         final DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_946a2145-89ae-4197-88b4-40e6f88c8101", "Null in relations");
         assertThat(model).isNotNull();
@@ -375,8 +405,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.hasErrors()).as(DMNRuntimeUtil.formatMessages(result.getMessages())).isFalse();
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollection(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2359
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollection.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "Drawing 1");
@@ -393,8 +425,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "xyz");
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollection_NOtypecheck() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollectionNOtypecheck(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2359
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieServices ks = KieServices.Factory.get();
@@ -415,8 +449,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "xyz");
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollectionWithLOV() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollectionWithLOV(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2359
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputDMNTypeCollectionWithLOV.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ae5d2033-c6d0-411f-a394-da33a70e5638", "List of Words in DT");
@@ -433,8 +469,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "a");
     }
 
-    @Test
-    public void testDecisionTableOutputDMNTypeCollectionWithLOV_NOtypecheck() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableOutputDMNTypeCollectionWithLOVNOtypecheck(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2359
         // do NOT use the DMNRuntimeUtil as that enables typeSafe check override for runtime.
         final KieServices ks = KieServices.Factory.get();
@@ -455,15 +493,19 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("a decision")).asList().containsExactly("abc", "a");
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkVariableCorrectEvaluation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkVariableCorrectEvaluation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmark.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkAsString() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkAsString(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkAsString.dmn",
                                                "NOT OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
@@ -475,99 +517,127 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkVariableVsQuestionMarkString() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkVariableVsQuestionMarkString(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkVsQmarkString.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkOnly() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkOnly(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkonly.dmn",
                                                null,
                                                DMNDecisionResult.DecisionEvaluationStatus.FAILED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkMultivalue() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkMultivalue(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkMultivalue.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkMultivalueWithBrackets() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkMultivalueWithBrackets(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkMultivalueWithBrackets.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithNot() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithNot(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithNot.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithContext() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithContext(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithContext.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithQuantifiedExpression() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithQuantifiedExpression(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithQuantifiedExpr.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithForExpression() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithForExpression(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithForExpr.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithFuncDef() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithFuncDef(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithFuncDef.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkInstanceOf() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkInstanceOf(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkInstanceOf.dmn",
                                                "NOT OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkInWithUnaryTests() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkInWithUnaryTests(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkInWithUnaryTest.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithRange() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithRange(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithRange.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkWithAnd() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkWithAnd(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkWithAnd.dmn",
                                                "OK",
                                                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
     }
 
-    @Test
-    public void testDecisionTablesQuestionMarkInNonBooleanFunction() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTablesQuestionMarkInNonBooleanFunction(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testDecisionTablesQuestionMarkVariable("questionmarkunarytest/qmarkInNonBooleanFunction.dmn",
                                                null,
                                                DMNDecisionResult.DecisionEvaluationStatus.FAILED);
@@ -587,8 +657,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.getResult()).isEqualTo(expectedResult);
     }
 
-    @Test
-    public void testDecisionTableOutputMessageRowIndex() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionTableOutputMessageRowIndex(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-5606 DMN wrong rule index in message when not conforming
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionTableOutputMessageRowIndex.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_D7A4B999-3178-4929-834F-8979E3C5000F", "DecisionTableOutputMessageRowIndex");
@@ -606,8 +678,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(msg0.getText()).containsIgnoringCase("Invalid result value on rule #1, output #1."); // there is only 1 row, 1 output column
     }
 
-    @Test
-    public void testDTand() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTand(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DTand.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_6697FFDC-B3D9-4B0B-BC07-AE5E5AC96CB4", "DTand");
         assertThat(dmnModel).isNotNull();
@@ -621,8 +695,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("out1").getResult()).isEqualTo("PASS");
     }
 
-    @Test
-    public void testQMarkAndNullShouldNotThrowNPEs() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void qMarkAndNullShouldNotThrowNPEs(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("questionmarkunarytest/qmarkMatches.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_D1CF8332-8443-41C8-B214-D282B82C7632", "qmarkMatches");
         assertThat(dmnModel).isNotNull();
@@ -654,8 +730,10 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(feelNPEs).as("while it's okay to have error-ed on evaluation of FEEL, there should not be any sort of NPEs when reporting the human friendly message").isEmpty();
     }
 
-    @Test
-    public void testDTCollectOperatorsMultipleOutputs() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTCollectOperatorsMultipleOutputs(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.SUM, 100, 111, 18);
         checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.COUNT, 10, 2, 2);
         checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.MIN, 100, 1, 3);

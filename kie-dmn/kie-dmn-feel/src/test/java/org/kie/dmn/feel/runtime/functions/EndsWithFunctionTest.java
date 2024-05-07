@@ -18,28 +18,28 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class EndsWithFunctionTest {
+class EndsWithFunctionTest {
 
     private EndsWithFunction endsWithFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         endsWithFunction = new EndsWithFunction();
     }
 
     @Test
-    public void invokeParamsNull() {
+    void invokeParamsNull() {
         FunctionTestUtil.assertResultError(endsWithFunction.invoke((String) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(endsWithFunction.invoke(null, "test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(endsWithFunction.invoke("test", null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeEndsWith() {
+    void invokeEndsWith() {
         FunctionTestUtil.assertResult(endsWithFunction.invoke("test", "t"), true);
         FunctionTestUtil.assertResult(endsWithFunction.invoke("test", "st"), true);
         FunctionTestUtil.assertResult(endsWithFunction.invoke("test", "est"), true);
@@ -47,7 +47,7 @@ public class EndsWithFunctionTest {
     }
 
     @Test
-    public void invokeNotEndsWith() {
+    void invokeNotEndsWith() {
         FunctionTestUtil.assertResult(endsWithFunction.invoke("test", "es"), false);
         FunctionTestUtil.assertResult(endsWithFunction.invoke("test", "ttttt"), false);
         FunctionTestUtil.assertResult(endsWithFunction.invoke("test", "estt"), false);

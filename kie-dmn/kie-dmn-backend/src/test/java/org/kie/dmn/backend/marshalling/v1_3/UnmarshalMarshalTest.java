@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_3.extensions.TrisoExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -62,48 +62,48 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void testV13_simple() throws Exception {
+    void v13Simple() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "simple.dmn");
     }
 
     @Test
-    public void testV13_ch11example_asFromOMG() throws Exception {
+    void v13Ch11exampleAsFromOMG() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving.
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_3/", "Chapter 11 Example.dmn", marshaller, DMN13_SCHEMA_SOURCE);
     }
 
     @Test
-    public void testV13_financial() throws Exception {
+    void v13Financial() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "Financial.dmn");
     }
 
     @Test
-    public void testV13_loan_info() throws Exception {
+    void v13LoanInfo() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "Loan info.dmn");
     }
 
     @Test
-    public void testV13_recommended_loan_product() throws Exception {
+    void v13RecommendedLoanProduct() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "Recommended Loan Products.dmn");
     }
 
     @Test
-    public void testV13_group() throws Exception {
+    void v13Group() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "group.dmn");
     }
 
     @Test
-    public void testV13_dmnedge() throws Exception {
+    void v13Dmnedge() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "dmnedge.dmn");
     }
 
     @Test
-    public void testV13_functionItem() throws Exception {
+    void v13FunctionItem() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "functionItem.dmn");
     }
 
     @Test
-    public void testV13_decision_list() throws Exception {
+    void v13DecisionList() throws Exception {
         testRoundTripV13("org/kie/dmn/backend/marshalling/v1_3/", "decision-list.dmn");
     }
 

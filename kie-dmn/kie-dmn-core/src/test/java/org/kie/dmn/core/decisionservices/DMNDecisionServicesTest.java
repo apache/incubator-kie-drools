@@ -21,7 +21,8 @@ package org.kie.dmn.core.decisionservices;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -42,12 +43,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServicesTest.class);
 
-    public DMNDecisionServicesTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
-    @Test
-    public void testBasic() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void basic(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-decision-services.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel).isNotNull();
@@ -103,8 +102,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("A")).isEqualTo("inBinC");
     }
 
-    @Test
-    public void testDSInLiteralExpression() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSInLiteralExpression(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpression.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel).isNotNull();
@@ -123,8 +124,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decide based on A and DS")).isEqualTo("xyde");
     }
 
-    @Test
-    public void testDSInLiteralExpressionWithBKM() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSInLiteralExpressionWithBKM(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionWithBKM.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel).isNotNull();
@@ -143,8 +146,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decide based on A and DS")).isEqualTo("xydemn");
     }
 
-    @Test
-    public void testDSInLiteralExpressionWithBKMUsingInvocation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSInLiteralExpressionWithBKMUsingInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionWithBKMUsingInvocation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel).isNotNull();
@@ -163,8 +168,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decide based on A and DS")).isEqualTo("xydemn");
     }
 
-    @Test
-    public void testDSInLiteralExpressionOnlyfromBKMUsingInvocation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSInLiteralExpressionOnlyfromBKMUsingInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionOnlyFromBKMUsingInvocation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel).isNotNull();
@@ -183,8 +190,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decide based on A and DS")).isEqualTo("demn");
     }
 
-    @Test
-    public void testMixtypeDS() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void mixtypeDS(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("mixtype-DS.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544", "mixtype DS");
         assertThat(dmnModel).isNotNull();
@@ -276,8 +285,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.getAll()).doesNotContainKey("hardcoded now");
     }
 
-    @Test
-    public void testDSForTypeCheck() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSForTypeCheck(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionService20180718.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a", "Decision Service 20180718");
         assertThat(dmnModel).isNotNull();
@@ -344,8 +355,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         .as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
     }
 
-    @Test
-    public void testDSSingletonOrMultipleOutputDecisions() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSSingletonOrMultipleOutputDecisions(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
         assertThat(dmnModel).isNotNull();
@@ -383,8 +396,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResultMultiple.getContext().getAll()).doesNotContainKey("a Value"); // Decision Service will not expose (nor encapsulate hence not execute) this decision.
     }
 
-    @Test
-    public void testDSSingletonOrMultipleOutputDecisions_OVERRIDE() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dSSingletonOrMultipleOutputDecisionsOVERRIDE(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         try {
             System.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
             final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
@@ -431,8 +446,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         }
     }
 
-    @Test
-    public void testImportDS() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void importDS(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2768 DMN Decision Service encapsulate Decision which imports a Decision Service
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DecisionService20180718.dmn", this.getClass(), "ImportDecisionService20180718.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0ff3708a-c861-4a96-b85c-7b882f18b7a1", "Import Decision Service 20180718");
@@ -473,8 +490,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("final Import L1 decision")).isEqualTo("Hello, L1 Import Evaluate DS NAME the result of invoking the imported DS is: Hello, L1 Import Evaluate DS NAME; you are allowed");
     }
 
-    @Test
-    public void testTransitiveImportDS() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void transitiveImportDS(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2768 DMN Decision Service encapsulate Decision which imports a Decision Service   
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DecisionService20180718.dmn", this.getClass(),
                                                                                        "ImportDecisionService20180718.dmn",
@@ -515,8 +534,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Final L2 Decision")).isEqualTo("The result of invoking the L1 DS was: Hello, L2 Bob DS the result of invoking the imported DS is: Hello, L2 Bob DS; you are allowed");
     }
 
-    @Test
-    public void testDecisionServiceCompiler20180830() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionServiceCompiler20180830(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServiceABC.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
@@ -554,8 +575,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("ABC")).isEqualTo("abc");
     }
 
-    @Test
-    public void testDecisionService20180920() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void decisionService20180920(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-3005 DMN DecisionService having an imported requiredInput
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("DSWithImportRequiredInput20180920.dmn",
                                                                                        this.getClass(),
@@ -596,8 +619,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decision B")).isEqualTo("input 1 value");
     }
 
-    @Test
-    public void test20190520() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void test20190520(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DStypecheck.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6e76b9ca-ce06-426a-91c0-99b70665321a", "Drawing 1");
         assertThat(dmnModel).isNotNull();
@@ -611,9 +636,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
         assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult()).containsEntry("outDS1", true);
     }
-    
-    @Test
-    public void testImportingBasic() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingBasic(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38", "importing0004");
         assertThat(dmnModel).isNotNull();
@@ -634,9 +661,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision1")).isEqualTo("inBinC");
     }
-    
-    @Test
-    public void testImportingBoxedInvocation() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingBoxedInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004boxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_346B2E00-71E5-4CEA-ADE1-7A0872481F38", "importing0004");
         assertThat(dmnModel).isNotNull();
@@ -644,9 +673,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         assertSupplyingBandC(runtime, dmnModel);
     }
-    
-    @Test
-    public void testImportingBkmBoxedInvocation() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingBkmBoxedInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("0004-decision-services.dmn", this.getClass(), "importing0004bkmBoxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_0CA8CCDE-106B-4805-B0C1-8D8D740C80F7", "importing0004bkmBoxedInvocation");
         assertThat(dmnModel).isNotNull();
@@ -654,9 +685,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         assertSupplyingBandC(runtime, dmnModel);
     }
-    
-    @Test
-    public void testImportingWithSameDSName() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingWithSameDSName(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDS.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
         assertThat(dmnModel).isNotNull();
@@ -676,9 +709,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision1")).isEqualTo("Hello, John Doe");
     }
-    
-    @Test
-    public void testImportingWithSameDSNameBoxedInvocation() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingWithSameDSNameBoxedInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSboxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
         assertThat(dmnModel).isNotNull();
@@ -686,9 +721,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
         assertSupplyingPersonname(runtime, dmnModel);
     }
-    
-    @Test
-    public void testImportingWithSameDSNameBKMBoxedInvocation() {
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void importingWithSameDSNameBKMBoxedInvocation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("myHelloDS.dmn", this.getClass(), "importingMyHelloDSbkmBoxedInvocation.dmn");
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_3295867F-C02D-4312-849B-844F74C51ADE", "importingMyHelloDS");
         assertThat(dmnModel).isNotNull();

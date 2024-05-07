@@ -21,7 +21,7 @@ package org.kie.dmn.validation.dtanalysis;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -36,10 +36,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class MisleadingRulesTest extends AbstractDTAnalysisTest {
+class MisleadingRulesTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testMisleadingRules() {
+    void misleadingRules() {
         List<DMNMessage> validate = validator.validate(getReader("MisleadingRules.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_BA703D04-803A-44AA-8A31-F5EEDD4FD54E");
         assertThat(analysis.getGaps()).hasSize(0);
@@ -75,7 +75,7 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testMisleadingRules2() {
+    void misleadingRules2() {
         List<DMNMessage> validate = validator.validate(getReader("MisleadingRules2.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_0cffdf05-071b-423b-94b9-182c2cc2435c");
 

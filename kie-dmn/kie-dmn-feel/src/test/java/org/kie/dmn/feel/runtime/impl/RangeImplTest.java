@@ -18,43 +18,43 @@
  */
 package org.kie.dmn.feel.runtime.impl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RangeImplTest {
+class RangeImplTest {
 
     @Test
-    public void getLowBoundary() {
+    void getLowBoundary() {
         final Range.RangeBoundary lowBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(lowBoundary, 10, 15, Range.RangeBoundary.OPEN);
         assertThat(rangeImpl.getLowBoundary()).isEqualTo(lowBoundary);
     }
 
     @Test
-    public void getLowEndPoint() {
+    void getLowEndPoint() {
         final Integer lowEndPoint = 1;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, lowEndPoint, 15, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl.getLowEndPoint()).isEqualTo(lowEndPoint);
     }
 
     @Test
-    public void getHighEndPoint() {
+    void getHighEndPoint() {
         final Integer highEndPoint = 15;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 1, highEndPoint, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl.getHighEndPoint()).isEqualTo(highEndPoint);
     }
 
     @Test
-    public void getHighBoundary() {
+    void getHighBoundary() {
         final Range.RangeBoundary highBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, highBoundary);
         assertThat(rangeImpl.getHighBoundary()).isEqualTo(highBoundary);
     }
 
     @Test
-    public void includes() {
+    void includes() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
         assertThat(rangeImpl.includes(-15)).isFalse();
         assertThat(rangeImpl.includes(5)).isFalse();
@@ -80,7 +80,7 @@ public class RangeImplTest {
     }
 
     @Test
-    public void equals() {
+    void equals() {
         RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
         assertThat(rangeImpl).isEqualTo(rangeImpl);
 
@@ -103,7 +103,7 @@ public class RangeImplTest {
     }
 
     @Test
-    public void hashCodeTest() {
+    void hashCodeTest() {
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
         assertThat(rangeImpl.hashCode()).isEqualTo(rangeImpl.hashCode());
 

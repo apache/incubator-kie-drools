@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
@@ -34,10 +34,10 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class NotTest extends AbstractDTAnalysisTest {
+class NotTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testNOTString() {
+    void notString() {
         List<DMNMessage> validate = validator.validate(getReader("DTusingNOT.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_b53fac34-fb12-4601-8605-c226e68292f9");
 
@@ -76,7 +76,7 @@ public class NotTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testNOTString2() {
+    void notString2() {
         List<DMNMessage> validate = validator.validate(getReader("DTusingNOT2.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_b53fac34-fb12-4601-8605-c226e68292f9");
 
@@ -99,9 +99,9 @@ public class NotTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps()).hasSize(0);
 
     }
-    
+
     @Test
-    public void testNotStringVowel() {
+    void notStringVowel() {
         List<DMNMessage> validate = validator.validate(getReader("NotStringVowel.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_406133D7-96FE-4237-8726-44D839F400D6");
 
@@ -111,9 +111,9 @@ public class NotTest extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps()).hasSize(0);
     }
-    
+
     @Test
-    public void testNotStringVowel2() {
+    void notStringVowel2() {
         List<DMNMessage> validate = validator.validate(getReader("NotStringVowel2.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_406133D7-96FE-4237-8726-44D839F400D6");
 
@@ -128,7 +128,7 @@ public class NotTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testNOTnumber() {
+    void nOTnumber() {
         List<DMNMessage> validate = validator.validate(getReader("DTusingNOTnumber.dmn"), ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_d0cbacca-55d4-47dd-acc6-131add2a8a53");
 

@@ -24,27 +24,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
-public class StddevFunctionTest {
+class StddevFunctionTest {
 
     private NNStddevFunction stddevFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         stddevFunction = NNStddevFunction.INSTANCE;
     }
 
     @Test
-    public void invokeNumberNull() {
+    void invokeNumberNull() {
         FunctionTestUtil.assertResult(stddevFunction.invoke((Number) null), null);
     }
 
     @Test
-    public void invokeSingleNumber() {
+    void invokeSingleNumber() {
         FunctionTestUtil.assertResultError(stddevFunction.invoke(BigDecimal.TEN), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(stddevFunction.invoke(10), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(stddevFunction.invoke(10d), InvalidParametersEvent.class);
@@ -53,74 +53,74 @@ public class StddevFunctionTest {
     }
 
     @Test
-    public void invokeUnconvertableNumber() {
+    void invokeUnconvertableNumber() {
         FunctionTestUtil.assertResultError(stddevFunction.invoke(Double.POSITIVE_INFINITY), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(stddevFunction.invoke(Double.NEGATIVE_INFINITY), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(stddevFunction.invoke(Double.NaN), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListNull() {
+    void invokeListNull() {
         FunctionTestUtil.assertResult(stddevFunction.invoke((List) null), null);
     }
 
     @Test
-    public void invokeListEmpty() {
+    void invokeListEmpty() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(Collections.emptyList()), null);
     }
 
     @Test
-    public void invokeListTypeHeterogenous() {
+    void invokeListTypeHeterogenous() {
         FunctionTestUtil.assertResultError(stddevFunction.invoke(Arrays.asList(1, "test")), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeListParamSupportedTypesWithNull() {
+    void invokeListParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(Arrays.asList(20, 30, null, (long) 40, null, BigDecimal.TEN)),
                 new BigDecimal("12.90994448735805628393088466594133", MathContext.DECIMAL128));
     }
 
     @Test
-    public void invokeListWithIntegers() {
+    void invokeListWithIntegers() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(Arrays.asList(10, 20, 30, 40)),
                 new BigDecimal("12.90994448735805628393088466594133", MathContext.DECIMAL128));
     }
 
     @Test
-    public void invokeListWithDoubles() {
+    void invokeListWithDoubles() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(Arrays.asList(10.0d, 20.0d, 30.0d, 40.0d)),
                 new BigDecimal("12.90994448735805628393088466594133", MathContext.DECIMAL128));
     }
 
     @Test
-    public void invokeArrayNull() {
+    void invokeArrayNull() {
         FunctionTestUtil.assertResult(stddevFunction.invoke((Object[]) null), null);
     }
 
     @Test
-    public void invokeArrayEmpty() {
+    void invokeArrayEmpty() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(new Object[]{}), null);
     }
 
     @Test
-    public void invokeArrayTypeHeterogenous() {
+    void invokeArrayTypeHeterogenous() {
         FunctionTestUtil.assertResultError(stddevFunction.invoke(new Object[]{1, "test"}), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeArrayWithIntegers() {
+    void invokeArrayWithIntegers() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(new Object[]{10, 20, 30, 40}),
                 new BigDecimal("12.90994448735805628393088466594133", MathContext.DECIMAL128));
     }
 
     @Test
-    public void invokeArrayWithDoubles() {
+    void invokeArrayWithDoubles() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(new Object[]{10.0d, 20.0d, 30.0d, 40.0d}),
                 new BigDecimal("12.90994448735805628393088466594133", MathContext.DECIMAL128));
     }
 
     @Test
-    public void invokeArrayParamSupportedTypesWithNull() {
+    void invokeArrayParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(stddevFunction.invoke(new Object[]{20, 30, null, (long) 40, null, BigDecimal.TEN}),
                 new BigDecimal("12.90994448735805628393088466594133", MathContext.DECIMAL128));
     }

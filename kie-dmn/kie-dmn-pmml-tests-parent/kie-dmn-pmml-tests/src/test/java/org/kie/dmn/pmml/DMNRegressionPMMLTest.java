@@ -20,7 +20,7 @@ package org.kie.dmn.pmml;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -37,7 +37,7 @@ public abstract class DMNRegressionPMMLTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNRegressionPMMLTest.class);
 
     @Test
-    public void testRegression() {
+    public void regression() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLRegression.dmn",
                                                                                        DMNRegressionPMMLTest.class,
                                                                                        "test_regression.pmml");

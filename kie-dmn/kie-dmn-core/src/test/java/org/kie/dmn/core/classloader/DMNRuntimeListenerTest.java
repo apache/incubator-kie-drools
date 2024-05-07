@@ -25,7 +25,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.drools.base.util.Drools;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -57,10 +59,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNRuntimeListenerTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeListenerTest.class);
 
     public static final Map<String, Object> TEST_METADATA = new HashMap<String, Object>() {{
@@ -68,8 +66,10 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         put("fieldName", "fieldValue");
     }};
 
-    @Test
-    public void testBasicListenerFromKModule() throws Exception {
+    @ParameterizedTest
+    @MethodSource("params")
+    void basicListenerFromKModule(boolean useExecModelCompiler) throws Exception {
+        init(useExecModelCompiler);
         final String javaSource = "package com.acme;" +
                                   "" +
                                   "public class TestListener implements org.kie.dmn.api.core.event.DMNRuntimeEventListener {\n" +
@@ -85,7 +85,7 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
                                   "        }\n" +
                                   "    }\n" +
                                   "\n" +
-                                  "    public java.util.List<Object> getResults() {\n" +
+                                  "    public java.util.List<Object> getResults() {;\n" +
                                   "        return java.util.Collections.unmodifiableList(decisionResults);\n" +
                                   "    }\n" +
                                   "}";
@@ -102,13 +102,7 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
                             "    <property key=\"org.kie.dmn.runtime.listeners.X\" value=\"com.acme.TestListener\"/>\n" +
                             "  </configuration>\n" +
                             "</kmodule>");
-        kfs.writePomXML(DMNClassloaderTest.getPom(releaseId,
-                                                  ks.newReleaseId("org.kie", "kie-dmn-api", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie", "kie-dmn-model", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie", "kie-api", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie", "kie-internal", Drools.getFullVersion())
-                                                  )
-                        );
+        kfs.writePomXML(DMNClassloaderTest.getPom(releaseId));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertThat(kieBuilder.getResults().getMessages()).as(kieBuilder.getResults().getMessages().toString()).isEmpty();
 
@@ -138,8 +132,10 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         assertThat(results).contains("Hello John Doe");
     }
 
-    @Test
-    public void testListenerWithBKM() throws Exception {
+    @ParameterizedTest
+    @MethodSource("params")
+    void listenerWithBKM(boolean useExecModelCompiler) throws Exception {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("org/kie/dmn/core/say_for_hello.dmn", this.getClass());
         TestEventListener listener = new TestEventListener();
         runtime.addListener(listener);
@@ -200,8 +196,10 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         assertThat(((AfterEvaluateDecisionEvent) eventList.get(11)).getDecision().getName()).isEqualTo("just say");
     }
 
-    @Test
-    public void testListenerWithDecisionService() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void listenerWithDecisionService(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("org/kie/dmn/core/decisionservices/DecisionServiceABC.dmn", this.getClass());
         TestEventListener listener = new TestEventListener();
         runtime.addListener(listener);
@@ -247,8 +245,10 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         assertThat(((AfterEvaluateDecisionEvent) eventList.get(5)).getDecision().getName()).isEqualTo("Invoking Decision");
     }
 
-    @Test
-    public void testBeforeAndAfterEvaluateAllEvents() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void beforeAndAfterEvaluateAllEvents(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final String modelResource = "org/kie/dmn/core/say_for_hello.dmn";
         final String modelNamespace = "http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c";
         final String modelName = "say for hello";

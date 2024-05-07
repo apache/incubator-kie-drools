@@ -23,14 +23,14 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TItemDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class ItemDefinitionDependenciesTest {
+class ItemDefinitionDependenciesTest {
     
     private static final String TEST_NS = "https://www.drools.org/";
 
@@ -53,9 +53,9 @@ public class ItemDefinitionDependenciesTest {
     private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
         return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
     }
-    
+
     @Test
-    public void testGeneric() {
+    void generic() {
         final ItemDefinition a = build("a");
         
         final ItemDefinition b = build("b");
@@ -71,9 +71,9 @@ public class ItemDefinitionDependenciesTest {
         assertThat(orderedList.subList(0, 2)).contains(a,b);
         assertThat(orderedList.subList(2, 4)).contains(c,d);
     }
-    
+
     @Test
-    public void testGeneric2() {
+    void generic2() {
         final ItemDefinition z = build("z");
         
         final ItemDefinition b = build("b");
@@ -86,9 +86,9 @@ public class ItemDefinitionDependenciesTest {
 
         assertThat(orderedList.indexOf(z) < orderedList.indexOf(a)).as("Index of z < a").isTrue();
     }
-    
+
     @Test
-    public void testOrdering1() {
+    void ordering1() {
         final ItemDefinition tCollateralRiskCategory = build("tCollateralRiskCategory");
         final ItemDefinition tCreditRiskCategory     = build("tCreditRiskCategory");
         final ItemDefinition tAffordabilityCategory  = build("tAffordabilityCategory");
@@ -120,9 +120,9 @@ public class ItemDefinitionDependenciesTest {
         assertThat(orderedList.indexOf(tAge) < orderedList.indexOf(tBorrowe)).as("Index of tAge < tBorrowe").isTrue();
         assertThat(orderedList.indexOf(temploementStatus) < orderedList.indexOf(tBorrowe)).as("Index of temploementStatus < tBorrowe").isTrue();
     }
-    
+
     @Test
-    public void testOrdering2() {
+    void ordering2() {
         final ItemDefinition tMortgageType      = build("tMortgageType");
         final ItemDefinition tObjective         = build("tObjective");
         final ItemDefinition tRequested         = build("tRequested", tMortgageType, tObjective);
@@ -149,9 +149,9 @@ public class ItemDefinitionDependenciesTest {
         assertThat(orderedList.indexOf(tMortgageType) < orderedList.indexOf(tLoanTypes)).as("Index of tMortgageType < tLoanTypes").isTrue();
         assertThat(orderedList.indexOf(tConformanceType) < orderedList.indexOf(tLoanTypes)).as("Index of tConformanceType < tLoanTypes").isTrue();
     }
-    
+
     @Test
-    public void testOrdering3() {
+    void ordering3() {
         final ItemDefinition tNumberList = build("tNumberList");
         final ItemDefinition tTax        = build("tTax");
         final ItemDefinition tStateModel = build("tStateModel");
@@ -180,7 +180,7 @@ public class ItemDefinitionDependenciesTest {
     }
 
     @Test
-    public void testOrdering4() {
+    void ordering4() {
         final ItemDefinition _TypeDecisionA1   = build("TypeDecisionA1");
         final ItemDefinition _TypeDecisionA2_x = build("TypeDecisionA2.x", _TypeDecisionA1);
         final ItemDefinition _TypeDecisionA3   = build("TypeDecisionA3", _TypeDecisionA2_x);
@@ -212,7 +212,7 @@ public class ItemDefinitionDependenciesTest {
     }
 
     @Test
-    public void testCircular3() {
+    void circular3() {
         final ItemDefinition fhirAge = build("fhirAge");
         addComponent(fhirAge, "fhirExtension");
 

@@ -21,13 +21,13 @@ package org.kie.dmn.core.internal.utils;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.core.BaseDMNContextTest;
 
-public class MapBackedDMNContextTest extends BaseDMNContextTest {
+class MapBackedDMNContextTest extends BaseDMNContextTest {
 
     @Test
-    public void testEmptyContext() {
+    void emptyContext() {
         MapBackedDMNContext ctx1 = MapBackedDMNContext.of(new HashMap<>(Collections.emptyMap()));
         testCloneAndAlter(ctx1, Collections.emptyMap(), Collections.emptyMap());
 
@@ -36,7 +36,7 @@ public class MapBackedDMNContextTest extends BaseDMNContextTest {
     }
 
     @Test
-    public void testContextWithEntries() {
+    void contextWithEntries() {
         MapBackedDMNContext ctx1 = MapBackedDMNContext.of(new HashMap<>(DEFAULT_ENTRIES));
         testCloneAndAlter(ctx1, DEFAULT_ENTRIES, Collections.emptyMap());
 
@@ -45,7 +45,7 @@ public class MapBackedDMNContextTest extends BaseDMNContextTest {
     }
 
     @Test
-    public void testContextWithEntriesAndMetadata() {
+    void contextWithEntriesAndMetadata() {
         MapBackedDMNContext ctx1 = MapBackedDMNContext.of(new HashMap<>(DEFAULT_ENTRIES), new HashMap<>(DEFAULT_METADATA));
         testCloneAndAlter(ctx1, DEFAULT_ENTRIES, DEFAULT_METADATA);
 

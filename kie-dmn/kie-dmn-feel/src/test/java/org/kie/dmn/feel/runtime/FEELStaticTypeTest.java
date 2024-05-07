@@ -23,7 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
@@ -34,8 +35,13 @@ import org.kie.dmn.feel.model.Person;
 public class FEELStaticTypeTest
         extends BaseFEELCompilerTest {
 
-    @Parameterized.Parameters(name = "{4}: {0} ({1} | {2}) = {3}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Map<String, Type> inputTypes, Map<String, Object> inputValues, Object result, BaseFEELTest.FEEL_TARGET testFEELTarget) {
+        expression(expression, inputTypes, inputValues,  result, testFEELTarget);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
             
                 { "{ name : first name + last name }",

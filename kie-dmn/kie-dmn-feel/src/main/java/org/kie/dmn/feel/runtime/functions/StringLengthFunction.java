@@ -27,6 +27,8 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class StringLengthFunction
         extends BaseFEELFunction {
 
+    public static final StringLengthFunction INSTANCE = new StringLengthFunction();
+
     public StringLengthFunction() {
         super( "string length" );
     }
