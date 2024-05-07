@@ -188,6 +188,8 @@
               <exclude>**/*.csv</exclude>
               <exclude>**/*.sdo</exclude>
               <exclude>**/*.sdt</exclude>
+              <exclude>**/TestingEmptyFile.txt</exclude>
+              <exclude>**/*.test_json</exclude>
             </excludes>
           </configuration>
         </plugin>
