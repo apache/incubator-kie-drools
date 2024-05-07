@@ -45,21 +45,18 @@ public class MultipleIndexableConstraintsTest extends BaseModelTest {
             rule.append(ruleWithIndex(i));
         }
 
-        KieSession ksession = getKieSession(rule.toString());
-        ArrayList<Object> results = new ArrayList<>();
-        ksession.setGlobal("results", results);
-        Person a = new Person("a", 1);
-        Person b = new Person("b", 0);
-        Person c = new Person("a", 7);
-        ksession.insert(a);
-        ksession.insert(b);
-        ksession.insert(c);
+        try (KieSession ksession = getKieSession(rule.toString())) {
+            ArrayList<Object> results = new ArrayList<>();
+            ksession.setGlobal("results", results);
+            Person a = new Person("a", 1);
+            Person b = new Person("b", 0);
+            Person c = new Person("a", 7);
+            ksession.insert(a);
+            ksession.insert(b);
+            ksession.insert(c);
 
-        try {
             ksession.fireAllRules();
             assertThat(results).contains(a, b, c);
-        } finally {
-            ksession.dispose();
         }
     }
 

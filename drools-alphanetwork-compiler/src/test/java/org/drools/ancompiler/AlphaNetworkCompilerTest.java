@@ -453,12 +453,9 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
-        try {
+        try (KieSession ksession = getKieSession(str)) {
             ksession.insert(new Person("Mario", 45));
             assertThat(ksession.fireAllRules()).isEqualTo(0);
-        } finally {
-            ksession.dispose();
         }
     }
 
