@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
@@ -83,24 +84,25 @@ public abstract class BaseFEELTest {
                                          FEEL_TARGET testFEELTarget, Boolean useExtendedProfile);
 
     protected void assertResult(final String expression, final Object result ) {
+        Object retrieved = feel.evaluate( expression );
+        String description = String.format("Evaluating: '%s'", expression);
+        ObjectAssert<Object> assertion = assertThat(retrieved).as(description);
         if( result == null ) {
-        	assertThat(feel.evaluate( expression )).as("Evaluating: '" + expression + "'").isNull();
+        	assertion.isNull();
         } else if( result instanceof Class<?> ) {
-        	assertThat(feel.evaluate( expression )).as("Evaluating: '" + expression + "'").isInstanceOf((Class<?>) result);
+        	assertion.isInstanceOf((Class<?>) result);
         } else {
-        	assertThat(feel.evaluate( expression )).as("Evaluating: '" + expression + "'").isEqualTo(result);
+        	assertion.isEqualTo(result);
         }
     }
 
     protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile) {
-        final List<Object[]> results = new ArrayList<>();
+        final List<Object[]> toReturn = new ArrayList<>();
         for (final Object[] c : cases) {
-            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile});
+            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile});
+            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile});
         }
-        for (final Object[] c : cases) {
-            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile});
-        }
-        return results;
+        return toReturn;
     }
 
     private List<FEELProfile> getFEELProfilesForTests() {
