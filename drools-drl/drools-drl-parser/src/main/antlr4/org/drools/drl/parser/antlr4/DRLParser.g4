@@ -351,7 +351,7 @@ blockStatements : drlBlockStatement* ;
 /*
 accumulateFunction := label? ID parameters
 */
-accumulateFunction : label? drlIdentifier conditionalExpressions ;
+accumulateFunction : (label|unif)? drlIdentifier conditionalExpressions ;
 
 // parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
 conditionalExpressions : LPAREN (conditionalExpression (COMMA conditionalExpression)* )? RPAREN ;
