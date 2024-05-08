@@ -1,0 +1,31 @@
+Apache KIE
+Copyright 2024 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+The Initial Developer of some parts of the framework, which are copied from, derived from, or
+inspired by KIE (Knowledge Is Everthing) group, is Red Hat, Inc (https://www.redhat.com/).
+Copyright Red Hat, Inc. and/or its affiliates.. All Rights Reserved.
+
+This product also includes the following third-party components:
+
+* Twitter bootstrap version: 2.3.2
+  Downloaded from: https://getbootstrap.com/
+  License: Apache License v2.0 (just like OptaPlanner)
+
+* jQuery version: 1.9.1
+  Downloaded from: http://jquery.com/
+  License: MIT (which can be used by Apache License v2.0 projects)
+
+* google-code-pretty version: 4-Mar-2013
+  Downloaded from: http://code.google.com/p/google-code-prettify
+  License: Apache License v2.0 (just like OptaPlanner)
+
+* jQuery version: 3.3.1
+  Downloaded from: http://jquery.com/
+  License: MIT - this is compatible with ASL 2.0: http://www.apache.org/legal/resolved.html#category-a
+
+* jstree version: 3.3.5
+  Downloaded from: https://www.jstree.com/
+  License: MIT - this is compatible with ASL 2.0: http://www.apache.org/legal/resolved.html#category-a
