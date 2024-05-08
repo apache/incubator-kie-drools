@@ -18,13 +18,19 @@
  */
 package org.drools.mvel.integrationtests.phreak;
 
+import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Role.Type;
 
 public class A {
 
     @Position(0)
     Integer object;
 
+    @Position(1)
+    String text;
+    
     public A(Integer object) {
         super();
         this.object = object;

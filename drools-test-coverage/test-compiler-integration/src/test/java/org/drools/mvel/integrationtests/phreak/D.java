@@ -25,7 +25,7 @@ import org.kie.api.definition.type.Role.Type;
 
 @Expires(value = "5s")
 @Role(value = Type.EVENT)
-public class B {
+public class D {
 
     @Position(0)
     Object object;
@@ -33,26 +33,26 @@ public class B {
     @Position(1)
     String text;
 
-    public B(Object object) {
+    public D(Object object) {
         this.object = object;
     }
 
-    public B(Object object, String text) {
+    public D(Object object, String text) {
         this.object = object;
         this.text   = text;
     }
 
-    public static B b(Object object) {
-        return new B( object );
+    public static D c(Object object) {
+        return new D(object );
     }
 
-    public static B[] b(Object... objects) {
-        B[] bs = new B[objects.length];
-        int i = 0;
+    public static D[] c(Object... objects) {
+        D[] cs = new D[objects.length];
+        int i  = 0;
         for ( Object object : objects ) {
-            bs[i++] = new B( object );
+            cs[i++] = new D(object );
         }
-        return bs;
+        return cs;
     }        
 
     public Object getObject() {
@@ -63,7 +63,7 @@ public class B {
         this.object = object;
     }
 
-    public String getText() {
+    public Object getText() {
         return text;
     }
 
@@ -84,7 +84,7 @@ public class B {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        B other = (B) obj;
+        D other = (D) obj;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
@@ -93,7 +93,7 @@ public class B {
 
     @Override
     public String toString() {
-        return "B [" + object + "]";
+        return "D [" + object + "]";
     }
 
 }

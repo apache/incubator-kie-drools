@@ -193,7 +193,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             log.trace("Insert {}", handle.toString());
         }
 
-        if ( parallelExecution || !reteEvaluator.isThreadSafe() ) {
+        if ( parallelExecution || reteEvaluator.isThreadSafe() ) {
             // In case of parallel execution the CompositePartitionAwareObjectSinkAdapter
             // used by the OTNs will take care of enqueueing this insertion on the propagation queues
             // of the different agendas

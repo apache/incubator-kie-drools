@@ -25,9 +25,17 @@ public class E {
     @Position(0)
     Object object;
 
+    @Position(1)
+    String text;
+
     public E(Object object) {
         super();
         this.object = object;
+    }
+
+    public E(Object object, String text) {
+        this.object = object;
+        this.text   = text;
     }
 
     public static E e(Object object) {
@@ -57,6 +65,14 @@ public class E {
         int result = 1;
         result = prime * result + ((object == null) ? 0 : object.hashCode());
         return result;
+    }
+
+    public Object getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override

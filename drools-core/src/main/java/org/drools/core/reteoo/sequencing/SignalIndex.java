@@ -1,0 +1,23 @@
+package org.drools.core.reteoo.sequencing;
+
+public class SignalIndex {
+    private LogicGate gate;
+    private int       bitIndex;
+
+    public static SignalIndex of(LogicGate gate, int bitIndex) {
+        return new SignalIndex(gate, bitIndex);
+    }
+
+    public SignalIndex(LogicGate gate, int bitIndex) {
+        this.gate     = gate;
+        this.bitIndex = bitIndex;
+    }
+
+    public LogicGate getGate() {
+        return gate;
+    }
+
+    public int getBitIndex() {
+        return bitIndex;
+    }
+}
