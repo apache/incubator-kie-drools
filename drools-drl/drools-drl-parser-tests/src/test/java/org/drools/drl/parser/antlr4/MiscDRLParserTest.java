@@ -136,6 +136,14 @@ class MiscDRLParserTest {
         return pkg.getRules().get(0);
     }
 
+    private ExprConstraintDescr parseAndGetFirstConstraintDescr(String drl) {
+        RuleDescr rule = parseAndGetFirstRuleDescr(drl);
+        assertThat(rule.getLhs().getDescrs().get(0)).isInstanceOf(PatternDescr.class);
+        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOf(ExprConstraintDescr.class);
+        return (ExprConstraintDescr) patternDescr.getConstraint().getDescrs().get(0);
+    }
+
     private PackageDescr parseAndGetPackageDescrFromFile(String filename) {
         return parseAndGetPackageDescr(readResource(filename));
     }
@@ -4694,5 +4702,53 @@ class MiscDRLParserTest {
         assertThat(pkg.getRules())
                 .map(RuleDescr::getName)
                 .containsExactly("X", "Y", "Z");
+    }
+
+    @Test
+    void orWithMethodCall() {
+        final String text =
+                "rule R1\n" +
+                        "when\n" +
+                        "  MyFact( value == 10 || someMethod() == 4 )\n" +
+                        "then\n" +
+                        "end";
+        ExprConstraintDescr exprConstraintDescr = parseAndGetFirstConstraintDescr(text);
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo("value == 10 || someMethod() == 4");
+    }
+
+    @Test
+    void orWithMethodCallWithArg() {
+        final String text =
+                "rule R1\n" +
+                        "when\n" +
+                        "  MyFact( value == 10 || someMethod(value) == 4 )\n" +
+                        "then\n" +
+                        "end";
+        ExprConstraintDescr exprConstraintDescr = parseAndGetFirstConstraintDescr(text);
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo("value == 10 || someMethod(value) == 4");
+    }
+
+    @Test
+    void andWithMethodCall() {
+        final String text =
+                "rule R1\n" +
+                        "when\n" +
+                        "  MyFact( value == 10 && someMethod() == 4 )\n" +
+                        "then\n" +
+                        "end";
+        ExprConstraintDescr exprConstraintDescr = parseAndGetFirstConstraintDescr(text);
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo("value == 10 && someMethod() == 4");
+    }
+
+    @Test
+    void andWithMethodCallWithArg() {
+        final String text =
+                "rule R1\n" +
+                        "when\n" +
+                        "  MyFact( value == 10 && someMethod(value) == 4 )\n" +
+                        "then\n" +
+                        "end";
+        ExprConstraintDescr exprConstraintDescr = parseAndGetFirstConstraintDescr(text);
+        assertThat(exprConstraintDescr.getExpression()).isEqualTo("value == 10 && someMethod(value) == 4");
     }
 }
