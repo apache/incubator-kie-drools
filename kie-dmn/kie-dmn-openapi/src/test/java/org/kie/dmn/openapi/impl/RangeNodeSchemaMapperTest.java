@@ -28,6 +28,7 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
@@ -39,7 +40,7 @@ import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getBaseNodes;
 
 class RangeNodeSchemaMapperTest {
 
-    private static final FEEL feel = FEEL.newInstance();
+    private static final FEEL feel = FEELBuilder.builder().build();
 
     @Test
     void evaluateUnaryTestsForNumberRange() {

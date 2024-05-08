@@ -24,6 +24,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ class ExamplesTest
     @BeforeAll
     static void setupTest() {
         String expression = loadExpression( "example_10_6_1.feel" );
-        feel = FEEL.newInstance();
+        feel = FEELBuilder.builder().build();
         context = (Map) feel.evaluate( expression );
     }
 

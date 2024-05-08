@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -96,24 +97,10 @@ public abstract class BaseFEELFunction
                     if ( result instanceof Either ) {
                         @SuppressWarnings("unchecked")
                         Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
-
-                        Object eitherResult = either.cata( (left) -> {
-                           ctx.notifyEvt( () -> {
-                                                       if ( left instanceof InvalidParametersEvent ) {
-                                                           InvalidParametersEvent invalidParametersEvent = (InvalidParametersEvent) left;
-                                                           invalidParametersEvent.setNodeName( getName() );
-                                                           invalidParametersEvent.setActualParameters(
-                                                                   Stream.of( cm.apply.getParameters() ).map( p -> p.getAnnotation( ParameterName.class ).value() ).collect( Collectors.toList() ),
-                                                                   Arrays.asList( cm.actualParams )
-                                                           );
-                                                       }
-                                                       return left;
-                                                   }
-                            );
-                            return null;
-                        }, Function.identity() );
-
-                        return eitherResult;
+                        return getEitherResult(ctx,
+                                               either,
+                                                        () -> Stream.of(cm.apply.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
+                                                        () -> Arrays.asList(cm.actualParams));
                     }
 
                     return result;
@@ -121,9 +108,7 @@ public abstract class BaseFEELFunction
                     // CandidateMethod cm could be null also if reflection failed on Platforms not supporting getClass().getDeclaredMethods()
                     String ps = getClass().toString();
                     logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length() - 1 ) + " )'" );
-                    ctx.notifyEvt(() -> {
-                        return new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) + " )'", null);
-                    });
+                    ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) + " )'", null));
                 }
             } else {
                 if ( isNamedParams ) {
@@ -135,20 +120,10 @@ public abstract class BaseFEELFunction
                     Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
 
                     final Object[] usedParams = params;
-
-                    Object eitherResult = either.cata( (left) -> {
-                       ctx.notifyEvt( () -> {
-                                                   if ( left instanceof InvalidParametersEvent ) {
-                                                       InvalidParametersEvent invalidParametersEvent = (InvalidParametersEvent) left;
-                                                       invalidParametersEvent.setNodeName( getName() );
-                                                       invalidParametersEvent.setActualParameters( IntStream.of( 0, usedParams.length ).mapToObj( i -> "arg" + i ).collect( Collectors.toList() ), Arrays.asList( usedParams ) );
-                                                   }
-                                                   return left;
-                                               }
-                        );
-                        return null;
-                    }, Function.identity() );
-
+                    Object eitherResult = getEitherResult(ctx,
+                                                          either,
+                                                          () -> IntStream.of( 0, usedParams.length ).mapToObj( i -> "arg" + i ).collect( Collectors.toList() ),
+                                                          () -> Arrays.asList( usedParams ));
                     return normalizeResult( eitherResult );
                 }
                 return normalizeResult( result );
@@ -168,6 +143,22 @@ public abstract class BaseFEELFunction
      */
     public Object invoke(EvaluationContext ctx, Object[] params) {
         throw new RuntimeException( "This method should be overriden by classes that implement custom feel functions" );
+    }
+
+    private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
+                                    Supplier<List<Object>> parameterValuesSupplier) {
+        return source.cata((left) -> {
+            ctx.notifyEvt(() -> {
+                              if (left instanceof InvalidParametersEvent invalidParametersEvent) {
+                                  invalidParametersEvent.setNodeName(getName());
+                                  invalidParametersEvent.setActualParameters(parameterNamesSupplier.get(),
+                                                                             parameterValuesSupplier.get());
+                              }
+                              return left;
+                          }
+            );
+            return null;
+        }, Function.identity());
     }
 
     private Object[] rearrangeParameters(Object[] params, List<String> pnames) {

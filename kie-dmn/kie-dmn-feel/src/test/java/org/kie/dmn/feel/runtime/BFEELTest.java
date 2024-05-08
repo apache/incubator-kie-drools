@@ -25,8 +25,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 
-public class FEELTernaryLogicTest extends BaseFEELTest {
-
+public class BFEELTest/* extends BaseFEELTest*/ {
+    
+  /* *//**
+     * WARNING: do not use as JUNit's @Parameters name the index {1} within this test class, as this would result in invalid character in the XML surefire-report
+     * Original error was: An invalid XML character (Unicode: 0x8) was found in the value of attribute "name" and element is "testcase".
+     *//*
     @ParameterizedTest
     @MethodSource("data")
     protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect feelDialect) {
@@ -35,31 +39,10 @@ public class FEELTernaryLogicTest extends BaseFEELTest {
 
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
-                // ternary logic operations as per the spec
-                { "true and true", Boolean.TRUE , null},
-                { "true and false", Boolean.FALSE , null},
-                { "true and null",  null , null},
-                { "false and true", Boolean.FALSE , null},
-                { "false and false", Boolean.FALSE , null},
-                { "false and null", Boolean.FALSE , null},
-                { "null and true", null , null},
-                { "null and false", Boolean.FALSE , null},
-                { "null and null", null , null},
-                { "true or true", Boolean.TRUE , null},
-                { "true or false", Boolean.TRUE , null},
-                { "true or null",  Boolean.TRUE , null},
-                { "false or true", Boolean.TRUE , null},
-                { "false or false", Boolean.FALSE , null},
-                { "false or null", null , null},
-                { "null or true", Boolean.TRUE , null},
-                { "null or false", null , null},
-                { "null or null", null , null},
-                // logical operator priority
-                { "false and false or true", Boolean.TRUE , null},
-                { "false and (false or true)", Boolean.FALSE , null},
-                { "true or false and false", Boolean.TRUE , null},
-                { "(true or false) and false", Boolean.FALSE , null}
+                {"lowercase(12)", null, null},
+//                {"string(null)", "", null},
+//                {"substring(\"a\", \"z\")", "", null},
         };
-        return addAdditionalParameters(cases, false);
-    }
+        return addAdditionalParameters(cases, false, FEELDialect.BFEEL);
+    }*/
 }

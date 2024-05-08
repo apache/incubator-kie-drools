@@ -34,6 +34,7 @@ import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode.Sign;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.visitor.DefaultedVisitor;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.validation.dtanalysis.model.DDTAOutputEntryExpression;
@@ -51,7 +52,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
     private final FEELImpl FEEL;
 
     public DMNDTAnalyserValueFromNodeVisitor(List<FEELProfile> feelProfiles) {
-        FEEL = (FEELImpl) org.kie.dmn.feel.FEEL.newInstance(feelProfiles);
+        FEEL = (FEELImpl) FEELBuilder.builder().withProfiles(feelProfiles).build();
     }
 
     @Override

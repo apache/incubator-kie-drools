@@ -44,6 +44,7 @@ import org.kie.dmn.core.compiler.alphanetbased.Results;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,6 +165,8 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         
         private final Map<String, Object> values;
         private final List<FEELEvent> events;
+        //TODO GC 1659
+        private final FEELDialect dialect = FEELDialect.FEEL;
         
         public JSR223WrappingEC(Map<String, Object> values, List<FEELEvent> events) {
             this.values = Collections.unmodifiableMap(values);
@@ -244,7 +247,11 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         public Object getRootObject() {
             throw new UnsupportedOperationException("not implemented for this impl.");
         }
-        
+
+        @Override
+        public FEELDialect getDialect() {
+            return dialect;
+        }
     }
 
 }

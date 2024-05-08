@@ -28,6 +28,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -45,8 +46,9 @@ public class Functions {
     private static final Expression EMPTY_LIST = parseExpression("java.util.Collections.emptyList()");
 
     public static Expression external(List<String> paramNames, BaseNode body) {
+        //TODO GC 1659
         EvaluationContextImpl emptyEvalCtx =
-                new EvaluationContextImpl(Functions.class.getClassLoader(), new FEELEventListenersManager());
+                new EvaluationContextImpl(Functions.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
 
 
         Map<String, Object> conf = (Map<String, Object>) body.evaluate(emptyEvalCtx);

@@ -36,6 +36,7 @@ import org.asciidoctor.ast.StructuralNode;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ class ADocFEELExamplesTest {
         profiles.add(new KieExtendedFEELProfile());
     }
 
-    private final FEEL feel = FEEL.newInstance(profiles);
+    private final FEEL feel = FEELBuilder.builder().withProfiles(profiles).build();
 
     /**
      * Dev notes: the availability of the .adoc resource to this test and its refresh is governed by Maven.

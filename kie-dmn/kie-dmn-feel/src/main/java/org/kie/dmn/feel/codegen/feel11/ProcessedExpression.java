@@ -76,7 +76,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         }
     }
 
-    public CompiledFEELExpression getResult() {
+    public CompiledFEELExpression asCompiledFEELExpression() {
         if (executionMode == Compiled) {
             if (CAN_PLATFORM_CLASSLOAD) {
                 executableFEELExpression = getCompiled();

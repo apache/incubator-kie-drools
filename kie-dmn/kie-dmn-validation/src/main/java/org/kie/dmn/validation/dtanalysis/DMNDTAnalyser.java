@@ -56,6 +56,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.ast.Visitor;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -100,7 +101,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
     private final DMNDTAnalyserOutputClauseVisitor outputClauseVisitor;
 
     public DMNDTAnalyser(List<DMNProfile> dmnProfiles) {
-        FEEL = org.kie.dmn.feel.FEEL.newInstance((List) dmnProfiles);
+        FEEL = FEELBuilder.builder().withProfiles((List) dmnProfiles).build();
         valueFromNodeVisitor = new DMNDTAnalyserValueFromNodeVisitor((List) dmnProfiles);
         outputClauseVisitor = new DMNDTAnalyserOutputClauseVisitor((List) dmnProfiles);
     }
@@ -222,7 +223,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             DDTARule ddtaRule = new DDTARule();
             int jColIdx = 0;
             for (UnaryTests ie : r.getInputEntry()) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), feelCtx(model, dt));
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.processUnaryTests(ie.getText(), feelCtx(model, dt));
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 if (interpreted == UnaryTestInterpretedExecutableExpression.EMPTY) {
                     throw new DMNDTAnalysisException("Gaps/Overlaps analysis cannot be performed for InputEntry with unary test containing: " + ie.getText(), dt);
@@ -330,7 +331,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 allowedValues = findAllowedValues(model, typeRef);
             }
             if (allowedValues != null) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.processUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 List<BaseNode> utlnElements = new ArrayList<>(utln.getElements());
@@ -389,7 +390,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
                 }
             }
             if (allowedValues != null) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.processUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 List<BaseNode> utlnElements = new ArrayList<>(utln.getElements());

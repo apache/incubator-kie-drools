@@ -32,6 +32,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.GenListType;
@@ -44,7 +45,7 @@ import static org.kie.dmn.feel.util.DynamicTypeUtils.prototype;
 
 class CompileEvaluateTest {
     private static final Logger LOG = LoggerFactory.getLogger(CompileEvaluateTest.class);
-    private static final FEEL feel = FEEL.newInstance();
+    private static final FEEL feel = FEELBuilder.builder().build();
     private List<FEELEvent> errors;
     private FEELEventListener errorsCountingListener;
     

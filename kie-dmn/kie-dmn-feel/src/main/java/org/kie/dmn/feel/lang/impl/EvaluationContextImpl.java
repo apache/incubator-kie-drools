@@ -30,6 +30,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class EvaluationContextImpl implements EvaluationContext {
@@ -39,19 +40,21 @@ public class EvaluationContextImpl implements EvaluationContext {
     private DMNRuntime dmnRuntime;
     private boolean performRuntimeTypeCheck = false;
     private ClassLoader rootClassLoader;
+    private final FEELDialect feelDialect;
 
-    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack) {
+    private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack, FEELDialect feelDialect) {
         this.eventsManager = eventsManager;
         this.rootClassLoader = cl;
         this.stack = new ArrayDeque<>(stack);
+        this.feelDialect = feelDialect;
     }
 
-    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager) {
-        this(cl, eventsManager, 32);
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, FEELDialect feelDialect) {
+        this(cl, eventsManager, 32, feelDialect);
     }
 
-    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size) {
-        this(cl, eventsManager, new ArrayDeque<>());
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size, FEELDialect feelDialect) {
+        this(cl, eventsManager, new ArrayDeque<>(), feelDialect);
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
@@ -61,18 +64,19 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     @Deprecated
-    public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime) {
-        this(dmnRuntime.getRootClassLoader(), eventsManager);
+    public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime, FEELDialect feelDialect) {
+        this(dmnRuntime.getRootClassLoader(), eventsManager, feelDialect);
         this.dmnRuntime = dmnRuntime;
     }
 
-    private EvaluationContextImpl(FEELEventListenersManager eventsManager) {
+    private EvaluationContextImpl(FEELEventListenersManager eventsManager, FEELDialect feelDialect) {
         this.eventsManager = eventsManager;
+        this.feelDialect = feelDialect;
     }
 
     @Override
     public EvaluationContext current() {
-        EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager);
+        EvaluationContextImpl ec = new EvaluationContextImpl(eventsManager, feelDialect);
         ec.stack = stack.clone();
         ec.rootClassLoader = this.rootClassLoader;
         ec.dmnRuntime = this.dmnRuntime;
@@ -223,4 +227,8 @@ public class EvaluationContextImpl implements EvaluationContext {
         return peek().getRootObject();
     }
 
+    @Override
+    public FEELDialect getDialect() {
+        return feelDialect;
+    }
 }

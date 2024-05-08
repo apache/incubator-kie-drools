@@ -31,6 +31,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -69,7 +70,8 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
 
         final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
-        final EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
+        //TODO GC 1659
+        final EvaluationContext ctx =  new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
         assertThat(feelType.getFeelType()).isInstanceOf(AliasFEELType.class);
         assertThat(feelType.getFeelType().getName()).isEqualTo("tEmploymentStatus");
         assertThat(feelType.getAllowedValuesFEEL()).hasSize(4);
