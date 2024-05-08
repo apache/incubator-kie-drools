@@ -3161,4 +3161,62 @@ public class CompilerTest extends BaseModelTest {
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("r1");
     }
+
+    @Test
+    public void orWithMethodCall() {
+        final String str =
+                "package org.example\n" +
+                        "import " + MyFact.class.getCanonicalName() + ";" +
+                        "rule r1 when\n" +
+                        "    MyFact( value == 10 || someMethod() == 4 )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new MyFact(5));
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
+
+    @Test
+    public void orWithMethodCallWithArg() {
+        final String str =
+                "package org.example\n" +
+                        "import " + MyFact.class.getCanonicalName() + ";" +
+                        "rule r1 when\n" +
+                        "    MyFact( value == 10 || someMethod(2) == 4 )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new MyFact(5));
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
+
+    public static class MyFact {
+        private int value;
+
+        public MyFact(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        public int someMethod(int input) {
+            return input * 2;
+        }
+
+        public int someMethod() {
+            return 4;
+        }
+    }
 }
