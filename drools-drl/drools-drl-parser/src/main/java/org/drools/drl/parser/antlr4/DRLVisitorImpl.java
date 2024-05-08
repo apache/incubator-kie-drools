@@ -292,7 +292,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         EntryPointDeclarationDescr entryPointDeclarationDescr = BaseDescrFactory.builder(new EntryPointDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .build();
-        entryPointDeclarationDescr.setEntryPointId(ctx.name.getText());
+        entryPointDeclarationDescr.setEntryPointId(safeStripStringDelimiters(ctx.name.getText()));
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
                 .forEach(entryPointDeclarationDescr::addAnnotation);

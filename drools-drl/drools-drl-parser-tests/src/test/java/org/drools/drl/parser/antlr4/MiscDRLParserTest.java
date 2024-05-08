@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
@@ -74,6 +75,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -3465,10 +3468,18 @@ class MiscDRLParserTest {
 
     }
 
-    @Test
-    public void parse_EntryPointDeclaration() throws Exception {
+    public static Stream<Arguments> entryPointIds() {
+        return Stream.of(
+                Arguments.of("eventStream", "eventStream"),
+                Arguments.of("\"My entry-point 'ID'\"", "My entry-point 'ID'")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("entryPointIds")
+    public void parse_EntryPointDeclaration(String sourceId, String expectedId) throws Exception {
         final String text = "package org.drools\n" +
-                "declare entry-point eventStream\n" +
+                "declare entry-point " + sourceId + "\n" +
                 "    @source(\"jndi://queues/events\")\n" +
                 "    @foo( true )\n" +
                 "end";
@@ -3480,7 +3491,7 @@ class MiscDRLParserTest {
 
         EntryPointDeclarationDescr epd = pkg.getEntryPointDeclarations().iterator().next();
 
-        assertThat(epd.getEntryPointId()).isEqualTo("eventStream");
+        assertThat(epd.getEntryPointId()).isEqualTo(expectedId);
         assertThat(epd.getAnnotations().size()).isEqualTo(2);
         assertThat(epd.getAnnotation("source").getValue()).isEqualTo("\"jndi://queues/events\"");
         assertThat(epd.getAnnotation("foo").getValue()).isEqualTo("true");
