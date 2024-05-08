@@ -154,6 +154,13 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void emptySource() {
+        final String source = "";
+        final PackageDescr pkg = parseAndGetPackageDescr(source);
+        assertThat(pkg.getName()).isEmpty();
+    }
+
+    @Test
     void parse_validPackage() {
         final String source = "package foo.bar.baz";
         final PackageDescr pkg = parseAndGetPackageDescr(source);

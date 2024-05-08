@@ -21,6 +21,7 @@ package org.drools.drl.parser.antlr4;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
@@ -38,23 +39,26 @@ public class DescrHelper {
     }
 
     public static <T extends BaseDescr> T populateCommonProperties(T descr, ParserRuleContext ctx) {
+        Token startToken = ctx.getStart(); // Start token is never null.
+        // If the stop token is null, use the start token as both the start end the end.
+        Token stopToken = ctx.getStop() != null ? ctx.getStop() : startToken;
 
         if (descr instanceof ExprConstraintDescr) {
             // Backward Compatibility Notes:
             //   Old DRL6Parser.constraint() has slightly different behavior for ExprConstraintDescr. Keep it for backward compatibility
             //   When we will update LanguageLevel, we can align this with other Descr.
-            descr.setStartCharacter(ctx.getStart().getStartIndex());
-            descr.setEndCharacter(ctx.getStop().getStopIndex());
-            descr.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
-            descr.setEndLocation(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine());
+            descr.setStartCharacter(startToken.getStartIndex());
+            descr.setEndCharacter(stopToken.getStopIndex());
+            descr.setLocation(startToken.getLine(), startToken.getCharPositionInLine());
+            descr.setEndLocation(stopToken.getLine(), stopToken.getCharPositionInLine());
         } else {
-            descr.setStartCharacter(ctx.getStart().getStartIndex());
+            descr.setStartCharacter(startToken.getStartIndex());
             // Backward Compatibility Notes:
             //   Old DRL6Parser adds +1 for EndCharacter (except ExprConstraintDescr). This new parser follows the same to keep the backward compatibility.
             //   However, it doesn't look reasonable. When we will update LanguageLevel, we can remove this +1.
-            descr.setEndCharacter(ctx.getStop().getStopIndex() + 1);
-            descr.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
-            descr.setEndLocation(ctx.getStop().getLine(), ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1); // last column of the end token
+            descr.setEndCharacter(stopToken.getStopIndex() + 1);
+            descr.setLocation(startToken.getLine(), startToken.getCharPositionInLine());
+            descr.setEndLocation(stopToken.getLine(), stopToken.getCharPositionInLine() + stopToken.getText().length() - 1); // last column of the end token
         }
         return descr;
     }
