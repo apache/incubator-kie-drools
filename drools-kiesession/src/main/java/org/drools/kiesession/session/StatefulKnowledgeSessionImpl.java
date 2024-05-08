@@ -39,7 +39,6 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
@@ -65,11 +64,13 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.actions.ExecuteQuery;
+import org.drools.core.phreak.actions.PropagationEntryWithResult;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
@@ -713,7 +714,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     private QueryTerminalNode[] evalQuery(final String queryName, final DroolsQueryImpl queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
-        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
+        ExecuteQuery executeQuery = new ExecuteQuery(queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
     }
@@ -730,7 +731,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    private class ExecuteCloseLiveQuery extends PropagationEntry.PropagationEntryWithResult<Void> {
+    private class ExecuteCloseLiveQuery extends PropagationEntryWithResult<ReteEvaluator, Void> {
 
         private final InternalFactHandle factHandle;
 
@@ -831,6 +832,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     @Override public SessionConfiguration getSessionConfiguration() {
         return this.config.as(SessionConfiguration.KEY);
+    }
+
+    @Override
+    public KieSessionConfiguration getKieSessionConfiguration() {
+        return config;
     }
 
     public void reset() {
@@ -1234,7 +1240,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void submit(AtomicAction action) {
-        agenda.addPropagation( new PropagationEntry.AbstractPropagationEntry() {
+        agenda.addPropagation( new AbstractPropagationEntry<ReteEvaluator>() {
             @Override
             public void internalExecute(ReteEvaluator reteEvaluator ) {
                 action.execute( (KieSession)reteEvaluator );

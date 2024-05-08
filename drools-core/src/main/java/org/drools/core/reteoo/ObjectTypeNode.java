@@ -30,6 +30,7 @@ import java.util.List;
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
@@ -46,8 +47,8 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
@@ -455,7 +456,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             JobContext,
             Externalizable {
         public WorkingMemoryReteExpireAction expireAction;
-        public transient ReteEvaluator         reteEvaluator;
+        public transient ReteEvaluator       reteEvaluator;
         public JobHandle                     handle;
 
         public ExpireJobContext() {
@@ -482,12 +483,9 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             return expireAction;
         }
 
-        public ReteEvaluator getReteEvaluator() {
+        @Override
+        public ValueResolver getValueResolver() {
             return reteEvaluator;
-        }
-
-        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
-            this.reteEvaluator = reteEvaluator;
         }
 
         public JobHandle getHandle() {

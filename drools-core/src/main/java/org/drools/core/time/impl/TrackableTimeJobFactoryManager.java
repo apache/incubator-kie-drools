@@ -25,9 +25,8 @@ import java.util.Map;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.core.time.EnqueuedSelfRemovalJobContext;
-import org.drools.core.time.InternalSchedulerService;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
 

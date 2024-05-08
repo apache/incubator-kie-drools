@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.time.InternalSchedulerService;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.core.time.impl.InternalSchedulerService;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.base.time.Trigger;

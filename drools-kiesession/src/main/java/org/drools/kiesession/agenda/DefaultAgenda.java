@@ -56,9 +56,11 @@ import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.phreak.ThreadUnsafePropagationList;
+import org.drools.core.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.ConsequenceExceptionHandler;
@@ -752,7 +754,7 @@ public class DefaultAgenda implements InternalAgenda {
         return executionStateMachine.tryDeactivate();
     }
 
-    static class Halt extends PropagationEntry.AbstractPropagationEntry {
+    static class Halt extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final ExecutionStateMachine executionStateMachine;
 
@@ -772,7 +774,7 @@ public class DefaultAgenda implements InternalAgenda {
         }
     }
 
-    static class ImmediateHalt extends PropagationEntry.AbstractPropagationEntry {
+    static class ImmediateHalt extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final ExecutionStateMachine executionStateMachine;
         private final PropagationList propagationList;

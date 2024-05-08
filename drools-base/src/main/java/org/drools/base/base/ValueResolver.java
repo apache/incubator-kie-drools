@@ -20,6 +20,11 @@ package org.drools.base.base;
 
 import org.drools.base.RuleBase;
 import org.drools.base.rule.accessor.GlobalResolver;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.time.TimerService;
+import org.kie.api.runtime.KieSessionConfiguration;
+
+import java.util.function.Consumer;
 
 public interface ValueResolver {
 
@@ -32,4 +37,29 @@ public interface ValueResolver {
     GlobalResolver getGlobalResolver();
 
     RuleBase getRuleBase();
+
+    void addPropagation(PropagationEntry propagationEntry);
+
+    KieSessionConfiguration getKieSessionConfiguration();
+
+    default <T extends ValueResolver> T as(Class<T> t) {
+        return (T) this;
+    }
+
+    default void setWorkingMemoryActionListener(Consumer<PropagationEntry> listener) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Consumer<PropagationEntry> getWorkingMemoryActionListener() {
+        return null;
+    }
+
+    default void onWorkingMemoryAction(PropagationEntry entry) {
+        Consumer<PropagationEntry> listener = getWorkingMemoryActionListener();
+        if (listener != null) {
+            listener.accept(entry);
+        }
+    }
+
+    TimerService getTimerService();
 }

@@ -52,7 +52,7 @@ import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;

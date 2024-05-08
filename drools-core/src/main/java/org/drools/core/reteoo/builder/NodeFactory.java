@@ -35,7 +35,7 @@ import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.QueryElement;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;

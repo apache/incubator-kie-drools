@@ -31,6 +31,9 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.SequenceNode;
+import org.drools.core.reteoo.SequenceNode.PhreakSequenceNode;
+import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.AccumulateNode;
@@ -97,8 +100,9 @@ public class RuleNetworkEvaluator {
     private static final PhreakAccumulateNode   pGroupByNode = PhreakNetworkNodeFactory.Factory.get().createPhreakGroupByNode();
     private static final PhreakBranchNode       pBranchNode = PhreakNetworkNodeFactory.Factory.get().createPhreakBranchNode();
     private static final PhreakQueryNode        pQueryNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryNode();
-    private static final PhreakTimerNode        pTimerNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakTimerNode();
-    private static final PhreakAsyncSendNode    pSendNode   = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncSendNode();
+    private static final PhreakTimerNode        pTimerNode = PhreakNetworkNodeFactory.Factory.get().createPhreakTimerNode();
+    private static final PhreakSequenceNode     pSequenceNode = PhreakNetworkNodeFactory.Factory.get().createPhreakSequenceNode();
+    private static final PhreakAsyncSendNode    pSendNode  = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncSendNode();
     private static final PhreakAsyncReceiveNode pReceiveNode = PhreakNetworkNodeFactory.Factory.get().createPhreakAsyncReceiveNode();
     private static final PhreakRuleTerminalNode pRtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakRuleTerminalNode();
     private static final PhreakQueryTerminalNode pQtNode     = PhreakNetworkNodeFactory.Factory.get().createPhreakQueryTerminalNode();
@@ -422,6 +426,10 @@ public class RuleNetworkEvaluator {
                 }
                 case NodeTypeEnums.TimerConditionNode: {
                     pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, pmem, smem, sink, activationsManager, srcTuples, trgTuples, stagedLeftTuples);
+                    break;
+                }
+                case NodeTypeEnums.SequenceNode: {
+                    pSequenceNode.doNode((SequenceNode) node, (SequenceNodeMemory) nodeMem, sink, activationsManager.getReteEvaluator(), srcTuples, trgTuples, stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.ConditionalBranchNode: {

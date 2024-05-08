@@ -140,7 +140,7 @@ public class RuleExecutor {
             Tuple lastTuple = null;
             for (; tuple != null; lastTuple = tuple, tuple = getNextTuple()) {
 
-                //check if the rule is not effective or
+                // check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
                 if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                     continue;

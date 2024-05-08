@@ -18,9 +18,6 @@
  */
 package org.drools.core.util;
 
-import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.index.TupleList;
-
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  *

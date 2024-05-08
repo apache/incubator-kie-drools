@@ -138,19 +138,4 @@ public interface ReteEvaluator extends ValueResolver {
     int fireAllRules(int max);
     int fireAllRules(AgendaFilter agendaFilter);
     int fireAllRules(AgendaFilter agendaFilter, int max);
-
-    default void setWorkingMemoryActionListener(Consumer<PropagationEntry> listener) {
-        throw new UnsupportedOperationException();
-    }
-
-    default Consumer<PropagationEntry> getWorkingMemoryActionListener() {
-        return null;
-    }
-
-    default void onWorkingMemoryAction(PropagationEntry entry) {
-        Consumer<PropagationEntry> listener = getWorkingMemoryActionListener();
-        if (listener != null) {
-            listener.accept(entry);
-        }
-    }
 }

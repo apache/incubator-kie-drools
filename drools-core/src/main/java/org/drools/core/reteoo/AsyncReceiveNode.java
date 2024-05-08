@@ -30,13 +30,11 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
@@ -112,7 +110,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         return objectTypeConf;
     }
 
-    public static class AsyncReceiveAction extends PropagationEntry.AbstractPropagationEntry {
+    public static class AsyncReceiveAction extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final AsyncReceiveNode asyncReceiveNode;
         private final Object object;

@@ -24,7 +24,7 @@ import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJob;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.JobContext;
 import org.drools.base.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.DefaultJobHandle;

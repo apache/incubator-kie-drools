@@ -20,7 +20,7 @@ package org.drools.core.time.impl;
 
 import java.io.Serializable;
 
-import org.drools.core.time.Job;
+import org.drools.base.time.Job;
 
 /**
  * A default implementation for the JobHandle interface

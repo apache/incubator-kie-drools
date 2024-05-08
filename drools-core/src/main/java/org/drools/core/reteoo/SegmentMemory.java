@@ -34,6 +34,7 @@ import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.TupleToObjectNode.SubnetworkPathMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.LinkedList;
@@ -766,6 +767,19 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
             TimerNodeMemory tmem = (TimerNodeMemory)  mem;
             tmem.setNodePosMaskBit(nodePosMaskBit);
+        }
+    }
+
+    public static class SequenceMemoryPrototype extends MemoryPrototype {
+
+        public SequenceMemoryPrototype(long nodePosMaskBit) {
+            this.nodePosMaskBit = nodePosMaskBit;
+        }
+
+        @Override
+        public void populateMemory(ReteEvaluator reteEvaluator, Memory mem) {
+            SequenceNodeMemory seqmem = (SequenceNodeMemory)  mem;
+            seqmem.setNodePosMaskBit(nodePosMaskBit);
         }
     }
 

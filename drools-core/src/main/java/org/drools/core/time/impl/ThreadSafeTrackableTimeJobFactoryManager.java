@@ -20,7 +20,7 @@ package org.drools.core.time.impl;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.time.JobContext;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
 
 public class ThreadSafeTrackableTimeJobFactoryManager extends TrackableTimeJobFactoryManager {
