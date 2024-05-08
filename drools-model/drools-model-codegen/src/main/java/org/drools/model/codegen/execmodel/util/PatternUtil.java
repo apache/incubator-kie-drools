@@ -24,7 +24,7 @@ import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.compiler.rule.builder.XpathAnalysis;
+import org.drools.drl.parser.lang.XpathAnalysis;
 import org.drools.model.codegen.execmodel.generator.QueryParameter;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
 

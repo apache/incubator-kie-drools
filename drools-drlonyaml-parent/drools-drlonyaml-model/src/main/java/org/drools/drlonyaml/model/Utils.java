@@ -34,9 +34,7 @@ public class Utils {
     private static final ObjectMapper mapper;
 
     static {
-        YAMLFactory yamlFactory = YAMLFactory.builder()
-                .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
-                .build();
+        YAMLFactory yamlFactory = YAMLFactory.builder().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES).build();
         mapper = new ObjectMapper(yamlFactory);
     }
 
@@ -45,17 +43,19 @@ public class Utils {
     }
     
     public static Base from(BaseDescr o) {
-        if (o instanceof PatternDescr) {
-            return Pattern.from((PatternDescr) o);
-        } else if (o instanceof NotDescr) {
-            return Not.from((NotDescr) o);
-        } else if (o instanceof AndDescr) {
-            return All.from((AndDescr) o);
-        } else if (o instanceof ExistsDescr) {
-            return Exists.from((ExistsDescr) o);
-        } else {
-            throw new UnsupportedOperationException("TODO: "+o);
+        if (o instanceof PatternDescr patternDescr) {
+            return Pattern.from(patternDescr);
         }
+        if (o instanceof NotDescr notDescr) {
+            return Not.from(notDescr);
+        }
+        if (o instanceof AndDescr andDescr) {
+            return All.from(andDescr);
+        }
+        if (o instanceof ExistsDescr existsDescr) {
+            return Exists.from(existsDescr);
+        }
+        throw new UnsupportedOperationException("TODO: "+o);
     }
 
     public static List<Base> from(List<BaseDescr> descrs) {

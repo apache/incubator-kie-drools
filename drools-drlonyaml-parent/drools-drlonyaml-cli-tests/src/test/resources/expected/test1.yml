@@ -1,6 +1,5 @@
 ---
 name: mypkg
-dialect: java
 imports:
 - java.lang.Number
 - java.lang.Long
