@@ -33,7 +33,10 @@ public class ParserStringUtils {
     public static String safeStripStringDelimiters(String value) {
         if (value != null) {
             value = value.trim();
-            if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
+            if (value.length() >= 2 && (
+                    value.startsWith("\"") && value.endsWith("\"")
+                    || value.startsWith("'") && value.endsWith("'")
+            )) {
                 value = value.substring(1, value.length() - 1);
             }
         }
