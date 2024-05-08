@@ -535,7 +535,7 @@ andRestriction returns [BaseDescr result]
                $result = descr;
            }
          }
-  )*
+  )*?
   ;
 
 singleRestriction returns [BaseDescr result]
