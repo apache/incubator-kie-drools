@@ -519,7 +519,7 @@ orRestriction returns [BaseDescr result]
                $result = descr;
            }
          }
-   )* EOF?
+   )*? EOF?
   ;
 
 andRestriction returns [BaseDescr result]
