@@ -519,7 +519,7 @@ orRestriction returns [BaseDescr result]
                $result = descr;
            }
          }
-   )* EOF?
+   )*? EOF?
   ;
 
 andRestriction returns [BaseDescr result]
@@ -535,7 +535,7 @@ andRestriction returns [BaseDescr result]
                $result = descr;
            }
          }
-  )*
+  )*?
   ;
 
 singleRestriction returns [BaseDescr result]
