@@ -39,16 +39,18 @@ public class BaseDeserializer extends StdDeserializer<Base> {
     @Override
     public Base deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
-        if (node.get("given") != null) { // TODO maybe enforce XOR checks.
+        if (node.get("given") != null || node.get("datasource") != null) {
             return jp.getCodec().treeToValue(node, Pattern.class);
-        } else if (node.get("exists") != null) {
-            return jp.getCodec().treeToValue(node, Exists.class);
-        } else if (node.get("all") != null) {
-            return jp.getCodec().treeToValue(node, All.class);
-        } else if (node.get("not") != null) {
-            return jp.getCodec().treeToValue(node, Not.class);
-        } else {
-            throw new UnsupportedOperationException();
         }
+        if (node.get("exists") != null) {
+            return jp.getCodec().treeToValue(node, Exists.class);
+        }
+        if (node.get("all") != null) {
+            return jp.getCodec().treeToValue(node, All.class);
+        }
+        if (node.get("not") != null) {
+            return jp.getCodec().treeToValue(node, Not.class);
+        }
+        throw new UnsupportedOperationException();
     }
 }

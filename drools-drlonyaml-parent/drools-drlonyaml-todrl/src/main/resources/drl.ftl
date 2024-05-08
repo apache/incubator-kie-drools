@@ -1,5 +1,6 @@
 // This file was automatically generated from a YAML representation.
 <#if name?has_content>package ${name};</#if>
+<#if unit?has_content>unit ${unit};</#if>
 <#if dialect?has_content>dialect "${dialect}";</#if>
 <#--
 
@@ -54,7 +55,7 @@ end
 
 -->
 <#macro patternVisitor p>
-<#if p.as?has_content>${p.as} : </#if>${p.given}(${p.having?join(", ")})<#if p.getFrom()?has_content> from ${p.getFrom()}</#if>
+<#if p.as?has_content>${p.as} : </#if><#if p.given?has_content>${p.given}(${p.having?join(", ")})</#if><#if p.datasource?has_content>/${p.datasource}[${p.having?join(", ")}]</#if><#if p.getFrom()?has_content> from ${p.getFrom()}</#if>
 </#macro>
 <#--
 
