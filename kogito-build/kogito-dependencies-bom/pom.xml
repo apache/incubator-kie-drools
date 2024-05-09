@@ -32,7 +32,7 @@
     <version.io.quarkiverse.openapi.generator>2.4.1</version.io.quarkiverse.openapi.generator>
     <version.io.quarkiverse.asyncapi>0.3.0</version.io.quarkiverse.asyncapi>
     <version.io.quarkiverse.reactivemessaging.http>2.2.0</version.io.quarkiverse.reactivemessaging.http>
-    <version.io.quarkiverse.embedded.postgresql>0.2.1</version.io.quarkiverse.embedded.postgresql>
+    <version.io.quarkiverse.embedded.postgresql>0.2.2</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
     <version.com.fasterxml.jackson.datatype>2.16.1</version.com.fasterxml.jackson.datatype>
