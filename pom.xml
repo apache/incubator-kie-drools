@@ -208,6 +208,7 @@
               <exclude>**/checkstyle-cachefile</exclude>
               <exclude>**/smoke*.drl.txt</exclude>
               <exclude>**/test*.txt</exclude>
+              <exclude>**/test*.yml</exclude>
               <exclude>**/drl.ftl</exclude>
               <exclude>**/goal.txt</exclude>
               <exclude>**/adult.txt</exclude>
