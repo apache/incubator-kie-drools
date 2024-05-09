@@ -803,12 +803,19 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
         String function = ctx.drlIdentifier().getText();
-        String bind = ctx.label() == null ? null : ctx.label().drlIdentifier().getText();
+        String bind = null;
+        boolean unify = false;
+        if (ctx.label() != null) {
+            bind = ctx.label().drlIdentifier().getText();
+        } else if (ctx.unif() != null) {
+            bind = ctx.unif().drlIdentifier().getText();
+            unify = true;
+        }
 
         String[] params = ctx.conditionalExpressions().conditionalExpression().stream()
                 .map(RuleContext::getText)
                 .toArray(String[]::new);
-        return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, false, params);
+        return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, unify, params);
     }
 
     @Override
