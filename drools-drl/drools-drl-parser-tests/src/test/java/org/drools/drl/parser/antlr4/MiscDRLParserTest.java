@@ -3728,6 +3728,83 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void endAndNonParingDoubleQuoteInSingleLineCommentInRHS() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    //System.out.println(\");\n" + // non-paring double quote in comment
+                "    retract($p)\n" +
+                "end\n" +
+                "rule \"R2\" when Person() then end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        List<RuleDescr> ruleDescrList = packageDescr.getRules();
+        assertThat(ruleDescrList).hasSize(2);
+        assertThat(ruleDescrList.get(0).getName()).isEqualTo("R1");
+        assertThat(ruleDescrList.get(1).getName()).isEqualTo("R2");
+    }
+
+    @Test
+    void endAndNonParingDoubleQuoteInMultiLineCommentInRHS() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    /*System.out.println\n" +
+                "          (\");*/\n" + // non-paring double quote in comment
+                "    retract($p)\n" +
+                "end\n" +
+                "rule \"R2\" when Person() then end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        List<RuleDescr> ruleDescrList = packageDescr.getRules();
+        assertThat(ruleDescrList).hasSize(2);
+        assertThat(ruleDescrList.get(0).getName()).isEqualTo("R1");
+        assertThat(ruleDescrList.get(1).getName()).isEqualTo("R2");
+    }
+
+    @Test
+    void endAndDoubleQuotationsInRHS() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    System.out.println(\"Draw \"+$p1+\" \"+$p2);\n" +
+                "    retract($p)\n" +
+                "end\n" +
+                "rule \"R2\" when Person() then end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        List<RuleDescr> ruleDescrList = packageDescr.getRules();
+        assertThat(ruleDescrList).hasSize(2);
+        assertThat(ruleDescrList.get(0).getName()).isEqualTo("R1");
+        assertThat(ruleDescrList.get(1).getName()).isEqualTo("R2");
+    }
+
+    @Test
+    void endAndsingleQuotationsInRHS() {
+        final String text = "package org.drools\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    System.out.println('Draw '+$p1+' '+$p2);\n" +
+                "    retract($p)\n" +
+                "end\n" +
+                "rule \"R2\" when Person() then end";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        List<RuleDescr> ruleDescrList = packageDescr.getRules();
+        assertThat(ruleDescrList).hasSize(2);
+        assertThat(ruleDescrList.get(0).getName()).isEqualTo("R1");
+        assertThat(ruleDescrList.get(1).getName()).isEqualTo("R2");
+    }
+
+    @Test
     void singleQuoteInRhsWithSpace() {
         String consequence = getResultConsequence("    System.out.println( 'singleQuoteInRhs' );\n");
         assertThat(consequence)
