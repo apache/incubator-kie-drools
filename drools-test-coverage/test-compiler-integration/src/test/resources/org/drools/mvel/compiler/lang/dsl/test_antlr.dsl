@@ -1,10 +1,29 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
 #This is a sample DSL for a ficticous E-Commerce website that is building a recommendation engine
 
 
 [condition][]address is present where {constraints}=u : User() and exists (a: Address( where {constraints}) from u.addresses)
 [condition][]where {attr:[A-Za-z0-9]+} is "{value}"= {attr} == "{value}" 
 [condition][]and {attr:[A-Za-z0-9]+} is "{value}"= , {attr} == "{value}"
-#[keyword][*]regra {atributos} faça {rhs} se {lhs} fim=rule {atributos} \\n when\\n    {lhs}\\n then\\n    {rhs}\\n end
+#[keyword][*]regra {atributos} faï¿½a {rhs} se {lhs} fim=rule {atributos} \\n when\\n    {lhs}\\n then\\n    {rhs}\\n end
 #[keyword][*]consulta=query
 #[keyword][]fim=end
 #[when][woolfel.ecommerce.model.Customer]the Customer=cust : Customer()

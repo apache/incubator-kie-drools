@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -143,6 +162,7 @@
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <version.apache-rat-plugin>0.16.1</version.apache-rat-plugin>
   </properties>
 
   <build>
@@ -154,6 +174,45 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${version.apache-rat-plugin}</version>
+          <configuration>
+            <excludes>
+              <exclude>.git-blame-ignore-revs</exclude>
+              <exclude>**/lunr-2.3.9.min.js</exclude>
+              <exclude>**/mvel.jj</exclude>
+              <exclude>**/*.csv</exclude>
+              <exclude>**/*.sdo</exclude>
+              <exclude>**/*.sdt</exclude>
+              <exclude>**/TestingEmptyFile.txt</exclude>
+              <exclude>**/*.test_json</exclude>
+              <exclude>**/*.pmml_json</exclude>
+              <exclude>**/*.drl_json</exclude>
+              <exclude>**/*.dslr</exclude>
+              <exclude>**/DMN*.xsd</exclude>
+              <exclude>**/DC.xsd</exclude>
+              <exclude>**/DI.xsd</exclude>
+              <exclude>**/KiePMML*.txt</exclude>
+              <exclude>**/TargetValueFactoryTest_01.txt</exclude>
+              <exclude>**/TargetFieldFactoryTest_01.txt</exclude>
+              <exclude>**/*.uml</exclude>
+              <exclude>**/drools-model</exclude>
+              <exclude>**/testFile.txt</exclude>
+              <exclude>**/simple.dot</exclude>
+              <exclude>**/*.log</exclude>
+              <exclude>**/*.lst</exclude>
+              <exclude>**/checkstyle-cachefile</exclude>
+              <exclude>**/smoke*.drl.txt</exclude>
+              <exclude>**/test*.txt</exclude>
+              <exclude>**/test*.yml</exclude>
+              <exclude>**/drl.ftl</exclude>
+              <exclude>**/goal.txt</exclude>
+              <exclude>**/adult.txt</exclude>
+            </excludes>
           </configuration>
         </plugin>
       </plugins>

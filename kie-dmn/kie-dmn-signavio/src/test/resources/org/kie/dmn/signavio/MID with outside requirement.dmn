@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
 <dmn:definitions namespace="http://www.signavio.com/dmn/1.2/diagram/b9dc18d5286d49c7b982ded853016e81.xml" exporterVersion="15.3.0-next+ffc08899" name="WithMid" id="id-ec50d1ea329b4c5287f41fac6418924b" sigExt:revisionNumber="3" sigExt:revisionId="3d5612988e1042ea8f7ff24549e6fd92" xmlns="http://www.signavio.com/dmn/1.2/diagram/b9dc18d5286d49c7b982ded853016e81.xml" xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.2/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/">
     <dmn:extensionElements/>
     <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="false" name="modifyInput" id="id-0694f6039dd5fbf97822a7a01c2a3612" label="modifyInput">
