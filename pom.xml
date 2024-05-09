@@ -192,6 +192,7 @@
               <exclude>**/*.test_json</exclude>
               <exclude>**/*.pmml_json</exclude>
               <exclude>**/*.drl_json</exclude>
+              <exclude>**/*.dslr</exclude>
               <exclude>**/DMN*.xsd</exclude>
               <exclude>**/DC.xsd</exclude>
               <exclude>**/DI.xsd</exclude>
