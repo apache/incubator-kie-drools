@@ -5,7 +5,7 @@
 		<xsd:annotation>
 			<xsd:documentation>
 				Include the DMN Diagram Interchange (DI) schema
-			</xsd:documentation>¡
+			</xsd:documentation>
 		</xsd:annotation>
 	</xsd:import>
 
