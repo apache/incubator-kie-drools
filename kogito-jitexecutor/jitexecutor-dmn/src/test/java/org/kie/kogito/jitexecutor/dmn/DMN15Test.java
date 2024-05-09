@@ -22,11 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.type.CollectionType;
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
@@ -35,6 +30,13 @@ import org.kie.kogito.jitexecutor.dmn.requests.JITDMNPayload;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.type.CollectionType;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -75,7 +77,7 @@ class DMN15Test {
         Map<String, Object> context =
                 Map.of("A Person", Map.of("name", "John", "age", 47));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
