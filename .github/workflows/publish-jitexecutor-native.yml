@@ -1,22 +1,20 @@
 name: "Publish jitexecutor-native"
 
 on:
+  pull_request:
+    branches: ["**"]
+    paths:
+      - ".github/workflows/publish-jitexecutor-native.yml"
   workflow_dispatch:
     inputs:
       kogito_runtime_version:
         description: "Kogito Runtime version"
         required: true
-      npm_version:
-        description: "NPM Version"
-        required: true
-      npm_tag:
-        description: "NPM Tag"
-        required: true
   schedule:
-    - cron: '0 16 * * 0' # Every sunday at 4:00PM
+    - cron: "0 16 * * 0" # Every sunday at 4:00PM
 
 jobs:
-  build_jitexecutor_native_binaries:
+  build_jitexecutor_native:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -31,19 +29,15 @@ jobs:
 
       - name: Set version
         id: version
-        run: | 
+        run: |
           if [ ${{ github.event_name }} == "schedule" ]; then
             VERSION="999-${{ steps.date.outputs.CURRENT_DATE }}"
             echo "TAG=$VERSION" >> "$GITHUB_OUTPUT"
             echo "PROJECT_VERSION=$VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
-            echo "NPM_VERSION=999.0.0-${{ steps.date.outputs.CURRENT_DATE }}-SNAPSHOT" >> "$GITHUB_OUTPUT"
-            echo "NPM_TAG=dev" >> "$GITHUB_OUTPUT"
           else
             VERSION="${{ github.event.inputs.kogito_runtime_version }}"
             echo "TAG=${VERSION//-SNAPSHOT/}" >> "$GITHUB_OUTPUT"
             echo "PROJECT_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-            echo "NPM_VERSION=${{ github.event.inputs.npm_version }}" >> "$GITHUB_OUTPUT"
-            echo "NPM_TAG=${{ github.event.inputs.npm_tag }}" >> "$GITHUB_OUTPUT"
           fi
         shell: bash
 
@@ -58,9 +52,9 @@ jobs:
           ref: ${{ steps.version.outputs.TAG }}
 
       - name: "Set up Maven"
-        uses: stCarolas/setup-maven@v4.5
+        uses: stCarolas/setup-maven@v5
         with:
-          maven-version: 3.9.3
+          maven-version: 3.9.6
 
       - name: "Set up JDK 17"
         if: runner.os != 'Windows'
@@ -81,7 +75,13 @@ jobs:
           gu install native-image && \
           mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
           mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-darwin -am -Pjitexecutor-native
+
+      - name: "Publish macOS"
+        if: github.event_name != 'pull_request' && runner.os == 'macOS'
+        shell: bash
+        run: |
+          echo "Publishing macOS..."
 
       - name: "Build Linux"
         if: runner.os == 'Linux'
@@ -94,7 +94,13 @@ jobs:
           gir1.2-appindicator3-0.1 && \
           mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
           mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-linux -am -Pjitexecutor-native
+
+      - name: "Publish Linux"
+        if: github.event_name != 'pull_request' && runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "Publishing Linux..."
 
       - name: "Configure Pagefile"
         if: runner.os == 'Windows'
@@ -125,52 +131,16 @@ jobs:
         run: |
           mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
           mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
+          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-win32 -am -Pjitexecutor-native
+      
+      - name: "Publish Windows"
+        if: github.event_name != 'pull_request' && runner.os == 'Windows'
+        shell: bash
+        run: |
+          echo "Publishing Windows..."
 
       - name: "Upload JIT Executor binary"
         uses: actions/upload-artifact@v4
         with:
           name: jitexecutor_${{ runner.os }}
-          path: ./jitexecutor/jitexecutor-runner/target/jitexecutor-runner-${{ steps.version.outputs.PROJECT_VERSION }}-run*
-
-    outputs:
-      package_version: ${{ steps.version.outputs.PROJECT_VERSION }}
-      npm_version: ${{ steps.version.outputs.NPM_VERSION }}
-      npm_tag: ${{ steps.version.outputs.NPM_TAG }}
-
-  pack_and_publish:
-    runs-on: ubuntu-latest
-    needs: [build_jitexecutor_native_binaries]
-    steps:
-      - name: "Checkout kie-kogito-apps"
-        uses: actions/checkout@v4
-
-      - name: "Download Windows binary"
-        uses: actions/download-artifact@v4
-        with:
-          name: jitexecutor_Windows
-          path: ./.github/supporting-files/publish_jitexecutor_native/dist/win32
-
-      - name: "Download macOS binary"
-        uses: actions/download-artifact@v4
-        with:
-          name: jitexecutor_macOS
-          path: ./.github/supporting-files/publish_jitexecutor_native/dist/darwin
-
-      - name: "Download Linux binary"
-        uses: actions/download-artifact@v4
-        with:
-          name: jitexecutor_Linux
-          path: ./.github/supporting-files/publish_jitexecutor_native/dist/linux
-
-      - name: "Pack and publish"
-        working-directory: ./.github/supporting-files/publish_jitexecutor_native
-        env:
-          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
-        run: |
-          mv ./dist/linux/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner ./dist/linux/jitexecutor
-          mv ./dist/darwin/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner ./dist/darwin/jitexecutor
-          mv ./dist/win32/jitexecutor-runner-${{ needs.build_jitexecutor_native_binaries.outputs.package_version }}-runner.exe ./dist/win32/jitexecutor.exe
-          npm version ${{ needs.build_jitexecutor_native_binaries.outputs.npm_version }}
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish --tag ${{ needs.build_jitexecutor_native_binaries.outputs.npm_tag }} --access public
+          path: ./jitexecutor-native/jitexecutor-native-*/target/jitexecutor-native-*-${{ steps.version.outputs.PROJECT_VERSION }}-run*

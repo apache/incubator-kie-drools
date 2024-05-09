@@ -104,5 +104,11 @@
         <module>trusty</module>
       </modules>
     </profile>
+    <profile>
+      <id>jitexecutor-native</id>
+      <modules>
+        <module>jitexecutor-native</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

@@ -965,7 +965,7 @@
                 <version>${project.version}</version>
                 <classifier>javadoc</classifier>
             </dependency>
-
+            
         </dependencies>
     </dependencyManagement>
 
