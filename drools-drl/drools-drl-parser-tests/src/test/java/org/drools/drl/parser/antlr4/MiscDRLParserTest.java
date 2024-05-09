@@ -4751,4 +4751,31 @@ class MiscDRLParserTest {
         ExprConstraintDescr exprConstraintDescr = parseAndGetFirstConstraintDescr(text);
         assertThat(exprConstraintDescr.getExpression()).isEqualTo("value == 10 && someMethod(value) == 4");
     }
+
+    @Test
+    void unificationInAccumulateRule() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    MyFact($i : currentValue)\n" +
+                        "    accumulate( $p : Person( name == \"John\" ),\n" +
+                        "                $i := min( $p.getAge() ) )\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
+        AccumulateDescr accumulateDescr = (AccumulateDescr) outPattern.getSource();
+        assertThat(accumulateDescr.getInputPattern()).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+            assertThat(patternDescr.getIdentifier()).isEqualTo("$p");
+            assertThat(patternDescr.getObjectType()).isEqualTo("Person");
+        });
+
+        AccumulateDescr.AccumulateFunctionCallDescr accumulateFunction = accumulateDescr.getFunctions().get(0);
+        assertThat(accumulateFunction.getBind()).isEqualTo("$i");
+        assertThat(accumulateFunction.isUnification()).isTrue();
+        assertThat(accumulateFunction.getFunction()).isEqualTo("min");
+        assertThat(accumulateFunction.getParams()).containsExactly("$p.getAge()");
+    }
 }
