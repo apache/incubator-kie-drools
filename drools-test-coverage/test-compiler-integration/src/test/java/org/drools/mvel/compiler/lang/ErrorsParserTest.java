@@ -55,7 +55,7 @@ public class ErrorsParserTest {
 
         assertThat(parser.getErrors().size()).isEqualTo(1);
         DroolsParserException err = parser.getErrors().get(0);
-        assertThat(err.getLineNumber()).isEqualTo(6);
+        assertThat(err.getLineNumber()).isEqualTo(8);
     }
 
     @Test
