@@ -113,7 +113,7 @@ class SourceFilesAddOnIT {
                 .get("/management/processes/sources?uri=org/kie/kogito/examples/ymlgreet.sw.yml")
                 .then()
                 .statusCode(200)
-                .header("Content-Length", "1012");
+                .header("Content-Length", "1802");
     }
 
     @Test
