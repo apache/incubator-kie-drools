@@ -16,31 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.lang.ast.infixexecutors;
+package org.kie.dmn.feel.util;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.util.BooleanEvalHelper;
+import java.math.BigDecimal;
 
-public class LtExecutor implements InfixExecutor {
+import org.junit.jupiter.api.Test;
 
-    private static final LtExecutor INSTANCE = new LtExecutor();
+import static org.assertj.core.api.Assertions.assertThat;
 
-    private LtExecutor() {
-    }
+class NumberEvalHelperTest {
 
-    public static LtExecutor instance() {
-        return INSTANCE;
-    }
 
-    @Override
-    public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) < 0);
-    }
-
-    @Override
-    public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        return evaluate(infixNode.getLeft().evaluate(ctx), infixNode.getRight().evaluate(ctx), ctx);
+    @Test
+    void getBigDecimalOrNull() {
+        assertThat(NumberEvalHelper.getBigDecimalOrNull(10d)).isEqualTo(new BigDecimal("10"));
+        assertThat(NumberEvalHelper.getBigDecimalOrNull(10.00000000D)).isEqualTo(new BigDecimal("10"));
+        assertThat(NumberEvalHelper.getBigDecimalOrNull(10000000000.5D)).isEqualTo(new BigDecimal("10000000000.5"));
     }
 
 }

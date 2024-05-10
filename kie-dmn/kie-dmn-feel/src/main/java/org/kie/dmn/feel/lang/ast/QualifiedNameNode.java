@@ -18,16 +18,17 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 public class QualifiedNameNode
         extends BaseNode {
@@ -65,11 +66,11 @@ public class QualifiedNameNode
                         // can't use Stream API as from EvalHelper.getValue I need to listen for checked exception
                         Collection<Object> result = new ArrayList<>();
                         for ( Object e : (Collection<?>) current ) {
-                            result.add( EvalHelper.getValue( e, EvalHelper.normalizeVariableName( n ) ) );
+                            result.add( EvalHelper.getValue(e, StringEvalHelper.normalizeVariableName(n ) ) );
                         }
                         current = result;
                     } else {
-                        current = EvalHelper.getValue( current, EvalHelper.normalizeVariableName( n ) );
+                        current = EvalHelper.getValue( current, StringEvalHelper.normalizeVariableName( n ) );
                     }
                 }
                 return current;

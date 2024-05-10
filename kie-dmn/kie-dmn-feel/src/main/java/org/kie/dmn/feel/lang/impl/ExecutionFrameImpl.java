@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 public class ExecutionFrameImpl
         implements ExecutionFrame {
@@ -52,7 +53,7 @@ public class ExecutionFrameImpl
 
     @Override
     public Object getValue(String symbol) {
-        symbol = EvalHelper.normalizeVariableName( symbol );
+        symbol = StringEvalHelper.normalizeVariableName(symbol );
         if (rootObject != null) {
             PropertyValueResult dv = EvalHelper.getDefinedValue(rootObject, symbol);
             if (dv.isDefined()) {
@@ -70,7 +71,7 @@ public class ExecutionFrameImpl
 
     @Override
     public boolean isDefined(String symbol) {
-        symbol = EvalHelper.normalizeVariableName( symbol );
+        symbol = StringEvalHelper.normalizeVariableName( symbol );
         if (rootObject != null) {
             if (EvalHelper.getDefinedValue(rootObject, symbol).isDefined()) {
                 return true;
@@ -89,7 +90,7 @@ public class ExecutionFrameImpl
 
     @Override
     public void setValue(String symbol, Object value) {
-        this.variables.put( EvalHelper.normalizeVariableName( symbol ), value );
+        this.variables.put( StringEvalHelper.normalizeVariableName( symbol ), value );
     }
 
     @Override

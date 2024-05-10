@@ -31,7 +31,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class EvaluationContextImpl implements EvaluationContext {
 
@@ -116,7 +116,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public void setValue(String name, Object value) {
-        peek().setValue( name, EvalHelper.coerceNumber( value ) );
+        peek().setValue(name, NumberEvalHelper.coerceNumber(value ) );
     }
     
     public void setValues(Map<String, Object> values) {

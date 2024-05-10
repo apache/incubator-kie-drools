@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.DateTimeEvalHelper;
 
 /**
  *  Class used to centralize all coercion-related behavior
@@ -51,7 +51,7 @@ public class CoerceUtil {
         if (valueToCoerce instanceof LocalDate localDate &&
                 requiredType instanceof SimpleTypeImpl simpleType &&
                 simpleType.getFeelType() == BuiltInType.DATE_TIME) {
-            return EvalHelper.coerceDateTime(localDate);
+            return DateTimeEvalHelper.coerceDateTime(localDate);
         }
         return toReturn;
     }

@@ -43,7 +43,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -349,11 +349,11 @@ public abstract class BaseFEELFunction
         if (result != null && result.getClass().isArray()) {
             List<Object> objs = new ArrayList<>();
             for (int i = 0; i < Array.getLength(result); i++) {
-                objs.add(EvalHelper.coerceNumber(Array.get(result, i)));
+                objs.add(NumberEvalHelper.coerceNumber(Array.get(result, i)));
             }
             return objs;
         } else {
-            return EvalHelper.coerceNumber(result);
+            return NumberEvalHelper.coerceNumber(result);
         }
     }
 

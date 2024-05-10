@@ -38,7 +38,7 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.mockito.Mockito;
@@ -112,7 +112,7 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
         resultVariables.forEach((s, value) -> {
             assertThat(retrieved).containsKey(s);
             Object retObject = retrieved.get(s);
-            Object expected = EvalHelper.coerceNumber(value);
+            Object expected = NumberEvalHelper.coerceNumber(value);
             assertThat(retObject).isEqualTo(expected);
         });
     }
@@ -125,7 +125,7 @@ class DMNKiePMMLTrustyInvocationEvaluatorTest {
             Map<String, Object> retrieved = dmnKiePMMLTrustyInvocationEvaluator.getPredictedValues(result, null);
             assertThat(retrieved).containsKey(result.getResultObjectName());
             Object retObject = retrieved.get(result.getResultObjectName());
-            Object expected = EvalHelper.coerceNumber(value);
+            Object expected = NumberEvalHelper.coerceNumber(value);
             assertThat(retObject).isEqualTo(expected);
         });
     }

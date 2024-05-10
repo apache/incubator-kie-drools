@@ -22,14 +22,14 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 public class StringNode extends BaseNode {
     private final String value;
 
     public StringNode(ParserRuleContext ctx) {
         super( ctx );
-        this.value = EvalHelper.unescapeString(getText());
+        this.value = StringEvalHelper.unescapeString(getText());
     }
 
     @Override

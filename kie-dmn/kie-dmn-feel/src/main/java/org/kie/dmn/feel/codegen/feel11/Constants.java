@@ -64,7 +64,7 @@ public class Constants {
         String originalText = numericValue;
         try {
             Long.parseLong(originalText);
-            initializer.addArgument(originalText.replaceFirst("^0+(?!$)", "")); // see EvalHelper.getBigDecimalOrNull
+            initializer.addArgument(originalText.replaceFirst("^0+(?!$)", "")); // see NumberEvalHelper.getBigDecimalOrNull
         } catch (Throwable t) {
             initializer.addArgument(new StringLiteralExpr(originalText));
         }

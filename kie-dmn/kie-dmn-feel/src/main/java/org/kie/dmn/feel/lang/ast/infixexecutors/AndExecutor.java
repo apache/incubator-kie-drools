@@ -20,7 +20,7 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.and;
 
@@ -42,15 +42,15 @@ public class AndExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(InfixOpNode infixNode, EvaluationContext ctx) {
-        Boolean leftAND = EvalHelper.getBooleanOrNull(infixNode.getLeft().evaluate(ctx));
+        Boolean leftAND = BooleanEvalHelper.getBooleanOrNull(infixNode.getLeft().evaluate(ctx));
         if (leftAND != null) {
             if (leftAND.booleanValue()) {
-                return EvalHelper.getBooleanOrNull(infixNode.getRight().evaluate(ctx));
+                return BooleanEvalHelper.getBooleanOrNull(infixNode.getRight().evaluate(ctx));
             } else {
                 return Boolean.FALSE; //left hand operand is false, we do not need to evaluate right side
             }
         } else {
-            Boolean rightAND = EvalHelper.getBooleanOrNull(infixNode.getRight().evaluate(ctx));
+            Boolean rightAND = BooleanEvalHelper.getBooleanOrNull(infixNode.getRight().evaluate(ctx));
             return Boolean.FALSE.equals(rightAND) ? Boolean.FALSE : null;
         }
     }

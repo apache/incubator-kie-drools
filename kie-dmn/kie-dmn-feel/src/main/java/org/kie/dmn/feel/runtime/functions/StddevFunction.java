@@ -26,6 +26,7 @@ import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
 public class StddevFunction
@@ -49,7 +50,7 @@ public class StddevFunction
         int n = list.size();
         BigDecimal[] numbers = new BigDecimal[n];
         for ( int i = 0; i < n; i++ ) {
-            final BigDecimal val = EvalHelper.getBigDecimalOrNull( list.get( i ) );
+            final BigDecimal val = NumberEvalHelper.getBigDecimalOrNull(list.get(i ) );
             if ( val == null ) {
                 return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "list", "an element in the list is not suitable for the stddev" ) );
             }
@@ -73,7 +74,7 @@ public class StddevFunction
         if ( sole == null ) {
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "the single value list cannot be null"));
-        } else if (EvalHelper.getBigDecimalOrNull(sole) == null) {
+        } else if (NumberEvalHelper.getBigDecimalOrNull(sole) == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list",
                                                                    "the value can not be converted to a number"));
         }

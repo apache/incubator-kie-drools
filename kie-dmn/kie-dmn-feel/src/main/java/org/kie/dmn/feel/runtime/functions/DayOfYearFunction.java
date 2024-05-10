@@ -24,7 +24,7 @@ import java.time.temporal.TemporalAccessor;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class DayOfYearFunction extends BaseFEELFunction {
     public static final DayOfYearFunction INSTANCE = new DayOfYearFunction();
@@ -38,7 +38,7 @@ public class DayOfYearFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
         }
 
-        BigDecimal result = EvalHelper.getBigDecimalOrNull(ChronoField.DAY_OF_YEAR.getFrom(date));
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(ChronoField.DAY_OF_YEAR.getFrom(date));
         return FEELFnResult.ofResult(result);
     }
 

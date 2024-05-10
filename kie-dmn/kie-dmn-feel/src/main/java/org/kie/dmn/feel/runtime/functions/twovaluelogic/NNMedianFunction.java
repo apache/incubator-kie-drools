@@ -18,19 +18,19 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class NNMedianFunction
         extends BaseFEELFunction {
@@ -50,7 +50,7 @@ public class NNMedianFunction
         for( int i = 0; i < list.size(); i++ ) {
             Object element = list.get( i );
             if(element instanceof Number) {
-                sorted.add(EvalHelper.getBigDecimalOrNull( element ) );
+                sorted.add(NumberEvalHelper.getBigDecimalOrNull(element ) );
             } else if( element != null ) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains element that is not a number"));
             }

@@ -22,7 +22,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class Just47Function extends BaseFEELFunction {
 
@@ -31,7 +31,7 @@ public class Just47Function extends BaseFEELFunction {
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("ctx") EvaluationContext ctx) {
-        return FEELFnResult.ofResult(EvalHelper.coerceNumber(47));
+        return FEELFnResult.ofResult(NumberEvalHelper.coerceNumber(47));
     }
 
     @Override

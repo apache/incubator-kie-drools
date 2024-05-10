@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
@@ -129,7 +130,7 @@ public class UnaryTestNode
     private UnaryTest createCompareUnaryTest( BiPredicate<Comparable, Comparable> op ) {
         return (context, left) -> {
             Object right = value.evaluate( context );
-            return EvalHelper.compare( left, right, context, op );
+            return BooleanEvalHelper.compare(left, right, op );
         };
     }
 
@@ -138,26 +139,26 @@ public class UnaryTestNode
      * If the RIGHT is NOT a list, then standard equals semantic applies
      * If the RIGHT is a LIST, then the semantic is "right contains left"
      */
-    private Boolean utEqualSemantic(Object left, Object right, EvaluationContext context) {
+    private Boolean utEqualSemantic(Object left, Object right) {
         if (right instanceof Collection) {
             return ((Collection) right).contains(left);
         } else {
             // evaluate single entity
-            return EvalHelper.isEqual(left, right, context);
+            return BooleanEvalHelper.isEqual(left, right);
         }
     }
 
     private UnaryTest createIsEqualUnaryTest( ) {
         return (context, left) -> {
             Object right = value.evaluate( context );
-            return utEqualSemantic(left, right, context);
+            return utEqualSemantic(left, right);
         };
     }
 
     private UnaryTest createIsNotEqualUnaryTest( ) {
         return (context, left) -> {
             Object right = value.evaluate( context );
-            Boolean result = utEqualSemantic(left, right, context);
+            Boolean result = utEqualSemantic(left, right);
             return result != null ? ! result : null;
         };
     }

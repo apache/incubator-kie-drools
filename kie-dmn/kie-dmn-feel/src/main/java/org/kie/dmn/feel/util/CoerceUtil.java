@@ -64,7 +64,7 @@ public class CoerceUtil {
         }
         if (actualObject instanceof LocalDate localDate &&
                 ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
-            Object coercedObject = EvalHelper.coerceDateTime(localDate);
+            Object coercedObject = DateTimeEvalHelper.coerceDateTime(localDate);
             return Optional.of(coercedObject);
         }
         return Optional.empty();
@@ -74,7 +74,7 @@ public class CoerceUtil {
         Object toReturn = valueToCoerce;
         if (valueToCoerce instanceof LocalDate localDate &&
                 requiredType == BuiltInType.DATE_TIME) {
-            return EvalHelper.coerceDateTime(localDate);
+            return DateTimeEvalHelper.coerceDateTime(localDate);
         }
         return toReturn;
     }

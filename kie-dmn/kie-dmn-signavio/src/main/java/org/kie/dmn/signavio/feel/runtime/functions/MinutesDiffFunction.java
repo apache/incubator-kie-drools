@@ -18,6 +18,13 @@
  */
 package org.kie.dmn.signavio.feel.runtime.functions;
 
+import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.util.function.Function;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -26,14 +33,7 @@ import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
-
-import java.math.BigDecimal;
-import java.time.DateTimeException;
-import java.time.Duration;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
-import java.util.function.Function;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class MinutesDiffFunction
         extends BaseFEELFunction {
@@ -51,7 +51,7 @@ public class MinutesDiffFunction
         }
 
         try {
-            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( Duration.between( (Temporal) datetime1, (Temporal) datetime2 ).toMinutes() ) );
+            return FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(Duration.between((Temporal) datetime1, (Temporal) datetime2 ).toMinutes() ) );
         } catch ( DateTimeException e ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datetime", "invalid 'date' or 'date and time' parameter", e ) );
         }

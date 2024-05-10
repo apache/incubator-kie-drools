@@ -36,7 +36,7 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.visitor.DefaultedVisitor;
 import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 import org.kie.dmn.validation.dtanalysis.model.DDTAOutputEntryExpression;
 
 import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE;
@@ -82,7 +82,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
 
     @Override
     public String visit(StringNode n) {
-        return EvalHelper.unescapeString(n.getText());
+        return StringEvalHelper.unescapeString(n.getText());
     }
 
     @Override

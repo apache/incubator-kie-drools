@@ -39,13 +39,16 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
-import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.ast.InfixOperator;
+import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.GenFnType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -440,7 +443,7 @@ public class Expressions {
     public static StringLiteralExpr stringLiteral(String text) {
         if (text.startsWith("\"") && text.endsWith("\"")) {
             String actualStringContent = text.substring(1, text.length() - 1); // remove start/end " from the FEEL text expression.
-            String unescaped = EvalHelper.unescapeString(actualStringContent); // unescapes String, FEEL-style
+            String unescaped = StringEvalHelper.unescapeString(actualStringContent); // unescapes String, FEEL-style
             return new StringLiteralExpr().setString(unescaped); // setString escapes the contents Java-style
         } else {
             return new StringLiteralExpr().setString(text);
