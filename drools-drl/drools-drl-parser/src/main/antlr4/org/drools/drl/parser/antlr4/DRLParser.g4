@@ -105,9 +105,9 @@ queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
               | lhsUnary                                                #lhsUnarySingle
-              | LPAREN DRL_AND lhsExpression+ RPAREN                    #lhsAnd
+              | DRL_AND lhsExpression+                                  #lhsAnd
               | lhsExpression (DRL_AND lhsExpression)+                  #lhsAnd
-              | LPAREN DRL_OR lhsExpression+ RPAREN                     #lhsOr
+              | DRL_OR lhsExpression+                                   #lhsOr
               | lhsExpression (DRL_OR lhsExpression)+                   #lhsOr
               ;
 
@@ -373,7 +373,7 @@ fromWindow : DRL_WINDOW drlIdentifier ;
            )
 */
 // Use lhsExpression instead of lhsOr because lhsExpression has good enough structure
-lhsExists : DRL_EXISTS ( lhsPatternBind | lhsExpression ) ;
+lhsExists : DRL_EXISTS ( LPAREN lhsExpression RPAREN | lhsPatternBind ) ;
 
 /*
  lhsNot := NOT
@@ -383,7 +383,7 @@ lhsExists : DRL_EXISTS ( lhsPatternBind | lhsExpression ) ;
            )
 */
 // Use lhsExpression instead of lhsOr because lhsExpression has good enough structure
-lhsNot : DRL_NOT ( lhsPatternBind | lhsExpression ) ;
+lhsNot : DRL_NOT ( LPAREN lhsExpression RPAREN | lhsPatternBind ) ;
 
 /**
  * lhsEval := EVAL LEFT_PAREN conditionalExpression RIGHT_PAREN

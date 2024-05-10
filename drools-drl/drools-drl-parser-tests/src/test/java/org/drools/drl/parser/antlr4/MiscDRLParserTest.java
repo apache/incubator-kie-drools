@@ -4778,4 +4778,48 @@ class MiscDRLParserTest {
         assertThat(accumulateFunction.getFunction()).isEqualTo("min");
         assertThat(accumulateFunction.getParams()).containsExactly("$p.getAge()");
     }
+
+    @Test
+    void existsOrNot() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    exists(not(Integer()) or not(Double()))\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(ExistsDescr.class, existsDescr -> {
+            assertThat(existsDescr.getDescrs().get(0)).isInstanceOfSatisfying(OrDescr.class, orDescr -> {
+                assertThat(orDescr.getDescrs()).hasSize(2);
+                assertThat(orDescr.getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
+                    assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                        assertThat(patternDescr.getObjectType()).isEqualTo("Integer");
+                    });
+                });
+                assertThat(orDescr.getDescrs().get(1)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
+                    assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                        assertThat(patternDescr.getObjectType()).isEqualTo("Double");
+                    });
+                });
+            });
+        });
+    }
+
+    @Test
+    void nestedNot() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    not ( not ( Cheese() ) )\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
+            assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, nestedNotDescr -> {
+                assertThat(nestedNotDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                    assertThat(patternDescr.getObjectType()).isEqualTo("Cheese");
+                });
+            });
+        });
+    }
 }
