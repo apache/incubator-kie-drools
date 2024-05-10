@@ -69,9 +69,7 @@ pipeline {
                         sh 'mvn clean generate-resources'
                         // Add changed files, commit, open and merge PR
                         prLink = commitAndCreatePR("Upgrade drools-website ${getProjectVersion()}", prBranchName, getBuildBranch())
-                        sh "git checkout ${getBuildBranch()}"
-                        mergeAndPush(prLink, getBuildBranch())
-                        githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorPushCredsId())
+                        approveAndMergePR(prLink)
                     }
                 }
             }
@@ -134,10 +132,10 @@ void checkoutRepo(String repo, String branch) {
     sh "git checkout ${branch}"
 }
 
-void mergeAndPush(String prLink, String targetBranch) {
-    if (prLink != '') {
-        githubscm.mergePR(prLink, getGitAuthorCredsId())
-        githubscm.pushObject('origin', targetBranch, getGitAuthorPushCredsId())
+void approveAndMergePR(String prLink) {
+    if (prLink?.trim()) {
+        githubscm.approvePR(prLink, getGitAuthorPushCredsId())
+        githubscm.mergePR(prLink, getGitAuthorPushCredsId())
     }
 }
 
