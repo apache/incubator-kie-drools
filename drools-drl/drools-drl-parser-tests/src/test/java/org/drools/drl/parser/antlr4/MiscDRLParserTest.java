@@ -69,6 +69,7 @@ import org.drools.drl.ast.descr.TypeDeclarationDescr;
 import org.drools.drl.ast.descr.TypeFieldDescr;
 import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsError;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.BeforeEach;
@@ -4904,5 +4905,19 @@ class MiscDRLParserTest {
                 });
             });
         });
+    }
+
+    @Test
+    void errorMessage_shouldNotContainEmptyString() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    foo\n" + // parse error
+                        "then\n" +
+                        "end";
+        PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(text);
+        assertThat(pkg).isNull();
+        assertThat(parser.hasErrors()).isTrue();
+        assertThat(parser.getErrors()).extracting(DroolsError::getMessage).doesNotContain("");
     }
 }
