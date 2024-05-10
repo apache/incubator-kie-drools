@@ -542,7 +542,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         } else if (ctx.lhsPattern().size() > 1) {
             return getOrDescrWithMultiplePatternDescr(ctx);
         } else {
-            throw new IllegalStateException("ctx.lhsPattern().size() == 0 : " + ctx.getText());
+            return null; // only caused by a parser error
         }
     }
 

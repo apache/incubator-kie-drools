@@ -36,6 +36,7 @@ public class DRLParserError {
     }
 
     public DRLParserError(Exception exception) {
+        this.message = exception.getMessage();
         this.exception = exception;
     }
 
