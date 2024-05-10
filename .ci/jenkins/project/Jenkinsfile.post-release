@@ -143,7 +143,7 @@ pipeline {
         //             }
         //             dir(websiteRepository) {
         //                 checkoutRepo(websiteRepository, 'main')
-        //                 mergeAndPush(prLink, 'main')
+        //                 approveAndMergePR(prLink)
         //                 githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorPushCredsId())
         //             }
         //         }
@@ -228,10 +228,10 @@ void checkoutTag(String repo, String tagName, String localBranchName = tagName) 
     sh "git checkout tags/${tagName} -b ${localBranchName}"
 }
 
-void mergeAndPush(String prLink, String targetBranch) {
-    if (prLink != '') {
-        githubscm.mergePR(prLink, getGitAuthorCredsId())
-        githubscm.pushObject('origin', targetBranch, getGitAuthorPushCredsId())
+void approveAndMergePR(String prLink) {
+    if (prLink?.trim()) {
+        githubscm.approvePR(prLink, getGitAuthorPushCredsId())
+        githubscm.mergePR(prLink, getGitAuthorPushCredsId())
     }
 }
 

@@ -217,7 +217,7 @@ void checkoutNewBranch(String repo, String originBranch, String newBranch, Strin
     dir(dirName) {
         deleteDir()
         checkout(githubscm.resolveRepository(repo, getGitAuthor(), originBranch, false, getGitAuthorCredsId()))
-        sh "git checkout -b ${newBranch}"
+        githubscm.createBranch(newBranch)
     }
 }
 
