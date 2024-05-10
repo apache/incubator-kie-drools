@@ -3991,6 +3991,50 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void andDescrAnnotation() {
+        ParserTestUtils.enableOldParser();
+        final String text =
+                "rule R\n" +
+                        "    when\n" +
+                        "       ( and @Annot \n" +
+                        "         String() \n" +
+                        "         Integer() ) \n" +
+                        "    then\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        AndDescr andDescr = ruleDescr.getLhs();
+        AnnotationDescr annotationDescr = andDescr.getAnnotations().iterator().next();
+        assertThat(annotationDescr.getName()).isEqualTo("Annot");
+        assertThat(annotationDescr.hasValue()).isFalse();
+
+        assertThat(andDescr.getDescrs()).hasSize(2);
+    }
+
+    @Test
+    void orDescrAnnotation() {
+        final String text =
+                "rule R\n" +
+                        "    when\n" +
+                        "       ( or @Annot \n" +
+                        "         String() \n" +
+                        "         Integer() ) \n" +
+                        "    then\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        OrDescr orDescr = (OrDescr) ruleDescr.getLhs().getDescrs().get(0);
+        AnnotationDescr annotationDescr = orDescr.getAnnotations().iterator().next();
+
+        assertThat(annotationDescr.getName()).isEqualTo("Annot");
+        assertThat(annotationDescr.hasValue()).isFalse();
+
+        assertThat(orDescr.getDescrs()).hasSize(2);
+    }
+
+    @Test
     void annotationWithEmptyParentheses() {
         final String text = "package org.drools;\n" +
                 "import java.util.*;\n" +

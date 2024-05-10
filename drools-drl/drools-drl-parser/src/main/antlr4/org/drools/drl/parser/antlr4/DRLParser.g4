@@ -105,10 +105,10 @@ queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
               | lhsUnary                                                #lhsUnarySingle
-              | DRL_AND lhsExpression+                                  #lhsAnd
-              | lhsExpression (DRL_AND lhsExpression)+                  #lhsAnd
-              | DRL_OR lhsExpression+                                   #lhsOr
-              | lhsExpression (DRL_OR lhsExpression)+                   #lhsOr
+              | DRL_AND drlAnnotation* lhsExpression+                                  #lhsAnd
+              | lhsExpression (DRL_AND drlAnnotation* lhsExpression)+                  #lhsAnd
+              | DRL_OR drlAnnotation* lhsExpression+                                   #lhsOr
+              | lhsExpression (DRL_OR drlAnnotation* lhsExpression)+                   #lhsOr
               ;
 
 // lhsAnd is used as a label in lhsExpression rule. But some other rules explicitly use the def, so lhsAndDef is declared.

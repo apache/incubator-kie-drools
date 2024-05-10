@@ -988,7 +988,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             //  B()  C()
             // So, we need to flatten it so that OrDescr has A(), B() and C() as children.
             List<BaseDescr> flattenedDescrs = flattenOrDescr(descrList);
-            flattenedDescrs.forEach(orDescr::addDescr);
+            flattenedDescrs.forEach(descr -> {
+                if (descr instanceof AnnotationDescr annotationDescr) {
+                    orDescr.addAnnotation(annotationDescr);
+                } else {
+                    orDescr.addDescr(descr);
+                }
+            });
             return orDescr;
         }
     }
@@ -1032,7 +1038,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             //  B()  C()
             // So, we need to flatten it so that AndDescr has A(), B() and C() as children.
             List<BaseDescr> flattenedDescrs = flattenAndDescr(descrList);
-            flattenedDescrs.forEach(andDescr::addDescr);
+            flattenedDescrs.forEach(descr -> {
+                if (descr instanceof AnnotationDescr annotationDescr) {
+                    andDescr.addAnnotation(annotationDescr);
+                } else {
+                    andDescr.addDescr(descr);
+                }
+            });
             return andDescr;
         }
     }
