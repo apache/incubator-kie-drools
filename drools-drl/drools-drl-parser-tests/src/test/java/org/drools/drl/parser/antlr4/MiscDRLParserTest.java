@@ -3991,6 +3991,89 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void prefixAndDescrAnnotation() {
+        final String text =
+                "rule R\n" +
+                        "    when\n" +
+                        "       ( and @Annot \n" +
+                        "         String() \n" +
+                        "         Integer() ) \n" +
+                        "    then\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        AndDescr andDescr = ruleDescr.getLhs();
+        AnnotationDescr annotationDescr = andDescr.getAnnotations().iterator().next();
+        assertThat(annotationDescr.getName()).isEqualTo("Annot");
+        assertThat(annotationDescr.hasValue()).isFalse();
+
+        assertThat(andDescr.getDescrs()).hasSize(2);
+    }
+
+    @Test
+    void prefixOrDescrAnnotation() {
+        final String text =
+                "rule R\n" +
+                        "    when\n" +
+                        "       ( or @Annot \n" +
+                        "         String() \n" +
+                        "         Integer() ) \n" +
+                        "    then\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        OrDescr orDescr = (OrDescr) ruleDescr.getLhs().getDescrs().get(0);
+        AnnotationDescr annotationDescr = orDescr.getAnnotations().iterator().next();
+
+        assertThat(annotationDescr.getName()).isEqualTo("Annot");
+        assertThat(annotationDescr.hasValue()).isFalse();
+
+        assertThat(orDescr.getDescrs()).hasSize(2);
+    }
+
+    @Test
+    void infixAndDescrAnnotation() {
+        final String text =
+                "rule R\n" +
+                        "    when\n" +
+                        "       ( Double() \n" +
+                        "         and @Annot1 String() \n" +
+                        "         and @Annot2 Integer() ) " +
+                        "    then\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        AndDescr andDescr = ruleDescr.getLhs();
+        Collection<AnnotationDescr> annotationDescrs = andDescr.getAnnotations();
+        assertThat(annotationDescrs).extracting(AnnotationDescr::getName).containsExactlyInAnyOrder("Annot1", "Annot2");
+
+        assertThat(andDescr.getDescrs()).hasSize(3);
+    }
+
+    @Test
+    void infixOrDescrAnnotation() {
+        final String text =
+                "rule R\n" +
+                        "    when\n" +
+                        "       ( Double() \n" +
+                        "         or @Annot1 String() \n" +
+                        "         or @Annot2 Integer() ) " +
+                        "    then\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        OrDescr orDescr = (OrDescr) ruleDescr.getLhs().getDescrs().get(0);
+        Collection<AnnotationDescr> annotationDescrs = orDescr.getAnnotations();
+        assertThat(annotationDescrs).extracting(AnnotationDescr::getName).containsExactlyInAnyOrder("Annot1", "Annot2");
+
+        assertThat(orDescr.getDescrs()).hasSize(3);
+    }
+
+    @Test
     void annotationWithEmptyParentheses() {
         final String text = "package org.drools;\n" +
                 "import java.util.*;\n" +
