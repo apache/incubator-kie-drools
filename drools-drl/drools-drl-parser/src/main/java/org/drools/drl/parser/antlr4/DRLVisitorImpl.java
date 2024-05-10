@@ -1004,9 +1004,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         for (DescrNodePair descrNodePair : descrList) {
             BaseDescr descr = descrNodePair.getDescr();
             ParseTree node = descrNodePair.getNode(); // parser node corresponding to the descr
-            if (descr instanceof OrDescr && !(node instanceof DRLParser.LhsExpressionEnclosedContext)) {
+            if (descr instanceof OrDescr orDescr && !(node instanceof DRLParser.LhsExpressionEnclosedContext)) {
                 // sibling OrDescr should be flattened unless it's explicitly enclosed by parenthesis
-                flattenedDescrs.addAll(((OrDescr) descr).getDescrs());
+                flattenedDescrs.addAll(orDescr.getDescrs());
+                flattenedDescrs.addAll(orDescr.getAnnotations());
             } else {
                 flattenedDescrs.add(descr);
             }
@@ -1054,9 +1055,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         for (DescrNodePair descrNodePair : descrList) {
             BaseDescr descr = descrNodePair.getDescr();
             ParseTree node = descrNodePair.getNode(); // parser node corresponding to the descr
-            if (descr instanceof AndDescr && !(node instanceof DRLParser.LhsExpressionEnclosedContext)) {
+            if (descr instanceof AndDescr andDescr && !(node instanceof DRLParser.LhsExpressionEnclosedContext)) {
                 // sibling AndDescr should be flattened unless it's explicitly enclosed by parenthesis
-                flattenedDescrs.addAll(((AndDescr) descr).getDescrs());
+                flattenedDescrs.addAll(andDescr.getDescrs());
+                flattenedDescrs.addAll(andDescr.getAnnotations());
             } else {
                 flattenedDescrs.add(descr);
             }
