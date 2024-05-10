@@ -64,8 +64,8 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
+                        approveAndMergePR(getDeployPrLink())
                         checkoutRepo()
-                        mergeAndPush(getDeployPrLink())
                         tagLatest()
                     }
                 }
@@ -78,10 +78,10 @@ pipeline {
                     dir(getRepoName()) {
                         checkoutRepo()
                         if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsId())) {
-                            githubscm.deleteRelease(getGitTag(), getGitAuthorCredsId())
+                            githubscm.deleteRelease(getGitTag(), getGitAuthorPushCredsId())
                         }
-                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorCredsId())
-                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsId())
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorPushCredsId())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -201,10 +201,10 @@ void checkoutRepo() {
     sh "git checkout ${getBuildBranch()}"
 }
 
-void mergeAndPush(String prLink) {
-    if (prLink) {
-        githubscm.mergePR(prLink, getGitAuthorCredsId())
-        githubscm.pushObject('origin', getBuildBranch(), getGitAuthorPushCredsId())
+void approveAndMergePR(String prLink) {
+    if (prLink?.trim()) {
+        githubscm.approvePR(prLink, getGitAuthorPushCredsId())
+        githubscm.mergePR(prLink, getGitAuthorPushCredsId())
     }
 }
 
