@@ -1,3 +1,21 @@
+<!---
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
 # Kogito JIT Executor
 
 Kogito JIT (Just In Time) Executor is an application that allow to execute a business model on the fly on a given context. The JIT Executor is intended to be an helpful support during **_Modeling and Development phases_**; for instance, when modeling a DMN asset, the JIT Executor can be used to support live interactions with the DMN model, while still being authored. The JIT Executor is **not** recommended for Deployment solution; when looking to deploy to the Cloud, we recommend to build and deploy a standard Kogito -based project containing the assets, in order to take advantage of the all features and full capabilities of the [Kogito platform](https://docs.kogito.kie.org/latest/html_single/#con-kogito-automation_kogito-docs).
