@@ -165,7 +165,6 @@ public class PhreakSequencerLogicGateTest {
 
         Sequence seq = new Sequence(circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
-        mnode.setLogicGates(new LogicGate[] {gate1});
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();
@@ -201,7 +200,6 @@ public class PhreakSequencerLogicGateTest {
 
         Sequence seq = new Sequence(circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
-        mnode.setLogicGates(new LogicGate[] {gate1});
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();
@@ -242,7 +240,6 @@ public class PhreakSequencerLogicGateTest {
 
         Sequence seq = new Sequence(circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
-        mnode.setLogicGates(new LogicGate[] {gate1, gate2});
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
 
         // D last

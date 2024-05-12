@@ -135,7 +135,6 @@ public class PhreakSequencerActivateDeactivateStepTest {
 
         Sequence seq = new Sequence(circuit1, circuit2);
         mnode.setSequencer(new Sequencer(mnode, seq));
-        mnode.setLogicGates(new LogicGate[] {gate1, gate2});
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());

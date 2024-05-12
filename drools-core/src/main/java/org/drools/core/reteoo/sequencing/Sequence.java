@@ -1,5 +1,6 @@
 package org.drools.core.reteoo.sequencing;
 
+import org.drools.core.reteoo.sequencing.Sequencer.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 
 public class Sequence {
@@ -31,6 +32,10 @@ public class Sequence {
         public static Step of(LogicCircuit circuit) {
             return new LogicCircuitStep(circuit);
         }
+
+        public static Step of(Sequence sequence) {
+            return new SequenceStep(sequence);
+        }
     }
 
     public static class LogicCircuitStep implements Step {
@@ -38,6 +43,10 @@ public class Sequence {
 
         public LogicCircuitStep(LogicCircuit circuit) {
             this.circuit = circuit;
+        }
+
+        public LogicCircuit getCircuit() {
+            return circuit;
         }
 
         @Override
@@ -58,14 +67,18 @@ public class Sequence {
             this.sequence = sequence;
         }
 
+        public Sequence getSequence() {
+            return sequence;
+        }
+
         @Override
         public void activate(SequencerMemory memory) {
-            //sequence.activate(memory);
+            memory.pushSequence(new SequenceMemory(sequence));
+            sequence.getSteps()[0].activate(memory);
         }
 
         @Override
         public void deactivate(SequencerMemory memory) {
-            //sequence.deactivate(memory);
         }
     }
 }

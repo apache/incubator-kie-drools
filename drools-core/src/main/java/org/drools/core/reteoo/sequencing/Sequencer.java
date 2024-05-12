@@ -4,6 +4,7 @@ import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilter;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
 import org.drools.core.reteoo.MultiInputNode.SignalAdapter;
+import org.drools.core.reteoo.sequencing.Sequence.Step;
 
 import java.util.ArrayList;
 
@@ -22,19 +23,21 @@ public class Sequencer {
     }
 
     public void start(Sequence sequence, SequencerMemory memory) {
-        memory.pushCurrentSequence(new SequenceMemory(sequence));
+        memory.pushSequence(new SequenceMemory(sequence));
         sequence.getSteps()[0].activate(memory);
     }
 
     public void next(SequencerMemory memory) {
         SequenceMemory currentSequence = memory.getCurrentSequence();
-        currentSequence.getSequence().getSteps()[currentSequence.getStep()].deactivate(memory);
-        int step = currentSequence.incrementStep();
+        int step = currentSequence.getStep();
+
+        currentSequence.getSequence().getSteps()[step].deactivate(memory);
+        step = currentSequence.incrementStep();
 
         if (step < currentSequence.getSequence().getSteps().length) {
             currentSequence.getSequence().getSteps()[step].activate(memory);
         } else {
-            memory.popCurrentSequence();
+            memory.popSequence(); // pop is here, but the push was in the activate of the step
             if ( memory.getCurrentSequence() != null) {
                 next(memory);
             } else {
@@ -81,6 +84,10 @@ public class Sequencer {
         public int getStep() {
             return step;
         }
+    }
+
+    public Sequence getSequence() {
+        return sequence;
     }
 
     public static class SequencerMemory {
@@ -221,17 +228,21 @@ public class Sequencer {
             return null;
         }
 
-        public SequenceMemory popCurrentSequence() {
+        public SequenceMemory popSequence() {
             return sequenceStack.remove(sequenceStack.size()-1);
         }
 
-        public void pushCurrentSequence(SequenceMemory sequenceMemory) {
+        public void pushSequence(SequenceMemory sequenceMemory) {
             sequenceStack.add(sequenceMemory);
         }
 
         public int getCurrentStep() {
             SequenceMemory seq = getCurrentSequence();
             return seq != null ? seq.getStep() : -1;
+        }
+
+        public ArrayList<SequenceMemory> getSequenceStack() {
+            return sequenceStack;
         }
     }
 }

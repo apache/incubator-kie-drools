@@ -32,6 +32,10 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
 import org.drools.core.reteoo.sequencing.ConditionalSignalCounter;
+import org.drools.core.reteoo.sequencing.Sequence;
+import org.drools.core.reteoo.sequencing.Sequence.LogicCircuitStep;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceStep;
+import org.drools.core.reteoo.sequencing.Sequence.Step;
 import org.drools.core.reteoo.sequencing.SignalProcessor;
 import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.SignalStatus;
@@ -47,6 +51,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MultiInputNode extends LeftTupleSource
@@ -86,7 +91,6 @@ public class MultiInputNode extends LeftTupleSource
         initMasks(context); // Is this still relevant? (mdp for multi input)
 
         hashcode = calculateHashCode();
-        gates = new LogicGate[0];
         //this.processor = new AnyNotAllInputProcessor(this); // hard coded for now. Inject the processor here, conditional on the behaviour you want.
     }
 
@@ -157,12 +161,33 @@ public class MultiInputNode extends LeftTupleSource
         return memory;
     }
 
+
+    public void populateGates(Sequence sequence, List<LogicGate> gates) {
+        // recursively populate with all the LogicGates
+        for (Step s : sequence.getSteps()) {
+            if (s.getClass() ==  LogicCircuitStep.class) {
+                for ( LogicGate g : ((LogicCircuitStep) s).getCircuit().getGates()) {
+                    gates.add(g);
+                }
+            } else if (s.getClass() ==  SequenceStep.class) {
+                populateGates( ((SequenceStep)s).getSequence(), gates);
+            }
+        }
+    }
+
     public SequencerMemory createSequencerMemory(MultiInputNodeMemory nodeMemory) {
         int signalAdapters = 0;
         int counters = 0;
+
+        if (gates == null) {
+            List<LogicGate> gatesList = new ArrayList<>();
+            populateGates(sequencer.getSequence(), gatesList);
+            gates = gatesList.toArray(new LogicGate[gatesList.size()]);
+        }
+
         for (LogicGate gate : gates) {
             counters = counters + gate.getInputSignalCounters().length;
-            if ( gate.getOutput() instanceof ConditionalSignalCounter) {
+            if ( gate.getOutput().getClass() == ConditionalSignalCounter.class) {
                 ++counters;
             }
             signalAdapters = signalAdapters + gate.getSignalAdapterIndexes().length;
@@ -230,10 +255,6 @@ public class MultiInputNode extends LeftTupleSource
 
     public int getType() {
         return NodeTypeEnums.MultiInputNode;
-    }
-
-    public void setLogicGates(LogicGate[] logicGates) {
-        this.gates = logicGates;
     }
 
     public void fail(SequencerMemory memory) {

@@ -21,6 +21,10 @@ public class LogicCircuit {
         this.gates = gates;
     }
 
+    public LogicGate[] getGates() {
+        return gates;
+    }
+
     public void activate(SequencerMemory sequenceMemory) {
         for (LogicGate gate : gates) {
             gate.activate(sequenceMemory);
