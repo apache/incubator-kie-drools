@@ -3728,7 +3728,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void endAndNonParingDoubleQuoteInSingleLineCommentInRHS() {
+    void endAndNonPairingDoubleQuoteInSingleLineCommentInRHS() {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
                 "when\n" +
