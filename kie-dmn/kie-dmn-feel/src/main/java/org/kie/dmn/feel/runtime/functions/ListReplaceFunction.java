@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class ListReplaceFunction
         extends BaseFEELFunction {
@@ -50,7 +50,7 @@ public class ListReplaceFunction
             String paramProblem = String.format("%s outside valid boundaries (1-%s)", intPosition, list.size());
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", paramProblem));
         }
-        Object e = EvalHelper.coerceNumber(newItem);
+        Object e = NumberEvalHelper.coerceNumber(newItem);
         List toReturn = new ArrayList(list);
         int replacementPosition = intPosition > 0 ? intPosition -1 : list.size() - Math.abs(intPosition);
         toReturn.set(replacementPosition, e);
@@ -66,7 +66,7 @@ public class ListReplaceFunction
         if (match == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "match", CANNOT_BE_NULL));
         }
-        Object e = EvalHelper.coerceNumber(newItem);
+        Object e = NumberEvalHelper.coerceNumber(newItem);
         List toReturn = new ArrayList();
         for (Object o : list) {
             Object matched = match.invokeReflectively(match.getEvaluationContext(), new Object[]{o, e});

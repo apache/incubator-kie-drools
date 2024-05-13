@@ -25,7 +25,9 @@ import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.mockito.ArgumentCaptor;
@@ -57,7 +59,7 @@ public abstract class BaseFEELTest {
     public boolean useExtendedProfile;
 
     public void expression(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget,
-                           Boolean useExtendedProfile) {
+                           Boolean useExtendedProfile, FEELDialect dialect) {
         this.expression = expression;
         this.result = result;
         this.severity = severity;
@@ -65,7 +67,7 @@ public abstract class BaseFEELTest {
         this.useExtendedProfile = useExtendedProfile;
 
         final List<FEELProfile> profiles = getFEELProfilesForTests();
-        feel = FEEL.newInstance(profiles);
+        feel = FEELBuilder.builder().withProfiles(profiles).withFEELDialect(dialect).build();
         final FEELEventListener listener = mock(FEELEventListener.class );
         feel.addListener( listener );
         feel.addListener(System.out::println);
@@ -81,7 +83,7 @@ public abstract class BaseFEELTest {
     }
 
     protected abstract void instanceTest(String expression, Object result, FEELEvent.Severity severity,
-                                         FEEL_TARGET testFEELTarget, Boolean useExtendedProfile);
+                                         FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect dialect);
 
     protected void assertResult(final String expression, final Object result ) {
         Object retrieved = feel.evaluate( expression );
@@ -97,10 +99,14 @@ public abstract class BaseFEELTest {
     }
 
     protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile) {
+        return addAdditionalParameters(cases, useExtendedProfile, FEELDialect.FEEL);
+    }
+
+    protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile, FEELDialect feelDialect) {
         final List<Object[]> toReturn = new ArrayList<>();
         for (final Object[] c : cases) {
-            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile});
-            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile});
+            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile, feelDialect});
+            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile, feelDialect});
         }
         return toReturn;
     }

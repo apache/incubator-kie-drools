@@ -26,12 +26,13 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
+import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 class FEELNumberCoercionTest {
-    private final FEEL feel = FEEL.newInstance();
+    private final FEEL feel = FEELBuilder.builder().build();
     
     private Object evaluateInfix(final Object x, final InfixOperator op, final Object y) {
         final Map<String, Object> inputVariables = new HashMap<>();

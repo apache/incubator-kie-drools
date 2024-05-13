@@ -34,7 +34,7 @@ import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
@@ -105,7 +105,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         Map<String, Object> toReturn = new HashMap<>();
         String resultName = pmml4Result.getResultObjectName();
         Object value = pmml4Result.getResultVariables().get(resultName);
-        toReturn.put(resultName, EvalHelper.coerceNumber(value));
+        toReturn.put(resultName, NumberEvalHelper.coerceNumber(value));
         return toReturn;
     }
 
@@ -114,7 +114,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
         if (outputFieldNameFromInfo.isPresent()) {
             String name = outputFieldNameFromInfo.get();
             try {
-                toPopulate.put(name, EvalHelper.coerceNumber(r));
+                toPopulate.put(name, NumberEvalHelper.coerceNumber(r));
             } catch (Exception e) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.WARN,

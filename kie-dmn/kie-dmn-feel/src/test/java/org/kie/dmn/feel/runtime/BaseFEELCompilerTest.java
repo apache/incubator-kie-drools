@@ -27,6 +27,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.BaseFEELTest.FEEL_TARGET;
 
@@ -53,7 +54,7 @@ public abstract class BaseFEELCompilerTest {
         this.result = result;
         this.testFEELTarget = testFEELTarget;
 
-        feel = (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) ? FEEL.newInstance(Collections.singletonList(new DoCompileFEELProfile())) : FEEL.newInstance();
+        feel = (testFEELTarget == FEEL_TARGET.JAVA_TRANSLATED) ? FEELBuilder.builder().withProfiles(Collections.singletonList(new DoCompileFEELProfile())).build() : FEELBuilder.builder().build();
         assertResult( expression, inputTypes, inputValues, result );
     }
 

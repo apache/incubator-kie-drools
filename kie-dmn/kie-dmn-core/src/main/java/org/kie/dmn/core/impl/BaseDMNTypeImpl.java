@@ -28,7 +28,7 @@ import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 /**
  * @see DMNType
@@ -190,7 +190,7 @@ public abstract class BaseDMNTypeImpl
         if ( unaryTests == null || unaryTests.isEmpty() ) {
             return true;
         } else {
-            return DMNFEELHelper.valueMatchesInUnaryTests(unaryTests, EvalHelper.coerceNumber(o), null);
+            return DMNFEELHelper.valueMatchesInUnaryTests(unaryTests, NumberEvalHelper.coerceNumber(o), null);
         }
     }
 

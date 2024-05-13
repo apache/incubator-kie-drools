@@ -18,16 +18,16 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
-
-import java.math.BigDecimal;
-import java.time.Duration;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class SignedUnaryNode
         extends BaseNode {
@@ -76,7 +76,7 @@ public class SignedUnaryNode
         if (expressionResult instanceof Duration duration) {
             return  Sign.NEGATIVE == sign ? duration.negated() : expressionResult;
         }
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( expressionResult );
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(expressionResult );
         if ( result == null ) {
             ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));
             return null;

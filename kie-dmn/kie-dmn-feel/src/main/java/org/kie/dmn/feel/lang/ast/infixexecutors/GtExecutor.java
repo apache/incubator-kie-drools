@@ -20,7 +20,7 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 public class GtExecutor implements InfixExecutor {
 
@@ -35,7 +35,7 @@ public class GtExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        return EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) > 0);
+        return BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) > 0);
     }
 
     @Override

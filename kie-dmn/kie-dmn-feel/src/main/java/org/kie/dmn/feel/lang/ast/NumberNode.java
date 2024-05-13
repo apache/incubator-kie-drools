@@ -18,13 +18,13 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.math.BigDecimal;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.EvalHelper;
-
-import java.math.BigDecimal;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class NumberNode
         extends BaseNode {
@@ -33,7 +33,7 @@ public class NumberNode
 
     public NumberNode(ParserRuleContext ctx) {
         super( ctx );
-        value = EvalHelper.getBigDecimalOrNull( ctx.getText() );
+        value = NumberEvalHelper.getBigDecimalOrNull(ctx.getText() );
     }
 
     public BigDecimal getValue() {

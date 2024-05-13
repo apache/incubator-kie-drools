@@ -40,10 +40,8 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +50,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
+import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
 
 public class DMNCompilerTest extends BaseVariantTest {
 
@@ -176,7 +175,7 @@ public class DMNCompilerTest extends BaseVariantTest {
 
         final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
-        final EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
+        final EvaluationContext ctx = newEmptyEvaluationContext();
         assertThat(feelType.getFeelType()).isInstanceOf(AliasFEELType.class);
         assertThat(feelType.getFeelType().getName()).isEqualTo("tEmploymentStatus");
         assertThat(feelType.getAllowedValuesFEEL()).hasSize(4);

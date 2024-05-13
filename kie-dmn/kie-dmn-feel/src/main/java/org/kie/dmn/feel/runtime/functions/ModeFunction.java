@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class ModeFunction
         extends BaseFEELFunction {
@@ -47,7 +47,7 @@ public class ModeFunction
             return FEELFnResult.ofResult( Collections.emptyList() );
         }
 
-        Map<BigDecimal, Long> collect = list.stream().map(EvalHelper::getBigDecimalOrNull).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        Map<BigDecimal, Long> collect = list.stream().map(NumberEvalHelper::getBigDecimalOrNull).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         long maxFreq = collect.values().stream().mapToLong(Long::longValue).max().orElse(-1);
 

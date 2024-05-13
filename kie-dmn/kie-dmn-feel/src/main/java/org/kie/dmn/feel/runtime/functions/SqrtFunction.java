@@ -18,13 +18,13 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class SqrtFunction
         extends BaseFEELFunction {
@@ -41,7 +41,7 @@ public class SqrtFunction
         if ( number.signum() < 0 ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "number", "is negative" ) );
         }
-        return FEELFnResult.ofResult( sqrt( EvalHelper.getBigDecimalOrNull( number ) ) );
+        return FEELFnResult.ofResult( sqrt(NumberEvalHelper.getBigDecimalOrNull(number ) ) );
     }
 
     public static BigDecimal sqrt( BigDecimal arg ) { // can be modified later to short-circuit if precision is not needed

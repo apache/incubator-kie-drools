@@ -18,18 +18,25 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.feel.util.Msg;
-
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.util.function.BinaryOperator;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
+import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class InfixExecutorUtils {
 
@@ -40,8 +47,8 @@ public class InfixExecutorUtils {
      */
     @Deprecated
     public static Object or(Object left, Object right, EvaluationContext ctx) {
-        Boolean l = EvalHelper.getBooleanOrNull(left);
-        Boolean r = EvalHelper.getBooleanOrNull(right);
+        Boolean l = BooleanEvalHelper.getBooleanOrNull(left);
+        Boolean r = BooleanEvalHelper.getBooleanOrNull(right);
         // have to check for all nulls first to avoid NPE
         if ((l == null && r == null) || (l == null && r == false) || (r == null && l == false)) {
             return null;
@@ -58,8 +65,8 @@ public class InfixExecutorUtils {
      */
     @Deprecated
     public static Object and(Object left, Object right, EvaluationContext ctx) {
-        Boolean l = EvalHelper.getBooleanOrNull(left);
-        Boolean r = EvalHelper.getBooleanOrNull(right);
+        Boolean l = BooleanEvalHelper.getBooleanOrNull(left);
+        Boolean r = BooleanEvalHelper.getBooleanOrNull(right);
         // have to check for all nulls first to avoid NPE
         if ((l == null && r == null) || (l == null && r == true) || (r == null && l == true)) {
             return null;
@@ -70,8 +77,8 @@ public class InfixExecutorUtils {
     }
 
     static Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
-        BigDecimal l = left instanceof String ? null : EvalHelper.getBigDecimalOrNull(left);
-        BigDecimal r = right instanceof String ? null : EvalHelper.getBigDecimalOrNull(right);
+        BigDecimal l = left instanceof String ? null : NumberEvalHelper.getBigDecimalOrNull(left);
+        BigDecimal r = right instanceof String ? null : NumberEvalHelper.getBigDecimalOrNull(right);
         if (l == null || r == null) {
             return null;
         }

@@ -18,11 +18,11 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.util.EvalHelper;
-
-import java.util.List;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 /**
  * A name is defined either as a sequence of
@@ -64,7 +64,7 @@ public class NameDefNode
 
     @Override
     public String evaluate(EvaluationContext ctx) {
-        return EvalHelper.normalizeVariableName( getText() );
+        return StringEvalHelper.normalizeVariableName(getText() );
     }
 
     @Override

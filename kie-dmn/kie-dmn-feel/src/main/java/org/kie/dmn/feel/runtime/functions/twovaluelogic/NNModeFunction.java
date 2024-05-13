@@ -18,19 +18,19 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class NNModeFunction
         extends BaseFEELFunction {
@@ -49,7 +49,7 @@ public class NNModeFunction
         long maxFreq = 0;
         for( int i = 0; i < list.size(); i++ ) {
             Object original = list.get( i );
-            BigDecimal value = EvalHelper.getBigDecimalOrNull( original );
+            BigDecimal value = NumberEvalHelper.getBigDecimalOrNull(original );
             if( original != null && value == null ) {
                 // conversion error
                 return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "contains items that are not numbers"));
