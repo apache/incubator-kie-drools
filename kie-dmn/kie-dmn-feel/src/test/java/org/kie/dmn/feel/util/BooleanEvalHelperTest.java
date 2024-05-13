@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.FEELDialect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,18 +31,18 @@ class BooleanEvalHelperTest {
 
     @Test
     void numericValuesComparative() {
-        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), BigDecimal.valueOf(2), (l, r) -> l.compareTo(r) < 0)).isTrue();
-        assertThat(BooleanEvalHelper.compare(1.0, 2.0, (l, r) -> l.compareTo(r) < 0)).isTrue();
-        assertThat(BooleanEvalHelper.compare(1, 2, (l, r) -> l.compareTo(r) > 0)).isFalse();
-        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), 2, (l, r) -> l.compareTo(r) > 0)).isFalse();
-        assertThat(BooleanEvalHelper.compare(1, BigDecimal.valueOf(2), (l, r) -> l.compareTo(r) < 0)).isTrue();
-        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), 2.3,  (l, r) -> l.compareTo(r) == 0)).isFalse();
-        assertThat(BooleanEvalHelper.compare(1.2, BigDecimal.valueOf(1.2),  (l, r) -> l.compareTo(r) == 0)).isTrue();
-        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), 0L,  (l, r) -> l.compareTo(r) > 0)).isTrue();
-        assertThat(BooleanEvalHelper.compare(10L, BigDecimal.valueOf(2),  (l, r) -> l.compareTo(r) < 0)).isFalse();
-        assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), BigInteger.valueOf(2), (l, r) -> l.compareTo(r) == 0)).isFalse();
-        assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), 2,  (l, r) -> l.compareTo(r) < 0)).isTrue();
-        assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), 2.3,  (l, r) -> l.compareTo(r) == 0)).isFalse();
+        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), BigDecimal.valueOf(2), FEELDialect.FEEL, (l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(BooleanEvalHelper.compare(1.0, 2.0, FEELDialect.FEEL,(l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(BooleanEvalHelper.compare(1, 2, FEELDialect.FEEL, (l, r) -> l.compareTo(r) > 0)).isFalse();
+        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), 2, FEELDialect.FEEL,(l, r) -> l.compareTo(r) > 0)).isFalse();
+        assertThat(BooleanEvalHelper.compare(1, BigDecimal.valueOf(2), FEELDialect.FEEL,(l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), 2.3,  FEELDialect.FEEL,(l, r) -> l.compareTo(r) == 0)).isFalse();
+        assertThat(BooleanEvalHelper.compare(1.2, BigDecimal.valueOf(1.2), FEELDialect.FEEL, (l, r) -> l.compareTo(r) == 0)).isTrue();
+        assertThat(BooleanEvalHelper.compare(BigDecimal.valueOf(1), 0L, FEELDialect.FEEL, (l, r) -> l.compareTo(r) > 0)).isTrue();
+        assertThat(BooleanEvalHelper.compare(10L, BigDecimal.valueOf(2), FEELDialect.FEEL, (l, r) -> l.compareTo(r) < 0)).isFalse();
+        assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), BigInteger.valueOf(2), FEELDialect.FEEL, (l, r) -> l.compareTo(r) == 0)).isFalse();
+        assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), 2, FEELDialect.FEEL, (l, r) -> l.compareTo(r) < 0)).isTrue();
+        assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), 2.3,  FEELDialect.FEEL,(l, r) -> l.compareTo(r) == 0)).isFalse();
     }
 
 }

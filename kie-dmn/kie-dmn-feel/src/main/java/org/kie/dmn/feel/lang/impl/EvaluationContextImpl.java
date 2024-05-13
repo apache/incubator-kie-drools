@@ -228,7 +228,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     @Override
-    public FEELDialect getDialect() {
+    public FEELDialect getFEELDialect() {
         return feelDialect;
     }
 }

@@ -25,6 +25,7 @@ import java.util.function.BiPredicate;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
@@ -130,7 +131,8 @@ public class UnaryTestNode
     private UnaryTest createCompareUnaryTest( BiPredicate<Comparable, Comparable> op ) {
         return (context, left) -> {
             Object right = value.evaluate( context );
-            return BooleanEvalHelper.compare(left, right, op );
+            // Defaulting FEELDialect to FEEL
+            return BooleanEvalHelper.compare(left, right, FEELDialect.FEEL, op );
         };
     }
 

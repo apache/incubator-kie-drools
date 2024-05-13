@@ -49,7 +49,7 @@ public class ManualFilterTest {
 
                 @Override
                 public Object apply(EvaluationContext feelExprCtx) {
-                    return gt(feelExprCtx.getValue("item"), K_2);
+                    return gt(feelExprCtx.getFEELDialect(), feelExprCtx.getValue("item"), K_2);
                 }
             });
         }

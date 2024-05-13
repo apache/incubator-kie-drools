@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.util.function.BiPredicate;
 
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 
@@ -126,7 +127,8 @@ public class RangeImpl
         if (left.getClass().isAssignableFrom(right.getClass())) { // short path
                 return op.test(left, (Comparable) right);
         }
-        return BooleanEvalHelper.compare(left, right, op); // defer to full DMN/FEEL semantic
+        // Defaulting FEELDialect to FEEL
+        return BooleanEvalHelper.compare(left, right, FEELDialect.FEEL, op); // defer to full DMN/FEEL semantic
     }
 
     @Override

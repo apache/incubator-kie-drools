@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
@@ -40,9 +41,9 @@ public class ManualUnaryTestsTest {
 
     public static class ManualImpl1 implements CompiledFEELUnaryTests {
 
-        private static final UnaryTest UT_a = (feelExprCtx, left) -> lt(left, new BigDecimal(47, MathContext.DECIMAL128));
+        private static final UnaryTest UT_a = (feelExprCtx, left) -> lt(FEELDialect.FEEL, left, new BigDecimal(47, MathContext.DECIMAL128));
 
-        private static final UnaryTest UT_b = (feelExprCtx, left) -> lt(left, new BigDecimal(1, MathContext.DECIMAL128));
+        private static final UnaryTest UT_b = (feelExprCtx, left) -> lt(FEELDialect.FEEL, left, new BigDecimal(1, MathContext.DECIMAL128));
 
         @Override
         public List<UnaryTest> getUnaryTests() {

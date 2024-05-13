@@ -249,7 +249,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         }
 
         @Override
-        public FEELDialect getDialect() {
+        public FEELDialect getFEELDialect() {
             return dialect;
         }
     }

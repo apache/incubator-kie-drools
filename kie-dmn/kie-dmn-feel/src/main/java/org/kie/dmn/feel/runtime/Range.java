@@ -18,9 +18,11 @@
  */
 package org.kie.dmn.feel.runtime;
 
+import org.kie.dmn.feel.lang.FEELDialect;
+
 public interface Range {
 
-    static enum RangeBoundary {
+    enum RangeBoundary {
         OPEN, CLOSED;
     }
 

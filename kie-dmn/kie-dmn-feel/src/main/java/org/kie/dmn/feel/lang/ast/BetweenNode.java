@@ -99,14 +99,14 @@ public class BetweenNode
         }
         if (problem) return null;
 
-        Object gte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_s, (l, r) -> l.compareTo(r) > 0),
+        Object gte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_s, ctx.getFEELDialect(), (l, r) -> l.compareTo(r) > 0),
                                            BooleanEvalHelper.isEqual(o_val, o_s),
                                            ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
         if (gte == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")));
         }
 
-        Object lte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_e, (l, r) -> l.compareTo(r) < 0),
+        Object lte = InfixExecutorUtils.or(BooleanEvalHelper.compare(o_val, o_e,ctx.getFEELDialect(), (l, r) -> l.compareTo(r) < 0),
                 BooleanEvalHelper.isEqual(o_val, o_e),
                 ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
         if (lte == null) {

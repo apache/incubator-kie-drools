@@ -48,7 +48,7 @@ public class ManualQuantTest {
         public Object apply(EvaluationContext feelExprCtx) {
             return CompiledFEELSupport.quant(Quantifier.SOME, feelExprCtx)
                                       .with(c -> "price", c -> Arrays.asList(K_80, K_11, K_110))
-                                      .satisfies(c -> gt(feelExprCtx.getValue("price"), K_100));
+                                      .satisfies(c -> gt(feelExprCtx.getFEELDialect(), feelExprCtx.getValue("price"), K_100));
         }
 
     }

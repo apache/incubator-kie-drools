@@ -60,9 +60,9 @@ public class BooleanEvalHelper {
      * @param op
      * @return
      */
-    public static Boolean compare(Object left, Object right, BiPredicate<Comparable, Comparable> op) {
+    public static Boolean compare(Object left, Object right, FEELDialect feelDialect, BiPredicate<Comparable, Comparable> op) {
         if ( left == null || right == null ) {
-            return null;
+            return returnOrDefault(null, feelDialect);
         }
         if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
@@ -94,7 +94,7 @@ public class BooleanEvalHelper {
             Comparable<?> r = (Comparable<?>) right;
             return op.test(l, r);
         }
-        return null;
+        return returnOrDefault(null, feelDialect);
     }
 
     /**
@@ -104,7 +104,7 @@ public class BooleanEvalHelper {
      * @param right
      * @return
      */
-    public static Boolean isEqual(Object left, Object right) {
+    public static Boolean isEqual(Object left, Object right, FEELDialect feelDialect) {
         if ( left == null || right == null ) {
             return left == right;
         }
@@ -133,12 +133,12 @@ public class BooleanEvalHelper {
             TemporalAccessor l = (TemporalAccessor) left;
             TemporalAccessor r = (TemporalAccessor) right;
             if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
-                return isEqual(valuet(l), valuet(r));
+                return isEqual(DateTimeEvalHelper.valuet(l), DateTimeEvalHelper.valuet(r));
             } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
-                return isEqual(valuedt(l, r.query(TemporalQueries.zone())), valuedt(r, l.query(TemporalQueries.zone())));
+                return isEqual(DateTimeEvalHelper.valuedt(l, r.query(TemporalQueries.zone())), DateTimeEvalHelper.valuedt(r, l.query(TemporalQueries.zone())));
             } // fallback; continue:
         }
-        return compare( left, right, (l, r) -> l.compareTo( r ) == 0  );
+        return compare( left, right, feelDialect, (l, r) -> l.compareTo( r ) == 0  );
     }
 
     /**
@@ -181,6 +181,18 @@ public class BooleanEvalHelper {
         return result;
     }
 
+    public static Boolean returnOrDefault(Object rawReturn, FEELDialect feelDialect) {
+        if (feelDialect.equals(FEELDialect.BFEEL)) {
+            if (rawReturn instanceof Boolean bool) {
+                return bool;
+            } else {
+                return false;
+            }
+        } else {
+            return (Boolean) rawReturn;
+        }
+    }
+
     static Boolean isEqual(Range left, Range right) {
         return left.equals( right );
     }
@@ -191,7 +203,7 @@ public class BooleanEvalHelper {
         while( li.hasNext() && ri.hasNext() ) {
             Object l = li.next();
             Object r = ri.next();
-            if ( !isEqualObject(l, r ) ) return false;
+            if ( !isEqual(l, r ) ) return false;
         }
         return li.hasNext() == ri.hasNext();
     }
@@ -203,12 +215,12 @@ public class BooleanEvalHelper {
         for( Map.Entry le : left.entrySet() ) {
             Object l = le.getValue();
             Object r = right.get( le.getKey() );
-            if ( !isEqualObject( l, r ) ) return false;
+            if ( !isEqual( l, r ) ) return false;
         }
         return true;
     }
 
-    static Boolean isEqualObject(Object l, Object r) {
+    public static Boolean isEqual(Object l, Object r) {
         if( l instanceof Iterable && r instanceof Iterable && !isEqual( (Iterable) l, (Iterable) r ) ) {
             return false;
         } else if( l instanceof Map && r instanceof Map && !isEqual( (Map) l, (Map) r ) ) {

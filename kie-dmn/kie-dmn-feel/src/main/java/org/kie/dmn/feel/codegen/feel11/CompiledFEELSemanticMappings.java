@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
@@ -131,7 +132,7 @@ public class CompiledFEELSemanticMappings {
         return false;
     }
 
-    private static Boolean applyUnaryTest(EvaluationContext ctx, Object test, Object target) {
+    private static Boolean applyUnaryTest(final EvaluationContext ctx, Object test, Object target) {
         if (test instanceof UnaryTest) {
             Boolean result = ((UnaryTest) test).apply(ctx, target);
             return result != null && result;
@@ -167,7 +168,7 @@ public class CompiledFEELSemanticMappings {
         return true;
     }
 
-    public static Object getValue(EvaluationContext ctx, String varName) {
+    public static Object getValue(final EvaluationContext ctx, String varName) {
         Object value = ctx.getValue(varName);
         if (value == null && !ctx.isDefined(varName)) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.UNKNOWN_VARIABLE_REFERENCE, varName), null));
@@ -195,20 +196,18 @@ public class CompiledFEELSemanticMappings {
         }
     }
 
-    public static Boolean coerceToBoolean(EvaluationContext ctx, Object value) {
-        if (value == null || value instanceof Boolean) {
-            return (Boolean) value;
+    public static Boolean coerceToBoolean(final EvaluationContext ctx, Object value) {
+        Boolean toReturn = BooleanEvalHelper.returnOrDefault(value, ctx.getFEELDialect());
+        if (!ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
+            ctx.notifyEvt(() -> new ASTEventBase(
+                    FEELEvent.Severity.ERROR,
+                    Msg.createMessage(
+                            Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE,
+                            value == null ? "null" : value.getClass(),
+                            "Boolean"),
+                    null));
         }
-
-        ctx.notifyEvt(() -> new ASTEventBase(
-                FEELEvent.Severity.ERROR,
-                Msg.createMessage(
-                        Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE,
-                        value == null ? "null" : value.getClass(),
-                        "Boolean"),
-                null));
-
-        return null;
+        return toReturn;
     }
 
     public static <T> T coerceTo(Class<?> paramType, Object value) {
@@ -268,11 +267,11 @@ public class CompiledFEELSemanticMappings {
      * @deprecated does not support short-circuit of the operator
      */
     @Deprecated
-    public static Boolean and(Object left, Object right) {
-        return (Boolean) InfixOperator.AND.evaluate(left, right, null);
+    public static Boolean and(final EvaluationContext ctx, Object left, Object right) {
+        return (Boolean) InfixOperator.AND.evaluate(left, right, ctx);
     }
 
-    public static Boolean and(Boolean left, Supplier<Boolean> right) {
+    public static Boolean and(final FEELDialect feelDialect, Boolean left, Supplier<Boolean> right) {
         if (left != null) {
             if (left.booleanValue()) {
                 return right.get();
@@ -373,49 +372,49 @@ public class CompiledFEELSemanticMappings {
      * FEEL spec Table 42 and derivations
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
-    public static Boolean lte(Object left, Object right) {
-        return or(lt(left, right),
-                eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+    public static Boolean lte(final FEELDialect feelDialect, Object left, Object right) {
+        return or(lt(feelDialect, left, right),
+                eq(feelDialect, left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
      * FEEL spec Table 42 and derivations
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
-    public static Boolean lt(Object left, Object right) {
-        return BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) < 0);
+    public static Boolean lt(final FEELDialect feelDialect, Object left, Object right) {
+        return BooleanEvalHelper.compare(left, right, feelDialect, (l, r) -> l.compareTo(r) < 0);
     }
 
     /**
      * FEEL spec Table 42 and derivations
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
-    public static Boolean gte(Object left, Object right) {
-        return or(gt(left, right),
-                eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+    public static Boolean gte(final FEELDialect feelDialect, Object left, Object right) {
+        return or(gt(feelDialect, left, right),
+                eq(feelDialect, left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
      * FEEL spec Table 42 and derivations
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
-    public static Boolean gt(Object left, Object right) {
-        return BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) > 0);
+    public static Boolean gt(final FEELDialect feelDialect, Object left, Object right) {
+        return BooleanEvalHelper.compare(left, right, feelDialect, (l, r) -> l.compareTo(r) > 0);
     }
 
     /**
      * FEEL spec Table 41: Specific semantics of equality
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
-    public static Boolean eq(Object left, Object right) {
-        return BooleanEvalHelper.isEqual(left, right);
+    public static Boolean eq(final FEELDialect feelDialect, Object left, Object right) {
+        return BooleanEvalHelper.isEqual(left, right, feelDialect);
     }
 
     public static Boolean gracefulEq(EvaluationContext ctx, Object left, Object right) {
         if (left instanceof List) {
             return ((List) left).contains(right);
         } else {
-            return eq(left, right);
+            return eq(ctx.getFEELDialect(), left, right);
         }
     }
 
@@ -434,25 +433,25 @@ public class CompiledFEELSemanticMappings {
             return null;
         }
 
-        Boolean gte = gte(value, start);
+        Boolean gte = gte(ctx.getFEELDialect(), value, start);
         if (gte == null) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start"), null));
         }
-        Boolean lte = lte(value, end);
+        Boolean lte = lte(ctx.getFEELDialect(),value, end);
         if (lte == null) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end"), null));
         }
-        return and(gte, lte); // do not use Java && to avoid potential NPE due to FEEL 3vl.
+        return and(ctx, gte, lte); // do not use Java && to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
      * FEEL spec Table 39
      */
-    public static Boolean ne(Object left, Object right) {
-        return not(BooleanEvalHelper.isEqual(left, right));
+    public static Boolean ne(Object left, Object right, FEELDialect feelDialect) {
+        return not(BooleanEvalHelper.isEqual(left, right, feelDialect));
     }
 
-    public static Object negateTest(Object param) {
+    public static Object negateTest(Object param, FEELDialect feelDialect) {
         if (param instanceof Boolean) {
             return param.equals(Boolean.FALSE);
         } else if (param instanceof UnaryTest) {
@@ -463,7 +462,7 @@ public class CompiledFEELSemanticMappings {
             UnaryTest t = (c, left) -> not(includes(c, param, left));
             return t;
         } else {
-            UnaryTest t = (c, left) -> not(eq(left, param));
+            UnaryTest t = (c, left) -> not(eq(feelDialect, left, param));
             return t;
         }
     }
