@@ -103,7 +103,7 @@ public class DMNFEELHelper {
         FEELEventListenersManager manager = new FEELEventListenersManager();
         FEELEventsListenerImpl listener = new FEELEventsListenerImpl();
         manager.addListener( listener );
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager, FEELDialect.FEEL);
         try {
             ctx.enterFrame();

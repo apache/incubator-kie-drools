@@ -70,7 +70,7 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
 
         final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         final EvaluationContext ctx =  new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
         assertThat(feelType.getFeelType()).isInstanceOf(AliasFEELType.class);
         assertThat(feelType.getFeelType().getName()).isEqualTo("tEmploymentStatus");

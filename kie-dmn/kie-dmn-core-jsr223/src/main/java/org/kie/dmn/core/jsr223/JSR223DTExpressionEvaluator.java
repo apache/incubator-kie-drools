@@ -165,7 +165,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         
         private final Map<String, Object> values;
         private final List<FEELEvent> events;
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         private final FEELDialect dialect = FEELDialect.FEEL;
         
         public JSR223WrappingEC(Map<String, Object> values, List<FEELEvent> events) {

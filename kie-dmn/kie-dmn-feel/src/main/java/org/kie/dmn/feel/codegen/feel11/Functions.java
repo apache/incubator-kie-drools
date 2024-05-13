@@ -46,7 +46,7 @@ public class Functions {
     private static final Expression EMPTY_LIST = parseExpression("java.util.Collections.emptyList()");
 
     public static Expression external(List<String> paramNames, BaseNode body) {
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         EvaluationContextImpl emptyEvalCtx =
                 new EvaluationContextImpl(Functions.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
 

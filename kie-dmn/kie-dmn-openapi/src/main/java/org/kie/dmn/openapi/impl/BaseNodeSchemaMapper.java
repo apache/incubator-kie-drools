@@ -50,7 +50,7 @@ public class BaseNodeSchemaMapper {
     private static BiConsumer<BaseNode, Schema> NUMBERNODE_CONSUMER = (node, schema) -> populateEnumSchema(schema, ((NumberNode) node).getValue());
 
     private static BiConsumer<BaseNode, Schema> ATLITERALNODE_CONSUMER = (node, schema) -> {
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         EvaluationContextImpl emptyEvalCtx =
                 new EvaluationContextImpl(Functions.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
         Object evaluated = node.evaluate(emptyEvalCtx);

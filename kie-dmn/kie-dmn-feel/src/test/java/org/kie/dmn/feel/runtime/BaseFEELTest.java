@@ -58,30 +58,6 @@ public abstract class BaseFEELTest {
 
     public boolean useExtendedProfile;
 
-//    public void expression(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget,
-//                           Boolean useExtendedProfile) {
-//        this.expression = expression;
-//        this.result = result;
-//        this.severity = severity;
-//        this.testFEELTarget = testFEELTarget;
-//        this.useExtendedProfile = useExtendedProfile;
-//
-//        final List<FEELProfile> profiles = getFEELProfilesForTests();
-//        feel = FEELBuilder.builder().withProfiles(profiles).build();
-//        final FEELEventListener listener = mock(FEELEventListener.class );
-//        feel.addListener( listener );
-//        feel.addListener(System.out::println);
-//        assertResult( expression, result );
-//
-//        if( severity != null ) {
-//            final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class );
-//            verify( listener , atLeastOnce()).onEvent( captor.capture() );
-//            assertThat(captor.getValue().getSeverity()).isEqualTo(severity);
-//        } else {
-//            verify( listener, never() ).onEvent( any(FEELEvent.class) );
-//        }
-//    }
-
     public void expression(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget,
                            Boolean useExtendedProfile, FEELDialect dialect) {
         this.expression = expression;
