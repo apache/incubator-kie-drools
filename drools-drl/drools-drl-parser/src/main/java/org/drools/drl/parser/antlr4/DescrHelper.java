@@ -22,9 +22,6 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import org.drools.drl.ast.descr.AndDescr;
-import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.PatternDescr;
@@ -58,9 +55,13 @@ public class DescrHelper {
             //   However, it doesn't look reasonable. When we will update LanguageLevel, we can remove this +1.
             descr.setEndCharacter(stopToken.getStopIndex() + 1);
             descr.setLocation(startToken.getLine(), startToken.getCharPositionInLine());
-            descr.setEndLocation(stopToken.getLine(), stopToken.getCharPositionInLine() + stopToken.getText().length() - 1); // last column of the end token
+            descr.setEndLocation(stopToken.getLine(), stopToken.getCharPositionInLine() + stopTokenLength(stopToken) - 1); // last column of the end token
         }
         return descr;
+    }
+
+    private static int stopTokenLength(Token token) {
+        return token.getType() == Token.EOF ? 0 : token.getText().length();
     }
 
     public static <T extends BaseDescr> T populateCommonProperties(T descr, List<? extends ParserRuleContext> ctxList) {
