@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class ManualUnaryTestsTest {
 
     @Test
     void manualUnaryTests() {
-        Object left = EvalHelper.coerceNumber(7);
+        Object left = NumberEvalHelper.coerceNumber(7);
 
         CompiledFEELUnaryTests compiledUnaryTests = new ManualImpl1();
         LOG.debug("{}", compiledUnaryTests);

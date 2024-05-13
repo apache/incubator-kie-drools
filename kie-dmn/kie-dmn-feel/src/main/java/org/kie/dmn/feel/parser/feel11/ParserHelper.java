@@ -48,7 +48,7 @@ import org.kie.dmn.feel.lang.types.VariableSymbol;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.FilterPathExpressionContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.QualifiedNameContext;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +115,7 @@ public class ParserHelper {
     private String getName(ParserRuleContext ctx) {
         String key = getOriginalText(ctx);
         if (ctx instanceof FEEL_1_1Parser.KeyStringContext) {
-            key = EvalHelper.unescapeString(key);
+            key = StringEvalHelper.unescapeString(key);
         }
         return key;
     }

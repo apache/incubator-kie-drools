@@ -32,7 +32,7 @@ import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoField.INSTANT_SECONDS;
@@ -54,7 +54,7 @@ public class DayDiffFunction
         }
     
         try {
-            return FEELFnResult.ofResult(EvalHelper.getBigDecimalOrNull(
+            return FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(
                     Duration.between(
                             convertToInstant(datetime1),
                             convertToInstant(datetime2)

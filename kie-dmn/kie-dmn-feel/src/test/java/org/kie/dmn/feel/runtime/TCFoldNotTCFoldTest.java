@@ -25,13 +25,14 @@ import java.util.Collection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.FEELDialect;
 
 public class TCFoldNotTCFoldTest extends BaseFEELTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile) {
-        expression( expression,  result, severity, testFEELTarget, useExtendedProfile);
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect feelDialect) {
+        expression( expression,  result, severity, testFEELTarget, useExtendedProfile, feelDialect);
     }
 
     private static Collection<Object[]> data() {

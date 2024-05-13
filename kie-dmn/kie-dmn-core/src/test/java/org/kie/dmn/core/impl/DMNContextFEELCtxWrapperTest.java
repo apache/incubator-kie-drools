@@ -30,6 +30,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.BaseDMNContextTest;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -159,6 +160,12 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
         @Override
         public Object getRootObject() {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public FEELDialect getDialect() {
+            // Defaulting FEELDialect to FEEL
+            return FEELDialect.FEEL;
         }
     }
 

@@ -54,7 +54,7 @@ import org.kie.dmn.feel.runtime.functions.DateFunction;
 import org.kie.dmn.feel.runtime.functions.DurationFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.TimeFunction;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE;
 import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE_AND_TIME;
@@ -109,7 +109,7 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
         scopeHelper.pushScope();
         for (IterationContextNode ic : n.getIterationContexts()) {
             ic.accept(this);
-            scopeHelper.addInScope(EvalHelper.normalizeVariableName(ic.getName().getText()), MASKED);
+            scopeHelper.addInScope(StringEvalHelper.normalizeVariableName(ic.getName().getText()), MASKED);
         }
         n.getExpression().accept(this);
         scopeHelper.popScope();
@@ -132,7 +132,7 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
         scopeHelper.pushScope();
         for (IterationContextNode ic : n.getIterationContexts()) {
             ic.accept(this);
-            scopeHelper.addInScope(EvalHelper.normalizeVariableName(ic.getName().getText()), MASKED);
+            scopeHelper.addInScope(StringEvalHelper.normalizeVariableName(ic.getName().getText()), MASKED);
         }
         n.getExpression().accept(this);
         scopeHelper.popScope();
@@ -143,7 +143,7 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
     public ASTNode visit(FunctionDefNode n) {
         scopeHelper.pushScope();
         for (FormalParameterNode fp : n.getFormalParameters()) {
-            scopeHelper.addInScope(EvalHelper.normalizeVariableName(fp.getName().getText()), MASKED);
+            scopeHelper.addInScope(StringEvalHelper.normalizeVariableName(fp.getName().getText()), MASKED);
         }
         n.getBody().accept(this);
         scopeHelper.popScope();
@@ -303,5 +303,5 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
         public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
             throw new UnsupportedOperationException();
         }
-    };
+    }
 }

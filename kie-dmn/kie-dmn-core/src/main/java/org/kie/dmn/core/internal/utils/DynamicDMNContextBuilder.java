@@ -41,7 +41,7 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;
 import org.kie.dmn.feel.runtime.functions.DurationFunction;
 import org.kie.dmn.feel.runtime.functions.TimeFunction;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -190,7 +190,7 @@ public class DynamicDMNContextBuilder {
                 case BOOLEAN:
                     return value;
                 case NUMBER:
-                    return EvalHelper.getBigDecimalOrNull(value);
+                    return NumberEvalHelper.getBigDecimalOrNull(value);
                 case STRING:
                     return value;
                 case DURATION:

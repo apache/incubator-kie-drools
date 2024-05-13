@@ -33,7 +33,7 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.subtractTemporals;
-import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
+import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 public class SubExecutor implements InfixExecutor {
 

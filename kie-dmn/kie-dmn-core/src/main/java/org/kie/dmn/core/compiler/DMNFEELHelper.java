@@ -46,9 +46,11 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -84,7 +86,7 @@ public class DMNFEELHelper {
     }
 
     private FEEL createFEELInstance() {
-        FEEL feel = FEEL.newInstance(classLoader, feelProfiles);
+        FEEL feel = FEELBuilder.builder().withClassloader(classLoader).withProfiles(feelProfiles).build();
         feel.addListener( listener );
         return feel;
     }
@@ -94,14 +96,15 @@ public class DMNFEELHelper {
      * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.
      */
     public FEEL newFEELInstance() {
-        return FEEL.newInstance(classLoader, feelProfiles);
+        return FEELBuilder.builder().withClassloader(classLoader).withProfiles(feelProfiles).build();
     }
 
     public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
         FEELEventListenersManager manager = new FEELEventListenersManager();
         FEELEventsListenerImpl listener = new FEELEventsListenerImpl();
         manager.addListener( listener );
-        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager);
+        // Defaulting FEELDialect to FEEL
+        EvaluationContextImpl ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), manager, FEELDialect.FEEL);
         try {
             ctx.enterFrame();
             if ( dmnContext != null ) {
@@ -282,7 +285,7 @@ public class DMNFEELHelper {
     public ClassOrInterfaceDeclaration generateUnaryTestsSource(CompilerContext compilerContext, String unaryTests, Type inputColumnType, boolean isStatic) {
         compilerContext.addInputVariableType("?", inputColumnType);
 
-        ProcessedUnaryTest compiledUnaryTest = ((FEELImpl) feel).compileUnaryTests(unaryTests, compilerContext);
+        ProcessedUnaryTest compiledUnaryTest = ((FEELImpl) feel).processUnaryTests(unaryTests, compilerContext);
         CompilationUnit compilationUnit = compiledUnaryTest.getSourceCode().clone();
         return compilationUnit.getType(0)
                 .asClassOrInterfaceDeclaration()
@@ -332,6 +335,6 @@ public class DMNFEELHelper {
     }
 
     public CompilationUnit generateFeelExpressionCompilationUnit(String input, CompilerContext compilerContext1) {
-        return ((FEELImpl) feel).compileExpression(input, compilerContext1).getSourceCode();
+        return feel.processExpression(input, compilerContext1).getSourceCode();
     }
 }

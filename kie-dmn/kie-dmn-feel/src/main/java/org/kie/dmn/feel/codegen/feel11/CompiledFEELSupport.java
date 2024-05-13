@@ -18,6 +18,16 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import ch.obermuhlner.math.big.BigDecimalMath;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -56,17 +66,7 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 import org.kie.dmn.feel.util.MsgUtil;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.dmn.feel.codegen.feel11.Expressions.compiledFeelSemanticMappingsFQN;
@@ -460,7 +460,7 @@ public class CompiledFEELSupport {
     }
 
     public static Object coerceNumber(Object value) {
-        return EvalHelper.coerceNumber(value);
+        return NumberEvalHelper.coerceNumber(value);
     }
 
 

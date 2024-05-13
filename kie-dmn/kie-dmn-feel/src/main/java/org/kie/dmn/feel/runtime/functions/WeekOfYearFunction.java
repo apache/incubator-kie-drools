@@ -25,6 +25,7 @@ import java.time.temporal.WeekFields;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class WeekOfYearFunction extends BaseFEELFunction {
     public static final WeekOfYearFunction INSTANCE = new WeekOfYearFunction();
@@ -37,7 +38,7 @@ public class WeekOfYearFunction extends BaseFEELFunction {
         if (date == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
         }
-        BigDecimal result = EvalHelper.getBigDecimalOrNull(date.get(WeekFields.ISO.weekOfWeekBasedYear()));
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(date.get(WeekFields.ISO.weekOfWeekBasedYear()));
         return FEELFnResult.ofResult(result);
     }
 

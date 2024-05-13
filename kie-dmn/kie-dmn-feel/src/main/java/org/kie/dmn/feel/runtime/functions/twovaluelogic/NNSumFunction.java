@@ -18,16 +18,16 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class NNSumFunction
         extends BaseFEELFunction {
@@ -49,7 +49,7 @@ public class NNSumFunction
             } else if ( element instanceof BigDecimal ) {
                 sum = sum.add( (BigDecimal) element );
             } else if ( element instanceof Number ) {
-                BigDecimal value = EvalHelper.getBigDecimalOrNull( element );
+                BigDecimal value = NumberEvalHelper.getBigDecimalOrNull(element );
                 if (value == null) {
                     return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not suitable for the sum"));
                 } else {
@@ -69,7 +69,7 @@ public class NNSumFunction
         if( single instanceof BigDecimal ) {
             return FEELFnResult.ofResult((BigDecimal) single );
         } 
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( single );
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull( single );
         if ( result != null ) {
             return FEELFnResult.ofResult( result );
         } else {

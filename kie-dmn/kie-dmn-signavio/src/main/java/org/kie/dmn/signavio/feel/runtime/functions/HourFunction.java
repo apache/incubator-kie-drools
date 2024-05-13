@@ -18,6 +18,12 @@
  */
 package org.kie.dmn.signavio.feel.runtime.functions;
 
+import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.util.function.Function;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -25,13 +31,7 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
-import org.kie.dmn.feel.util.EvalHelper;
-
-import java.math.BigDecimal;
-import java.time.DateTimeException;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
-import java.util.function.Function;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class HourFunction
         extends BaseFEELFunction {
@@ -63,7 +63,7 @@ public class HourFunction
         }
 
         try {
-            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( datetime.get( ChronoField.HOUR_OF_DAY ) ) );
+            return FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(datetime.get(ChronoField.HOUR_OF_DAY ) ) );
         } catch ( DateTimeException e ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "timestring", "invalid 'time' or 'date and time' parameter", e ) );
         }

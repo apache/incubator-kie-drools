@@ -22,6 +22,7 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.TemporalAccessor;
 
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class IsFunction extends BaseFEELFunction {
@@ -40,12 +41,12 @@ public class IsFunction extends BaseFEELFunction {
             TemporalAccessor left = (TemporalAccessor) value1;
             TemporalAccessor right = (TemporalAccessor) value2;
             if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
-                return FEELFnResult.ofResult(EvalHelper.isEqualTimeInSemanticD(left, right));
+                return FEELFnResult.ofResult(BooleanEvalHelper.isEqualTimeInSemanticD(left, right));
             } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
-                return FEELFnResult.ofResult(EvalHelper.isEqualDateTimeInSemanticD(left, right));
+                return FEELFnResult.ofResult(BooleanEvalHelper.isEqualDateTimeInSemanticD(left, right));
             } // fallback; continue:
         }
-        Boolean fallback = EvalHelper.isEqual(value1, value2, null); // if null implying they are not the same semantic domain value.
+        Boolean fallback = BooleanEvalHelper.isEqual(value1, value2); // if null implying they are not the same semantic domain value.
         return FEELFnResult.ofResult(fallback != null ? fallback : Boolean.FALSE);
     }
 

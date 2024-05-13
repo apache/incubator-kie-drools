@@ -23,6 +23,7 @@ import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.signavio.KieDMNSignavioProfile;
 import org.mockito.ArgumentCaptor;
 
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.verify;
 
 public abstract class ExtendedFunctionsBaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance(List.of(new KieDMNSignavioProfile()));
+    private final FEEL feel = FEELBuilder.builder().withProfiles(List.of(new KieDMNSignavioProfile())).build();
 
     public String expression;
 

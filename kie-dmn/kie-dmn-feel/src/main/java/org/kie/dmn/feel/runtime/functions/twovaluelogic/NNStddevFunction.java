@@ -30,7 +30,7 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.functions.SqrtFunction;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
 public class NNStddevFunction
@@ -52,7 +52,7 @@ public class NNStddevFunction
                 // ignore null elements
                 continue;
             }
-            final BigDecimal val = EvalHelper.getBigDecimalOrNull(value);
+            final BigDecimal val = NumberEvalHelper.getBigDecimalOrNull(value);
             if ( val == null ) {
                 // coercion to number failed
                 return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "list", "an element in the list is not suitable for the stddev" ) );
@@ -80,7 +80,7 @@ public class NNStddevFunction
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Object sole) {
         if ( sole == null ) {
             return FEELFnResult.ofResult( null );
-        } else if( EvalHelper.getBigDecimalOrNull( sole ) == null ) {
+        } else if( NumberEvalHelper.getBigDecimalOrNull( sole ) == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "list",
                     "the value can not be converted to a number" ) );
         }

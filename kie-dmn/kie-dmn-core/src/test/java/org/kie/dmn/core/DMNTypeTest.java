@@ -31,6 +31,7 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
@@ -43,6 +44,8 @@ class DMNTypeTest {
     private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV15(Collections.emptyMap());
     private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
     private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
+
+    private static final FEEL feel = FEELBuilder.builder().build();
 
     @Test
     void drools2147() {
@@ -93,7 +96,6 @@ class DMNTypeTest {
         // DROOLS-2357
         final String testNS = "testDROOLS2357";
 
-        final FEEL feel = FEEL.newInstance();
         final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfVowels", null, true, feel.evaluateUnaryTests("\"a\",\"e\",\"i\",\"o\",\"u\""), null, FEEL_STRING, BuiltInType.STRING));
 
         assertThat(tDecision1.isAssignableValue("a")).isTrue();
@@ -111,7 +113,6 @@ class DMNTypeTest {
         // incubator-kie-issues#926
         final String testNS = "testINCUBATORKIEISSUES926";
 
-        final FEEL feel = FEEL.newInstance();
         final DMNType tDecision1 = typeRegistry.registerType(new SimpleTypeImpl(testNS, "tListOfStrings", null, true, null, feel.evaluateUnaryTests("count (?) > 1"), FEEL_STRING, BuiltInType.LIST));
 
         assertThat(tDecision1.isAssignableValue("asdvfsd")).isFalse();
@@ -126,7 +127,6 @@ class DMNTypeTest {
     public void testAllowedValuesForSimpleTypeInherited() {
         final String testNS = "testAllowedValuesForSimpleTypeInherited";
 
-        final FEEL feel = FEEL.newInstance();
         final DMNType aStringSimpleType = typeRegistry.registerType(new SimpleTypeImpl(testNS, "AString", null, false, feel.evaluateUnaryTests("string length( ? ) = 3"), null, FEEL_STRING, BuiltInType.STRING));
         assertThat(aStringSimpleType.isAssignableValue("abc")).isTrue();
         assertThat(aStringSimpleType.isAssignableValue("ab")).isFalse();
@@ -140,7 +140,6 @@ class DMNTypeTest {
     @Test
     public void testAllowedValuesForComplexType() {
         final String testNS = "testAllowedValuesForComplexType";
-        final FEEL feel = FEEL.newInstance();
         final Map<String, DMNType> personPrototype = prototype(entry("name", FEEL_STRING), entry("age", FEEL_NUMBER));
         final BaseDMNTypeImpl dmnPerson = (BaseDMNTypeImpl) typeRegistry.registerType(new CompositeTypeImpl(testNS, "Person", null, false, personPrototype, null, null));
         dmnPerson.setAllowedValues(feel.evaluateUnaryTests("?.name = \"Bob\", ?.age >= 30"));
@@ -159,7 +158,6 @@ class DMNTypeTest {
     @Test
     public void testAllowedValuesForComplexTypeInherited() {
         final String testNS = "testAllowedValuesForComplexType";
-        final FEEL feel = FEEL.newInstance();
         final Map<String, DMNType> personPrototype = prototype(entry("name", FEEL_STRING), entry("age", FEEL_NUMBER));
         final BaseDMNTypeImpl dmnAdultPerson = (BaseDMNTypeImpl) typeRegistry.registerType(new CompositeTypeImpl(testNS, "AdultPerson", null, false, personPrototype, null, null));
         dmnAdultPerson.setAllowedValues(feel.evaluateUnaryTests("?.age >= 30"));

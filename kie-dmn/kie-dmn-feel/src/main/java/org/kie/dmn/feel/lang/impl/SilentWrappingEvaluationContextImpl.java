@@ -27,6 +27,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 
 /**
  * This EvaluationContext should only be used to "try" evaluations
@@ -115,5 +116,10 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     @Override
     public ClassLoader getRootClassLoader() {
         return wrapped.getRootClassLoader();
+    }
+
+    @Override
+    public FEELDialect getDialect() {
+        return wrapped.getDialect();
     }
 }

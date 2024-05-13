@@ -35,6 +35,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -66,7 +67,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     protected FEEL newFeelEvaluator(AtomicReference<FEELEvent> errorHolder) {
         // cleanup existing error
         errorHolder.set(null);
-        FEEL feel = FEEL.newInstance(singletonList(new ExtendedDMNProfile()));
+        FEEL feel = FEELBuilder.builder().withProfiles(singletonList(new ExtendedDMNProfile())).build();
         feel.addListener(event -> {
             FEELEvent feelEvent = errorHolder.get();
             if (!(feelEvent instanceof SyntaxErrorEvent) &&

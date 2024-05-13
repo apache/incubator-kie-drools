@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class NumberFunction
         extends BaseFEELFunction {
@@ -55,7 +55,7 @@ public class NumberFunction
             from = from.replaceAll( "\\" + decimal, "." );
         }
 
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( from );
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(from );
         if( from != null && result == null ) {
             // conversion failed
             return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "unable to calculate final number result" ) );

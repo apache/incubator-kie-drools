@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 /**
  * This is a thread safe implementation of a root
@@ -40,13 +40,13 @@ public class RootExecutionFrame implements ExecutionFrame {
     private RootExecutionFrame() {
         Map<String, Object> builtIn = new ConcurrentHashMap<>(  );
         for( FEELFunction f : BuiltInFunctions.getFunctions() ) {
-            builtIn.put( EvalHelper.normalizeVariableName( f.getName() ), f );
+            builtIn.put(StringEvalHelper.normalizeVariableName(f.getName() ), f );
         }
         functions = Collections.unmodifiableMap( builtIn );
     }
 
     public Object getValue(String symbol) {
-        symbol = EvalHelper.normalizeVariableName( symbol );
+        symbol = StringEvalHelper.normalizeVariableName( symbol );
         if ( functions.containsKey( symbol ) ) {
             return functions.get( symbol );
         }
@@ -54,7 +54,7 @@ public class RootExecutionFrame implements ExecutionFrame {
     }
 
     public boolean isDefined( String symbol ) {
-        symbol = EvalHelper.normalizeVariableName( symbol );
+        symbol = StringEvalHelper.normalizeVariableName( symbol );
         return functions.containsKey( symbol );
     }
 

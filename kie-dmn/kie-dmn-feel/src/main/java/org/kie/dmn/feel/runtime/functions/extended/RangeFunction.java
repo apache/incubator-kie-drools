@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions.extended;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
@@ -46,7 +47,8 @@ import java.util.function.Predicate;
 public class RangeFunction extends BaseFEELFunction {
 
     public static final RangeFunction INSTANCE = new RangeFunction();
-    private static final EvaluationContext STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), new FEELEventListenersManager(), 0);
+    // Defaulting FEELDialect to FEEL
+    private static final EvaluationContext STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), new FEELEventListenersManager(), 0, FEELDialect.FEEL);
 
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
             baseNode -> baseNode instanceof NumberNode,
