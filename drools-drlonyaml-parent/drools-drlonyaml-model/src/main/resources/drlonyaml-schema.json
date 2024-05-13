@@ -113,6 +113,9 @@
         "as" : {
           "type" : "string"
         },
+        "datasource" : {
+          "type" : "string"
+        },
         "from" : {
           "type" : "string"
         },
@@ -125,8 +128,7 @@
             "type" : "string"
           }
         }
-      },
-      "required" : [ "given" ]
+      }
     },
     "Rule" : {
       "type" : "object",
@@ -161,6 +163,9 @@
   "type" : "object",
   "properties" : {
     "name" : {
+      "type" : "string"
+    },
+    "unit" : {
       "type" : "string"
     },
     "dialect" : {

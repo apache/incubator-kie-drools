@@ -47,7 +47,7 @@ import java.util.function.Predicate;
 public class RangeFunction extends BaseFEELFunction {
 
     public static final RangeFunction INSTANCE = new RangeFunction();
-    //TODO GC 1659
+    // Defaulting FEELDialect to FEEL
     private static final EvaluationContext STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), new FEELEventListenersManager(), 0, FEELDialect.FEEL);
 
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,

@@ -1,0 +1,19 @@
+Apache KIE
+Copyright 2024 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+The Initial Developer of some parts of the framework, which are copied from, derived from, or
+inspired by KIE (Knowledge Is Everthing) group, is Red Hat, Inc (https://www.redhat.com/).
+Copyright Red Hat, Inc. and/or its affiliates.. All Rights Reserved.
+
+This product also includes the following third-party components:
+
+* lunr  2.3.9
+  Downloaded from: https://lunrjs.com/
+  License: MIT
+
+* search-ui
+  Downloaded from: https://gitlab.com/antora/antora-lunr-extension
+  License: Mozilla Public License 2.0

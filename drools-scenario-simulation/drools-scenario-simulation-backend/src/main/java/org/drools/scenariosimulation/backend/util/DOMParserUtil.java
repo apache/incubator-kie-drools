@@ -346,6 +346,7 @@ public class DOMParserUtil {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        factory.setIgnoringComments(true);
         DocumentBuilder dBuilder = factory.newDocumentBuilder();
         try (InputStream inputStream = new ByteArrayInputStream(xml.getBytes())) {
             return dBuilder.parse(inputStream);

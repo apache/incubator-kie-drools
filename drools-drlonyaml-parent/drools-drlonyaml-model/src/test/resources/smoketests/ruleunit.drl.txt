@@ -1,0 +1,15 @@
+// this is only syntactically valid DRL, so not ending with purely .drl
+package org.drools.unit;
+
+unit AlertingUnit;
+
+rule IncomingEvent
+  when
+    $e1 : /eventData [ type == "temperature", value >= 30 ]
+    $e2 : /eventData [ type == "temperature", value > $e1.value, this after[0s,5s] $e1 ]
+  then
+    String alertMessage = "Temperature increase: " + ($e2.getValue() - $e1.getValue());
+    System.out.println(alertMessage);
+    Alert alert = new Alert( "warning", alertMessage );
+    alertData.append( alert );
+end

@@ -30,12 +30,12 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 public class MapperHelper {
 
     static Object evaluateInfixOpNode(InfixOpNode toEvaluate) {
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL));
     }
 
     static Object evaluateAtLiteralNode(AtLiteralNode toEvaluate) {
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL));
     }
 

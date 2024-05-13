@@ -31,12 +31,12 @@ public class CodegenTestUtil {
     }
 
     public static EvaluationContext newEmptyEvaluationContext(FEELEventListenersManager mgr) {
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL);
     }
 
     public static EvaluationContext newEmptyEvaluationContext() {
-        //TODO GC 1659
+        // Defaulting FEELDialect to FEEL
         return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
     }
 }

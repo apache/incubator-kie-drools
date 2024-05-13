@@ -22,55 +22,79 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.PatternDescr;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.drools.drl.parser.lang.XpathAnalysis;
 
 @JsonDeserialize(as = Pattern.class) // see https://stackoverflow.com/a/34128468/893991 TODO maybe enforce this check somehow
 public class Pattern implements Base {
-    @JsonProperty(required = true)
+
+    @JsonInclude(Include.NON_EMPTY)
     private String given;
+
+    @JsonInclude(Include.NON_EMPTY)
+    private String datasource;
+
     @JsonInclude(Include.NON_EMPTY)
     private String as;
+
     @JsonInclude(Include.NON_EMPTY)
     private List<String> having = new ArrayList<>();
+
     @JsonInclude(Include.NON_EMPTY)
     private String from;
-    
-    public static Pattern from(PatternDescr o) {
-        Objects.requireNonNull(o);
+
+    public static Pattern from(PatternDescr pattern) {
+        Objects.requireNonNull(pattern);
         Pattern result = new Pattern();
-        result.given = o.getObjectType();
-        if (o.getAllBoundIdentifiers().isEmpty()) {
-            // do nothing, as expected.
-        } else if (o.getAllBoundIdentifiers().size() == 1) {
-            result.as = o.getAllBoundIdentifiers().get(0);
+
+        if (pattern.getObjectType() != null) {
+            result.given = pattern.getObjectType();
+
+            for (BaseDescr c: pattern.getConstraint().getDescrs()) {
+                if (c instanceof MVELExprDescr) {
+                    result.having.add(((MVELExprDescr) c).getExpression());
+                } if (c instanceof ExprConstraintDescr) {
+                    result.having.add(((ExprConstraintDescr) c).getExpression());
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+
+            if (pattern.getSource() != null) {
+                if (pattern.getSource() instanceof FromDescr) {
+                    result.from = ((FromDescr) pattern.getSource()).getDataSource().getText();
+                } else {
+                    throw new UnsupportedOperationException("unknown patternSourceDescr");
+                }
+            }
+
         } else {
-            result.as = o.getAllBoundIdentifiers().get(0); // TODO check the index=0 is always the pattern one
-        }
-        for (BaseDescr c: o.getConstraint().getDescrs()) {
-            if (c instanceof MVELExprDescr) {
-                result.having.add(((MVELExprDescr) c).getExpression());
-            } if (c instanceof ExprConstraintDescr) {
-                result.having.add(((ExprConstraintDescr) c).getExpression());
-            } else {
+
+            String oopathExpr = pattern.getDescrs().get(0).getText();
+            XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(oopathExpr);
+            if (!xpathAnalysis.isSinglePart()) {
                 throw new UnsupportedOperationException();
             }
+            XpathAnalysis.XpathPart xpathPart = xpathAnalysis.getPart(0);
+            result.datasource = xpathPart.getField();
+            result.having.addAll( xpathPart.getConstraints() );
         }
-        if (o.getSource() != null) {
-            if (o.getSource() instanceof FromDescr) {                
-                result.from = ((FromDescr) o.getSource()).getDataSource().getText();
-            } else {
-                throw new UnsupportedOperationException("unknown patternSourceDescr");
-            }
+
+        if (pattern.getAllBoundIdentifiers().isEmpty()) {
+            // do nothing, as expected.
+        } else if (pattern.getAllBoundIdentifiers().size() == 1) {
+            result.as = pattern.getAllBoundIdentifiers().get(0);
+        } else {
+            result.as = pattern.getAllBoundIdentifiers().get(0); // TODO check the index=0 is always the pattern one
         }
+
         return result;
     }
 
@@ -88,5 +112,9 @@ public class Pattern implements Base {
 
     public String getFrom() {
         return from;
+    }
+
+    public String getDatasource() {
+        return datasource;
     }
 }

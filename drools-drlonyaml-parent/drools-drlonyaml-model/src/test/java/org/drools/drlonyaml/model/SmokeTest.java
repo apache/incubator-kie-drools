@@ -18,13 +18,14 @@
  */
 package org.drools.drlonyaml.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import org.assertj.core.api.Assertions;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
@@ -33,47 +34,38 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SmokeTest {
     private static final Logger LOG = LoggerFactory.getLogger(SmokeTest.class);
     private static final DrlParser drlParser = new DrlParser();
     private static final ObjectMapper mapper;
+
     static {
-        YAMLFactory yamlFactory = YAMLFactory.builder()
-                .enable(Feature.MINIMIZE_QUOTES)
-                .build();
+        YAMLFactory yamlFactory = YAMLFactory.builder().enable(Feature.MINIMIZE_QUOTES).build();
         mapper = new ObjectMapper(yamlFactory);
     }
 
     private void assertDrlToYamlAndBack(String filename) {
         try {
             String content = Files.readString(Paths.get(this.getClass().getResource(filename).toURI()));
-            assertThat(content).as("Failed to read test resource")
-                .isNotNull();
+            assertThat(content).as("Failed to read test resource").isNotNull();
             
             PackageDescr pkgDescr = drlParser.parse(new StringReader(content));
-            assertThat(pkgDescr).as("Failed to parse DRL as a PackageDescr")
-                .isNotNull();
+            assertThat(pkgDescr).as("Failed to parse DRL as a PackageDescr").isNotNull();
             
             DrlPackage model = DrlPackage.from(pkgDescr);
-            assertThat(model).as("Failed to generate from a PackageDescr a valid model")
-                .isNotNull();
+            assertThat(model).as("Failed to generate from a PackageDescr a valid model").isNotNull();
             
             StringWriter writer = new StringWriter();
             mapper.writeValue(writer, model);
             final String yaml = writer.toString();
             writer.close();            
             LOG.debug("{}", yaml);
-            assertThat(yaml).as("resulting YAML shall not be null nor empty")
-                .isNotNull()
-                .isNotEmpty();
+            assertThat(yaml).as("resulting YAML shall not be null nor empty").isNotNull().isNotEmpty();
             
             final DrlPackage deserPackage = mapper.readValue(yaml, DrlPackage.class);
-            assertThat(deserPackage).usingRecursiveComparison()
-                .isEqualTo(model);
+            assertThat(deserPackage).usingRecursiveComparison().isEqualTo(model);
         } catch (Exception e) {
             Assertions.fail("Failed to roundtrip from DRL to YAML and back to YAML", e);
         }
@@ -152,5 +144,11 @@ public class SmokeTest {
         String content = Files.readString(Paths.get(this.getClass().getResource("/smoketests/yamlfirst_smoke2.yml").toURI()));
         DrlPackage result = mapper.readValue(content, DrlPackage.class);
         LOG.debug("{}", result);
+    }
+
+    @Test
+    public void smokeTestWithRuleUnit() {
+        String filename = "/smoketests/ruleunit.drl.txt";
+        assertDrlToYamlAndBack(filename);
     }
 }

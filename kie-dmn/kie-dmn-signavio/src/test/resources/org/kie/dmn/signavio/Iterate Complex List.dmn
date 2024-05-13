@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
 <dmn:definitions namespace="http://www.signavio.com/dmn/1.2/diagram/3053f20d4a8a49c5a12a8bb73e2fe745.xml" exporterVersion="14.16.0" name="Iterate Complex List" id="id-5680dc4c8952426c80429b1abc08d018" sigExt:revisionNumber="1" sigExt:revisionId="c726cc3d596d487990da19e4300e7a43" xmlns="http://www.signavio.com/dmn/1.2/diagram/3053f20d4a8a49c5a12a8bb73e2fe745.xml" xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.2/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/">
     <dmn:extensionElements/>
     <dmn:itemDefinition typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" isCollection="false" name="getName" id="id-634bbc9ca1a0c50a6301373f8588df00" label="getName">
