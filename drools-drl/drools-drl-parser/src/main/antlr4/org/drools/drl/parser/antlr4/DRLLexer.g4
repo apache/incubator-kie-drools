@@ -169,6 +169,9 @@ DrlUnicodeEscape
 
 mode RHS;
 RHS_WS : [ \t\r\n\u000C]+ -> channel(HIDDEN);
+RHS_COMMENT:            '/*' .*? '*/' ;
+RHS_LINE_COMMENT:       '//' ~[\r\n]* ;
+
 //DRL_RHS_END : 'end' [ \t]* SEMI? [ \t]* ('\n' | '\r\n' | EOF) { setText("end"); } -> popMode;
 DRL_RHS_END : {isRhsDrlEnd()}? DRL_END -> popMode;
 
@@ -181,7 +184,7 @@ RHS_STRING_LITERAL
 RHS_NAMED_CONSEQUENCE_THEN : DRL_THEN LBRACK IDENTIFIER RBRACK ;
 
 RHS_CHUNK
-    : ~[ ()[\]{},;\t\r\n\u000C]+ // ;}) could be a delimitter proceding 'end'. ()[]{},; are delimiters to match RHS_STRING_LITERAL
+    : ~[ "'()[\]{},;\t\r\n\u000C]+ // ;}) could be a delimitter proceding 'end'. ()[]{},; are delimiters to match RHS_STRING_LITERAL
     | LPAREN
     | RPAREN
     | LBRACK
