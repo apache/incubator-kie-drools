@@ -420,7 +420,7 @@ groupByKeyBinding : label? conditionalExpression ;
 
 rhs : DRL_THEN consequenceBody namedConsequence* ;
 
-consequenceBody : ( RHS_STRING_LITERAL | RHS_CHUNK )* ;
+consequenceBody : ( RHS_COMMENT | RHS_LINE_COMMENT | RHS_STRING_LITERAL | RHS_CHUNK )* ;
 
 // THEN LEFT_SQUARE ID RIGHT_SQUARE chunk
 namedConsequence : RHS_NAMED_CONSEQUENCE_THEN consequenceBody ;
