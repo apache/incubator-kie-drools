@@ -3734,7 +3734,7 @@ class MiscDRLParserTest {
                 "when\n" +
                 "    $p : Person()\n" +
                 "then\n" +
-                "    //System.out.println(\");\n" + // non-paring double quote in comment
+                "    //System.out.println(\");\n" + // non-pairing double quote in comment
                 "    retract($p)\n" +
                 "end\n" +
                 "rule \"R2\" when Person() then end";
