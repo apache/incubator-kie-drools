@@ -3786,7 +3786,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void endAndsingleQuotationsInRHS() {
+    void endAndSingleQuotationsInRHS() {
         final String text = "package org.drools\n" +
                 "rule R1\n" +
                 "when\n" +
