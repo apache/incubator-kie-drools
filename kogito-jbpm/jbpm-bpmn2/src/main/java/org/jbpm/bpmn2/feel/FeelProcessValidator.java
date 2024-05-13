@@ -36,6 +36,7 @@ import org.jbpm.workflow.core.node.Split;
 import org.kie.api.definition.process.Node;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 
 import static java.lang.String.format;
@@ -87,7 +88,7 @@ public class FeelProcessValidator extends RuleFlowProcessValidator {
      * use the FEEL compiler capabilities to verify if mere compilation of the FEEL expression may contain any error.
      */
     private void verifyFEELbyCompilingExpression(VariableScope variableScope, String feelExpression) {
-        FEEL feel = FEEL.newInstance(Collections.singletonList(new KieExtendedFEELProfile()));
+        FEEL feel = FEELBuilder.builder().withProfiles(Collections.singletonList(new KieExtendedFEELProfile())).build();
         FeelErrorEvaluatorListener feelErrorListener = new FeelErrorEvaluatorListener();
         feel.addListener(feelErrorListener);
         CompilerContext cc = feel.newCompilerContext();
