@@ -71,4 +71,5 @@ public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ext
         getActionNode().setAction(droolsAction);
         return this;
     }
+
 }

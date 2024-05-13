@@ -34,6 +34,7 @@ import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
+import org.jbpm.ruleflow.core.factory.ExtendedNodeFactory;
 import org.jbpm.ruleflow.core.factory.FaultNodeFactory;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
 import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
@@ -48,10 +49,32 @@ import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.ThrowLinkNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
+import org.jbpm.ruleflow.core.factory.provider.NodeFactoryProviderService;
 import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.core.node.CatchLinkNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.DynamicNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.ThrowLinkNode;
+import org.jbpm.workflow.core.node.TimerNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
@@ -60,97 +83,106 @@ import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 
-public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContainerFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends NodeFactory<T, P> {
+public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContainerFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends ExtendedNodeFactory<T, P> {
 
     public static final String METHOD_CONNECTION = "connection";
     public static final String METHOD_ASSOCIATION = "association";
 
-    protected RuleFlowNodeContainerFactory(P nodeContainerFactory, NodeContainer nodeContainer, NodeContainer node, WorkflowElementIdentifier id) {
+    private NodeFactoryProviderService provider;
+
+    public RuleFlowNodeContainerFactory(P nodeContainerFactory, NodeContainer nodeContainer, org.jbpm.workflow.core.Node node, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, node, id);
+        provider = new NodeFactoryProviderService();
+    }
+
+    protected abstract NodeContainer getNodeContainer();
+
+    public <R extends NodeFactory<R, T>> R newNode(Class<?> node, WorkflowElementIdentifier id) {
+        return provider.newNodeFactory(node, (T) this, getNodeContainer(), id);
     }
 
     public StartNodeFactory<T> startNode(WorkflowElementIdentifier id) {
-        return new StartNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(StartNode.class, id);
     }
 
     public EndNodeFactory<T> endNode(WorkflowElementIdentifier id) {
-        return new EndNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(EndNode.class, id);
     }
 
     public CatchLinkNodeFactory<T> catchLinkNode(WorkflowElementIdentifier id) {
-        return new CatchLinkNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(CatchLinkNode.class, id);
     }
 
     public ThrowLinkNodeFactory<T> throwLinkNode(WorkflowElementIdentifier id) {
-        return new ThrowLinkNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(ThrowLinkNode.class, id);
     }
 
     public ActionNodeFactory<T> actionNode(WorkflowElementIdentifier id) {
-        return new ActionNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(ActionNode.class, id);
     }
 
     public MilestoneNodeFactory<T> milestoneNode(WorkflowElementIdentifier id) {
-        return new MilestoneNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(MilestoneNode.class, id);
     }
 
     public TimerNodeFactory<T> timerNode(WorkflowElementIdentifier id) {
-        return new TimerNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(TimerNode.class, id);
     }
 
     public HumanTaskNodeFactory<T> humanTaskNode(WorkflowElementIdentifier id) {
-        return new HumanTaskNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(HumanTaskNode.class, id);
     }
 
     public SubProcessNodeFactory<T> subProcessNode(WorkflowElementIdentifier id) {
-        return new SubProcessNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(SubProcessNode.class, id);
     }
 
     public SplitFactory<T> splitNode(WorkflowElementIdentifier id) {
-        return new SplitFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(Split.class, id);
     }
 
     public JoinFactory<T> joinNode(WorkflowElementIdentifier id) {
-        return new JoinFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(Join.class, id);
     }
 
     public RuleSetNodeFactory<T> ruleSetNode(WorkflowElementIdentifier id) {
-        return new RuleSetNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(RuleSetNode.class, id);
     }
 
     public FaultNodeFactory<T> faultNode(WorkflowElementIdentifier id) {
-        return new FaultNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(FaultNode.class, id);
     }
 
     public EventNodeFactory<T> eventNode(WorkflowElementIdentifier id) {
-        return new EventNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(EventNode.class, id);
     }
 
     public BoundaryEventNodeFactory<T> boundaryEventNode(WorkflowElementIdentifier id) {
-        return new BoundaryEventNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(BoundaryEventNode.class, id);
     }
 
     public CompositeContextNodeFactory<T> compositeContextNode(WorkflowElementIdentifier id) {
-        return new CompositeContextNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(CompositeContextNode.class, id);
     }
 
     public ForEachNodeFactory<T> forEachNode(WorkflowElementIdentifier id) {
-        return new ForEachNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(ForEachNode.class, id);
     }
 
     public DynamicNodeFactory<T> dynamicNode(WorkflowElementIdentifier id) {
-        return new DynamicNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(DynamicNode.class, id);
     }
 
     public WorkItemNodeFactory<T> workItemNode(WorkflowElementIdentifier id) {
-        return new WorkItemNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(WorkItemNode.class, id);
     }
 
     public EventSubProcessNodeFactory<T> eventSubProcessNode(WorkflowElementIdentifier id) {
-        return new EventSubProcessNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(EventSubProcessNode.class, id);
     }
 
     public StateNodeFactory<T> stateNode(WorkflowElementIdentifier id) {
-        return new StateNodeFactory<>((T) this, (NodeContainer) node, id);
+        return newNode(StateNode.class, id);
     }
 
     public T connection(WorkflowElementIdentifier fromId, WorkflowElementIdentifier toId) {
@@ -170,8 +202,8 @@ public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContain
     }
 
     private Connection getConnection(WorkflowElementIdentifier fromId, WorkflowElementIdentifier toId, String uniqueId) {
-        Node from = ((NodeContainer) node).getNode(fromId);
-        Node to = ((NodeContainer) node).getNode(toId);
+        Node from = ((NodeContainer) getNodeContainer()).getNode(fromId);
+        Node to = ((NodeContainer) getNodeContainer()).getNode(toId);
         Connection connection = new ConnectionImpl(from, CONNECTION_DEFAULT_TYPE, to, CONNECTION_DEFAULT_TYPE);
         if (uniqueId != null) {
             connection.setMetaData(UNIQUE_ID, uniqueId);
@@ -212,7 +244,7 @@ public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContain
     public abstract T variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue);
 
     private <S extends Context> S getScope(String scopeType, Class<S> scopeClass) {
-        ContextContainer contextContainer = (ContextContainer) node;
+        ContextContainer contextContainer = (ContextContainer) getNodeContainer();
         Context scope = contextContainer.getDefaultContext(scopeType);
         if (scope == null) {
             try {
@@ -227,9 +259,9 @@ public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContain
     }
 
     public RuleFlowNodeContainerFactory<T, P> addCompensationContext(String contextId) {
-        if (node instanceof ContextContainer) {
+        if (getNodeContainer() instanceof ContextContainer) {
             CompensationScope compensationScope = new CompensationScope();
-            ContextContainer contextNode = (ContextContainer) node;
+            ContextContainer contextNode = (ContextContainer) getNodeContainer();
             contextNode.addContext(compensationScope);
             contextNode.setDefaultContext(compensationScope);
             compensationScope.setContextContainerId(contextId);

@@ -54,4 +54,5 @@ public class DynamicNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
         getDynamicNode().setCompletionExpression(completionExpression);
         return this;
     }
+
 }

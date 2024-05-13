@@ -95,8 +95,13 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         return new RuleFlowProcessFactory(id, autoComplete);
     }
 
+    @Override
+    protected org.jbpm.workflow.core.NodeContainer getNodeContainer() {
+        return nodeContainer;
+    }
+
     protected RuleFlowProcessFactory(String id, boolean autoComplete) {
-        super(null, null, new RuleFlowProcess(), WorkflowElementIdentifierFactory.fromExternalFormat(id));
+        super(null, new RuleFlowProcess(), null, WorkflowElementIdentifierFactory.fromExternalFormat(id));
         getRuleFlowProcess().setAutoComplete(autoComplete);
     }
 
@@ -111,7 +116,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     }
 
     protected RuleFlowProcess getRuleFlowProcess() {
-        return (RuleFlowProcess) node;
+        return (RuleFlowProcess) nodeContainer;
     }
 
     @Override

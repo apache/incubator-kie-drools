@@ -33,8 +33,13 @@ public abstract class AbstractCompositeNodeFactory<T extends RuleFlowNodeContain
     private WorkflowElementIdentifier linkedIncomingNodeId;
     private WorkflowElementIdentifier linkedOutgoingNodeId;
 
-    protected AbstractCompositeNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, NodeContainer node, WorkflowElementIdentifier id) {
+    protected AbstractCompositeNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, org.jbpm.workflow.core.Node node, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, node, id);
+    }
+
+    @Override
+    protected NodeContainer getNodeContainer() {
+        return getCompositeNode();
     }
 
     protected CompositeContextNode getCompositeNode() {

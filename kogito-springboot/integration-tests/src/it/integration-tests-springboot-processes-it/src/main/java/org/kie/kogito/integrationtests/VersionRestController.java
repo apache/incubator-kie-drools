@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.process.management;
+package org.kie.kogito.integrationtests;
 
 import java.util.Map;
 
