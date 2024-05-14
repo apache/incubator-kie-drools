@@ -82,22 +82,22 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
 
     @Override
     public void update(Map<String, Object> params) {
-        update(params, w -> w);
+        update(params, w -> w instanceof JsonNode ? ((JsonNode) w).deepCopy() : JsonObjectUtils.fromValue(w));
     }
 
     @Override
     public Map<String, Object> updatePartially(Map<String, Object> params) {
-        update(params, w -> MergeUtils.merge(w, this.workflowdata));
+        update(params, w -> MergeUtils.merge(JsonObjectUtils.fromValue(w), this.workflowdata));
         return toMap();
     }
 
-    private void update(Map<String, Object> params, Function<JsonNode, JsonNode> merger) {
+    private void update(Map<String, Object> params, Function<Object, JsonNode> merger) {
         if (params.containsKey(SWFConstants.DEFAULT_WORKFLOW_VAR)) {
             params = mutableMap(params);
-            this.workflowdata = merger.apply(JsonObjectUtils.fromValue(params.remove(SWFConstants.DEFAULT_WORKFLOW_VAR)));
+            this.workflowdata = merger.apply(params.remove(SWFConstants.DEFAULT_WORKFLOW_VAR));
             this.additionalProperties = params;
         } else {
-            this.workflowdata = merger.apply(JsonObjectUtils.fromValue(params));
+            this.workflowdata = merger.apply(params);
             this.additionalProperties = Collections.emptyMap();
         }
     }
