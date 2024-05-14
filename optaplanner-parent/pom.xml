@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>30</version>
+    <version>32</version>
   </parent>
 
   <groupId>org.optaplanner</groupId>
@@ -43,6 +43,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
   <inceptionYear>2006</inceptionYear>
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>https://apache.org/</url>
+  </organization>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -50,6 +54,48 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/apache/incubator-kie-optaplanner.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/incubator-kie-optaplanner.git</developerConnection>
+    <url>https://github.com/apache/incubator-kie-optaplanner</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
+  </issueManagement>
+  <developers>
+    <developer>
+      <name>The Apache KIE Team</name>
+      <email>dev@kie.apache.org</email>
+      <url>https://kie.apache.org</url>
+      <organization>Apache Software Foundation</organization>
+      <organizationUrl>http://apache.org/</organizationUrl>
+    </developer>
+  </developers>
+  <mailingLists>
+    <mailingList>
+      <name>Development List</name>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <post>dev@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>User List</name>
+      <subscribe>users-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@kie.apache.org</unsubscribe>
+      <post>users@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?users@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@kie.apache.org</unsubscribe>
+      <post>commits@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
+    </mailingList>
+  </mailingLists>
 
   <properties>
     <!-- TODO: Evaluate if this override is still needed. -->
@@ -63,86 +109,6 @@
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
   </properties>
-
-  <distributionManagement>
-    <repository>
-      <id>apache-release-staging-repository</id>
-      <name>Apache Release Staging Repository</name>
-      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>apache-snapshots-repository</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-  <repositories>
-    <repository>
-      <id>apache-public-repository-group</id>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <!-- Get releases only from Maven Central which is faster. -->
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <!-- Only get SNAPSHOTS from Apache repository,
-             so it tries to get releases first (and only) from Maven Central. -->
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-optaplanner.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-optaplanner.git</developerConnection>
-    <url>https://github.com/apache/incubator-kie-optaplanner</url>
-  </scm>
-  <issueManagement>
-    <system>GitHub Issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
-  <developers>
-    <developer>
-      <name>All developers are listed on the team website</name>
-      <url>https://www.optaplanner.org/community/team.html</url>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>All contributors are listed on the team website</name>
-      <url>https://www.optaplanner.org/community/team.html</url>
-    </contributor>
-  </contributors>
-  <mailingLists>
-    <mailingList>
-      <name>Development mailing list</name>
-      <post>dev@kie.apache.org</post>
-      <subscribe>dev-subscribe@kie.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
-      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
-    </mailingList>
-    <mailingList>
-      <name>setup</name>
-      <subscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/optaplanner-dev</unsubscribe>
-    </mailingList>
-  </mailingLists>
 
   <modules>
     <module>build/optaplanner-bom</module>
