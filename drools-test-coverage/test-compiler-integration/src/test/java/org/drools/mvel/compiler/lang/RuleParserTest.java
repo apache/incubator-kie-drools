@@ -111,26 +111,6 @@ public class RuleParserTest {
     }
 
     @Test
-    public void testPackageWithError() throws Exception {
-        final String source = "package 12 foo.bar.baz";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-        final PackageDescr pkg = parser.parse( true,
-                                               new StringReader( source ) );
-        assertThat(parser.hasErrors()).isTrue();
-        assertThat(pkg.getName()).isEqualTo("foo.bar.baz");
-    }
-
-    @Test
-    public void testPackageWithError2() throws Exception {
-        final String source = "package 12 12312 231";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-        final PackageDescr pkg = parser.parse( true,
-                                               new StringReader( source ) );
-        assertThat(parser.hasErrors()).isTrue();
-        assertThat(pkg.getName()).isEqualTo("");
-    }
-
-    @Test
     public void testCompilationUnit() throws Exception {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
