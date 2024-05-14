@@ -34,7 +34,7 @@
 
   <scm>
     <connection>scm:git:https://github.com/apache/incubator-kie-drools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-drools.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/apache/incubator-kie-drools.git</developerConnection>
     <url>https://github.com/apache/incubator-kie-drools</url>
   </scm>
 
