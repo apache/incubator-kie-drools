@@ -188,7 +188,7 @@ public class DrlParser {
         System.out.println("### parse : ANTLR4_PARSER_ENABLED = " + ANTLR4_PARSER_ENABLED);
         if (ANTLR4_PARSER_ENABLED) {
             // new parser based on antlr4
-            return compileWithAntlr4Parser(parser -> parser.parse(is));
+            return compileWithAntlr4Parser(parser -> parser.parse(is, encoding));
         } else {
             // old parsers based on antlr3
             lexer = DRLFactory.buildLexer(is, encoding, languageLevel);

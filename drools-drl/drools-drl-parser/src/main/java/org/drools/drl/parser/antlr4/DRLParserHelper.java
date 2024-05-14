@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -56,9 +57,11 @@ public class DRLParserHelper {
         return createDrlParser(charStream);
     }
 
-    public static DRLParser createDrlParser(InputStream is) {
+    public static DRLParser createDrlParser(InputStream is, String encoding) {
         try {
-            CharStream charStream = CharStreams.fromStream(is);
+            CharStream charStream = encoding != null
+                    ? CharStreams.fromStream(is, Charset.forName(encoding))
+                    : CharStreams.fromStream(is);
             return createDrlParser(charStream);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
