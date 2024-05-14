@@ -4644,6 +4644,98 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void testNamedConsequencesInsideOR1() {
+        final String text =
+                "import org.drools.mvel.compiler.Cheese;\n " +
+                        "global java.util.List results;\n" +
+                        "\n" +
+                        "rule R1 when\n" +
+                        "    ( $a: Cheese ( type == \"stilton\" ) do[t1]\n" +
+                        "    or\n" +
+                        "    $b: Cheese ( type == \"gorgonzola\" ) )\n" +
+                        "    $c: Cheese ( type == \"cheddar\" )\n" +
+                        "then\n" +
+                        "    results.add( $c.getType() );\n" +
+                        "then[t1]\n" +
+                        "    results.add( $a.getType() );\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+
+        assertThat(ruleDescr.getLhs().getDescrs()).hasSize(2);
+        assertThat(ruleDescr.getLhs().getDescrs()).first().isInstanceOfSatisfying(OrDescr.class, stiltonOrGorgonzola -> {
+            assertThat(stiltonOrGorgonzola.getDescrs()).hasSize(2);
+            assertThat(stiltonOrGorgonzola.getDescrs()).first().isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                assertThat(andDescr.getDescrs()).hasSize(2);
+                assertThat(andDescr.getDescrs()).first().isInstanceOfSatisfying(PatternDescr.class, stilton -> {
+                    assertThat(stilton.getIdentifier()).isEqualTo("$a");
+                    assertThat(stilton.getObjectType()).isEqualTo("Cheese");
+                    assertThat(stilton.getConstraint().toString()).contains("stilton");
+                });
+                assertThat(andDescr.getDescrs()).last().isInstanceOfSatisfying(NamedConsequenceDescr.class, namedConsequenceDescr -> {
+                    assertThat(namedConsequenceDescr.getName()).isEqualTo("t1");
+                });
+            });
+            assertThat(stiltonOrGorgonzola.getDescrs()).last().isInstanceOfSatisfying(PatternDescr.class, gorgonzola -> {
+                assertThat(gorgonzola.getIdentifier()).isEqualTo("$b");
+                assertThat(gorgonzola.getObjectType()).isEqualTo("Cheese");
+                assertThat(gorgonzola.getConstraint().toString()).contains("gorgonzola");
+            });
+        });
+        assertThat(ruleDescr.getLhs().getDescrs()).last().isInstanceOfSatisfying(PatternDescr.class, cheddar -> {
+            assertThat(cheddar.getIdentifier()).isEqualTo("$c");
+            assertThat(cheddar.getObjectType()).isEqualTo("Cheese");
+            assertThat(cheddar.getConstraint().toString()).contains("cheddar");
+        });
+    }
+
+    @Test
+    void testNamedConsequencesInsideOR2() {
+        final String text =
+                "import org.drools.mvel.compiler.Cheese;\n " +
+                        "global java.util.List results;\n" +
+                        "\n" +
+                        "rule R1 when\n" +
+                        "    ( $a: Cheese ( type == \"stilton\" )\n" +
+                        "    or\n" +
+                        "    $b: Cheese ( type == \"gorgonzola\" ) do[t1] )\n" +
+                        "    $c: Cheese ( type == \"cheddar\" )\n" +
+                        "then\n" +
+                        "    results.add( $c.getType() );\n" +
+                        "then[t1]\n" +
+                        "    results.add( $b.getType() );\n" +
+                        "end\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+
+        assertThat(ruleDescr.getLhs().getDescrs()).hasSize(2);
+        assertThat(ruleDescr.getLhs().getDescrs()).first().isInstanceOfSatisfying(OrDescr.class, stiltonOrGorgonzola -> {
+            assertThat(stiltonOrGorgonzola.getDescrs()).hasSize(2);
+            assertThat(stiltonOrGorgonzola.getDescrs()).first().isInstanceOfSatisfying(PatternDescr.class, stilton -> {
+                assertThat(stilton.getIdentifier()).isEqualTo("$a");
+                assertThat(stilton.getObjectType()).isEqualTo("Cheese");
+                assertThat(stilton.getConstraint().toString()).contains("stilton");
+            });
+            assertThat(stiltonOrGorgonzola.getDescrs()).last().isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+                assertThat(andDescr.getDescrs()).hasSize(2);
+                assertThat(andDescr.getDescrs()).first().isInstanceOfSatisfying(PatternDescr.class, gorgonzola -> {
+                    assertThat(gorgonzola.getIdentifier()).isEqualTo("$b");
+                    assertThat(gorgonzola.getObjectType()).isEqualTo("Cheese");
+                    assertThat(gorgonzola.getConstraint().toString()).contains("gorgonzola");
+                });
+                assertThat(andDescr.getDescrs()).last().isInstanceOfSatisfying(NamedConsequenceDescr.class, namedConsequenceDescr -> {
+                    assertThat(namedConsequenceDescr.getName()).isEqualTo("t1");
+                });
+            });
+        });
+        assertThat(ruleDescr.getLhs().getDescrs()).last().isInstanceOfSatisfying(PatternDescr.class, cheddar -> {
+            assertThat(cheddar.getIdentifier()).isEqualTo("$c");
+            assertThat(cheddar.getObjectType()).isEqualTo("Cheese");
+            assertThat(cheddar.getConstraint().toString()).contains("cheddar");
+        });
+    }
+
+    @Test
     public void queryComplexLhs() {
         final String text = "query isContainedIn(String x, String y)\n" +
                 "    Location (x, y;)\n" +
