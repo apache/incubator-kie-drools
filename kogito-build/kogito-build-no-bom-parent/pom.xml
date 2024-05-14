@@ -110,7 +110,6 @@
     <version.copyrename.plugin>1.0</version.copyrename.plugin>
     <version.dependency.plugin>3.5.0</version.dependency.plugin>
     <version.de.skuzzle.enforcer>1.1.0</version.de.skuzzle.enforcer>
-    <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
     <version.exec.plugin>3.1.1</version.exec.plugin>
     <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
@@ -300,10 +299,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>${version.deploy.plugin}</version>
-          <configuration>
-            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
-          </configuration>
+          <version>${version.maven-deploy-plugin}</version>
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>

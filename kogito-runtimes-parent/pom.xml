@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>30</version>
+    <version>32</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -53,16 +53,43 @@
 
   <scm>
     <connection>scm:git:https://github.com/apache/incubator-kie-kogito-runtimes.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-kogito-runtimes.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/apache/incubator-kie-kogito-runtimes.git</developerConnection>
     <url>https://github.com/apache/incubator-kie-kogito-runtimes</url>
   </scm>
 
   <developers>
     <developer>
-      <name>All developers are listed in the KIE GitHub organization</name>
-      <url>https://github.com/orgs/kiegroup/people</url>
+      <name>The Apache KIE Team</name>
+      <email>dev@kie.apache.org</email>
+      <url>https://kie.apache.org</url>
+      <organization>Apache Software Foundation</organization>
+      <organizationUrl>http://apache.org/</organizationUrl>
     </developer>
   </developers>
+
+  <mailingLists>
+    <mailingList>
+      <name>Development List</name>
+      <subscribe>dev-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <post>dev@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>User List</name>
+      <subscribe>users-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@kie.apache.org</unsubscribe>
+      <post>users@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?users@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@kie.apache.org</unsubscribe>
+      <post>commits@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
+    </mailingList>
+  </mailingLists>
 
   <!--
       CONVENTIONS:
@@ -119,67 +146,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <!-- distributionManagement section -->
-  <distributionManagement>
-    <repository>
-      <id>apache-release-staging-repository</id>
-      <name>Apache Release Staging Repository</name>
-      <url>https://repository.apache.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>apache-snapshots-repository</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-  <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom
-      has not been build locally. -->
-    <repository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache Nexus repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
   <modules>
     <module>kogito-build</module>
