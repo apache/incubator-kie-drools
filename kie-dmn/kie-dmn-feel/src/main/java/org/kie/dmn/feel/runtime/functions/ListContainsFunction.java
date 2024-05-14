@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
@@ -56,7 +57,8 @@ public class ListContainsFunction
         if (value instanceof String) {
             return value.equals(itemFromList);
         } else {
-            Boolean dmnEqual = BooleanEvalHelper.isEqual(value, itemFromList);
+            // Defaulting FEELDialect to FEEL
+            Boolean dmnEqual = BooleanEvalHelper.isEqual(value, itemFromList, FEELDialect.FEEL);
             return dmnEqual != null && dmnEqual;
         }
     }

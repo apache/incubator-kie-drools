@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
@@ -83,13 +84,8 @@ public abstract class BaseFEELFunction
         try {
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( !isCustomFunction() ) {
-                List<String> available = null;
-                if ( isNamedParams ) {
-                    available = Stream.of( params ).map( p -> ((NamedParameter) p).getName() ).collect( Collectors.toList() );
-                }
 
-
-                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available );
+                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams );
 
                 if ( cm != null ) {
                     Object result = cm.apply.invoke( this, cm.actualParams );
@@ -107,8 +103,10 @@ public abstract class BaseFEELFunction
                 } else {
                     // CandidateMethod cm could be null also if reflection failed on Platforms not supporting getClass().getDeclaredMethods()
                     String ps = getClass().toString();
-                    logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length() - 1 ) + " )'" );
-                    ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) + " )'", null));
+                    String parametersString = Arrays.stream(params).map(o -> o == null ? "(null)" : o instanceof String ? String.format("\"%s\"", o) : o.toString()).collect(Collectors.joining(", "));
+                    String errorMessage = String.format("Unable to find function '%s(%s)' with parameters %s", getName(), ps, parametersString);
+                    logger.error(errorMessage );
+                    ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, errorMessage, null));
                 }
             } else {
                 if ( isNamedParams ) {
@@ -132,7 +130,7 @@ public abstract class BaseFEELFunction
             logger.error( "Error trying to call function " + getName() + ".", e );
             ctx.notifyEvt( () -> new FEELEventBase( Severity.ERROR, "Error trying to call function " + getName() + ".", e ));
         }
-        return null;
+        return ctx.getFEELDialect().equals(FEELDialect.BFEEL) ? defaultValue() : null;
     }
 
     /**
@@ -146,8 +144,12 @@ public abstract class BaseFEELFunction
     }
 
     private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
-                                    Supplier<List<Object>> parameterValuesSupplier) {
-        return source.cata((left) -> {
+                                   Supplier<List<Object>> parameterValuesSupplier) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
+                && source.getOrElse(null) == null) {
+            source = Either.ofRight(defaultValue());
+        }
+        return source.cata(left -> {
             ctx.notifyEvt(() -> {
                               if (left instanceof InvalidParametersEvent invalidParametersEvent) {
                                   invalidParametersEvent.setNodeName(getName());
@@ -177,7 +179,7 @@ public abstract class BaseFEELFunction
         return params;
     }
 
-    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available) {
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
         CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {
@@ -186,7 +188,7 @@ public abstract class BaseFEELFunction
             }
 
             Object[] actualParams;
-            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch( p -> EvaluationContext.class.isAssignableFrom( p ) );
+            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
             if( injectCtx ) {
                 actualParams = new Object[ params.length + 1 ];
                 int j = 0;
@@ -206,7 +208,7 @@ public abstract class BaseFEELFunction
                 actualParams = params;
             }
             if( isNamedParams ) {
-                actualParams = calculateActualParams( ctx, m, actualParams, available );
+                actualParams = calculateActualParams( m, actualParams );
                 if( actualParams == null ) {
                     // incompatible method
                     continue;
@@ -292,7 +294,7 @@ public abstract class BaseFEELFunction
         }
     }
 
-    private Object[] calculateActualParams(EvaluationContext ctx, Method m, Object[] params, List<String> available) {
+    private Object[] calculateActualParams(Method m, Object[] params) {
         Annotation[][] pas = m.getParameterAnnotations();
         List<String> names = new ArrayList<>( m.getParameterCount() );
         for ( int i = 0; i < m.getParameterCount(); i++ ) {

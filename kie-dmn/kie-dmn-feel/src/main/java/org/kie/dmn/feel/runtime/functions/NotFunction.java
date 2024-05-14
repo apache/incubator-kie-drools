@@ -42,4 +42,9 @@ public class NotFunction
         return FEELFnResult.ofResult( negand == null ? null : !((Boolean) negand) );
     }
 
+    @Override
+    public Object defaultValue() {
+        return false;
+    }
+
 }

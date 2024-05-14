@@ -155,4 +155,9 @@ public class TimeFunction
         }
     }
 
+    @Override
+    public Object defaultValue() {
+        return invoke("00:00:00+00:00");
+    }
+
 }

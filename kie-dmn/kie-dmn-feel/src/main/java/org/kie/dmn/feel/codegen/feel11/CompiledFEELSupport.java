@@ -433,7 +433,7 @@ public class CompiledFEELSupport {
             // alignment to FunctionInvocationNode
             List<?> ps = (List<?>) params;
             if (ps.size() == 1) {
-                return ((Range) function).includes(ps.get(0));
+                return ((Range) function).includes(feelExprCtx.getFEELDialect(), ps.get(0));
             } else {
                 feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, ps.size()), null));
             }

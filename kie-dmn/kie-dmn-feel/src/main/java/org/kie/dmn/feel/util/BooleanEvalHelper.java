@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
@@ -62,7 +61,7 @@ public class BooleanEvalHelper {
      */
     public static Boolean compare(Object left, Object right, FEELDialect feelDialect, BiPredicate<Comparable, Comparable> op) {
         if ( left == null || right == null ) {
-            return returnOrDefault(null, feelDialect);
+            return getBooleanOrDialectDefault(null, feelDialect);
         }
         if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
@@ -94,7 +93,7 @@ public class BooleanEvalHelper {
             Comparable<?> r = (Comparable<?>) right;
             return op.test(l, r);
         }
-        return returnOrDefault(null, feelDialect);
+        return getBooleanOrDialectDefault(null, feelDialect);
     }
 
     /**
@@ -181,7 +180,13 @@ public class BooleanEvalHelper {
         return result;
     }
 
-    public static Boolean returnOrDefault(Object rawReturn, FEELDialect feelDialect) {
+    /**
+     * Return the original object or, depending on the FEELDialect, a default value
+     * @param rawReturn
+     * @param feelDialect
+     * @return
+     */
+    public static Boolean getBooleanOrDialectDefault(Object rawReturn, FEELDialect feelDialect) {
         if (feelDialect.equals(FEELDialect.BFEEL)) {
             if (rawReturn instanceof Boolean bool) {
                 return bool;
@@ -190,6 +195,34 @@ public class BooleanEvalHelper {
             }
         } else {
             return (Boolean) rawReturn;
+        }
+    }
+
+    /**
+     * Return <code>TRUE</code> if it is the original object or, depending on the FEELDialect, a default value
+     * @param rawReturn
+     * @param feelDialect
+     * @return
+     */
+    public static Boolean getTrueOrDialectDefault(Object rawReturn, FEELDialect feelDialect) {
+        if (rawReturn instanceof Boolean bool && bool) {
+            return bool;
+        } else {
+            return getBooleanOrDialectDefault(null, feelDialect);
+        }
+    }
+
+    /**
+     * Return <code>TRUE</code> if it is the original object or, depending on the FEELDialect, a default value
+     * @param rawReturn
+     * @param feelDialect
+     * @return
+     */
+    public static Boolean getFalseOrDialectDefault(Object rawReturn, FEELDialect feelDialect) {
+        if (rawReturn instanceof Boolean bool && (!bool)) {
+            return bool;
+        } else {
+            return getBooleanOrDialectDefault(null, feelDialect);
         }
     }
 

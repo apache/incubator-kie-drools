@@ -79,7 +79,7 @@ public class CompiledFEELSemanticMappings {
             Object param) {
         if (range instanceof Range) {
             try {
-                return ((Range) range).includes(param);
+                return ((Range) range).includes(ctx.getFEELDialect(), param);
             } catch (Exception e) {
                 // e.g. java.base/java.time.Duration cannot be cast to java.base/java.time.Period
                 ctx.notifyEvt(() -> new ASTEventBase(
@@ -137,7 +137,7 @@ public class CompiledFEELSemanticMappings {
             Boolean result = ((UnaryTest) test).apply(ctx, target);
             return result != null && result;
         } else if (test instanceof Range) {
-            Boolean result = ((Range) test).includes(target);
+            Boolean result = ((Range) test).includes(ctx.getFEELDialect(), target);
             return result != null && result;
         } else if (test == null) {
             return target == null ? true : null;
@@ -197,8 +197,10 @@ public class CompiledFEELSemanticMappings {
     }
 
     public static Boolean coerceToBoolean(final EvaluationContext ctx, Object value) {
-        Boolean toReturn = BooleanEvalHelper.returnOrDefault(value, ctx.getFEELDialect());
-        if (!ctx.getFEELDialect().equals(FEELDialect.BFEEL)) {
+        Boolean toReturn = BooleanEvalHelper.getBooleanOrDialectDefault(value, ctx.getFEELDialect());
+        if (!ctx.getFEELDialect().equals(FEELDialect.BFEEL)
+                && value != null
+                && !(value instanceof Boolean)) {
             ctx.notifyEvt(() -> new ASTEventBase(
                     FEELEvent.Severity.ERROR,
                     Msg.createMessage(
@@ -279,8 +281,7 @@ public class CompiledFEELSemanticMappings {
                 return Boolean.FALSE; //left hand operand is false, we do not need to evaluate right side
             }
         } else {
-            Boolean rightAND = right.get();
-            return Boolean.FALSE.equals(rightAND) ? Boolean.FALSE : null;
+            return BooleanEvalHelper.getFalseOrDialectDefault(right.get(), feelDialect);
         }
     }
 
@@ -307,7 +308,17 @@ public class CompiledFEELSemanticMappings {
         return (Boolean) InfixOperator.OR.evaluate(left, right, null);
     }
 
-    public static Boolean or(Boolean left, Supplier<Boolean> right) {
+    /**
+     * FEEL spec Table 38
+     * Delegates to {@link InfixOperator} except evaluationcontext
+     *
+     * @deprecated does not support short-circuit of the operator
+     */
+    public static Boolean or(final FEELDialect feelDialect, Object left, Object right) {
+        return BooleanEvalHelper.getBooleanOrDialectDefault(InfixOperator.OR.evaluate(left, right, null), feelDialect);
+    }
+
+    public static Boolean or(final FEELDialect feelDialect, Boolean left, Supplier<Boolean> right) {
         if (left != null) {
             if (!left.booleanValue()) {
                 return right.get();
@@ -373,7 +384,8 @@ public class CompiledFEELSemanticMappings {
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
     public static Boolean lte(final FEELDialect feelDialect, Object left, Object right) {
-        return or(lt(feelDialect, left, right),
+        return or(feelDialect,
+                  lt(feelDialect, left, right),
                 eq(feelDialect, left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
@@ -447,11 +459,11 @@ public class CompiledFEELSemanticMappings {
     /**
      * FEEL spec Table 39
      */
-    public static Boolean ne(Object left, Object right, FEELDialect feelDialect) {
+    public static Boolean ne(FEELDialect feelDialect, Object left, Object right) {
         return not(BooleanEvalHelper.isEqual(left, right, feelDialect));
     }
 
-    public static Object negateTest(Object param, FEELDialect feelDialect) {
+    public static Object negateTest(FEELDialect feelDialect, Object param) {
         if (param instanceof Boolean) {
             return param.equals(Boolean.FALSE);
         } else if (param instanceof UnaryTest) {

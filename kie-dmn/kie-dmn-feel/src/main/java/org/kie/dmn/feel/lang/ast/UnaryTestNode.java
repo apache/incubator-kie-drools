@@ -173,7 +173,7 @@ public class UnaryTestNode
             Object val = value.evaluate( c );
             if (val instanceof Range) {
                 try {
-                    return ((Range) val).includes(o);
+                    return ((Range) val).includes(c.getFEELDialect(), o);
                 } catch (Exception e) {
                     c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, val)));
                     throw e;
@@ -208,7 +208,7 @@ public class UnaryTestNode
                     }
                 } else if( test instanceof Range ) {
                     try {
-                        if( ((Range)test).includes( o ) ) {
+                        if( ((Range)test).includes(c.getFEELDialect(), o ) ) {
                             return false;
                         }
                     } catch ( Exception e ) {

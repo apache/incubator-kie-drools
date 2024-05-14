@@ -23,7 +23,6 @@ import java.time.temporal.TemporalAccessor;
 
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
-import org.kie.dmn.feel.util.EvalHelper;
 
 public class IsFunction extends BaseFEELFunction {
     public static final IsFunction INSTANCE = new IsFunction();

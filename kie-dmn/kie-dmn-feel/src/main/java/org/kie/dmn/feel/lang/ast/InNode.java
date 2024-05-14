@@ -88,7 +88,7 @@ public class InNode
             return ((UnaryTest) expr).apply( ctx, value );
         } else if ( expr instanceof Range ) {
             try {
-                return ((Range) expr).includes( value );
+                return ((Range) expr).includes(ctx.getFEELDialect(), value );
             } catch ( Exception e ) {
                 ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString() ), e ) );
                 return null;

@@ -34,6 +34,6 @@ public interface Range {
 
     RangeBoundary getHighBoundary();
 
-    Boolean includes(Object param);
+    Boolean includes(FEELDialect feelDialect, Object param);
 
 }

@@ -46,4 +46,9 @@ public class StringFunction
             return FEELFnResult.ofResult( String.format( mask, params ) );
         }
     }
+
+    @Override
+    public Object defaultValue() {
+        return "";
+    }
 }

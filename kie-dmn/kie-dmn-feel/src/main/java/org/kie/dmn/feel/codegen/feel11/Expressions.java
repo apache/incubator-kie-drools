@@ -34,6 +34,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -154,18 +155,22 @@ public class Expressions {
     }
 
     private static MethodCallExpr equality(String op, Expression left, Expression right) {
-        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(left, right));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(getFeelDialectFromEvaluationContext(), left, right));
     }
 
     private static MethodCallExpr comparison(String op, Expression left, Expression right) {
-        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(left, right));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(getFeelDialectFromEvaluationContext(), left, right));
     }
 
     private static MethodCallExpr booleans(String op, Expression left, Expression right) {
         Expression l = coerceToBoolean(left);
         Expression r = supplierLambda(coerceToBoolean(right));
 
-        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(l, r));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(getFeelDialectFromEvaluationContext(), l, r));
+    }
+
+    private static MethodCallExpr getFeelDialectFromEvaluationContext() {
+        return new MethodCallExpr(FeelCtx.FEELCTX, "getFEELDialect");
     }
 
     public static Expression unary(
@@ -197,7 +202,7 @@ public class Expressions {
     }
 
     public static MethodCallExpr unaryComparison(String operator, Expression right) {
-        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), operator, new NodeList<>(LEFT_EXPR, right));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), operator, new NodeList<>(getFeelDialectFromEvaluationContext(), LEFT_EXPR, right));
     }
 
     public static MethodCallExpr lt(Expression left, Expression right) {
