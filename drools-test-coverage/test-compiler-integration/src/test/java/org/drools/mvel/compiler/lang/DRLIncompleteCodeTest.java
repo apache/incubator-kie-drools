@@ -33,6 +33,7 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore("No need to maintain this test. See https://github.com/apache/incubator-kie-drools/issues/5924")
 public class DRLIncompleteCodeTest {
 
     @Before
