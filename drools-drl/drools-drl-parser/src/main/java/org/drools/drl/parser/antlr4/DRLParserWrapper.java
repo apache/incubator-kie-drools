@@ -50,8 +50,8 @@ public class DRLParserWrapper {
     /**
      * Main entry point for parsing DRL
      */
-    public PackageDescr parse(InputStream is) {
-        DRLParser drlParser = DRLParserHelper.createDrlParser(is);
+    public PackageDescr parse(InputStream is, String encoding) {
+        DRLParser drlParser = DRLParserHelper.createDrlParser(is, encoding);
         return parse(drlParser);
     }
 
