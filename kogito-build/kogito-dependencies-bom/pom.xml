@@ -40,6 +40,8 @@
     <version.org.springframework.boot>3.2.4</version.org.springframework.boot>
     <version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 
+    <version.org.bouncycastle.bc.jdk18on>1.78.1</version.org.bouncycastle.bc.jdk18on>
+
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
     <version.com.fasterxml.jackson>2.16.1</version.com.fasterxml.jackson>
@@ -154,6 +156,25 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Not directly used, but a vulnerable version has been brought from com.dajudge.kindcontainer dependency -->
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk18on</artifactId>
+        <version>${version.org.bouncycastle.bc.jdk18on}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk18on</artifactId>
+        <version>${version.org.bouncycastle.bc.jdk18on}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcutil-jdk18on</artifactId>
+        <version>${version.org.bouncycastle.bc.jdk18on}</version>
+      </dependency>
+
       <!-- Guava should not be used directly by Kogito, here we are managing it to override dependency added by GRPC to fix this CVE: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-2976 -->
       <dependency>
         <groupId>com.google.guava</groupId>
