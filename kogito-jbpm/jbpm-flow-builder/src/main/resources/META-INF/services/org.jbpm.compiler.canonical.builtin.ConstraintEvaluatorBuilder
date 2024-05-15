@@ -1,0 +1,5 @@
+org.jbpm.compiler.canonical.builtin.ExpressionConstraintEvaluatorBuilder
+org.jbpm.compiler.canonical.builtin.FEELConstraintEvaluatorBuilder
+org.jbpm.compiler.canonical.builtin.JavaConstraintEvaluatorBuilder
+org.jbpm.compiler.canonical.builtin.XPATHConstraintEvaluatorBuilder
+org.jbpm.compiler.canonical.builtin.MVELConstraintEvaluatorBuilder

@@ -33,7 +33,7 @@
 
   <itemDefinition id="_instanceMetadataItem" structureRef="org.w3c.dom.Document" />
 
-  <process processType="Private" isExecutable="true" id="XPathProcess" name="XPathProcess" >
+  <process processType="Private" isExecutable="true" id="XPathProcess" name="XPathProcess" tns:packageName="org.jbpm.bpmn2.activity">
 
     <!-- process variables -->
     <property id="instanceMetadata" itemSubjectRef="_instanceMetadataItem"/>

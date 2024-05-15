@@ -16,31 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.bpmn2.feel;
+package org.jbpm.compiler.canonical.builtin;
 
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.drl.ast.descr.ReturnValueDescr;
-import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
+import java.util.function.Supplier;
+
 import org.jbpm.process.core.ContextResolver;
-import org.jbpm.process.instance.impl.FeelReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.workflow.core.Constraint;
 
-public class FeelReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
+import com.github.javaparser.ast.expr.Expression;
 
-    public FeelReturnValueEvaluatorBuilder() {
+public class ExpressionConstraintEvaluatorBuilder implements ConstraintEvaluatorBuilder {
 
+    @Override
+    public boolean accept(Constraint constraint) {
+        return constraint instanceof ReturnValueConstraintEvaluator && ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator() instanceof Supplier;
     }
 
     @Override
-    public void build(final PackageBuildContext context,
-            final ReturnValueConstraintEvaluator constraintNode,
-            final ReturnValueDescr descr,
-            final ContextResolver contextResolver) {
-
-        String text = descr.getText();
-        FeelReturnValueEvaluator expr = new FeelReturnValueEvaluator(text);
-        constraintNode.setEvaluator(expr);
-
+    public Expression build(ContextResolver resolver, Constraint constraint) {
+        return ((Supplier<Expression>) ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator()).get();
     }
 
 }

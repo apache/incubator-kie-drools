@@ -85,7 +85,7 @@ return (te.equals(&quot;error&quot;));</bpmn2:conditionExpression>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="ExclusiveGateway_1" targetRef="EndEvent_3">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3">String te=(String) kcontext.getVariable(&quot;tipoEventoAdentro&quot;);
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3" language="http://www.java.com/java">String te=(String) kcontext.getVariable(&quot;tipoEventoAdentro&quot;);
 return (te.equals(&quot;nada&quot;));</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
   </bpmn2:process>

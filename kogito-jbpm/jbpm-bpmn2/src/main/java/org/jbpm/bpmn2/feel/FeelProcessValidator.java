@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.validation.ProcessValidationError;
+import org.jbpm.process.instance.impl.FeelErrorEvaluatorListener;
+import org.jbpm.process.instance.impl.FeelReturnValueEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.Constraint;

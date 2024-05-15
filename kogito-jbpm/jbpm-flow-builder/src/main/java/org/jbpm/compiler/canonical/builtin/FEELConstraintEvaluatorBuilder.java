@@ -16,31 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.bpmn2.feel;
+package org.jbpm.compiler.canonical.builtin;
 
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.drl.ast.descr.ReturnValueDescr;
-import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.FeelReturnValueEvaluator;
-import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.workflow.core.Constraint;
+import org.kie.kogito.internal.utils.ConversionUtils;
 
-public class FeelReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-    public FeelReturnValueEvaluatorBuilder() {
+public class FEELConstraintEvaluatorBuilder implements ConstraintEvaluatorBuilder {
 
+    @Override
+    public boolean accept(Constraint constraint) {
+        return "FEEL".equals(constraint.getDialect());
     }
 
     @Override
-    public void build(final PackageBuildContext context,
-            final ReturnValueConstraintEvaluator constraintNode,
-            final ReturnValueDescr descr,
-            final ContextResolver contextResolver) {
-
-        String text = descr.getText();
-        FeelReturnValueEvaluator expr = new FeelReturnValueEvaluator(text);
-        constraintNode.setEvaluator(expr);
-
+    public Expression build(ContextResolver resolver, Constraint constraint) {
+        return new ObjectCreationExpr(null,
+                StaticJavaParser.parseClassOrInterfaceType(FeelReturnValueEvaluator.class.getName()),
+                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(constraint.getConstraint()))));
     }
 
 }

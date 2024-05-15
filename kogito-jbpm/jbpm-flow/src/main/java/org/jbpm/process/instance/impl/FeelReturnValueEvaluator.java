@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.bpmn2.feel;
+package org.jbpm.process.instance.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.Globals;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;

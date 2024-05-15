@@ -20,28 +20,19 @@ package org.jbpm.compiler.canonical;
 
 import java.util.Collection;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 
-import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.compiler.canonical.builtin.ConstraintEvaluatorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
-import org.kie.kogito.internal.utils.ConversionUtils;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.UnknownType;
 
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_CONSTRAINT;
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_TYPE;
@@ -66,26 +57,7 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                 if (entry.getValue() != null) {
                     for (Constraint constraint : entry.getValue()) {
                         if (constraint != null) {
-                            Expression returnValueEvaluator;
-                            if (constraint instanceof ReturnValueConstraintEvaluator && ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator() instanceof Supplier) {
-                                returnValueEvaluator = ((Supplier<Expression>) ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator()).get();
-                            } else if ("FEEL".equals(constraint.getDialect())) {
-                                returnValueEvaluator = buildFEELReturnValueEvaluator(constraint);
-                            } else {
-                                BlockStmt actionBody = new BlockStmt();
-                                LambdaExpr lambda = new LambdaExpr(
-                                        new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
-                                        actionBody);
-
-                                for (Variable v : variableScope.getVariables()) {
-                                    actionBody.addStatement(makeAssignment(v));
-                                }
-
-                                BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + constraint.getConstraint() + "}");
-                                blockStmt.getStatements().forEach(actionBody::addStatement);
-
-                                returnValueEvaluator = lambda;
-                            }
+                            Expression returnValueEvaluator = ConstraintEvaluatorBuilderService.instance().build(node, constraint);
                             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
                                     getWorkflowElementConstructor(entry.getKey().getNodeId()),
                                     new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
@@ -102,9 +74,4 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
-    private static ObjectCreationExpr buildFEELReturnValueEvaluator(Constraint constraint) {
-        return new ObjectCreationExpr(null,
-                StaticJavaParser.parseClassOrInterfaceType("org.jbpm.bpmn2.feel.FeelReturnValueEvaluator"),
-                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(constraint.getConstraint()))));
-    }
 }

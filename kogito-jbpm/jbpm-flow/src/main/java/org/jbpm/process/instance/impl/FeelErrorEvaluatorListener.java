@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.bpmn2.feel;
+package org.jbpm.process.instance.impl;
 
 import java.util.ArrayList;
 import java.util.List;

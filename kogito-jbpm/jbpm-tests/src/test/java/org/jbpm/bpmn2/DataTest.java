@@ -27,19 +27,24 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.jbpm.bpmn2.activity.XPathProcessModel;
+import org.jbpm.bpmn2.activity.XPathProcessProcess;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
+import org.kie.kogito.process.ProcessInstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -139,18 +144,21 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testXpathExpression() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-XpathExpression.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<XPathProcessModel> process = XPathProcessProcess.newProcess(app);
+        XPathProcessModel model = process.createModel();
+
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
                 .parse(new ByteArrayInputStream(
                         "<instanceMetadata><user approved=\"false\" /></instanceMetadata>"
                                 .getBytes()));
-        Map<String, Object> params = new HashMap<>();
-        params.put("instanceMetadata", document);
-        KogitoProcessInstance processInstance = kruntime.startProcess("XPathProcess",
-                params);
-        assertProcessInstanceCompleted(processInstance);
+
+        model.setInstanceMetadata(document);
+        ProcessInstance<XPathProcessModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
     }
 
