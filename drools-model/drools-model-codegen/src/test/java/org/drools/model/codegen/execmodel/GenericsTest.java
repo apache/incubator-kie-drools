@@ -20,10 +20,10 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
-
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -116,5 +116,174 @@ public class GenericsTest extends BaseModelTest {
 
         ksession.insert(classWithGenericField);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testGenericsOnSuperclass() {
+        // KIE-DROOLS-5925
+        String str =
+                "import " + DieselCar.class.getCanonicalName() + ";\n " +
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "rule \"Diesel vehicles with more than 95 kW use high-octane fuel (diesel has no octane, this is a test)\"\n" +
+                "    when\n" +
+                "        $v: DieselCar(motor.kw > 95, score<=0, !motor.highOctane)\n" +
+                "    then\n" +
+                "        System.out.println(\"Diesel vehicle with more than 95 kW: \" + $v+\", score=\"+$v.score);\n" +
+                "        $v.engine.highOctane = true;\n" +
+                "        update($v);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"High-octane fuel engines newer serial numbers have slightly higher score\"\n" +
+                "    when\n" +
+                "        $v: DieselCar(engine.highOctane, score<=1, motor.serialNumber > 50000)\n" +
+                "    then\n" +
+                "        System.out.println(\"High octane engine vehicle with newer serial number: \" + $v.motor.serialNumber);\n" +
+                "        $v.score = $v.score + 1;\n" +
+                "        update($v);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        DieselCar vehicle1 = new DieselCar("Volkswagen", "Passat", 100);
+        vehicle1.setFrameMaxTorque(500);
+        vehicle1.getEngine().setMaxTorque(350);
+        vehicle1.getEngine().setSerialNumber(75_000);
+        vehicle1.setScore(0);
+
+        DieselCar vehicle2 = new DieselCar("Peugeot", "208", 50);
+        vehicle2.setFrameMaxTorque(100);
+        vehicle2.getEngine().setMaxTorque(200);
+        vehicle2.setScore(0);
+
+        ksession.insert(vehicle1);
+        ksession.insert(vehicle2);
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
+    }
+
+    public static abstract class Vehicle<TEngine extends Engine> {
+
+        private final String maker;
+        private final String model;
+
+        private int score;
+
+        public Vehicle(String maker, String model) {
+            this.maker = Objects.requireNonNull(maker);
+            this.model = Objects.requireNonNull(model);
+        }
+
+        public String getMaker() {
+            return maker;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public abstract TEngine getEngine();
+
+        public TEngine getMotor() {
+            return getEngine();
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        @Override
+        public String toString() {
+            return "Vehicle{" + "maker='" + maker + '\'' + ", model='" + model + '\'' + '}';
+        }
+    }
+
+    public static abstract class Engine {
+
+        private final int kw;
+
+        public Engine(int kw) {
+            this.kw = kw;
+        }
+
+        public int getKw() {
+            return kw;
+        }
+
+        public abstract boolean isZeroEmissions();
+
+    }
+
+    public static class DieselEngine extends Engine {
+
+        // diesel has no octanes... but let's pretend it does
+        private boolean highOctane;
+
+        private int maxTorque;
+
+        private long serialNumber;
+
+        public DieselEngine(int kw) {
+            super(kw);
+        }
+
+        @Override
+        public boolean isZeroEmissions() {
+            return false;
+        }
+
+        public boolean isHighOctane() {
+            return highOctane;
+        }
+
+        public void setHighOctane(boolean highOctane) {
+            this.highOctane = highOctane;
+        }
+
+        public int getMaxTorque() {
+            return maxTorque;
+        }
+
+        public void setMaxTorque(int maxTorque) {
+            this.maxTorque = maxTorque;
+        }
+
+        public void setSerialNumber(long serialNumber) {
+            this.serialNumber = serialNumber;
+        }
+
+        public long getSerialNumber() {
+            return serialNumber;
+        }
+
+    }
+
+    public static class DieselCar extends Vehicle<DieselEngine> {
+        private final DieselEngine engine;
+
+        private long frameMaxTorque;
+
+
+
+        public DieselCar(String maker, String model, int kw) {
+            super(maker, model);
+            this.engine = new DieselEngine(kw);
+        }
+
+        @Override
+        public DieselEngine getEngine() {
+            return engine;
+        }
+
+        public long getFrameMaxTorque() {
+            return frameMaxTorque;
+        }
+
+        public void setFrameMaxTorque(long frameMaxTorque) {
+            this.frameMaxTorque = frameMaxTorque;
+        }
     }
 }
