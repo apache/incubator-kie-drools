@@ -1072,8 +1072,19 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<BaseDescr> visitLhsUnary(DRLParser.LhsUnaryContext ctx) {
-        return visitDescrChildren(ctx); // lhsUnary may have consequenceInvocation, so not always a single child
+    public BaseDescr visitLhsUnary(DRLParser.LhsUnaryContext ctx) {
+        List<BaseDescr> children = visitDescrChildren(ctx);
+        if (children.size() > 1) {
+            // lhsUnary may have multiple children e.g. consequenceInvocation, connect with AND
+            AndDescr andDescr = BaseDescrFactory.builder(new AndDescr())
+                    .withParserRuleContext(ctx)
+                    .build();
+            children.forEach(andDescr::addDescr);
+            return andDescr;
+        } else {
+            // size == 1. children never be empty
+            return children.get(0);
+        }
     }
 
     /**
