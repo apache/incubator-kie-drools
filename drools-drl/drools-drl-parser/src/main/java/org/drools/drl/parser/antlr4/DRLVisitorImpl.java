@@ -235,9 +235,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public TypeDeclarationDescr visitTypeDeclaration(DRLParser.TypeDeclarationContext ctx) {
-        TypeDeclarationDescr typeDeclarationDescr = BaseDescrFactory.builder(new TypeDeclarationDescr(ctx.name.getText()))
+        TypeDeclarationDescr typeDeclarationDescr = BaseDescrFactory.builder(new TypeDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .build();
+
+        typeDeclarationDescr.setTypeName(ctx.name.getText());
+
         if (ctx.DRL_TRAIT() != null) {
             typeDeclarationDescr.setTrait(true);
         }
@@ -257,9 +260,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public EnumDeclarationDescr visitEnumDeclaration(DRLParser.EnumDeclarationContext ctx) {
-        EnumDeclarationDescr enumDeclarationDescr = BaseDescrFactory.builder(new EnumDeclarationDescr(ctx.name.getText()))
+        EnumDeclarationDescr enumDeclarationDescr = BaseDescrFactory.builder(new EnumDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .build();
+
+        enumDeclarationDescr.setTypeName(ctx.name.getText());
+
         ctx.drlAnnotation().stream()
                 .map(this::visitDrlAnnotation)
                 .forEach(enumDeclarationDescr::addAnnotation);
