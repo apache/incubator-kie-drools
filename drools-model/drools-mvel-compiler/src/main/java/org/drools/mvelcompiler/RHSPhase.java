@@ -216,12 +216,14 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
     private Optional<TypedExpression> asPropertyAccessor(SimpleName n, VisitorContext arg) {
         Optional<TypedExpression> lastTypedExpression = arg.getScope();
 
-        Optional<Type> scopeType = lastTypedExpression.filter(ListAccessExprT.class::isInstance)
-                                                      .map(ListAccessExprT.class::cast)
-                                                      .map(expr -> expr.getElementType())
-                                                      .orElse(arg.getScopeType());
+        Optional<Type> propertyType = lastTypedExpression.filter(ListAccessExprT.class::isInstance)
+                                                         .map(ListAccessExprT.class::cast)
+                                                         .map(expr -> expr.getElementType())
+                                                         .orElse(arg.getScopeType());
 
-        Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
+        Optional<Type> scopeType = lastTypedExpression.flatMap(TypedExpression::getScopeType);
+
+        Optional<Method> optAccessor = propertyType.flatMap(t -> ofNullable(getAccessor(classFromType(t, scopeType.orElse(null)), n.asString())));
 
         return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
     }

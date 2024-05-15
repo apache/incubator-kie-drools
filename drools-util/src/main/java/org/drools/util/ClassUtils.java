@@ -104,8 +104,8 @@ public final class ClassUtils {
         if (c == boolean.class) return Boolean.class;
         return c;
     }
-    
-    
+
+
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
@@ -315,11 +315,11 @@ public final class ClassUtils {
         // see http://download.oracle.com/javase/6/docs/api/java/lang/Class.html#getName%28%29
         String qualifiedNamespace = className;
         String name = className;
-        if( className.indexOf('.') > 0 ) { 
+        if( className.indexOf('.') > 0 ) {
             qualifiedNamespace = className.substring( 0, className.lastIndexOf( '.' ) ).trim();
             name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
         }
-        else if( className.indexOf('[') == 0 ) { 
+        else if( className.indexOf('[') == 0 ) {
            qualifiedNamespace = className.substring(0, className.lastIndexOf('[') );
         }
         Object object = patterns.get( qualifiedNamespace );
@@ -351,7 +351,7 @@ public final class ClassUtils {
             } else {
                 dotPos = cls.getName().lastIndexOf( '.' );
             }
-                
+
             if ( dotPos > 0 ) {
                 return cls.getName().substring( 0,
                                                 dotPos );
@@ -556,17 +556,17 @@ public final class ClassUtils {
         }
         throw new RuntimeException("No generic type");
     }
-    
+
 
     public static Type getTypeArgument(Type genericType, int index) {
         return genericType instanceof ParameterizedType ? (( ParameterizedType ) genericType).getActualTypeArguments()[index] : Object.class;
     }
-    
+
     public static boolean isAssignableFrom(Type from, Type to) {
         Class<?> fromClass = toRawClass( from );
         Class<?> toClass = toRawClass( to );
         return fromClass.isAssignableFrom(toClass) || MethodUtils.areBoxingCompatible(fromClass, toClass);
-    }    
+    }
 
 
     public static boolean isCollection(Type t) {
@@ -577,15 +577,20 @@ public final class ClassUtils {
     }
 
     public static Class<?> classFromType(Type t) {
-        Class<?> clazz;
-        if(t instanceof Class<?>) {
-            clazz = (Class<?>) t;
-        } else if(t instanceof ParameterizedType) {
-            clazz = (Class<?>) ((ParameterizedType)t).getRawType();
-        } else {
-            throw new UnsupportedOperationException("Unable to parse type");
+        return classFromType(t, null);
+    }
+
+    public static Class<?> classFromType(Type t, Type scope) {
+        if (t instanceof Class<?>) {
+            return (Class<?>) t;
         }
-        return clazz;
+        if (t instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType)t).getRawType();
+        }
+        if (t instanceof TypeVariable && scope != null) {
+            return classFromType( actualTypeFromGenerics(scope, t) );
+        }
+        throw new UnsupportedOperationException("Unable to parse type");
     }
 
     public static Class<?> toRawClass(Type type) {
@@ -603,7 +608,7 @@ public final class ClassUtils {
         }
         throw new UnsupportedOperationException( "Unknown type " + type );
     }
-    
+
     public static Class<?> rawType(Type type) {
         if (type == null) {
             return null;
@@ -670,7 +675,7 @@ public final class ClassUtils {
     public static boolean isFinal(Class<?> clazz) {
         return Modifier.isFinal( clazz.getModifiers() );
     }
-    
+
     public static boolean isInterface(Class<?> clazz) {
         return Modifier.isInterface( clazz.getModifiers() );
     }
@@ -913,5 +918,38 @@ public final class ClassUtils {
 
     public static boolean isNumericClass(Class<?> clazz) {
         return numericClasses.contains(clazz);
+    }
+
+    public static Type actualTypeFromGenerics(Type scope, Type genericType) {
+        return actualTypeFromGenerics(scope, genericType, toRawClass(scope));
+    }
+
+    public static Type actualTypeFromGenerics(Type scope, Type genericType, Class<?> rawClassCursor) {
+        if (genericType instanceof Class || genericType instanceof ParameterizedType) {
+            return genericType;
+        }
+        if (genericType instanceof TypeVariable typeVar) {
+            if (scope instanceof ParameterizedType paramType) {
+                return actualTypeFromGenerics(rawClassCursor, paramType, typeVar);
+            }
+            if (scope instanceof Class classCursor && classCursor.getSuperclass() != null && classCursor.getSuperclass() != Object.class) {
+                return actualTypeFromGenerics(classCursor.getGenericSuperclass(), genericType, classCursor.getSuperclass());
+            }
+            if (typeVar.getBounds().length == 1 && typeVar.getBounds()[0] instanceof Class) {
+                return typeVar.getBounds()[0];
+            }
+        }
+        return Object.class;
+    }
+
+    private static Type actualTypeFromGenerics(Class<?> rawClassCursor, ParameterizedType originalTypeCursor, TypeVariable genericType) {
+        int genericPos = 0;
+        for (TypeVariable typeVar : rawClassCursor.getTypeParameters()) {
+            if (typeVar.equals( genericType )) {
+                return originalTypeCursor.getActualTypeArguments()[genericPos];
+            }
+            genericPos++;
+        }
+        throw new RuntimeException( "Unknonw generic type " + genericType + " for type " + originalTypeCursor );
     }
 }
