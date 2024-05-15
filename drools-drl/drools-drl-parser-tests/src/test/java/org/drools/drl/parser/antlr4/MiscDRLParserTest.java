@@ -3072,6 +3072,20 @@ class MiscDRLParserTest {
     }
 
     @Test
+    public void parse_QualifiedTypeDeclaration() throws Exception {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile(
+                                                               "qualified_type_declaration.drl" );
+
+        TypeDeclarationDescr someFact = pkg.getTypeDeclarations().get( 0 );
+        assertThat(someFact.getTypeName()).isEqualTo("SomeFact");
+        assertThat(someFact.getNamespace()).isEqualTo("com.sample1");
+
+        EnumDeclarationDescr color = pkg.getEnumDeclarations().get( 0 );
+        assertThat(color.getTypeName()).isEqualTo("Color");
+        assertThat(color.getNamespace()).isEqualTo("com.sample2");
+    }
+
+    @Test
     public void parenthesesOneLevelNestWithThreeSiblings() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile( "Rule_with_nested_LHS.drl" );
 
