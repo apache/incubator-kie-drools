@@ -276,7 +276,6 @@ class DRLParserIdentifierTest {
         assertThat(exprConstraintDescr.getExpression()).isEqualTo("address.super.contains() == 10");
     }
 
-    @Disabled("To be done by https://github.com/apache/incubator-kie-drools/issues/5874")
     @Test
     void operator_key() {
         final String text =
@@ -292,7 +291,6 @@ class DRLParserIdentifierTest {
         assertThat(exprConstraintDescr.getExpression()).isEqualTo("age provides 10");
     }
 
-    @Disabled("To be done by https://github.com/apache/incubator-kie-drools/issues/5874")
     @Test
     void neg_operator_key() {
         final String text =
@@ -310,8 +308,6 @@ class DRLParserIdentifierTest {
 
     @Test
     void operator_key_temporal() {
-        // This test (and MiscDRLParserTest.parse_PluggableOperators) fails when adapting drlIdentifier to operator_key and neg_operator_key in DRL6Expressions.g4
-        // See https://github.com/apache/incubator-kie-drools/issues/5874
         final String text =
                 "rule X\n" +
                         "when\n" +

@@ -927,12 +927,10 @@ in_key
     ;
 
 operator_key
-  // IDENTIFIER is required to accept custom operators. We need to keep this semantic predicate for custom operators
-  :      {(helper.isPluggableEvaluator(false))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
-  |      op=builtInOperator { helper.emit($op.token, DroolsEditorType.KEYWORD); }
+  // drlIdentifier is required to accept custom operators. We need to keep this semantic predicate for custom operators
+  :      {(helper.isPluggableEvaluator(false))}? id=drlIdentifier { helper.emit($id.token, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
-  |      op=builtInOperator { helper.emit($op.token, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(true))}? id=drlIdentifier { helper.emit($id.token, DroolsEditorType.KEYWORD); }
   ;
