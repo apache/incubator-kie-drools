@@ -26,6 +26,7 @@ import java.util.List;
 import org.drools.base.base.ObjectType;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultEventHandle;
@@ -300,7 +301,7 @@ public class WindowNode extends ObjectSource
     }
 
     @Override
-    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
 

@@ -143,6 +143,38 @@ public class GenericsTest extends BaseModelTest {
                 "        update($v);\n" +
                 "end";
 
+        runTestWithGenerics(str);
+    }
+
+    @Test
+    public void testGenericsOnSuperclassWithRedundantVariableDeclaration() {
+        // KIE-DROOLS-5925
+        String str =
+                "import " + DieselCar.class.getCanonicalName() + ";\n " +
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "rule \"Diesel vehicles with more than 95 kW use high-octane fuel (diesel has no octane, this is a test)\"\n" +
+                "    when\n" +
+                "        $v: DieselCar($v.motor.kw > 95, score<=0, !$v.motor.highOctane)\n" +
+                "    then\n" +
+                "        System.out.println(\"Diesel vehicle with more than 95 kW: \" + $v+\", score=\"+$v.score);\n" +
+                "        $v.engine.highOctane = true;\n" +
+                "        update($v);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"High-octane fuel engines newer serial numbers have slightly higher score\"\n" +
+                "    when\n" +
+                "        $v: DieselCar($v.engine.highOctane, $v.score<=1, $v.motor.serialNumber > 50000)\n" +
+                "    then\n" +
+                "        System.out.println(\"High octane engine vehicle with newer serial number: \" + $v.motor.serialNumber);\n" +
+                "        $v.score = $v.score + 1;\n" +
+                "        update($v);\n" +
+                "end";
+
+        runTestWithGenerics(str);
+    }
+
+    private void runTestWithGenerics(String str) {
         KieSession ksession = getKieSession(str);
 
         DieselCar vehicle1 = new DieselCar("Volkswagen", "Passat", 100);
