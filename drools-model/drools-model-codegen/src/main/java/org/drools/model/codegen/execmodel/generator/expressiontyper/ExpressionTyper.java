@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,6 +93,7 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
 import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
+import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils;
 import org.drools.util.Pair;
 import org.drools.util.TypeResolver;
@@ -125,6 +125,7 @@ import static org.drools.model.codegen.execmodel.generator.expressiontyper.Flatt
 import static org.drools.mvel.parser.MvelParser.parseType;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.ClassUtils.extractGenericType;
+import static org.drools.util.ClassUtils.actualTypeFromGenerics;
 import static org.drools.util.ClassUtils.getTypeArgument;
 import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.util.ClassUtils.toRawClass;
@@ -922,16 +923,7 @@ public class ExpressionTyper {
             return new TypedExpressionCursor(methodCallExpr, ((ParameterizedType) originalTypeCursor).getActualTypeArguments()[0]);
         }
 
-        java.lang.reflect.Type genericReturnType = m.getGenericReturnType();
-        if (genericReturnType instanceof TypeVariable) {
-            if (originalTypeCursor instanceof ParameterizedType) {
-                return new TypedExpressionCursor( methodCallExpr, getActualType( rawClassCursor, ( ParameterizedType ) originalTypeCursor, ( TypeVariable ) genericReturnType ) );
-            } else {
-                return new TypedExpressionCursor(methodCallExpr, Object.class);
-            }
-        } else {
-            return new TypedExpressionCursor(methodCallExpr, genericReturnType);
-        }
+        return new TypedExpressionCursor(methodCallExpr, actualTypeFromGenerics(originalTypeCursor, m.getGenericReturnType(), rawClassCursor));
     }
 
     private void promoteBigDecimalParameters(MethodCallExpr methodCallExpr, Class[] argsType, Class<?>[] actualArgumentTypes) {
@@ -965,17 +957,6 @@ public class ExpressionTyper {
         } else {
             return Optional.empty();
         }
-    }
-
-    private java.lang.reflect.Type getActualType(Class<?> rawClassCursor, ParameterizedType originalTypeCursor, TypeVariable genericReturnType) {
-        int genericPos = 0;
-        for (TypeVariable typeVar : rawClassCursor.getTypeParameters()) {
-            if (typeVar.equals( genericReturnType )) {
-                return originalTypeCursor.getActualTypeArguments()[genericPos];
-            }
-            genericPos++;
-        }
-        throw new RuntimeException( "Unknonw generic type " + genericReturnType + " for type " + originalTypeCursor );
     }
 
     private TypedExpressionCursor objectCreationExpr(ObjectCreationExpr objectCreationExpr) {
@@ -1163,7 +1144,7 @@ public class ExpressionTyper {
                     return of(new TypedExpressionCursor(addCastToExpression(typeWithoutDollar, fieldAccessor, false), typeOfFirstAccessor ) );
                 }
 
-                return of(new TypedExpressionCursor(fieldAccessor, firstAccessor.getGenericReturnType() ) );
+                return of( new TypedExpressionCursor(fieldAccessor, ClassUtils.actualTypeFromGenerics(originalTypeCursor, firstAccessor.getGenericReturnType()) ) );
             }
 
             Field field = DrlxParseUtil.getField( classCursor, firstName );

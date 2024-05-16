@@ -28,5 +28,9 @@ public interface TypedExpression {
     Optional<Type> getType();
 
     Node toJavaExpression();
+
+    default Optional<Type> getScopeType() {
+        return Optional.empty();
+    }
 }
 

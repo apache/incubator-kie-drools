@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
@@ -182,7 +183,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     @Override
     protected BitMask setNodeConstraintsPropertyReactiveMask( BitMask mask, ObjectType objectType, List<String> accessibleProperties) {
         for (int i = 0; i < alphaConstraints.length; i++) {
-            mask = mask.setAll(alphaConstraints[i].getListenedPropertyMask(objectType, accessibleProperties));
+            mask = mask.setAll(alphaConstraints[i].getListenedPropertyMask(Optional.empty(), objectType, accessibleProperties));
         }
         return mask;
     }
