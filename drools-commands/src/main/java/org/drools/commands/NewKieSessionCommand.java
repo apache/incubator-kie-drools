@@ -54,7 +54,7 @@ public class NewKieSessionCommand extends AbstractNewKieContainerCommand
 
         KieSessionConfiguration kieSessionConfiguration = customizeSessionConfiguration.apply(sessionName, kieContainer);
 
-        KieSession ksession = kieContainer.newKieSession(kieSessionConfiguration);
+        KieSession ksession = kieContainer.newKieSession(sessionName, kieSessionConfiguration);
 
         ((RegistryContext) context).register(KieSession.class, ksession);
 
