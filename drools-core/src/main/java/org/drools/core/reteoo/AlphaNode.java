@@ -19,12 +19,14 @@
 package org.drools.core.reteoo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -309,8 +311,8 @@ public class AlphaNode extends ObjectSource
         }
     }
 
-    public BitMask calculateDeclaredMask(ObjectType objectType, List<String> settableProperties) {
-        return constraint.getListenedPropertyMask(objectType, settableProperties);
+    public BitMask calculateDeclaredMask(Pattern pattern, ObjectType objectType, List<String> settableProperties) {
+        return constraint.getListenedPropertyMask(Optional.ofNullable(pattern), objectType, settableProperties);
     }
 
     @Override
