@@ -1858,4 +1858,26 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertThat(fired).isEqualTo(10);
     }
+
+    @Test
+    public void testPropertyReactivityWithRedundantVariableDeclaration() {
+        // KIE-DROOLS-5943
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( $p.name == \"Mario\" )\n" +
+                "then\n" +
+                "    $p.setAge( $p.getAge()+1 );\n" +
+                "    update($p);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertThat(p.getAge()).isEqualTo(41);
+    }
 }
