@@ -24,6 +24,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 import org.kie.kogito.addon.quarkus.common.reactive.messaging.http.CloudEventHttpOutgoingDecorator;
 import org.kie.kogito.jobs.messaging.quarkus.AbstractReactiveMessagingJobsService;
 
@@ -43,7 +44,7 @@ public class KnativeEventingJobsService extends AbstractReactiveMessagingJobsSer
     public KnativeEventingJobsService(
             @ConfigProperty(name = "kogito.service.url") URI serviceUrl,
             ObjectMapper objectMapper,
-            @Channel(KOGITO_JOB_SERVICE_JOB_REQUEST_EVENTS_CHANNEL) Emitter<String> eventsEmitter) {
+            @Channel(KOGITO_JOB_SERVICE_JOB_REQUEST_EVENTS_CHANNEL) @OnOverflow(value = OnOverflow.Strategy.UNBOUNDED_BUFFER) Emitter<String> eventsEmitter) {
         super(serviceUrl, objectMapper, eventsEmitter);
     }
 
