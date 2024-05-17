@@ -18,9 +18,22 @@
  */
 package org.drools.drl.parser.antlr4;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.drl.parser.DrlParser;
 
 public class ParserTestUtils {
+
+    public static List<String> javaKeywords =
+            Arrays.asList(
+                    "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
+                    "continue", "default", "do", "double", "else", "enum", "extends", "final", "finally", "float",
+                    "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native",
+                    "new", "package", "private", "protected", "public", "return", "short", "static", "strictfp",
+                    "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile",
+                    "while"
+            );
 
     private ParserTestUtils() {
         // It is a utility class, so it should not be instantiated.
@@ -38,5 +51,9 @@ public class ParserTestUtils {
      */
     public static void enableOldParser() {
         DrlParser.ANTLR4_PARSER_ENABLED = false;
+    }
+
+    public static List<String> javaKeywords() {
+        return javaKeywords;
     }
 }

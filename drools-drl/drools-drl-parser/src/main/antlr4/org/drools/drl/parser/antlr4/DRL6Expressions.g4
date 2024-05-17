@@ -162,6 +162,58 @@ typeArgument
 drlIdentifier returns [Token token]
     : drlKeywords
     | IDENTIFIER
+    // java keywords
+    | ABSTRACT
+    | ASSERT
+    | BOOLEAN
+    | BREAK
+    | BYTE
+    | CASE
+    | CATCH
+    | CHAR
+    | CLASS
+    | CONST
+    | CONTINUE
+    | DEFAULT
+    | DO
+    | DOUBLE
+    | ELSE
+    | ENUM
+    | EXTENDS
+    | FINAL
+    | FINALLY
+    | FLOAT
+    | FOR
+    | IF
+    | GOTO
+    | IMPLEMENTS
+    | IMPORT
+    | INSTANCEOF
+    | INT
+    | INTERFACE
+    | LONG
+    | NATIVE
+    | NEW
+    | PACKAGE
+    | PRIVATE
+    | PROTECTED
+    | PUBLIC
+    | RETURN
+    | SHORT
+    | STATIC
+    | STRICTFP
+    | SUPER
+    | SWITCH
+    | SYNCHRONIZED
+    | THIS
+    | THROW
+    | THROWS
+    | TRANSIENT
+    | TRY
+    | VOID
+    | VOLATILE
+    | WHILE
+    // Module related keywords
     | MODULE
     | OPEN
     | REQUIRES
@@ -172,12 +224,13 @@ drlIdentifier returns [Token token]
     | PROVIDES
     | WITH
     | TRANSITIVE
+    // other java keywords
+    | VAR
     | YIELD
+    | RECORD
     | SEALED
     | PERMITS
-    | RECORD
-    | VAR
-    | THIS
+    | NON_SEALED
     ;
 
 // matches any drl keywords

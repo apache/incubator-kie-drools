@@ -441,29 +441,6 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testNoViableAlt() {
-        String source = "x.int";
-        parser.parse(source);
-
-        // Backward Compatibility Notes:
-        //   Old expr parser (DRL6Expressions) allows this expression because it's too tolerant (fail at runtime anyway).
-        //   Backward compatibility doesn't seem to be required in this case. (But we may align with the old tolerant behavior.)
-        if (DrlParser.ANTLR4_PARSER_ENABLED) {
-            assertThat(parser.hasErrors()).isTrue();
-            assertThat(parser.getErrors()).hasSize(1);
-            DroolsParserException exception = parser.getErrors().get(0);
-            assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
-            assertThat(exception.getLineNumber()).isEqualTo(1);
-            assertThat(exception.getColumn()).isEqualTo(2);
-            assertThat(exception.getOffset()).isEqualTo(2);
-            assertThat(exception.getMessage())
-                    .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input '.int'");
-        } else {
-            assertThat(parser.hasErrors()).isFalse();
-        }
-    }
-
-    @Test
     void orWithMethodCall() {
         String source = "value == 10 || someMethod() == 4";
         ConstraintConnectiveDescr result = parser.parse(source);
