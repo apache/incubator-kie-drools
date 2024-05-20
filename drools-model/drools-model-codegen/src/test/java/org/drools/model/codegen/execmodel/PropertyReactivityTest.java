@@ -608,6 +608,46 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
+    public void thisWithGetter() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R \n" +
+                        "when\n" +
+                        "    $p: Person(this.getAddress() != null)\n" +
+                        "then\n" +
+                        "    modify($p) { setLikes(\"Cheese\") };\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        me.setAddress(new Address("street1", 2, "city1"));
+        ksession.insert( me );
+
+        assertThat(ksession.fireAllRules(10)).as("should not loop").isEqualTo(1);
+    }
+
+    @Test
+    public void nullSafeDereferencing() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R \n" +
+                        "when\n" +
+                        "    $p: Person(address!.street == \"street1\")\n" +
+                        "then\n" +
+                        "    modify($p) { setLikes(\"Cheese\") };\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        me.setAddress(new Address("street1", 2, "city1"));
+        ksession.insert( me );
+
+        assertThat(ksession.fireAllRules(10)).as("should not loop").isEqualTo(1);
+    }
+
+    @Test
     public void testNestedPropInRHS() throws Exception {
         // Property Reactivity for "owner"
         final String str =
