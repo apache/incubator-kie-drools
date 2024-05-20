@@ -19,13 +19,12 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.stream.Stream;
 
+import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -34,8 +33,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends AbstractCompositeNodeVisitor<T> {
 
-    public CompositeContextNodeVisitor(Map<Class<?>, AbstractNodeVisitor<? extends Node>> nodesVisitors) {
-        super(nodesVisitors);
+    public CompositeContextNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
+        super(nodeVisitorService);
     }
 
     @Override

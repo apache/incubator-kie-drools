@@ -20,13 +20,12 @@ package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Stream;
 
+import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.workflow.core.node.DynamicNode;
-import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
@@ -36,8 +35,8 @@ import static org.jbpm.ruleflow.core.factory.DynamicNodeFactory.METHOD_LANGUAGE;
 
 public class DynamicNodeVisitor extends CompositeContextNodeVisitor<DynamicNode> {
 
-    public DynamicNodeVisitor(Map<Class<?>, AbstractNodeVisitor<? extends Node>> nodesVisitors) {
-        super(nodesVisitors);
+    public DynamicNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
+        super(nodeVisitorService);
     }
 
     @Override

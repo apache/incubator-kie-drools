@@ -23,12 +23,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.StateNodeFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.StateNode;
-import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -39,8 +39,8 @@ import static org.jbpm.ruleflow.core.factory.StateNodeFactory.METHOD_CONSTRAINT;
 
 public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
 
-    public StateNodeVisitor(Map<Class<?>, AbstractNodeVisitor<? extends Node>> nodesVisitors) {
-        super(nodesVisitors);
+    public StateNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
+        super(nodeVisitorService);
     }
 
     @Override

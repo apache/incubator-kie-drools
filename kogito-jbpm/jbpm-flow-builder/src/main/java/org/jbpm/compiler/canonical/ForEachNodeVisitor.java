@@ -21,8 +21,8 @@ package org.jbpm.compiler.canonical;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
 import org.jbpm.workflow.core.Node;
@@ -45,8 +45,8 @@ import static org.jbpm.ruleflow.core.factory.ForEachNodeFactory.METHOD_SEQUENTIA
 
 public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode> {
 
-    public ForEachNodeVisitor(Map<Class<?>, AbstractNodeVisitor<? extends org.kie.api.definition.process.Node>> nodesVisitors) {
-        super(nodesVisitors);
+    public ForEachNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
+        super(nodeVisitorService);
     }
 
     @Override

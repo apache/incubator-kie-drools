@@ -20,13 +20,12 @@ package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Stream;
 
+import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
-import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -37,8 +36,8 @@ import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_K
 
 public class EventSubProcessNodeVisitor extends CompositeContextNodeVisitor<EventSubProcessNode> {
 
-    public EventSubProcessNodeVisitor(Map<Class<?>, AbstractNodeVisitor<? extends Node>> nodesVisitors) {
-        super(nodesVisitors);
+    public EventSubProcessNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
+        super(nodeVisitorService);
     }
 
     @Override

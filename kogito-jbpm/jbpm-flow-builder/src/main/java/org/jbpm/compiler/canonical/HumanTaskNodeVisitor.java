@@ -27,8 +27,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class HumanTaskNodeVisitor extends WorkItemNodeVisitor<HumanTaskNode> {
 
-    public HumanTaskNodeVisitor() {
-        super(null);
+    public HumanTaskNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override
