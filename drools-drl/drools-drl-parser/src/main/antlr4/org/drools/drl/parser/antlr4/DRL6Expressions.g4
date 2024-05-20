@@ -193,7 +193,7 @@ drlIdentifier returns [Token token]
     | INTERFACE
     | LONG
     | NATIVE
-    | NEW
+//    | NEW     // avoid ambiguity with 'new_key creator' and 'drlIdentifier' in 'primary'
     | PACKAGE
     | PRIVATE
     | PROTECTED

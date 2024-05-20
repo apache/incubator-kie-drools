@@ -441,6 +441,30 @@ public class DRLExprParserTest {
     }
 
     @Test
+    public void testNoViableAlt() {
+        String source = "a~a";
+        parser.parse(source);
+
+        // Backward Compatibility Notes:
+        //   Old expr parser (DRL6Expressions) allows this expression and only takes "a" ignoring the invalid part "~a" without emitting an error.
+        //   This is rather a bug in the old parser, and the new parser (ANTLR4) correctly emits an error for this case.
+        //   Backward compatibility doesn't seem to be required in this case.
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            assertThat(parser.hasErrors()).isTrue();
+            assertThat(parser.getErrors()).hasSize(1);
+            DroolsParserException exception = parser.getErrors().get(0);
+            assertThat(exception.getErrorCode()).isEqualTo("ERR 101");
+            assertThat(exception.getLineNumber()).isEqualTo(1);
+            assertThat(exception.getColumn()).isEqualTo(2);
+            assertThat(exception.getOffset()).isEqualTo(2);
+            assertThat(exception.getMessage())
+                    .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input 'a'");
+        } else {
+            assertThat(parser.hasErrors()).isFalse();
+        }
+    }
+
+    @Test
     void orWithMethodCall() {
         String source = "value == 10 || someMethod() == 4";
         ConstraintConnectiveDescr result = parser.parse(source);
@@ -540,5 +564,18 @@ public class DRLExprParserTest {
         right = (AtomicExprDescr) expr.getRight();
         assertThat(left.getExpression()).isEqualTo("someMethod(value)");
         assertThat(right.getExpression()).isEqualTo("4");
+    }
+
+    @Test
+    void newBigDecimal() {
+        String source = "$bd : new BigDecimal(30)";
+        ConstraintConnectiveDescr result = parser.parse(source);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        assertThat(result.getDescrs().size()).isEqualTo(1);
+
+        BindingDescr bind = (BindingDescr) result.getDescrs().get(0);
+        assertThat(bind.getVariable()).isEqualTo("$bd");
+        assertThat(bind.getExpression()).isEqualTo("new BigDecimal(30)");
     }
 }
