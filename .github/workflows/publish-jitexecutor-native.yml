@@ -5,13 +5,12 @@ on:
     branches: ["**"]
     paths:
       - ".github/workflows/publish-jitexecutor-native.yml"
+      - "jitexecutor-native/**"
   workflow_dispatch:
     inputs:
       kogito_runtime_version:
         description: "Kogito Runtime version"
         required: true
-  schedule:
-    - cron: "0 16 * * 0" # Every sunday at 4:00PM
 
 jobs:
   build_jitexecutor_native:
@@ -30,13 +29,14 @@ jobs:
       - name: Set version
         id: version
         run: |
-          if [ ${{ github.event_name }} == "schedule" ]; then
-            VERSION="999-${{ steps.date.outputs.CURRENT_DATE }}"
-            echo "TAG=$VERSION" >> "$GITHUB_OUTPUT"
-            echo "PROJECT_VERSION=$VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
+          if [ ${{ github.event_name }} == "pull_request" ]; then
+            echo "REPOSITORY=${{github.event.pull_request.head.repo.full_name}}" >> "$GITHUB_OUTPUT"
+            echo "REF=${{github.event.pull_request.head.ref}}" >> "$GITHUB_OUTPUT"
+            echo "PROJECT_VERSION=999-SNAPSHOT" >> "$GITHUB_OUTPUT"
           else
             VERSION="${{ github.event.inputs.kogito_runtime_version }}"
-            echo "TAG=${VERSION//-SNAPSHOT/}" >> "$GITHUB_OUTPUT"
+            echo "REPOSITORY=apache/incubator-kie-kogito-apps" >> "$GITHUB_OUTPUT"
+            echo "REF=${VERSION//-SNAPSHOT/}" >> "$GITHUB_OUTPUT"
             echo "PROJECT_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
           fi
         shell: bash
@@ -48,8 +48,8 @@ jobs:
       - name: "Checkout kie-kogito-apps"
         uses: actions/checkout@v4
         with:
-          repository: apache/incubator-kie-kogito-apps
-          ref: ${{ steps.version.outputs.TAG }}
+          repository: ${{ steps.version.outputs.REPOSITORY }}
+          ref: ${{ steps.version.outputs.REF }}
 
       - name: "Set up Maven"
         uses: stCarolas/setup-maven@v5
@@ -57,33 +57,15 @@ jobs:
           maven-version: 3.9.6
 
       - name: "Set up JDK 17"
-        if: runner.os != 'Windows'
         uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "zulu"
+          server-id: apache.snapshots.https
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
 
-      - name: "Build macOS"
-        if: runner.os == 'macOS'
-        run: |
-          brew install make && \
-          wget https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-17.0.9/graalvm-community-jdk-17.0.9_macos-x64_bin.tar.gz && \
-          tar -xzf graalvm-community-jdk-17.0.9_macos-x64_bin.tar.gz && \
-          sudo mv graalvm-community-openjdk-17.0.9+9.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1
-          export PATH=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1/Contents/Home/bin:$PATH && \
-          export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1/Contents/Home && \
-          gu install native-image && \
-          mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-darwin -am -Pjitexecutor-native
-
-      - name: "Publish macOS"
-        if: github.event_name != 'pull_request' && runner.os == 'macOS'
-        shell: bash
-        run: |
-          echo "Publishing macOS..."
-
-      - name: "Build Linux"
+      - name: "Setup Linux"
         if: runner.os == 'Linux'
         run: |
           sudo apt update && \
@@ -91,24 +73,20 @@ jobs:
           build-essential \
           libgtk-3-dev \
           libappindicator3-dev \
-          gir1.2-appindicator3-0.1 && \
-          mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-linux -am -Pjitexecutor-native
+          gir1.2-appindicator3-0.1
 
-      - name: "Publish Linux"
-        if: github.event_name != 'pull_request' && runner.os == 'Linux'
-        shell: bash
+      - name: "Setup macOS"
+        if: runner.os == 'macOS'
         run: |
-          echo "Publishing Linux..."
-
-      - name: "Configure Pagefile"
-        if: runner.os == 'Windows'
-        uses: al-cheb/configure-pagefile-action@a3b6ebd6b634da88790d9c58d4b37a7f4a7b8708 #v1.4
-        with:
-          minimum-size: 16GB
-          maximum-size: 16GB
-          disk-root: "C:"
+          brew install make && \
+          wget https://github.com/graalvm/graalvm-ce-builds/releases/download/jdk-17.0.9/graalvm-community-jdk-17.0.9_macos-x64_bin.tar.gz && \
+          tar -xzf graalvm-community-jdk-17.0.9_macos-x64_bin.tar.gz && \
+          sudo mv graalvm-community-openjdk-17.0.9+9.1 /Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1
+          export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-community-openjdk-17.0.9+9.1/Contents/Home
+          export PATH=${GRAALVM_HOME}/bin:$PATH
+          echo "${GRAALVM_HOME}/bin" >> $GITHUB_PATH && \
+          echo "GRAALVM_HOME=${GRAALVM_HOME}" >> $GITHUB_ENV && \
+          gu install native-image
 
       - name: "Setup MSCV"
         if: runner.os == 'Windows'
@@ -125,19 +103,63 @@ jobs:
           java-version: "17"
           components: "native-image"
 
-      - name: "Build Windows"
+      - name: "Configure Pagefile"
         if: runner.os == 'Windows'
+        uses: al-cheb/configure-pagefile-action@a3b6ebd6b634da88790d9c58d4b37a7f4a7b8708 #v1.4
+        with:
+          minimum-size: 16GB
+          maximum-size: 16GB
+          disk-root: "C:"
+
+      - name: "Update versions (Linux and macOS)"
+        if: (runner.os == 'Linux' || runner.os == 'macOS') && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
+          mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
+
+      - name: "Update versions Windows"
+        if: runner.os == 'Windows' && github.event_name != 'pull_request'
         shell: pwsh
         run: |
           mvn -B -fae -ntp -N -e versions:update-parent -DparentVersion="[${{ steps.version.outputs.PROJECT_VERSION }}]" -DallowSnapshots=true -DgenerateBackupPoms=false
           mvn -B -fae -ntp -N -e versions:update-child-modules -DallowSnapshots=true -DgenerateBackupPoms=false
-          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-win32 -am -Pjitexecutor-native
-      
-      - name: "Publish Windows"
-        if: github.event_name != 'pull_request' && runner.os == 'Windows'
+
+      - name: "Build macOS"
+        if: runner.os == 'macOS' && github.event_name == 'pull_request'
         shell: bash
         run: |
-          echo "Publishing Windows..."
+          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-darwin -am -Pjitexecutor-native
+
+      - name: "Build and publish macOS"
+        if: runner.os == 'macOS' && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-darwin -am -Pjitexecutor-native
+
+      - name: "Build Linux"
+        if: runner.os == 'Linux' && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-linux -am -Pjitexecutor-native
+
+      - name: "Build and Publish Linux"
+        if: runner.os == 'Linux' && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-linux -am -Pjitexecutor-native
+
+      - name: "Build Windows"
+        if: runner.os == 'Windows' && github.event_name == 'pull_request'
+        shell: pwsh
+        run: |
+          mvn clean install -B -ntp -DskipTests -pl jitexecutor-native/jitexecutor-native-win32 -am -Pjitexecutor-native
+      
+      - name: "Build and Publish Windows"
+        if: runner.os == 'Windows' && github.event_name != 'pull_request'
+        shell: pwsh
+        run: |
+          mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-win32 -am -Pjitexecutor-native
 
       - name: "Upload JIT Executor binary"
         uses: actions/upload-artifact@v4
