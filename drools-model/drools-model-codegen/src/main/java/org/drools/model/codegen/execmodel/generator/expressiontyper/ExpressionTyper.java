@@ -1181,13 +1181,18 @@ public class ExpressionTyper {
         TypedExpressionCursor teCursor;
         if (childNodes.size() > 1 && !isInLineCast) {
             SimpleName fieldName = null;
-            if (childNodes.get(1) instanceof NameExpr) {
-                fieldName = (( NameExpr ) childNodes.get(1 )).getName();
-            } else if (childNodes.get(1) instanceof SimpleName) {
-                fieldName = ( SimpleName ) childNodes.get(1 );
+            Node secondNode = childNodes.get(1);
+            if (secondNode instanceof NameExpr nameExpr) {
+                fieldName = nameExpr.getName();
+            } else if (secondNode instanceof SimpleName simpleName) {
+                fieldName = simpleName;
             }
             if (fieldName != null) {
                 context.addReactOnProperties( getFieldName(drlxExpr, fieldName ) );
+            }
+
+            if (secondNode instanceof MethodCallExpr methodCallExpr) {
+                addReactOnProperty(methodCallExpr.getNameAsString(), methodCallExpr.getArguments());
             }
         }
         teCursor = new TypedExpressionCursor(new NameExpr(THIS_PLACEHOLDER), originalTypeCursor);
