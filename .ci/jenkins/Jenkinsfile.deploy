@@ -2,7 +2,6 @@ import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
 import org.kie.jenkins.MavenCommand
-import org.kie.jenkins.MavenStagingHelper
 
 deployProperties = [:]
 
@@ -30,7 +29,6 @@ pipeline {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
-        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
     }
 
     stages {
@@ -102,11 +100,24 @@ pipeline {
                 }
             }
         }
-        stage('Deploy kogito-apps locally') {
+        stage('Deploy kogito-apps') {
             steps {
                 script {
-                    dir(getRepoName()){
-                        runMavenDeploy(params.SKIP_TESTS, true)
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        def installOrDeploy
+                        if (shouldDeployToRepository()) {
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                        } else {
+                            installOrDeploy = 'install'
+                        }
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                            getMavenCommand().withProperty('maven.test.failure.ignore', true)
+                                .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                                .withOptions(env.KOGITO_APPS_BUILD_MVN_OPTS ? [ env.KOGITO_APPS_BUILD_MVN_OPTS ] : [])
+                                .skipTests(skipTests)
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run("clean $installOrDeploy")
+                        }
                     }
                 }
             }
@@ -115,30 +126,6 @@ pipeline {
                     script {
                         saveReports()
                         util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
-        stage('Upload artifacts to given repository') {
-            when {
-                expression { return !isRelease() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    // Deploy to specific repository with credentials
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(), getMavenRepoZipUrl())
-                }
-            }
-        }
-        stage('Stage artifacts') {
-            when {
-                expression { return shouldStageArtifacts() }
-            }
-            steps {
-                script {
-                    dir(getRepoName()){
-                        // Stage release artifacts
-                        runMavenStage()
                     }
                 }
             }
@@ -224,14 +211,6 @@ void commitAndCreatePR() {
     deployProperties["${getRepoName()}.pr.link"] = githubscm.createPRWithLabels(commitMsg, prBody, getBuildBranch(), ['skip-ci'] as String[], getGitAuthorCredsId()) 
 }
 
-boolean isSpecificArtifactsUpload() {
-    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID
-}
-
-boolean shouldStageArtifacts() {
-    return isRelease()
-}
-
 boolean shouldDeployToRepository() {
     return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'apache'
 }
@@ -275,49 +254,10 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-MavenCommand getMavenCommand() {
+MavenCommand getMavenCommand(String directory = '') {
+    directory = directory ?: getRepoName()
     return new MavenCommand(this, ['-fae', '-ntp'])
-            .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
-            .withProperty('full')
-}
-
-void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
-    mvnCmd = getMavenCommand()
-
-    if (localDeployment) {
-        mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
-    } else if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-        mvnCmd.withProperty('maven.test.failure.ignore', true)
-            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-            .withOptions(env.KOGITO_APPS_BUILD_MVN_OPTS ? [ env.KOGITO_APPS_BUILD_MVN_OPTS ] : [])
-            .skipTests(skipTests)
-            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-            .run('clean deploy')
-    }
-}
-
-void runMavenStage() {
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-        MavenStagingHelper stagingHelper = getStagingHelper(getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE))
-        deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
-        stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
-    }
-}
-
-MavenStagingHelper getStagingHelper(MavenCommand mavenCommand) {
-    return new MavenStagingHelper(this, mavenCommand)
-            .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
-            .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
-}
-
-String getLocalDeploymentFolder() {
-    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
-}
-
-String getMavenRepoZipUrl() {
-    return "${env.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
+                .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
+                .inDirectory(directory)
+                .withProperty('full')
 }
