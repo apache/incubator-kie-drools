@@ -5122,4 +5122,25 @@ class MiscDRLParserTest {
 
         assertThat(pkg.getRules().get(0).getName()).isEqualTo("R");
     }
+
+    @Test
+    void accumulateEmptyChunks() {
+        ParserTestUtils.enableOldParser();
+        String text = "rule R\n" +
+                "when\n" +
+                "        $totalAmount : Number() from accumulate( Cheese( $price : price ),\n" +
+                "                                                 init( ),\n" +
+                "                                                 action( ),\n" +
+                "                                                 result( null ) );\n" +
+                "then\n" +
+                "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccumulateDescr accumulateDescr = (AccumulateDescr) outPattern.getSource();
+        assertThat(accumulateDescr.getInitCode()).isEmpty();
+        assertThat(accumulateDescr.getActionCode()).isEmpty();
+        assertThat(accumulateDescr.getReverseCode()).isNull();
+        assertThat(accumulateDescr.getResultCode()).isEqualTo( "null");
+    }
 }
