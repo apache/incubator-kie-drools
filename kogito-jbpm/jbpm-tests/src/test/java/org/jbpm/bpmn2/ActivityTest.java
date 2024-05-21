@@ -20,12 +20,34 @@ package org.jbpm.bpmn2;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.jbpm.bpmn2.activity.ScriptTaskModel;
+import org.jbpm.bpmn2.activity.ScriptTaskProcess;
+import org.jbpm.bpmn2.activity.ScriptTaskWithIOModel;
+import org.jbpm.bpmn2.activity.ScriptTaskWithIOProcess;
+import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataModel;
+import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataProcess;
+import org.jbpm.bpmn2.flow.CompositeWithDIGraphicalModel;
+import org.jbpm.bpmn2.flow.CompositeWithDIGraphicalProcess;
+import org.jbpm.bpmn2.flow.MinimalImplicitModel;
+import org.jbpm.bpmn2.flow.MinimalImplicitProcess;
+import org.jbpm.bpmn2.flow.MinimalModel;
+import org.jbpm.bpmn2.flow.MinimalProcess;
+import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalModel;
+import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalProcess;
+import org.jbpm.bpmn2.flow.MinimalWithGraphicalModel;
+import org.jbpm.bpmn2.flow.MinimalWithGraphicalProcess;
+import org.jbpm.bpmn2.flow.ProcessWithVariableNameModel;
+import org.jbpm.bpmn2.flow.ProcessWithVariableNameProcess;
+import org.jbpm.bpmn2.flow.UserTaskModel;
+import org.jbpm.bpmn2.flow.UserTaskProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -36,6 +58,8 @@ import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.subprocess.SubProcessWithEntryExitScriptsModel;
 import org.jbpm.bpmn2.subprocess.SubProcessWithEntryExitScriptsProcess;
+import org.jbpm.bpmn2.task.SendTaskModel;
+import org.jbpm.bpmn2.task.SendTaskProcess;
 import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.AssignmentBuilder;
@@ -81,7 +105,9 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.Application;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -98,31 +124,43 @@ import static org.assertj.core.api.Assertions.fail;
 public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
-    public void testMinimalProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MinimalProcess.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("Minimal");
-        assertProcessInstanceCompleted(processInstance);
+    public void testMinimalProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<MinimalModel> minimalProcess = MinimalProcess.newProcess(app);
+        MinimalModel model = minimalProcess.createModel();
+        org.kie.kogito.process.ProcessInstance<MinimalModel> instance = minimalProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testMinimalProcessImplicit() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MinimalProcessImplicit.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("MinimalImplicit");
-        assertProcessInstanceCompleted(processInstance);
+    public void testMinimalProcessImplicit() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<MinimalImplicitModel> minimalImplicitProcess = MinimalImplicitProcess.newProcess(app);
+        MinimalImplicitModel model = minimalImplicitProcess.createModel();
+        ProcessInstance<MinimalImplicitModel> instance = minimalImplicitProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testMinimalProcessWithGraphical() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MinimalProcessWithGraphical.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("MinimalWithGraphical");
-        assertProcessInstanceCompleted(processInstance);
+    public void testMinimalProcessWithGraphical() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<MinimalWithGraphicalModel> minimalWithGraphicalProcess = MinimalWithGraphicalProcess.newProcess(app);
+        MinimalWithGraphicalModel model = minimalWithGraphicalProcess.createModel();
+        ProcessInstance<MinimalWithGraphicalModel> instance = minimalWithGraphicalProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testMinimalProcessWithDIGraphical() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MinimalProcessWithDIGraphical.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("MinimalWithDIGraphical");
-        assertProcessInstanceCompleted(processInstance);
+    public void testMinimalProcessWithDIGraphical() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<MinimalWithDIGraphicalModel> minimalWithDIGraphicalProcess = MinimalWithDIGraphicalProcess.newProcess(app);
+        MinimalWithDIGraphicalModel model = minimalWithDIGraphicalProcess.createModel();
+        ProcessInstance<MinimalWithDIGraphicalModel> instance = minimalWithDIGraphicalProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -194,34 +232,38 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testCompositeProcessWithDIGraphical() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-CompositeProcessWithDIGraphical.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("CompositeWithDIGraphical");
-        assertProcessInstanceCompleted(processInstance);
+    public void testCompositeProcessWithDIGraphical() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<CompositeWithDIGraphicalModel> compositeWithDIGraphicalProcess = CompositeWithDIGraphicalProcess.newProcess(app);
+        CompositeWithDIGraphicalModel model = compositeWithDIGraphicalProcess.createModel();
+        ProcessInstance<CompositeWithDIGraphicalModel> instance = compositeWithDIGraphicalProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testScriptTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/activity/BPMN2-ScriptTask.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask");
-        assertProcessInstanceCompleted(processInstance);
+    public void testScriptTask() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ScriptTaskModel> scriptTasklProcess = ScriptTaskProcess.newProcess(app);
+        ScriptTaskModel model = scriptTasklProcess.createModel();
+        ProcessInstance<ScriptTaskModel> instance = scriptTasklProcess.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testScriptTaskWithIO() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/activity/BPMN2-ScriptTaskWithIO.bpmn2");
-
-        Process scriptProcess = kruntime.getKieBase().getProcess("ScriptTaskWithIO");
-        assertThat(scriptProcess).isNotNull();
-        Node[] nodes = ((NodeContainer) scriptProcess).getNodes();
+    public void testScriptTaskWithIO() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ScriptTaskWithIOModel> scriptTaskWithIOProcess = ScriptTaskWithIOProcess.newProcess(app);
+        ScriptTaskWithIOModel model = scriptTaskWithIOProcess.createModel();
+        model.setName("john");
+        ProcessInstance<ScriptTaskWithIOModel> instance = scriptTaskWithIOProcess.createInstance(model);
+        instance.start();
+        assertThat(scriptTaskWithIOProcess).isNotNull();
+        Collection<KogitoNode> nodes = scriptTaskWithIOProcess.findNodes(Objects::nonNull);
         assertThat(nodes).hasSize(3);
         assertThat(nodes).filteredOn(n -> n instanceof ActionNode).allMatch(n -> ((ActionNode) n).getInAssociations().size() == 1 && ((ActionNode) n).getOutAssociations().size() == 1);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "John");
-        KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTaskWithIO", params);
-
-        assertProcessInstanceCompleted(processInstance);
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -357,19 +399,20 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testUserTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/activity/BPMN2-UserTask.bpmn2");
-
+    public void testUserTask() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("UserTask");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskModel> processDefinition = UserTaskProcess.newProcess(app);
+        UserTaskModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        instance.completeWorkItem(workItem.getStringId(), Collections.emptyMap(), SecurityPolicy.of("john", Collections.emptyList()));
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -827,16 +870,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testSendTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/task/BPMN2-SendTask.bpmn2");
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Send Task",
-                new SendTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("s", "john");
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime
-                .startProcess("SendTask", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
+    public void testSendTask() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Send Task", new SendTaskHandler());
+        org.kie.kogito.process.Process<SendTaskModel> processDefinition = SendTaskProcess.newProcess(app);
+        SendTaskModel model = processDefinition.createModel();
+        model.setS("john");
+        org.kie.kogito.process.ProcessInstance<SendTaskModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -938,13 +980,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testScriptTaskWithVariableByName() throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put("myVar", "test");
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-ProcessWithVariableName.bpmn2");
 
-        KogitoProcessInstance processInstance = kruntime.startProcess(
-                "ProcessWithVariableName", params);
-        assertProcessInstanceCompleted(processInstance);
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ProcessWithVariableNameModel> processDefinition = ProcessWithVariableNameProcess.newProcess(app);
+        ProcessWithVariableNameModel model = processDefinition.createModel();
+        model.setMyVar("test");
+        org.kie.kogito.process.ProcessInstance<ProcessWithVariableNameModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1021,19 +1064,20 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testUserTaskWithSimData() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/activity/BPMN2-UserTaskWithSimulationMetaData.bpmn2");
-
+    public void testUserTaskWithSimData() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("UserTaskWithSimulationMetaData");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskWithSimulationMetaDataModel> processDefinition = UserTaskWithSimulationMetaDataProcess.newProcess(app);
+        UserTaskWithSimulationMetaDataModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskWithSimulationMetaDataModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        instance.completeWorkItem(workItem.getStringId(), Collections.emptyMap(), SecurityPolicy.of("john", Collections.emptyList()));
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
