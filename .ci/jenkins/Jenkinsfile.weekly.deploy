@@ -101,10 +101,28 @@ pipeline {
             }
         }
 
-        stage('Build & Test & Deploy locally') {
+        stage('Build & Test & Install/Deploy') {
             steps {
                 script {
-                    runMavenLocalDeploy(params.SKIP_TESTS)
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        def installOrDeploy
+                        if (shouldDeployToRepository()) {
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                        } else {
+                            installOrDeploy = 'install'
+                        }
+                        def mvnCmd = getMavenCommand().withProperty('maven.test.failure.ignore', true)
+                                .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                                .withOptions(env.KOGITO_RUNTIMES_BUILD_MVN_OPTS ? [ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS ] : [])
+                        if (params.SKIP_TESTS) {
+                            mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
+                        }
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                            mvnCmd
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run("clean $installOrDeploy")
+                        }
+                    }
                 }
             }
             post {
@@ -112,28 +130,6 @@ pipeline {
                     script {
                         saveReports()
                         util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
-
-        stage('Upload artifacts to given repository') {
-            when {
-                expression { return shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                            getMavenCommand()
-                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                .withProperty('wagon.source', "file://${getLocalDeploymentFolder()}")
-                                .withProperty('wagon.target', env.MAVEN_DEPLOY_REPOSITORY)
-                                .withProperty('wagon.targetId', 'apache-snapshots-repository')
-                                .withProperty('apache.snapshot.repository.username', REPOSITORY_USER)
-                                .withProperty('apache.snapshot.repository.password', REPOSITORY_TOKEN)
-                                .run("org.codehaus.mojo:wagon-maven-plugin:2.0.2:merge-maven-repos")
-                        }
                     }
                 }
             }
@@ -235,20 +231,6 @@ MavenCommand getMavenCommand(String directory = '') {
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
                 .withProperty('full')
-}
-
-void runMavenLocalDeploy(boolean skipTests = true) {
-    mvnCmd = getMavenCommand()
-    mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
-
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-        mvnCmd.withProperty('maven.test.failure.ignore', true)
-            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-            .withOptions(env.KOGITO_RUNTIMES_BUILD_MVN_OPTS ? [ env.KOGITO_RUNTIMES_BUILD_MVN_OPTS ] : [])
-            //.skipTests(skipTests) // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
-            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-            .run('clean deploy')
-    }
 }
 
 String getLocalDeploymentFolder() {
