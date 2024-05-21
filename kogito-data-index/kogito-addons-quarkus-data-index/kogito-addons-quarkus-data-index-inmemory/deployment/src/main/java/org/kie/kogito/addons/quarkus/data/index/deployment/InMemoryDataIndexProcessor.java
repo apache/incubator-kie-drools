@@ -18,11 +18,17 @@
  */
 package org.kie.kogito.addons.quarkus.data.index.deployment;
 
+import java.util.List;
+
+import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourcePatternsBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
+import io.quarkus.devui.spi.page.Page;
 
 public class InMemoryDataIndexProcessor extends AbstractKogitoAddonsQuarkusDataIndexProcessor {
 
@@ -38,4 +44,13 @@ public class InMemoryDataIndexProcessor extends AbstractKogitoAddonsQuarkusDataI
         resource.produce(NativeImageResourcePatternsBuildItem.builder().includeGlob("postgres-*.txz").build());
     }
 
+    @BuildStep(onlyIf = { IsDevelopment.class })
+    CardPageBuildItem createDevUILink(List<SystemPropertyBuildItem> systemPropertyBuildItems) {
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+        cardPageBuildItem.addPage(Page.externalPageBuilder("Data Index GraphQL UI")
+                .url("/q/graphql-ui/")
+                .isHtmlContent()
+                .icon("font-awesome-solid:signs-post"));
+        return cardPageBuildItem;
+    }
 }
