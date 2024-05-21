@@ -313,14 +313,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
             OPERATOR_IMAGE_NAME: 'optaplanner-operator',
             MAX_REGISTRY_RETRIES: 3,
         ])
-        if (jobType == JobType.RELEASE) {
-            jobParams.env.putAll([
-                NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
-                NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
-                NEXUS_STAGING_PROFILE_ID: "${MAVEN_NEXUS_STAGING_PROFILE_ID}",
-                NEXUS_BUILD_PROMOTION_PROFILE_ID: "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}",
-            ])
-        }
     }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {

@@ -53,8 +53,6 @@ pipeline {
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
 
-        // Maven configuration
-        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
     }
 
     stages {
@@ -134,13 +132,21 @@ pipeline {
         stage('Build OptaPlanner') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                        getOptaplannerMavenCommand()
-                                .withProperty('maven.test.failure.ignore', true)
-                                .withProperty('operator.image.build')
-                                .skipTests(params.SKIP_TESTS)
-                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                .run('clean install')
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        def installOrDeploy
+                        if (shouldDeployToRepository()) {
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                        } else {
+                            installOrDeploy = 'install'
+                        }
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                            getOptaplannerMavenCommand()
+                                    .withProperty('maven.test.failure.ignore', true)
+                                    .withProperty('operator.image.build')
+                                    .skipTests(params.SKIP_TESTS)
+                                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                    .run("clean $installOrDeploy")
+                        }
                     }
                     if (isRelease()) {
                         updateAntoraYaml(optaplannerFolder)
@@ -178,46 +184,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploy locally') {
-            steps {
-                script {
-                    runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
-                }
-            }
-        }
-        stage('Deploy to repository') {
-            when {
-                expression { return  shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                            new MavenCommand(this)
-                                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                    .withProperty('wagon.source', "file://${getLocalDeploymentFolder(optaplannerRepository)}")
-                                    .withProperty('wagon.target', MAVEN_DEPLOY_REPOSITORY)
-                                    .withProperty('wagon.targetId', 'apache-snapshots-repository')
-                                    .withProperty('apache.snapshot.repository.username', REPOSITORY_USER)
-                                    .withProperty('apache.snapshot.repository.password', REPOSITORY_TOKEN)
-                                    .run("org.codehaus.mojo:wagon-maven-plugin:2.0.2:merge-maven-repos")
-                        }
-                    }
-                }
-            }
-        }
-
-//        stage('Upload artifacts to given repository') {
-//            when {
-//                expression { return isSpecificArtifactsUpload() }
-//            }
-//            steps {
-//                script {
-//                    // Deploy to specific repository with credentials
-//                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
-//                }
-//            }
-//        }
         stage('Stage artifacts') {
             when {
                 expression { return shouldStageArtifacts() }
@@ -450,31 +416,7 @@ String getMavenRepoZipUrl() {
     return "${params.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
 }
 
-void runMavenStage(MavenCommand mvnCmd, String localDeployId) {
-    MavenStagingHelper stagingHelper = getStagingHelper(mvnCmd)
-    deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder(localDeployId)))
-    stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
-}
-
-MavenStagingHelper getStagingHelper(MavenCommand mvnCmd) {
-    return new MavenStagingHelper(this, mvnCmd)
-            .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
-            .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
-}
-
-String getLocalDeploymentFolder(String localDeployId) {
-    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${localDeployId}"
-}
-
 // Getters and Setters of params/properties
-
-boolean isSpecificArtifactsUpload() {
-    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && !isDeployDisabled()
-}
-
-boolean shouldStageArtifacts() {
-    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY && !isDeployDisabled()
-}
 
 boolean shouldDeployToRepository() {
     return (env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()) && !isDeployDisabled()
