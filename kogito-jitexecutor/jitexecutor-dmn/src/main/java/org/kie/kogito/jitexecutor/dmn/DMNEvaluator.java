@@ -29,6 +29,8 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DynamicDMNContextBuilder;
 import org.kie.internal.io.ResourceFactory;
@@ -52,6 +54,7 @@ public class DMNEvaluator {
     private DMNEvaluator(DMNModel dmnModel, DMNRuntime dmnRuntime) {
         this.dmnModel = dmnModel;
         this.dmnRuntime = dmnRuntime;
+        ((DMNRuntimeImpl) this.dmnRuntime).setOption(new RuntimeTypeCheckOption(true));
     }
 
     public DMNModel getDmnModel() {

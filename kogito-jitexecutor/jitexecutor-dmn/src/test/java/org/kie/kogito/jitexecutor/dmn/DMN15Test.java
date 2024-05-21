@@ -19,6 +19,7 @@
 package org.kie.kogito.jitexecutor.dmn;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.jitexecutor.dmn.TestingUtils.MAPPER;
 import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModel;
@@ -71,45 +73,84 @@ class DMN15Test {
                 "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
     }
 
-    private void commonUnnamedImport(String importingModelRef, String importedModelRef) throws IOException {
-        ResourceWithURI model1 = new ResourceWithURI(importingModelRef, getModelFromIoUtils(importingModelRef));
-        ResourceWithURI model2 = new ResourceWithURI(importedModelRef, getModelFromIoUtils(importedModelRef));
+    @Test
+    void collectionTypeConstraintSucceed() throws IOException {
+        String modelRef = "valid_models/DMNv1_5/TypeConstraintsChecks.dmn";
+        ResourceWithURI model = new ResourceWithURI(modelRef, getModelFromIoUtils(modelRef));
         Map<String, Object> context =
-                Map.of("A Person", Map.of("name", "John", "age", 47));
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2),
-                context);
+                Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Ski")));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
+                                                        context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
                 .when().post("/jitdmn")
                 .then()
                 .statusCode(200)
-                .body("'Local Hello'", is("function Local Hello( Person )"))
-                .body("'Say Hello'", is("function Say Hello( Person )"));
+                .body("'MyDecision'", is("The Person P3 likes 1 thing(s)."));
+    }
 
-        String response = given()
-                .contentType(ContentType.JSON)
-                .body(new MultipleResourcesPayload(importingModelRef, List.of(model1, model2)))
-                .when()
-                .post("/jitdmn/validate")
-                .then()
-                .statusCode(200)
-                .extract()
-                .asString();
-        LOG.debug("Validate response: {}", response);
-        List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
-        assertEquals(0, messages.size());
-
-        jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2), context);
+    @Test
+    void collectionTypeConstraintFails() throws IOException {
+        String modelRef = "valid_models/DMNv1_5/TypeConstraintsChecks.dmn";
+        ResourceWithURI model = new ResourceWithURI(modelRef, getModelFromIoUtils(modelRef));
+        Map<String, Object> context =
+                Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Ski", "Golf")));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
+                                                        context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
-                .when()
-                .post("/jitdmn/dmnresult")
+                .when().post("/jitdmn")
                 .then()
                 .statusCode(200)
-                .body("decisionResults.result[0]", is("Hello John!"))
-                .body("decisionResults.result[1]", is("Local Hello John!"));
+                .body("'MyDecision'", nullValue());
+    }
+
+    @Test
+    void collectionAllowedValuesSucceed() throws IOException {
+        String modelRef = "valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn";
+        ResourceWithURI model = new ResourceWithURI(modelRef, getModelFromIoUtils(modelRef));
+        Map<String, Object> context =
+                Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Golf")));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
+                                                        context);
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn")
+                .then()
+                .statusCode(200)
+                .body("'MyDecision'", is("The Person P3 likes 1 thing(s)."));
+
+        context =
+                Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Golf", "Jogging")));
+        jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
+                                                        context);
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn")
+                .then()
+                .statusCode(200)
+                .body("'MyDecision'", is("The Person P3 likes 2 thing(s)."));
+    }
+
+    @Test
+    void collectionAllowedValuesFails() throws IOException {
+        String modelRef = "valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn";
+        ResourceWithURI model = new ResourceWithURI(modelRef, getModelFromIoUtils(modelRef));
+        Map<String, Object> context =
+                Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Ski")));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
+                                                        context);
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn")
+                .then()
+                .statusCode(200)
+                .body("'MyDecision'", nullValue());
     }
 
     @Test
@@ -164,6 +205,47 @@ class DMN15Test {
                 "usingNormal", "2021-05-31T00:00:00Z");
         endpoint(model, expectedValues);
         result(model, Map.of("decisionResults.result[0]", "2021-05-31T00:00:00Z"));
+    }
+
+    private void commonUnnamedImport(String importingModelRef, String importedModelRef) throws IOException {
+        ResourceWithURI model1 = new ResourceWithURI(importingModelRef, getModelFromIoUtils(importingModelRef));
+        ResourceWithURI model2 = new ResourceWithURI(importedModelRef, getModelFromIoUtils(importedModelRef));
+        Map<String, Object> context =
+                Map.of("A Person", Map.of("name", "John", "age", 47));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2),
+                                                        context);
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn")
+                .then()
+                .statusCode(200)
+                .body("'Local Hello'", is("function Local Hello( Person )"))
+                .body("'Say Hello'", is("function Say Hello( Person )"));
+
+        String response = given()
+                .contentType(ContentType.JSON)
+                .body(new MultipleResourcesPayload(importingModelRef, List.of(model1, model2)))
+                .when()
+                .post("/jitdmn/validate")
+                .then()
+                .statusCode(200)
+                .extract()
+                .asString();
+        LOG.debug("Validate response: {}", response);
+        List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
+        assertEquals(0, messages.size());
+
+        jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2), context);
+        given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when()
+                .post("/jitdmn/dmnresult")
+                .then()
+                .statusCode(200)
+                .body("decisionResults.result[0]", is("Hello John!"))
+                .body("decisionResults.result[1]", is("Local Hello John!"));
     }
 
     private void result(String model, Map<String, Object> expectedValues) {
