@@ -29,7 +29,7 @@ pipeline {
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
+        MAVEN_DEPLOY_LOCAL_DIR = '/tmp/maven_deploy_dir'
     }
 
     stages {
@@ -110,6 +110,22 @@ pipeline {
                         githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                         githubscm.tagRepository(projectVersion)
                         githubscm.pushRemoteTag('origin', projectVersion, getGitAuthorPushCredsId())
+                    }
+                }
+            }
+        }
+
+        stage('Trigger JIT Executor Native GH workflow') {
+            steps {
+                script {
+                    checkoutTag = getProjectVersion(false)
+                    kogitoVersion = getProjectVersion()
+                    withCredentials([usernamePassword(credentialsId: "${getGitAuthorPushCredsId()}", usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        sh """
+                        git config user.email ${GITHUB_USER}@jenkins.kie.apache.org
+                        git config user.name ${GITHUB_USER}
+                        gh workflow run "publish-jitexecutor-native.yml" --ref "${checkoutTag}" -f kogito_runtime_version="${kogitoVersion}" --repo="https://github.com/${getGitAuthor()}/${getRepoName()}"
+                        """
                     }
                 }
             }
@@ -209,7 +225,7 @@ void runMavenLocalDeploy(boolean skipTests = true) {
     mvnCmd = getMavenCommand()
     mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
 
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
         mvnCmd.withProperty('maven.test.failure.ignore', true)
             .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
             .withOptions(env.KOGITO_APPS_BUILD_MVN_OPTS ? [ env.KOGITO_APPS_BUILD_MVN_OPTS ] : [])
@@ -235,7 +251,7 @@ String getProjectVersionDate() {
 String getProjectVersion(boolean keepSnapshotSuffix = true) {
     def projectVersion = env.PROJECT_VERSION
     if (keepSnapshotSuffix) {
-        return projectVersion.replace("-SNAPSHOT", "-${getProjectVersionDate()}-SNAPSHOT")
+        return projectVersion.replace('-SNAPSHOT', "-${getProjectVersionDate()}-SNAPSHOT")
     }
-    return projectVersion.replace("-SNAPSHOT", "-${getProjectVersionDate()}")
+    return projectVersion.replace('-SNAPSHOT', "-${getProjectVersionDate()}")
 }
