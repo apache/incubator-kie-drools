@@ -5103,4 +5103,23 @@ class MiscDRLParserTest {
         assertThat(parser.hasErrors()).isTrue();
         assertThat(parser.getErrors()).extracting(DroolsError::getMessage).doesNotContain("");
     }
+
+    @ParameterizedTest
+    @MethodSource("org.drools.drl.parser.antlr4.ParserTestUtils#javaKeywords")
+    void javaKeywordsInPackage(String keyword) {
+        String pkgName = "org.drools." + keyword;
+        String text = "package " + pkgName + "\n" +
+                "rule R\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "end\n";
+
+        PackageDescr pkg = parseAndGetPackageDescr(text);
+
+        assertThat(pkg.getName()).isEqualTo(pkgName);
+        assertThat(pkg.getRules()).hasSize(1);
+
+        assertThat(pkg.getRules().get(0).getName()).isEqualTo("R");
+    }
 }
