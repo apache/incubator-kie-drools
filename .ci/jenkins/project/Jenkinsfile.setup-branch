@@ -215,7 +215,7 @@ String getDroolsVersion() {
     return params.DROOLS_VERSION ?: getVersionFromReleaseBranch(getBuildBranch())
 }
 
-String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, String suffix = 'SNAPSHOT') {
+String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 999, String suffix = 'SNAPSHOT') {
     String [] versionSplit = releaseBranch.split("\\.")
     if (versionSplit.length == 3
         && versionSplit[0].isNumber()
