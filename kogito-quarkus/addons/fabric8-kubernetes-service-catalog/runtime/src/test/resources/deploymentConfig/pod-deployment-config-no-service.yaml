@@ -81,7 +81,7 @@ spec:
       readOnly: true
       mountPath: /var/run/secrets/kubernetes.io/serviceaccount
     terminationMessagePolicy: File
-    image: 'quay.io/kiegroup/process-quarkus-example:latest'
+    image: 'docker.io/namespace/bananas:latest'
   serviceAccount: default
   volumes:
   - name: kube-api-access-mg9n9
@@ -149,5 +149,5 @@ status:
     state:
       running:
         startedAt: '2022-08-22T17:30:29Z'
-    image: 'quay.io/kiegroup/process-quarkus-example:latest'
+    image: 'docker.io/namespace/bananas:latest'
   qosClass: BestEffort

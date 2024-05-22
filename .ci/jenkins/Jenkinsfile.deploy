@@ -305,5 +305,5 @@ String getWorkflowCommonDeploymentPath() {
 }
 
 String getDataIndexEphemeralReleaseImage() {
-    return "quay.io/kiegroup/kogito-data-index-ephemeral:${util.getMajorMinorVersion(getProjectVersion())}"
+    return "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:${util.getMajorMinorVersion(getProjectVersion())}"
 }

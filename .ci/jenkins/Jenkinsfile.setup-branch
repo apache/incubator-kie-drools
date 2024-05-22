@@ -23,7 +23,7 @@ import org.jenkinsci.plugins.workflow.libs.Library
 import org.kie.jenkins.MavenCommand
 
 droolsRepo = 'incubator-kie-drools'
-dataIndexEphemeralImageName = 'quay.io/kiegroup/kogito-data-index-ephemeral'
+dataIndexEphemeralImageName = 'docker.io/apache/incubator-kie-kogito-data-index-ephemeral'
 
 pipeline {
     agent {
@@ -213,11 +213,11 @@ String getWorkflowCommonDeploymentRelativePath() {
 
 String getDataIndexEphemeralImage() {
     if (isMainBranch()) {
-        return "${dataIndexEphemeralImageName}-nightly:latest"
+        return "${dataIndexEphemeralImageName}:main"
     }
     String version = getKogitoVersion()
     if (version.endsWith('-SNAPSHOT')) {
-        return "${dataIndexEphemeralImageName}-nightly:${util.getMajorMinorVersion(version)}"
+        return "${dataIndexEphemeralImageName}:${util.getMajorMinorVersion(version)}"
     }
     return "${dataIndexEphemeralImageName}:${util.getMajorMinorVersion(version)}"
 }

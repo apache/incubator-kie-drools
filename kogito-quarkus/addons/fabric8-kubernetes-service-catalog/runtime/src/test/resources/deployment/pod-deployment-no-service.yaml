@@ -57,7 +57,7 @@ spec:
       defaultMode: 420
   containers:
   - name: example-deployment-no-service
-    image: quay.io/kiegroup/process-quarkus-example:latest
+    image: docker.io/namespace/bananas:latest
     ports:
     - containerPort: 8080
       protocol: TCP
@@ -121,6 +121,6 @@ status:
     lastState: {}
     ready: true
     restartCount: 0
-    image: quay.io/kiegroup/process-quarkus-example:latest
+    image: docker.io/namespace/bananas:latest
     started: true
   qosClass: BestEffort

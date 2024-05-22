@@ -26,7 +26,7 @@ metadata:
 spec:
   containers:
   - name: process-quarkus-example-pod-no-service
-    image: quay.io/kiegroup/process-quarkus-example:latest
+    image: docker.io/namespace/bananas:latest
     imagePullPolicy: Never
     ports:
     - name: http
@@ -64,5 +64,5 @@ status:
     lastState: {}
     ready: true
     restartCount: 0
-    image: quay.io/kiegroup/process-quarkus-example:latest
+    image: docker.io/namespace/bananas:latest
     started: true

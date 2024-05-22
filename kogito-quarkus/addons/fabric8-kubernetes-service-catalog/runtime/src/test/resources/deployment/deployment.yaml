@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: example-deployment-with-service
-        image: quay.io/kiegroup/process-quarkus-example:latest
+        image: docker.io/namespace/bananas:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

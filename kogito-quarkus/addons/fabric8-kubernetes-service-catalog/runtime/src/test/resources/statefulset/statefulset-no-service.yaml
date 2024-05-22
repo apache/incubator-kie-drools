@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: process-quarkus-example-statefulset-no-service
-        image: quay.io/kiegroup/process-quarkus-example:latest
+        image: docker.io/namespace/bananas:latest
         ports:
         - containerPort: 8080
           name: http

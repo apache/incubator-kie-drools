@@ -26,7 +26,7 @@ metadata:
 spec:
   containers:
   - name: pod-no-service-custom-port
-    image: quay.io/kiegroup/process-quarkus-example:latest
+    image: docker.io/namespace/bananas:latest
     imagePullPolicy: Never
     ports:
     - name: http

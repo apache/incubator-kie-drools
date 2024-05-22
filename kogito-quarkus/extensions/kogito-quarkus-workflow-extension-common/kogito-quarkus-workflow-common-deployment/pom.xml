@@ -33,7 +33,7 @@
   <name>Kogito :: Quarkus Workflow Extension Common :: Deployment</name>
 
   <properties>
-    <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral-nightly:latest</data-index-ephemeral.image>
+    <data-index-ephemeral.image>docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main</data-index-ephemeral.image>
     <java.module.name>org.kie.kogito.quarkus.workflow.deployment</java.module.name>
   </properties>
 
