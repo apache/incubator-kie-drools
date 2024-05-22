@@ -1,0 +1,323 @@
+/* groovylint-disable UnnecessaryGetter */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import org.jenkinsci.plugins.workflow.libs.Library
+
+@Library('jenkins-pipeline-shared-libraries') _
+
+import org.kie.jenkins.MavenCommand
+
+deployProperties = [:]
+
+optaplannerRepository = 'incubator-kie-optaplanner'
+optaplannerFolder = 'optaplanner'
+quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
+quickstartsFolder = 'quickstarts'
+
+imageUtils = null
+
+pipeline {
+    agent {
+        docker {
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timestamps()
+        timeout(time: 120, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
+    environment {
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+    }
+
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    cleanWs(disableDeferredWipeout: true)
+
+                    if (params.DISPLAY_NAME) {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+
+                    checkout scm // To make sure the repository containing the script is available on the Jenkins node.
+                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
+
+                    env.PROJECT_VERSION = maven.mvnGetVersionProperty(getMavenCommand(), 'project.version')
+                }
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('git.branch', getBuildBranch())
+                        setDeployPropertyIfNeeded('git.branchQuickstarts', getQuickStartsBranch())
+                        setDeployPropertyIfNeeded('git.author', getGitAuthor())
+                        setDeployPropertyIfNeeded('project.version', getProjectVersion())
+                    }
+                }
+            }
+        }
+
+        stage('Clone repositories') {
+            steps {
+                script {
+                    checkoutRepo(optaplannerRepository, optaplannerFolder)
+                    checkoutRepo(quickstartsRepository, quickstartsFolder)
+                }
+            }
+        }
+
+        stage('Update project version') {
+            steps {
+                script {
+                    if (getDroolsVersion()) {
+                        maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
+                    }
+                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), true)
+                    mavenCleanInstallOptaPlannerParents()
+                    updateQuickstartsVersions()
+                }
+            }
+        }
+
+        stage('Build OptaPlanner') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        def installOrDeploy
+                        if (shouldDeployToRepository()) {
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                        } else {
+                            installOrDeploy = 'install'
+                        }
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            getOptaplannerMavenCommand()
+                                    .withProperty('maven.test.failure.ignore', true)
+                                    .withProperty('operator.image.build')
+                                    .skipTests(params.SKIP_TESTS)
+                                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                    .run("clean $installOrDeploy")
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        archiveJUnitTestResults()
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Build Quickstarts') {
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                        getOptaplannerQuickstartsMavenCommand()
+                                .withProperty('maven.test.failure.ignore', true)
+                                .skipTests(params.SKIP_TESTS)
+                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run('clean install')
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        archiveJUnitTestResults()
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Create and push a new tag') {
+            steps {
+                script {
+                    projectVersion = getProjectVersion(false)
+                    dir(optaplannerFolder) {
+                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                        githubscm.tagRepository(projectVersion)
+                        githubscm.pushRemoteTag('origin', projectVersion, getGitAuthorPushCredsId())
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def propertiesStr = deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
+                writeFile(text: propertiesStr, file: env.PROPERTIES_FILE_NAME)
+                archiveArtifacts(artifacts: env.PROPERTIES_FILE_NAME)
+            }
+        }
+        unsuccessful {
+            sendErrorNotification()
+        }
+        cleanup {
+            script {
+                util.cleanNode()
+            }
+        }
+    }
+}
+
+void sendErrorNotification() {
+    if (params.SEND_NOTIFICATION) {
+        String additionalInfo = "**[${getBuildBranch()}] Optaplanner - Deploy**"
+        mailer.sendMarkdownTestSummaryNotification('CI failures', [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+void updateQuickstartsVersions() {
+    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
+    maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), true)
+    gradleVersionsUpdate(quickstartsFolder, getProjectVersion())
+}
+
+void gradleVersionsUpdate(String folder, String newVersion) {
+    dir(folder) {
+        sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
+    }
+}
+
+void archiveJUnitTestResults() {
+    if (!skipUnitTests()) {
+        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+    }
+}
+
+void checkoutRepo(String repo, String dirName) {
+    dir(dirName) {
+        deleteDir()
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
+        // need to manually checkout branch since on a detached branch after checkout command
+        sh "git checkout ${getBuildBranch()}"
+        checkoutDatetime = getCheckoutDatetime()
+        if (checkoutDatetime) {
+            sh "git checkout `git rev-list -n 1 --before=\"${checkoutDatetime}\" ${getBuildBranch()}`"
+        }
+    }
+}
+
+MavenCommand getMavenDefaultCommand() {
+    MavenCommand mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+    if (env.MAVEN_DEPENDENCIES_REPOSITORY) {
+        mvnCmd.withDependencyRepositoryInSettings('deps-repo', env.MAVEN_DEPENDENCIES_REPOSITORY)
+    }
+    return mvnCmd
+}
+
+MavenCommand getOptaplannerMavenCommand() {
+    return getMavenDefaultCommand().inDirectory(optaplannerFolder).withProperty('full')
+}
+
+MavenCommand getOptaplannerQuickstartsMavenCommand() {
+    return getMavenDefaultCommand().inDirectory(quickstartsFolder).withProperty('full')
+}
+
+/**
+ * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
+ */
+void mavenCleanInstallOptaPlannerParents() {
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+        getOptaplannerMavenCommand()
+                .skipTests(true)
+                .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
+                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                .run('clean install')
+    }
+}
+
+// Getters and Setters of params/properties
+
+boolean shouldDeployToRepository() {
+    return (env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()) && !isDeployDisabled()
+}
+
+boolean isNotTestingBuild() {
+    return getGitAuthor() == 'apache'
+}
+
+boolean skipUnitTests() {
+    return params.SKIP_TESTS
+}
+
+String getGitAuthor() {
+    // GIT_AUTHOR can be env or param
+    return "${GIT_AUTHOR}"
+}
+
+String getGitAuthorCredsId() {
+    return env.GIT_AUTHOR_CREDS_ID
+}
+
+String getGitAuthorPushCredsId() {
+    return env.GIT_AUTHOR_PUSH_CREDS_ID
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getDroolsVersion() {
+    return getProjectVersion()
+}
+
+void setDeployPropertyIfNeeded(String key, def value) {
+    if (value != null && value != '') {
+        deployProperties[key] = value
+    }
+}
+
+String getQuickStartsBranch() {
+    return params.QUICKSTARTS_BUILD_BRANCH_NAME
+}
+
+boolean isDeployDisabled() {
+    return env.DISABLE_DEPLOY.toBoolean()
+}
+
+String getCheckoutDatetime() {
+    return params.GIT_CHECKOUT_DATETIME
+}
+
+String getProjectVersionDate() {
+    def projectVersionDate = (getCheckoutDatetime() =~ /(\d{4}-\d{2}-\d{2})/)[0][0]
+    return projectVersionDate.replace('-', '')
+}
+
+String getProjectVersion(boolean keepSnapshotSuffix = true) {
+    def projectVersion = env.PROJECT_VERSION
+    if (keepSnapshotSuffix) {
+        return projectVersion.replace('-SNAPSHOT', "-${getProjectVersionDate()}-SNAPSHOT")
+    }
+    return projectVersion.replace('-SNAPSHOT', "-${getProjectVersionDate()}")
+}
