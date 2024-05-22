@@ -25,11 +25,11 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quay.io/kiegroup/jit-runner-native .
+# docker build -f src/main/docker/Dockerfile.native -t docker.io/apache/incubator-kie-jit-runner-native .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quay.io/kiegroup/jit-runner-native
+# docker run -i --rm -p 8080:8080 docker.io/apache/incubator-kie-jit-runner-native
 #
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal
