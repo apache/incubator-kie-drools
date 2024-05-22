@@ -38,6 +38,9 @@ public class Antlr4ParserStringUtils {
      * Get text from ParserRuleContext's CharStream without trimming whitespace
      */
     public static String getTextPreservingWhitespace(ParserRuleContext ctx) {
+        if (ctx == null) {
+            return "";
+        }
         // Using raw CharStream
         int startIndex = ctx.start.getStartIndex();
         int stopIndex = ctx.stop.getStopIndex();
