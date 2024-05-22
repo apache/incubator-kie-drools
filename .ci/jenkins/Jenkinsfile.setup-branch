@@ -53,7 +53,7 @@ pipeline {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
-                    checkoutRepo(droolsRepo, getDroolsTargetBranch())
+                    checkoutRepo(droolsRepo, getBuildBranch())
                     checkoutRepo(getRepoName(), getBuildBranch())
                 }
             }
@@ -149,18 +149,6 @@ void checkoutRepo(String repository, String branch) {
         // need to manually checkout branch since on a detached branch after checkout command
         sh "git checkout ${branch}"
     }
-}
-
-String getDroolsTargetBranch() {
-    String targetBranch = getBuildBranch()
-    List versionSplit = targetBranch.split("\\.") as List
-
-    if (versionSplit[0].isNumber()) {
-        targetBranch = "${Integer.parseInt(versionSplit[0]) + 7}.${versionSplit.tail().join('.')}"
-    } else {
-        echo "Cannot parse targetBranch as release branch so going further with current value: ${targetBranch}"
-    }
-    return targetBranch
 }
 
 String getRepoName() {
