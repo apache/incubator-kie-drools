@@ -1087,9 +1087,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                     .build();
             children.forEach(andDescr::addDescr);
             return andDescr;
-        } else {
-            // size == 1. children never be empty
+        } else if (children.size() == 1) {
             return children.get(0);
+        } else {
+            return null; // only caused by a parser error
         }
     }
 
