@@ -5125,7 +5125,6 @@ class MiscDRLParserTest {
 
     @Test
     void accumulateEmptyChunks() {
-        ParserTestUtils.enableOldParser();
         String text = "rule R\n" +
                 "when\n" +
                 "        $totalAmount : Number() from accumulate( Cheese( $price : price ),\n" +
