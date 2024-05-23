@@ -56,6 +56,9 @@ public class Antlr4ParserStringUtils {
      * Get text from List of ParserRuleContext's CharStream without trimming whitespace
      */
     public static String getTextPreservingWhitespace(List<? extends ParserRuleContext> ctx) {
+        if (ctx == null) {
+            return "";
+        }
         return ctx.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.joining());
     }
 
@@ -65,6 +68,9 @@ public class Antlr4ParserStringUtils {
      * Unlike getTextPreservingWhitespace, this method reflects Lexer normalizeString
      */
     public static String getTokenTextPreservingWhitespace(ParserRuleContext ctx, TokenStream tokenStream) {
+        if (ctx == null) {
+            return "";
+        }
         return tokenStream.getText(ctx.start, ctx.stop);
     }
 
