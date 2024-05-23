@@ -5216,4 +5216,18 @@ class MiscDRLParserTest {
         assertThat(accumulateFunction.getFunction()).isEqualTo("average");
         assertThat(accumulateFunction.getParams()).containsExactly("$a + $b");
     }
+
+    @Test
+    void durationChunk() {
+        final String text =
+                "rule R\n" +
+                        "  duration (30s 10s) \n" +
+                        "when\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getAttributes()).containsKey("duration");
+        assertThat(rule.getAttributes().get("duration").getType()).isEqualTo(AttributeDescr.Type.EXPRESSION);
+        assertThat(rule.getAttributes().get("duration").getValue()).isEqualTo("30s 10s");
+    }
 }
