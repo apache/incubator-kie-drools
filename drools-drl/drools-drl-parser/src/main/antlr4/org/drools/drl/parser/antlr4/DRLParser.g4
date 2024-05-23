@@ -104,16 +104,16 @@ lhs : DRL_WHEN lhsExpression* ;
 queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
-              | lhsUnary                                                #lhsUnarySingle
-              | DRL_AND drlAnnotation* lhsExpression+                                  #lhsAnd
-              | lhsExpression (DRL_AND drlAnnotation* lhsExpression)+                  #lhsAnd
               | DRL_OR drlAnnotation* lhsExpression+                                   #lhsOr
-              | lhsExpression (DRL_OR drlAnnotation* lhsExpression)+                   #lhsOr
+              | lhsExpression ((DRL_OR|OR) drlAnnotation* lhsExpression)+              #lhsOr
+              | DRL_AND drlAnnotation* lhsExpression+                                  #lhsAnd
+              | lhsExpression ((DRL_AND|AND) drlAnnotation* lhsExpression)+            #lhsAnd
+              | lhsUnary                                                               #lhsUnarySingle
               ;
 
 // lhsAnd is used as a label in lhsExpression rule. But some other rules explicitly use the def, so lhsAndDef is declared.
 lhsAndDef : LPAREN lhsAndDef RPAREN
-          | lhsUnary (DRL_AND lhsUnary)*
+          | lhsUnary ((DRL_AND|AND) lhsUnary)*
           | LPAREN DRL_AND lhsUnary+ RPAREN
           ;
 

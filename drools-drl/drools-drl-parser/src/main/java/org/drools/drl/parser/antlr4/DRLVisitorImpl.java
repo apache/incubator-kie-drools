@@ -819,7 +819,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         }
 
         String[] params = ctx.conditionalExpressions().conditionalExpression().stream()
-                .map(RuleContext::getText)
+                .map(Antlr4ParserStringUtils::getTextPreservingWhitespace)
                 .toArray(String[]::new);
         return new AccumulateDescr.AccumulateFunctionCallDescr(function, bind, unify, params);
     }
