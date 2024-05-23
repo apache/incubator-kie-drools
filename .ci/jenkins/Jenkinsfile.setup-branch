@@ -23,7 +23,6 @@ import org.jenkinsci.plugins.workflow.libs.Library
 import org.kie.jenkins.MavenCommand
 
 droolsRepo = 'incubator-kie-drools'
-dataIndexEphemeralImageName = 'docker.io/apache/incubator-kie-kogito-data-index-ephemeral'
 
 pipeline {
     agent {
@@ -98,8 +97,8 @@ pipeline {
                             getMavenCommand(getRepoName())
                                 .withOptions(['-pl :kogito-quarkus-workflow-common-deployment'])
                                 .withSettingsXmlFile(MAVEN_SETTINGS_FILE),
-                            'data-index-ephemeral.image',
-                            getDataIndexEphemeralImage()
+                            'data-index-ephemeral.image.tagVersion',
+                            getDataIndexEphemeralImageTagVersion()
                         )
                     }
                 }
@@ -199,13 +198,10 @@ String getWorkflowCommonDeploymentRelativePath() {
     return 'quarkus/extensions/kogito-quarkus-workflow-extension-common/kogito-quarkus-workflow-common-deployment'
 }
 
-String getDataIndexEphemeralImage() {
-    if (isMainBranch()) {
-        return "${dataIndexEphemeralImageName}:main"
-    }
+String getDataIndexEphemeralImageTagVersion() {
     String version = getKogitoVersion()
     if (version.endsWith('-SNAPSHOT')) {
-        return "${dataIndexEphemeralImageName}:${util.getMajorMinorVersion(version)}"
+        return getBuildBranch() // E.g., `main` or `10.0.x`
     }
-    return "${dataIndexEphemeralImageName}:${util.getMajorMinorVersion(version)}"
+    return util.getMajorMinorVersion(version) // E.g., `10.0`
 }
