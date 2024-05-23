@@ -121,14 +121,26 @@ pipeline {
                         } else {
                             installOrDeploy = 'install'
                         }
+                        def mavenCommand = getMavenCommand()
+                           .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+                           .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                           .withProperty('maven.test.failure.ignore', true)
+                           .skipTests(params.SKIP_TESTS)
+                           .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+
+                        if (isRelease()) {
+                            withCredentials([file(credentialsId: 'asf-release-gpg-signing-key', variable: 'SIGNING_KEY')]) {
+                                // copy the key to singkey.gpg file in *plain text* so we can import it
+                                sh ('cat $SIGNING_KEY > $WORKSPACE/signkey.gpg')
+                                // import the key into the gpg keyring
+                                sh ('gpg --allow-secret-key-import --import signkey.gpg')
+                                sh ('rm $WORKSPACE/signkey.gpg')
+                            }
+                            mavenCommand.withProfiles(['apache-release'])
+                        }
+
                         configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                            getMavenCommand()
-                                .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-                                .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                                .withProperty('maven.test.failure.ignore', true)
-                                .skipTests(params.SKIP_TESTS)
-                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                .run("clean $installOrDeploy")
+                            mavenCommand.run("clean $installOrDeploy")
                         }
                     }
                 }
