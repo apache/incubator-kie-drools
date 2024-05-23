@@ -5135,11 +5135,85 @@ class MiscDRLParserTest {
                 "end";
         RuleDescr rule = parseAndGetFirstRuleDescr(text);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accumulateDescr = (AccumulateDescr) outPattern.getSource();
         assertThat(accumulateDescr.getInitCode()).isEmpty();
         assertThat(accumulateDescr.getActionCode()).isEmpty();
         assertThat(accumulateDescr.getReverseCode()).isNull();
-        assertThat(accumulateDescr.getResultCode()).isEqualTo( "null");
+        assertThat(accumulateDescr.getResultCode()).isEqualTo("null");
+    }
+
+    @Test
+    void doublePipeInfixOr() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    Person()\n" +
+                        "      ||\n" +
+                        "    Address()\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(OrDescr.class, orDescr -> {
+            assertThat(orDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("Person");
+            });
+            assertThat(orDescr.getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("Address");
+            });
+        });
+    }
+
+    @Test
+    void doubleAmpersandInfixAnd() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    Person()\n" +
+                        "      &&\n" +
+                        "    Address()\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+            assertThat(patternDescr.getObjectType()).isEqualTo("Person");
+        });
+        assertThat(rule.getLhs().getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+            assertThat(patternDescr.getObjectType()).isEqualTo("Address");
+        });
+    }
+
+    @Test
+    void doubleAmpersandInfixAndInAccumulate() {
+        final String text =
+                "rule R\n" +
+                        "when\n" +
+                        "    accumulate( FactA($a : value) && FactB($b : value);\n" +
+                        "      $avg : average($a + $b))\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        AccumulateDescr accumulateDescr = (AccumulateDescr) outPattern.getSource();
+        assertThat(accumulateDescr.getInput()).isInstanceOfSatisfying(AndDescr.class, andDescr -> {
+            assertThat(andDescr.getDescrs()).hasSize(2);
+            assertThat(andDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("FactA");
+                assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                    assertThat(exprConstraintDescr.getExpression()).isEqualTo("$a : value");
+                });
+            });
+            assertThat(andDescr.getDescrs().get(1)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("FactB");
+                assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                    assertThat(exprConstraintDescr.getExpression()).isEqualTo("$b : value");
+                });
+            });
+        });
+
+        AccumulateDescr.AccumulateFunctionCallDescr accumulateFunction = accumulateDescr.getFunctions().get(0);
+        assertThat(accumulateFunction.getBind()).isEqualTo("$avg");
+        assertThat(accumulateFunction.getFunction()).isEqualTo("average");
+        assertThat(accumulateFunction.getParams()).containsExactly("$a + $b");
     }
 }
