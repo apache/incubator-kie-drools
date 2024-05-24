@@ -121,14 +121,35 @@ pipeline {
                         } else {
                             installOrDeploy = 'install'
                         }
-                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                            getMavenCommand()
-                                .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-                                .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                                .withProperty('maven.test.failure.ignore', true)
-                                .skipTests(params.SKIP_TESTS)
-                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                .run("clean $installOrDeploy")
+                        def mavenCommand = getMavenCommand()
+                           .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+                           .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                           .withProperty('maven.test.failure.ignore', true)
+                           .skipTests(params.SKIP_TESTS)
+
+                        if (isRelease()) {
+                            withCredentials([file(credentialsId: 'asf-release-gpg-signing-key', variable: 'SIGNING_KEY')]) {
+                                withCredentials([file(credentialsId: 'asf-release-gpg-signing-key-password', variable: 'SIGNING_KEY_PASSWORD')]) {
+                                    // copy the key to singkey.gpg file in *plain text* so we can import it
+                                    sh ("cat \"${SIGNING_KEY}\" > \"${WORKSPACE}\"/signkey.gpg")
+                                    // Please do not remove list keys command. When gpg is run for the first time, it may initialize some internals.
+                                    sh ('gpg --list-keys')
+                                    sh ("gpg --batch --pinentry-mode=loopback --passphrase \"${SIGNING_KEY_PASSWORD}\" --import  \"${WORKSPACE}\"/signkey.gpg")
+                                    sh ("rm \"${WORKSPACE}\"/signkey.gpg")
+
+                                    mavenCommand.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
+                                        .withProfiles(['apache-release'])
+
+                                    // If there are passwords, this needs to be duplicated within the withCredentials block.
+                                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                        mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                                    }
+                                }
+                            }
+                        } else {
+                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                            }
                         }
                     }
                 }
