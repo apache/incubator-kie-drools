@@ -138,13 +138,18 @@ pipeline {
                                     sh ("rm \"${WORKSPACE}\"/signkey.gpg")
 
                                     mavenCommand.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
+                                        .withProfiles(['apache-release'])
+
+                                    // If there are passwords, this needs to be duplicated within the withCredentials block.
+                                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                        mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                                    }
                                 }
                             }
-                            mavenCommand.withProfiles(['apache-release'])
-                        }
-
-                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                        } else {
+                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                            }
                         }
                     }
                 }
