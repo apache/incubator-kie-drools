@@ -47,3 +47,11 @@ seed:
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
+  agent:
+    docker:
+      builder:
+        # At some point, this image will need to be changed when a release branch is created
+        # but we need to make sure the image exists first ... simple tag before setting up the branch ?
+        # See https://github.com/kiegroup/kie-issues/issues/551
+        image: quay.io/kiegroup/kogito-ci-build:main-latest
+        args: --privileged --group-add docker
