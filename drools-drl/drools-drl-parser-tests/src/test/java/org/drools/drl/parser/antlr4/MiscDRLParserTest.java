@@ -5221,13 +5221,15 @@ class MiscDRLParserTest {
     void durationChunk() {
         final String text =
                 "rule R\n" +
-                        "  duration (30s 10s) \n" +
+                        "  duration (wrong input) \n" +
                         "when\n" +
                         "then\n" +
                         "end";
         RuleDescr rule = parseAndGetFirstRuleDescr(text);
         assertThat(rule.getAttributes()).containsKey("duration");
         assertThat(rule.getAttributes().get("duration").getType()).isEqualTo(AttributeDescr.Type.EXPRESSION);
-        assertThat(rule.getAttributes().get("duration").getValue()).isEqualTo("30s 10s");
+
+        // At the moment, the parser accepts any input and let the compile phase validate it.
+        assertThat(rule.getAttributes().get("duration").getValue()).isEqualTo("wrong input");
     }
 }
