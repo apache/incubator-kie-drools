@@ -101,6 +101,7 @@
     <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
     <version.apache-rat-plugin>0.16.1</version.apache-rat-plugin>
+    <version.maven-javadoc-plugin>3.6.2</version.maven-javadoc-plugin>
   </properties>
 
   <build>
