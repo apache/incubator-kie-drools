@@ -126,7 +126,6 @@ pipeline {
                            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
                            .withProperty('maven.test.failure.ignore', true)
                            .skipTests(params.SKIP_TESTS)
-                           .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
 
                         if (isRelease()) {
                             withCredentials([file(credentialsId: 'asf-release-gpg-signing-key', variable: 'SIGNING_KEY')]) {
@@ -143,7 +142,7 @@ pipeline {
                         }
 
                         configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                            mavenCommand.run("clean $installOrDeploy")
+                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
                         }
                     }
                 }
