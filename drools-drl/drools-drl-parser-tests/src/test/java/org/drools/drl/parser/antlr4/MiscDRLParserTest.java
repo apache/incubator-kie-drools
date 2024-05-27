@@ -5216,4 +5216,20 @@ class MiscDRLParserTest {
         assertThat(accumulateFunction.getFunction()).isEqualTo("average");
         assertThat(accumulateFunction.getParams()).containsExactly("$a + $b");
     }
+
+    @Test
+    void durationChunk() {
+        final String text =
+                "rule R\n" +
+                        "  duration (wrong input) \n" +
+                        "when\n" +
+                        "then\n" +
+                        "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(text);
+        assertThat(rule.getAttributes()).containsKey("duration");
+        assertThat(rule.getAttributes().get("duration").getType()).isEqualTo(AttributeDescr.Type.EXPRESSION);
+
+        // At the moment, the parser accepts any input and let the compile phase validate it.
+        assertThat(rule.getAttributes().get("duration").getValue()).isEqualTo("wrong input");
+    }
 }
