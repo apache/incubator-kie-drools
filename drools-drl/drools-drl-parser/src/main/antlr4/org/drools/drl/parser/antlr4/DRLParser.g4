@@ -445,7 +445,7 @@ attribute : name=( 'salience' | 'enabled' ) conditionalAttributeValue #expressio
           | name=( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL #stringAttribute
           | name='calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
           | name='timer' ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
-          | name='duration' ( DECIMAL_LITERAL | TIME_INTERVAL | LPAREN TIME_INTERVAL RPAREN ) #durationAttribute
+          | name='duration' ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
           ;
 
 conditionalAttributeValue : ( LPAREN conditionalExpression RPAREN | conditionalExpression ) ;
