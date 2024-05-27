@@ -66,6 +66,7 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
         for (Branch branch : state.getBranches()) {
             currentBranch = branch;
             CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory, getName(branch)), branch.getActions());
+            handleErrors(factory, embeddedSubProcess);
             WorkflowElementIdentifier branchId = embeddedSubProcess.getNode().getId();
             embeddedSubProcess.done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
         }

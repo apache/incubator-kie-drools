@@ -54,6 +54,7 @@ public class ForEachStateHandler extends CompositeContextNodeHandler<ForEachStat
             result.completionAction(new CollectorActionSupplier(workflow.getExpressionLang(), state.getOutputCollection(), DEFAULT_WORKFLOW_VAR, TEMP_OUTPUT_VAR));
         }
         handleActions(result, state.getActions(), FOR_EACH_OUTPUT_VARIABLE, false);
+        handleErrors(factory, result);
         return new MakeNodeResult(result);
     }
 
